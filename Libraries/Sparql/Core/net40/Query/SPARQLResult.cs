@@ -31,6 +31,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.Common.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
@@ -52,6 +53,7 @@ namespace VDS.RDF.Query
         , ISerializable, IXmlSerializable
 #endif
     {
+        private List<String> _variables = new List<string>();
         private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
 
         /// <summary>
@@ -68,14 +70,35 @@ namespace VDS.RDF.Query
         {
             foreach (String var in s.Variables)
             {
+                this._variables.Add(var);
+                this._resultValues.Add(var, s[var]);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new SPARQL Result from the given Set which contains only the given variables in the given order
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="variables">Variables</param>
+        public SparqlResult(ISet s, IEnumerable<String> variables)
+        {
+            this._variables.AddRange(variables);
+            foreach (String var in this._variables)
+            {
                 this._resultValues.Add(var, s[var]);
             }
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization only constructor
+        /// </summary>
+        /// <param name="info">Serialization Info</param>
+        /// <param name="context">Streaming Context</param>
         private SparqlResult(SerializationInfo info, StreamingContext context)
         {
             this._resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
+            this._variables = new List<string>(this._resultValues.Keys);
         }
 #endif
 
@@ -117,20 +140,20 @@ namespace VDS.RDF.Query
         /// <param name="index">Index whose Value you wish to retrieve</param>
         /// <returns></returns>
         /// <remarks>
-        /// The order of variables in a Result is not guaranteed in any way
+        /// As of 1.0.0 the order of variables in a result may/may not vary depending on the original query.  If a specific variable list was declared dotNetRDF tries to preserve that order but this may not always happen depending on how results are received.
         /// </remarks>
         /// <exception cref="IndexOutOfRangeException">Thrown if there is nothing bound at the given Index</exception>
         public INode this[int index]
         {
             get
             {
-                if (index < 0 || index >= this._resultValues.Count)
+                if (index < 0 || index >= this._variables.Count)
                 {
-                    throw new IndexOutOfRangeException("There is no Result Value at Index " + index);
+                    throw new IndexOutOfRangeException("There is no variable at Index " + index);
                 }
                 else
                 {
-                    return this._resultValues.Values.ElementAt(index);
+                    return this._resultValues[this._variables[index]];
                 }
             }
         }
@@ -199,8 +222,25 @@ namespace VDS.RDF.Query
             }
             else
             {
+                this._variables.Add(variable);
                 this._resultValues.Add(variable, value);
             }
+        }
+
+        /// <summary>
+        /// Sets the variable ordering for the result
+        /// </summary>
+        /// <param name="variables"></param>
+        protected internal void SetVariableOrdering(IEnumerable<String> variables)
+        {
+            //Validate that the ordering is applicable
+            if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+            foreach (String var in this._variables)
+            {
+                if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in this result");
+            }
+            //Apply ordering
+            this._variables = new List<string>(variables);
         }
 
         /// <summary>
@@ -231,8 +271,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (from v in this._resultValues.Keys
-                        select v);
+                return new ImmutableView<String>(this._variables);
             }
         }
 
@@ -274,7 +313,7 @@ namespace VDS.RDF.Query
 
             if (this._resultValues.Count == 0) return "<Empty Result>";
 
-            foreach (String var in this._resultValues.Keys)
+            foreach (String var in this._variables)
             {
                 output.Append("?");
                 output.Append(var);
@@ -309,7 +348,7 @@ namespace VDS.RDF.Query
 
             if (this._resultValues.Count == 0) return "<Empty Result>";
 
-            foreach (String var in this._resultValues.Keys)
+            foreach (String var in this._variables)
             {
                 output.Append("?");
                 output.Append(var);
@@ -374,7 +413,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        if (other[v] != null) return false;
+                        if (other.HasBoundValue(v)) return false;
                     }
                 }
                 return true;
@@ -395,7 +434,7 @@ namespace VDS.RDF.Query
         {
             StringBuilder output = new StringBuilder();
 
-            foreach (String var in this._resultValues.Keys)
+            foreach (String var in this._resultValues.Keys.OrderBy(v => v))
             {
                 output.Append("?");
                 output.Append(var);
@@ -420,6 +459,9 @@ namespace VDS.RDF.Query
         /// Enumerates the Bindings of Variable Names to Values in this Result
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// Does not respect the ordering of the variables (if any)
+        /// </remarks>
         public IEnumerator<KeyValuePair<string, INode>> GetEnumerator()
         {
             return this._resultValues.GetEnumerator();

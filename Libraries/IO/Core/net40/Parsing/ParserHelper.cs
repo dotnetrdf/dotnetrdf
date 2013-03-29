@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public static class ParserHelper
     {
-        /// <summary>
+                /// <summary>
         /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
         /// </summary>
         /// <param name="context">Parser Context</param>
@@ -46,12 +46,24 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static INode TryResolveUri(IParserContext context, IToken t)
         {
+            return TryResolveUri(context, t, false);
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="t">Token to resolve</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI</param>
+        /// <returns></returns>
+        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
+        {
             switch (t.TokenType)
             {
                 case Token.QNAME:
                     try
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
+                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri, allowDefaultPrefixFallback)));
                     }
                     catch (UriFormatException formatEx)
                     {

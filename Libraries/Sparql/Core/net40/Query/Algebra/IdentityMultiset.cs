@@ -34,7 +34,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Identity Multiset
     /// </summary>
-    public class IdentityMultiset : BaseMultiset
+    public class IdentityMultiset 
+        : BaseMultiset
     {
         /// <summary>
         /// Joins the Multiset to another Multiset
@@ -175,6 +176,15 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Sets the variable ordering for the multiset
+        /// </summary>
+        /// <param name="variables">Variable Ordering</param>
+        public override void SetVariableOrder(IEnumerable<string> variables)
+        {
+            if (variables.Any()) throw new RdfQueryException("Cannot set variable order for the Identify Multiset");
+        }
+
+        /// <summary>
         /// Removes a Set to the Multiset
         /// </summary>
         /// <param name="id">Set ID</param>
@@ -205,7 +215,7 @@ namespace VDS.RDF.Query.Algebra
                 return Enumerable.Empty<String>();
             }
         }
-
+        
         /// <summary>
         /// Returns an empty enumerable as the Identity Multiset contains no Sets
         /// </summary>

@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        private String ValueInternal(SparqlEvaluationContext context, int bindingID)
+        protected virtual String ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = this._expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");

@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -43,7 +42,7 @@ namespace VDS.RDF.Configuration
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public static class ConfigurationLoader
+    public class ConfigurationLoader
     {
         #region Constants
 
@@ -1439,6 +1438,107 @@ namespace VDS.RDF.Configuration
                 return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
             }
 #endif
+        }
+
+        #endregion
+
+        #region Instance methods
+
+        private readonly IGraph _configGraph;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph)
+            : this(configGraph, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph, bool autoConfigure)
+        {
+            if (autoConfigure)
+            {
+                AutoConfigure(configGraph);
+            }
+            _configGraph = configGraph;
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file)
+            : this(file, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(file, autoConfigure);
+        }
+
+
+#if !SILVERLIGHT
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph from file and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri)
+            : this(graphUri, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(graphUri, autoConfigure);
+        }
+#endif
+
+        /// <summary>
+        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public T LoadObject<T>(string blankNodeIdentifier)
+        {
+            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+            if (blankNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
+            }
+
+            return (T)LoadObject(_configGraph, blankNode);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public T LoadObject<T>(Uri objectIdentifier)
+        {
+            IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
+            if (uriNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
+            }
+
+            return (T)LoadObject(_configGraph, uriNode);
         }
 
         #endregion

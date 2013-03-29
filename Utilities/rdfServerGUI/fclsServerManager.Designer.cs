@@ -82,7 +82,6 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.lblCreateAdvanced = new System.Windows.Forms.Label();
             this.tabRunningServers = new System.Windows.Forms.TabPage();
             this.btnStop = new System.Windows.Forms.Button();
-            this.btnPauseResume = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.cboServers = new System.Windows.Forms.ComboBox();
             this.lblServers = new System.Windows.Forms.Label();
@@ -96,9 +95,9 @@ namespace VDS.RDF.Utilities.Server.GUI
             // 
             // tabControls
             // 
-            this.tabControls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControls.Controls.Add(this.tabCreate);
             this.tabControls.Controls.Add(this.tabCreateAdvanced);
             this.tabControls.Controls.Add(this.tabRunningServers);
@@ -196,8 +195,8 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.txtBaseDirectory.Size = new System.Drawing.Size(344, 20);
             this.txtBaseDirectory.TabIndex = 13;
             this.ttpTips.SetToolTip(this.txtBaseDirectory, "Sets the Base Directory from which static content is served.  If left blank then " +
-                    "static content will not be served.  Enter . to serve static content from servers" +
-                    " working directory");
+        "static content will not be served.  Enter . to serve static content from servers" +
+        " working directory");
             // 
             // lblBaseDirectory
             // 
@@ -215,7 +214,7 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.txtConfigFile.Size = new System.Drawing.Size(332, 20);
             this.txtConfigFile.TabIndex = 11;
             this.ttpTips.SetToolTip(this.txtConfigFile, "Sets the dotNetRDF Configuration File used to specify the dataset served by this " +
-                    "rdfServer (leave blank to start with an empty non-persistent in-memory dataset)");
+        "rdfServer (leave blank to start with an empty non-persistent in-memory dataset)");
             // 
             // lblConfigFile
             // 
@@ -239,7 +238,7 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.cboLogFormat.Size = new System.Drawing.Size(366, 21);
             this.cboLogFormat.TabIndex = 9;
             this.ttpTips.SetToolTip(this.cboLogFormat, "Set the log format to use for logging.  Select either a predefined format or ente" +
-                    "r your own, log format is specified in Apache mod_log style");
+        "r your own, log format is specified in Apache mod_log style");
             // 
             // lblLogFormat
             // 
@@ -378,12 +377,11 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.lblCreateAdvanced.Size = new System.Drawing.Size(429, 32);
             this.lblCreateAdvanced.TabIndex = 0;
             this.lblCreateAdvanced.Text = "To create a server enter the command line arguments to pass to rdfServer below.  " +
-                "Advanced servers are always started as external processes";
+    "Advanced servers are always started as external processes";
             // 
             // tabRunningServers
             // 
             this.tabRunningServers.Controls.Add(this.btnStop);
-            this.tabRunningServers.Controls.Add(this.btnPauseResume);
             this.tabRunningServers.Controls.Add(this.btnStart);
             this.tabRunningServers.Controls.Add(this.cboServers);
             this.tabRunningServers.Controls.Add(this.lblServers);
@@ -397,10 +395,10 @@ namespace VDS.RDF.Utilities.Server.GUI
             // 
             // btnStop
             // 
-            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(261, 244);
+            this.btnStop.Location = new System.Drawing.Point(223, 268);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 5;
@@ -408,25 +406,12 @@ namespace VDS.RDF.Utilities.Server.GUI
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // btnPauseResume
-            // 
-            this.btnPauseResume.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPauseResume.Enabled = false;
-            this.btnPauseResume.Location = new System.Drawing.Point(180, 244);
-            this.btnPauseResume.Name = "btnPauseResume";
-            this.btnPauseResume.Size = new System.Drawing.Size(75, 23);
-            this.btnPauseResume.TabIndex = 4;
-            this.btnPauseResume.Text = "Pause";
-            this.btnPauseResume.UseVisualStyleBackColor = true;
-            this.btnPauseResume.Click += new System.EventHandler(this.btnPauseResume_Click);
-            // 
             // btnStart
             // 
-            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStart.Enabled = false;
-            this.btnStart.Location = new System.Drawing.Point(99, 244);
+            this.btnStart.Location = new System.Drawing.Point(142, 268);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 3;
@@ -455,13 +440,13 @@ namespace VDS.RDF.Utilities.Server.GUI
             // 
             // monServers
             // 
-            this.monServers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.monServers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.monServers.BufferSize = 50;
             this.monServers.Location = new System.Drawing.Point(15, 39);
             this.monServers.Name = "monServers";
-            this.monServers.Size = new System.Drawing.Size(411, 199);
+            this.monServers.Size = new System.Drawing.Size(411, 223);
             this.monServers.TabIndex = 2;
             // 
             // ttpTips
@@ -505,7 +490,6 @@ namespace VDS.RDF.Utilities.Server.GUI
         private ServerMonitor monServers;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Button btnPauseResume;
         private System.Windows.Forms.CheckBox chkStartAutoAdvanced;
         private System.Windows.Forms.TextBox txtHost;
         private System.Windows.Forms.Label lblHost;

@@ -48,6 +48,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
+    [Obsolete("The dotNetRDF team does not recommend usage of Dydra because their API frequently exhibits inconsistency, transient failures and other errors", false)]
     public class DydraConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP

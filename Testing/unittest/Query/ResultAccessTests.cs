@@ -183,5 +183,135 @@ namespace VDS.RDF.Query
                 Console.WriteLine();
             }
         }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder1()
+        {
+            String query = "SELECT ?s ?type ?comment WHERE { ?s a ?type ; rdfs:comment ?comment }";
+            SparqlQuery q = this.CreateQuery(query);
+            SparqlResultSet results = this.GetResults(q);
+
+            this.TestVariableOrder(results, new List<String>() { "s", "type", "comment" });
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder2()
+        {
+            String query = "SELECT ?s ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
+            SparqlQuery q = this.CreateQuery(query);
+            SparqlResultSet results = this.GetResults(q);
+
+            this.TestVariableOrder(results, new List<String>() { "s", "comment", "type" });
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder3()
+        {
+            String query = "SELECT ?comment ?type ?s WHERE { ?s a ?type ; rdfs:comment ?comment }";
+            SparqlQuery q = this.CreateQuery(query);
+            SparqlResultSet results = this.GetResults(q);
+
+            this.TestVariableOrder(results, new List<String>() { "comment", "type", "s"});
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder4()
+        {
+            String query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
+            SparqlQuery q = this.CreateQuery(query);
+            SparqlResultSet results = this.GetResults(q);
+
+            this.TestVariableOrder(results, new List<String>() { "comment", "type" });
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder5()
+        {
+            String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
+    <head>
+        <variable name=""a"" />
+        <variable name=""b"" />
+    </head>
+    <results />
+</sparql>";
+
+            SparqlResultSet results = new SparqlResultSet();
+            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+
+            this.TestVariableOrder(results, new List<string>() { "a", "b" });
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder6()
+        {
+            String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
+    <head>
+        <variable name=""b"" />
+        <variable name=""a"" />
+    </head>
+    <results />
+</sparql>";
+
+            SparqlResultSet results = new SparqlResultSet();
+            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+
+            this.TestVariableOrder(results, new List<string>() { "b", "a" });
+        }
+
+        [TestMethod]
+        public void SparqlResultSetVariableOrder7()
+        {
+            String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + @""">
+    <head>
+        <variable name=""b"" />
+        <variable name=""a"" />
+    </head>
+    <results>
+        <result>
+            <binding name=""a""><uri>http://example</uri></binding>
+            <binding name=""b""><uri>http://example</uri></binding>
+        </result>
+        <result>
+            <binding name=""b""><uri>http://example</uri></binding>
+            <binding name=""a""><uri>http://example</uri></binding>
+        </result>
+        <result>
+            <binding name=""a""><uri>http://example</uri></binding>
+        </result>
+        <result>
+            <binding name=""b""><uri>http://example</uri></binding>
+        </result>
+    </results>
+</sparql>";
+
+            SparqlResultSet results = new SparqlResultSet();
+            StringParser.ParseResultSet(results, data, new SparqlXmlParser());
+
+            this.TestVariableOrder(results, new List<string>() { "b", "a" });
+        }
+
+        private void TestVariableOrder(SparqlResultSet results, List<String> expected)
+        {
+            List<String> vars = results.Variables.ToList();
+            this.TestVariableOrder(expected, vars);
+
+            foreach (SparqlResult r in results)
+            {
+                vars = r.Variables.ToList();
+                this.TestVariableOrder(expected, vars);
+            }
+        }
+
+        private void TestVariableOrder(List<String> expected, List<String> actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i], "Incorrect variable at index " + i + " - got ?" + actual[i] + " but expected ?" + expected[i]);
+            }
+        }
     }
 }

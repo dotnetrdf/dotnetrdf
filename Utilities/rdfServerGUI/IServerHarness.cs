@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
 using VDS.Web;
+using VDS.Web.Consoles;
 using VDS.Web.Logging;
 
 namespace VDS.RDF.Utilities.Server.GUI
@@ -59,24 +60,6 @@ namespace VDS.RDF.Utilities.Server.GUI
         }
 
         /// <summary>
-        /// Gets whether pausing and resuming the server is supported
-        /// </summary>
-        bool CanPauseAndResume
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Pauses the server
-        /// </summary>
-        void Pause();
-
-        /// <summary>
-        /// Resumes the server
-        /// </summary>
-        void Resume();
-
-        /// <summary>
         /// Attaches a Monitor to the Server
         /// </summary>
         /// <param name="monitor">Monitor</param>
@@ -99,6 +82,7 @@ namespace VDS.RDF.Utilities.Server.GUI
     {
         private HttpServer _server;
         private MonitorLogger _activeLogger;
+        private MonitorConsole _activeConsole;
         private String _logFormat;
 
         /// <summary>
@@ -119,7 +103,13 @@ namespace VDS.RDF.Utilities.Server.GUI
         /// </summary>
         public void Stop()
         {
-            this._server.Stop();
+            switch (this._server.State)
+            {
+                case ServerState.Running:
+                case ServerState.Starting:
+                    this._server.Stop();
+                    break;
+            }
         }
 
         /// <summary>
@@ -127,7 +117,15 @@ namespace VDS.RDF.Utilities.Server.GUI
         /// </summary>
         public void Start()
         {
-            this._server.Start();
+            switch (this._server.State)
+            {
+                case ServerState.Creating:
+                case ServerState.Created:
+                case ServerState.Stopping:
+                case ServerState.Stopped:
+                    this._server.Start();
+                    break;
+            }
         }
 
         /// <summary>
@@ -142,41 +140,29 @@ namespace VDS.RDF.Utilities.Server.GUI
         }
 
         /// <summary>
-        /// Returns that the server may be paused and resumed
-        /// </summary>
-        public bool CanPauseAndResume
-        {
-            get 
-            {
-                return true; 
-            }
-        }
-
-        /// <summary>
-        /// Pauses the server
-        /// </summary>
-        public void Pause()
-        {
-            this.Stop();
-        }
-
-        /// <summary>
-        /// Resumes the server
-        /// </summary>
-        public void Resume()
-        {
-            this.Start();
-        }
-
-        /// <summary>
         /// Attaches a Monitor to the Server
         /// </summary>
         /// <param name="monitor">Monitor</param>
         public void AttachMonitor(ServerMonitor monitor)
         {
             this.DetachMonitor();
+
+            //Set up logger
             this._activeLogger = new MonitorLogger(monitor, this._logFormat);
             this._server.AddLogger(this._activeLogger);
+
+            //Set up console
+            this._activeConsole = new MonitorConsole(monitor);
+            if (this._server.Console is MulticastConsole)
+            {
+                ((MulticastConsole)this._server.Console).AddConsole(this._activeConsole);
+            }
+            else
+            {
+                IServerConsole current = this._server.Console;
+                IServerConsole multicast = new MulticastConsole(new IServerConsole[] { current, this._activeConsole });
+                this._server.Console = multicast;
+            }
         }
 
         /// <summary>
@@ -187,6 +173,15 @@ namespace VDS.RDF.Utilities.Server.GUI
             if (this._activeLogger != null)
             {
                 this._server.RemoveLogger(this._activeLogger);
+                this._activeLogger = null;
+            }
+            if (this._activeConsole != null)
+            {
+                if (this._server.Console is MulticastConsole)
+                {
+                    ((MulticastConsole)this._server.Console).RemoveConsole(this._activeConsole);
+                }
+                this._activeConsole = null;
             }
         }
 
@@ -309,33 +304,6 @@ namespace VDS.RDF.Utilities.Server.GUI
             {
                 return (this._process != null && !this._process.HasExited);
             }
-        }
-
-        /// <summary>
-        /// Returns that pausing and resuming is not supported
-        /// </summary>
-        public bool CanPauseAndResume
-        {
-            get 
-            {
-                return false; 
-            }
-        }
-
-        /// <summary>
-        /// Throws an error as out of process servers cannot be paused
-        /// </summary>
-        public void Pause()
-        {
-            throw new NotSupportedException("Pause not supported by external process servers");
-        }
-
-        /// <summary>
-        /// Throws an error as out of process servers cannot be resumed
-        /// </summary>
-        public void Resume()
-        {
-            throw new NotSupportedException("Resume not supported by external process servers");
         }
 
         /// <summary>

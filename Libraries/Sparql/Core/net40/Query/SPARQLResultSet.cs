@@ -143,7 +143,7 @@ namespace VDS.RDF.Query
                 }
                 foreach (ISet s in context.OutputMultiset.Sets)
                 {
-                    this.AddResult(new SparqlResult(s));
+                    this.AddResult(new SparqlResult(s, context.OutputMultiset.Variables));
                 }
             }
         }
@@ -258,6 +258,9 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the Variables used in the Result Set
         /// </summary>
+        /// <remarks>
+        /// As of 1.0 where possible dotNetRDF tries to preserve the ordering of variables however this may not be possible depending on where the result set originates from or how it is populated
+        /// </remarks>
         public IEnumerable<String> Variables
         {
             get

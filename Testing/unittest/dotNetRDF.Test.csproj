@@ -94,6 +94,7 @@
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
+    <Compile Include="Configuration\ConfigurationLoaderInstanceTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
     <Compile Include="Core\AbstractTripleStoreTests.cs" />
@@ -123,7 +124,9 @@
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
     <Compile Include="Query\Aggregates\AggregatesOverNullTests.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Query\Aggregates\GroupConcatTests.cs" />
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
+    <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
     <Compile Include="Query\ConstructWithOptionalTests.cs" />
@@ -308,6 +311,9 @@
     <Content Include="resources\ntriples\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\ontology.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\rdfa\webscience.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -363,6 +369,9 @@
     <Compile Include="Query\FullText\IndexCreationTests.cs" />
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
+    <Content Include="resources\schema-org.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\trix\curies.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1569,6 +1578,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\swrc.owl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\learning-problem.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\LearningStyles.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">

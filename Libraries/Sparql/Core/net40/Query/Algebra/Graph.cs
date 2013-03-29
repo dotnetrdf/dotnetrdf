@@ -63,14 +63,14 @@ namespace VDS.RDF.Query.Algebra
 
             //Q: Can we optimise GRAPH when the input is the Null Multiset to just return the Null Multiset?
 
-            if (this._pattern is Bgp && ((Bgp)this._pattern).IsEmpty)
-            {
-                //Optimise the case where we have GRAPH ?g {} by not setting the Graph and just returning
-                //a Null Multiset
-                result = new NullMultiset();
-            }
-            else
-            {
+            //if (this._pattern is Bgp && ((Bgp)this._pattern).IsEmpty)
+            //{
+            //    //Optimise the case where we have GRAPH ?g {} by not setting the Graph and just returning
+            //    //a Null Multiset
+            //    result = new NullMultiset();
+            //}
+            //else
+            //{
                 bool datasetOk = false;
                 try
                 {
@@ -259,7 +259,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (datasetOk) context.Data.ResetActiveGraph();
                 }
-            }
+            //}
 
             return context.OutputMultiset;
         }

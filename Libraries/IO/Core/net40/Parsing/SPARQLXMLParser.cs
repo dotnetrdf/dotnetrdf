@@ -323,6 +323,7 @@ namespace VDS.RDF.Parsing
                             }
 
                             //Add to results set
+                            result.SetVariableOrdering(context.Variables);
                             if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
                         }
                     }

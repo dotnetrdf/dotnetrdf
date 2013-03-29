@@ -359,5 +359,29 @@ WHERE
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.AreEqual(0, results.Results.Count);
         }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationDuplicates()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile("schema-org.ttl");
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromFile("schema-org.rq");
+            SparqlQuery qDistinct = parser.ParseFromFile("schema-org.rq");
+            qDistinct.QueryType = SparqlQueryType.SelectDistinct;
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+            SparqlResultSet resultsDistinct = processor.ProcessQuery(qDistinct) as SparqlResultSet;
+            Assert.IsNotNull(resultsDistinct);
+            Assert.IsFalse(resultsDistinct.IsEmpty);
+
+            Assert.AreEqual(resultsDistinct.Count, results.Count);
+        }
     }
 }

@@ -1,0 +1,14 @@
+PREFIX : <http://www.semanticsage.home.lc/LearningStyles.owl#>
+
+SELECT *
+WHERE
+{
+  ?QuizMarks :hasValue ?hasValue .
+  ?MTech :hasQuizMarks ?QuizMarks .
+  ?MTech :attendsLessons ?Lesson .
+  ?QuizMarks :belongsToQuiz ?Quiz .
+  ?Lesson :hasLessonType ?LessonType .
+  ?MTech :undergoesEvaluation ?Quiz .
+  ?Quiz :isForLesson ?Lesson .
+}
+ORDER BY ASC(?MTech)
