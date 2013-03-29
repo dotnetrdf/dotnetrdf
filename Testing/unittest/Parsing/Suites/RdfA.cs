@@ -37,6 +37,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing.Suites
 {
+#if !NO_HTMLAGILITYPACK
     [TestClass]
     public class RdfA
     {
@@ -282,4 +283,5 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine("Warning: " + warning);
         }
     }
+#endif
 }

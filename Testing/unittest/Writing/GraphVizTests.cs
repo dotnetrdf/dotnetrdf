@@ -50,6 +50,7 @@ namespace VDS.RDF.Writing
             writer.Save(g, "WritingGraphViz1.dot");
         }
 
+#if !NO_PROCESS
         [TestMethod]
         public void WritingGraphViz2()
         {
@@ -79,5 +80,6 @@ namespace VDS.RDF.Writing
             GraphVizGenerator generator = new GraphVizGenerator("png");
             generator.Generate(g, "WritingGraphViz3.png", false);
         }
+#endif
     }
 }

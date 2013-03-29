@@ -35,7 +35,6 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-#if !NO_SYNC_HTTP
     [TestClass]
     public class SesameTests
     {
@@ -47,6 +46,8 @@ namespace VDS.RDF.Storage
             }
             return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
         }
+
+#if !NO_SYNC_HTTP
 
         [TestMethod]
         public void StorageSesameSaveLoad()
@@ -255,6 +256,6 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = false;
             }
         }
-    }
 #endif
+    }
 }

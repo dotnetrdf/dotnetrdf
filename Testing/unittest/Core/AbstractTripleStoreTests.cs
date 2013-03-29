@@ -112,6 +112,7 @@ namespace VDS.RDF.Core
         }
     }
 
+#if !SILVERLIGHT
     [TestClass]
     public class WebDemandTripleStoreTests
         : AbstractTripleStoreTests
@@ -121,7 +122,9 @@ namespace VDS.RDF.Core
             return new WebDemandTripleStore();
         }
     }
+#endif
 
+#if !NO_FILE
     [TestClass]
     public class DiskDemandTripleStoreTests
         : AbstractTripleStoreTests
@@ -131,4 +134,5 @@ namespace VDS.RDF.Core
             return new DiskDemandTripleStore();
         }
     }
+#endif
 }

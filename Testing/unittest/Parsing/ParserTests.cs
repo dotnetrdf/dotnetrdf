@@ -375,6 +375,7 @@ namespace VDS.RDF.Parsing
                 }
         }
 
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void ParsingMalformedRdfA()
         {
@@ -404,6 +405,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine();
             }
         }
+#endif
 
         [TestMethod]
         public void ParsingRdfXmlStreaming()
@@ -520,10 +522,10 @@ namespace VDS.RDF.Parsing
         {
             TurtleParser parser = new TurtleParser();
             Graph g = new Graph();
-            FileLoader.Load(g, "ttl-with-bom.ttl");
+            g.LoadFromFile("ttl-with-bom.ttl");
 
             Graph h = new Graph();
-            FileLoader.Load(h, "ttl-without-bom.ttl");
+            h.LoadFromFile("ttl-without-bom.ttl");
 
             Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
         }

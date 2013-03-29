@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             Graph data = new Graph();
-            FileLoader.Load(data, "InferenceTest.ttl");
+            data.LoadFromFile("InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             int origCount = data.Triples.Count;
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             Graph data = new Graph();
-            FileLoader.Load(data, "InferenceTest.ttl");
+            data.LoadFromFile("InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             int origCount = data.Triples.Count;

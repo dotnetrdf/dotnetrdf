@@ -74,11 +74,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
         }
 
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void ParsingCountHandlerRdfA()
         {
             this.ParsingUsingCountHandler("test.html", new RdfAParser());
         }
+#endif
 
         [TestMethod]
         public void ParsingCountHandlerRdfJson()

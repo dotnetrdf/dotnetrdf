@@ -428,6 +428,7 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
+#if !NO_SYNC_HTTP // No SparqlConnector
         [TestMethod]
         public void SparqlEndpointWithExtensions()
         {
@@ -469,6 +470,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
                 Assert.Fail("Query should run fine when local parsing is skipped");
             }
         }
+#endif
 
         [TestMethod]
         public void SparqlBNodeIDsInResults()
@@ -492,7 +494,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         public void SparqlAnton()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "anton.rdf");
+            g.LoadFromFile("anton.rdf");
 
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("anton.rq");
