@@ -112,7 +112,6 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\SparqlNumericType.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
-    <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Core\BlankNode.cs" />
     <Compile Include="Core\Graph.cs" />
     <Compile Include="Collections\GraphCollection.cs" />
@@ -257,4 +256,5 @@
   <ItemGroup>
     <Compile Include="Writing\BlankNodeOutputMapper.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

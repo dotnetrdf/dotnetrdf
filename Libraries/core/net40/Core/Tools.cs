@@ -240,7 +240,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace since the namespace is not defined.  Did you to forget to define a namespace for the : prefix?");
+                    throw new RdfException("Cannot resolve the QName '" + qname + "' in the Default Namespace since the namespace is not defined.  Did you to forget to define a namespace for the : prefix?");
                 }
             }
             else
