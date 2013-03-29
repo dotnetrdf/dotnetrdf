@@ -103,7 +103,13 @@ namespace VDS.RDF.Utilities.Server.GUI
         /// </summary>
         public void Stop()
         {
-            this._server.Stop();
+            switch (this._server.State)
+            {
+                case ServerState.Running:
+                case ServerState.Starting:
+                    this._server.Stop();
+                    break;
+            }
         }
 
         /// <summary>
@@ -111,7 +117,15 @@ namespace VDS.RDF.Utilities.Server.GUI
         /// </summary>
         public void Start()
         {
-            this._server.Start();
+            switch (this._server.State)
+            {
+                case ServerState.Creating:
+                case ServerState.Created:
+                case ServerState.Stopping:
+                case ServerState.Stopped:
+                    this._server.Start();
+                    break;
+            }
         }
 
         /// <summary>
@@ -123,33 +137,6 @@ namespace VDS.RDF.Utilities.Server.GUI
             {
                 return this._server.IsRunning;
             }
-        }
-
-        /// <summary>
-        /// Returns that the server may be paused and resumed
-        /// </summary>
-        public bool CanPauseAndResume
-        {
-            get 
-            {
-                return true; 
-            }
-        }
-
-        /// <summary>
-        /// Pauses the server
-        /// </summary>
-        public void Pause()
-        {
-            this.Stop();
-        }
-
-        /// <summary>
-        /// Resumes the server
-        /// </summary>
-        public void Resume()
-        {
-            this.Start();
         }
 
         /// <summary>
