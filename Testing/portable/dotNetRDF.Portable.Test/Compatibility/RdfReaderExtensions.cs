@@ -7,9 +7,9 @@ namespace VDS.RDF
     {
         public static void Load(this IRdfReader  rdr, Graph g, string fileName)
         {
-            using (var textReader = new StreamReader(fileName))
+            using (var input = new StreamReader(fileName))
             {
-                rdr.Load(g, fileName);
+                rdr.Load(g, input);
             }
         }
 
