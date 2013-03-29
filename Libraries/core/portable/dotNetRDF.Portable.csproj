@@ -36,6 +36,7 @@
     <Compile Include="Compatability\CryptoConfig.cs" />
     <Compile Include="Compatability\PortableLibraryCompatibility.cs" />
     <Compile Include="Compatability\SparqlRemoteEndpointExtensions.cs" />
+    <Compile Include="Compatability\SparqlRemoteUpdateEndpointExtensions.cs" />
     <Compile Include="Compatability\UriLoaderAsyncExtensions.cs" />
     <Compile Include="Crypto\CryptographicException.cs" />
     <Compile Include="Crypto\CryptographicUnexpectedOperationExcpetion.cs" />

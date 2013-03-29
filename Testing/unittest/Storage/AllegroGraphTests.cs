@@ -47,6 +47,7 @@ namespace VDS.RDF.Storage
 
             return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
         }
+#if !NO_SYNC_HTTP // These tests are using the synchronous API
 
         [TestInitialize]
         public void Setup()
@@ -159,5 +160,6 @@ namespace VDS.RDF.Storage
             Assert.IsNotNull(results);
             Assert.AreEqual(1, results.Count);
         }
+#endif
     }
 }

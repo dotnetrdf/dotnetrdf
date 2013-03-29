@@ -35,7 +35,6 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-#if !NO_SYNC_HTTP // The tests here all use the synchronous API
     [TestClass]
     public class DydraTests
     {
@@ -50,6 +49,7 @@ namespace VDS.RDF.Storage
             return new DydraConnector(TestConfigManager.GetSetting(TestConfigManager.DydraAccount), TestConfigManager.GetSetting(TestConfigManager.DydraRepository), TestConfigManager.GetSetting(TestConfigManager.DydraApiKey));
         }
 
+#if !NO_SYNC_HTTP // The tests here all use the synchronous API
         [TestMethod]
         public void StorageDydraSaveToDefaultGraph()
         {
@@ -319,7 +319,7 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = false;
             }
         }
-    }
 #endif
+    }
 }
 

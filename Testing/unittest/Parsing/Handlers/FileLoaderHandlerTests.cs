@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestData("temp.ttl");
 
             Graph g = new Graph();
-            FileLoader.Load(g, "temp.ttl");
+            g.LoadFromFile("temp.ttl");
 
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
@@ -65,7 +65,14 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestData("temp.ttl");
             Graph g = new Graph();
             GraphHandler handler = new GraphHandler(g);
+#if PORTABLE
+            using (var input = File.OpenRead("temp.ttl"))
+            {
+                StreamLoader.Load(handler, "temp.ttl", input);
+            }
+#else
             FileLoader.Load(handler, "temp.ttl");
+#endif
 
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
@@ -78,7 +85,14 @@ namespace VDS.RDF.Parsing.Handlers
             Graph orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
+#if PORTABLE
+            using (var input = File.OpenRead("temp.ttl"))
+            {
+                StreamLoader.Load(handler, "temp.ttl", input);
+            }
+#else
             FileLoader.Load(handler, "temp.ttl");
+#endif
 
             Assert.AreEqual(orig.Triples.Count, handler.Count);
         }

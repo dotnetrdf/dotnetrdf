@@ -324,7 +324,7 @@ namespace VDS.RDF.Parsing
                 if (u.TokenType == Token.URI)
                 {
                     //Set the Base Uri resolving against the current Base if any
-                    Uri baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u)).Uri;
+                    Uri baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u, true)).Uri;
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -343,7 +343,7 @@ namespace VDS.RDF.Parsing
                     if (ns.TokenType == Token.URI)
                     {
                         //Register a Namespace resolving the Namespace Uri against the Base Uri
-                        Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns)).Uri;
+                        Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns, true)).Uri;
                         String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : String.Empty;
                         context.Namespaces.AddNamespace(nsPrefix, nsUri);
                         if (!context.Handler.HandleNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsUri)) ParserHelper.Stop();
@@ -423,7 +423,7 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.QNAME:
                     case Token.URI:
-                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next, true));
                         break;
 
                     default:
@@ -468,7 +468,7 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.QNAME:
                     case Token.URI:
-                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next, true));
                         break;
 
                     default:
@@ -571,7 +571,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.QNAME:
                 case Token.URI:
-                    subj = ParserHelper.TryResolveUri(context, subjToken);
+                    subj = ParserHelper.TryResolveUri(context, subjToken, true);
                     break;
 
                 case Token.VARIABLE:
@@ -735,7 +735,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        pred = ParserHelper.TryResolveUri(context, predToken);
+                        pred = ParserHelper.TryResolveUri(context, predToken, true);
                         break;
 
                     case Token.VARIABLE:
@@ -926,7 +926,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, objToken);
+                        obj = ParserHelper.TryResolveUri(context, objToken, true);
                         break;
 
                     case Token.VARIABLE:
@@ -1083,7 +1083,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, next);
+                        obj = ParserHelper.TryResolveUri(context, next, true);
                         break;
 
                     case Token.VARIABLE:
@@ -1202,7 +1202,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.QNAME:
-                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri)));
+                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true)));
                         break;
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
@@ -1283,7 +1283,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri);
+                                    dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true);
                                     return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(dturi));
                                 }
                             }
@@ -1314,7 +1314,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri);
+                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri, true);
                             return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(dturi));
                         }
                     }

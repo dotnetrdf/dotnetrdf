@@ -77,7 +77,7 @@ namespace VDS.RDF.Storage
         }
 
         [TestMethod]
-        public void StorageSesameDeleteTriples()
+        public void StorageSesameDeleteTriples1()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -92,7 +92,7 @@ namespace VDS.RDF.Storage
             //Delete all Triples about the Ford Fiesta
             sesame.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
 
-            Object results = sesame.Query("ASK WHERE { <http://example.org/vehicles/FordFiesta> ?p ?o }");
+            Object results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
             if (results is SparqlResultSet)
             {
                 Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
@@ -106,6 +106,39 @@ namespace VDS.RDF.Storage
 
             Assert.IsFalse(h.IsEmpty, "Graph should not be completely empty");
             Assert.IsTrue(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
+            Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
+        }
+
+        [TestMethod]
+        public void StorageSesameDeleteTriples2()
+        {
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/SesameTest/Delete2");
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/ns#"));
+            g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("ex:obj"));
+
+            SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+            sesame.SaveGraph(g);
+
+            Console.WriteLine("Graph before deletion");
+            TestTools.ShowGraph(g);
+
+            //Delete the single triple
+            sesame.UpdateGraph(g.BaseUri, null, g.Triples);
+
+            Object results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest/Delete2> { <http://example.org/ns#subj> ?p ?o } }");
+            if (results is SparqlResultSet)
+            {
+                Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples present in the graph");
+            }
+
+            Graph h = new Graph();
+            sesame.LoadGraph(h, g.BaseUri);
+
+            Console.WriteLine("Graph after deletion");
+            TestTools.ShowGraph(h);
+
+            Assert.IsTrue(h.IsEmpty, "Graph should not be completely empty");
             Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
         }
 
@@ -175,7 +208,7 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = true;
 
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-                sesame.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
+                sesame.Update("DROP GRAPH <http://example.org/sparqlUpdateLoad>; LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
 
                 Graph orig = new Graph();
                 orig.LoadFromUri(new Uri("http://dbpedia.org/resource/Ilkeston"));

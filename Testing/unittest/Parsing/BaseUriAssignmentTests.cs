@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing
         public void ParsingBaseUriAssignmentFileLoader()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
             Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
             Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
         }

@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
             //Prepare the Store
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "Turtle.ttl");
+            g.LoadFromFile("Turtle.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -298,7 +298,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Load our test data
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
 
             List<String> testQueries = new List<string>();
@@ -364,10 +364,10 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Get the Data we want to query
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
-            //FileLoader.Load(g, "noise.ttl");
+            //g.LoadFromFile("noise.ttl");
             //store.Add(g);
 
             Console.WriteLine(store.Triples.Count() + " Triples in Store");
@@ -472,10 +472,10 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Get the Data we want to query
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
-            //FileLoader.Load(g, "noise.ttl");
+            //g.LoadFromFile("noise.ttl");
             //store.Add(g);
 
             Console.WriteLine(store.Triples.Count() + " Triples in Store");

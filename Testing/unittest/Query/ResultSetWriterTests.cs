@@ -42,7 +42,7 @@ namespace VDS.RDF.Query
         public void SparqlXmlWriter()
         {
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
 
                 Object results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
                 if (results is SparqlResultSet)

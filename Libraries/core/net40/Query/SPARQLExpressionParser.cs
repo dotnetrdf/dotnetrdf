@@ -1204,15 +1204,8 @@ namespace VDS.RDF.Query
                 }
 
                 if (expressions.Count == 0) throw new RdfParseException("Aggregate must have at least one argument expression unless they are a COUNT(*)");
-                if (agg.TokenType == Token.GROUPCONCAT)
-                {
-                    aggExpr = new ConcatFunction(expressions);
-                }
-                else
-                {
-                    if (expressions.Count > 1) throw new RdfParseException("The " + agg.Value + " aggregate does not support more than one argument expression");
-                    aggExpr = expressions.First();
-                }
+                if (expressions.Count > 1) throw new RdfParseException("The " + agg.Value + " aggregate does not support more than one argument expression");
+                aggExpr = expressions.First();
             }
             else
             {
