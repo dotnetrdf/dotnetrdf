@@ -98,7 +98,11 @@ namespace VDS.RDF.Configuration
         [TestMethod]
         public void ConfigurationDefaultTypeProxy()
         {
+#if NO_PROXY
+            this.TestDefaultType(ConfigurationLoader.ClassProxy, null);
+#else
             this.TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
+#endif
         }
     }
 }
