@@ -617,6 +617,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\unittest\resources\**\*.*">
+      <Link>resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="..\..\unittest\Query\SampleWeightings.n3">
       <Link>Query\SampleWeightings.n3</Link>
     </EmbeddedResource>

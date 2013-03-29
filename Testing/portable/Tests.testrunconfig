@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRunConfiguration name="Tests" id="832e8b63-436f-4292-ba51-c92cddc3430d" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Description>This is a default test run configuration for a local test run.</Description>
+  <Deployment>
+    <DeploymentItem filename="Testing\portable\dotNetRDF.Portable.Test\bin\Debug\resources\" />
+    <DeploymentItem filename="Testing\portable\dotNetRDF.Portable.Test\dotNetRDF.Portable.Test.dll.config" />
+  </Deployment>
+  <TestTypeSpecific />
+</TestRunConfiguration>

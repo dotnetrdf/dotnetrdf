@@ -5,6 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Portable.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Portable", "..\..\Libraries\core\portable\dotNetRDF.Portable.csproj", "{8AAEC132-8EC5-4A53-B27B-960FBAB99E19}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestSettings", "TestSettings", "{33BA9D3B-24C3-43FC-8488-F9A5C16C310E}"
+	ProjectSection(SolutionItems) = preProject
+		Tests.testrunconfig = Tests.testrunconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
