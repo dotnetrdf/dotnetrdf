@@ -133,6 +133,50 @@ namespace VDS.RDF.Query
         }
 
         [TestMethod]
+        public void SparqlRemoteEndpointMemoryLeak()
+        {
+            /*
+            Dim endpoint = New SparqlRemoteEndpoint(New Uri("http://localhost:8080/sesame/repositories/my_repo"))
+Dim queryString As SparqlParameterizedString = New SparqlParameterizedString()
+queryString.Namespaces.AddNamespace("annot", New Uri(oAppSettingsReader.GetValue("BaseUriSite", GetType(System.String)) & "/annotations.owl#"))
+queryString.CommandText = "SELECT DISTINCT ?text WHERE {?annotation annot:onContent <" & _uriDocument & "> ; annot:onContentPart """ & ContentPart & """ ; annot:text ?text ; annot:isValid ""false""^^xsd:boolean . }"
+Dim results As SparqlResultSet = endpoint.QueryWithResultSet(queryString.ToString)
+For Each result As SparqlResult In results
+    Console.WriteLine(DirectCast(result.Value("text"), LiteralNode).Value)
+Next
+results.Dispose()
+             */
+
+            //First off make sure to load some data into the some
+            SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
+            updateEndpoint.Update("INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
+
+            using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
+            {
+                //Loop over making queries to try and reproduce the memory leak
+                for (int i = 1; i < 100000; i++)
+                {
+                    SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+                    SparqlParameterizedString queryString = new SparqlParameterizedString();
+                    queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
+
+                    SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
+                    Assert.AreEqual(1, results.Count);
+                    foreach (SparqlResult result in results)
+                    {
+                       writer.WriteLine(result.Value("o").ToString());
+                    }
+                    results.Dispose();
+
+                    if (i % 5000 == 0)
+                    {
+                        Console.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
