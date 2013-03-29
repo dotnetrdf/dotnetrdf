@@ -790,6 +790,12 @@ namespace VDS.RDF.Query.Algebra
         public abstract void AddVariable(String variable);
 
         /// <summary>
+        /// Sets the variable ordering for the multiset
+        /// </summary>
+        /// <param name="variables">Variable Ordering</param>
+        public abstract void SetVariableOrder(IEnumerable<String> variables);
+
+        /// <summary>
         /// Removes a Set (by ID) from the Multiset
         /// </summary>
         /// <param name="id">ID</param>

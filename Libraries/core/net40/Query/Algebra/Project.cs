@@ -149,6 +149,11 @@ namespace VDS.RDF.Query.Algebra
             }
 
             context.OutputMultiset = context.InputMultiset;
+            //Apply variable ordering if applicable
+            if (!selectAll && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
+            {
+                context.OutputMultiset.SetVariableOrder(context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name));
+            }
             return context.OutputMultiset;
         }
 

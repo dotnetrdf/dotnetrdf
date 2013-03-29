@@ -90,9 +90,15 @@ namespace VDS.RDF.Query
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization only constructor
+        /// </summary>
+        /// <param name="info">Serialization Info</param>
+        /// <param name="context">Streaming Context</param>
         private SparqlResult(SerializationInfo info, StreamingContext context)
         {
             this._resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
+            this._variables = new List<string>(this._resultValues.Keys);
         }
 #endif
 
@@ -219,6 +225,22 @@ namespace VDS.RDF.Query
                 this._variables.Add(variable);
                 this._resultValues.Add(variable, value);
             }
+        }
+
+        /// <summary>
+        /// Sets the variable ordering for the result
+        /// </summary>
+        /// <param name="variables"></param>
+        protected internal void SetVariableOrdering(IEnumerable<String> variables)
+        {
+            //Validate that the ordering is applicable
+            if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+            foreach (String var in this._variables)
+            {
+                if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in this result");
+            }
+            //Apply ordering
+            this._variables = new List<string>(variables);
         }
 
         /// <summary>
