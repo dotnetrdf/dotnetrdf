@@ -1,26 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Aggregates
 {
     [TestClass]
     public class AggregateTests
     {
+        private CultureInfo _previousCulture;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _previousCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
+        }
+
+        [TestCleanup]
+        public void Teardown()
+        {
+            Thread.CurrentThread.CurrentCulture = _previousCulture;
+        }
+
         [TestMethod]
         public void SparqlAggregatesMaxBug1()
         {
-            try
-            {
-                TripleStore store = new TripleStore();
-                store.LoadFromUri(UriFactory.Create("http://semanticsage.home.lc/files/LearningStyles.rdf"));
+            TripleStore store = new TripleStore();
+            store.LoadFromUri(UriFactory.Create("http://semanticsage.home.lc/files/LearningStyles.rdf"));
 
-                Options.AlgebraOptimisation = false;
-
-                IGraph graph = store.ExecuteQuery(@"prefix sage:
+            IGraph graph = store.ExecuteQuery(@"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -50,32 +58,22 @@ WHERE
     }
     GROUP BY ?MTech
 }") as IGraph;
-                Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
 
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                INode zero = (0).ToLiteral(graph);
-                foreach (Triple t in graph.Triples)
-                {
-                    Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
-                }
-            }
-            finally
+            INode zero = (0).ToLiteral(graph);
+            foreach (Triple t in graph.Triples)
             {
-                Options.AlgebraOptimisation = true;
+                Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
             }
         }
 
         [TestMethod]
         public void SparqlAggregatesMaxBug2()
         {
-            try
-            {
-                TripleStore store = new TripleStore();
-                store.LoadFromUri(UriFactory.Create("http://semanticsage.home.lc/files/LearningStyles.rdf"));
+            TripleStore store = new TripleStore();
+            store.LoadFromUri(UriFactory.Create("http://semanticsage.home.lc/files/LearningStyles.rdf"));
 
-                Options.AlgebraOptimisation = true;
-
-                IGraph graph = store.ExecuteQuery(@"prefix sage:
+            IGraph graph = store.ExecuteQuery(@"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix : <http://semanticsage.home.lc/files/LearningStyles.rdf#>
@@ -105,18 +103,12 @@ WHERE
     }
     GROUP BY ?MTech
 }") as IGraph;
-                Assert.IsNotNull(graph);
+            Assert.IsNotNull(graph);
 
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                INode zero = (0).ToLiteral(graph);
-                foreach (Triple t in graph.Triples)
-                {
-                    Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
-                }
-            }
-            finally
+            INode zero = (0).ToLiteral(graph);
+            foreach (Triple t in graph.Triples)
             {
-                Options.AlgebraOptimisation = true;
+                Assert.IsFalse(t.Object.CompareTo(zero) == 0, "Unexpected zero value returned");
             }
         }
     }
