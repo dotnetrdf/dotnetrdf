@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using VDS.RDF.Parsing;
 
@@ -535,7 +536,7 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 //Extract the Double Values and compare
                                 double aDouble, bDouble;
-                                if (Double.TryParse(a.Value, out aDouble))
+                                if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDouble))
                                 {
                                     if (Double.TryParse(b.Value, out bDouble))
                                     {
@@ -548,7 +549,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Double.TryParse(b.Value, out bDouble))
+                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDouble))
                                     {
                                         return 1;
                                     }
@@ -589,7 +590,7 @@ namespace VDS.RDF
                                 float aFloat, bFloat;
                                 if (Single.TryParse(a.Value, out aFloat))
                                 {
-                                    if (Single.TryParse(b.Value, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
                                     {
                                         return aFloat.CompareTo(bFloat);
                                     }
@@ -600,7 +601,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Single.TryParse(b.Value, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
                                     {
                                         return 1;
                                     }
