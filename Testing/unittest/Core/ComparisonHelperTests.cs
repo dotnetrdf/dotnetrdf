@@ -1,21 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VDS.RDF.Core
 {
     [TestClass]
-    public class ComparisonHelperTests
+    public class ComparisonHelperTests : BaseTest
     {
         private Graph _graph;
-        private static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
-            {
-                new CultureInfo("pl-PL"), 
-                new CultureInfo("en-US"), 
-                new CultureInfo("ja-JP"), 
-                new CultureInfo("ru-RU"), 
-                new CultureInfo("pt-BR")
-            };
 
         [TestInitialize]
         public void Setup()

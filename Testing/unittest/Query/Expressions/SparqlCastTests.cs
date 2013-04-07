@@ -9,17 +9,9 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions
 {
     [TestClass]
-    public class SparqlCastTests
+    public class SparqlCastTests : BaseTest
     {
         private INodeFactory _graph;
-        private static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
-            {
-                new CultureInfo("en-US"), 
-                new CultureInfo("pl-PL"), 
-                new CultureInfo("ja-JP"), 
-                new CultureInfo("ru-RU"), 
-                new CultureInfo("pt-BR")
-            };
 
         [TestInitialize]
         public void Setup()
