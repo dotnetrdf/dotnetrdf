@@ -61,6 +61,7 @@
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
     </Reference>
@@ -100,6 +101,7 @@
     <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
+    <Compile Include="Core\ComparisonHelperTests.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
     <Compile Include="Core\LiteralNodeTests.cs" />
     <Compile Include="Core\MimeTypesTests.cs" />
