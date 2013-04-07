@@ -562,9 +562,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
                                 //Extract the Decimal Values and compare
                                 decimal aDecimal, bDecimal;
-                                if (decimal.TryParse(a.Value, out aDecimal))
+                                if (decimal.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDecimal))
                                 {
-                                    if (decimal.TryParse(b.Value, out bDecimal))
+                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDecimal))
                                     {
                                         return aDecimal.CompareTo(bDecimal);
                                     }
@@ -588,7 +588,7 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 //Extract the Float Values and compare
                                 float aFloat, bFloat;
-                                if (Single.TryParse(a.Value, out aFloat))
+                                if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aFloat))
                                 {
                                     if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
                                     {
