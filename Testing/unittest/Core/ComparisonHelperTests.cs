@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -23,20 +23,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Nodes;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Core
 {
     [TestClass]
-    public class ValuedNodeTests : BaseTest
+    public class ComparisonHelperTests : BaseTest
     {
         private Graph _graph;
 
@@ -47,54 +39,45 @@ namespace VDS.RDF.Core
         }
 
         [TestMethod]
-        public void NodeAsValuedTimeSpan()
-        {
-            INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
-            IValuedNode valued = orig.AsValuedNode();
-
-            Assert.AreEqual(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
-            Assert.IsTrue(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
-            Assert.AreEqual(typeof(TimeSpanNode), valued.GetType());
-        }
-
-        [TestMethod]
-        public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
+        public void ShouldSuccesfullyCompareDecimalNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
             {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4m, n => n.AsDecimal()));
+                TestTools.ExecuteWithChangedCulture(ci, () =>
+                {
+                    const decimal left = 1.4m;
+                    const decimal right = 3.55m;
+                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                });
             }
         }
 
         [TestMethod]
-        public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
+        public void ShouldSuccesfullyCompareFloatNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
             {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4d, n => n.AsDouble()));
+                TestTools.ExecuteWithChangedCulture(ci, () =>
+                {
+                    const float left = 1.4f;
+                    const float right = 3.55f;
+                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                });
             }
         }
 
         [TestMethod]
-        public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
+        public void ShouldSuccesfullyCompareDoubleNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
             {
-                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4f, n => n.AsFloat()));
+                TestTools.ExecuteWithChangedCulture(ci, () =>
+                {
+                    const double left = 1.4d;
+                    const double right = 3.55d;
+                    Assert.AreEqual(-1, ComparisonHelper.CompareLiterals(left.ToLiteral(_graph), right.ToLiteral(_graph)));
+                });
             }
-        }
-
-        private void RoundTripValuedNodeConversion<T>(dynamic value, Func<IValuedNode, T> convertBack)
-        {
-            // given
-            ILiteralNode literalNode = LiteralExtensions.ToLiteral(value, _graph);
-
-            // when
-            IValuedNode valuedNode = literalNode.AsValuedNode();
-            T convertedBack = convertBack(valuedNode);
-
-            // then
-            Assert.AreEqual<T>(value, convertedBack);
         }
     }
 }
