@@ -608,7 +608,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    Debug.WriteLine("Falling back to brute force mapping with base mapping of " + baseMapping.Count + " nodes");
+                    Debug.WriteLine("Had a potential mapping but it was invalid, falling back to brute force mapping with base mapping of " + baseMapping.Count + " nodes");
                     this._mapping = baseMapping;
                     return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
                 }
