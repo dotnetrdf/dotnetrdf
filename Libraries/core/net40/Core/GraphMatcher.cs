@@ -51,6 +51,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(IGraph g, IGraph h)
         {
+            Debug.WriteLine("Making simple equality checks");
+
             //If both are null then consider equal
             if (g == null && h == null)
             {
@@ -149,6 +151,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Second Graph contains ground triples not present in first graph");
                 return false;
             }
+            Debug.WriteLine("Validated that there are " + gtCount + " ground triples present in both graphs");
 
             //If there are no Triples left in the other Graph, all our Triples were Ground Triples and there are no Blank Nodes to map the Graphs are equal
             if (this._targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0)
@@ -201,6 +204,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Differing number of unique blank nodes between graphs");
                 return false;
             }
+            Debug.WriteLine("Both graphs contain " + gNodes.Count + " unique blank nodes");
 
             //Then we sub-classify by the number of Blank Nodes with each degree classification
             Dictionary<int, int> gDegrees = new Dictionary<int, int>();
@@ -234,10 +238,13 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
                 return false;
             }
+            Debug.WriteLine("Degree classification of blank nodes indicates there is a possible equality mapping");
 
             //Then for each degree classification there must be the same number of BNodes with that degree in both Graph
             if (gDegrees.All(pair => hDegrees.ContainsKey(pair.Key) && gDegrees[pair.Key] == hDegrees[pair.Key]))
             {
+                Debug.WriteLine("Validated that degree classification does provide a possible equality mapping");
+
                 //Try to do a Rules Based Mapping
                 return this.TryRulesBasedMapping(g, h, gNodes, hNodes, gDegrees, hDegrees);
             }
@@ -288,6 +295,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[EQUAL] Trivial Mapping (all Blank Nodes have identical IDs) is a valid equality mapping");
                 return true;
             }
+            Debug.WriteLine("Trivial Mapping (all Blank Nodes have identical IDs) did not hold");
 
             //Initialise the Unbound list
             this._unbound = (from n in hNodes.Keys
@@ -331,6 +339,7 @@ namespace VDS.RDF
             }
 
             //Map any Nodes of unique degree next
+            Debug.WriteLine("Trying to map unique blank nodes");
             foreach (KeyValuePair<int, int> degreeClass in gDegrees)
             {
                 if (degreeClass.Key > 1 && degreeClass.Value == 1)
@@ -354,6 +363,7 @@ namespace VDS.RDF
                     this._unbound.Remove(y);
                 }
             }
+            Debug.WriteLine("Still have " + this._unbound.Count + " blank nodes to map");
 
             //Work out which Nodes are paired up 
             //By this we mean any Nodes which appear with other Nodes in a Triple
@@ -416,6 +426,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Graphs contain different number of independent blank nodes");
                 return false;
             }
+            Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " indepdent blank nodes, attempting mapping");
 
             //Try to map the independent nodes
             foreach (INode x in sourceIndependents)
@@ -449,10 +460,13 @@ namespace VDS.RDF
                     return false;
                 }
             }
+            Debug.WriteLine("After indepdendent blank node mapping we have mapped " + this._mapping.Count + " blank nodes");
 
             //Want to save our mapping so far here as if the mapping we produce using the dependency information
             //is flawed then we'll have to attempt brute force
             Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>(this._mapping);
+
+            Debug.WriteLine("Using dependency information to try and map more blank nodes");
 
             //Now we use the dependency information to try and find mappings
             foreach (MappingPair dependency in sourceDependencies)
@@ -580,6 +594,7 @@ namespace VDS.RDF
                     }
                 }
             }
+            Debug.WriteLine("After using dependency information we have a possible mapping with " + this._mapping.Count + " blank nodes mapped (" + baseMapping.Count + " confirmed mappings)");
 
             //If we've filled in the Mapping fully then the Graphs are hopefully equal
             if (this._mapping.Count == gNodes.Count)
