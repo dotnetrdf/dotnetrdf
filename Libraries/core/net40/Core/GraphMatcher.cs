@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -50,15 +51,36 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(IGraph g, IGraph h)
         {
+            //If both are null then consider equal
+            if (g == null && h == null)
+            {
+                Debug.WriteLine("[EQUAL] Both Graphs null");
+            }
             //Graphs can't be equal to null
-            if (g == null) return false;
-            if (h == null) return false;
+            if (g == null)
+            {
+                Debug.WriteLine("[NOT EQUAL] First Graph is null");
+                return false;
+            }
+            if (h == null)
+            {
+                Debug.WriteLine("[NOT EQUAL] Second Graph is null");
+                return false;
+            }
 
             //If we're the same Graph (by reference) then we're trivially equal
-            if (ReferenceEquals(g, h)) return true;
+            if (ReferenceEquals(g, h))
+            {
+                Debug.WriteLine("[EQUAL] Graphs equal be reference");
+                return true;
+            }
 
             //If different number of Triples then the Graphs can't be equal
-            if (g.Triples.Count != h.Triples.Count) return false;
+            if (g.Triples.Count != h.Triples.Count)
+            {
+                Debug.WriteLine("[NOT EQUAL] Differing number of triples between graphs");
+                return false;
+            }
 
             int gtCount = 0;
             Dictionary<INode, int> gNodes = new Dictionary<INode, int>();
@@ -70,8 +92,16 @@ namespace VDS.RDF
                 {
                     //If the other Graph doesn't contain the Ground Triple so can't be equal
                     //We make the contains call first as that is typically O(1) while the Remove call may be O(n)
-                    if (!h.Triples.Contains(t)) return false;
-                    if (!this._targetTriples.Remove(t)) return false;
+                    if (!h.Triples.Contains(t))
+                    {
+                        Debug.WriteLine("[NOT EQUAL] First graph contains a ground triple which is not in the second graph");
+                        return false;
+                    }
+                    if (!this._targetTriples.Remove(t))
+                    {
+                        Debug.WriteLine("[NOT EQUAL] First graph contains a ground triple which is not in the second graph");
+                        return false;
+                    }
                     gtCount++;
                 }
                 else
@@ -114,10 +144,18 @@ namespace VDS.RDF
             }
 
             //If the other Graph still contains Ground Triples then the Graphs aren't equal
-            if (this._targetTriples.Any(t => t.IsGroundTriple)) return false;
+            if (this._targetTriples.Any(t => t.IsGroundTriple))
+            {
+                Debug.WriteLine("[NOT EQUAL] Second Graph contains ground triples not present in first graph");
+                return false;
+            }
 
             //If there are no Triples left in the other Graph, all our Triples were Ground Triples and there are no Blank Nodes to map the Graphs are equal
-            if (this._targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0) return true;
+            if (this._targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0)
+            {
+                Debug.WriteLine("[EQUAL] Graphs contain only ground triples and all triples are present in both graphs");
+                return true;
+            }
 
             //Now classify the remaining Triples from the other Graph
             foreach (Triple t in this._targetTriples)
@@ -158,7 +196,11 @@ namespace VDS.RDF
             }
 
             //First off we must have the same number of Blank Nodes in each Graph
-            if (gNodes.Count != hNodes.Count) return false;
+            if (gNodes.Count != hNodes.Count)
+            {
+                Debug.WriteLine("[NOT EQUAL] Differing number of unique blank nodes between graphs");
+                return false;
+            }
 
             //Then we sub-classify by the number of Blank Nodes with each degree classification
             Dictionary<int, int> gDegrees = new Dictionary<int, int>();
@@ -187,7 +229,11 @@ namespace VDS.RDF
             }
 
             //Then we must have the same number of degree classifications
-            if (gDegrees.Count != hDegrees.Count) return false;
+            if (gDegrees.Count != hDegrees.Count)
+            {
+                Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
+                return false;
+            }
 
             //Then for each degree classification there must be the same number of BNodes with that degree in both Graph
             if (gDegrees.All(pair => hDegrees.ContainsKey(pair.Key) && gDegrees[pair.Key] == hDegrees[pair.Key]))
@@ -199,6 +245,7 @@ namespace VDS.RDF
             {
                 //There are degree classifications that don't have the same number of BNodes with that degree 
                 //or the degree classification is not in the other Graph
+                Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
                 return false;
             }
 
@@ -216,6 +263,8 @@ namespace VDS.RDF
         /// <returns></returns>
         private bool TryRulesBasedMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, Dictionary<int, int> gDegrees, Dictionary<int, int> hDegrees)
         {
+            Debug.WriteLine("Attempting rules based equality mapping");
+
             //Start with new lists and dictionaries each time in case we get reused
             this._unbound = new List<INode>();
             this._bound = new List<INode>();
@@ -236,6 +285,7 @@ namespace VDS.RDF
             if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, trivialMapping))))
             {
                 this._mapping = trivialMapping;
+                Debug.WriteLine("[EQUAL] Trivial Mapping (all Blank Nodes have identical IDs) is a valid equality mapping");
                 return true;
             }
 
@@ -274,7 +324,11 @@ namespace VDS.RDF
             }
 
             //If all the Nodes were used only once and we mapped them all then the Graphs are equal
-            if (this._targetTriples.Count == 0) return true;
+            if (this._targetTriples.Count == 0)
+            {
+                Debug.WriteLine("[EQUAL] All Blank Nodes were single use and were successfully mapped");
+                return true;
+            }
 
             //Map any Nodes of unique degree next
             foreach (KeyValuePair<int, int> degreeClass in gDegrees)
@@ -288,7 +342,11 @@ namespace VDS.RDF
                     INode y = hNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
 
                     //If either of these return null then the Graphs can't be equal
-                    if (x == null || y == null) return false;
+                    if (x == null || y == null)
+                    {
+                        Debug.WriteLine("[NOT EQUAL] Node with unique degree could not be mapped");
+                        return false;
+                    }
 
                     //Add the Mapping
                     this._mapping.Add(x, y);
@@ -353,7 +411,11 @@ namespace VDS.RDF
                                               select n).ToList();
 
             //If the number of independent nodes in the two Graphs is different we return false
-            if (sourceIndependents.Count != targetIndependents.Count) return false;
+            if (sourceIndependents.Count != targetIndependents.Count)
+            {
+                Debug.WriteLine("[NOT EQUAL] Graphs contain different number of independent blank nodes");
+                return false;
+            }
 
             //Try to map the independent nodes
             foreach (INode x in sourceIndependents)
@@ -381,7 +443,11 @@ namespace VDS.RDF
                 }
 
                 //If we couldn't map an independent Node then we fail
-                if (!this._mapping.ContainsKey(x)) return false;
+                if (!this._mapping.ContainsKey(x))
+                {
+                    Debug.WriteLine("[NOT EQUAL] Independent blank node could not be mapped");
+                    return false;
+                }
             }
 
             //Want to save our mapping so far here as if the mapping we produce using the dependency information
@@ -522,16 +588,19 @@ namespace VDS.RDF
                 List<Triple> ys = new List<Triple>(this._targetTriples);
                 if (this._sourceTriples.All(t => ys.Remove(t.MapTriple(h, this._mapping))))
                 {
+                    Debug.WriteLine("[EQUAL] Generated a rules based mapping successfully");
                     return true;
                 }
                 else
                 {
+                    Debug.WriteLine("Falling back to brute force mapping with base mapping of " + baseMapping.Count + " nodes");
                     this._mapping = baseMapping;
                     return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
                 }
             }
             else
             {
+                Debug.WriteLine("Falling back to brute force mapping");
                 return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
             }
         }
@@ -568,7 +637,11 @@ namespace VDS.RDF
                     }
 
                     //If there's no possible matches for the Node we fail
-                    if (possibleMappings[gPair.Key].Count == 0) return false;
+                    if (possibleMappings[gPair.Key].Count == 0)
+                    {
+                        Debug.WriteLine("[NOT EQUAL] Unable to find any possible mappings for a blank node");
+                        return false;
+                    }
                 }
             }
 
@@ -581,10 +654,12 @@ namespace VDS.RDF
                 if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
                 {
                     this._mapping = mapping;
+                    Debug.WriteLine("[EQUAL] Succesfully brute forced a mapping");
                     return true;
                 }
             }
 
+            Debug.WriteLine("[NOT EQUAL] No valid brute forced mappings");
             return false;
         }
 

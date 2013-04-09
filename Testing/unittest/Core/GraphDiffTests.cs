@@ -199,8 +199,8 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        [TestMethod, Timeout(10)]
-        public void ShouldNotLeakMemoryWhenComparingEqualGraphs()
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphs()
         {
             Graph a = new Graph();
             a.LoadFromFile("GraphComparisonA.ttl");

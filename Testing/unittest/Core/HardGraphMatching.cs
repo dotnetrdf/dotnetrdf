@@ -231,6 +231,17 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual);
         }
 
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphs()
+        {
+            Graph a = new Graph();
+            a.LoadFromFile("GraphComparisonA.ttl");
+            Graph b = new Graph();
+            b.LoadFromFile("GraphComparisonB.ttl");
+
+            Assert.IsTrue(a.Equals(b));
+        }
+
         private IGraph GenerateCyclicGraph(int nodes, int seed)
         {
             return GenerateCyclicGraph(nodes, seed, 0);
