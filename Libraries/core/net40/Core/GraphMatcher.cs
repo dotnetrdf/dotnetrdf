@@ -945,17 +945,22 @@ namespace VDS.RDF
             foreach (INode y in possibles)
             {
                 Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
-                test.Add(x, y);
+                if (!test.ContainsKey(x)) test.Add(x, y);
 
-                if (test.Count == possibleMappings.Count) yield return test;
-
-                //Go ahead and recurse
-                foreach (INode x2 in possibleMappings.Keys)
+                if (test.Count == possibleMappings.Count)
                 {
-                    if (test.ContainsKey(x2)) continue;
-                    foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappingsInternal(test, possibleMappings, x2))
+                    yield return test;
+                }
+                else
+                {
+                    //Go ahead and recurse
+                    foreach (INode x2 in possibleMappings.Keys)
                     {
-                        yield return mapping;
+                        if (test.ContainsKey(x2)) continue;
+                        foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappingsInternal(test, possibleMappings, x2))
+                        {
+                            yield return mapping;
+                        }
                     }
                 }
             }

@@ -398,6 +398,48 @@ namespace VDS.RDF
             Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
         }
 
+        [TestMethod]
+        public void GraphMatchBruteForce3()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce4()
+        {
+            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
+            //Our base mapping also already calls out the confirmed mapping
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+            baseMapping.Add(a1, b1);
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
         private void PrintMappings(List<Dictionary<INode, INode>> mappings)
         {
             for (int i = 0; i < mappings.Count; i++)
