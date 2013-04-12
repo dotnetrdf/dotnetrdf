@@ -83,6 +83,7 @@ namespace VDS.RDF
     ///         </ol>
     ///     </li>
     ///     <li>If we now have a complete possible mapping (there is a mapping for each blank node from the Source Graph to the Target Graph) then test the mapping.  Return success/failure depending on whether the mapping is valid.</li>
+    ///     <li><strong>Important:</strong> Keep a copy of the mapping up to this point as a <em>Base Mapping</em> for use as a base for the brute force step</li>
     ///     </ol> 
     /// </li>
     /// <li>If we still don't have a complete mapping we now fallback to the <em>Base Mapping</em> and use it as a basis for brute forcing the possible solution space and testing every possibility until either a mapping works or we find the graphs to be non-equal</li>
