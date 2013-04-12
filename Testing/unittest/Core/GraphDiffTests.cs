@@ -198,5 +198,18 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreDifferentSizes, "Graphs should have been reported as different sizes for one null reference");
             Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
         }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphs()
+        {
+            Graph a = new Graph();
+            a.LoadFromFile("GraphComparisonA.ttl");
+            Graph b = new Graph();
+            b.LoadFromFile("GraphComparisonB.ttl");
+
+            var diff = a.Difference(b);
+
+            Assert.IsTrue(diff.AreEqual);
+        }
     }
 }

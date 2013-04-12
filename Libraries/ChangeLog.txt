@@ -21,6 +21,7 @@ Changed
  - Fixed a bug in GROUP_CONCAT where certain values would not be correctly concatenated together (CORE-340)
  - Fixed a corner case bug where the Turtle parser could accept some invalid input and generate incorrect URIs for it (CORE-341)
  - Fixed a bug where certain triple patterns could trigger a bug in the scan logic and explode the solution space (CORE-343)
+ - Fixed a bug where Graph equality could explode memory usage and be unable to determine equality on some blank node heavy equivalent graphs (CORE-345)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
 - Documentation

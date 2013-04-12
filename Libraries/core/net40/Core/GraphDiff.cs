@@ -95,7 +95,7 @@ namespace VDS.RDF
                             this._rhsUnassigned.Add(t);
                         }
                     }
-                    this.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+                    GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
                     foreach (IGraph msg in this._rhsMSGs)
                     {
                         report.AddAddedMSG(msg);
@@ -119,7 +119,7 @@ namespace VDS.RDF
                         this._lhsUnassigned.Add(t);
                     }
                 }
-                this.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
+                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
                 foreach (IGraph msg in this._lhsMSGs)
                 {
                     report.AddRemovedMSG(msg);
@@ -174,8 +174,8 @@ namespace VDS.RDF
                 }
 
                 //Then compute all the MSGs
-                this.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
-                this.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
+                GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
 
                 //Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
                 GraphSizeComparer comparer = new GraphSizeComparer();
@@ -243,7 +243,7 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         /// <param name="unassigned">Triples that need assigning to MSGs</param>
         /// <param name="msgs">MSGs list to populate</param>
-        private void ComputeMSGs(IGraph g, HashSet<Triple> unassigned, List<IGraph> msgs)
+        public static void ComputeMSGs(IGraph g, HashSet<Triple> unassigned, List<IGraph> msgs)
         {
             //While we have unassigned Triples build MSGs
             while (unassigned.Count > 0)
@@ -256,7 +256,7 @@ namespace VDS.RDF
                 unassigned.Remove(first);
 
                 //Get the BNodes from it that need to be processed
-                this.GetNodesForProcessing(first, unprocessed);
+                GraphDiff.GetNodesForProcessing(first, unprocessed);
 
                 //Start building an MSG starting from the Triple
                 Graph msg = new Graph();
@@ -273,7 +273,7 @@ namespace VDS.RDF
                         //When a Triple is added to an MSG it is removed from the unassigned list
                         unassigned.Remove(t);
                         msg.Assert(t);
-                        this.GetNodesForProcessing(t, unprocessed);
+                        GraphDiff.GetNodesForProcessing(t, unprocessed);
                     }
 
                     processed.Add(next);
@@ -283,7 +283,7 @@ namespace VDS.RDF
             }
         }
 
-        private void GetNodesForProcessing(Triple t, Queue<INode> nodes)
+        public static void GetNodesForProcessing(Triple t, Queue<INode> nodes)
         {
             if (t.Subject.NodeType == NodeType.Blank) nodes.Enqueue(t.Subject);
             if (t.Predicate.NodeType == NodeType.Blank) nodes.Enqueue(t.Predicate);
