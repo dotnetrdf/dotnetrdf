@@ -89,6 +89,7 @@
     <Compile Include="Compatability\HtmlTextWriterTag.cs" />
     <Compile Include="Compatability\HttpUtility.cs" />
     <Compile Include="Compatability\SilverlightCompatability.cs" />
+    <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
     <Compile Include="Configuration\CollectionFactory.cs" />
     <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\OperatorFactory.cs" />

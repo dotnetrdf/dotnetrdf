@@ -654,7 +654,7 @@ namespace VDS.RDF
         /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes</param>
         /// <returns></returns>
         /// <remarks>
-        /// See <see cref="GraphMatcher/> for documentation of the equality algorithm used.
+        /// See <see cref="GraphMatcher"/> for documentation of the equality algorithm used.
         /// </remarks>
         public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {

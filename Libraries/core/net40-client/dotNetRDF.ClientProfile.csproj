@@ -2383,4 +2383,9 @@
       <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
