@@ -34,7 +34,7 @@ namespace VDS.RDF
     /// <summary>
     /// Implements a Graph Isomorphism Algorithm
     /// </summary>
-    class GraphMatcher 
+    class GraphMatcher
     {
         //The Unbound and Bound lists refers to the Nodes of the Target Graph
         private List<INode> _unbound;
@@ -608,14 +608,184 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    Debug.WriteLine("Had a potential mapping but it was invalid, falling back to brute force mapping with base mapping of " + baseMapping.Count + " nodes");
+                    //Fall back should to a divide and conquer mapping
+                    Debug.WriteLine("Had a potential rules based mapping but it was invalid, falling back to divide and conquer mapping with base mapping of " + baseMapping.Count + " nodes");
                     this._mapping = baseMapping;
-                    return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
+                    return this.TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
                 }
             }
             else
             {
-                Debug.WriteLine("Falling back to brute force mapping");
+                Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
+                return this.TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
+            }
+        }
+
+        /// <summary>
+        /// Uses a divide and conquer based approach to generate a mapping without the need for brute force guessing
+        /// </summary>
+        /// <param name="g">1st Graph</param>
+        /// <param name="h">2nd Graph</param>
+        /// <param name="gNodes">1st Graph Node classification</param>
+        /// <param name="hNodes">2nd Graph Node classification</param>
+        /// <param name="gDegrees">1st Graph Degree classification</param>
+        /// <param name="hDegrees">2nd Graph Degree classification</param>
+        /// <returns></returns>
+        private bool TryDivideAndConquerMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
+        {
+            Debug.WriteLine("Attempting divide and conquer based mapping");
+
+            //Need to try and split the BNodes into MSGs
+            //Firstly we need a copy of the unassigned triples
+            HashSet<Triple> gUnassigned = new HashSet<Triple>(this._sourceTriples);
+            HashSet<Triple> hUnassigned = new HashSet<Triple>(this._targetTriples);
+
+            //Remove already mapped nodes
+            gUnassigned.RemoveWhere(t => this._mapping != null && this._mapping.Keys.Any(n => t.Involves(n)));
+            hUnassigned.RemoveWhere(t => this._mapping != null && this._mapping.Any(kvp => t.Involves(kvp.Value)));
+
+            //Compute MSGs
+            List<IGraph> gMsgs = new List<IGraph>();
+            GraphDiff.ComputeMSGs(g, gUnassigned, gMsgs);
+            List<IGraph> hMsgs = new List<IGraph>();
+            GraphDiff.ComputeMSGs(h, hUnassigned, hMsgs);
+
+            if (gMsgs.Count != hMsgs.Count)
+            {
+                Debug.WriteLine("[NOT EQUAL] Blank Node portions of graphs decomposed into differing numbers of isolated sub-graphs");
+                this._mapping = null;
+                return false;
+            }
+            else if (gMsgs.Count == 1)
+            {
+                Debug.WriteLine("Blank Node potions of graphs did not decompose into isolated sub-graphs, falling back to brute force mapping");
+                return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
+            }
+            Debug.WriteLine("Blank Node portions of graphs decomposed into " + gMsgs.Count + " isolated sub-graphs");
+
+            //Sort sub-graphs by triple count
+            gMsgs.Sort(new GraphSizeComparer());
+            hMsgs.Sort(new GraphSizeComparer());
+            bool retry = true;
+            int retryCount = 1;
+
+            while (retry)
+            {
+                int found = 0;
+                List<IGraph> lhsMsgs = new List<IGraph>(gMsgs);
+                if (lhsMsgs.Count == 0) break;
+
+                Debug.WriteLine("Divide and conquer attempt #" + retryCount);
+
+                while (lhsMsgs.Count > 0)
+                {
+                    IGraph lhs = lhsMsgs[0];
+                    lhsMsgs.RemoveAt(0);
+
+                    //Find possible matches
+                    List<IGraph> possibles = new List<IGraph>(hMsgs.Where(graph => graph.Triples.Count == lhs.Triples.Count));
+
+                    if (possibles.Count == 0)
+                    {
+                        Debug.WriteLine("[NOT EQUAL] Isolated sub-graphs are of differing sizes");
+                        this._mapping = null;
+                        return false;
+                    }
+
+                    //Check each possible match
+                    List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
+                    List<IGraph> partialMappingSources = new List<IGraph>();
+                    Debug.WriteLine("Dividing and conquering...");
+                    Debug.Indent();
+                    int i = 1;
+                    foreach (IGraph rhs in possibles)
+                    {
+                        Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
+                        Debug.Indent();
+                        Dictionary<INode, INode> partialMapping;
+                        if (lhs.Equals(rhs, out partialMapping))
+                        {
+                            partialMappings.Add(partialMapping);
+                            partialMappingSources.Add(rhs);
+                        }
+                        Debug.Unindent();
+                    }
+                    Debug.Unindent();
+                    Debug.WriteLine("Dividing and conquering done");
+
+                    //Did we find a possible mapping for the sub-graph?
+                    if (partialMappings.Count == 0)
+                    {
+                        // No possible mappings
+                        Debug.WriteLine("[NOT EQUAL] Divide and conquer found an isolated sub-graph that has no possible matches");
+                        this._mapping = null;
+                        return false;
+                    }
+                    else if (partialMappings.Count == 1)
+                    {
+                        //Only one possible match
+                        foreach (KeyValuePair<INode, INode> kvp in partialMappings[0])
+                        {
+                            if (this._mapping.ContainsKey(kvp.Key))
+                            {
+                                Debug.WriteLine("[NOT EQUAL] Divide and conque found a sub-graph with a single possible mapping that conflicts with the existing confirmed mappings");
+                                this._mapping = null;
+                                return false;
+                            }
+                            else
+                            {
+                                this._mapping.Add(kvp.Key, kvp.Value);
+                            }
+                        }
+                        Debug.WriteLine("Divide and conquer found a unique mapping for an isolated sub-graph and confirmed an additional " + partialMappings[0].Count + " blank node mappings");
+
+                        // Can eliminate the matched sub-graph from further consideration
+                        gMsgs.Remove(lhs);
+                        hMsgs.Remove(partialMappingSources[0]);
+                        found++;
+                    }
+                    else
+                    {
+                        // Multiple possible mappings
+                        Debug.WriteLine("Divide and conquer found " + partialMappings.Count + " possible mappings for an isolated sub-graph, unable to confirm any mappings");
+                    }
+                }
+
+                retry = found > 0;
+
+                if (retry)
+                {
+                    Debug.WriteLine("Divide and conquer Attempt #" + retryCount + " found " + found + " isolated sub-graph matches, will retry to see if confirmed matches permit further matches to be made");
+                }
+                else
+                {
+                    Debug.WriteLine("Divide and conquer Attempt #" + retryCount + " found no further isolated sub-graph matches");
+                }
+                retryCount++;
+            }
+
+            //If we now have a complete mapping test it
+            if (this._mapping.Count == gNodes.Count)
+            {
+                //Need to check we found a valid mapping
+                List<Triple> ys = new List<Triple>(this._targetTriples);
+                if (this._sourceTriples.All(t => ys.Remove(t.MapTriple(h, this._mapping))))
+                {
+                    Debug.WriteLine("[EQUAL] Generated a divide and conquer based mapping successfully");
+                    return true;
+                }
+                else
+                {
+                    //Invalid mapping
+                    Debug.WriteLine("[NOT EQUAL] Divide and conquer led to an invalid mapping");
+                    this._mapping = null;
+                    return false;
+                }
+            }
+            else
+            {
+                //If dvide and conquer fails fall back to brute force
+                Debug.WriteLine("Divide and conquer based mapping did not succeed in mapping everything, have " + this._mapping.Count + " confirmed mappings out of " + gNodes.Count + " total blank nodes, falling back to brute force mapping");
                 return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
             }
         }
@@ -649,6 +819,7 @@ namespace VDS.RDF
                     if (possibleMappings[gPair.Key].Count == 0)
                     {
                         Debug.WriteLine("[NOT EQUAL] Unable to find any possible mappings for a blank node");
+                        this._mapping = null;
                         return false;
                     }
                 }
@@ -660,9 +831,12 @@ namespace VDS.RDF
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
                 count++;
-                if (mapping.Count < gNodes.Count) continue;
+                if (mapping.Count != gNodes.Count) continue;
 
                 HashSet<Triple> targets = new HashSet<Triple>(this._targetTriples);
+                if (this._sourceTriples.Count != targets.Count) continue;
+
+                // Validate the mapping
                 if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
                 {
                     this._mapping = mapping;
@@ -672,6 +846,7 @@ namespace VDS.RDF
             }
 
             Debug.WriteLine("[NOT EQUAL] No valid brute forced mappings (" + count + " were considered)");
+            this._mapping = null;
             return false;
         }
 
@@ -701,25 +876,6 @@ namespace VDS.RDF
             {
                 Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
                 test.Add(x, y);
-
-                //// Partial mapping test
-                //List<Triple> xs = (from t in this._sourceTriples
-                //                    where t.Involves(x)
-                //                    select t).ToList();
-
-                ////Are all the Blank Nodes involved in these Triples mapped at this stage?
-                //if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || test.ContainsKey(node))))
-                //{
-                //    //Then we can do a partial mapping test
-                //    IEnumerable<Triple> ys = (from t in xs
-                //                                where this._targetTriples.Contains(t.MapTriple(target, test))
-                //                                select t);
-
-                //    if (xs.Count != ys.Count())
-                //    {
-                //        continue;
-                //    }
-                //}
 
                 //Go ahead and recurse
                 foreach (Dictionary<INode, INode> mapping in this.GenerateMappings(test, possibleMappings, sourceDependencies, targetDependencies, target))
