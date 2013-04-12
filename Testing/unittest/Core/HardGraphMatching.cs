@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -44,6 +45,9 @@ namespace VDS.RDF
         private const int CycleNodes = 100;
         private const int CycleDropNodes = 25;
         private const int StarNodes = 50;
+
+        private NodeFactory _factory = new NodeFactory();
+        private INodeFormatter _formatter = new NTriplesFormatter();
 
         [TestMethod]
         public void GraphHardMatch1()
@@ -353,6 +357,58 @@ namespace VDS.RDF
             }
 
             return g;
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce1()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a = this._factory.CreateBlankNode("a");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a single blank node with two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a)));
+            Assert.IsFalse(generated.All(m => m[a].Equals(b1)));
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce2()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes with two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1, b2 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(4, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
+        private void PrintMappings(List<Dictionary<INode, INode>> mappings)
+        {
+            for (int i = 0; i < mappings.Count; i++)
+            {
+                Console.WriteLine("Mapping " + (i + 1) + " of " + mappings.Count);
+                foreach (KeyValuePair<INode, INode> kvp in mappings[i])
+                {
+                    Console.WriteLine(this._formatter.Format(kvp.Key) + " => " + this._formatter.Format(kvp.Value));
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

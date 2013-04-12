@@ -916,20 +916,30 @@ namespace VDS.RDF
         /// <param name="possibleMappings">Possible Mappings</param>
         /// <returns></returns>
         /// <remarks>
-        /// The base mapping contains known good mappings
+        /// The base mapping at the time of the initial call shoudl contain known good mappings
         /// </remarks>
         public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
         {
-            if (possibleMappings.Count == 0)
-            {
-                yield return baseMapping;
-                yield break;
-            }
-
-            //Remove the first key and get its possibilities
             INode x = possibleMappings.Keys.First();
+            foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(baseMapping, possibleMappings, x))
+            {
+                yield return mapping;
+            }
+        }
+
+        /// <summary>
+        /// Helper method for brute forcing the possible mappings
+        /// </summary>
+        /// <param name="baseMapping">Base Mapping</param>
+        /// <param name="possibleMappings">Possible Mappings</param>
+        /// <param name="x">Node to consider for mapping</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The base mapping contains known good mappings
+        /// </remarks>
+        private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x)
+        {
             List<INode> possibles = possibleMappings[x];
-            possibleMappings.Remove(x);
 
             //For each possiblity build a possible mapping
             foreach (INode y in possibles)
@@ -937,10 +947,16 @@ namespace VDS.RDF
                 Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
                 test.Add(x, y);
 
+                if (test.Count == possibleMappings.Count) yield return test;
+
                 //Go ahead and recurse
-                foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappings(test, possibleMappings))
+                foreach (INode x2 in possibleMappings.Keys)
                 {
-                    yield return mapping;
+                    if (test.ContainsKey(x2)) continue;
+                    foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappingsInternal(test, possibleMappings, x2))
+                    {
+                        yield return mapping;
+                    }
                 }
             }
         }
