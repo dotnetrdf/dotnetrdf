@@ -135,7 +135,7 @@ namespace VDS.RDF
             }
 
             //If different number of Triples then the Graphs can't be equal
-            if (g.Triples.Count != h.Triples.Count)
+            if (g.Count != h.Count)
             {
                 Debug.WriteLine("[NOT EQUAL] Differing number of triples between graphs");
                 return false;
@@ -211,7 +211,7 @@ namespace VDS.RDF
             Debug.WriteLine("Validated that there are " + gtCount + " ground triples present in both graphs");
 
             //If there are no Triples left in the other Graph, all our Triples were Ground Triples and there are no Blank Nodes to map the Graphs are equal
-            if (this._targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0)
+            if (this._targetTriples.Count == 0 && gtCount == g.Count && gNodes.Count == 0)
             {
                 Debug.WriteLine("[EQUAL] Graphs contain only ground triples and all triples are present in both graphs");
                 return true;
@@ -798,7 +798,7 @@ namespace VDS.RDF
                     lhsMsgs.RemoveAt(0);
 
                     //Find possible matches
-                    List<IGraph> possibles = new List<IGraph>(hMsgs.Where(graph => graph.Triples.Count == lhs.Triples.Count));
+                    List<IGraph> possibles = new List<IGraph>(hMsgs.Where(graph => graph.Count == lhs.Count));
 
                     if (possibles.Count == 0)
                     {
@@ -810,7 +810,7 @@ namespace VDS.RDF
                     //Check each possible match
                     List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
                     List<IGraph> partialMappingSources = new List<IGraph>();
-                    Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
+                    Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Count + " triples...");
                     Debug.Indent();
                     int i = 1;
                     foreach (IGraph rhs in possibles)
