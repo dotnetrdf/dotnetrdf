@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,6 +36,15 @@ namespace VDS.RDF
     public abstract class BaseTest
     {
         protected TestContext testContextInstance;
+
+        protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
+            {
+                new CultureInfo("en-US"), 
+                new CultureInfo("pl-PL"), 
+                new CultureInfo("ja-JP"), 
+                new CultureInfo("ru-RU"), 
+                new CultureInfo("pt-BR")
+            };
 
         /// <summary>
         ///Gets or sets the test context which provides

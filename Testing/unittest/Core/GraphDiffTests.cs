@@ -198,5 +198,63 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreDifferentSizes, "Graphs should have been reported as different sizes for one null reference");
             Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
         }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase1()
+        {
+            const string testGraphName = "case1";
+            TestGraphDiff(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase2()
+        {
+            const string testGraphName = "case2";
+            TestGraphDiff(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase3()
+        {
+            const string testGraphName = "case3";
+            TestGraphDiff(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase4()
+        {
+            const string testGraphName = "case4";
+            TestGraphDiff(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase5()
+        {
+            const string testGraphName = "case5";
+            TestGraphDiff(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphDiffSlowOnEqualGraphsCase6()
+        {
+            const string testGraphName = "case6";
+            TestGraphDiff(testGraphName);
+        }
+
+        private static void TestGraphDiff(string testGraphName)
+        {
+            Graph a = new Graph();
+            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
+            Graph b = new Graph();
+            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
+
+            var diff = a.Difference(b);
+
+            if (!diff.AreEqual)
+            {
+                TestTools.ShowDifferences(diff);
+            }
+            Assert.IsTrue(diff.AreEqual);
+        }
     }
 }

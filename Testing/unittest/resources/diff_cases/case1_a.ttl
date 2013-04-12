@@ -1,0 +1,34 @@
+@base <http://example.com/>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+_:autos38 a rr:TriplesMap;
+          rr:logicalTable [rr:sqlQuery """SELECT child.*, p1.\"Id\" as \"TargetId\"
+FROM \"Source\" as child
+LEFT JOIN \"Target\" as p1 ON
+p1.\"UQ1\" = child.\"FK1\" AND p1.\"UQ2\" = child.\"FK2\"
+"""];
+          rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/Source#FK1>] ; 
+                                 rr:objectMap [rr:column "FK1"]],
+                                [rr:predicateMap [rr:constant <http://example.com/Source#FK2>] ; 
+                                 rr:objectMap [rr:column "FK2"]],
+                                [rr:predicateMap [rr:constant <http://example.com/Source#Some%20column>] ; 
+                                 rr:objectMap [rr:column "Some column"]],
+                                [rr:predicateMap [rr:constant <http://example.com/Source#ref-FK1;FK2>] ; 
+                                 rr:objectMap [rr:template """http://example.com/Target/Id={\"TargetId\"}"""]];
+          rr:subjectMap [rr:termType rr:BlankNode ; 
+                         rr:template """Source_{\"FK1\"}_{\"FK2\"}_{\"Some column\"}""" ; 
+                         rr:class <http://example.com/Source>].
+<http://example.com/TargetTriplesMap> a rr:TriplesMap;
+                                      rr:logicalTable [rr:tableName "Target"];
+                                      rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/Target#Id>] ; 
+                                                             rr:objectMap [rr:column "Id"]],
+                                                            [rr:predicateMap [rr:constant <http://example.com/Target#UQ1>] ; 
+                                                             rr:objectMap [rr:column "UQ1"]],
+                                                            [rr:predicateMap [rr:constant <http://example.com/Target#UQ2>] ; 
+                                                             rr:objectMap [rr:column "UQ2"]];
+                                      rr:subjectMap [rr:template """http://example.com/Target/Id={\"Id\"}""" ; 
+                                                     rr:class <http://example.com/Target>].

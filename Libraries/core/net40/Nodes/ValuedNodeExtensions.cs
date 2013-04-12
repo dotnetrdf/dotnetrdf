@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 using VDS.RDF.Parsing;
@@ -118,7 +119,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
                                 Decimal dec;
-                                if (Decimal.TryParse(lit.Value, out dec))
+                                if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
                                     return new DecimalNode(dec, lit.Value);
                                 }
@@ -128,7 +129,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 Double dbl;
-                                if (Double.TryParse(lit.Value, out dbl))
+                                if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                 {
                                     return new DoubleNode(dbl, lit.Value);
                                 }
@@ -138,7 +139,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 Single flt;
-                                if (Single.TryParse(lit.Value, out flt))
+                                if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out flt))
                                 {
                                     return new FloatNode(flt, lit.Value);
                                 }

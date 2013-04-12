@@ -1,0 +1,41 @@
+@base <http://example.com/>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+<http://example.com/SportTriplesMap> a rr:TriplesMap;
+                                     rr:logicalTable [rr:tableName "Sport"];
+                                     rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/Sport#ID>] ; 
+                                                            rr:objectMap [rr:column "ID" ; 
+                                                                          rr:datatype xsd:integer]],
+                                                           [rr:predicateMap [rr:constant <http://example.com/Sport#Description>] ; 
+                                                            rr:objectMap [rr:column "Description"]];
+                                     rr:subjectMap [rr:class <http://example.com/Sport> ; 
+                                                    rr:template """http://example.com/Sport/ID={\"ID\"}"""].
+<http://example.com/StudentTriplesMap> a rr:TriplesMap;
+                                       rr:logicalTable [rr:tableName "Student"];
+                                       rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/Student#ID>] ; 
+                                                              rr:objectMap [rr:column "ID" ; 
+                                                                            rr:datatype xsd:integer]],
+                                                             [rr:predicateMap [rr:constant <http://example.com/Student#FirstName>] ; 
+                                                              rr:objectMap [rr:column "FirstName"]],
+                                                             [rr:predicateMap [rr:constant <http://example.com/Student#LastName>] ; 
+                                                              rr:objectMap [rr:column "LastName"]];
+                                       rr:subjectMap [rr:class <http://example.com/Student> ; 
+                                                      rr:template """http://example.com/Student/ID={\"ID\"}"""].
+<http://example.com/Student_SportTriplesMap> a rr:TriplesMap;
+                                             rr:logicalTable [rr:tableName "Student_Sport"];
+                                             rr:predicateObjectMap [rr:predicateMap [rr:constant <http://example.com/Student_Sport#ID_Student>] ; 
+                                                                    rr:objectMap [rr:column "ID_Student" ; 
+                                                                                  rr:datatype xsd:integer]],
+                                                                   [rr:predicateMap [rr:constant <http://example.com/Student_Sport#ID_Sport>] ; 
+                                                                    rr:objectMap [rr:column "ID_Sport" ; 
+                                                                                  rr:datatype xsd:integer]],
+                                                                   [rr:predicateMap [rr:constant <http://example.com/Student_Sport#ref-ID_Student>] ; 
+                                                                    rr:objectMap [rr:template """http://example.com/Student/ID={\"ID_Student\"}"""]],
+                                                                   [rr:predicateMap [rr:constant <http://example.com/Student_Sport#ref-ID_Sport>] ; 
+                                                                    rr:objectMap [rr:template """http://example.com/Sport/ID={\"ID_Sport\"}"""]];
+                                             rr:subjectMap [rr:class <http://example.com/Student_Sport> ; 
+                                                            rr:template """http://example.com/Student_Sport/ID_Student={\"ID_Student\"};ID_Sport={\"ID_Sport\"}"""].
