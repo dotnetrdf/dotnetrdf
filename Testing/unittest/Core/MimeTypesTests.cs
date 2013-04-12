@@ -2663,5 +2663,33 @@ namespace VDS.RDF.Core
             Assert.AreEqual("text/plain", selectors[1].Type);
             Assert.AreEqual(0.5d, selectors[1].Quality);
         }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionByUpperCaseExt()
+        {
+            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            {
+                if (!def.HasFileExtensions) continue;
+                String ext = def.CanonicalFileExtension.ToUpper();
+                MimeTypeDefinition def2 = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault();
+                Assert.IsNotNull(def2);
+                Assert.AreEqual(def.SyntaxName, def2.SyntaxName);
+                Assert.AreEqual(def.CanonicalMimeType, def2.CanonicalMimeType);
+                Assert.AreEqual(def.HasFileExtensions, def2.HasFileExtensions);
+                Assert.AreEqual(def.CanonicalFileExtension, def2.CanonicalFileExtension);
+                Assert.AreEqual(def.CanParseRdf, def2.CanParseRdf);
+                Assert.AreEqual(def.CanParseRdfDatasets, def2.CanParseRdfDatasets);
+                Assert.AreEqual(def.CanParseSparqlResults, def2.CanParseSparqlResults);
+                Assert.AreEqual(def.CanWriteRdf, def2.CanWriteRdf);
+                Assert.AreEqual(def.CanWriteRdfDatasets, def2.CanWriteRdfDatasets);
+                Assert.AreEqual(def.CanWriteSparqlResults, def2.CanWriteSparqlResults);
+                Assert.AreEqual(def.RdfParserType, def2.RdfParserType);
+                Assert.AreEqual(def.RdfDatasetParserType, def2.RdfDatasetParserType);
+                Assert.AreEqual(def.SparqlResultsParserType, def2.SparqlResultsParserType);
+                Assert.AreEqual(def.RdfWriterType, def2.RdfWriterType);
+                Assert.AreEqual(def.RdfDatasetWriterType, def2.RdfDatasetWriterType);
+                Assert.AreEqual(def.SparqlResultsWriterType, def2.SparqlResultsWriterType);
+            }
+        }
     }
 }

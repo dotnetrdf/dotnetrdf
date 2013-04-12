@@ -307,6 +307,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets whether any file extensions are associated with this syntax
+        /// </summary>
+        public bool HasFileExtensions
+        {
+            get
+            {
+                return this._canonicalExt != null || this._fileExtensions.Count > 0;
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets the Canonical File Extension for this Syntax
         /// </summary>
         public String CanonicalFileExtension
