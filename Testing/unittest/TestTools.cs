@@ -216,6 +216,7 @@ namespace VDS.RDF
                 Console.WriteLine("MSGs removed from 1st Graph to give 2nd Graph:");
                 foreach (IGraph msg in report.RemovedMSGs)
                 {
+                    Console.WriteLine(msg.Triples.Count + " Triple(s):");
                     foreach (Triple t in msg.Triples)
                     {
                         Console.WriteLine(t.ToString(formatter));
