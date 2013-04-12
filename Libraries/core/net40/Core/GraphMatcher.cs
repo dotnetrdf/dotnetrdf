@@ -57,6 +57,7 @@ namespace VDS.RDF
             if (g == null && h == null)
             {
                 Debug.WriteLine("[EQUAL] Both Graphs null");
+                return true;
             }
             //Graphs can't be equal to null
             if (g == null)

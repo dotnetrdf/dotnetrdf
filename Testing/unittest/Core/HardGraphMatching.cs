@@ -452,5 +452,33 @@ namespace VDS.RDF
                 Console.WriteLine();
             }
         }
+
+        [TestMethod]
+        public void GraphMatchNull1()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsTrue(matcher.Equals(null, null));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull2()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsFalse(matcher.Equals(new Graph(), null));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull3()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsFalse(matcher.Equals(null, new Graph()));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull4()
+        {
+            IGraph g = new Graph();
+            Assert.IsFalse(g.Equals((IGraph)null));
+        }
     }
 }
