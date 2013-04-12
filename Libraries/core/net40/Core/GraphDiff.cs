@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -136,6 +137,7 @@ namespace VDS.RDF
                 if (equalityMapping != null) report.Mapping = equalityMapping;
                 return report;
             }
+            Debug.WriteLine(String.Empty);
 
             report.AreDifferentSizes = (a.Triples.Count != b.Triples.Count);
 

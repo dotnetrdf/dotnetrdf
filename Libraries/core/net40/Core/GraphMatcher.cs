@@ -302,6 +302,7 @@ namespace VDS.RDF
                              select n).ToList();
 
             //Map single use Nodes first to reduce the size of the overall mapping
+            Debug.WriteLine("Mapping single use blank nodes");
             foreach (KeyValuePair<INode, int> pair in gNodes.Where(p => p.Value == 1))
             {
                 //Find the Triple we need to map
@@ -330,6 +331,7 @@ namespace VDS.RDF
                 //Otherwise we can mark that Node as Bound
                 if (this._mapping.ContainsKey(pair.Key)) this._unbound.Remove(this._mapping[pair.Key]);
             }
+            Debug.WriteLine("Single use nodes allowed mapping " + this._mapping.Count + " nodes, " + this._mapping.Count + " mapped out of a total " + gNodes.Count);
 
             //If all the Nodes were used only once and we mapped them all then the Graphs are equal
             if (this._targetTriples.Count == 0)
@@ -340,6 +342,7 @@ namespace VDS.RDF
 
             //Map any Nodes of unique degree next
             Debug.WriteLine("Trying to map unique blank nodes");
+            int mappedSoFar = this._mapping.Count;
             foreach (KeyValuePair<int, int> degreeClass in gDegrees)
             {
                 if (degreeClass.Key > 1 && degreeClass.Value == 1)
@@ -363,7 +366,8 @@ namespace VDS.RDF
                     this._unbound.Remove(y);
                 }
             }
-            Debug.WriteLine("Still have " + this._unbound.Count + " blank nodes to map");
+            Debug.WriteLine("Unique blank nodes allowing mapping of " + (this._mapping.Count - mappedSoFar) + " nodes, " + this._mapping.Count + " mapped out of a total " + gNodes.Count);
+            mappedSoFar = this._mapping.Count;
 
             //Work out which Nodes are paired up 
             //By this we mean any Nodes which appear with other Nodes in a Triple
@@ -460,7 +464,8 @@ namespace VDS.RDF
                     return false;
                 }
             }
-            Debug.WriteLine("After indepdendent blank node mapping we have mapped " + this._mapping.Count + " blank nodes");
+            Debug.WriteLine("Indepdendent blank node mapping was able to map " + (this._mapping.Count - mappedSoFar) + " blank nodes, have mapped " + this._mapping.Count + " blank nodes out of " + gNodes.Count);
+            mappedSoFar = this._mapping.Count;
 
             //Want to save our mapping so far here as if the mapping we produce using the dependency information
             //is flawed then we'll have to attempt brute force
@@ -594,7 +599,7 @@ namespace VDS.RDF
                     }
                 }
             }
-            Debug.WriteLine("After using dependency information we have a possible mapping with " + this._mapping.Count + " blank nodes mapped (" + baseMapping.Count + " confirmed mappings)");
+            Debug.WriteLine("Dependency information allowed us to map a further " + (this._mapping.Count - mappedSoFar) + " nodes, we now have a possible mapping with " + this._mapping.Count + " blank nodes mapped (" + baseMapping.Count + " confirmed mappings) out of a total " + gNodes.Count + " blank nodes");
 
             //If we've filled in the Mapping fully then the Graphs are hopefully equal
             if (this._mapping.Count == gNodes.Count)
@@ -695,7 +700,7 @@ namespace VDS.RDF
                     //Check each possible match
                     List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
                     List<IGraph> partialMappingSources = new List<IGraph>();
-                    Debug.WriteLine("Dividing and conquering...");
+                    Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
                     Debug.Indent();
                     int i = 1;
                     foreach (IGraph rhs in possibles)
