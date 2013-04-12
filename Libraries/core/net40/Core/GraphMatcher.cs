@@ -885,7 +885,7 @@ namespace VDS.RDF
             }
 
             //Now start testing the possiblities
-            IEnumerable<Dictionary<INode, INode>> possibles = this.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings, sourceDependencies, targetDependencies, h);
+            IEnumerable<Dictionary<INode, INode>> possibles = GraphMatcher.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings);
             int count = 0;
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
@@ -912,12 +912,13 @@ namespace VDS.RDF
         /// <summary>
         /// Helper method for brute forcing the possible mappings
         /// </summary>
+        /// <param name="baseMapping">Base Mapping</param>
         /// <param name="possibleMappings">Possible Mappings</param>
-        /// <param name="sourceDependencies">Dependencies in the 1st Graph</param>
-        /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
-        /// <param name="target">Target Graph (2nd Graph)</param>
         /// <returns></returns>
-        protected internal IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies, IGraph target)
+        /// <remarks>
+        /// The base mapping contains known good mappings
+        /// </remarks>
+        public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
         {
             if (possibleMappings.Count == 0)
             {
@@ -937,7 +938,7 @@ namespace VDS.RDF
                 test.Add(x, y);
 
                 //Go ahead and recurse
-                foreach (Dictionary<INode, INode> mapping in this.GenerateMappings(test, possibleMappings, sourceDependencies, targetDependencies, target))
+                foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappings(test, possibleMappings))
                 {
                     yield return mapping;
                 }
