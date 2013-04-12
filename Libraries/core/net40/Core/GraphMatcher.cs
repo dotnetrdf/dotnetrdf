@@ -634,12 +634,6 @@ namespace VDS.RDF
         {
             Dictionary<INode, List<INode>> possibleMappings = new Dictionary<INode, List<INode>>();
 
-            //Populate existing Mappings
-            foreach (KeyValuePair<INode,INode> fixedMapping in this._mapping) 
-            {
-                possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable<INode>()));
-            }
-
             //Populate possibilities for each Node
             foreach (KeyValuePair<INode, int> gPair in gNodes)
             {
@@ -661,10 +655,11 @@ namespace VDS.RDF
             }
 
             //Now start testing the possiblities
-            List<Dictionary<INode, INode>> possibles = this.GenerateMappings(possibleMappings, sourceDependencies, targetDependencies, h);
-
+            IEnumerable<Dictionary<INode, INode>> possibles = this.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings, sourceDependencies, targetDependencies, h);
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
+                if (mapping.Count < gNodes.Count) continue;
+
                 HashSet<Triple> targets = new HashSet<Triple>(this._targetTriples);
                 if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
                 {
@@ -686,89 +681,54 @@ namespace VDS.RDF
         /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
         /// <param name="target">Target Graph (2nd Graph)</param>
         /// <returns></returns>
-        private List<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies, IGraph target)
+        protected internal IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies, IGraph target)
         {
-            List<Dictionary<INode, INode>> mappings = new List<Dictionary<INode, INode>>();
-
-            mappings.Add(new Dictionary<INode, INode>());
-            foreach (INode x in possibleMappings.Keys)
+            if (possibleMappings.Count == 0)
             {
-                if (possibleMappings[x].Count == 1)
-                {
-                    //Only one possible for this Node
-                    //This means we can just add this to the dictionaries and continue
-                    mappings.ForEach(m => m.Add(x, possibleMappings[x].First()));
-                }
-                else
-                {
-                    //Multiple possibilities each of which generates a potential mapping
-                    List<Dictionary<INode, INode>> temp = new List<Dictionary<INode, INode>>();
-
-                    //Need to know whether there are any dependencies we can use to limit possible mappings
-                    bool dependent = sourceDependencies.Any(p => p.Contains(x));
-
-                    foreach (INode y in possibleMappings[x])
-                    {
-                        foreach (Dictionary<INode, INode> m in mappings)
-                        {
-                            if (m.ContainsValue(y)) continue;
-                            Dictionary<INode, INode> n = new Dictionary<INode, INode>(m);
-                            n.Add(x, y);
-                            if (dependent)
-                            {
-                                foreach (MappingPair dependency in sourceDependencies)
-                                {
-                                    if (n.ContainsKey(dependency.X) && n.ContainsKey(dependency.Y))
-                                    {
-                                        MappingPair targetDependency = new MappingPair(n[dependency.X], n[dependency.Y], dependency.Type);
-                                        if (!targetDependencies.Contains(targetDependency))
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            temp.Add(n);
-                        }
-
-
-                    }
-                    mappings.Clear();
-                    mappings = temp;
-                }
-
-                //List of Triples for doing partial mapping Tests
-                foreach (INode test in possibleMappings.Keys)
-                {
-                    List<Triple> xs = (from t in this._sourceTriples
-                                       where t.Involves(test)
-                                       select t).ToList();
-
-                    foreach (Dictionary<INode, INode> m in mappings)
-                    {
-                        //Are all the Blank Nodes involved in these Triples mapped at this stage?
-                        if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || m.ContainsKey(node))))
-                        {
-                            //Then we can do a partial mapping test
-                            IEnumerable<Triple> ys = (from t in xs
-                                                      where this._targetTriples.Contains(t.MapTriple(target, m))
-                                                      select t);
-
-                            if (xs.Count != ys.Count())
-                            {
-                                continue;
-                            }
-                        }
-                    }
-                }
+                yield return baseMapping;
+                yield break;
             }
 
-            return mappings;
+            //Remove the first key and get its possibilities
+            INode x = possibleMappings.Keys.First();
+            List<INode> possibles = possibleMappings[x];
+            possibleMappings.Remove(x);
+
+            //For each possiblity build a possible mapping
+            foreach (INode y in possibles)
+            {
+                Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
+                test.Add(x, y);
+
+                //// Partial mapping test
+                //List<Triple> xs = (from t in this._sourceTriples
+                //                    where t.Involves(x)
+                //                    select t).ToList();
+
+                ////Are all the Blank Nodes involved in these Triples mapped at this stage?
+                //if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || test.ContainsKey(node))))
+                //{
+                //    //Then we can do a partial mapping test
+                //    IEnumerable<Triple> ys = (from t in xs
+                //                                where this._targetTriples.Contains(t.MapTriple(target, test))
+                //                                select t);
+
+                //    if (xs.Count != ys.Count())
+                //    {
+                //        continue;
+                //    }
+                //}
+
+                //Go ahead and recurse
+                foreach (Dictionary<INode, INode> mapping in this.GenerateMappings(test, possibleMappings, sourceDependencies, targetDependencies, target))
+                {
+                    yield return mapping;
+                }
+            }
         }
 
         /// <summary>
-        /// Gets the Blank Node Mapping found between the Graphs
+        /// Gets the Blank Node Mapping found between the Graphs (if one was found)
         /// </summary>
         public Dictionary<INode, INode> Mapping
         {
