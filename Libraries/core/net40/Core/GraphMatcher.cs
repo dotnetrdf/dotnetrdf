@@ -34,7 +34,61 @@ namespace VDS.RDF
     /// <summary>
     /// Implements a Graph Isomorphism Algorithm
     /// </summary>
-    class GraphMatcher
+    /// <remarks>
+    /// <para>
+    /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll - <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a> but has been expanded upon significantly to use a variety of techniques.
+    /// </para>
+    /// <para>
+    /// Graph Equality is determined according to the following algorithm, we refer to the first graph as the <em>Source Graph</em> and the second graph as the <em>Target Graph</em>:
+    /// </para>
+    /// <ol>
+    /// <li>If both graphs are null they are considered equal</li>
+    /// <li>If only one of the given graph is null then they are not equal</li>
+    /// <li>If the given graphs are reference equal then they are equal</li>
+    /// <li>If the given graphs have a different number of Triples they are not equal</li>
+    /// <li>Declare a list of triples which are the triples of the second graph called <em>TargetTriples</em></li>
+    /// <li>Declare two dictionaries of Nodes to Integers which are called <em>SourceClassification</em> and <em>TargetClassification</em></li>
+    /// <li>For Each Triple in the Source Graph
+    ///     <ol>
+    ///     <li>If it is a ground triple and cannot be found and removed from <em>TargetTriples</em> then graphs are not equal since the triple does not exist in both graphs</li>
+    ///     <li>If it contains blank nodes track the number of usages of this blank node in <em>SourceClassification</em></li>
+    ///     </ol>
+    /// </li> 
+    /// <li>If there are any triples remaining in <em>TargetTriples</em> which are ground triples then graphs are not equal since the Source Graph does not contain them</li>
+    /// <li>If all the triples from both graphs were ground triples (i.e. there were no blank nodes) then the graphs are equal</li>
+    /// <li>Iterate over the remaining triples in <em>TargetTriples</em> and populate the <em>TargetClassification</em></li>
+    /// <li>If the count of the two classifications is different the graphs are not equal since there are differing numbers of blank nodes in the Graph</li>
+    /// <li>Now build two additional dictionaries of Integers to Integers which are called <em>SourceDegreeClassification</em> and <em>TargetDegreeClassification</em>.  Iterate over <em>SourceClassification</em> and <em>TargetClassification</em> such that the corresponding degree classifications contain a mapping of the number of blank nodes with a given degree</li>
+    /// <li>If the count of the two degree classifications is different the graphs are not equal since there are not the same range of blank node degrees in both graphs</li>
+    /// <li>For All classifications in <em>SourceDegreeClassification</em> there must be a matching classification in <em>TargetDegreeClassification</em> else the graphs are not equal</li>
+    /// <li>Then build a possible mapping using the following rules:
+    ///     <ol>
+    ///     <li>Any blank bode used only once (single-use) in the Source Graph should be mapped to an equivalent blank bode in the Target Graph.  If this is not possible then the graphs are not equal</li>
+    ///     <li>Any blank node with a unique degree in the Source Graph should be mapped to an equivalent blank node in the Target Graph.  If this is not possible then the graphs are not equal</li>
+    ///     <li>Any blank node used with unique constants (two other ground terms in a triple) in the Source Graph should be mapped to an equivalent blank bode in the Target Graph.  If this is not possible then the graphs are not equal.</li>
+    ///     <li>Build up lists of dependent pairs of blank Nodes for both graphs</li>
+    ///     <li>Use these lists to determine if there are any independent nodes not yet mapped in the Source Graph.  These should be mapped to equivalent blank nodes in the Target Graph, if this is not possible the graphs are not equal</li>
+    ///     <li><strong>Important:</strong> Keep a copy of the mapping up to this point as a <em>Base Mapping</em> for use as a fallback in later steps</li>
+    ///     <li>Use the dependency information and existing mappings to generate a possible mapping</li>
+    ///     <li>If a complete possible mapping (there is a mapping for each blank node from the Source Graph to the Target Graph) then test this mapping.  If it succeeds then the graphs are equal</li>
+    ///     </ol>
+    /// </li>
+    /// <li>If we don't yet have a mapping take a divide and conquer approach:
+    ///     <ol>
+    ///     <li>Take the not yet mapped blank nodes for each graph and sub-divide them into their isolated sub-graphs</li>
+    ///     <li>If there are at least 2 isolated sub-graphs proceed to divide and conquer</li>
+    ///     <li>For Each Isolated Sub-Graph from the Source Graph
+    ///         <ol>
+    ///         <li>Consider each possible isolated sub-graph of the same size from the target graph, if there are none then graphs are not equal.  If there is a single possible equal isolated sub-graph add the mappings for all involved blank nodes.</li>
+    ///         </ol>
+    ///     </li>
+    ///     <li>If we now have a complete possible mapping (there is a mapping for each blank node from the Source Graph to the Target Graph) then test the mapping.  Return success/failure depending on whether the mapping is valid.</li>
+    ///     </ol> 
+    /// </li>
+    /// <li>If we still don't have a complete mapping we now fallback to the <em>Base Mapping</em> and use it as a basis for brute forcing the possible solution space and testing every possibility until either a mapping works or we find the graphs to be non-equal</li>
+    /// </ol>
+    /// </remarks>
+    public class GraphMatcher
     {
         //The Unbound and Bound lists refers to the Nodes of the Target Graph
         private List<INode> _unbound;
@@ -49,6 +103,7 @@ namespace VDS.RDF
         /// <param name="g">Graph</param>
         /// <param name="h">Graph</param>
         /// <returns></returns>
+        
         public bool Equals(IGraph g, IGraph h)
         {
             Debug.WriteLine("Making simple equality checks");
