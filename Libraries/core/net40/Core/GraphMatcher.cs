@@ -656,20 +656,22 @@ namespace VDS.RDF
 
             //Now start testing the possiblities
             IEnumerable<Dictionary<INode, INode>> possibles = this.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings, sourceDependencies, targetDependencies, h);
+            int count = 0;
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
+                count++;
                 if (mapping.Count < gNodes.Count) continue;
 
                 HashSet<Triple> targets = new HashSet<Triple>(this._targetTriples);
                 if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
                 {
                     this._mapping = mapping;
-                    Debug.WriteLine("[EQUAL] Succesfully brute forced a mapping");
+                    Debug.WriteLine("[EQUAL] Succesfully brute forced a mapping on Attempt #" + count);
                     return true;
                 }
             }
 
-            Debug.WriteLine("[NOT EQUAL] No valid brute forced mappings");
+            Debug.WriteLine("[NOT EQUAL] No valid brute forced mappings (" + count + " were considered)");
             return false;
         }
 
