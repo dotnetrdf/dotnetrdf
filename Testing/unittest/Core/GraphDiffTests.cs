@@ -250,6 +250,10 @@ namespace VDS.RDF
 
             var diff = a.Difference(b);
 
+            if (!diff.AreEqual)
+            {
+                TestTools.ShowDifferences(diff);
+            }
             Assert.IsTrue(diff.AreEqual);
         }
     }
