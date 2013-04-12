@@ -709,6 +709,7 @@ namespace VDS.RDF
                             partialMappingSources.Add(rhs);
                         }
                         Debug.Unindent();
+                        i++;
                     }
                     Debug.Unindent();
                     Debug.WriteLine("Dividing and conquering done");
@@ -740,8 +741,8 @@ namespace VDS.RDF
                         Debug.WriteLine("Divide and conquer found a unique mapping for an isolated sub-graph and confirmed an additional " + partialMappings[0].Count + " blank node mappings");
 
                         // Can eliminate the matched sub-graph from further consideration
-                        gMsgs.Remove(lhs);
-                        hMsgs.Remove(partialMappingSources[0]);
+                        gMsgs.RemoveAll(x => ReferenceEquals(x, lhs));
+                        hMsgs.RemoveAll(x => ReferenceEquals(x, partialMappingSources[0]));
                         found++;
                     }
                     else
