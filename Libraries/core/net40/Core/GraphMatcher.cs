@@ -357,6 +357,7 @@ namespace VDS.RDF
                     if (x == null || y == null)
                     {
                         Debug.WriteLine("[NOT EQUAL] Node with unique degree could not be mapped");
+                        this._mapping = null;
                         return false;
                     }
 
@@ -367,6 +368,58 @@ namespace VDS.RDF
                 }
             }
             Debug.WriteLine("Unique blank nodes allowing mapping of " + (this._mapping.Count - mappedSoFar) + " nodes, " + this._mapping.Count + " mapped out of a total " + gNodes.Count);
+            mappedSoFar = this._mapping.Count;
+
+            //Then look for nodes which are associated with unique constants
+            //By this we mean nodes that occur as the subject/object of a triple where the other two parts are non-blank
+            Debug.WriteLine("Trying to map blank nodes based on unique constants associated with the nodes");
+            foreach (Triple t in this._sourceTriples)
+            {
+                if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType != NodeType.Blank && t.Object.NodeType != NodeType.Blank)
+                {
+                    //Ignore if already mapped
+                    if (this._mapping.ContainsKey(t.Subject)) continue;
+
+                    //Are there any possible matches?
+                    //We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
+                    List<Triple> possibles = new List<Triple>(this._targetTriples.Where(x => x.Subject.NodeType == NodeType.Blank && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object)).Take(2));
+                    if (possibles.Count == 1)
+                    {
+                        //Precisely one possible match so map
+                        INode x = t.Subject;
+                        INode y = possibles.First().Subject;
+                        this._mapping.Add(x, y);
+                        this._bound.Add(y);
+                        this._unbound.Remove(y);
+                    }
+                    else if (possibles.Count == 0)
+                    {
+                        //No possible matches so not equal graphs
+                        Debug.WriteLine("[NOT EQUAL] Node used in a triple with two constants where no candidate mapping for that triple could be found");
+                        this._mapping = null;
+                        return false;
+                    }
+                }
+                else if (t.Subject.NodeType != NodeType.Blank && t.Predicate.NodeType != NodeType.Blank && t.Object.NodeType == NodeType.Blank)
+                {
+                    //Ignore if already mapped
+                    if (this._mapping.ContainsKey(t.Object)) continue;
+
+                    //Are there any possible matches?
+                    //We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
+                    List<Triple> possibles = new List<Triple>(this._targetTriples.Where(x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.NodeType == NodeType.Blank).Take(2));
+                    if (possibles.Count == 1)
+                    {
+                        //Precisely one possible match so map
+                        INode x = t.Subject;
+                        INode y = possibles.First().Subject;
+                        this._mapping.Add(x, y);
+                        this._bound.Add(y);
+                        this._unbound.Remove(y);
+                    }
+                }
+            }
+            Debug.WriteLine("Using unique constants associated with blank nodes allowed mapping of " + (this._mapping.Count - mappedSoFar) + " blank nodes, " + this._mapping.Count + " mapped out of a total " + gNodes.Count);
             mappedSoFar = this._mapping.Count;
 
             //Work out which Nodes are paired up 
@@ -464,7 +517,7 @@ namespace VDS.RDF
                     return false;
                 }
             }
-            Debug.WriteLine("Indepdendent blank node mapping was able to map " + (this._mapping.Count - mappedSoFar) + " blank nodes, have mapped " + this._mapping.Count + " blank nodes out of " + gNodes.Count);
+            Debug.WriteLine("Independent blank node mapping was able to map " + (this._mapping.Count - mappedSoFar) + " blank nodes, " + this._mapping.Count + " blank nodes out of a total " + gNodes.Count);
             mappedSoFar = this._mapping.Count;
 
             //Want to save our mapping so far here as if the mapping we produce using the dependency information

@@ -232,14 +232,56 @@ namespace VDS.RDF
         }
 
         [TestMethod, Timeout(10000)]
-        public void GraphMatchSlowOnEqualGraphs()
+        public void GraphMatchSlowOnEqualGraphsCase1()
+        {
+            const string testGraphName = "case1";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase2()
+        {
+            const string testGraphName = "case2";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase3()
+        {
+            const string testGraphName = "case3";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase4()
+        {
+            const string testGraphName = "case4";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase5()
+        {
+            const string testGraphName = "case5";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase6()
+        {
+            const string testGraphName = "case6";
+            TestGraphMatch(testGraphName);
+        }
+
+        private static void TestGraphMatch(string testGraphName)
         {
             Graph a = new Graph();
-            a.LoadFromFile("GraphComparisonA.ttl");
+            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
             Graph b = new Graph();
-            b.LoadFromFile("GraphComparisonB.ttl");
+            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
 
             Assert.IsTrue(a.Equals(b));
+            Assert.IsTrue(b.Equals(a));
         }
 
         private IGraph GenerateCyclicGraph(int nodes, int seed)
