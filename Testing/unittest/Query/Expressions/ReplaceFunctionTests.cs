@@ -28,7 +28,7 @@ using System;
 using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
