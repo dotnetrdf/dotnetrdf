@@ -28,7 +28,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlProcessorsWithHandlersTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -181,42 +181,42 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanCount()
         {
             this.EnsureLeviathanReady();
             this.TestCountHandlers(this._leviathan);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanExplainCount()
         {
             this.EnsureLeviathanReady();
             this.TestCountHandlers(this._explainer);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanGraph()
         {
             this.EnsureLeviathanReady();
             this.TestGraphHandlers(this._leviathan);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanExplainGraph()
         {
             this.EnsureLeviathanReady();
             this.TestGraphHandlers(this._explainer);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanWriteThrough()
         {
             this.EnsureLeviathanReady();
             this.TestWriteThroughHandlers(this._leviathan);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersLeviathanExplainWriteThrough()
         {
             this.EnsureLeviathanReady();
@@ -241,21 +241,21 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersRemoteCount()
         {
             this.EnsureRemoteReady();
             this.TestCountHandlers(this._remote);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersRemoteGraph()
         {
             this.EnsureRemoteReady();
             this.TestGraphHandlers(this._remote);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersRemoteWriteThrough()
         {
             this.EnsureRemoteReady();
@@ -276,7 +276,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersPelletCount()
         {
             try
@@ -306,21 +306,21 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersGenericCount()
         {
             this.EnsureGenericReady();
             this.TestCountHandlers(this._generic);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersGenericGraph()
         {
             this.EnsureGenericReady();
             this.TestGraphHandlers(this._generic);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlWithHandlersGenericWriteThrough()
         {
             this.EnsureGenericReady();

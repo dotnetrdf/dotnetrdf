@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class NamespaceTests
     {
         private const String TurtleExample = @"[] a <relative> .";
 
-        [TestMethod]
+        [Test]
         public void ParsingRelativeUriAppBaseRdfXml1()
         {
             //This invocation succeeds because when invoking via the FileLoader
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("relative", obj.Segments[obj.Segments.Length - 1]);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRelativeUriAppBaseRdfXml2()
         {
             //This invocation succeeds because when invoking because
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("relative", obj.Segments[1]);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRelativeUriNoBaseRdfXml()
         {
             //This invocation fails because when invoking the parser directly
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing
             parser.Load(g, "rdfxml-relative-uri.rdf");
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRelativeUriNoBaseTurtle()
         {
             //This invocation fails because there is no Base URI to
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing
             parser.Load(g, new StringReader(TurtleExample));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRelativeUriAppBaseTurtle()
         {
             //This invocation succeeds because we define a Base URI

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -60,14 +60,14 @@ namespace VDS.RDF.Parsing.Suites
     }
 
    
-    [TestClass]
+    [TestFixture]
     public class Turtle11
         : BaseRdfParserSuite
     {
         public Turtle11()
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\") { }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteTurtleW3C()
         {
             //Nodes for positive and negative tests
@@ -179,7 +179,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(1, g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CBaseTurtleStyle2()
         {
             //Missing dot
@@ -201,7 +201,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CBaseSparqlStyle1()
         {
             //Forbidden dot
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CBaseSparqlStyle2()
         {
             //No dot required
@@ -223,7 +223,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CPrefixTurtleStyle1()
         {
             //Dot required
@@ -234,7 +234,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CPrefixTurtleStyle2()
         {
             //Missing dot
@@ -245,7 +245,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CPrefixSparqlStyle1()
         {
             //Forbidden dot
@@ -256,7 +256,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CPrefixSparqlStyle2()
         {
             //No dot required

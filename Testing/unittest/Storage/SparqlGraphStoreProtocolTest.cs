@@ -30,7 +30,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlGraphStoreProtocolTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
@@ -106,7 +106,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
@@ -159,7 +159,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
@@ -244,7 +244,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
@@ -277,7 +277,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();

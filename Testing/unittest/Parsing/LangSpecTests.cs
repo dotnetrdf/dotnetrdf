@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class LangSpecTests
     {
         private IGraph _original;
@@ -112,31 +112,31 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingLangSpecNTriples()
         {
             this.TestLangSpecParsing("langspec.nt");            
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingLangSpecTurtle()
         {
             this.TestLangSpecParsing("langspec.ttl");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingLangSpecN3()
         {
             this.TestLangSpecParsing("langspec.n3");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingLangSpecTriG()
         {
             this.TestLangSpecParsing("langspec.trig");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingLangSpecNQuads()
         {
             this.TestLangSpecParsing("langspec.nq");

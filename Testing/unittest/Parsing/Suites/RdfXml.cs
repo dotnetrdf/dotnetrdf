@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing.Suites
 {
    
-    [TestClass]
+    [TestFixture]
     public class RdfXmlDomParser
         : BaseRdfParserSuite
     {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteRdfXmlDOM()
         {
             //Run manifests
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlIDsDOM()
         {
             IGraph g = new Graph();
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Suites
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class RdfXmlStreamingParser
         : BaseRdfParserSuite
     {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteRdfXmlStreaming()
         {
             //Run manifests
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlIDsStreaming()
         {
             IGraph g = new Graph();

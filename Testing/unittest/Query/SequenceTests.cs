@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
@@ -35,13 +35,13 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SequenceTests
     {
         private SparqlQueryParser _queryParser = new SparqlQueryParser();
         private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
-        [TestMethod]
+        [Test]
         public void SparqlSequenceUpdateThenQuery1()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.Result);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSequenceUpdateThenQuery2()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.Result);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSequenceUpdateThenQuery3()
         {
             InMemoryDataset dataset = new InMemoryDataset();
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.Result);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSequenceUpdateThenQuery4()
         {
             InMemoryDataset dataset = new InMemoryDataset();

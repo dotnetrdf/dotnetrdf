@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class WriteThroughHandlerTests
     {
         private void ParsingUsingWriteThroughHandler(ITripleFormatter formatter)
@@ -65,121 +65,121 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(handler, "temp.ttl");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNTriples()
         {
             this.ParsingUsingWriteThroughHandler(new NTriplesFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerTurtle()
         {
             this.ParsingUsingWriteThroughHandler(new TurtleFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNotation3()
         {
             this.ParsingUsingWriteThroughHandler(new Notation3Formatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNQuads()
         {
             this.ParsingUsingWriteThroughHandler(new NQuadsFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerUncompressedNotation3()
         {
             this.ParsingUsingWriteThroughHandler(new UncompressedNotation3Formatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerUncompressedTurtle()
         {
             this.ParsingUsingWriteThroughHandler(new UncompressedTurtleFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerCsv()
         {
             this.ParsingUsingWriteThroughHandler(new CsvFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerTsv()
         {
             this.ParsingUsingWriteThroughHandler(new TsvFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerRdfXml()
         {
             this.ParsingUsingWriteThroughHandler(new RdfXmlFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerRdfXml2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(RdfXmlFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerSparql()
         {
             this.ParsingUsingWriteThroughHandler(new SparqlFormatter());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNTriples2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(NTriplesFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerTurtle2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(TurtleFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNotation32()
         {
             this.ParsingUsingWriteThroughHandler(typeof(Notation3Formatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerNQuads2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(NQuadsFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerUncompressedNotation32()
         {
             this.ParsingUsingWriteThroughHandler(typeof(UncompressedNotation3Formatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerUncompressedTurtle2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(UncompressedTurtleFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerCsv2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(CsvFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerTsv2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(TsvFormatter));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteThroughHandlerSparql2()
         {
             this.ParsingUsingWriteThroughHandler(typeof(SparqlFormatter));

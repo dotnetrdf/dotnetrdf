@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             return new SparqlRemoteUpdateEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri)));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointLongQuery()
         {
             try
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointLongUpdate()
         {
             try
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query
             Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointResultCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
             Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointMemoryLeak1()
         {
             /*
@@ -215,7 +215,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -223,7 +223,7 @@ results.Dispose()
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -239,7 +239,7 @@ results.Dispose()
             Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "WaitHandle should be closed");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
@@ -255,7 +255,7 @@ results.Dispose()
             Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
@@ -275,7 +275,7 @@ results.Dispose()
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
             String query;
@@ -327,7 +327,7 @@ results.Dispose()
             Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         }
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
         //{
         //    String query;
@@ -380,7 +380,7 @@ results.Dispose()
         //    Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
         //{
         //    String query;
@@ -433,7 +433,7 @@ results.Dispose()
         //    Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         //}
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
         {
             String query;
@@ -485,7 +485,7 @@ results.Dispose()
             Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))

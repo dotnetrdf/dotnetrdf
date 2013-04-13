@@ -27,18 +27,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
-    [TestClass]
+    [TestFixture]
     public class UpdateTimeouts
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTimeout()
         {
             String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";

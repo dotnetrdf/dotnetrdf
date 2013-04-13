@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -39,7 +39,7 @@ using VDS.RDF.Query.Expressions.Functions;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlTests2
     {
         private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
@@ -54,7 +54,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBind()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }";
@@ -84,7 +84,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindLazy()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 1";
@@ -119,7 +119,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindLazy2()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10";
@@ -154,7 +154,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindLazy3()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10 OFFSET 10";
@@ -189,7 +189,7 @@ namespace VDS.RDF
             }
         }
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlBindNested()
         //{
         //    String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o .{ BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } FILTER(BOUND(?triple))}";
@@ -218,7 +218,7 @@ namespace VDS.RDF
         //    }
         //}
 
-        [TestMethod]
+        [Test]
         public void SparqlBindIn10Standard()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }";
@@ -244,7 +244,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindToExistingVariable()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(?s AS ?p) }";
@@ -278,7 +278,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindToExistingVariableLazy()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(?s AS ?p) } LIMIT 1";
@@ -317,7 +317,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void SparqlBindScope1()
         {
             String query = @"PREFIX : <http://www.example.org>
@@ -334,7 +334,7 @@ namespace VDS.RDF
             parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindScope2()
         {
             String query = @"PREFIX : <http://www.example.org>
@@ -348,7 +348,7 @@ namespace VDS.RDF
             parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindScope3()
         {
             String query = @" PREFIX : <http://www.example.org>
@@ -363,7 +363,7 @@ namespace VDS.RDF
             parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindScope4()
         {
             String query = @" PREFIX : <http://www.example.org>
@@ -380,7 +380,7 @@ namespace VDS.RDF
             parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindScope5()
         {
             String query = @"PREFIX : <http://example.org>
@@ -398,13 +398,13 @@ WHERE
 
             ISparqlAlgebra algebra = q.ToAlgebra();
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOfType(algebra, typeof(Select));
+            Assert.IsInstanceOf<Select>(algebra);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
-            Assert.IsInstanceOfType(algebra, typeof(Extend));
+            Assert.IsInstanceOf<Extend>(algebra);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindScope6()
         {
             String query = @"PREFIX : <http://example.org>
@@ -429,20 +429,20 @@ WHERE
 
             ISparqlAlgebra algebra = q.ToAlgebra();
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOfType(algebra, typeof(Select));
+            Assert.IsInstanceOf<Select>(algebra);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
-            Assert.IsInstanceOfType(algebra, typeof(Union));
+            Assert.IsInstanceOf<Union>(algebra);
 
             IUnion union = (Union)algebra;
             ISparqlAlgebra lhs = union.Lhs;
-            Assert.IsInstanceOfType(lhs, typeof(Extend));
+            Assert.IsInstanceOf<Extend>(lhs);
 
             ISparqlAlgebra rhs = union.Rhs;
-            Assert.IsInstanceOfType(rhs, typeof(Join));
+            Assert.IsInstanceOf<Join>(rhs);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlLet()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . LET (?triple := fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o))) }";
@@ -472,7 +472,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlLetIn11Standard()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . LET (?triple := fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o))) }";
@@ -498,7 +498,7 @@ WHERE
             }
         }
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlSubQueryLazy()
         //{
         //    String query = "SELECT * WHERE { {SELECT * WHERE { ?s ?p ?o}}} LIMIT 1";
@@ -531,7 +531,7 @@ WHERE
         //    }
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlSubQueryLazy2()
         //{
         //    String query = "SELECT * WHERE { {SELECT * WHERE { ?s ?p ?o}}} LIMIT 10";
@@ -564,7 +564,7 @@ WHERE
         //    }
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlSubQueryLazy3()
         //{
         //    String query = "SELECT * WHERE { {SELECT * WHERE { ?s ?p ?o}}} LIMIT 10 OFFSET 10";
@@ -597,7 +597,7 @@ WHERE
         //    }
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlSubQueryLazyComplex()
         //{
         //    String query = "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> . {SELECT * WHERE { ?s <http://example.org/vehicles/Speed> ?speed}}} LIMIT 1";
@@ -630,7 +630,7 @@ WHERE
         //    }
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlSubQueryLazyComplex2()
         //{
         //    String query = "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> . {SELECT * WHERE { ?s <http://example.org/vehicles/Speed> ?speed}}} LIMIT 5";
@@ -663,7 +663,7 @@ WHERE
         //    }
         //}
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderBySubjectLazyAscending()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s LIMIT 1";
@@ -697,7 +697,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderBySubjectLazyAscendingExplicit()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ASC(?s) LIMIT 1";
@@ -731,7 +731,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderBySubjectLazyDescending()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY DESC(?s) LIMIT 1";
@@ -765,7 +765,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByPredicateLazyAscending()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?p LIMIT 1";
@@ -799,7 +799,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByPredicateLazyAscendingExplicit()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ASC(?p) LIMIT 1";
@@ -833,7 +833,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByPredicateLazyDescending()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY DESC(?p) LIMIT 1";
@@ -867,7 +867,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByComplexLazy()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s DESC(?p) LIMIT 5";
@@ -901,7 +901,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByComplexLazyPerformance()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s DESC(?p) LIMIT 5";
@@ -963,7 +963,7 @@ WHERE
             Options.AlgebraOptimisation = true;
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByComplexLazy2()
         {
             String query = "SELECT * WHERE { ?s a ?vehicle . ?s <http://example.org/vehicles/Speed> ?speed } ORDER BY DESC(?speed) LIMIT 3";
@@ -997,7 +997,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFilterLazy()
         {
             String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
@@ -1031,7 +1031,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFilterLazy2()
         {
             String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/Vehicles/Car>)) } LIMIT 3";
@@ -1066,7 +1066,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFilterLazy3()
         {
             long currTimeout = Options.QueryExecutionTimeout;
@@ -1111,7 +1111,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFilterLazy4()
         {
             String query = "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> ; <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
@@ -1145,7 +1145,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFilterLazyDBPedia()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -1181,7 +1181,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlLazyWithAndWithoutOffset()
         {
             String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
@@ -1236,7 +1236,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlLazyLimitSimple1()
         {
             const string query = @"PREFIX eg:
@@ -1259,7 +1259,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlLazyLimitSimple2()
         {
             const string query = @"PREFIX eg:

@@ -28,16 +28,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Web;
 
 namespace VDS.RDF.Web
 {
-    [TestClass]
+    [TestFixture]
     public class ETagTests
     {
-        [TestMethod]
+        [Test]
         public void WebETagComputation()
         {
             try

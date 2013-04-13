@@ -27,15 +27,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class RdfXmlNamespaces
     {
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlNamespaces()
         {
             Graph g = new Graph();

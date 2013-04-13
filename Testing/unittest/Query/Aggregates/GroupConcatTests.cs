@@ -27,13 +27,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestClass]
+    [TestFixture]
     public class GroupConcatTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupConcat1()
         {
             IGraph g = new Graph();
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Aggregates
             this.RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupConcat2()
         {
             IGraph g = new Graph();
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates
             this.RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupConcat3()
         {
             IGraph g = new Graph();
@@ -106,7 +106,7 @@ WHERE
             this.RunTest(g, query, 1, "concat", true, "1234");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupConcat4()
         {
             IGraph g = new Graph();

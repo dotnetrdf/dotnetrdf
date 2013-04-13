@@ -29,16 +29,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class SchemaWriter
     {
-        [TestMethod]
+        [Test]
         public void WritingHtmlSchemaWriter()
         {
             //Load the Graph from within the Assembly
@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
             writer.Save(g, "configSchema.html");
         }
 
-        [TestMethod]
+        [Test]
         public void WritingHtmlSchemaWriterAnonClasses()
         {
             //Create an example Graph
@@ -69,7 +69,7 @@ namespace VDS.RDF.Writing
             Assert.IsFalse(strWriter.ToString().Contains("type"), "Should not have documented any classes");
         }
 
-        [TestMethod]
+        [Test]
         public void WritingHtmlSchemaWriterUnionOfRanges()
         {
             //Create an example Graph

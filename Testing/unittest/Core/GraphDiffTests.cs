@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class GraphDiffTests
     {
-        [TestMethod]
+        [Test]
         public void GraphDiffEqualGraphs()
         {
             Graph g = new Graph();
@@ -50,7 +50,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffDifferentGraphs()
         {
             Graph g = new Graph();
@@ -64,7 +64,7 @@ namespace VDS.RDF
             Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffEqualGraphs2()
         {
             Graph g = new Graph();
@@ -78,7 +78,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffRemovedGroundTriples()
         {
             Graph g = new Graph();
@@ -96,7 +96,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedTriples.Any(), "Difference should have reported some Removed Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffAddedGroundTriples()
         {
             Graph g = new Graph();
@@ -117,7 +117,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedTriples.Any(), "Difference should have reported some Added Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffAddedMSG()
         {
             Graph g = new Graph();
@@ -138,7 +138,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedMSGs.Any(), "Difference should have reported some Added MSGs");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffRemovedMSG()
         {
             Graph g = new Graph();
@@ -158,7 +158,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedMSGs.Any(), "Difference should have reported some Removed MSGs");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceBoth()
         {
             GraphDiff diff = new GraphDiff();
@@ -170,7 +170,7 @@ namespace VDS.RDF
             Assert.IsFalse(report.AreDifferentSizes, "Graphs should have been reported same size for two null references");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceA()
         {
             Graph g = new Graph();
@@ -185,7 +185,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedTriples.Any(), "Report should list added triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceB()
         {
             Graph g = new Graph();
@@ -199,42 +199,42 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase1()
         {
             const string testGraphName = "case1";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase2()
         {
             const string testGraphName = "case2";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase3()
         {
             const string testGraphName = "case3";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase4()
         {
             const string testGraphName = "case4";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase5()
         {
             const string testGraphName = "case5";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase6()
         {
             const string testGraphName = "case6";

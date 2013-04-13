@@ -24,16 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestClass]
+    [TestFixture]
     public class CountDistinctAggregateTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlCountDistinctWhenToStringCalled()
         {
             // given
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual("COUNT(DISTINCT ?var)", aggregateString);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlCountDistinctHasDistinctModifier()
         {
             // given

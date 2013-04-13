@@ -30,17 +30,17 @@ using System.Reflection;
 using System.Text;
 using System.Net;
 using System.Web;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class BasicTests1 : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void NodesDistinct()
         {
             Graph g = new Graph();
@@ -74,7 +74,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCreation1()
         {
             //Create a new Empty Graph
@@ -161,7 +161,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCreation2()
         {
             //Create a new Empty Graph
@@ -193,7 +193,7 @@ namespace VDS.RDF
             Assert.IsTrue(g.Triples.Count == 5);
         }
 
-        [TestMethod]
+        [Test]
         public void UriResolution()
         {
             String[] baseUris = { "http://www.bbc.co.uk",
@@ -265,7 +265,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriResolutionWithGraphBase()
         {
             IGraph g = new Graph();
@@ -276,7 +276,7 @@ namespace VDS.RDF
             Assert.AreEqual(expected, actual.Uri);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void UriResolutionUriProvidedToQNameMethod()
         {
             try
@@ -291,7 +291,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
@@ -309,7 +309,7 @@ namespace VDS.RDF
             Assert.AreEqual(test1.GetHashCode(), test3.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void NodesHashCodes()
         {
             Console.WriteLine("Tests that Literal and URI Nodes produce different Hashes");
@@ -392,7 +392,7 @@ namespace VDS.RDF
 
         }
 
-        [TestMethod]
+        [Test]
         public void NodesUriNodeEquality()
         {
             //Create the Nodes
@@ -430,7 +430,7 @@ namespace VDS.RDF
             TestTools.CompareNodes(k, l, true);
         }
 
-        [TestMethod]
+        [Test]
         public void NodesBlankNodeEquality()
         {
             try
@@ -478,7 +478,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesLiteralNodeEquality()
         {
             try
@@ -574,7 +574,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesSorting()
         {
             //Stream for Output
@@ -667,7 +667,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesSortingSparqlOrder()
         {
             SparqlOrderingComparer comparer = new SparqlOrderingComparer();
@@ -752,7 +752,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesNullNodeEquality()
         {
             UriNode nullUri = null;
@@ -807,7 +807,7 @@ namespace VDS.RDF
             Assert.IsFalse(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMerging()
         {
             try
@@ -877,7 +877,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphTripleCreation()
         {
             //Create two Graphs
@@ -926,7 +926,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriEncoding()
         {
             List<String> tests = new List<string>()
@@ -950,7 +950,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriPathAndQuery()
         {
             Uri u = new Uri("http://example.org/some/path/with?query=some&param=values");
@@ -964,7 +964,7 @@ namespace VDS.RDF
             Assert.AreEqual(pathAndQuery, absPathPlusQuery);
         }
 
-        [TestMethod]
+        [Test]
         public void UriQuery()
         {
             Uri withQuery = new Uri("http://example.org/with?some=query");
@@ -974,7 +974,7 @@ namespace VDS.RDF
             Assert.AreEqual(String.Empty, withoutQuery.Query);
         }
 
-        //[TestMethod]
+        //[Test]
         //public void UriTrailingDot()
         //{
         //    Uri u = new Uri("http://example.org/path.");

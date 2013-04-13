@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
@@ -35,10 +35,10 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF.Ontology
 {
-    [TestClass]
+    [TestFixture]
     public class OntologyTests
     {
-        [TestMethod]
+        [Test]
         public void OntologyClassBasic()
         {
             //Load Test Data
@@ -76,7 +76,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyIndividualCreation()
         {
             //Load Test Data
@@ -130,7 +130,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertyBasic()
         {
             //Load Test Data
@@ -167,7 +167,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyReasonerGraph()
         {
             //Load Test Data
@@ -214,7 +214,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyResourceCasting()
         {
             //Load Test Data
@@ -231,7 +231,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyDomainAndRangeOfClassProperties()
         {
             OntologyGraph g = new OntologyGraph();
@@ -259,7 +259,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyDomainAndRangeOfClassManual()
         {
             OntologyGraph g = new OntologyGraph();
@@ -300,7 +300,7 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassSubClasses()
         {
             //Load Test Data
@@ -323,7 +323,7 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassSiblings()
         {
             //Load Test Data
@@ -340,7 +340,7 @@ namespace VDS.RDF.Ontology
             Assert.IsFalse(siblings.Contains(car));
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassTopAndBottom()
         {
             //Load Test Data
@@ -364,7 +364,7 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(sportsCar.IsBottomClass);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertySubProperties()
         {
             //Load Test Data
@@ -387,7 +387,7 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(0, speed.IndirectSubProperties.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertyTopAndBottom()
         {
             //Load Test Data
@@ -406,7 +406,7 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(airSpeed.IsBottomProperty);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertySiblings()
         {
             //Load Test Data
@@ -423,7 +423,7 @@ namespace VDS.RDF.Ontology
             Assert.IsFalse(siblings.Contains(limitedSpeed));
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyProperties()
         {
             OntologyGraph g = new OntologyGraph();
@@ -438,7 +438,7 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(4, g.AllProperties.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClasses()
         {
             OntologyGraph g = new OntologyGraph();
@@ -450,7 +450,7 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(2, g.AllClasses.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassCount1()
         {
             OntologyGraph g = new OntologyGraph();
@@ -467,7 +467,7 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassCount2()
         {
             OntologyGraph g = new OntologyGraph();

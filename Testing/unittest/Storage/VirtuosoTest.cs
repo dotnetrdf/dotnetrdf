@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class VirtuosoTest : BaseTest
     {
         public static VirtuosoManager GetConnection()
@@ -50,7 +50,7 @@ namespace VDS.RDF.Storage
             return new VirtuosoManager(TestConfigManager.GetSetting(TestConfigManager.VirtuosoServer), TestConfigManager.GetSettingAsInt(TestConfigManager.VirtuosoPort), TestConfigManager.GetSetting(TestConfigManager.VirtuosoDatabase), TestConfigManager.GetSetting(TestConfigManager.VirtuosoUser), TestConfigManager.GetSetting(TestConfigManager.VirtuosoPassword));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoLoadGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -115,7 +115,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoLoadGraphWithNullHandler()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoSaveGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoDeleteGraph()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -264,7 +264,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodePersistence()
         {
             //Create our Test Graph
@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoUpdateGraph()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -390,7 +390,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeQuery()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeQueryBifContains1()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -520,7 +520,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeUpdate()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -559,7 +559,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoEncoding()
         {
             //Get the Virtuoso Manager
@@ -598,7 +598,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoConfigSerialization()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -665,7 +665,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoQueryRegex()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -709,7 +709,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodeInsert()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -737,7 +737,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodeDelete()
         {
             //First ensure data is present in the store

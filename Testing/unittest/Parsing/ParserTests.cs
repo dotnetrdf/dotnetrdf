@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -38,10 +38,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class ParserTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingStringParser()
         {
                 String[] someRDF = { "<http://example.org/subject> <http://example.org/predicate> <http://example.org/object>.",
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingBlankNodeIDs()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -245,7 +245,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingCollections()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -357,7 +357,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlNamespaceAttributes()
         {
                 Graph g = new Graph();
@@ -375,7 +375,7 @@ namespace VDS.RDF.Parsing
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingMalformedRdfA()
         {
             Console.WriteLine("Tests how the RDFa Parser handles RDFa from the web which is embedded in malformed HTML and is known to contain malformed RDFa");
@@ -405,7 +405,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlStreaming()
         {
                 RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
@@ -416,7 +416,7 @@ namespace VDS.RDF.Parsing
                 TestTools.ShowGraph(g);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingMalformedFileUris()
         {
             String malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
@@ -429,7 +429,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        //[TestMethod]
+        //[Test]
         //public void JsonNTriplesParsing()
         //{
         //    Graph g = new Graph();
@@ -451,7 +451,7 @@ namespace VDS.RDF.Parsing
         //    Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void JsonNTriplesEscaping()
         //{
         //    Graph g = new Graph();
@@ -500,7 +500,7 @@ namespace VDS.RDF.Parsing
         //    Assert.AreEqual(g, h, "Graphs should have been equal");
         //}
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlEmptyElement()
         {
             String fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
@@ -515,7 +515,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleWithAndWithoutBOM()
         {
             TurtleParser parser = new TurtleParser();
@@ -528,7 +528,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingMalformedSparqlXml()
         {
             SparqlResultSet results = new SparqlResultSet();
@@ -536,7 +536,7 @@ namespace VDS.RDF.Parsing
             parser.Load(results, "bad_srx.srx");
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleDBPediaMalformedData()
         {
             Graph g = new Graph();
@@ -545,7 +545,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingDefaultPrefixFallbackTurtle1()
         {
             String data = @"@base <http://base/> . :subj :pred :obj .";
@@ -554,7 +554,7 @@ namespace VDS.RDF.Parsing
             parser.Load(g, new StringReader(data));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingDefaultPrefixFallbackTurtle2()
         {
             String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
@@ -565,7 +565,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingDefaultPrefixFallbackNotation3_1()
         {
             String data = @"@base <http://base/> . :subj :pred :obj .";
@@ -576,7 +576,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingDefaultPrefixFallbackNotation3_2()
         {
             String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";

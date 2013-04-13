@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Core
 {
-    [TestClass]
+    [TestFixture]
     public class TripleCollectionTests
     {
-        [TestMethod]
+        [Test]
         public void TripleCollectionInstantiation1()
         {
             TreeIndexedTripleCollection collection = new TreeIndexedTripleCollection();

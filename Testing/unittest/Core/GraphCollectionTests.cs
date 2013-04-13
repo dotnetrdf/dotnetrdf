@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Core
 {
-    [TestClass]
+    [TestFixture]
     public class GraphCollectionTests
     {
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic1()
         {
             TripleStore store = new TripleStore();
@@ -46,7 +46,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic2()
         {
             TripleStore store = new TripleStore();
@@ -58,7 +58,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic3()
         {
             GraphCollection collection = new GraphCollection();
@@ -68,7 +68,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(collection.Contains(g.BaseUri));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic4()
         {
             GraphCollection collection = new GraphCollection();
@@ -79,7 +79,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(collection.GraphUris.Contains(null));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionDiskDemand1()
         {
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
@@ -91,7 +91,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionDiskDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
@@ -109,7 +109,7 @@ namespace VDS.RDF.Core
             Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionWebDemand1()
         {
             TripleStore store = new TripleStore(new WebDemandGraphCollection());
@@ -122,7 +122,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs

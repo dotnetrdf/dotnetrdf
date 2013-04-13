@@ -27,21 +27,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Core
 {
-    [TestClass]
+    [TestFixture]
     public class UriTests
     {
-        [TestMethod]
+        [Test]
         public void UriAbsoluteUriWithQuerystring()
         {
             Uri u = new Uri("http://example.org/?test");
             Assert.AreEqual("http://example.org/?test", u.AbsoluteUri);
         }
 
-        [TestMethod]
+        [Test]
         public void UriAbsoluteUriWithFragment()
         {
             Uri u = new Uri("http://example.org/#test");

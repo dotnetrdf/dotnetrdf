@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
@@ -37,10 +37,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ViewTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlViewConstruct()
         {
                 TripleStore store = new TripleStore();
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlViewDescribe()
         {
                 TripleStore store = new TripleStore();
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlViewSelect()
         {
                 TripleStore store = new TripleStore();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlViewAndReasonerInteraction()
         {
                 TripleStore store = new TripleStore();
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query
                 TestTools.ShowGraph(view);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlViewNativeAllegroGraph()
         {
                 AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query
                 Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlViewGraphScope()
         {
                 TripleStore store = new TripleStore();

@@ -27,17 +27,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
 	public class RdfXmlTests
 	{
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlAmpersands()
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlEmptyStrings()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -106,35 +106,35 @@ namespace VDS.RDF.Parsing
             TestTools.ShowGraph(g);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlSequenceStreaming()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
             this.TestRdfXmlSequence(parser, "sequence.rdf");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlSequenceDom()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
             this.TestRdfXmlSequence(parser, "sequence.rdf");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlSequenceStreaming2()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
             this.TestRdfXmlSequence(parser, "sequence2.rdf");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlSequenceDom2()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
             this.TestRdfXmlSequence(parser, "sequence2.rdf");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlWithUrlEscapedNodes()
         {
             //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlWithUrlEscapedNodes2()
         {
             //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing
 
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRdfXmlPropertyInDefaultNamespaceBad()
         {
             Graph g = new Graph();
@@ -201,7 +201,7 @@ namespace VDS.RDF.Parsing
             g.LoadFromFile("rdfxml-bad-property.rdf", parser);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlPropertyInDefaultNamespaceGood()
         {
             Graph g = new Graph();

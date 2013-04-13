@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -36,10 +36,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class GroupByTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlGroupByInSubQuery()
         {
             String query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAssignmentSimple()
         {
             String query = "SELECT ?x WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAssignmentSimple2()
         {
             String query = "SELECT ?x (COUNT(?p) AS ?predicates) WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAssignmentExpression()
         {
             String query = "SELECT ?s ?sum WHERE { ?s ?p ?o } GROUP BY ?s (1 + 2 AS ?sum)";
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAssignmentExpression2()
         {
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAssignmentExpression3()
         {
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupBySample()
         {
             String query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAggregateEmptyGroup1()
         {
             String query = @"PREFIX ex: <http://example.com/>
@@ -216,7 +216,7 @@ WHERE {
             Assert.IsTrue(results.First().All(kvp => kvp.Value == null), "Should be no bound values");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByAggregateEmptyGroup2()
         {
             String query = @"PREFIX ex: <http://example.com/>
@@ -235,7 +235,7 @@ WHERE {
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor1()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#>
@@ -263,7 +263,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             Assert.AreEqual(6, results.Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor2()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
@@ -294,7 +294,7 @@ WHERE
             Assert.AreEqual(2, results.Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor3()
         {
             String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
@@ -332,7 +332,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             Assert.AreEqual(3, results.Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor4()
         {
             String query = @"PREFIX : <http://example/>
@@ -363,7 +363,7 @@ GROUP BY ?s ?w";
             Assert.IsTrue(results.All(r => r.HasBoundValue("s")), "One or more rows were empty or failed to have a value for ?s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor5()
         {
             String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
@@ -383,7 +383,7 @@ GROUP BY ?s ?w";
             Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor6()
         {
             String query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
@@ -403,7 +403,7 @@ GROUP BY ?s ?w";
             Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s ?p"));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor7()
         {
             String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
@@ -423,7 +423,7 @@ GROUP BY ?s ?w";
             Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor8()
         {
             String query = @"PREFIX : <http://example.org/>
@@ -475,7 +475,7 @@ WHERE
             }            
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByRefactor9()
         {
             try
@@ -524,7 +524,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByComplex1()
         {
             String data = @"PREFIX : <http://test/> INSERT DATA { :x :p 1 , 2 . :y :p 5 }";
@@ -549,7 +549,7 @@ WHERE
             Assert.AreEqual("$5", y["Total"].AsValuedNode().AsString());
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void SparqlGroupByComplex2()
         {
             //Nested aggregates are a parser error
@@ -558,7 +558,7 @@ WHERE
             parser.ParseFromString(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByWithValues1()
         {
             String query = @"SELECT ?a WHERE { VALUES ( ?a ) { ( 1 ) ( 2 ) } } GROUP BY ?a";
@@ -570,7 +570,7 @@ WHERE
             Assert.AreEqual(2, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByWithValues2()
         {
             String query = @"SELECT ?a ?b WHERE { VALUES ( ?a ?b ) { ( 1 2 ) ( 1 UNDEF ) ( UNDEF 2 ) } } GROUP BY ?a ?b";
@@ -582,7 +582,7 @@ WHERE
             Assert.AreEqual(3, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGroupByWithGraph1()
         {
             String query = @"SELECT ?g WHERE { GRAPH ?g { } } GROUP BY ?g";

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -37,7 +37,7 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
 {
-    [TestClass]
+    [TestFixture]
     public class UpdateTests1
     {
         public const String InsertPatterns1 = @"ex:IndividualA rdf:type          tpl:MyIndividualClass .
@@ -52,7 +52,7 @@ _:template        tpl:ObjectRole    rdl:MyTypeClass .
 _:template        tpl:PossessorRole ex:IndividualB .
 _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertDataWithBNodes()
         {
             TripleStore store = new TripleStore();
@@ -75,7 +75,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertDataWithSkolemBNodes()
         {
             TripleStore store = new TripleStore();
@@ -98,7 +98,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateAddCommand()
         {
             IGraph g = new Graph();
@@ -128,7 +128,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateAddCommand2()
         {
             IGraph g = new Graph();
@@ -158,7 +158,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateAddCommand3()
         {
             IGraph g = new Graph();
@@ -188,7 +188,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateCopyCommand()
         {
             IGraph g = new Graph();
@@ -218,7 +218,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(g, h, "Graphs should now be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateCopyCommand2()
         {
             IGraph g = new Graph();
@@ -248,7 +248,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(g, h, "Graphs should now be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateCopyCommand3()
         {
             IGraph g = new Graph();
@@ -278,7 +278,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(g, h, "Graphs should now be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateMoveCommand()
         {
             IGraph g = new Graph();
@@ -311,7 +311,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateMoveCommand2()
         {
             IGraph g = new Graph();
@@ -344,7 +344,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateMoveCommand3()
         {
             IGraph g = new Graph();
@@ -378,7 +378,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertCommand()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -421,7 +421,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(h, g, "Graphs should be equal");            
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertCommand2()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -468,7 +468,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertCommand3()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -497,7 +497,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertCommand4()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -541,7 +541,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithCommand()
         {
             String command = "WITH <http://example.org/> DELETE { ?s ?p ?o } WHERE {?s ?p ?o}";
@@ -553,7 +553,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.AreEqual(new Uri("http://example.org/"), delete.GraphUri, "Graph URI of the Command should be equal to http://example.org/");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertDataCombination()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -585,7 +585,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteDataCombination()
         {
             SparqlParameterizedString command = new SparqlParameterizedString();
@@ -627,7 +627,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertWithBind()
         {
             TripleStore store = new TripleStore();
@@ -652,7 +652,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertWithFilter()
         {
             TripleStore store = new TripleStore();
@@ -677,7 +677,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithBind()
         {
             TripleStore store = new TripleStore();
@@ -702,7 +702,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsFalse(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(), "Expected triples to have been deleted");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithFilter()
         {
             TripleStore store = new TripleStore();

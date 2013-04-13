@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ResultSetWriterTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlXmlWriter()
         {
                 Graph g = new Graph();

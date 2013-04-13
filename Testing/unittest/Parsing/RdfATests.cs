@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class RdfATests
     {
-        [TestMethod]
+        [Test]
         public void ParsingRdfABadSyntax()
         {
             RdfAParser parser = new RdfAParser();
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing
             ttlwriter.Save(g, "test.ttl");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfAGoodRelations()
         {
             try
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfABadProfile()
         {
             RdfAParser parser = new RdfAParser(RdfASyntax.RDFa_1_1);

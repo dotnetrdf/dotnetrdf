@@ -26,29 +26,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Globalization;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestClass]
+    [TestFixture]
     public class AggregateTests
     {
         private CultureInfo _previousCulture;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _previousCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Teardown()
         {
             Thread.CurrentThread.CurrentCulture = _previousCulture;
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug1()
         {
             TripleStore store = new TripleStore();
@@ -93,7 +93,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug2()
         {
             TripleStore store = new TripleStore();
@@ -138,7 +138,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug3()
         {
             try

@@ -29,14 +29,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class SpeedTesting
     {
         private void EnsureTestData(int triples, String file, ITripleFormatter formatter)
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Triples/Second = " + tps);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle10Thousand()
         {
             try
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle100Thousand()
         {
             try
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle500Thousand()
         {
             try
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle10ThousandCountOnly()
         {
             try
@@ -171,7 +171,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle100ThousandCountOnly()
         {
             try
@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples10Thousand()
         {
             try
@@ -223,7 +223,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples100Thousand()
         {
             try
@@ -248,7 +248,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples500Thousand()
         {
             try
@@ -273,7 +273,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples1Million()
         {
             try

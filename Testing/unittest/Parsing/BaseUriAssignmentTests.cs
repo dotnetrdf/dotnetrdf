@@ -27,13 +27,13 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class BaseUriAssignmentTests
     {
         private String ShowBaseUri(Uri baseUri)
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingBaseUriAssignmentFileLoader()
         {
             Graph g = new Graph();
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing
             Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingBaseUriAssignmentUriLoader()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingBaseUriAssignmentRdfXml()
         {
             Graph g = new Graph();

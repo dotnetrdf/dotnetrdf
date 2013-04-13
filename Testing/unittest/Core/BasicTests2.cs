@@ -29,17 +29,17 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class BasicTests2 : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void GraphEquality() {
             try
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
@@ -155,7 +155,7 @@ namespace VDS.RDF
             Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
@@ -190,7 +190,7 @@ namespace VDS.RDF
 
         }
 
-        [TestMethod]
+        [Test]
         public void GraphWithBNodeEquality()
         {
             try
@@ -227,7 +227,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoader()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -278,7 +278,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesEqualityOperator()
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
@@ -334,7 +334,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphToDataTable()
         {
             Graph g = new Graph();
@@ -355,7 +355,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphToDataTable2()
         {
             Graph g = new Graph();
@@ -375,7 +375,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphPersistenceWrapperNodeCreation()
         {
             Graph g = new Graph();

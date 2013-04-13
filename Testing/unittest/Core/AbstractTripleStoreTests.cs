@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Core
 {
     /// <summary>
     /// Abstract set of Triple Stores tests which can be used to test any <see cref="ITripleStore"/> implementation
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public abstract class AbstractTripleStoreTests
     {
         /// <summary>
@@ -43,7 +43,7 @@ namespace VDS.RDF.Core
         /// <returns></returns>
         protected abstract ITripleStore GetInstance();
 
-        [TestMethod]
+        [Test]
         public void TripleStoreIsEmpty01()
         {
             ITripleStore store = this.GetInstance();
@@ -51,7 +51,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreIsEmpty02()
         {
             ITripleStore store = this.GetInstance();
@@ -60,7 +60,7 @@ namespace VDS.RDF.Core
             Assert.IsFalse(store.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreAdd01()
         {
             ITripleStore store = this.GetInstance();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.HasGraph(g.BaseUri));
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreAdd02()
         {
             ITripleStore store = this.GetInstance();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.HasGraph(g.BaseUri));
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreHasGraph01()
         {
             ITripleStore store = this.GetInstance();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Core
             Assert.IsFalse(store.HasGraph(new Uri("http://thereisnosuchdomain.com/graph")));
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreHasGraph02()
         {
             ITripleStore store = this.GetInstance();
@@ -104,7 +104,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.HasGraph(null));
         }
 
-        [TestMethod]
+        [Test]
         public void TripleStoreHasGraph03()
         {
             ITripleStore store = this.GetInstance();
@@ -117,7 +117,7 @@ namespace VDS.RDF.Core
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class TripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Core
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class ThreadSafeTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Core
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class WebDemandTripleStoreTests
         : AbstractTripleStoreTests
     {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Core
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class DiskDemandTripleStoreTests
         : AbstractTripleStoreTests
     {

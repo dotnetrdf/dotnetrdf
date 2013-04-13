@@ -28,17 +28,17 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class GraphHandlerTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerImplicitBaseUriPropogation()
         {
             try
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerImplicitBaseUriPropogation2()
         {
             try
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerImplicitTurtle()
         {
             Graph g = new Graph();
@@ -122,37 +122,37 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitNTriples()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.nt", new NTriplesParser(), false);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitTurtle()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.ttl", new TurtleParser(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitNotation3()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.n3", new Notation3Parser(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.rdf", new RdfXmlParser(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitRdfA()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.html", new RdfAParser(), false);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitRdfJson()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.json", new RdfJsonParser(), false);
@@ -160,7 +160,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitMerging()
         {
             Graph g = new Graph();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerImplicitMerging()
         {
             Graph g = new Graph();
@@ -219,7 +219,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerImplicitInitialBaseUri()
         {
             Graph g = new Graph();
@@ -233,7 +233,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be parsed");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGraphHandlerExplicitInitialBaseUri()
         {
             Graph g = new Graph();

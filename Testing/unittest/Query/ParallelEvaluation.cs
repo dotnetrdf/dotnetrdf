@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -42,7 +42,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ParallelEvaluation
     {
         private InMemoryDataset _dataset;
@@ -125,13 +125,13 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParallelEvaluationJoin1()
         {
             this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParallelEvaluationJoin2()
         {
             try
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParallelEvaluationDivision1()
         {
             INode zero = (0).ToLiteral(this._factory);
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
             context.OutputMultiset.Add(s);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParallelEvaluationOptional1()
         {
             String data = @"<http://a> <http://p> <http://x> .

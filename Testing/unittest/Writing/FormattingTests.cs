@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class FormattingTests
     {
-        [TestMethod]
+        [Test]
         public void WritingFormattingTriples()
         {
             try
@@ -145,7 +145,7 @@ namespace VDS.RDF.Writing
             }       
         }
 
-        [TestMethod]
+        [Test]
         public void WritingFormattingGraphs()
         {
             List<IGraph> graphs = new List<IGraph>();
@@ -207,7 +207,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void WritingFormattingResultSets()
         {
             Graph g = new Graph();

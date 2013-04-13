@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class DescribeAlgorithms
     {
         private const String DescribeQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DESCRIBE ?x WHERE {?x foaf:name \"Dave\" }";
@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
         private InMemoryDataset _data;
         private LeviathanQueryProcessor _processor;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._parser = new SparqlQueryParser();
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
             this._processor = new LeviathanQueryProcessor(this._data);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this._parser = null;
@@ -85,37 +85,37 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeCBD()
         {
             this.RunDescribeTest(new ConciseBoundedDescription());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeSCBD()
         {
             this.RunDescribeTest(new SymmetricConciseBoundedDescription());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeSubject()
         {
             this.RunDescribeTest(new SimpleSubjectDescription());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeSubjectObject()
         {
             this.RunDescribeTest(new SimpleSubjectObjectDescription());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeMSG()
         {
             this.RunDescribeTest(new MinimalSpanningGraph());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDescribeLabelled()
         {
             this.RunDescribeTest(new LabelledDescription());

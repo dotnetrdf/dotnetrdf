@@ -27,19 +27,19 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class BindingsTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
-        [TestMethod]
+        [Test]
         public void SparqlBindingsSimple()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindingsSimple2()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
 
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }
-        [TestMethod]
+        [Test]
         public void SparqlBindingsSimple3()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();

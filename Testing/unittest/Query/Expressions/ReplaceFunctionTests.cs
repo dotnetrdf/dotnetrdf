@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Linq;
 using VDS.RDF.Nodes;
@@ -33,20 +33,20 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class ReplaceFunctionTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlParsingReplaceExpression()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
 
             ISparqlExpression expr = q.Variables.First().Projection;
-            Assert.IsInstanceOfType(expr, typeof(VDS.RDF.Query.Expressions.Functions.Sparql.String.ReplaceFunction));
+            Assert.IsInstanceOf<ReplaceFunction>(expr);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlExpressionsXPathReplaceNullInCanParallelise1()
         {
             // when
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions
             var canParallelise = func.CanParallelise;
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlExpressionsXPathReplaceNullInCanParallelise2()
         {
             // when

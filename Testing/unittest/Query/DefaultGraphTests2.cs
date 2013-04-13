@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class DefaultGraphTests2
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             return new InMemoryDataset(store, defaultGraphUri);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphUnion()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphUnionAndGraphClause()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphNoUnion()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphNamed()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphNamed2()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -247,7 +247,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause2()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -279,7 +279,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphUnknownName()
         {
             List<IGraph> gs = new List<IGraph>();
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphUnnamed()
         {
             List<IGraph> gs = new List<IGraph>();

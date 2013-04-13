@@ -24,15 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Ordering;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlOrderByTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithRawVariableName()
         {
             // when
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithVariableNameWithDollarSign()
         {
             // when
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithVariableNameWithQuestionMark()
         {
             // when

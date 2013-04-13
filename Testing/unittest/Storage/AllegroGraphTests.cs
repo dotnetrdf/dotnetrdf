@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -35,7 +35,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class AllegroGraphTests
     {
         public static AllegroGraphConnector GetConnection()
@@ -48,19 +48,19 @@ namespace VDS.RDF.Storage
             return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             Options.HttpDebugging = true;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Teardown()
         {
             Options.HttpDebugging = false;
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAllegroGraphSaveLoad()
         {
             Graph g = new Graph();
@@ -77,7 +77,7 @@ namespace VDS.RDF.Storage
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAllegroGraphDeleteTriples()
         {
             Graph g = new Graph();
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAllegroGraphAsk()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -128,7 +128,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAllegroGraphDescribe()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAllegroGraphSparqlUpdate()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();

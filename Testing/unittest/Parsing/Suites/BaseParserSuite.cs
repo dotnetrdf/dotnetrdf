@@ -28,13 +28,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestClass]
+    [TestFixture]
     public abstract class BaseRdfParserSuite
     {
         protected IRdfReader _parser;
@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing.Suites
             }
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._count = 0;
@@ -432,7 +432,7 @@ WHERE
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public abstract class BaseDatasetParserSuite
     {
         protected IStoreReader _parser;
@@ -501,7 +501,7 @@ WHERE
             }
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._count = 0;
@@ -739,7 +739,7 @@ WHERE
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public abstract class BaseResultsParserSuite
     {
         protected ISparqlResultsReader _parser;
@@ -808,7 +808,7 @@ WHERE
             }
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._count = 0;

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -37,10 +37,10 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
 {
-    [TestClass]
+    [TestFixture]
     public class UpdateTests2
     {
-        [TestMethod]
+        [Test]
         public void SparqlUpdateCreateDrop()
         {
             TripleStore store = new TripleStore();
@@ -106,7 +106,7 @@ namespace VDS.RDF.Update
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateLoad()
         {
             TripleStore store = new TripleStore();
@@ -137,7 +137,7 @@ namespace VDS.RDF.Update
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateModify()
         {
             TripleStore store = new TripleStore();
@@ -158,7 +158,7 @@ namespace VDS.RDF.Update
             Assert.AreEqual(0, store.GetTriplesWithPredicate(rdfType).Count(), "Store should contain no rdf:type Triples after DELETE command executes");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateWithCustomQueryProcessor()
         {
             Graph g = new Graph();
@@ -175,7 +175,7 @@ namespace VDS.RDF.Update
             processor.ProcessCommandSet(cmds);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateChangesNotReflectedInOriginalGraph1()
         {
             //Test Case originally submitted by Tomasz Pluskiewicz
@@ -219,7 +219,7 @@ WHERE { ?s ?p ?o . }"
             Assert.AreNotEqual(expectedGraph, sourceGraph, "Source Graph should not match expected Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateChangesNotReflectedInOriginalGraph2()
         {
             //Test Case originally submitted by Tomasz Pluskiewicz
@@ -258,7 +258,7 @@ WHERE { ?s ?p ?o . }"
             Assert.AreEqual(expectedGraph, sourceGraph, "Source Graph should match expected Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertDeleteWithBlankNodes()
         {
             //This test adapted from a contribution by Tomasz Pluskiewicz
@@ -338,7 +338,7 @@ _:blank rr:objectMap _:autos2.";
             Assert.IsFalse(results.IsEmpty, "Should be some results");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertBNodesComplex1()
         {
             String update = @"PREFIX : <http://test/>
@@ -360,7 +360,7 @@ INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }";
             Assert.AreEqual(a.Subject, b.Object);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertBNodesComplex2()
         {
             String update = @"PREFIX : <http://test/>
@@ -376,7 +376,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertBNodesComplex3()
         {
             String update = @"PREFIX : <http://test/>
@@ -391,7 +391,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertWithGraphClause1()
         {
             Graph g = new Graph();
@@ -409,7 +409,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithGraphClause1()
         {
             Graph g = new Graph();
@@ -435,7 +435,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.AreEqual(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithGraphClause2()
         {
             Graph g = new Graph();
