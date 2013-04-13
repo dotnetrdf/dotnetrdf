@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage
                 Options.UriLoaderCaching = false;
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "Turtle.ttl");
+                FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Save Graph to SPARQL Uniform Protocol
@@ -116,7 +116,7 @@ namespace VDS.RDF.Storage
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "Turtle.ttl");
+                FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -223,7 +223,7 @@ namespace VDS.RDF.Storage
 
                 Graph g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
             {
                 Options.UriLoaderCaching = false;
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 try
                 {
@@ -287,7 +287,7 @@ namespace VDS.RDF.Storage
             request.ContentType = "application/rdf+xml";
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
@@ -328,7 +328,7 @@ namespace VDS.RDF.Storage
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             List<Uri> uris = new List<Uri>();
             for (int i = 0; i < 10; i++)

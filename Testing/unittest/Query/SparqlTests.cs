@@ -252,8 +252,8 @@ where {
             SparqlResultSet a = new SparqlResultSet();
             SparqlResultSet b = new SparqlResultSet();
 
-            parser.Load(a, "list-3.srx");
-            parser.Load(b, "list-3.srx.out");
+            parser.Load(a, "resources\\list-3.srx");
+            parser.Load(b, "resources\\list-3.srx.out");
 
             a.Trim();
             b.Trim();
@@ -261,8 +261,8 @@ where {
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            parser.Load(a, "no-distinct-opt.srx");
-            parser.Load(b, "no-distinct-opt.srx.out");
+            parser.Load(a, "resources\\no-distinct-opt.srx");
+            parser.Load(b, "resources\\no-distinct-opt.srx.out");
 
             a.Trim();
             b.Trim();
@@ -270,8 +270,8 @@ where {
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            rdfparser.Load(a, "result-opt-3.ttl");
-            parser.Load(b, "result-opt-3.ttl.out");
+            rdfparser.Load(a, "resources\\result-opt-3.ttl");
+            parser.Load(b, "resources\\result-opt-3.ttl.out");
 
             a.Trim();
             b.Trim();
@@ -287,7 +287,7 @@ where {
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "json.owl");
+            FileLoader.Load(g, "resources\\json.owl");
             store.Add(g);
 
             Object results = store.ExecuteQuery(query);
@@ -468,14 +468,14 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         {
             SparqlXmlParser xmlparser = new SparqlXmlParser();
             SparqlResultSet results = new SparqlResultSet();
-            xmlparser.Load(results, "bnodes.srx");
+            xmlparser.Load(results, "resources\\bnodes.srx");
 
             TestTools.ShowResults(results);
             Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
 
             SparqlJsonParser jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
-            jsonparser.Load(results, "bnodes.json");
+            jsonparser.Load(results, "resources\\bnodes.json");
 
             TestTools.ShowResults(results);
             Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
@@ -485,10 +485,10 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         public void SparqlAnton()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "anton.rdf");
+            FileLoader.Load(g, "resources\\anton.rdf");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("anton.rq");
+            SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
 
             Object results = g.ExecuteQuery(query);
             if (results is SparqlResultSet)

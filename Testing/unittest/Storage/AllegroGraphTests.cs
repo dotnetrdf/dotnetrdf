@@ -64,7 +64,7 @@ namespace VDS.RDF.Storage
         public void StorageAllegroGraphSaveLoad()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -81,7 +81,7 @@ namespace VDS.RDF.Storage
         public void StorageAllegroGraphDeleteTriples()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();

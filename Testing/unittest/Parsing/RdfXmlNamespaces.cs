@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing
             Graph g = new Graph();
             try
             {
-                g.LoadFromFile("rdfxml-namespaces.rdf");
+                g.LoadFromFile("resources\\rdfxml-namespaces.rdf");
                 Assert.Fail("Parsing should fail as namespaces are not properly defined in the RDF/XML");
             }
             catch (RdfParseException parseEx)

@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
                 store.Add(g);
 

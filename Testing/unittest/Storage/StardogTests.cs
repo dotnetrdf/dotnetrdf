@@ -343,7 +343,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();;
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/reasoning");
                 stardog.SaveGraph(g);
 

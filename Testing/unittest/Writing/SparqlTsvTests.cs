@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
                 store.Add(g);
 

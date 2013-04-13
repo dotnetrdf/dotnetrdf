@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
             this._parser = new SparqlQueryParser();
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "describe-algos.ttl");
+            FileLoader.Load(g, "resources\\describe-algos.ttl");
             store.Add(g);
             this._data = new InMemoryDataset(store);
             this._processor = new LeviathanQueryProcessor(this._data);
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query
         [TestCase(typeof(SimpleSubjectObjectDescription))]
         [TestCase(typeof(MinimalSpanningGraph))]
         [TestCase(typeof(LabelledDescription))]
-        private void ShouldSucceedDescribingWithSpecificAlgorithm(Type describerType)
+        public void ShouldSucceedDescribingWithSpecificAlgorithm(Type describerType)
         {
             SparqlQuery q = this.GetQuery();
             q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);

@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -198,7 +198,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -234,7 +234,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -272,7 +272,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)

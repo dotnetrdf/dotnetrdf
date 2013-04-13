@@ -43,7 +43,7 @@ namespace VDS.RDF.Web
             try
             {
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 Stopwatch timer = new Stopwatch();
                 timer.Start();

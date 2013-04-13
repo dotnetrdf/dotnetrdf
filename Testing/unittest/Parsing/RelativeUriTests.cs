@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing
 
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            g.LoadFromFile("rdfxml-relative-uri.rdf", parser);
+            g.LoadFromFile("resources\\rdfxml-relative-uri.rdf", parser);
 
             //Expect a non-empty grpah with a single triple
             Assert.IsFalse(g.IsEmpty);
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org");
             RdfXmlParser parser = new RdfXmlParser();
-            parser.Load(g, "rdfxml-relative-uri.rdf");
+            parser.Load(g, "resources\\rdfxml-relative-uri.rdf");
 
             //Expect a non-empty grpah with a single triple
             Assert.IsFalse(g.IsEmpty);
@@ -92,7 +92,7 @@ namespace VDS.RDF.Parsing
 
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            parser.Load(g, "rdfxml-relative-uri.rdf");
+            parser.Load(g, "resources\\rdfxml-relative-uri.rdf");
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]

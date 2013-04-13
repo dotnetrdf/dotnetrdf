@@ -84,8 +84,8 @@ namespace VDS.RDF.Core
         {
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
-            g.BaseUri = new Uri("file:///" + Path.GetFullPath("InferenceTest.ttl"));
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
@@ -98,8 +98,8 @@ namespace VDS.RDF.Core
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
 
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
-            g.BaseUri = new Uri("file:///" + Path.GetFullPath("InferenceTest.ttl"));
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
             Graph empty = new Graph();
             empty.BaseUri = g.BaseUri;

@@ -411,7 +411,7 @@ namespace VDS.RDF.Parsing
                 RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
                 parser.TraceParsing = true;
                 Graph g = new Graph();
-                parser.Load(g, "example.rdf");
+                parser.Load(g, "resources\\example.rdf");
 
                 TestTools.ShowGraph(g);
         }
@@ -433,7 +433,7 @@ namespace VDS.RDF.Parsing
         //public void JsonNTriplesParsing()
         //{
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateLiteralNode("some text", "en")));
 
         //    String temp = StringWriter.Write(g, new JsonNTriplesWriter());
@@ -520,10 +520,10 @@ namespace VDS.RDF.Parsing
         {
             TurtleParser parser = new TurtleParser();
             Graph g = new Graph();
-            FileLoader.Load(g, "ttl-with-bom.ttl");
+            FileLoader.Load(g, "resources\\ttl-with-bom.ttl");
 
             Graph h = new Graph();
-            FileLoader.Load(h, "ttl-without-bom.ttl");
+            FileLoader.Load(h, "resources\\ttl-without-bom.ttl");
 
             Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
         }
@@ -533,7 +533,7 @@ namespace VDS.RDF.Parsing
         {
             SparqlResultSet results = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
-            parser.Load(results, "bad_srx.srx");
+            parser.Load(results, "resources\\bad_srx.srx");
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
@@ -541,7 +541,7 @@ namespace VDS.RDF.Parsing
         {
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
-            parser.Load(g, "dbpedia_malformed.ttl");
+            parser.Load(g, "resources\\dbpedia_malformed.ttl");
             Assert.IsFalse(g.IsEmpty);
         }
 

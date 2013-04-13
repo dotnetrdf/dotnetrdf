@@ -279,7 +279,7 @@ results.Dispose()
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
             String query;
-            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            using (StreamReader reader = new StreamReader("resources\\dbpedia-query-time.rq"))
             {
                 query = reader.ReadToEnd();
                 reader.Close();
@@ -327,117 +327,117 @@ results.Dispose()
             Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         }
 
-        //[Test]
-        //public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
-        //{
-        //    String query;
-        //    using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
-        //    {
-        //        query = reader.ReadToEnd();
-        //        reader.Close();
-        //    }
+        [Test, Ignore("TP: I think that we should either ignore or remove redundant tests")]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("resources\\dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
 
-        //    SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
-        //    endpoint.Timeout = AsyncTimeout;
-        //    Stopwatch timer = new Stopwatch();
-        //    timer.Start();
-        //    SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
-        //    timer.Stop();
-        //    Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
-        //    TestTools.ShowResults(syncGetResults);
-        //    Console.WriteLine();
-        //    timer.Reset();
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
+            endpoint.Timeout = AsyncTimeout;
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
 
-        //    timer.Start();
-        //    endpoint.HttpMode = "POST";
-        //    SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
-        //    timer.Stop();
-        //    Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
-        //    TestTools.ShowResults(syncPostResults);
-        //    Console.WriteLine();
-        //    timer.Reset();
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
 
-        //    ManualResetEvent signal = new ManualResetEvent(false);
-        //    SparqlResultSet asyncResults = null;
-        //    //DateTime start = DateTime.Now;
-        //    //DateTime end = start;
-        //    timer.Start();
-        //    endpoint.QueryWithResultSet(query, (r, s) =>
-        //    {
-        //        //end = DateTime.Now;
-        //        timer.Stop();
-        //        asyncResults = r;
-        //        signal.Set();
-        //        signal.Close();
-        //    }, null);
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
 
-        //    Thread.Sleep(AsyncTimeout*2);
-        //    Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Thread.Sleep(AsyncTimeout * 2);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
-        //    Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
-        //    TestTools.ShowResults(asyncResults);
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
 
-        //    Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
-        //}
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
 
-        //[Test]
-        //public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
-        //{
-        //    String query;
-        //    using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
-        //    {
-        //        query = reader.ReadToEnd();
-        //        reader.Close();
-        //    }
+        [Test, Ignore("TP: I think that we should either ignore or remove redundant tests")]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("resources\\dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
 
-        //    SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
-        //    endpoint.Timeout = AsyncTimeout;
-        //    Stopwatch timer = new Stopwatch();
-        //    timer.Start();
-        //    SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
-        //    timer.Stop();
-        //    Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
-        //    TestTools.ShowResults(syncGetResults);
-        //    Console.WriteLine();
-        //    timer.Reset();
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
+            endpoint.Timeout = AsyncTimeout;
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
 
-        //    timer.Start();
-        //    endpoint.HttpMode = "POST";
-        //    SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
-        //    timer.Stop();
-        //    Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
-        //    TestTools.ShowResults(syncPostResults);
-        //    Console.WriteLine();
-        //    timer.Reset();
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
 
-        //    ManualResetEvent signal = new ManualResetEvent(false);
-        //    SparqlResultSet asyncResults = null;
-        //    //DateTime start = DateTime.Now;
-        //    //DateTime end = start;
-        //    timer.Start();
-        //    endpoint.QueryWithResultSet(query, (r, s) =>
-        //    {
-        //        //end = DateTime.Now;
-        //        timer.Stop();
-        //        asyncResults = r;
-        //        signal.Set();
-        //        signal.Close();
-        //    }, null);
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
 
-        //    Thread.Sleep(AsyncTimeout);
-        //    Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
-        //    Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
-        //    TestTools.ShowResults(asyncResults);
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
 
-        //    Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
-        //}
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
 
         [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
         {
             String query;
-            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            using (StreamReader reader = new StreamReader("resources\\dbpedia-query-time.rq"))
             {
                 query = reader.ReadToEnd();
                 reader.Close();

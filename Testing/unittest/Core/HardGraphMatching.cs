@@ -192,9 +192,9 @@ namespace VDS.RDF
         public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
-            g.LoadFromFile("turtle11-unofficial/test-13.ttl");
+            g.LoadFromFile("resources/turtle11-unofficial/test-13.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("turtle11-unofficial/test-13.out", new NTriplesParser());
+            h.LoadFromFile("resources/turtle11-unofficial/test-13.out", new NTriplesParser());
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
@@ -291,9 +291,9 @@ namespace VDS.RDF
         private static void TestGraphMatch(string testGraphName)
         {
             Graph a = new Graph();
-            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
             Graph b = new Graph();
-            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             Assert.IsTrue(a.Equals(b));
             Assert.IsTrue(b.Equals(a));
