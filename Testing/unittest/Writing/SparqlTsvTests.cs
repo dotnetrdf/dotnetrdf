@@ -60,7 +60,13 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void TestTsvRoundTrip(String query)
+        [TestCase("SELECT * WHERE { ?s a ?type }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }")]
+        [TestCase("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }")]
+        [TestCase("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
+        public void TestTsvRoundTrip(String query)
         {
             this.EnsureTestData();
 
@@ -87,42 +93,6 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(original, results, "Result Sets should be equal");
             
-        }
-
-        [Test]
-        public void WritingSparqlTsv1()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type }");
-        }
-
-        [Test]
-        public void WritingSparqlTsv2()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }");
-        }
-
-        [Test]
-        public void WritingSparqlTsv3()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }");
-        }
-
-        [Test]
-        public void WritingSparqlTsv4()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }");
-        }
-
-        [Test]
-        public void WritingSparqlTsv5()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }");
-        }
-
-        [Test]
-        public void WritingSparqlTsv6()
-        {
-            this.TestTsvRoundTrip("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }");
         }
     }
 }
