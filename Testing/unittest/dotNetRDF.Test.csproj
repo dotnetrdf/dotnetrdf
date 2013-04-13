@@ -108,10 +108,13 @@
     <Compile Include="Core\TripleCollectionTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\Suites\BaseDatasetParserSuite.cs" />
     <Compile Include="Parsing\Suites\BaseParserSuite.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\Suites\BaseRdfParserSuite.cs" />
+    <Compile Include="Parsing\Suites\BaseResultsParserSuite.cs" />
     <Compile Include="Parsing\Suites\N3.cs" />
     <Compile Include="Parsing\Suites\NTriples.cs" />
     <Compile Include="Parsing\Suites\RdfA.cs" />

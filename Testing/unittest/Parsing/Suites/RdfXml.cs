@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 }
