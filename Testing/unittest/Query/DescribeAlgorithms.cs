@@ -68,57 +68,25 @@ namespace VDS.RDF.Query
             return this._parser.ParseFromString(DescribeQuery);
         }
 
-        private Graph RunDescribeTest(ISparqlDescribe describer)
+        [TestCase(typeof(ConciseBoundedDescription))]
+        [TestCase(typeof(SymmetricConciseBoundedDescription))]
+        [TestCase(typeof(SimpleSubjectDescription))]
+        [TestCase(typeof(SimpleSubjectObjectDescription))]
+        [TestCase(typeof(MinimalSpanningGraph))]
+        [TestCase(typeof(LabelledDescription))]
+        private void ShouldSucceedDescribingWithSpecificAlgorithm(Type describerType)
         {
             SparqlQuery q = this.GetQuery();
-            q.Describer = describer;
+            q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
             Object results = this._processor.ProcessQuery(q);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);
-                return (Graph)results;
             }
-            else 
+            else
             {
                 Assert.Fail("Expected a Graph as the Result");
-                return null;
             }
-        }
-
-        [Test]
-        public void SparqlDescribeCBD()
-        {
-            this.RunDescribeTest(new ConciseBoundedDescription());
-        }
-
-        [Test]
-        public void SparqlDescribeSCBD()
-        {
-            this.RunDescribeTest(new SymmetricConciseBoundedDescription());
-        }
-
-        [Test]
-        public void SparqlDescribeSubject()
-        {
-            this.RunDescribeTest(new SimpleSubjectDescription());
-        }
-
-        [Test]
-        public void SparqlDescribeSubjectObject()
-        {
-            this.RunDescribeTest(new SimpleSubjectObjectDescription());
-        }
-
-        [Test]
-        public void SparqlDescribeMSG()
-        {
-            this.RunDescribeTest(new MinimalSpanningGraph());
-        }
-
-        [Test]
-        public void SparqlDescribeLabelled()
-        {
-            this.RunDescribeTest(new LabelledDescription());
         }
     }
 }
