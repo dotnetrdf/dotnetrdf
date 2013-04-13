@@ -46,8 +46,8 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
-            this.RunManifest("turtle/manifest.ttl", true);
-            this.RunManifest("turtle/manifest-bad.ttl", false);
+            this.RunManifest("resources/turtle/manifest.ttl", true);
+            this.RunManifest("resources/turtle/manifest-bad.ttl", false);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Suites
             //Dot required
             String graph = "@base <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Suites
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Suites
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing.Suites
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
@@ -141,7 +141,7 @@ namespace VDS.RDF.Parsing.Suites
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }

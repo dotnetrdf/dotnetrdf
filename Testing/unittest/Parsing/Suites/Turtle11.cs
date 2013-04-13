@@ -24,14 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -46,8 +40,8 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleW3CUnofficalTests()
         {
             //Run manifests
-            this.RunManifest("turtle11-unofficial/manifest.ttl", true);
-            this.RunManifest("turtle11-unofficial/manifest-bad.ttl", false);
+            this.RunManifest("resources/turtle11-unofficial/manifest.ttl", true);
+            this.RunManifest("resources/turtle11-unofficial/manifest-bad.ttl", false);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -180,89 +174,89 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [Test]
-        public void ParsingTurtleW3CBaseTurtleStyle1()
+        public void ShouldSuccessfullyParseValidTurtleStyleW3CBase()
         {
             //Dot required
             String graph = "@base <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test,ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CBaseTurtleStyle2()
+        public void ShouldThrowWhenTurtleStyleBaseIsMissingDot()
         {
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test,ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CBaseSparqlStyle1()
+        public void ShouldThrowWhenSparqlStyleBaseHasDot()
         {
             //Forbidden dot
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test]
-        public void ParsingTurtleW3CBaseSparqlStyle2()
+        public void ShouldSuccessfullyParseValidSparqlStyleW3CBase()
         {
             //No dot required
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test]
-        public void ParsingTurtleW3CPrefixTurtleStyle1()
+        public void ShouldSuccessfullyParseValidTurtleStyleW3CPrefix()
         {
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CPrefixTurtleStyle2()
+        public void ShouldThrowWhenTurtleStylePrefixIsMissingDot()
         {
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CPrefixSparqlStyle1()
+        public void ShouldThrowWhenSparqlStylePrefixHasDot()
         {
             //Forbidden dot
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
         [Test]
-        public void ParsingTurtleW3CPrefixSparqlStyle2()
+        public void ShouldSuccessfullyParseValidSparqlStyleW3CPrefix()
         {
             //No dot required
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
