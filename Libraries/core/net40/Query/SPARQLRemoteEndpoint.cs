@@ -310,12 +310,8 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query, see inner exception for details", webEx);
             }
@@ -361,12 +357,7 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query, see inner exception for details", webEx);
             }
@@ -392,12 +383,7 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
@@ -418,12 +404,8 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
@@ -620,23 +602,11 @@ namespace VDS.RDF.Query
             }
 #endif
 
-#if DEBUG
-            //HTTP Debugging
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(httpRequest);
-            }
-#endif
+            Tools.HttpDebugRequest(httpRequest);
 
             httpResponse = (HttpWebResponse)httpRequest.GetResponse();
 
-#if DEBUG
-            //HTTP Debugging
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugResponse(httpResponse);
-            }
-#endif
+            Tools.HttpDebugResponse(httpResponse);
 
             return httpResponse;
         }
@@ -656,12 +626,7 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
             {
@@ -689,12 +654,8 @@ namespace VDS.RDF.Query
                     {
                         using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
+                            
                             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
                             SparqlResultSet rset = new SparqlResultSet();
                             parser.Load(rset, new StreamReader(response.GetResponseStream()));
@@ -721,12 +682,7 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
             {
@@ -754,12 +710,7 @@ namespace VDS.RDF.Query
                 {
                     using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
                         ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
                         parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
@@ -783,12 +734,7 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
             {
@@ -815,12 +761,7 @@ namespace VDS.RDF.Query
                 request.BeginGetResponse(innerResult =>
                 {
                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     Graph g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
@@ -844,12 +785,7 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
             {
@@ -876,12 +812,7 @@ namespace VDS.RDF.Query
                 request.BeginGetResponse(innerResult =>
                 {
                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
 

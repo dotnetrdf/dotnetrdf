@@ -350,22 +350,13 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
+                    
                     StreamReader data = new StreamReader(response.GetResponseStream());
                     String ctype = response.ContentType;
                     try
@@ -512,21 +503,12 @@ namespace VDS.RDF.Storage
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
+                    
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
@@ -573,20 +555,10 @@ namespace VDS.RDF.Storage
                 NTriplesWriter ntwriter = new NTriplesWriter();
                 ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get then it was OK
                     response.Close();
                 }
@@ -649,21 +621,11 @@ namespace VDS.RDF.Storage
                             serviceParams["obj"] = this._formatter.Format(t.Object);
                             request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
 
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
 
                             using (response = (HttpWebResponse)request.GetResponse())
                             {
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse(response);
-                                }
-#endif
+                                Tools.HttpDebugResponse(response);
                                 //If we get here then the Delete worked OK
                                 response.Close();
                             }
@@ -687,21 +649,11 @@ namespace VDS.RDF.Storage
                         //request.ContentType = MimeTypesHelper.RdfXml[0];
                         //writer.Save(h, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugRequest(request);
-                        }
-#endif
+                        Tools.HttpDebugRequest(request);
 
                         using (response = (HttpWebResponse)request.GetResponse())
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
                             //If we get then it was OK
                             response.Close();
                         }
@@ -746,20 +698,11 @@ namespace VDS.RDF.Storage
                 }
 
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                
+                Tools.HttpDebugRequest(request);
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then the Delete worked OK
                     response.Close();
                 }
@@ -1098,12 +1041,7 @@ namespace VDS.RDF.Storage
                 //Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
                 //POST the response which in async requires extra pain
                 request.BeginGetRequestStream(r =>
                     {
@@ -1123,12 +1061,7 @@ namespace VDS.RDF.Storage
                                     try
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            Tools.HttpDebugResponse(response);
-                                        }
-#endif
+                                        Tools.HttpDebugResponse(response);
                                         StreamReader data = new StreamReader(response.GetResponseStream());
                                         String ctype = response.ContentType;
                                         try
@@ -1494,22 +1427,12 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here it completed OK
                     response.Close();
                 }
@@ -1554,12 +1477,7 @@ namespace VDS.RDF.Storage
                                 writer.Close();
                             }
 
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
 
                             //Get the Response and process based on the Content Type
                             request.BeginGetResponse(r2 =>
@@ -1567,12 +1485,7 @@ namespace VDS.RDF.Storage
                                      try
                                      {
                                          HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                         if (Options.HttpDebugging)
-                                         {
-                                             Tools.HttpDebugResponse(response);
-                                         }
-#endif
+                                         Tools.HttpDebugResponse(response);
                                          //If we get here it completed OK
                                          response.Close();
                                          callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);

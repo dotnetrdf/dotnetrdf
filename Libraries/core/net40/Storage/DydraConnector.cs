@@ -247,21 +247,11 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then operation completed OK
                     response.Close();
                 }
@@ -318,21 +308,11 @@ namespace VDS.RDF.Storage
                 }
 
                 HttpWebRequest request = this.CreateRequest("/statements", MimeTypesHelper.HttpAcceptHeader, "GET", requestParams);
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
 
                     //If we get here try and parse the response
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
@@ -547,22 +527,12 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     StreamReader data = new StreamReader(response.GetResponseStream());
                     String ctype = response.ContentType;
                     if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
@@ -624,21 +594,11 @@ namespace VDS.RDF.Storage
                     writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
                     writer.Close();
                 }
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it completed OK
                     response.Close();
                 }
@@ -889,12 +849,7 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest("/sparql", accept, "POST", queryParams);
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetRequestStream(r =>
                     {
@@ -914,12 +869,7 @@ namespace VDS.RDF.Storage
                                     try
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            Tools.HttpDebugResponse(response);
-                                        }
-#endif
+                                        Tools.HttpDebugResponse(response);
                                         StreamReader data = new StreamReader(response.GetResponseStream());
                                         String ctype = response.ContentType;
                                         if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
@@ -989,24 +939,14 @@ namespace VDS.RDF.Storage
                                 writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
                                 writer.Close();
                             }
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
 
                             request.BeginGetResponse(r2 =>
                                 {
                                     try
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            Tools.HttpDebugResponse(response);
-                                        }
-#endif
+                                        Tools.HttpDebugResponse(response);
                                         //If we get here then it completed OK
                                         response.Close();
                                     }
