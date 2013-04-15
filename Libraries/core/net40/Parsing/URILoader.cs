@@ -357,23 +357,12 @@ namespace VDS.RDF.Parsing
                 {
                     httpRequest.UserAgent = _userAgent;
                 }
-#if DEBUG
-                //HTTP Debugging
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(httpRequest);
-                }
-#endif
+
+                Tools.HttpDebugRequest(httpRequest);
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-#if DEBUG
-                    //HTTP Debugging
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(httpResponse);
-                    }
-#endif
+                    Tools.HttpDebugResponse(httpResponse);
 
 #if !NO_URICACHE
                     if (Options.UriLoaderCaching)
@@ -463,12 +452,10 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (webEx.Response != null && Options.HttpDebugging)
+                if (webEx.Response != null)
                 {
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
-#endif
 
 #if !NO_URICACHE
                 if (webEx.Response != null)
@@ -614,23 +601,12 @@ namespace VDS.RDF.Parsing
                     httpRequest.UserAgent = _userAgent;
                 }
 
-#if DEBUG
                 //HTTP Debugging
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(httpRequest);
-                }
-#endif
+                Tools.HttpDebugRequest(httpRequest);
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-#if DEBUG
-                    //HTTP Debugging
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(httpResponse);
-                    }
-#endif
+                    Tools.HttpDebugResponse(httpResponse);
 
                     //Get a Parser and Load the RDF
                     if (parser == null)
@@ -675,12 +651,8 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+
                 //Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);
             }

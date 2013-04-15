@@ -94,12 +94,7 @@ namespace VDS.RDF.Storage
         {
             if (webEx.Response != null)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 if (webEx.Response.ContentLength > 0)
                 {
                     String responseText = "";

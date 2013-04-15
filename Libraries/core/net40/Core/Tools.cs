@@ -460,16 +460,15 @@ namespace VDS.RDF
             return hash;
         }
 
-#if DEBUG
-
         /// <summary>
         /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request
         /// </summary>
         /// <param name="httpRequest">HTTP Web Request</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        public static void HttpDebugRequest(HttpWebRequest httpRequest)
+        internal static void HttpDebugRequest(HttpWebRequest httpRequest)
         {
-            if (!Options.HttpDebugging) return;
+            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
+                return;
 
             //Output the Request Headers
             Console.Error.WriteLine("# HTTP DEBUGGING #");
@@ -488,9 +487,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="httpResponse">HTTP Web Response</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        public static void HttpDebugResponse(HttpWebResponse httpResponse)
+        internal static void HttpDebugResponse(HttpWebResponse httpResponse)
         {
-            if (!Options.HttpDebugging) return;
+            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
+                return;
 
             //Output the Response Uri and Headers
             Console.Error.WriteLine();
@@ -525,7 +525,5 @@ namespace VDS.RDF
 
             Console.Error.WriteLine("# END HTTP DEBUGGING #");
         }
-
-#endif
     }
 }

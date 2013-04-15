@@ -141,24 +141,15 @@ namespace VDS.RDF.Query.Inference.Pellet
                 request.Method = "GET";
                 request.Accept = ServerDescriptionFormat;
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the response and parse the JSON
                 String jsonText;
                 JObject json;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
+                    
                     //Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
@@ -174,12 +165,8 @@ namespace VDS.RDF.Query.Inference.Pellet
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
             catch (Exception)
@@ -201,13 +188,7 @@ namespace VDS.RDF.Query.Inference.Pellet
             request.Method = "GET";
             request.Accept = ServerDescriptionFormat;
 
-
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             //Get the response and parse the JSON
             String jsonText;
@@ -215,12 +196,9 @@ namespace VDS.RDF.Query.Inference.Pellet
             request.BeginGetResponse(result =>
                 {
                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    
+                    Tools.HttpDebugResponse(response);
+                    
                     //Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
