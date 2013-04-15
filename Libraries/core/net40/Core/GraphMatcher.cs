@@ -743,8 +743,8 @@ namespace VDS.RDF
         /// <param name="h">2nd Graph</param>
         /// <param name="gNodes">1st Graph Node classification</param>
         /// <param name="hNodes">2nd Graph Node classification</param>
-        /// <param name="gDegrees">1st Graph Degree classification</param>
-        /// <param name="hDegrees">2nd Graph Degree classification</param>
+        /// <param name="sourceDependencies">Dependencies in the 1st Graph</param>
+        /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
         /// <returns></returns>
         private bool TryDivideAndConquerMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
         {
