@@ -465,7 +465,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="httpRequest">HTTP Web Request</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        internal static void HttpDebugRequest(HttpWebRequest httpRequest)
+        public static void HttpDebugRequest(HttpWebRequest httpRequest)
         {
             if (!Options.HttpDebugging && !Options.HttpFullDebugging)
                 return;
@@ -487,7 +487,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="httpResponse">HTTP Web Response</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        internal static void HttpDebugResponse(HttpWebResponse httpResponse)
+        public static void HttpDebugResponse(HttpWebResponse httpResponse)
         {
             if (!Options.HttpDebugging && !Options.HttpFullDebugging)
                 return;
