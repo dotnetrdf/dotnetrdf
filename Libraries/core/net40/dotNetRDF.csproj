@@ -89,6 +89,7 @@
     <Compile Include="Compatability\HtmlTextWriterTag.cs" />
     <Compile Include="Compatability\HttpUtility.cs" />
     <Compile Include="Compatability\SilverlightCompatability.cs" />
+    <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
     <Compile Include="Configuration\CollectionFactory.cs" />
     <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\OperatorFactory.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Query\Algebra\FilteredProduct.cs" />
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
+    <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\DescribeBuilder.cs" />

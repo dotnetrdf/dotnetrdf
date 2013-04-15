@@ -542,6 +542,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Add to Results
+                result.SetVariableOrdering(context.Variables);
                 if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
             }
             else

@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2012 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,37 +27,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.Web;
-using VDS.Web.Handlers;
 
-namespace VDS.RDF.Utilities.Server
+namespace VDS.RDF.Query.Algebra
 {
 
     /// <summary>
-    /// A Handlers collection which is set up for providing a SPARQL Server
+    /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables
     /// </summary>
-    public class SparqlHandlersCollection
-        : HttpListenerHandlerCollection
+    public class SetDistinctnessComparer
+        : IEqualityComparer<ISet>
     {
-        private RdfServerOptions _options;
+        private List<String> _vars = new List<String>();
 
-        /// <summary>
-        /// Creates a new handlers collection
-        /// </summary>
-        /// <param name="options">Server Options</param>
-        public SparqlHandlersCollection(RdfServerOptions options)
+        public SetDistinctnessComparer() { }
+
+        public SetDistinctnessComparer(IEnumerable<String> variables)
         {
-            this._options = options;
-            if (options.BaseDirectory == null)
+            this._vars.AddRange(variables);
+        }
+
+        public bool Equals(ISet x, ISet y)
+        {
+            if (this._vars.Count == 0)
             {
-                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(SparqlServerHandler)));
+                return x.Equals(y);
             }
             else
             {
-                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/query", typeof(SparqlServerHandler)));
-                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/update", typeof(SparqlServerHandler)));
-                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(StaticFileHandler)));
-                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.NoVerbs, HttpRequestMapping.AnyPath, typeof(DirectoryListingHandler)));
+                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
+            }
+        }
+
+        public int GetHashCode(ISet obj)
+        {
+            if (this._vars.Count == 0)
+            {
+                return obj.GetHashCode();
+            }
+            else
+            {
+                StringBuilder output = new StringBuilder();
+                foreach (String var in this._vars)
+                {
+                    output.Append("?" + var + " = " + obj[var].ToSafeString());
+                    output.Append(" , ");
+                }
+                output.Remove(output.Length - 3, 3);
+                return output.ToString().GetHashCode();
             }
         }
     }

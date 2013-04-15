@@ -111,11 +111,13 @@
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
+    <Compile Include="Configuration\ConfigurationLoaderInstanceTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
     <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
+    <Compile Include="Core\ComparisonHelperTests.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
     <Compile Include="Core\LiteralNodeTests.cs" />
     <Compile Include="Core\MimeTypesTests.cs" />
@@ -139,8 +141,11 @@
     <Compile Include="Parsing\Suites\Turtle11.cs" />
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
     <Compile Include="Query\Aggregates\AggregatesOverNullTests.cs" />
+    <Compile Include="Query\Aggregates\AggregateTests.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Query\Aggregates\GroupConcatTests.cs" />
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
+    <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
     <Compile Include="Query\ConstructWithOptionalTests.cs" />
@@ -150,6 +155,7 @@
     <Compile Include="Query\DefaultGraphTests2.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
     <Compile Include="Query\FormattingTests.cs" />
@@ -226,10 +232,46 @@
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\diff_cases\case1_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case1_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case2_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case2_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case3_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case3_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case4_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case4_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case5_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case5_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case6_b.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\dbpedia_malformed.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\full-minuend.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\diff_cases\case6_a.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\n3\anon-prop.n3">
@@ -325,6 +367,9 @@
     <Content Include="resources\ntriples\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\ontology.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\rdfa\webscience.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -380,6 +425,9 @@
     <Compile Include="Query\FullText\IndexCreationTests.cs" />
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
+    <Content Include="resources\schema-org.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\trix\curies.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1586,6 +1634,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\swrc.owl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\learning-problem.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\LearningStyles.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">

@@ -184,7 +184,7 @@ namespace VDS.RDF
             return result;
         }
 
-        /// <summary>
+                /// <summary>
         /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided
         /// </summary>
         /// <param name="qname">QName to resolve</param>
@@ -192,6 +192,19 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns></returns>
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
+        {
+            return Tools.ResolveQName(qname, nsmap, baseUri, false);
+        }
+
+        /// <summary>
+        /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided
+        /// </summary>
+        /// <param name="qname">QName to resolve</param>
+        /// <param name="nsmap">Namespace Map to resolve against</param>
+        /// <param name="baseUri">Base Uri to resolve against</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI</param>
+        /// <returns></returns>
+        public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
         {
             String output;
 
@@ -203,7 +216,7 @@ namespace VDS.RDF
                     //Default Namespace Defined
                     output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + qname.Substring(1);
                 }
-                else
+                else if (allowDefaultPrefixFallback)
                 {
                     //No Default Namespace so use Base Uri
                     //These type of QNames are scoped to the local Uri regardless of the type of the Base Uri
@@ -224,6 +237,10 @@ namespace VDS.RDF
                     {
                         throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
                     }
+                }
+                else
+                {
+                    throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace since the namespace is not defined.  Did you to forget to define a namespace for the : prefix?");
                 }
             }
             else

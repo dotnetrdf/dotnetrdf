@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.Web;
+using VDS.Web.Consoles;
 using VDS.Web.Logging;
 
 namespace VDS.RDF.Utilities.Server.GUI
@@ -36,7 +37,7 @@ namespace VDS.RDF.Utilities.Server.GUI
     /// A logger to server monitor adaptor
     /// </summary>
     class MonitorLogger
-        : ApacheStyleLogger, IExtendedHttpLogger
+        : ApacheStyleLogger
     {
         private ServerMonitor _monitor;
 
@@ -66,22 +67,49 @@ namespace VDS.RDF.Utilities.Server.GUI
         {
             this._monitor.WriteLine(line);
         }
+    }
 
-        /// <summary>
-        /// Logs errors
-        /// </summary>
-        /// <param name="ex">Error</param>
-        public void LogError(Exception ex)
+    /// <summary>
+    /// A console to server monitor adaptor
+    /// </summary>
+    class MonitorConsole
+        : BaseConsole
+    {
+        private ServerMonitor _monitor;
+
+        public MonitorConsole(ServerMonitor monitor)
         {
-            this._monitor.WriteLine(ex.Message);
-            this._monitor.WriteLine(ex.StackTrace);
-            while (ex.InnerException != null)
-            {
-                this._monitor.WriteLine("Inner Exception:");
-                this._monitor.WriteLine(ex.InnerException.Message);
-                this._monitor.WriteLine(ex.InnerException.StackTrace);
-                ex = ex.InnerException;
-            }
+            this._monitor = monitor;
+        }
+
+        protected override void PrintError(string message, Exception e)
+        {
+            this.PrintError(message + "\n" + this.GetFullStackTrace(e));
+        }
+
+        protected override void PrintError(string message)
+        {
+            this._monitor.WriteLine(message);
+        }
+
+        protected override void PrintInformation(string message)
+        {
+            this._monitor.WriteLine(message);
+        }
+
+        protected override void PrintWarning(string message, Exception e)
+        {
+            this.PrintWarning(message + "\n" + this.GetFullStackTrace(e));
+        }
+
+        protected override void PrintWarning(string message)
+        {
+            this._monitor.WriteLine(message);
+        }
+
+        public override void Dispose()
+        {
+            //Do nothing
         }
     }
 }

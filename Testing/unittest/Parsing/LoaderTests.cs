@@ -148,33 +148,6 @@ namespace VDS.RDF.Parsing
         }
 
         [TestMethod]
-        public void ParsingUriLoaderWithChunkedData()
-        {
-            try
-            {
-                Options.UriLoaderCaching = false;
-                Options.HttpDebugging = true;
-                Options.UriLoaderTimeout = 90000;
-                //Options.HttpFullDebugging = true;
-
-                Graph g = new Graph();
-                UriLoader.Load(g, new Uri("http://cheminfov.informatics.indiana.edu:8080/medline/resource/medline/15760907"));
-
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-            }
-            finally
-            {
-                //Options.HttpFullDebugging = false;
-                Options.UriLoaderTimeout = 15000;
-                Options.HttpDebugging = false;
-                Options.UriLoaderCaching = true;
-            }
-        }
-
-        [TestMethod]
         public void ParsingUriLoaderDBPedia()
         {
             int defaultTimeout = Options.UriLoaderTimeout;

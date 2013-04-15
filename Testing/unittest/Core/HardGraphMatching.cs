@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -44,6 +45,9 @@ namespace VDS.RDF
         private const int CycleNodes = 100;
         private const int CycleDropNodes = 25;
         private const int StarNodes = 50;
+
+        private NodeFactory _factory = new NodeFactory();
+        private INodeFormatter _formatter = new NTriplesFormatter();
 
         [TestMethod]
         public void GraphHardMatch1()
@@ -231,6 +235,59 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual);
         }
 
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase1()
+        {
+            const string testGraphName = "case1";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase2()
+        {
+            const string testGraphName = "case2";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase3()
+        {
+            const string testGraphName = "case3";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase4()
+        {
+            const string testGraphName = "case4";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase5()
+        {
+            const string testGraphName = "case5";
+            TestGraphMatch(testGraphName);
+        }
+
+        [TestMethod, Timeout(10000)]
+        public void GraphMatchSlowOnEqualGraphsCase6()
+        {
+            const string testGraphName = "case6";
+            TestGraphMatch(testGraphName);
+        }
+
+        private static void TestGraphMatch(string testGraphName)
+        {
+            Graph a = new Graph();
+            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
+            Graph b = new Graph();
+            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
+
+            Assert.IsTrue(a.Equals(b));
+            Assert.IsTrue(b.Equals(a));
+        }
+
         private IGraph GenerateCyclicGraph(int nodes, int seed)
         {
             return GenerateCyclicGraph(nodes, seed, 0);
@@ -300,6 +357,128 @@ namespace VDS.RDF
             }
 
             return g;
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce1()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a = this._factory.CreateBlankNode("a");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a single blank node with two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a)));
+            Assert.IsFalse(generated.All(m => m[a].Equals(b1)));
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce2()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes with two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1, b2 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(4, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce3()
+        {
+            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
+        [TestMethod]
+        public void GraphMatchBruteForce4()
+        {
+            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>();
+            INode a1 = this._factory.CreateBlankNode("a1");
+            INode a2 = this._factory.CreateBlankNode("a2");
+            INode b1 = this._factory.CreateBlankNode("b1");
+            INode b2 = this._factory.CreateBlankNode("b2");
+
+            //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
+            //Our base mapping also already calls out the confirmed mapping
+            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            possibles.Add(a1, new List<INode> { b1 });
+            possibles.Add(a2, new List<INode> { b1, b2 });
+            baseMapping.Add(a1, b1);
+
+            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();
+            this.PrintMappings(generated);
+            Assert.AreEqual(2, generated.Count);
+            Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
+        }
+
+        private void PrintMappings(List<Dictionary<INode, INode>> mappings)
+        {
+            for (int i = 0; i < mappings.Count; i++)
+            {
+                Console.WriteLine("Mapping " + (i + 1) + " of " + mappings.Count);
+                foreach (KeyValuePair<INode, INode> kvp in mappings[i])
+                {
+                    Console.WriteLine(this._formatter.Format(kvp.Key) + " => " + this._formatter.Format(kvp.Value));
+                }
+                Console.WriteLine();
+            }
+        }
+
+        [TestMethod]
+        public void GraphMatchNull1()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsTrue(matcher.Equals(null, null));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull2()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsFalse(matcher.Equals(new Graph(), null));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull3()
+        {
+            GraphMatcher matcher = new GraphMatcher();
+            Assert.IsFalse(matcher.Equals(null, new Graph()));
+        }
+
+        [TestMethod]
+        public void GraphMatchNull4()
+        {
+            IGraph g = new Graph();
+            Assert.IsFalse(g.Equals((IGraph)null));
         }
     }
 }

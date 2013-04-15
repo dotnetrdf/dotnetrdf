@@ -207,6 +207,22 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Sets the variable ordering for the multiset
+        /// </summary>
+        /// <param name="variables">Variable Ordering</param>
+        public override void SetVariableOrder(IEnumerable<string> variables)
+        {
+            //Validate that the ordering is applicable
+            if (variables.Count() < this._variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+            foreach (String var in this._variables)
+            {
+                if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
+            }
+            //Apply ordering
+            this._variables = new List<string>(variables);
+        }
+
+        /// <summary>
         /// Removes a Set from the Multiset
         /// </summary>
         /// <param name="id">Set ID</param>
@@ -357,7 +373,8 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
                 }
             }
-        }
+        } 
+
     }
 
     internal class SingletonMultiset : Multiset

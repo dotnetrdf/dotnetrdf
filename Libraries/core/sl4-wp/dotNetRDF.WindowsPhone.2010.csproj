@@ -2392,9 +2392,19 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>    
+    </Compile>
     <Compile Include="..\net40\Query\Builder\AssignmentVariableNamePart.cs">
       <Link>Query\Builder\AssignmentVariableNamePart.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+  </ItemGroup> 
+  <ItemGroup>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
     </Compile>

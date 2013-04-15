@@ -654,44 +654,7 @@ namespace VDS.RDF
         /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes</param>
         /// <returns></returns>
         /// <remarks>
-        /// <para>
-        /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll - <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a>
-        /// </para>
-        /// <para>
-        /// Graph Equality is determined according to the following algorithm:
-        /// </para>
-        /// <ol>
-        /// <li>If the given Graph is null Graphs are not equal</li>
-        /// <li>If the given Graph is this Graph (as determined by Reference Equality) then Graphs are equal</li>
-        /// <li>If the Graphs have a different number of Triples they are not equal</li>
-        /// <li>Declare a list of Triples which are the Triples of the given Graph called <em>OtherTriples</em></li>
-        /// <li>Declare two dictionaries of Nodes to Integers which are called <em>LocalClassification</em> and <em>OtherClassification</em></li>
-        /// <li>For Each Triple in this Graph
-        ///     <ol>
-        ///     <li>If it is a Ground Triple and cannot be found and removed from <em>OtherTriples</em> then Graphs are not equal since the Triple does not exist in both Graphs</li>
-        ///     <li>If it contains Blank Nodes track the number of usages of this Blank Node in <em>LocalClassification</em></li>
-        ///     </ol>
-        /// </li> 
-        /// <li>If there are any Triples remaining in <em>OtherTriples</em> which are Ground Triples then Graphs are not equal since this Graph does not contain them</li>
-        /// <li>If all the Triples from both Graphs were Ground Triples and there were no Blank Nodes then the Graphs are equal</li>
-        /// <li>Iterate over the remaining Triples in <em>OtherTriples</em> and populate the <em>OtherClassification</em></li>
-        /// <li>If the count of the two classifications is different the Graphs are not equal since there are differing numbers of Blank Nodes in the Graph</li>
-        /// <li>Now build two additional dictionaries of Integers to Integers which are called <em>LocalDegreeClassification</em> and <em>OtherDegreeClassification</em>.  Iterate over <em>LocalClassification</em> and <em>OtherClassification</em> such that the corresponding degree classifications contain a mapping of the number of Blank Nodes with a given degree</li>
-        /// <li>If the count of the two degree classifications is different the Graphs are not equal since there are not the same range of Blank Node degrees in both Graphs</li>
-        /// <li>For All classifications in <em>LocalDegreeClassification</em> there must be a matching classification in <em>OtherDegreeClassification</em> else the Graphs are not equal</li>
-        /// <li>Then build a possible mapping using the following rules:
-        ///     <ol>
-        ///     <li>Any Blank Node used only once should be mapped to an equivalent Blank Node in the other Graph.  If this is not possible then the Graphs are not equal</li>
-        ///     <li>Any Blank Node with a unique degree should be mapped to an equivalent Blank Node in the other Graph.  If this is not possible then the Graphs are not equal</li>
-        ///     <li>Keep a copy of the mapping up to this point as a Base Mapping for use as a fallback in later steps</li>
-        ///     <li>Build up lists of dependent pairs of Blank Nodes for both Graphs</li>
-        ///     <li>Use these lists to determine if there are any independent nodes not yet mapped.  These should be mapped to equivalent Blank Nodes in the other Graph, if this is not possible the Graphs are not equal</li>
-        ///     <li>Use the Dependencies and existing mappings to generate a possible mapping</li>
-        ///     <li>If a Complete Possible Mapping (there is a Mapping for each Blank Node from this Graph to the Other Graph) then test this mapping.  If it succeeds then the Graphs are equal</li>
-        ///     <li>Otherwise we now fallback to the Base Mapping and use it as a basis for Brute Forcing the possible solution space and testing every possibility until either a mapping works or we find the Graphs to be non-equal</li>
-        ///     </ol>
-        /// </li>
-        /// </ol>
+        /// See <see cref="GraphMatcher"/> for documentation of the equality algorithm used.
         /// </remarks>
         public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {

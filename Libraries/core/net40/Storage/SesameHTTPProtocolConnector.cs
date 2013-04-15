@@ -57,7 +57,7 @@ namespace VDS.RDF.Storage
     public abstract class BaseSesameHttpProtocolConnector
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage
+, IQueryableStorage
 #endif
     {
         /// <summary>
@@ -107,7 +107,6 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected SesameServer _server;
 
-        private StringBuilder _output = new StringBuilder();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
@@ -503,7 +502,7 @@ namespace VDS.RDF.Storage
                 {
                     //if (this._fullContextEncoding)
                     //{
-                        serviceParams.Add("context", "<" + graphUri + ">");
+                    serviceParams.Add("context", "<" + graphUri + ">");
                     //}
                     //else
                     //{
@@ -645,7 +644,6 @@ namespace VDS.RDF.Storage
                         //Have to do a DELETE for each individual Triple
                         foreach (Triple t in removals.Distinct())
                         {
-                            this._output.Remove(0, this._output.Length);
                             serviceParams["subj"] = this._formatter.Format(t.Subject);
                             serviceParams["pred"] = this._formatter.Format(t.Predicate);
                             serviceParams["obj"] = this._formatter.Format(t.Object);
@@ -912,7 +910,6 @@ namespace VDS.RDF.Storage
                             serviceParams.Add("context", "null");
                         }
 
-                        this._output.Remove(0, this._output.Length);
                         serviceParams.Add("subj", this._formatter.Format(t.Subject));
                         serviceParams.Add("pred", this._formatter.Format(t.Predicate));
                         serviceParams.Add("obj", this._formatter.Format(t.Object));
@@ -920,21 +917,60 @@ namespace VDS.RDF.Storage
                         requests.Enqueue(request);
                     }
 
-                    //Run all the requests, if any error make an error callback and abort
+                    //Run all the requests, if any error make an error callback and abort, if it succeeds then do any adds
                     this.MakeRequestSequence(requests, (sender, args, st) =>
                         {
                             if (!args.WasSuccessful)
                             {
-                                //Invoke callbakc and bail out
+                                //Deletes failed
+                                //Invoke callback and bail out
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
                                 return;
                             }
+                            else
+                            {
+                                //Deletes suceeded, perform any adds
+                                if (additions != null)
+                                {
+                                    if (additions.Any())
+                                    {
+                                        //Prep Service Params
+                                        serviceParams = new Dictionary<string, string>();
+                                        if (!graphUri.Equals(String.Empty))
+                                        {
+                                            serviceParams.Add("context", "<" + graphUri + ">");
+                                        }
+                                        else
+                                        {
+                                            serviceParams.Add("context", "null");
+                                        }
+
+                                        //Add the new Triples
+                                        request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
+                                        Graph h = new Graph();
+                                        h.Assert(additions);
+                                        request.ContentType = MimeTypesHelper.NTriples[0];
+
+                                        //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
+                                        this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+
+                                        //Don't want to make the callback until the adds have finished
+                                        //So we must return here as otherwise we will make the callback prematurely
+                                        return;
+                                    }
+                                }
+
+                                //If there were no adds we should make the callback now
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                            }
                         }, state);
 
+                    //Don't want to make the callback until deletes have finished and we've processed any subsequent adds
+                    //So we must return here as otherwise we will make the callback prematurely
+                    return;
                 }
             }
-
-            if (additions != null)
+            else if (additions != null)
             {
                 if (additions.Any())
                 {
@@ -957,11 +993,14 @@ namespace VDS.RDF.Storage
 
                     //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
                     this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+
+                    //Don't want to make the callback until the adds have finished
+                    //So we must return here as otherwise we will make the callback prematurely
                     return;
                 }
             }
 
-            //If we get here then we may have done some deletes (which suceeded) but didn't do any adds so we still need to invoke the callback
+            //If we get here then we had nothing to do
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
         }
 
@@ -1384,7 +1423,7 @@ namespace VDS.RDF.Storage
     public class SesameHttpProtocolVersion6Connector
         : SesameHttpProtocolVersion5Connector
 #if !NO_SYNC_HTTP
-        , IUpdateableStorage
+, IUpdateableStorage
 #endif
     {
         /// <summary>

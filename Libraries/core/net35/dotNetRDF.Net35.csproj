@@ -2426,6 +2426,9 @@
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>    
+    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\BlankNodeExpression.cs">
       <Link>Query\Builder\Expressions\BlankNodeExpression.cs</Link>
     </Compile>
@@ -2435,6 +2438,13 @@
     <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
       <Link>Query\Builder\ExpressionBuilder.cs</Link>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
     </Compile>

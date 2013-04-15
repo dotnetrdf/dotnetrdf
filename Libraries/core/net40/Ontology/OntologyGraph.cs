@@ -239,11 +239,11 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Gets all OWL Data properties defined in the graph
         /// </summary>
-        public IEnumerable<OntologyProperty> OwlDataProperties
+        public IEnumerable<OntologyProperty> OwlDatatypeProperties
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDataProperty)));
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
             }
         }
 
@@ -259,13 +259,24 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Gets all properties defined in the graph using any of the standard OWL property types (owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty)
+        /// </summary>
+        public IEnumerable<OntologyProperty> OwlProperties
+        {
+            get
+            {
+                return this.OwlAnnotationProperties.Concat(this.OwlDatatypeProperties).Concat(this.OwlObjectProperties);
+            }
+        }
+
+        /// <summary>
         /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty)
         /// </summary>
         public IEnumerable<OntologyProperty> AllProperties
         {
             get
             {
-                return this.RdfProperties.Concat(this.OwlAnnotationProperties).Concat(this.OwlDataProperties).Concat(this.OwlObjectProperties);
+                return this.RdfProperties.Concat(this.OwlAnnotationProperties).Concat(this.OwlDatatypeProperties).Concat(this.OwlObjectProperties);
             }
         }
 
