@@ -149,7 +149,7 @@ results.Dispose()
 
             //First off make sure to load some data into the some
             SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
-            updateEndpoint.Update("INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
+            updateEndpoint.Update("DROP ALL; INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
 
             using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
             {
