@@ -75,7 +75,7 @@ namespace VDS.RDF.Core
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(Notation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
-
+#if !NO_COMPRESSION
 #if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
@@ -392,10 +392,12 @@ namespace VDS.RDF.Core
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt.gz");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 
         [TestMethod]
@@ -404,10 +406,12 @@ namespace VDS.RDF.Core
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt.gz");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 #endif
 

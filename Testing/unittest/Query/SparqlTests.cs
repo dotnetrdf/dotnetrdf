@@ -428,7 +428,7 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-#if !NO_SYNC_HTTP
+#if !NO_SYNC_HTTP // No SparqlConnector
         [TestMethod]
         public void SparqlEndpointWithExtensions()
         {

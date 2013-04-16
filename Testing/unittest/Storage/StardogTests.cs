@@ -68,6 +68,7 @@ namespace VDS.RDF.Storage
         }
 
 #if !NO_SYNC_HTTP // Many of these tests require a synchronous API
+
         [TestMethod]
         public void StorageStardogLoadDefaultGraph()
         {

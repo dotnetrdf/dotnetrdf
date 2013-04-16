@@ -2369,7 +2369,7 @@
       <HintPath>packages\Newtonsoft.Json.4.5.11\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="VDS.Common">
-      <HintPath>packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
+      <HintPath>..\..\..\Testing\portable\packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

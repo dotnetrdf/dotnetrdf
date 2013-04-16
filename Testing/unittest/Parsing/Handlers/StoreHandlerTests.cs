@@ -163,7 +163,9 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
         }
+#endif
 
+#if !NO_FILE // No FileLoader
         [TestMethod]
         public void ParsingFileLoaderStoreHandlerExplicit()
         {

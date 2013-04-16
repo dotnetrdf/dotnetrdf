@@ -117,7 +117,7 @@ _:b a dnr:GraphCollection ;
             Assert.AreEqual(typeof(ThreadSafeGraphCollection), collection.GetType());
         }
 
-#if !NO_FILE
+#if !NO_FILE // No DiskDemandGraphCollection
         [TestMethod]
         public void ConfigurationLoadObjectGraphCollection3()
         {
@@ -137,7 +137,7 @@ _:b a dnr:GraphCollection ;
         }
 #endif
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT // No WebDemandGraphCollection
         [TestMethod]
         public void ConfigurationLoadObjectGraphCollection4()
         {
@@ -155,7 +155,9 @@ _:b a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+#endif
 
+#if !SILVERLIGHT // No WebDemandGraphCollection
         [TestMethod]
         public void ConfigurationLoadObjectGraphCollection5()
         {
@@ -193,7 +195,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(Graph), result.GetType());
         }
 
-#if !NO_RWLOCK
+#if !NO_RWLOCK // No ThreadSafeGraph
         [TestMethod]
         public void ConfigurationLoadObjectGraphEmpty2()
         {
@@ -244,7 +246,7 @@ _:a a dnr:TripleStore ;
             Assert.AreEqual(typeof(TripleStore), result.GetType());
         }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT // No WebDemandTripleStore
         [TestMethod]
         public void ConfigurationLoadObjectTripleStoreEmpty2()
         {
