@@ -152,12 +152,7 @@ namespace VDS.RDF.Update
                 }
 #endif
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
                     request.Method = "POST";
@@ -175,12 +170,7 @@ namespace VDS.RDF.Update
                 request.Accept = MimeTypesHelper.Any;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we don't get an error then we should be fine
                     response.Close();
                 }
@@ -188,12 +178,7 @@ namespace VDS.RDF.Update
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
@@ -250,12 +235,7 @@ namespace VDS.RDF.Update
             }
 #endif
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
                 {
@@ -272,12 +252,7 @@ namespace VDS.RDF.Update
                         {
                             using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
                             {
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse(response);
-                                }
-#endif
+                                Tools.HttpDebugResponse(response);
 
                                 response.Close();
                                 callback(state);

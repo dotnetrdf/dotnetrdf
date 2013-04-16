@@ -60,7 +60,9 @@ namespace VDS.RDF
             //Create our Native Managers
             List<IStorageProvider> managers = new List<IStorageProvider>() {
                 new InMemoryManager(),
+#if !NO_DATAEXTENSIONS
                 VirtuosoTest.GetConnection()
+#endif
             };
 
             //Save the Graph to each Manager

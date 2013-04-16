@@ -330,6 +330,7 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
             }
 
+            result.SetVariableOrdering(context.Variables);
             if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
         }
 

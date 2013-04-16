@@ -93,11 +93,8 @@ namespace VDS.RDF
         private static bool _usePLinq = true;
 #endif
 
-#if DEBUG
-        //Debug Build Only
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
-#endif
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
@@ -509,19 +506,10 @@ namespace VDS.RDF
                 _defaultTokenQueueMode = value;
             }
         }
-
-        #region Debug Build Only Options
-
-        #if DEBUG
-
+        
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// This does not guarentee that this information is output to the Console Standard Out, most code that makes HTTP requests should do this but it may vary depending on the Library build and the exact classes used.
-        /// </remarks>
         public static bool HttpDebugging {
             get
             {
@@ -536,11 +524,6 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// Only applies if <see cref="HttpDebugging">HttpDebugging</see> is enabled
-        /// </remarks>
         public static bool HttpFullDebugging
         {
             get
@@ -552,9 +535,5 @@ namespace VDS.RDF
                 _httpFullDebug = value;
             }
         }
-
-        #endif
-
-        #endregion
     }
 }

@@ -140,11 +140,13 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
         }
 
+#if !PORTABLE
         [TestMethod]
         public void ParsingFileLoaderStoreHandlerCounting()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingFileLoaderStoreHandlerCountingActual));
         }
+
 
         private void ParsingFileLoaderStoreHandlerCountingActual()
         {
@@ -188,7 +190,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
-
+#endif
         #endregion
 
         #region TriG Tests

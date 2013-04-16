@@ -29,6 +29,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Primary;
@@ -65,6 +66,20 @@ namespace VDS.RDF
             // then
             Assert.IsTrue(algebra.InnerAlgebra is Select);
             Assert.IsTrue(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
+        }
+
+        [TestMethod]
+        public void SparqlJoinExplosion()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile("LearningStyles.rdf");
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile("learning-problem.rq");
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(176, results.Count);
         }
     }
 }

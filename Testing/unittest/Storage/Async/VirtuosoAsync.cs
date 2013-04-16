@@ -30,6 +30,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Storage;
 
+#if !NO_DATAEXTENSIONS
 namespace VDS.RDF.Storage.Async
 {
     [TestClass]
@@ -42,3 +43,4 @@ namespace VDS.RDF.Storage.Async
         }
     }
 }
+#endif

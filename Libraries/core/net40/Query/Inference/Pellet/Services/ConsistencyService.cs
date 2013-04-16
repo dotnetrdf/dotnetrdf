@@ -55,23 +55,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
                     SparqlResultSet results = new SparqlResultSet();
                     parser.Load(results, new StreamReader(response.GetResponseStream()));
@@ -82,12 +72,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
@@ -104,23 +89,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetResponse(result =>
                 {
                     using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
                         ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
                         SparqlResultSet results = new SparqlResultSet();
                         parser.Load(results, new StreamReader(response.GetResponseStream()));

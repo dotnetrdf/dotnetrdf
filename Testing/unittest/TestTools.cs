@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -204,6 +205,7 @@ namespace VDS.RDF
                 Console.WriteLine("MSGs added to 1st Graph to give 2nd Graph:");
                 foreach (IGraph msg in report.AddedMSGs)
                 {
+                    Console.WriteLine(msg.Triples.Count + " Triple(s):");
                     foreach (Triple t in msg.Triples)
                     {
                         Console.WriteLine(t.ToString(formatter));
@@ -214,6 +216,7 @@ namespace VDS.RDF
                 Console.WriteLine("MSGs removed from 1st Graph to give 2nd Graph:");
                 foreach (IGraph msg in report.RemovedMSGs)
                 {
+                    Console.WriteLine(msg.Triples.Count + " Triple(s):");
                     foreach (Triple t in msg.Triples)
                     {
                         Console.WriteLine(t.ToString(formatter));
@@ -279,6 +282,21 @@ namespace VDS.RDF
                     first = false;
                 }
                 Console.Write(item.ToString());
+            }
+        }
+
+        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action testMethod)
+        {
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
+
+            try
+            {
+                testMethod();
+            }
+            finally
+            {
+                Thread.CurrentThread.CurrentCulture = currentCulture;
             }
         }
     }

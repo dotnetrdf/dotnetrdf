@@ -322,6 +322,7 @@ namespace VDS.RDF.Parsing
 
             if (v < context.Variables.Count) throw ParserHelper.Error("Too few RDF Terms, got " + v + " but expected " + context.Variables.Count, next);
 
+            result.SetVariableOrdering(context.Variables);
             if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
         }
 

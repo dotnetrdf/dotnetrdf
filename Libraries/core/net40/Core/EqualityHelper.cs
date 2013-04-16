@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using VDS.RDF.Parsing;
 
@@ -342,7 +343,7 @@ namespace VDS.RDF
             else if (a.DataType == null && b.DataType == null)
             {
                 //If neither are typed use Lexical Ordering on the value
-                return a.Value.CompareTo(b.Value);
+                return String.CompareOrdinal(a.Value, b.Value);
             }
             else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
@@ -351,7 +352,7 @@ namespace VDS.RDF
                 if (!XmlSpecsHelper.IsSupportedType(type))
                 {
                     //Don't know how to order so use lexical order on the value
-                    return a.Value.CompareTo(b.Value);
+                    return String.CompareOrdinal(a.Value, b.Value);
                 }
                 else
                 {
@@ -361,7 +362,7 @@ namespace VDS.RDF
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
                                 //Can use Lexical ordering for this
-                                return a.Value.ToLower().CompareTo(b.Value.ToLower());
+                                return String.Compare(a.Value.ToLower(), b.Value.ToLower(), StringComparison.Ordinal);
 
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 //Remember that xsd:byte is actually equivalent to SByte in .Net
@@ -384,10 +385,7 @@ namespace VDS.RDF
                                     {
                                         return 1;
                                     }
-                                    else
-                                    {
-                                        return a.Value.CompareTo(b.Value);
-                                    }
+                                    goto default;
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
@@ -413,7 +411,7 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -442,7 +440,7 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -458,7 +456,7 @@ namespace VDS.RDF
                                         {
                                             if (bNegInt >= 0)
                                             {
-                                                return a.Value.CompareTo(b.Value);
+                                                goto default;
                                             }
                                             else
                                             {
@@ -476,7 +474,7 @@ namespace VDS.RDF
                                     }
                                     else if (aNegInt >= 0)
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                     else
                                     {
@@ -489,7 +487,7 @@ namespace VDS.RDF
                                     {
                                         if (bNegInt >= 0)
                                         {
-                                            return a.Value.CompareTo(b.Value);
+                                            goto default;
                                         }
                                         else
                                         {
@@ -498,7 +496,7 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -531,14 +529,14 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 //Extract the Double Values and compare
                                 double aDouble, bDouble;
-                                if (Double.TryParse(a.Value, out aDouble))
+                                if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDouble))
                                 {
                                     if (Double.TryParse(b.Value, out bDouble))
                                     {
@@ -551,22 +549,48 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Double.TryParse(b.Value, out bDouble))
+                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDouble))
                                     {
                                         return 1;
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
+                                    }
+                                }
+
+                            case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
+                                //Extract the Decimal Values and compare
+                                decimal aDecimal, bDecimal;
+                                if (decimal.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDecimal))
+                                {
+                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDecimal))
+                                    {
+                                        return aDecimal.CompareTo(bDecimal);
+                                    }
+                                    else
+                                    {
+                                        return -1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (decimal.TryParse(b.Value, out bDecimal))
+                                    {
+                                        return 1;
+                                    }
+                                    else
+                                    {
+                                        goto default;
                                     }
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 //Extract the Float Values and compare
                                 float aFloat, bFloat;
-                                if (Single.TryParse(a.Value, out aFloat))
+                                if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aFloat))
                                 {
-                                    if (Single.TryParse(b.Value, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
                                     {
                                         return aFloat.CompareTo(bFloat);
                                     }
@@ -577,13 +601,13 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Single.TryParse(b.Value, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
                                     {
                                         return 1;
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -609,7 +633,7 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -657,14 +681,13 @@ namespace VDS.RDF
                                     }
                                     catch
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //String Type
-                                //Can use Lexical Ordering for this
-                                return a.Value.CompareTo(b.Value);
+                            //Can use Lexical Ordering for thisgoto default;
 
                             case XmlSpecsHelper.XmlSchemaDataTypeAnyUri:
                                 //Uri Type
@@ -692,7 +715,7 @@ namespace VDS.RDF
                                     }
                                     catch
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -719,7 +742,7 @@ namespace VDS.RDF
                                     }
                                     else
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
@@ -749,13 +772,13 @@ namespace VDS.RDF
                                     }
                                     catch
                                     {
-                                        return a.Value.CompareTo(b.Value);
+                                        goto default;
                                     }
                                 }
 
                             default:
                                 //Don't know how to order so use lexical order
-                                return a.Value.CompareTo(b.Value);
+                                return String.CompareOrdinal(a.Value, b.Value);
                         }
                     }
                     catch
@@ -763,7 +786,7 @@ namespace VDS.RDF
                         //There was some error suggesting a non-valid value for a type
                         //e.g. "example"^^xsd:integer
                         //In this case just use Lexical Ordering
-                        return a.Value.CompareTo(b.Value);
+                        return String.CompareOrdinal(a.Value, b.Value);
                     }
                 }
             }

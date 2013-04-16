@@ -142,7 +142,7 @@ namespace VDS.RDF.Update
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
             g.BaseUri = null;
             store.Add(g);
 

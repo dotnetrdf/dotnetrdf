@@ -3,6 +3,16 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF
 {
+    public static class RdfHandlerExtensions
+    {
+        public static void Load(this IRdfHandler handler, string filename)
+        {
+            using (var textReader = new StreamReader(filename))
+            {
+                
+            }
+        }
+    }
     public static class RdfReaderExtensions
     {
         public static void Load(this IRdfReader  rdr, Graph g, string fileName)

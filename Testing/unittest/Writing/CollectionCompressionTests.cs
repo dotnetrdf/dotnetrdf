@@ -225,7 +225,7 @@ namespace VDS.RDF.Writing
         //    this.CheckCompressionRoundTrip(g);
         //}
 
-
+#if !NO_SYNC_HTTP
         [TestMethod]
         public void WritingCollectionCompressionComplex1()
         {
@@ -247,6 +247,7 @@ namespace VDS.RDF.Writing
 
             this.CheckCompressionRoundTrip(g);
         }
+#endif
 
         [TestMethod]
         public void WritingCollectionCompressionComplex2()

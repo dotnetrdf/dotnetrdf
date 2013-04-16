@@ -6,12 +6,12 @@ namespace VDS.RDF
 {
     public static class GraphExtensions
     {
-        public static void LoadFromFile(this Graph g, string filename)
+        public static void LoadFromFile(this IGraph g, string filename)
         {
             LoadFromFile(g, filename, null);
         }
 
-        public static void LoadFromFile(this Graph g, string filename, IRdfReader parser)
+        public static void LoadFromFile(this IGraph g, string filename, IRdfReader parser)
         {
             var path = System.IO.Path.GetFullPath(filename);
             if (g.IsEmpty && g.BaseUri == null)

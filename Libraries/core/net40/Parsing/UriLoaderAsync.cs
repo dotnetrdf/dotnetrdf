@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
             //Set Base URI if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
-            UriLoader.Load(new GraphHandler(g), u, parser, (_,s) => callback(g, s), state);
+            UriLoader.Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
         }
 
         /// <summary>
@@ -212,24 +212,13 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-#if DEBUG
-                //HTTP Debugging
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(result =>
                     {
                         using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
 
                             //Get a Parser and load the RDF
                             if (parser == null)
@@ -257,12 +246,7 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
 
                 throw new WebException("A HTTP Error occurrred resolving the URI '" + u.AbsoluteUri + "', see inner exception for details", webEx);
             }
@@ -414,24 +398,13 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-#if DEBUG
-                //HTTP Debugging
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(result =>
                 {
                     using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
 
                         //Get a Parser and load the RDF
                         if (parser == null)
@@ -484,12 +457,8 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                
                 //Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);
 

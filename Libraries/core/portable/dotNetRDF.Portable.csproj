@@ -2376,4 +2376,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
