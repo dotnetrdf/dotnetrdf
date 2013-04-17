@@ -38,6 +38,7 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Storage.Management;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -573,6 +574,7 @@ namespace VDS.RDF.Storage
     public class ReadWriteSparqlConnector
         : SparqlConnector, IUpdateableStorage
     {
+        private SparqlFormatter _formatter = new SparqlFormatter();
         private SparqlRemoteUpdateEndpoint _updateEndpoint;
 
         public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
@@ -603,6 +605,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets that deleting graphs is supported
+        /// </summary>
         public override bool DeleteSupported
         {
             get
@@ -611,6 +616,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets that the store is not read-only
+        /// </summary>
         public override bool IsReadOnly
         {
             get
@@ -619,6 +627,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the IO behaviour for the store
+        /// </summary>
         public override IOBehaviour IOBehaviour
         {
             get
@@ -627,6 +638,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets that triple level updates are supported, see the remarks section of the <see cref="ReadWriteSparqlConnector"/> for exactly what is and isn't supported
+        /// </summary>
         public override bool UpdateSupported
         {
             get
@@ -635,34 +649,137 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to delete</param>
         public override void DeleteGraph(string graphUri)
         {
-            base.DeleteGraph(graphUri);
+            base.DeleteGraph(graphUri.ToSafeUri());
         }
 
+        /// <summary>
+        /// Deletes a graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to delete</param>
         public override void DeleteGraph(Uri graphUri)
         {
-            base.DeleteGraph(graphUri);
+            if (graphUri == null)
+            {
+                this.Update("DROP DEFAULT");
+            }
+            else
+            {
+                this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
+            }
         }
 
+        /// <summary>
+        /// Saves a graph to the store
+        /// </summary>
+        /// <param name="g">Graph to save</param>
         public override void SaveGraph(IGraph g)
         {
             base.SaveGraph(g);
         }
 
+        /// <summary>
+        /// Updates a graph in the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            base.UpdateGraph(graphUri, additions, removals);
+            this.UpdateGraph(graphUri.ToSafeUri(), additions, removals);
         }
 
+        /// <summary>
+        /// Updates a graph in the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            base.UpdateGraph(graphUri, additions, removals);
+            StringBuilder updates = new StringBuilder();
+
+            if (additions != null)
+            {
+                if (additions.Any())
+                {
+                    //Insert preamble
+                    //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+                    if (graphUri != null)
+                    {
+                        updates.AppendLine("WITH <" + this._formatter.FormatUri(graphUri) + ">");
+                    }
+                    updates.AppendLine("INSERT");
+                    updates.AppendLine("{");
+
+                    //Serialize triples
+                    foreach (Triple t in additions)
+                    {
+                        updates.AppendLine(" " + this._formatter.Format(t));
+                    }
+
+                    //End
+                    updates.AppendLine("} WHERE { }");
+                    if (removals != null && removals.Any()) updates.AppendLine(";");
+                }
+            }
+            if (removals != null)
+            {
+                if (removals.Any())
+                {
+                    //Insert preamble
+                    //Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
+                    if (graphUri != null)
+                    {
+                        updates.AppendLine("WITH <" + this._formatter.FormatUri(graphUri) + ">");
+                    }
+                    updates.AppendLine("DELETE DATA");
+                    updates.AppendLine("{");
+
+                    //Serialize triples
+                    foreach (Triple t in removals)
+                    {
+                        if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
+                        updates.AppendLine(" " + this._formatter.Format(t));
+                    }
+
+                    //End
+                    updates.AppendLine("}");
+                }
+            }
+
+            //Make an update if necessary
+            if (updates.Length > 0)
+            {
+                this.Update(updates.ToString());
+            }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Update against the store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
         public void Update(string sparqlUpdate)
         {
-            throw new NotImplementedException();
+            if (!this._skipLocalParsing)
+            {
+                //Parse the update locally to validate it
+                //This also saves us wasting a HttpWebRequest on a malformed update
+                SparqlUpdateParser uparser = new SparqlUpdateParser();
+                uparser.ParseFromString(sparqlUpdate);
+
+                this._updateEndpoint.Update(sparqlUpdate);
+            }
+            else
+            {
+                //If we're skipping local parsing then we'll need to just make a raw update
+                this._updateEndpoint.Update(sparqlUpdate);
+            }
         }
 
         /// <summary>
@@ -671,14 +788,14 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[SPARQL Query+Update] Query: " + this._endpoint.Uri.AbsoluteUri + " Update: " + this._updateEndpoint.Uri.AbsoluteUri;
+            return "[SPARQL Query & Update] Query: " + this._endpoint.Uri.AbsoluteUri + " Update: " + this._updateEndpoint.Uri.AbsoluteUri;
         }
 
         /// <summary>
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             //Call base SerializeConfiguration() first
             INode manager = context.NextSubject;
