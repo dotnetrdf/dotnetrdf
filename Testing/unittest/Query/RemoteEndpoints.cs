@@ -156,29 +156,27 @@ results.Dispose()
 
             int totalRuns = 10000;
 
-            using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
+            //Loop over making queries to try and reproduce the memory leak
+            for (int i = 1; i <= totalRuns; i++)
             {
-                //Loop over making queries to try and reproduce the memory leak
-                for (int i = 1; i <= totalRuns; i++)
+                SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+                SparqlParameterizedString queryString = new SparqlParameterizedString();
+                queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
+
+                SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
+                Assert.AreEqual(1, results.Count);
+                foreach (SparqlResult result in results)
                 {
-                    SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                    SparqlParameterizedString queryString = new SparqlParameterizedString();
-                    queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
+                    //We're just iterating to make sure we touch the whole of the results
+                }
+                results.Dispose();
 
-                    SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
-                    Assert.AreEqual(1, results.Count);
-                    foreach (SparqlResult result in results)
-                    {
-                       writer.WriteLine(result.Value("o").ToString());
-                    }
-                    results.Dispose();
-
-                    if (i % 500 == 0)
-                    {
-                        Console.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
-                    }
+                if (i % 500 == 0)
+                {
+                    Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
                 }
             }
+            Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
         [TestMethod]
@@ -195,28 +193,26 @@ results.Dispose()
             int subjects = 1000;
             int predicates = 10;
 
-            using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
+            //Loop over making queries to try and reproduce the memory leak
+            for (int i = 1; i <= totalRuns; i++)
             {
-                //Loop over making queries to try and reproduce the memory leak
-                for (int i = 1; i <= totalRuns; i++)
+                //Add new data each time around
+                updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
+
+                SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+                SparqlParameterizedString queryString = new SparqlParameterizedString();
+                queryString.CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }";
+
+                ResultCountHandler handler = new ResultCountHandler();
+                endpoint.QueryWithResultSet(handler, queryString.ToString());
+                Assert.IsTrue(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
+
+                if (i % 500 == 0)
                 {
-                    //Add new data each time around
-                    updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
-
-                    SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                    SparqlParameterizedString queryString = new SparqlParameterizedString();
-                    queryString.CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }";
-
-                    ResultCountHandler handler = new ResultCountHandler();
-                    endpoint.QueryWithResultSet(handler, queryString.ToString());
-                    Assert.IsTrue(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
-
-                    if (i % 500 == 0)
-                    {
-                        Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
-                    }
+                    Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
                 }
             }
+            Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
         [TestMethod]
