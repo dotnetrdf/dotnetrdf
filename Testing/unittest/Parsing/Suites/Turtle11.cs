@@ -35,6 +35,30 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
+    [TestClass]
+    public class Turtle11Unofficial
+        : BaseRdfParserSuite
+    {
+        public Turtle11Unofficial()
+            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
+
+        [TestMethod]
+        public void ParsingSuiteTurtleW3CUnofficalTests()
+        {
+            //Run manifests
+            this.RunManifest("turtle11-unofficial/manifest.ttl", true);
+            this.RunManifest("turtle11-unofficial/manifest-bad.ttl", false);
+
+            if (this.Count == 0) Assert.Fail("No tests found");
+
+            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
+            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+
+            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+    }
+
    
     [TestClass]
     public class Turtle11
@@ -47,8 +71,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleW3C()
         {
             //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", true);
-            this.RunManifest("turtle11/manifest-bad.ttl", false);
+            //TODO: Add manifests to run once new tests are imported
 
             if (this.Count == 0) Assert.Fail("No tests found");
 

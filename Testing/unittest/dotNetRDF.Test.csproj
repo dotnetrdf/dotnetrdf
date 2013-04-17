@@ -430,184 +430,184 @@
     <Content Include="resources\trix\multiple-stylesheets.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-00.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-00.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-01.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-01.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-02.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-02.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-03.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-03.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-04.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-04.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-05.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-05.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-06.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-06.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-07.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-07.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-08.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-08.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-09.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-09.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-10.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-10.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-11.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-11.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-12.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-12.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-13.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-13.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\bad-14.ttl">
+    <Content Include="resources\turtle11-unofficial\bad-14.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\base1.ttl">
+    <Content Include="resources\turtle11-unofficial\base1.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\base2.ttl">
+    <Content Include="resources\turtle11-unofficial\base2.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\default.ttl">
+    <Content Include="resources\turtle11-unofficial\default.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\default1.ttl">
+    <Content Include="resources\turtle11-unofficial\default1.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\escapedNamespace1.ttl">
+    <Content Include="resources\turtle11-unofficial\escapedNamespace1.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\escapedPrefix1.ttl">
+    <Content Include="resources\turtle11-unofficial\escapedPrefix1.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\manifest-bad.ttl">
+    <Content Include="resources\turtle11-unofficial\manifest-bad.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\manifest.ttl">
+    <Content Include="resources\turtle11-unofficial\manifest.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\prefix1.ttl">
+    <Content Include="resources\turtle11-unofficial\prefix1.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\rdf-schema.ttl">
+    <Content Include="resources\turtle11-unofficial\rdf-schema.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\rdfq-results.ttl">
+    <Content Include="resources\turtle11-unofficial\rdfq-results.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\rdfs-namespace.ttl">
+    <Content Include="resources\turtle11-unofficial\rdfs-namespace.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-00.ttl">
+    <Content Include="resources\turtle11-unofficial\test-00.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-01.ttl">
+    <Content Include="resources\turtle11-unofficial\test-01.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-02.ttl">
+    <Content Include="resources\turtle11-unofficial\test-02.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-03.ttl">
+    <Content Include="resources\turtle11-unofficial\test-03.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-04.ttl">
+    <Content Include="resources\turtle11-unofficial\test-04.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-05.ttl">
+    <Content Include="resources\turtle11-unofficial\test-05.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-06.ttl">
+    <Content Include="resources\turtle11-unofficial\test-06.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-07.ttl">
+    <Content Include="resources\turtle11-unofficial\test-07.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-08.ttl">
+    <Content Include="resources\turtle11-unofficial\test-08.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-09.ttl">
+    <Content Include="resources\turtle11-unofficial\test-09.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-10.ttl">
+    <Content Include="resources\turtle11-unofficial\test-10.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-11.ttl">
+    <Content Include="resources\turtle11-unofficial\test-11.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-12.ttl">
+    <Content Include="resources\turtle11-unofficial\test-12.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-13.ttl">
+    <Content Include="resources\turtle11-unofficial\test-13.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-14.ttl">
+    <Content Include="resources\turtle11-unofficial\test-14.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-15.ttl">
+    <Content Include="resources\turtle11-unofficial\test-15.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-16.ttl">
+    <Content Include="resources\turtle11-unofficial\test-16.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-17.ttl">
+    <Content Include="resources\turtle11-unofficial\test-17.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-18.ttl">
+    <Content Include="resources\turtle11-unofficial\test-18.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-19.ttl">
+    <Content Include="resources\turtle11-unofficial\test-19.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-20.ttl">
+    <Content Include="resources\turtle11-unofficial\test-20.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-21.ttl">
+    <Content Include="resources\turtle11-unofficial\test-21.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-22.ttl">
+    <Content Include="resources\turtle11-unofficial\test-22.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-23.ttl">
+    <Content Include="resources\turtle11-unofficial\test-23.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-24.ttl">
+    <Content Include="resources\turtle11-unofficial\test-24.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-25.ttl">
+    <Content Include="resources\turtle11-unofficial\test-25.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-26.ttl">
+    <Content Include="resources\turtle11-unofficial\test-26.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-27.ttl">
+    <Content Include="resources\turtle11-unofficial\test-27.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-28-out.ttl">
+    <Content Include="resources\turtle11-unofficial\test-28-out.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-28.ttl">
+    <Content Include="resources\turtle11-unofficial\test-28.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-29.ttl">
+    <Content Include="resources\turtle11-unofficial\test-29.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\test-30.ttl">
+    <Content Include="resources\turtle11-unofficial\test-30.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11\type.ttl">
+    <Content Include="resources\turtle11-unofficial\type.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle\bad-00.ttl">
@@ -1653,129 +1653,6 @@
     <None Include="resources\trig\example6.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="resources\turtle11\base1.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\base2.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\default.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\escapedNamespace1.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\escapedPrefix1.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\prefix1.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\rdf-schema.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\rdfq-results.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\rdfs-namespace.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-00.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-01.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-02.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-03.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-04.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-05.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-06.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-07.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-08.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-09.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-10.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-11.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-12.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-13.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-14.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-15.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-16.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-17.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-18.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-19.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-20.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-21.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-22.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-23.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-24.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-25.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-26.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-27.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-28.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-29.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\test-30.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="resources\turtle11\type.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="resources\UnitTestConfig.properties">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -2049,6 +1926,129 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\multiple-optionals.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\base1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\base2.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\default.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\escapedNamespace1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\escapedPrefix1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\prefix1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\rdf-schema.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\rdfq-results.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\rdfs-namespace.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-00.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-01.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-02.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-03.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-04.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-05.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-06.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-07.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-08.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-09.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-10.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-11.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-12.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-13.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-14.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-15.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-16.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-17.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-18.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-19.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-20.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-21.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-22.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-23.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-24.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-25.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-26.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-27.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-28.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-29.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\test-30.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11-unofficial\type.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\UnitTestConfig.template" />
@@ -2910,6 +2910,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\nquads\" />
+    <Folder Include="resources\turtle11\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
