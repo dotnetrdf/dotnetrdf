@@ -22,12 +22,16 @@ Changed
  - Fixed a corner case bug where the Turtle parser could accept some invalid input and generate incorrect URIs for it (CORE-341)
  - Fixed a bug where certain triple patterns could trigger a bug in the scan logic and explode the solution space (CORE-343)
  - Fixed a bug where Graph equality could explode memory usage and be unable to determine equality on some blank node heavy equivalent graphs (CORE-345)
+ - Fixed a bug with numeric literals not being parsed using the invariant culture (CORE-344)
+ - Fixed a bug with the Ontology API not returning OWL datatype properties correctly (CORE-339)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API
  - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
+ - Graph equality should now be more performant (CORE-345)
+ - HTTP Debugging is no longer debug build specific (CORE-347)
 - Query
  - Wherever possible the order of variables in the SELECT clause will now be respected in SparqlResultSet objects (CORE-342)
 - Storage API
