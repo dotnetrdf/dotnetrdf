@@ -173,7 +173,7 @@ results.Dispose()
                     }
                     results.Dispose();
 
-                    if (i % 5000 == 0)
+                    if (i % 500 == 0)
                     {
                         Console.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
                     }
