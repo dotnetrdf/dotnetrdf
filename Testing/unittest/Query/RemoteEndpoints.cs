@@ -133,7 +133,7 @@ namespace VDS.RDF.Query
         }
 
         [TestMethod]
-        public void SparqlRemoteEndpointMemoryLeak()
+        public void SparqlRemoteEndpointMemoryLeak1()
         {
             /*
             Dim endpoint = New SparqlRemoteEndpoint(New Uri("http://localhost:8080/sesame/repositories/my_repo"))
@@ -147,14 +147,19 @@ Next
 results.Dispose()
              */
 
+            //Do a GC before attempting the test
+            GC.GetTotalMemory(true);
+
             //First off make sure to load some data into the some
             SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
             updateEndpoint.Update("DROP ALL; INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
 
+            int totalRuns = 10000;
+
             using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
             {
                 //Loop over making queries to try and reproduce the memory leak
-                for (int i = 1; i < 100000; i++)
+                for (int i = 1; i <= totalRuns; i++)
                 {
                     SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
                     SparqlParameterizedString queryString = new SparqlParameterizedString();
@@ -171,6 +176,44 @@ results.Dispose()
                     if (i % 5000 == 0)
                     {
                         Console.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointMemoryLeak2()
+        {
+            //Do a GC before attempting the test
+            GC.GetTotalMemory(true);
+
+            //First off make sure to load some data into the some
+            SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
+            updateEndpoint.Update("DROP ALL");
+
+            int totalRuns = 10000;
+            int subjects = 1000;
+            int predicates = 10;
+
+            using (StreamWriter writer = new StreamWriter("endpoint-mem-leak.txt"))
+            {
+                //Loop over making queries to try and reproduce the memory leak
+                for (int i = 1; i <= totalRuns; i++)
+                {
+                    //Add new data each time around
+                    updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
+
+                    SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+                    SparqlParameterizedString queryString = new SparqlParameterizedString();
+                    queryString.CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }";
+
+                    ResultCountHandler handler = new ResultCountHandler();
+                    endpoint.QueryWithResultSet(handler, queryString.ToString());
+                    Assert.IsTrue(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
+
+                    if (i % 500 == 0)
+                    {
+                        Debug.WriteLine("Memory Usage after " + i + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
                     }
                 }
             }
