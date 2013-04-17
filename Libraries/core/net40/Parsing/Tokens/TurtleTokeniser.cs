@@ -1057,7 +1057,16 @@ namespace VDS.RDF.Parsing.Tokens
                 //A Backslash allow for unicode escapes in QNames
                 if (next == '\\')
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    if (colonoccurred)
+                    {
+                        //If we are in local name portion complex escapes apply
+                        this.HandleComplexLocalNameEscapes();
+                    }
+                    else
+                    {
+                        //Prior to first colon only standard escapes apply
+                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                    }
                     //If escape is handled characters have already been consumed so must continue to avoid double consumption
                     next = this.Peek();
                     continue;
