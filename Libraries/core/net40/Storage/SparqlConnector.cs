@@ -531,7 +531,7 @@ namespace VDS.RDF.Storage
                 //Use the indirect serialization method
 
                 //Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 ((IConfigurationSerializable)this._endpoint).SerializeConfiguration(context);
@@ -542,7 +542,7 @@ namespace VDS.RDF.Storage
             else
             {
                 //Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri));
+                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
                 INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
                 INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
                 
@@ -663,20 +663,18 @@ namespace VDS.RDF.Storage
                 //Use the indirect serialization method
 
                 //Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
-                ((IConfigurationSerializable)this._endpoint).SerializeConfiguration(context);
+                ((IConfigurationSerializable)this._updateEndpoint).SerializeConfiguration(context);
 
                 //Link that serialization to our serialization
                 context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
             }
             else
             {
-                //TODO: We need to be able to distinguish between query and update endpoints for the purposes of being able to serialize and deserialze the configuration
-
                 //Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri));
+                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.AbsoluteUri)));
             }
