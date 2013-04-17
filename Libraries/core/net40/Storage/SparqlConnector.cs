@@ -508,7 +508,7 @@ namespace VDS.RDF.Storage
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -559,6 +559,17 @@ namespace VDS.RDF.Storage
         }
     }
 
+    /// <summary>
+    /// Class for connecting to any SPARQL server that provides both a query and update endpoint
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class is a wrapper around a <see cref="SparqlRemoteEndpoint"/> and a <see cref="SparqlRemoteUpdateEndpoint"/>.  The former is used for the query functionality while the latter is used for the update functionality.  As updates happen via SPARQL the behaviour with respects to adding and removing blank nodes will be somewhat up to the underlying SPARQL implementation.  This connector is <strong>not</strong> able to carry out <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{T},IEnumerable{T})"/> operations which attempt to delete blank nodes and cannot guarantee that added blank nodes bear any relation to existing blank nodes in the store.
+    /// </para>
+    /// <para>
+    /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing endpoint instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="ReadWriteSparqlConnector.Endpoint">Endpoint</see> and <see cref="ReadWriteSparqlConnector.UpdateEndpoint">UpdateEndpoint</see> properties and programmatically adding the settings.
+    /// </para>
+    /// </remarks>
     public class ReadWriteSparqlConnector
         : SparqlConnector, IUpdateableStorage
     {
@@ -579,6 +590,18 @@ namespace VDS.RDF.Storage
 
         public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
             : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
+
+        /// <summary>
+        /// Gets the underlying <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> which this class is a wrapper around
+        /// </summary>
+        [Description("The Remote Update Endpoint to which queries are sent using HTTP."), TypeConverter(typeof(ExpandableObjectConverter))]
+        public SparqlRemoteUpdateEndpoint UpdateEndpoint
+        {
+            get
+            {
+                return this._updateEndpoint;
+            }
+        }
 
         public override bool DeleteSupported
         {
@@ -635,6 +658,11 @@ namespace VDS.RDF.Storage
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             base.UpdateGraph(graphUri, additions, removals);
+        }
+
+        public void Update(string sparqlUpdate)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
