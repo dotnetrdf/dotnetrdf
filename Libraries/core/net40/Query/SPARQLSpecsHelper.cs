@@ -988,7 +988,7 @@ namespace VDS.RDF.Query
                         case '~':
                         case '-':
                         case '.':
-                        case '|':
+                        case '!':
                         case '$':
                         case '&':
                         case '\'':
@@ -1100,19 +1100,23 @@ namespace VDS.RDF.Query
                     }
                     else if (cs[i] == '%')
                     {
+                        //Remember that we are supposed to preserve precent encoded characters as-is
+                        //Simply need to validate that they are valid encoding
                         if (i > cs.Length - 2)
                         {
                             throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
                         }
                         else
                         {
-                            //BUG: We are not supposed to decode % encoded characters
-#if !SILVERLIGHT
-                            output.Append(Uri.HexUnescape(value, ref i));
-#else
-                            output.Append(SilverlightExtensions.HexUnescape(value, ref i));
-#endif
-                            i--;
+                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
+                            {
+                                throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
+                            }
+                            else
+                            {
+                                output.Append(cs, i, 3);
+                                i += 2;
+                            }
                         }
                     }
                     else

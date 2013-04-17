@@ -42,7 +42,7 @@ namespace VDS.RDF.Query
                  '~',
                  '-',
                  '.',
-                 '|',
+                 '!',
                  '$',
                  '&',
                  '\'',
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
         [TestMethod]
         public void SparqlQNameUnescapingPercentEncodingSimple()
         {
-            this.TestQNameUnescaping("ex:a%20space", "ex:a space");
+            this.TestQNameUnescaping("ex:a%20space", "ex:a%20space");
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query
         {
             for (int i = 0; i <= 255; i++)
             {
-                this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + (char)i);
+                this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
             }
         }
 
