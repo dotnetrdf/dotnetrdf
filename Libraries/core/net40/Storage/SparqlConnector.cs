@@ -291,7 +291,7 @@ namespace VDS.RDF.Storage
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            this.LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -655,7 +655,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the graph to delete</param>
         public override void DeleteGraph(string graphUri)
         {
-            base.DeleteGraph(graphUri.ToSafeUri());
+            this.DeleteGraph(graphUri.ToSafeUri());
         }
 
         /// <summary>
@@ -683,7 +683,14 @@ namespace VDS.RDF.Storage
             StringBuilder updates = new StringBuilder();
 
             //Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
-            updates.AppendLine("CLEAR SILENT GRAPH;");
+            if (g.BaseUri == null)
+            {
+                updates.AppendLine("CLEAR SILENT DEFAULT;");
+            }
+            else
+            {
+                updates.AppendLine("CLEAR SILENT GRAPH <" + this._formatter.FormatUri(g.BaseUri) + ">;");
+            }
 
             //Insert preamble
             //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
@@ -758,21 +765,23 @@ namespace VDS.RDF.Storage
                 {
                     //Insert preamble
                     //Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
-                    if (graphUri != null)
-                    {
-                        updates.AppendLine("WITH <" + this._formatter.FormatUri(graphUri) + ">");
-                    }
                     updates.AppendLine("DELETE DATA");
                     updates.AppendLine("{");
+
+                    if (graphUri != null)
+                    {
+                        updates.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                    }
 
                     //Serialize triples
                     foreach (Triple t in removals)
                     {
                         if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
-                        updates.AppendLine(" " + this._formatter.Format(t));
+                        updates.AppendLine("  " + this._formatter.Format(t));
                     }
 
                     //End
+                    if (graphUri != null) updates.AppendLine(" }");
                     updates.AppendLine("}");
                 }
             }
