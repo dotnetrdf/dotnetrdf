@@ -36,6 +36,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
@@ -343,7 +344,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the IO Behaviour of SPARQL Connections
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public virtual IOBehaviour IOBehaviour
         {
             get
             {
@@ -376,7 +377,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Updates are not supported since this connection is read-only
         /// </summary>
-        public bool UpdateSupported
+        public virtual bool UpdateSupported
         {
             get 
             {
@@ -407,7 +408,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting graphs is not supported
         /// </summary>
-        public bool DeleteSupported
+        public virtual bool DeleteSupported
         {
             get
             {
@@ -476,7 +477,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is read-only
         /// </summary>
-        public bool IsReadOnly
+        public virtual bool IsReadOnly
         {
             get 
             {
@@ -550,6 +551,28 @@ namespace VDS.RDF.Storage
                 }
             }
         }
+    }
+
+    public class ReadWriteSparqlConnector
+        : SparqlConnector, IUpdateableStorage
+    {
+        private SparqlRemoteUpdateEndpoint _updateEndpoint;
+
+        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
+            : base(queryEndpoint, mode)
+        {
+            if (updateEndpoint == null) throw new ArgumentNullException("updateEndpoint", "Update Endpoint cannot be null, if you require a read-only SPARQL connector use the base class SparqlConnector instead");
+            this._updateEndpoint = updateEndpoint;
+        }
+
+        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
+            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
+
+        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint, SparqlConnectorLoadMethod mode)
+            : this(new SparqlRemoteEndpoint(queryEndpoint), new SparqlRemoteUpdateEndpoint(updateEndpoint), mode) { }
+
+        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
+            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
     }
 }
 
