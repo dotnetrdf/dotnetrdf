@@ -680,7 +680,31 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         public override void SaveGraph(IGraph g)
         {
-            base.SaveGraph(g);
+            StringBuilder updates = new StringBuilder();
+
+            //Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
+            updates.AppendLine("CLEAR SILENT GRAPH;");
+
+            //Insert preamble
+            //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+            if (g.BaseUri != null)
+            {
+                updates.AppendLine("WITH <" + this._formatter.FormatUri(g.BaseUri) + ">");
+            }
+            updates.AppendLine("INSERT");
+            updates.AppendLine("{");
+
+            //Serialize triples
+            foreach (Triple t in g.Triples)
+            {
+                updates.AppendLine(" " + this._formatter.Format(t));
+            }
+
+            //End
+            updates.AppendLine("} WHERE { }");
+
+            //Save the graph
+            this.Update(updates.ToString());
         }
 
         /// <summary>
