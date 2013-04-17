@@ -38,8 +38,11 @@ namespace VDS.RDF.Update
     /// <summary>
     /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it
     /// </summary>
-    public class SparqlRemoteUpdateEndpoint : BaseEndpoint
+    public class SparqlRemoteUpdateEndpoint 
+        : BaseEndpoint
     {
+        //TODO: Needs to support IConfigurationSerializable
+
         const int LongUpdateLength = 2048;
 
         /// <summary>
