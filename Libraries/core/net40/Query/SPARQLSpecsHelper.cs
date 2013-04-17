@@ -1052,7 +1052,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Unescapes SPARQL 1.1 QNames
+        /// Unescapes local name escapes from QNames
         /// </summary>
         /// <param name="value">Value to unescape</param>
         /// <returns></returns>
@@ -1075,7 +1075,7 @@ namespace VDS.RDF.Query
                             case '~':
                             case '-':
                             case '.':
-                            case '|':
+                            case '!':
                             case '$':
                             case '&':
                             case '\'':
@@ -1106,6 +1106,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
+                            //BUG: We are not supposed to decode % encoded characters
 #if !SILVERLIGHT
                             output.Append(Uri.HexUnescape(value, ref i));
 #else

@@ -664,12 +664,12 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Handles the special SPARQL escapes that can occur in a local name
+        /// Handles the complex escapes that can occur in a local name
         /// </summary>
         /// <remarks>
         /// Unlike <see cref="BaseTokeniser.HandleEscapes(TokeniserEscapeMode)">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping
         /// </remarks>
-        protected void HandleSparqlLocalNameEscapes()
+        protected void HandleComplexLocalNameEscapes()
         {
             //Grab the first character which must be a \ or %
             char next = this.SkipCharacter();
@@ -687,7 +687,7 @@ namespace VDS.RDF.Parsing.Tokens
                     case '~':
                     case '-':
                     case '.':
-                    case '|':
+                    case '!':
                     case '$':
                     case '&':
                     case '\'':
@@ -770,7 +770,7 @@ namespace VDS.RDF.Parsing.Tokens
                         return;
 
                     default:
-                        throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.|$&'()*+,;=/?#@%) in Local Names");
+                        throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.!$&'()*+,;=/?#@%) in Local Names");
                 }
             }
             else if (next == '%')
@@ -789,7 +789,7 @@ namespace VDS.RDF.Parsing.Tokens
                 //Did we get % followed by two hex digits
                 if (localOutput.Length != 3)
                 {
-                    throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character");
+                    throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");
                 }
 #if !SILVERLIGHT
                 else if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
@@ -806,7 +806,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                throw Error("HandleSparqlLocalNameEscapes() was called but the next character is not a % or \\ as expected");
+                throw Error("HandleComplexLocalNameEscapes() was called but the next character is not a % or \\ as expected");
             }
         }
 
