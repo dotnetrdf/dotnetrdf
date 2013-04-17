@@ -26,6 +26,7 @@ Changed
  - Fixed a bug with the Ontology API not returning OWL datatype properties correctly (CORE-339)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
+ - Upgrade Json.Net to 5.0.3
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API
