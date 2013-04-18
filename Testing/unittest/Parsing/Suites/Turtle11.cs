@@ -84,7 +84,17 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
+            if (this.Failed > 0)
+            {
+                if (this.Indeterminate == 0)
+                {
+                    Assert.Fail(this.Failed + " Tests failed");
+                }
+                else
+                {
+                    Assert.Fail(this.Failed + " Test failed and " + this.Indeterminate + " Tests are indeterminate)");
+                }
+            }
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
@@ -141,6 +151,13 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleW3CComplexPrefixedNames8()
         {
             String input = ":%bb";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames9()
+        {
+            String input = @"p:AZazÀÖØöø˿Ͱͽ΄῾‌‍⁰↉Ⰰ⿕、ퟻ﨎ﷇﷰ￯𐀀󠇯";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 

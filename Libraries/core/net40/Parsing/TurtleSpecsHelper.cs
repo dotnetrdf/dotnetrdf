@@ -406,10 +406,11 @@ namespace VDS.RDF.Parsing
                 if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
                 {
                     //Handle surrogate pairs for UTF-32 characters
-                    if (Char.IsHighSurrogate(cs[i]) && i <= cs.Length - 2)
+                    if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                     {
                         if (!IsPNChars(cs[i], cs[i + 1])) return false;
                         i++;
+                        j = i;
                     }
                     else if (Char.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                     {
