@@ -540,7 +540,7 @@ namespace VDS.RDF.Parsing
         public void ParsingTurtleDBPediaMalformedData()
         {
             Graph g = new Graph();
-            TurtleParser parser = new TurtleParser();
+            TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
             parser.Load(g, "dbpedia_malformed.ttl");
             Assert.IsFalse(g.IsEmpty);
         }

@@ -294,13 +294,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        public static bool IsPNameLN(String value, TurtleSyntax syntax)
+        public static bool IsValidLocalName(String value, TurtleSyntax syntax)
         {
             char[] cs = value.ToCharArray();
 
-            //The parent rules used by IsValidQName do allow for empty local names
-            //but that code will never call us with a non-empty local name
-            if (cs.Length == 0) return false;
+            //Empty local names are valid
+            if (cs.Length == 0) return true;
 
             switch (syntax)
             {
@@ -547,87 +546,10 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsValidQName(String value, TurtleSyntax syntax)
         {
-            if (value.Contains(':'))
-            {
-                String ns, localname;
-                ns = value.Substring(0, value.IndexOf(':'));
-                localname = value.Substring(value.IndexOf(':') + 1);
-
-                //Namespace Validation
-                if (!ns.Equals(String.Empty))
-                {
-                    //Allowed empty Namespace
-                    if (ns.StartsWith("-") || ns.StartsWith("."))
-                    {
-                        //Can't start with a - or .
-                        return false;
-                    }
-                    else
-                    {
-                        char[] nchars = ns.ToCharArray();
-                        if (IsPNCharsBase(nchars[0]))
-                        {
-                            if (nchars.Length > 1)
-                            {
-                                for (int i = 1; i < nchars.Length; i++)
-                                {
-                                    //Check if valid Name Char
-                                    //The . character is not allowed in original Turtle but is permitted in new Turtle
-                                    if (!IsPNChars(nchars[i]) || (nchars[i] == '.' && syntax == TurtleSyntax.Original)) return false;
-                                }
-                                //If we reach here the Namespace is OK
-                            }
-                            else
-                            {
-                                //Only 1 Character which was valid so OK
-                            }
-                        }
-                        else
-                        {
-                            //Doesn't start with a valid Name Start Char
-                            return false;
-                        }
-                    }
-                }
-
-                //Local Name Validation
-                if (!localname.Equals(String.Empty))
-                {
-                    //Allowed empty Local Name
-                    char[] lchars = localname.ToCharArray();
-
-                    if (IsPNCharsU(lchars[0]) || (Char.IsDigit(lchars[0]) && syntax == TurtleSyntax.W3C))
-                    {
-                        if (lchars.Length > 1)
-                        {
-                            for (int i = 1; i < lchars.Length; i++)
-                            {
-                                //Check if valid Name Char
-                                //The . character is not allowed in original Turtle but is permitted in new Turtle
-                                if (!IsPNChars(lchars[i]) || (lchars[i] == '.' && syntax == TurtleSyntax.Original)) return false;
-                            }
-                            //If we reach here the Local Name is OK
-                        }
-                        else
-                        {
-                            //Only 1 Character which was valid so OK
-                        }
-                    }
-                    else
-                    {
-                        //Not a valid Name Start Char
-                        return false;
-                    }
-                }
-
-                //If we reach here then it's all valid
-                return true;
-            }
-            else
-            {
-                //Must contain a colon
-                return false;
-            }
+            if (!value.Contains(":")) return false;
+            String prefix = value.Substring(0, value.IndexOf(':') + 1);
+            String lname = prefix.Length < value.Length ? value.Substring(prefix.Length) : String.Empty;
+            return IsValidPrefix(prefix, syntax) && IsValidLocalName(lname, syntax);
         }
 
         /// <summary>

@@ -89,10 +89,17 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
-        public void ParsingTurtleW3CComplexPrefixes1()
+        public void ParsingTurtleW3CComplexPrefixedNames1()
         {
             String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:";
             Assert.IsTrue(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames2()
+        {
+            String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:o";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
         [TestMethod]
