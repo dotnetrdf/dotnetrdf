@@ -470,7 +470,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.QNAME:
                 case Token.URI:
-                    subj = ParserHelper.TryResolveUri(context, subjToken);
+                    subj = ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction);
                     break;
 
                 default:
@@ -540,7 +540,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        pred = ParserHelper.TryResolveUri(context, predToken);
+                        pred = ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.EOF:
@@ -693,7 +693,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, objToken);
+                        obj = ParserHelper.TryResolveUri(context, objToken, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.EOF:
@@ -800,7 +800,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, next);
+                        obj = ParserHelper.TryResolveUri(context, next, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.RIGHTBRACKET:

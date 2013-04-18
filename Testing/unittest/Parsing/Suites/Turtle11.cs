@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -86,6 +86,13 @@ namespace VDS.RDF.Parsing.Suites
 
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixes1()
+        {
+            String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
         }
 
         [TestMethod]

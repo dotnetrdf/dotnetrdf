@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
@@ -181,6 +182,60 @@ namespace VDS.RDF.Parsing
             return IsValidQName(value, TurtleSyntax.Original);
         }
 
+        public static bool IsValidPrefix(String value, TurtleSyntax syntax)
+        {
+            if (value.Equals(String.Empty)) return false;
+            if (!value.EndsWith(":")) return false;
+            if (value.Equals(":")) return true;
+            return IsPNPrefix(value.Substring(0, value.Length - 1), syntax);
+        }
+
+        public static bool IsPNPrefix(String value, TurtleSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case TurtleSyntax.W3C:
+                    //PNAME_NS	::=	PN_PREFIX? ':'
+                    //PNAME_LN	::=	PNAME_NS PN_LOCAL
+                    //PN_PREFIX	::=	PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
+
+                    char[] cs = value.ToCharArray();
+                    if (cs.Length == 0) return true;
+
+                    //First character must be in PN_CHARS_BASE
+                    if (!IsPNCharsBase(cs[0])) return false;
+                    if (cs.Length == 1) return true;
+
+                    //Intermediate characters must be a '.' or in PN_CHARS
+                    for (int i = 1; i < cs.Length - 1; i++)
+                    {
+                        if (cs[i] != '.' && !IsPNChars(cs[i]))
+                        {
+                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
+                            {
+                                if (!IsPNChars(cs[i], cs[i + 1])) return false;
+                                i++;
+                            }
+                            else if (i == cs.Length - 2)
+                            {
+                                return IsPNChars(cs[i], cs[i + 1]);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+
+                    //Final character must be in PN_CHARS
+                    return IsPNChars(cs[cs.Length - 1]);
+
+                default:
+                    //prefixName	::=	( nameStartChar - '_' ) nameChar*
+                    throw new NotImplementedException(); 
+            }
+        }
+
         /// <summary>
         /// Determines whether a given String is a valid QName
         /// </summary>
@@ -273,6 +328,16 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Unescapes local name escapes in a QName
+        /// </summary>
+        /// <param name="value">QName</param>
+        /// <returns>Unescaped QName</returns>
+        public static String UnescapeQName(String value)
+        {
+            return SparqlSpecsHelper.UnescapeQName(value);
+        }
+
+        /// <summary>
         /// Determines whether a given String should be serialized as a Long Literal
         /// </summary>
         /// <param name="value">String to test</param>
@@ -338,15 +403,28 @@ namespace VDS.RDF.Parsing
                      (c >= 0x00d8 && c <= 0x00f6) ||
                      (c >= 0x00f8 && c <= 0x02ff) ||
                      (c >= 0x0370 && c <= 0x037d) ||
+                     (c >= 0x037f && c <= 0x1fff) ||
                      (c >= 0x200c && c <= 0x200d) ||
                      (c >= 0x2070 && c <= 0x218f) ||
                      (c >= 0x2c00 && c <= 0x2fef) ||
                      (c >= 0x3001 && c <= 0xd7ff) ||
                      (c >= 0xf900 && c <= 0xfdcf) ||
-                     (c >= 0xfdf0 && c <= 0xfffd) /*||
-                     (c >= 0x10000 && c <= 0xeffff)*/)
+                     (c >= 0xfdf0 && c <= 0xfffd))
             {
                 return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsPNCharsBase(char c, char d)
+        {
+            if (Char.IsHighSurrogate(c) && Char.IsLowSurrogate(d))
+            {
+                int codepoint = Char.ConvertToUtf32(c, d);
+                return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
             {
@@ -361,11 +439,8 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNChars(char c)
         {
-            if (IsPNCharsU(c))
-            {
-                return true;
-            }
-            else if (c == '-')
+            //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            if (c == '-')
             {
                 return true;
             }
@@ -385,10 +460,20 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
+            else if (IsPNCharsU(c))
+            {
+                return true;
+            }
             else
             {
                 return false;
             }
+        }
+
+        public static bool IsPNChars(char c, char d)
+        {
+            //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            return IsPnCharsU(c, d);
         }
 
         /// <summary>
@@ -398,7 +483,14 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
+            //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
             return c == '_' || IsPNCharsBase(c);
+        }
+
+        public static bool IsPnCharsU(char c, char d)
+        {
+            //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
+            return IsPNCharsBase(c, d);
         }
     }
 

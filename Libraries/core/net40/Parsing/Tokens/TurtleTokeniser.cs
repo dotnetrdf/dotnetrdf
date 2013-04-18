@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                         }
 
-                        if (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next))
+                        if (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next))
                         {
                             //Alphanumeric Character Handling
                             if (anycharallowed || !quotemarksallowed)
@@ -999,7 +999,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
             }
-            if (!TurtleSpecsHelper.IsValidQName(this.Value))
+            if (!TurtleSpecsHelper.IsValidPrefix(this.Value, this._syntax))
             {
                 throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in Turtle", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
             }
