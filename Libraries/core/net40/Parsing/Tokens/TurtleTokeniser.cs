@@ -1111,32 +1111,36 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else
                 {
-                    if (qname.Length > 1)
+                    if (!TurtleSpecsHelper.IsValidQName(qname, this._syntax))
                     {
-                        //Check Illegal use of - or a Digit to start a Local Name
-                        String[] localname = qname.Split(':');
-                        if (localname[1].Length >= 1)
-                        {
-                            if (localname[1].StartsWith("-"))
-                            {
-                                throw Error("The - Character cannot be used as the start of a Local Name within a QName");
-                            }
-                            //Check for Illegal use of a Digit to start a Local Name
-                            char[] lnamechar = localname[1].Substring(0, 1).ToCharArray();
-                            if (Char.IsDigit(lnamechar[0]) && this._syntax == TurtleSyntax.Original)
-                            {
-                                throw Error("A Local Name within a QName may not start with a Number");
-                            }
-                        }
-
+                        throw Error("The QName " + qname + " is not valid in Turtle");
                     }
+                    //if (qname.Length > 1)
+                    //{
+                    //    //Check Illegal use of - or a Digit to start a Local Name
+                    //    String[] localname = qname.Split(':');
+                    //    if (localname[1].Length >= 1)
+                    //    {
+                    //        if (localname[1].StartsWith("-"))
+                    //        {
+                    //            throw Error("The - Character cannot be used as the start of a Local Name within a QName");
+                    //        }
+                    //        //Check for Illegal use of a Digit to start a Local Name
+                    //        char[] lnamechar = localname[1].Substring(0, 1).ToCharArray();
+                    //        if (Char.IsDigit(lnamechar[0]) && this._syntax == TurtleSyntax.Original)
+                    //        {
+                    //            throw Error("A Local Name within a QName may not start with a Number");
+                    //        }
+                    //    }
 
-                    //QNames can't start with a Digit
-                    char[] firstchar = qname.Substring(0, 1).ToCharArray();
-                    if (Char.IsDigit(firstchar[0]))
-                    {
-                        throw Error("A QName may not start with a Number");
-                    }
+                    //}
+
+                    ////QNames can't start with a Digit
+                    //char[] firstchar = qname.Substring(0, 1).ToCharArray();
+                    //if (Char.IsDigit(firstchar[0]))
+                    //{
+                    //    throw Error("A QName may not start with a Number");
+                    //}
 
                     //Normal QName
                     this.LastTokenType = Token.QNAME;

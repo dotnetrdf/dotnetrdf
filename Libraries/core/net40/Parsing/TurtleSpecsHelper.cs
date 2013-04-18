@@ -184,40 +184,62 @@ namespace VDS.RDF.Parsing
 
         public static bool IsValidPrefix(String value, TurtleSyntax syntax)
         {
+            //W3C Standard Turtle
+            //PNAME_NS	::=	PN_PREFIX? ':'
+
+            //Original Member Submission Turtle
+            //qname	::=	prefixName? ':' name?
+
+            //The productions are identical for our purposes
             if (value.Equals(String.Empty)) return false;
             if (!value.EndsWith(":")) return false;
             if (value.Equals(":")) return true;
+
+            //IsPNPrefix() implements the appropriate productions for the different syntaxes
             return IsPNPrefix(value.Substring(0, value.Length - 1), syntax);
         }
 
         public static bool IsPNPrefix(String value, TurtleSyntax syntax)
         {
+            char[] cs = value.ToCharArray();
+            int start = 1;
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
-                    //PNAME_NS	::=	PN_PREFIX? ':'
-                    //PNAME_LN	::=	PNAME_NS PN_LOCAL
                     //PN_PREFIX	::=	PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
 
-                    char[] cs = value.ToCharArray();
                     if (cs.Length == 0) return true;
 
                     //First character must be in PN_CHARS_BASE
-                    if (!IsPNCharsBase(cs[0])) return false;
-                    if (cs.Length == 1) return true;
+                    if (!IsPNCharsBase(cs[0])) 
+                    {
+                        //Handle surrogate pairs for UTF-32 characters
+                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        {
+                            if (!IsPNCharsBase(cs[0], cs[1])) return false;
+                            start++;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    if (cs.Length == start) return true;
 
                     //Intermediate characters must be a '.' or in PN_CHARS
-                    for (int i = 1; i < cs.Length - 1; i++)
+                    for (int i = start; i < cs.Length - 1; i++)
                     {
                         if (cs[i] != '.' && !IsPNChars(cs[i]))
                         {
+                            //Handle surrogate pairs for UTF-32 characters
                             if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                             {
                                 if (!IsPNChars(cs[i], cs[i + 1])) return false;
                                 i++;
                             }
-                            else if (i == cs.Length - 2)
+                            else if (Char.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                             {
+                                //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                                 return IsPNChars(cs[i], cs[i + 1]);
                             }
                             else
@@ -232,7 +254,288 @@ namespace VDS.RDF.Parsing
 
                 default:
                     //prefixName	::=	( nameStartChar - '_' ) nameChar*
-                    throw new NotImplementedException(); 
+
+                    if (cs.Length == 0) return true;
+
+                    //First character must be a name start char and not a _
+                    if (!IsNameStartChar(cs[0]))
+                    {
+                        //Handle surrogate pairs for UTF-32
+                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        {
+                            if (!IsNameStartChar(cs[0], cs[1])) return false;
+                            start++;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    if (cs.Length == start) return true;
+
+                    //Subsequent characters must be in nameChar
+                    for (int i = start; i < cs.Length; i++)
+                    {
+                        if (!IsNameChar(cs[i]))
+                        {
+                            //Handle surrogate pairs for UTF-32
+                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            {
+                                if (!IsNameChar(cs[i], cs[i + 1])) return false;
+                                i++;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+            }
+        }
+
+        public static bool IsPNameLN(String value, TurtleSyntax syntax)
+        {
+            char[] cs = value.ToCharArray();
+
+            //The parent rules used by IsValidQName do allow for empty local names
+            //but that code will never call us with a non-empty local name
+            if (cs.Length == 0) return false;
+
+            switch (syntax)
+            {
+                case TurtleSyntax.W3C:
+                    //PNAME_LN	::=	PNAME_NS PN_LOCAL
+                    //PNAME_NS	::=	PN_PREFIX? ':'
+
+                    //Local name is a syntax of namespace segments
+                    String[] portions = value.Split(':');
+
+                    //Each non-final portion conforms to the PNAME_NS production
+                    //This is a PN_PREFIX followed by a ':' so we can call IsPNPrefix() directly
+                    //However we have to be careful because the final portion can contain bare : which we already split on
+                    int p;
+                    for (p = 0; p < portions.Length - 1; p++)
+                    {
+                        if (portions[p].Contains("%") || portions[p].Contains("\\")) break;
+                        if (!IsPNPrefix(portions[p], syntax)) return false;
+                    }
+
+                    String final = portions[portions.Length - 1];
+                    if (p < portions.Length - 1)
+                    {
+                        final = String.Join(":", portions, p, portions.Length - p);
+                    }
+
+                    //Final portion conforms to PN_LOCAL
+                    return IsPNLocal(final);
+
+                default:
+                    //name	::=	nameStartChar nameChar*
+
+                    int start = 1;
+
+                    //Validate first character is a nameStartChar
+                    if (!IsNameStartChar(cs[0]))
+                    {
+                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        {
+                            if (!IsNameStartChar(cs[0], cs[1])) return false;
+                            start++;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (cs.Length == start) return true;
+
+                    //Further characters must be nameChar
+                    for (int i = start; i < cs.Length; i++)
+                    {
+                        if (!IsNameChar(cs[i]))
+                        {
+                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            {
+                                if (!IsNameChar(cs[i], cs[i + 1])) return false;
+                                i++;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+            }
+        }
+
+        public static bool IsPNLocal(String value)
+        {
+            //PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
+
+            char[] cs = value.ToCharArray();
+            int start = 1;
+
+            //Validate first character
+            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out start) && !IsPNCharsU(cs[0]))
+            {
+                //Handle surrogate pairs for UTF-32 characters
+                if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                {
+                    if (!IsPnCharsU(cs[0], cs[1])) return false;
+                    start++;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            if (start >= cs.Length) return true;
+
+            //Intermediate characters can be PN_CHARS, a '.', a ':' or a PLX
+            for (int i = start; i < cs.Length - 1; i++)
+            {
+                int j = i;
+                if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
+                {
+                    //Handle surrogate pairs for UTF-32 characters
+                    if (Char.IsHighSurrogate(cs[i]) && i <= cs.Length - 2)
+                    {
+                        if (!IsPNChars(cs[i], cs[i + 1])) return false;
+                        i++;
+                    }
+                    else if (Char.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
+                    {
+                        //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
+                        return IsPNChars(cs[i], cs[i + 1]);
+                    }
+                }
+                if (i != j)
+                {
+                    //This means we just saw a PLX
+                    //Last thing being a PLX is valid
+                    if (j == cs.Length - 1) return true;
+                    //Otherwise adjust the index appropriately and continue checking further characters
+                    i = j;
+                }
+            }
+
+            //Final character is a ':' or a PN_CHARS
+            return cs[cs.Length - 1] == ':' || IsPNChars(cs[cs.Length - 1]);
+        }
+
+        /// <summary>
+        /// Checks whether a given String matches the PLX rule from the Turtle W3C Specification
+        /// </summary>
+        /// <param name="cs">String as character array</param>
+        /// <param name="startIndex">Start Index</param>
+        /// <param name="endIndex">Resulting End Index</param>
+        /// <returns></returns>
+        public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
+        {
+            endIndex = startIndex;
+            if (cs[startIndex] == '%')
+            {
+                if (startIndex > cs.Length - 2)
+                {
+                    //If we saw a base % but there are not two subsequent characters not a valid PLX escape
+                    return false;
+                }
+                else
+                {
+                    char a = cs[startIndex + 1];
+                    char b = cs[startIndex + 2];
+                    if (IsHex(a) && IsHex(b))
+                    {
+                        //Valid % encoding
+                        endIndex = startIndex + 2;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else if (cs[startIndex] == '\\')
+            {
+                if (startIndex >= cs.Length - 1)
+                {
+                    //If we saw a backslash but no subsequent character not a valid PLX escape
+                    return false;
+                }
+                else
+                {
+                    char c = cs[startIndex + 1];
+                    switch (c)
+                    {
+                        case '_':
+                        case '~':
+                        case '-':
+                        case '.':
+                        case '!':
+                        case '$':
+                        case '&':
+                        case '\'':
+                        case '(':
+                        case ')':
+                        case '*':
+                        case '+':
+                        case ',':
+                        case ';':
+                        case '=':
+                        case '/':
+                        case '?':
+                        case '#':
+                        case '@':
+                        case '%':
+                            //Valid Escape
+                            endIndex = startIndex + 1;
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether a character is a Hex character
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
+        public static bool IsHex(char c)
+        {
+            if (Char.IsDigit(c))
+            {
+                return true;
+            }
+            else
+            {
+                switch (c)
+                {
+                    case 'A':
+                    case 'a':
+                    case 'B':
+                    case 'b':
+                    case 'C':
+                    case 'c':
+                    case 'D':
+                    case 'd':
+                    case 'E':
+                    case 'f':
+                    case 'F':
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
 
@@ -384,6 +687,8 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        #region W3C Standardised Turtle Character Productions
+
         /// <summary>
         /// Gets whether a character matches the PN_CHARS_BASE production from the Turtle specifications
         /// </summary>
@@ -492,6 +797,91 @@ namespace VDS.RDF.Parsing
             //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
             return IsPNCharsBase(c, d);
         }
+
+        #endregion
+
+        #region Member Submission Turtle Character Productions
+
+        public static bool IsNameStartChar(char c)
+        {
+            //[30]	nameStartChar	::=	[A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+            if (c >= 'A' && c <= 'Z')
+            {
+                return true;
+            }
+            else if (c >= 'a' && c <= 'z')
+            {
+                return true;
+            }
+            else if (c == '_')
+            {
+                return true;
+            }
+            else if ((c >= 0x00c0 && c <= 0x00d6) ||
+                     (c >= 0x00d8 && c <= 0x00f6) ||
+                     (c >= 0x00f8 && c <= 0x02ff) ||
+                     (c >= 0x0370 && c <= 0x037d) ||
+                     (c >= 0x037f && c <= 0x1fff) ||
+                     (c >= 0x200c && c <= 0x200d) ||
+                     (c >= 0x2070 && c <= 0x218f) ||
+                     (c >= 0x2c00 && c <= 0x2fef) ||
+                     (c >= 0x3001 && c <= 0xd7ff) ||
+                     (c >= 0xf900 && c <= 0xfdcf) ||
+                     (c >= 0xfdf0 && c <= 0xfffd))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsNameStartChar(char c, char d)
+        {
+            if (Char.IsHighSurrogate(c) && Char.IsLowSurrogate(d))
+            {
+                int codepoint = Char.ConvertToUtf32(c, d);
+                return (codepoint >= 0x10000 && codepoint <= 0xeffff);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsNameChar(char c)
+        {
+            //[31]	nameChar	::=	nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+            if (c == '-')
+            {
+                return true;
+            }
+            else if (Char.IsDigit(c))
+            {
+                return true;
+            }
+            else if (c == 0x00b7)
+            {
+                return true;
+            }
+            else if ((c >= 0x0300 && c <= 0x036f) || (c >= 0x203f && c <= 0x2040))
+            {
+                return true;
+            }
+            else
+            {
+                return IsNameStartChar(c);
+            }
+        }
+
+        public static bool IsNameChar(char c, char d)
+        {
+            return IsNameStartChar(c, d);
+        }
+
+
+        #endregion
     }
 
 }
