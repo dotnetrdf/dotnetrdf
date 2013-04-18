@@ -557,6 +557,11 @@ namespace VDS.RDF.Parsing
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected end of file while trying to parse a Predicate Object list", predToken);
 
+                    case Token.SEMICOLON:
+                        if (this._syntax == TurtleSyntax.Original) goto default;
+                        this.TryParsePredicateObjectList(context, subj, bnodeList);
+                        return;
+
                     default:
                         throw ParserHelper.Error("Unexpected Token '" + predToken.GetType().ToString() + "' encountered while trying to parse a Predicate Object list", predToken);
 
