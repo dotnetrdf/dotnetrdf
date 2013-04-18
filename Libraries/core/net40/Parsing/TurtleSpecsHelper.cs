@@ -326,6 +326,9 @@ namespace VDS.RDF.Parsing
                         final = String.Join(":", portions, p, portions.Length - p);
                     }
 
+                    //Final portion may be empty which is valid because a portion may consist solely of a : which would result in this scenario
+                    if (final.Length == 0) return true;
+
                     //Final portion conforms to PN_LOCAL
                     return IsPNLocal(final);
 
@@ -375,15 +378,15 @@ namespace VDS.RDF.Parsing
             //PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
 
             char[] cs = value.ToCharArray();
-            int start = 1;
+            int start = 1, temp = 0;
 
             //Validate first character
-            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out start) && !IsPNCharsU(cs[0]))
+            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
                 //Handle surrogate pairs for UTF-32 characters
                 if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
                 {
-                    if (!IsPnCharsU(cs[0], cs[1])) return false;
+                    if (!IsPNCharsU(cs[0], cs[1])) return false;
                     start++;
                 }
                 else
@@ -391,6 +394,8 @@ namespace VDS.RDF.Parsing
                     return false;
                 }
             }
+            //We may have seen a PLX as the first thing so need to correct start appropriately
+            if (temp > 0) start = temp + 1;
 
             if (start >= cs.Length) return true;
 
@@ -410,6 +415,10 @@ namespace VDS.RDF.Parsing
                     {
                         //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                         return IsPNChars(cs[i], cs[i + 1]);
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
                 if (i != j)
@@ -438,7 +447,7 @@ namespace VDS.RDF.Parsing
             endIndex = startIndex;
             if (cs[startIndex] == '%')
             {
-                if (startIndex > cs.Length - 2)
+                if (startIndex >= cs.Length - 2)
                 {
                     //If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
@@ -700,7 +709,7 @@ namespace VDS.RDF.Parsing
         public static bool IsPNChars(char c, char d)
         {
             //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-            return IsPnCharsU(c, d);
+            return IsPNCharsU(c, d);
         }
 
         /// <summary>
@@ -714,7 +723,7 @@ namespace VDS.RDF.Parsing
             return c == '_' || IsPNCharsBase(c);
         }
 
-        public static bool IsPnCharsU(char c, char d)
+        public static bool IsPNCharsU(char c, char d)
         {
             //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
             return IsPNCharsBase(c, d);

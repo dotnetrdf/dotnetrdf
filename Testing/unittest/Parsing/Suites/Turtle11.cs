@@ -103,6 +103,48 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames3()
+        {
+            String input = ":a~b";
+            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames4()
+        {
+            String input = ":a%b";
+            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames5()
+        {
+            String input = @":a\~b";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames6()
+        {
+            String input = ":a%bb";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames7()
+        {
+            String input = @":\~";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames8()
+        {
+            String input = ":%bb";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required
