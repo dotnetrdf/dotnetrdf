@@ -465,6 +465,17 @@ namespace VDS.RDF.Parsing
                         //Start of a Blank Node Collection
                         subj = context.Handler.CreateBlankNode();
                         this.TryParsePredicateObjectList(context, subj, true);
+
+                        //In W3C Turtle we are allowed to have a dot to terminate a top level blank node predicate list
+                        if (this._syntax == TurtleSyntax.W3C)
+                        {
+                            next = context.Tokens.Peek();
+                            if (next.TokenType == Token.DOT)
+                            {
+                                context.Tokens.Dequeue();
+                                return;
+                            }
+                        }
                     }
                     break;
 
