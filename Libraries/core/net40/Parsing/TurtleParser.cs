@@ -559,6 +559,20 @@ namespace VDS.RDF.Parsing
 
                     case Token.SEMICOLON:
                         if (this._syntax == TurtleSyntax.Original) goto default;
+
+                        //May get a sequence of semicolons
+                        IToken next = context.Tokens.Peek();
+                        while (next.TokenType == Token.SEMICOLON)
+                        {
+                            context.Tokens.Dequeue();
+                            next = context.Tokens.Peek();
+                        }
+                        //Bail out of these are followed by a DOT
+                        if (next.TokenType == Token.DOT && !bnodeList)
+                        {
+                            context.Tokens.Dequeue();
+                            return;
+                        }
                         this.TryParsePredicateObjectList(context, subj, bnodeList);
                         return;
 

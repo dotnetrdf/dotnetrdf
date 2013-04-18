@@ -162,6 +162,13 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
+        public void ParsingTurtleW3CNumericLiterals1()
+        {
+            String input = "123.E+1";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidDouble(input));
+        }
+
+        [TestMethod]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required

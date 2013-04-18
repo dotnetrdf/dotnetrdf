@@ -73,14 +73,21 @@ namespace VDS.RDF.Parsing
         /// Pattern for Valid Integers in Turtle
         /// </summary>
         public const String ValidIntegerPattern = "^(\\+|-)?\\d+$";
+
         /// <summary>
         /// Pattern for Valid Decimals in Turtle
         /// </summary>
         public const String ValidDecimalPattern = "^(\\+|-)?(\\d+\\.\\d*|\\.\\d+|\\d+)$";
+
+        //DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
+        //EXPONENT  ::= [eE] [+-]? [0-9]+
+
         /// <summary>
         /// Pattern for Valid Doubles in Turtle
         /// </summary>
-        public const String ValidDoublePattern = "^(\\+|-)?(\\d+\\.\\d+[eE](\\+|-)?\\d+|\\.\\d+[eE](\\+|-)?\\d+|\\d+[eE](\\+|-)?\\d+)$";
+        public const String ValidDoublePattern = "^(\\+|-)?(\\d+\\.\\d*[eE](\\+|-)?\\d+|\\.\\d+[eE](\\+|-)?\\d+|\\d+[eE](\\+|-)?\\d+)$";
+
+
         /// <summary>
         /// Pattern for determining whether a given String should be serialized as a Long Literal
         /// </summary>
@@ -169,6 +176,13 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsValidDouble(String value)
         {
+            //W3C:
+            //DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
+            //EXPONENT  ::= [eE] [+-]? [0-9]+
+            //
+            //Original:
+            //double    ::= ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
+            //exponent  ::= [eE] ('-' | '+')? [0-9]+
             return _validDouble.IsMatch(value);
         }
 
