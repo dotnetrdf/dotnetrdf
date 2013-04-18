@@ -92,10 +92,10 @@ namespace VDS.RDF.Parsing.Suites
                 }
                 else
                 {
-                    Assert.Fail(this.Failed + " Test failed and " + this.Indeterminate + " Tests are indeterminate)");
+                    Assert.Fail(this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
                 }
             }
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
         }
 
         [TestMethod]
