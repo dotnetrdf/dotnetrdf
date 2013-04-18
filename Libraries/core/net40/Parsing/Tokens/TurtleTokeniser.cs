@@ -1003,7 +1003,7 @@ namespace VDS.RDF.Parsing.Tokens
             this.StartNewToken();
 
             //Grab all the Characters in the QName
-            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && (next != '.' || this._syntax == TurtleSyntax.W3C))
+            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && (next != '.' || this._syntax == TurtleSyntax.W3C))
             {
                 //Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)
@@ -1014,17 +1014,6 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + this.Value + "\nQNames can only contain 1 Colon character");
                 }
-
-                ////Can't have more than one Dot in a QName unless we're using W3C Syntax
-                //if (next == '.' && (!dotoccurred || this._syntax == TurtleSyntax.W3C))
-                //{
-                //    if (this.Value.Equals("true", comparison) || this.Value.Equals("false", comparison)) break;
-                //    dotoccurred = true;
-                //}
-                //else if (next == '.')
-                //{
-                //    throw Error("Unexpected additional Dot Character while trying to parse a Plain Literal from content:\n" + this.Value + "\nPlain Literals can only contain 1 Dot Character, ensure you use White Space after a Plain Literal which contains a dot to avoid ambiguity");
-                //}
 
                 //A Backslash allow for unicode escapes in QNames or reserved name escapes in local names
                 if (next == '\\')
@@ -1200,6 +1189,9 @@ namespace VDS.RDF.Parsing.Tokens
                 this.ConsumeCharacter();
                 next = this.Peek();
             }
+
+            //Backtrack if we get a trailing .
+            if (this.Value.EndsWith(".")) this.Backtrack();
             
             if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value, this._syntax))
             {

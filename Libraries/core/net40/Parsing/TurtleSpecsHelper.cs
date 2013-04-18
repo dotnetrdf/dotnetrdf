@@ -330,7 +330,12 @@ namespace VDS.RDF.Parsing
                     int p;
                     for (p = 0; p < portions.Length - 1; p++)
                     {
-                        if (portions[p].Contains("%") || portions[p].Contains("\\")) break;
+                        if (portions[p].Length == 0) continue;
+
+                        //If we see any of the escape sequence starters or a leading digit then this must be the start of the local name
+                        if (portions[p].Contains("%") || portions[p].Contains("\\") || Char.IsDigit(portions[p][0])) break;
+
+                        //Otherwise must be a valid prefix
                         if (!IsPNPrefix(portions[p], syntax)) return false;
                     }
 
