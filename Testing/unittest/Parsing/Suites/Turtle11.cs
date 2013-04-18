@@ -70,8 +70,14 @@ namespace VDS.RDF.Parsing.Suites
         [TestMethod]
         public void ParsingSuiteTurtleW3C()
         {
+            //Nodes for positive and negative tests
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+
             //Run manifests
-            //TODO: Add manifests to run once new tests are imported
+            this.RunManifest("turtle11/manifest.ttl", posSyntaxTest, negSyntaxTest);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 

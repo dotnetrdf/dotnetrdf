@@ -949,6 +949,12 @@ namespace VDS.RDF
                 }
             }
 
+            //TODO: We should never have this case, need to figure out why we get here and what the behaviour should actually be
+            if (possibleMappings.Count == 0)
+            {
+                throw new RdfException("Unexpected error trying to brute force graph equality");
+            }
+
             //Now start testing the possiblities
             IEnumerable<Dictionary<INode, INode>> possibles = GraphMatcher.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings);
             int count = 0;
