@@ -197,7 +197,7 @@ namespace VDS.RDF
                     Console.WriteLine(t.ToString(formatter));
                 }
                 Console.WriteLine();
-                Console.WriteLine("Triples removed from " + lhsName + " to given " + rhsName + ":");
+                Console.WriteLine("Triples removed from " + lhsName + " to give " + rhsName + ":");
                 foreach (Triple t in report.RemovedTriples)
                 {
                     Console.WriteLine(t.ToString(formatter));

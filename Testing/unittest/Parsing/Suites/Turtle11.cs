@@ -181,6 +181,19 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
+        public void ParsingTurtleW3CLiteralEscapes1()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"turtle11\literal_with_escaped_BACKSPACE.ttl");
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+            Triple t = g.Triples.First();
+            Assert.AreEqual(NodeType.Literal, t.Object.NodeType);
+            ILiteralNode lit = (ILiteralNode)t.Object;
+            Assert.AreEqual(1, lit.Value.Length);
+        }
+
+        [TestMethod]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required

@@ -479,20 +479,22 @@ namespace VDS.RDF.Parsing.Tokens
                         //Consume this one Backslash
                         this.ConsumeCharacter();
 
-                        //If this was a backslash escape i.e. \\
-                        //Then need to check whether the subsequent character could be confused with a valid escape
-                        //in the tokenised output and if so insert another backslash into the output
-                        next = this.Peek();
-                        switch (next)
-                        {
-                            case 't':
-                            case 'n':
-                            case 'r':
-                            case 'u':
-                            case 'U':
-                                this._output.Append("\\");
-                                break;
-                        }
+                        //TODO: I think this should be removed, commented out for now to test if it resolves a Turtle parser issue
+                        //      This will cause some regressions in the tests because there are some tests that assume this behaviour which I believe to actually be incorrect behaviour
+                        ////If this was a backslash escape i.e. \\
+                        ////Then need to check whether the subsequent character could be confused with a valid escape
+                        ////in the tokenised output and if so insert another backslash into the output
+                        //next = this.Peek();
+                        //switch (next)
+                        //{
+                        //    case 't':
+                        //    case 'n':
+                        //    case 'r':
+                        //    case 'u':
+                        //    case 'U':
+                        //        this._output.Append("\\");
+                        //        break;
+                        //}
 
                         return;
                     }
@@ -545,7 +547,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
-                        this._output.Append("\n");
+                        this._output.Append('\n');
                         return;
                     }
                     else
@@ -558,7 +560,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
-                        this._output.Append("\r");
+                        this._output.Append('\r');
                         return;
                     }
                     else
@@ -571,7 +573,33 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Discard and append a real Tab to the output
                         this.SkipCharacter();
-                        this._output.Append("\t");
+                        this._output.Append('\t');
+                        return;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                case 'b':
+                    //Backspace Escape
+                    if (mode != TokeniserEscapeMode.QName)
+                    {
+                        //Discard and append a real backspace to the output
+                        this.SkipCharacter();
+                        this._output.Append('\b');
+                        return;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                case 'f':
+                    //Form Feed Escape
+                    if (mode != TokeniserEscapeMode.QName)
+                    {
+                        //Discard and append a real form feed to the output
+                        this.SkipCharacter();
+                        this._output.Append('\f');
                         return;
                     }
                     else
@@ -652,7 +680,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Append the \ and then return
                         //Processing continues normally in the caller function
-                        this._output.Append("\\");
+                        this._output.Append(@"\");
                         return;
                     }
                     else
