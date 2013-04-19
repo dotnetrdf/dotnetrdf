@@ -883,11 +883,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case -1:
                         //Not sure which directive we might see yet
-                        if (next == 'b' || next == 'B')
+                        if (next == 'b')
                         {
                             directiveExpected = 2;
                         }
-                        else if (next == 'p' || next == 'P')
+                        else if (next == 'p')
                         {
                             directiveExpected = 1;
                         }
@@ -910,7 +910,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-                        if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
+                        if (this.Value.Equals("prefix", StringComparison.Ordinal))
                         {
                             //Got a Prefix Directive
                             this.LastTokenType = Token.PREFIXDIRECTIVE;
@@ -927,7 +927,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-                        if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+                        if (this.Value.Equals("base", StringComparison.Ordinal))
                         {
                             //Got a Base Directive
                             this.LastTokenType = Token.BASEDIRECTIVE;

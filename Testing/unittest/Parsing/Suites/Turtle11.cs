@@ -203,6 +203,15 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CBaseTurtleStyle3()
+        {
+            //@base is case sensitive in Turtle
+            String graph = "@BASE <http://example.org/> .";
+            Graph g = new Graph();
+            this._parser.Load(g, new StringReader(graph));
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CBaseSparqlStyle1()
         {
             //Forbidden dot
@@ -218,6 +227,17 @@ namespace VDS.RDF.Parsing.Suites
         {
             //No dot required
             String graph = "BASE <http://example.org/>";
+            Graph g = new Graph();
+            this._parser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CBaseSparqlStyle3()
+        {
+            //No dot required and case insensitive
+            String graph = "BaSe <http://example.org/>";
             Graph g = new Graph();
             this._parser.Load(g, new StringReader(graph));
 
@@ -247,6 +267,15 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CPrefixTurtleStyle3()
+        {
+            //@prefix is case sensitive in Turtle
+            String graph = "@PREFIX ex: <http://example.org/> .";
+            Graph g = new Graph();
+            this._parser.Load(g, new StringReader(graph));
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CPrefixSparqlStyle1()
         {
             //Forbidden dot
@@ -262,6 +291,17 @@ namespace VDS.RDF.Parsing.Suites
         {
             //No dot required
             String graph = "PREFIX ex: <http://example.org/>";
+            Graph g = new Graph();
+            this._parser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CPrefixSparqlStyle3()
+        {
+            //No dot required and case insensitive
+            String graph = "PrEfIx ex: <http://example.org/>";
             Graph g = new Graph();
             this._parser.Load(g, new StringReader(graph));
 
