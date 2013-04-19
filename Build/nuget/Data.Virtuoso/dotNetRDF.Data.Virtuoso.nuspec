@@ -2,7 +2,6 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Data.Virtuoso</id>
-    <version>1.0.0</version>
     <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
@@ -19,4 +18,10 @@
 
     </releaseNotes>
   </metadata>
+  <files>
+	<file src="..\..\..\Libraries\Data\Virtuoso\net40\*.*" target="lib\net40\" />
+	<file src="..\..\..\Libraries\Data\Virtuoso\net40-client\*.*" target="lib\net40-client\" />
+	<file src="..\..\..\Libraries\Data\Virtuoso\net35\*.*" target="lib\net35\" />
+	<file src="..\..\..\Libraries\Data\Virtuoso\net35-client\*.*" target="lib\net35-client\" />
+  </files>
 </package>
