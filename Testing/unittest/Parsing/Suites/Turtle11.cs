@@ -75,9 +75,10 @@ namespace VDS.RDF.Parsing.Suites
             g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
             INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
             INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+            INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
             //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", posSyntaxTest, negSyntaxTest);
+            this.RunManifest("turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -88,7 +89,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 if (this.Indeterminate == 0)
                 {
-                    Assert.Fail(this.Failed + " Tests failed");
+                    Assert.Fail(this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
                 }
                 else
                 {

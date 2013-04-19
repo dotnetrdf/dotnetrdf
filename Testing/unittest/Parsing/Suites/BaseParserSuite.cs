@@ -173,6 +173,11 @@ WHERE
         /// <param name="file">Manifest file</param>
         protected void RunManifest(String file, INode positiveSyntaxTest, INode negativeSyntaxTest)
         {
+            this.RunManifest(file, new INode[] { positiveSyntaxTest }, new INode[] { negativeSyntaxTest });
+        }
+
+        protected void RunManifest(String file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
+        {
             if (!File.Exists(file))
             {
                 Assert.Fail("Manifest file " + file + " not found");
@@ -230,11 +235,11 @@ WHERE
                     INode type;
                     if (test.TryGetBoundValue("type", out type))
                     {
-                        if (type.Equals(positiveSyntaxTest))
+                        if (positiveSyntaxTests.Contains(type))
                         {
                             shouldParse = true;
                         }
-                        else if (type.Equals(negativeSyntaxTest))
+                        else if (negativeSyntaxTests.Contains(type))
                         {
                             shouldParse = false;
                         }
