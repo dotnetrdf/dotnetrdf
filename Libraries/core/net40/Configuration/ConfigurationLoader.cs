@@ -108,6 +108,10 @@ namespace VDS.RDF.Configuration
                             //Properties for Endpoints
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
+                            PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
+                            PropertyUpdateEndpointUri = ConfigurationNamespace + "updateEndpointUri",
+                            PropertyQueryEndpoint = ConfigurationNamespace + "queryEndpoint",
+                            PropertyUpdateEndpoint = ConfigurationNamespace + "updateEndpoint",
                             PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
                             PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
                             PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
@@ -170,6 +174,8 @@ namespace VDS.RDF.Configuration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
                             //Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
+                            ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",

@@ -177,6 +177,7 @@
     <Compile Include="Query\VariableSubstitutionTests.cs" />
     <Compile Include="Query\ViewTests.cs" />
     <Compile Include="Query\WeightedOptimiserTests.cs" />
+    <Compile Include="Storage\ReadWriteSparqlTest.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />

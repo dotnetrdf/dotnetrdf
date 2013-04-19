@@ -116,7 +116,17 @@ dnr:HttpHandler a rdfs:Class ;
 				
 dnr:SparqlEndpoint a rdfs:Class ;
 				   rdfs:label "Class of SPARQL Endpoints" ;
-				   rdfs:comment "A SPARQL Endpoint is a Query endpoint that can be queried.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+				   rdfs:comment "A SPARQL Endpoint is an endpoint that exposes one/more kinds of SPARQL endpoint.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+
+dnr:SparqlQueryEndpoint a rdfs:Class ;
+				   rdfs:subClassOf dnr:SparqlEndpoint ;
+				   rdfs:label "Class of SPARQL Query Endpoints" ;
+				   rdfs:comment "A SPARQL Query Endpoint is a SPARQL endpoint that supports SPARQL queries.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
+
+dnr:SparqlUpdateEndpoint a rdfs:Class ;
+				   rdfs:subClassOf dnr:SparqlEndpoint ;
+				   rdfs:label "Class of SPARQL Update Endpoints" ;
+				   rdfs:comment "A SPARQL Update Endpoint is a SPARQL endpoint that supports SPARQL updates.  Define these if you wish to set use things like the RemoteQueryProcessor or if you simply want to store settings for a particular SPARQL Endpoint you regularly use." .
 				   
 dnr:SparqlQueryProcessor a rdfs:Class ;
 						 rdfs:label "Class of SPARQL Query Processors" ;
@@ -412,8 +422,18 @@ dnr:assignUri a rdf:Property ;
 
 dnr:endpoint a rdf:Property ;
 			 rdfs:label "Endpoint" ;
-			 rdfs:comment "This property associates a SPARQL Endpoint with an object." ;
+			 rdfs:comment "This property associates an endpoint with an object." ;
 			 rdfs:range dnr:SparqlEndpoint .
+
+dnr:queryEndpoint a rdf:Property ;
+			 rdfs:label "Query Endpoint" ;
+			 rdfs:comment "This property associates a query endpoint with an object." ;
+			 rdfs:range dnr:SparqlQueryEndpoint .
+
+dnr:updateEndpoint a rdf:Property ;
+			 rdfs:label "Update Endpoint" ;
+			 rdfs:comment "This property associates an update endpoint with an object." ;
+			 rdfs:range dnr:SparqlUpdateEndpoint .
 			 
 dnr:endpointUri a rdf:Property ;
 				rdfs:label "Endpoint URI" ;
@@ -421,6 +441,16 @@ dnr:endpointUri a rdf:Property ;
 				rdfs:domain dnr:SparqlEndpoint ;
 				rdfs:domain dnr:GenericIOManager ;
 				rdfs:domain dnr:StorageProvider .
+
+dnr:queryEndpointUri a rdf:Property ;
+				rdfs:label "Query Endpoint URI" ;
+				rdfs:comment "This property defines the Query Endpoint URI." ;
+				rdfs:domain dnr:SparqlQueryEndpoint .
+
+dnr:updateEndpointUri a rdf:Property ;
+				rdfs:label "Update Endpoint URI" ;
+				rdfs:comment "This property defines the Update Endpoint URI." ;
+				rdfs:domain dnr:SparqlUpdateEndpoint .
 			 
 dnr:defaultGraphUri a rdf:Property ;
 					rdfs:label "Default Graph URI" ;
