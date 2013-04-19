@@ -152,6 +152,7 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case QueryEndpoint:
+                case UpdateEndpoint:
 #if !SILVERLIGHT
                 case FederatedEndpoint:
 #endif

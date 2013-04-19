@@ -31,6 +31,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -413,6 +414,25 @@ namespace VDS.RDF.Storage
             {
                 Options.HttpDebugging = false;
             }
+        }
+
+        [TestMethod]
+        public void StorageReadWriteSparqlConfigSerialization1()
+        {
+            ReadWriteSparqlConnector connector = ReadWriteSparqlTests.GetConnection();
+            Graph g = new Graph();
+            INode n = g.CreateBlankNode();
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext(g);
+            context.NextSubject = n;
+            connector.SerializeConfiguration(context);
+
+            TestTools.ShowGraph(g);
+
+            Object temp = ConfigurationLoader.LoadObject(g, n);
+            Assert.IsInstanceOfType(temp, typeof(ReadWriteSparqlConnector));
+            ReadWriteSparqlConnector connector2 = (ReadWriteSparqlConnector)temp;
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(connector.Endpoint.Uri, connector2.Endpoint.Uri));
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
         }
     }
 }
