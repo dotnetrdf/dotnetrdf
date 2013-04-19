@@ -306,7 +306,7 @@ namespace VDS.RDF.Query
             try
             {
                 //Try multiple times because sometimes machine load may mean we don't timeout
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     processor.ProcessQuery(q);
                 }

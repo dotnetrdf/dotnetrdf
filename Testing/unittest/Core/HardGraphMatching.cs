@@ -192,9 +192,9 @@ namespace VDS.RDF
         public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
-            g.LoadFromFile("turtle11/test-13.ttl");
+            g.LoadFromFile("turtle11-unofficial/test-13.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("turtle11/test-13.out", new NTriplesParser());
+            h.LoadFromFile("turtle11-unofficial/test-13.out", new NTriplesParser());
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);

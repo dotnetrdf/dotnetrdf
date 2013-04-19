@@ -169,6 +169,17 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
+        public void ParsingTurtleW3CNumericLiterals2()
+        {
+            String input = @"@prefix : <http://example.org/> .
+:subject :predicate 123.E+1.";
+            Graph g = new Graph();
+            g.LoadFromString(input, new TurtleParser(TurtleSyntax.W3C));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [TestMethod]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required

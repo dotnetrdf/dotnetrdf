@@ -1035,6 +1035,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 this.ConsumeCharacter();
                 next = this.Peek();
+                if (this._in.EndOfStream) break;
             }
 
             //If it ends in a trailing . then we need to backtrack
@@ -1188,6 +1189,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 this.ConsumeCharacter();
                 next = this.Peek();
+                if (this._in.EndOfStream) break;
             }
 
             //Backtrack if we get a trailing .
