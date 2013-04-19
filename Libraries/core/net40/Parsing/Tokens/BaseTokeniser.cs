@@ -835,6 +835,7 @@ namespace VDS.RDF.Parsing.Tokens
                     case 'D':
                     case 'd':
                     case 'E':
+                    case 'e':
                     case 'f':
                     case 'F':
                         return true;
