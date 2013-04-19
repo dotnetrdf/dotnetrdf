@@ -28,6 +28,6 @@ packages/
 Testing\unittest\resources\UnitTestConfig.properties
 
 # use regex here
-syntax: regex
+syntax: regexp
 [Bb]in
 [Oo]bj
