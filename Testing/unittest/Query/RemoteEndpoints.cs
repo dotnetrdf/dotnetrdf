@@ -179,7 +179,7 @@ results.Dispose()
             Debug.WriteLine("Memory Usage after " + totalRuns + " Iterations: " + Process.GetCurrentProcess().PrivateMemorySize64);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteEndpointMemoryLeak2()
         {
             //Do a GC before attempting the test
