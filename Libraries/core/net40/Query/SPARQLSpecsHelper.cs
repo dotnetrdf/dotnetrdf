@@ -951,7 +951,7 @@ namespace VDS.RDF.Query
             endIndex = startIndex;
             if (cs[startIndex] == '%')
             {
-                if (startIndex > cs.Length - 2)
+                if (startIndex >= cs.Length - 2)
                 {
                     //If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;

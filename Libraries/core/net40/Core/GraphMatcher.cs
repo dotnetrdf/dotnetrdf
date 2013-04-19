@@ -468,8 +468,8 @@ namespace VDS.RDF
                     if (possibles.Count == 1)
                     {
                         //Precisely one possible match so map
-                        INode x = t.Subject;
-                        INode y = possibles.First().Subject;
+                        INode x = t.Object;
+                        INode y = possibles.First().Object;
                         this._mapping.Add(x, y);
                         this._bound.Add(y);
                         this._unbound.Remove(y);
@@ -540,7 +540,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Graphs contain different number of independent blank nodes");
                 return false;
             }
-            Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " indepdent blank nodes, attempting mapping");
+            Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " independent blank nodes, attempting mapping");
 
             //Try to map the independent nodes
             foreach (INode x in sourceIndependents)
@@ -947,6 +947,12 @@ namespace VDS.RDF
                         return false;
                     }
                 }
+            }
+
+            //This should never happen but handle it just in case
+            if (possibleMappings.Count == 0)
+            {
+                throw new RdfException("Unexpected error trying to brute force graph equality");
             }
 
             //Now start testing the possiblities
