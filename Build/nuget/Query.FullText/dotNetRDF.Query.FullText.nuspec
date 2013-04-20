@@ -13,15 +13,10 @@
     <dependencies>
       <dependency id="dotNetRDF" version="1.0.0" />
       <dependency id="Lucene.Net" version="3.0.3" />
+      <dependency id="SharpZipLib" version="0.86.0" />
     </dependencies>
     <releaseNotes>
 
     </releaseNotes>
   </metadata>
-  <files>
-	<file src="..\..\..\Libraries\Query\FullText\net40\*.*" target="lib\net40\" />
-	<file src="..\..\..\Libraries\Query\FullText\net40-client\*.*" target="lib\net40-client\" />
-	<file src="..\..\..\Libraries\Query\FullText\net35\*.*" target="lib\net35\" />
-	<file src="..\..\..\Libraries\Query\FullText\net35-client\*.*" target="lib\net35-client\" />
-  </files>
 </package>

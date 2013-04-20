@@ -19,12 +19,4 @@
 
     </releaseNotes>
   </metadata>
-  <files>
-	<file src="..\..\..\Libraries\core\net40\bin\Release\dotNetRDF.*" target="lib\net40\" />
-	<file src="..\..\..\Libraries\core\net40-client\bin\Release\dotNetRDF.*" target="lib\net40-client\" \>
-	<file src="..\..\..\Libraries\core\net35\bin\Release\dotNetRDF.*" target="lib\net35\" \>
-	<file src="..\..\..\Libraries\core\net35-client\bin\Release\dotNetRDF.*" target="lib\net35-client\" \>
-	<file src="..\..\..\Libraries\core\sl4\bin\Release\dotNetRDF.*" target="lib\sl4\" \>
-	<file src="..\..\..\Libraries\core\sl4-wp\bin\Release\dotNetRDF.*" target="lib\sl4-wp\" \>
-  </files>
 </package>
