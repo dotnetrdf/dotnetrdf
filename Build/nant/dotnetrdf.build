@@ -1591,7 +1591,7 @@
               <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
           </infiles>
       </style>
-      <move file="Build/nant/dotNetRDF.Data.Virtuoso.nuspec" todir="Build/nuget/Data.Virtuoso" />
-      <move file="Build/nant/dotNetRDF.Query.FullText.nuspec" todir="Build/nuget/Query.FullText" />
+      <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
+      <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.csproj" />
   </target>
 </project>
