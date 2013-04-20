@@ -1582,7 +1582,7 @@
   </target>
 
   <target name="patch-nuspec" description="Changes the dependency version for dotNetRDF in library packages">
-      <style style="patch-nuspec.xsl" destdir="Build/nant/">
+      <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
           <parameters>
               <parameter name="version" value="${version}" />
           </parameters>
