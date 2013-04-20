@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compatability\CharHelper.cs" />
     <Compile Include="Compatability\HashSet.cs" />
     <Compile Include="Compatability\HtmlTextWriter.cs" />
     <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using VDS.RDF.Compatability;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 
@@ -228,7 +229,7 @@ namespace VDS.RDF.Parsing
                     if (!IsPNCharsBase(cs[0])) 
                     {
                         //Handle surrogate pairs for UTF-32 characters
-                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsPNCharsBase(cs[0], cs[1])) return false;
                             start++;
@@ -246,12 +247,12 @@ namespace VDS.RDF.Parsing
                         if (cs[i] != '.' && !IsPNChars(cs[i]))
                         {
                             //Handle surrogate pairs for UTF-32 characters
-                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
+                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                             {
                                 if (!IsPNChars(cs[i], cs[i + 1])) return false;
                                 i++;
                             }
-                            else if (Char.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
+                            else if (CharHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                             {
                                 //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                                 return IsPNChars(cs[i], cs[i + 1]);
@@ -275,7 +276,7 @@ namespace VDS.RDF.Parsing
                     if (!IsNameStartChar(cs[0]))
                     {
                         //Handle surrogate pairs for UTF-32
-                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsNameStartChar(cs[0], cs[1])) return false;
                             start++;
@@ -293,7 +294,7 @@ namespace VDS.RDF.Parsing
                         if (!IsNameChar(cs[i]))
                         {
                             //Handle surrogate pairs for UTF-32
-                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
                             {
                                 if (!IsNameChar(cs[i], cs[i + 1])) return false;
                                 i++;
@@ -359,7 +360,7 @@ namespace VDS.RDF.Parsing
                     //Validate first character is a nameStartChar
                     if (!IsNameStartChar(cs[0]))
                     {
-                        if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsNameStartChar(cs[0], cs[1])) return false;
                             start++;
@@ -377,7 +378,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (!IsNameChar(cs[i]))
                         {
-                            if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
                             {
                                 if (!IsNameChar(cs[i], cs[i + 1])) return false;
                                 i++;
@@ -403,7 +404,7 @@ namespace VDS.RDF.Parsing
             if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
                 //Handle surrogate pairs for UTF-32 characters
-                if (Char.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                 {
                     if (!IsPNCharsU(cs[0], cs[1])) return false;
                     start++;
@@ -425,13 +426,13 @@ namespace VDS.RDF.Parsing
                 if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
                 {
                     //Handle surrogate pairs for UTF-32 characters
-                    if (Char.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
+                    if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                     {
                         if (!IsPNChars(cs[i], cs[i + 1])) return false;
                         i++;
                         j = i;
                     }
-                    else if (Char.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
+                    else if (CharHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                     {
                         //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                         return IsPNChars(cs[i], cs[i + 1]);
@@ -677,9 +678,9 @@ namespace VDS.RDF.Parsing
 
         public static bool IsPNCharsBase(char c, char d)
         {
-            if (Char.IsHighSurrogate(c) && Char.IsLowSurrogate(d))
+            if (CharHelper.IsHighSurrogate(c) && CharHelper.IsLowSurrogate(d))
             {
-                int codepoint = Char.ConvertToUtf32(c, d);
+                int codepoint = CharHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
@@ -790,9 +791,9 @@ namespace VDS.RDF.Parsing
 
         public static bool IsNameStartChar(char c, char d)
         {
-            if (Char.IsHighSurrogate(c) && Char.IsLowSurrogate(d))
+            if (CharHelper.IsHighSurrogate(c) && CharHelper.IsLowSurrogate(d))
             {
-                int codepoint = Char.ConvertToUtf32(c, d);
+                int codepoint = CharHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
