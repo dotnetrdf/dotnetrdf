@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestFixture]
+    [TestFixture, Category("parsing speed")]
     public class SpeedTesting
     {
         private void EnsureTestData(int triples, String file, ITripleFormatter formatter)
