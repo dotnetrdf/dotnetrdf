@@ -1524,7 +1524,7 @@ namespace VDS.RDF.Configuration
             IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
             if (blankNode == null)
             {
-                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
             }
 
             return (T)LoadObject(_configGraph, blankNode);
