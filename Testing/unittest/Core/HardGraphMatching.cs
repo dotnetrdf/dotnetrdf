@@ -235,13 +235,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardTrivial3()
         {
             Graph g = new Graph();
-            g.LoadFromFile("turtle11/first.ttl");
+            g.LoadFromFile("resources/turtle11/first.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("turtle11/first.ttl");
+            h.LoadFromFile("resources/turtle11/first.ttl");
 
             Assert.AreEqual(g, h);
         }

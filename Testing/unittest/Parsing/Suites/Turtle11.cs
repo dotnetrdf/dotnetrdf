@@ -29,14 +29,14 @@ using NUnit.Framework;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestClass]
+    [TestFixture]
     public class Turtle11Unofficial
         : BaseRdfParserSuite
     {
         public Turtle11Unofficial()
             : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteTurtleW3CUnofficalTests()
         {
             //Run manifests
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
 
             //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", posSyntaxTest, negSyntaxTest);
+            this.RunManifest("resources\\turtle11\\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -92,77 +92,77 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames1()
         {
             String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:";
             Assert.IsTrue(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames2()
         {
             String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:o";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames3()
         {
             String input = ":a~b";
             Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames4()
         {
             String input = ":a%b";
             Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames5()
         {
             String input = @":a\~b";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames6()
         {
             String input = ":a%bb";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames7()
         {
             String input = @":\~";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames8()
         {
             String input = ":%bb";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexPrefixedNames9()
         {
             String input = @"p:AZazÀÖØöø˿Ͱͽ΄῾‌‍⁰↉Ⰰ⿕、ퟻ﨎ﷇﷰ￯𐀀󠇯";
             Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CNumericLiterals1()
         {
             String input = "123.E+1";
             Assert.IsTrue(TurtleSpecsHelper.IsValidDouble(input));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CNumericLiterals2()
         {
             String input = @"@prefix : <http://example.org/> .
