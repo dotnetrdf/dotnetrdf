@@ -13,6 +13,11 @@
     </xsl:template>
 
     <xsl:template match="nuget:dependency[@id='dotNetRDF']" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-        <dependency id="dotNetRDF" version="{version}" />
+        <xsl:element name="dependency">
+            <xsl:attribute name="id">dotNetRDF</xsl:attribute>
+            <xsl:attribute name="version">
+                <xsl:value-of select="$version"/>
+            </xsl:attribute>
+        </xsl:element>
     </xsl:template>
 </xsl:stylesheet>
