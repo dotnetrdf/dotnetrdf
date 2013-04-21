@@ -82,7 +82,7 @@ namespace VDS.RDF.Configuration
 
             String server, user, pwd, store, catalog, loadModeRaw;
             bool isAsync;
-            SparqlConnectorLoadMethod loadMode;
+            //SparqlConnectorLoadMethod loadMode;
 
             Object temp;
             INode storeObj;
