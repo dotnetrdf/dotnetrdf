@@ -23,37 +23,34 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Handlers
 {
     [TestFixture]
     public class FileLoaderHandlerTests
     {
-        private void EnsureTestData(String testFile)
+        private const string TestDataFile = "resources\\temp.ttl";
+
+        [SetUp]
+        public void Setup()
         {
-            if (!File.Exists(testFile))
+            if (File.Exists(TestDataFile))
             {
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile(testFile);
+                File.Delete(TestDataFile);
             }
+            
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.SaveToFile(TestDataFile);
         }
 
         [Test]
         public void ParsingFileLoaderGraphHandlerImplicitTurtle()
         {
-            EnsureTestData("temp.ttl");
-
             Graph g = new Graph();
-            FileLoader.Load(g, "temp.ttl");
+            FileLoader.Load(g, TestDataFile);
 
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
@@ -62,10 +59,9 @@ namespace VDS.RDF.Parsing.Handlers
         [Test]
         public void ParsingFileLoaderGraphHandlerExplicitTurtle()
         {
-            EnsureTestData("temp.ttl");
             Graph g = new Graph();
             GraphHandler handler = new GraphHandler(g);
-            FileLoader.Load(handler, "temp.ttl");
+            FileLoader.Load(handler, TestDataFile);
 
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
@@ -74,11 +70,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Test]
         public void ParsingFileLoaderCountHandlerTurtle()
         {
-            EnsureTestData("temp.ttl");
             Graph orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
-            FileLoader.Load(handler, "temp.ttl");
+            FileLoader.Load(handler, TestDataFile);
 
             Assert.AreEqual(orig.Triples.Count, handler.Count);
         }
