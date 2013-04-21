@@ -497,9 +497,9 @@ namespace VDS.RDF.Parsing
         {
             if (!File.Exists("nio.ttl"))
             {
-                using (StreamWriter writer = new StreamWriter("nio.ttl"))
+                using (StreamWriter writer = new StreamWriter("resources\\nio.ttl"))
                 {
-                    using (StreamReader reader = new StreamReader("dataset_50.ttl.gz"))
+                    using (StreamReader reader = new StreamReader("resources\\dataset_50.ttl.gz"))
                     {
                         String line = reader.ReadLine();
                         while (line != null)
