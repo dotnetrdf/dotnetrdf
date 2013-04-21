@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -38,7 +38,7 @@ namespace VDS.RDF.Web
     /// <summary>
     /// Summary description for ServiceDescription
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class ServiceDescription
     {
         private void EnsureIIS()
@@ -49,7 +49,7 @@ namespace VDS.RDF.Web
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionOptionsRequestOnSparqlServer()
         {
             EnsureIIS();
@@ -78,7 +78,7 @@ namespace VDS.RDF.Web
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionOptionsRequestOnSparqlServer2()
         {
             EnsureIIS();
@@ -108,7 +108,7 @@ namespace VDS.RDF.Web
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionDescriptionUriSparqlServer()
         {
             EnsureIIS();
@@ -125,7 +125,7 @@ namespace VDS.RDF.Web
             Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionOptionsRequestOnQueryHandler()
         {
             EnsureIIS();
@@ -154,7 +154,7 @@ namespace VDS.RDF.Web
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionOptionsRequestOnSparqlServer3()
         {
             EnsureIIS();
@@ -183,7 +183,7 @@ namespace VDS.RDF.Web
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceDescriptionOptionsRequestOnSparqlServer4()
         {
             EnsureIIS();

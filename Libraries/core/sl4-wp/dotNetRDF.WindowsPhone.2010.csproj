@@ -20,6 +20,7 @@
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +28,6 @@
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
     <DefineConstants>DEBUG,TRACE,SILVERLIGHT,WINDOWS_PHONE,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>

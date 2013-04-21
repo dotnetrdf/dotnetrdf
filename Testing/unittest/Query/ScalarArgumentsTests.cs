@@ -27,19 +27,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ScalarArgumentsTests
     {
         private SparqlQueryParser _parser11 = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
         private SparqlQueryParser _parserExt = new SparqlQueryParser(SparqlQuerySyntax.Extended);
 
-        [TestMethod]
+        [Test]
         public void SparqlScalarArgsGroupBySeparator()
         {
             String query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; SEPARATOR = \" - \") AS ?concat) WHERE {?s ?p ?o}";
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             this.CheckQueryFailsToParseInExtended(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlScalarArgsCountSeparator()
         {
             String query = "SELECT (COUNT(?s ; SEPARATOR = \" - \") AS ?count) WHERE {?s ?p ?o}";
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query
             this.CheckQueryFailsToParseInExtended(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlScalarArgsGroupByCustom()
         {
             String query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; <ex:custom> = \" - \") AS ?concat) WHERE {?s ?p ?o}";
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query
             this.CheckQueryFailsToParseInExtended(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlScalarArgsCountCustom()
         {
             String query = "SELECT (COUNT(?s ; <ex:custom> = \" - \") AS ?count) WHERE {?s ?p ?o}";

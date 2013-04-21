@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class ChainedHandlerTests
     {
         private void EnsureTestData()
@@ -47,26 +47,26 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
         
-        [TestMethod,ExpectedException(typeof(ArgumentException))]
+        [Test,ExpectedException(typeof(ArgumentException))]
         public void ParsingChainedHandlerBadInstantiation()
         {
             ChainedHandler handler = new ChainedHandler(Enumerable.Empty<IRdfHandler>());
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void ParsingChainedHandlerBadInstantiation2()
         {
             ChainedHandler handler = new ChainedHandler(null);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        [Test, ExpectedException(typeof(ArgumentException))]
         public void ParsingChainedHandlerBadInstantiation3()
         {
             GraphHandler h = new GraphHandler(new Graph());
             ChainedHandler handler = new ChainedHandler(new IRdfHandler[] { h, h });
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingChainedHandlerTwoGraphs()
         {
             EnsureTestData();
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(g, h, "Expected Graphs to be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingChainedHandlerGraphAndPaging()
         {
             EnsureTestData();
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreNotEqual(g, h, "Expected Graphs to not be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingChainedHandlerGraphAndPaging2()
         {
             EnsureTestData();
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(g, h, "Expected Graphs to be equal");
         }
         
-        [TestMethod]
+        [Test]
         public void ParsingChainedHandlerGraphAndCount()
         {
             EnsureTestData();
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing.Handlers
  
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingChainedHandlerGraphAndNull()
         {
             EnsureTestData();

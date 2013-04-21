@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1024,11 +1025,11 @@ namespace VDS.RDF.Query
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else
                     {

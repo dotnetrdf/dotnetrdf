@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -35,7 +35,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class NegationTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -44,13 +44,13 @@ namespace VDS.RDF.Query
         {
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             dataset.AddGraph(g);
 
             return dataset;
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationMinusSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationMinusComplex()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationMinusComplex2()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationMinusDisjoint()
         {
             String query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationNotExistsDisjoint()
         {
             String negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o FILTER(NOT EXISTS { ?x ?y ?z }) }";
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationNotExistsSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationExistsSimple()
         {
             SparqlParameterizedString negQuery = new SparqlParameterizedString();
@@ -137,14 +137,14 @@ namespace VDS.RDF.Query
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlNegationFullMinued()
         {
-            SparqlQuery lhsQuery = this._parser.ParseFromFile("full-minuend-lhs.rq");
-            SparqlQuery rhsQuery = this._parser.ParseFromFile("full-minuend-rhs.rq");
-            SparqlQuery query = this._parser.ParseFromFile("full-minuend.rq");
+            SparqlQuery lhsQuery = this._parser.ParseFromFile("resources\\full-minuend-lhs.rq");
+            SparqlQuery rhsQuery = this._parser.ParseFromFile("resources\\full-minuend-rhs.rq");
+            SparqlQuery query = this._parser.ParseFromFile("resources\\full-minuend.rq");
             Graph g = new Graph();
-            g.LoadFromFile("full-minuend.ttl");
+            g.LoadFromFile("resources\\full-minuend.ttl");
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
 
             SparqlResultSet lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query
             if (actual == null) Assert.Fail("Null results");
             SparqlResultSet expected = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
-            parser.Load(expected, "full-minuend.srx");
+            parser.Load(expected, "resources\\full-minuend.srx");
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);

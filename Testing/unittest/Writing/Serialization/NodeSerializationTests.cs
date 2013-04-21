@@ -33,13 +33,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Writing.Serialization
 {
-    [TestClass]
+    [TestFixture]
     public class NodeSerializationTests
     {
         #region Methods that perform the actual test logic
@@ -148,7 +148,7 @@ namespace VDS.RDF.Writing.Serialization
 
         #region Unit Tests for Blank Nodes
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlBlankNodes()
         {
             Graph g = new Graph();
@@ -156,7 +156,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestSerializationXml(b, typeof(BlankNode), false);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryBlankNodes()
         {
             Graph g = new Graph();
@@ -164,7 +164,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestSerializationBinary(b, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractBlankNodes()
         {
             Graph g = new Graph();
@@ -193,19 +193,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlLiteralNodes()
         {
             this.TestSerializationXml(this.GetLiteralNodes(), typeof(LiteralNode), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryLiteralNodes()
         {
             this.TestSerializationBinary(this.GetLiteralNodes(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractLiteralNodes()
         {
             this.TestSerializationDataContract(this.GetLiteralNodes(), typeof(LiteralNode), true);
@@ -230,19 +230,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlUriNodes()
         {
             this.TestSerializationXml(this.GetUriNodes(), typeof(UriNode), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryUriNodes()
         {
             this.TestSerializationBinary(this.GetUriNodes(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractUriNodes()
         {
             this.TestSerializationDataContract(this.GetUriNodes(), typeof(UriNode), true);
@@ -270,19 +270,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraphLiteralNodes()
         {
             this.TestSerializationXml(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraphLiteralNodes()
         {
             this.TestSerializationBinary(this.GetGraphLiteralNodes(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraphLiteralNodes()
         {
             this.TestSerializationDataContract(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
@@ -307,19 +307,19 @@ namespace VDS.RDF.Writing.Serialization
             return nodes;
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlVariableNodes()
         {
             this.TestSerializationXml(this.GetVariableNodes(), typeof(VariableNode), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryVariableNodes()
         {
             this.TestSerializationBinary(this.GetVariableNodes(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractVariableNodes()
         {
             this.TestSerializationDataContract(this.GetVariableNodes(), typeof(VariableNode), true);

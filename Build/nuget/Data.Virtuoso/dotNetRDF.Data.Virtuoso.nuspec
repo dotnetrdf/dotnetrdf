@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Data.Virtuoso</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>

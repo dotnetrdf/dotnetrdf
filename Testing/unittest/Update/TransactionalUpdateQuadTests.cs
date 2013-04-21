@@ -27,12 +27,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Update
 {
-    [TestClass]
+    [TestFixture]
     public class TransactionalUpdateQuadTests
         : TransactionalUpdateTests
     {

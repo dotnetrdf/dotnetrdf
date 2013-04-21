@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class WriterTests
         : CompressionTests
     {
@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing
 
         private String prefix = "@prefix : <http://example.org>.\n";
         
-        [TestMethod]
+        [Test]
         public void WritingBlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing
 
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCharEscaping()
         {
             List<IRdfReader> readers = new List<IRdfReader>()
@@ -147,7 +147,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingNTriplesCharEscaping()
         {
             TurtleParser parser = new TurtleParser();
@@ -190,11 +190,11 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "charescaping.owl");
+            FileLoader.Load(g, "resources\\charescaping.owl");
 
             Console.WriteLine("Original Triples");
             foreach (Triple t in g.Triples)
@@ -219,11 +219,11 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod]
+        [Test]
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
             String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollections()
         {
             Graph g = new Graph();
@@ -257,7 +257,7 @@ namespace VDS.RDF.Writing
             ttlwriter.Save(g, Console.Out);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingXmlAmpersandEscaping()
         {
             List<String> inputs = new List<string>()
@@ -292,7 +292,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingBackslashEscaping()
         {
             Graph g = new Graph();
@@ -346,7 +346,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingUriEscaping()
         {
             Graph g = new Graph();
@@ -425,7 +425,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingQNameValidation()
         {
             Graph g = new Graph();

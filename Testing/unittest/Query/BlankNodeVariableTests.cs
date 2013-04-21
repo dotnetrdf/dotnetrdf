@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class BlankNodeVariableTests
     {
         private LeviathanQueryProcessor _processor;
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBlankNodeVariables1()
         {
             this.EnsureTestData();

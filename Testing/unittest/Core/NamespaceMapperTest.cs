@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class NamespaceMapperTest : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void NamespaceMapperEvent()
         {
             bool eventRaised = false;

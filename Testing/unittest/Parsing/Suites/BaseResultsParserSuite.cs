@@ -24,42 +24,51 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
-   
     [TestFixture]
-    public class TriG
-        : BaseDatasetParserSuite
+    public abstract class BaseResultsParserSuite : BaseParserSuite<ISparqlResultsReader, SparqlResultSet>
     {
-        public TriG()
-            : base(new TriGParser(), new NQuadsParser(), "trig\\")
+        protected BaseResultsParserSuite(ISparqlResultsReader testParser, ISparqlResultsReader resultsParser, String baseDir)
+            : base(testParser, resultsParser, baseDir)
         {
-            this.CheckResults = false;
         }
 
-        [Test]
-        public void ParsingSuiteTriG()
+        protected override SparqlResultSet TryParseTestInput(string file)
         {
-            //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
+            SparqlResultSet actual = new SparqlResultSet();
+            this.Parser.Load(actual, file);
+            return actual;
+        }
 
-            if (this.Count == 0) Assert.Fail("No tests found");
+        protected override void TryValidateResults(string resultFile, SparqlResultSet actual)
+        {
+            SparqlResultSet expected = new SparqlResultSet();
+            this.ResultsParser.Load(expected, resultFile);
 
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            if (expected.Equals(actual))
+            {
+                Console.WriteLine("Parsed Results matches Expected Results (Test Passed)");
+                this.Passed++;
+            }
+            else
+            {
+                Console.WriteLine("Parsed Results did not match Expected Graph (Test Failed)");
+                this.Failed++;
+                Console.WriteLine("Expected:");
+                TestTools.ShowResults(expected);
+                Console.WriteLine();
+                Console.WriteLine("Actual:");
+                TestTools.ShowResults(actual);
+            }
+        }
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        protected override string FileExtension
+        {
+            get { return ".srx"; }
         }
     }
 }

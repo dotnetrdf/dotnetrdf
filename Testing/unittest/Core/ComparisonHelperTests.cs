@@ -23,22 +23,22 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Core
 {
-    [TestClass]
+    [TestFixture]
     public class ComparisonHelperTests : BaseTest
     {
         private Graph _graph;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _graph = new Graph();
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyCompareDecimalNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -52,7 +52,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyCompareFloatNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -66,7 +66,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyCompareDoubleNodeRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)

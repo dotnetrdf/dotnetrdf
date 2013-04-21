@@ -24,28 +24,49 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF.Parsing.Suites
 {
     [TestFixture]
-    public class UriTests
+    public abstract class BaseRdfParserSuite : BaseParserSuite<IRdfReader, Graph>
     {
-        [Test]
-        public void UriAbsoluteUriWithQuerystring()
+        protected BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)
+            : base(testParser, resultsParser, baseDir)
         {
-            Uri u = new Uri("http://example.org/?test");
-            Assert.AreEqual("http://example.org/?test", u.AbsoluteUri);
         }
 
-        [Test]
-        public void UriAbsoluteUriWithFragment()
+        protected override Graph TryParseTestInput(string file)
         {
-            Uri u = new Uri("http://example.org/#test");
-            Assert.AreEqual("http://example.org/#test", u.AbsoluteUri);
+            Graph actual = new Graph();
+            actual.BaseUri = new Uri(BaseUri, Path.GetFileName(file));
+            this.Parser.Load(actual, file);
+            return actual;
+        }
+
+        protected override void TryValidateResults(string resultFile, Graph actual)
+        {
+            Graph expected = new Graph();
+            this.ResultsParser.Load(expected, resultFile);
+
+            GraphDiffReport diff = expected.Difference(actual);
+            if (diff.AreEqual)
+            {
+                Console.WriteLine("Parsed Graph matches Expected Graph (Test Passed)");
+                this.Passed++;
+            }
+            else
+            {
+                Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
+                this.Failed++;
+                TestTools.ShowDifferences(diff);
+            }
+        }
+
+        protected override string FileExtension
+        {
+            get { return ".nt"; }
         }
     }
 }

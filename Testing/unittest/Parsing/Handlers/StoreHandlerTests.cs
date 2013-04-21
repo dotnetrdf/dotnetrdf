@@ -26,13 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class StoreHandlerTests
     {
         private void EnsureTestData(String testFile)
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod,ExpectedException(typeof(ArgumentNullException))]
+        [Test,ExpectedException(typeof(ArgumentNullException))]
         public void ParsingStoreHandlerBadInstantiation()
         {
             StoreHandler handler = new StoreHandler(null);
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region NQuads Tests
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerNQuadsImplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerNQuadsImplicitActual));
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerNQuadsExplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerNQuadsExplicitActual));
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerNQuadsCounting()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerNQuadsCountingActual));
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingFileLoaderStoreHandlerCounting()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingFileLoaderStoreHandlerCountingActual));
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingFileLoaderStoreHandlerExplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingFileLoaderStoreHandlerExplicitActual));
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region TriG Tests
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriGImplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriGImplicitActual));
@@ -222,7 +222,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriGExplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriGExplicitActual));
@@ -251,7 +251,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriGCounting()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriGCountingActual));
@@ -278,7 +278,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region TriX Tests
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriXImplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriXImplicitActual));
@@ -307,7 +307,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriXExplicit()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriXExplicitActual));
@@ -336,7 +336,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerTriXCounting()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriXCountingActual));

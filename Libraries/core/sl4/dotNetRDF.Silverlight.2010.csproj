@@ -18,6 +18,7 @@
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
@@ -33,7 +34,6 @@
     <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>0659,1574,0067,0419,0628</NoWarn>

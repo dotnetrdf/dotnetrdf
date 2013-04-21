@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextHelperTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -84,49 +84,49 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns1()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns2()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns3()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns4()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns5()
         {
             this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns6()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns7()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextHelperExtractPatterns8()
         {
             this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);

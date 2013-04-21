@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
@@ -37,10 +37,10 @@ using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class ConfigSerializationTests
     {
-        [TestMethod]
+        [Test]
         public void ConfigurationSerializationOperators()
         {
             List<ISparqlOperator> ops = new List<ISparqlOperator>()

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Query.FullText</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
@@ -14,6 +14,7 @@
     <dependencies>
       <dependency id="dotNetRDF" version="1.0.0" />
       <dependency id="Lucene.Net" version="3.0.3" />
+      <dependency id="SharpZipLib" version="0.86.0" />
     </dependencies>
     <releaseNotes>
 

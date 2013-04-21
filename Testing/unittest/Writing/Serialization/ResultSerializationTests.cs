@@ -33,12 +33,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Serialization
 {
-    [TestClass]
+    [TestFixture]
     public class ResultSerializationTests
     {
         private void TestXmlSerialization(SparqlResult r, bool fullEquality)
@@ -202,37 +202,37 @@ namespace VDS.RDF.Writing.Serialization
             return this.GetResults("SELECT * WHERE { ?s a ?type } LIMIT 20");
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinarySparqlResult()
         {
             this.TestBinarySerialization(this.GetResults(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinarySparqlResultSet()
         {
             this.TestBinarySerialization(this.GetResults());
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlSparqlResult()
         {
             this.TestXmlSerialization(this.GetResults(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlSparqlResultSet()
         {
             this.TestXmlSerialization(this.GetResults());
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractSparqlResult()
         {
             this.TestDataContractSerialization(this.GetResults(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractSparqlResultSet()
         {
             this.TestDataContractSerialization(this.GetResults());

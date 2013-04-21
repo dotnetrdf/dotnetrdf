@@ -1580,4 +1580,18 @@
       <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
+
+  <target name="patch-nuspec" description="Changes the dependency version for dotNetRDF in library packages">
+      <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
+          <parameters>
+              <parameter name="version" value="${version}" />
+          </parameters>
+          <infiles>
+              <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+              <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+          </infiles>
+      </style>
+      <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+      <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+  </target>
 </project>

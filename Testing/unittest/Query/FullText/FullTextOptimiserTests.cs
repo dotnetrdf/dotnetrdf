@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextOptimiserTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -69,37 +69,37 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserSimple1()
         {
             this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserSimple2()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserSimple3()
         {
             this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserSimple4()
         {
             this.TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserComplex1()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextOptimiserComplex2()
         {
             this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");

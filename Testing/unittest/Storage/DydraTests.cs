@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class DydraTests
     {
        
@@ -49,7 +49,7 @@ namespace VDS.RDF.Storage
             return new DydraConnector(TestConfigManager.GetSetting(TestConfigManager.DydraAccount), TestConfigManager.GetSetting(TestConfigManager.DydraRepository), TestConfigManager.GetSetting(TestConfigManager.DydraApiKey));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraSaveToDefaultGraph()
         {
             try
@@ -82,7 +82,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraSaveToNamedGraph()
         {
             try
@@ -120,7 +120,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraLoadGraphWithHandler()
         {
             try
@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraDeleteGraph()
         {
             try
@@ -193,7 +193,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraListGraphs()
         {
             DydraConnector dydra = DydraTests.GetConnection();
@@ -206,7 +206,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraQuery()
         {
             try
@@ -232,7 +232,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraConstructQuery()
         {
             try
@@ -259,7 +259,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraAddTriples()
         {
             try
@@ -289,7 +289,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageDydraRemoveTriples()
         {
             try

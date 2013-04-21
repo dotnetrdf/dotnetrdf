@@ -28,12 +28,12 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
-     [TestClass]
+     [TestFixture]
     public class EmptyFileParsing
     {
          private void TestEmptyParsing(IRdfReader reader)
@@ -64,31 +64,31 @@ namespace VDS.RDF.Parsing
              Assert.AreEqual(0, store.Graphs.Count, "Store should have no Graphs");
          }
          
-         [TestMethod]
+         [Test]
          public void ParsingEmptyFileNTriples()
          {
              this.TestEmptyParsing(new NTriplesParser());
          }
 
-         [TestMethod]
+         [Test]
          public void ParsingEmptyFileTurtle()
          {
              this.TestEmptyParsing(new TurtleParser());
          }
 
-         [TestMethod]
+         [Test]
          public void ParsingEmptyFileNotation3()
          {
              this.TestEmptyParsing(new Notation3Parser());
          }
 
-         [TestMethod]
+         [Test]
          public void ParsingEmptyFileNQuads()
          {
              this.TestEmptyDatasetParsing(new NQuadsParser());
          }
 
-         [TestMethod]
+         [Test]
          public void ParsingEmptyFileTriG()
          {
              this.TestEmptyDatasetParsing(new TriGParser());

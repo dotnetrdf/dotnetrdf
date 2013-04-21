@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class GZipTests
     {
         private IGraph _g;
@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing
         private List<String> _manualResultsTestFiles = new List<String>();
         private List<String> _autoResultsTestFiles = new List<String>();
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._g = new Graph();
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipExtensionDetectionNaive()
         {
             List<String> filenames = new List<String>()
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipExtensionDetectionNonStackable()
         {
             List<String> filenames = new List<String>()
@@ -170,7 +170,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipExtensionDetectionTrue()
         {
             List<String> filenames = new List<String>()
@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameManual1()
         {
             foreach (String filename in this._manualTestFiles)
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameManual2()
         {
             foreach (String filename in this._manualTestFiles)
@@ -227,7 +227,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameManual3()
         {
             foreach (String filename in this._manualTestFiles)
@@ -239,7 +239,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByStreamManual()
         {
             foreach (String filename in this._manualTestFiles)
@@ -258,7 +258,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByGZipStreamManual()
         {
             foreach (String filename in this._manualTestFiles)
@@ -277,7 +277,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameAuto1()
         {
             foreach (String filename in this._autoTestFiles)
@@ -296,7 +296,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameAuto2()
         {
             foreach (String filename in this._autoTestFiles)
@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByFilenameAuto3()
         {
             foreach (String filename in this._autoTestFiles)
@@ -322,7 +322,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByStreamAuto()
         {
             foreach (String filename in this._autoTestFiles)
@@ -341,7 +341,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipByGZipStreamAuto()
         {
             foreach (String filename in this._autoTestFiles)
@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipDatasetByStreamManual()
         {
             foreach (String filename in this._manualDatasetTestFiles)
@@ -379,7 +379,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipDatasetByGZipStreamManual()
         {
             foreach (String filename in this._manualDatasetTestFiles)
@@ -398,7 +398,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipDatasetByStreamAuto()
         {
             foreach (String filename in this._autoDatasetTestFiles)
@@ -417,7 +417,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipDatasetByGZipStreamAuto()
         {
             foreach (String filename in this._autoDatasetTestFiles)
@@ -436,7 +436,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByFilenameManual()
         {
             foreach (String filename in this._manualResultsTestFiles)
@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByStreamManual()
         {
             foreach (String filename in this._manualResultsTestFiles)
@@ -474,7 +474,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByGZipStreamManual()
         {
             foreach (String filename in this._manualResultsTestFiles)
@@ -493,7 +493,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByFilenameAuto1()
         {
             foreach (String filename in this._autoResultsTestFiles)
@@ -512,7 +512,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByFilenameAuto2()
         {
             foreach (String filename in this._autoResultsTestFiles)
@@ -526,7 +526,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByStreamAuto()
         {
             foreach (String filename in this._autoResultsTestFiles)
@@ -545,7 +545,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingGZipResultsByGZipStreamAuto()
         {
             foreach (String filename in this._autoResultsTestFiles)

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -35,7 +35,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class SesameTests
     {
         public static SesameHttpProtocolConnector GetConnection()
@@ -47,13 +47,13 @@ namespace VDS.RDF.Storage
             return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameSaveLoad()
         {
             try
             {
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/SesameTest");
 
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -75,11 +75,11 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameDeleteTriples1()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/SesameTest");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -108,7 +108,7 @@ namespace VDS.RDF.Storage
             Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameDeleteTriples2()
         {
             Graph g = new Graph();
@@ -141,7 +141,7 @@ namespace VDS.RDF.Storage
             Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameCyrillic()
         {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Storage
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameAsk()
         {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -181,7 +181,7 @@ namespace VDS.RDF.Storage
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameDescribe()
         {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -199,7 +199,7 @@ namespace VDS.RDF.Storage
                 }
          }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameSparqlUpdate1()
         {
             try
@@ -229,7 +229,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSesameSparqlUpdate2()
         {
             try

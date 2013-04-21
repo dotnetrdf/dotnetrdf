@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading;
 using System.IO;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -285,14 +285,14 @@ namespace VDS.RDF
             }
         }
 
-        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action testMethod)
+        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action Test)
         {
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
 
             try
             {
-                testMethod();
+                Test();
             }
             finally
             {

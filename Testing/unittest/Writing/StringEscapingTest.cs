@@ -29,14 +29,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class StringEscapingTest
     {
         private char[] _ntripleEscapes = new char[] { '\\', '"', 'n', 'r', 't' };
@@ -113,31 +113,31 @@ new line",
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingNTriples()
         {
             this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(), new NTriplesParser(), this._ntripleEscapes);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingTurtle()
         {
             this.TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser(), this._turtleEscapes);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingNotation3()
         {
             this.TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser(), this._n3Escapes);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingSparql()
         {
             this.TestEscaping<SparqlFormatter>(new SparqlFormatter(), null, this._sparqlEscapes);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringIsFullyEscaped()
         {
             String test = "Ends with a \"";
@@ -156,7 +156,7 @@ new line",
             Assert.IsTrue(result.IsFullyEscaped(this._ntripleEscapes, new char[] { '"', '\n', '\r', '\t' }));
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringEscapeCharacters()
         {
             String test = "Ends with a \"";
@@ -174,7 +174,7 @@ new line",
             Console.WriteLine("Escaped Value - " + result2);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringEscapeNewLines()
         {
             String test = "Has a \n new line";
