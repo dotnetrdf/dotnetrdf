@@ -74,6 +74,7 @@ namespace VDS.RDF.Configuration
 #if !NO_SYNC_HTTP
             IStorageProvider storageProvider = null;
             IStorageServer storageServer = null;
+            SparqlConnectorLoadMethod loadMode;
 #else
             IAsyncStorageProvider storageProvider = null;
             IAsyncStorageServer storageServer = null;
@@ -82,7 +83,6 @@ namespace VDS.RDF.Configuration
 
             String server, user, pwd, store, catalog, loadModeRaw;
             bool isAsync;
-            SparqlConnectorLoadMethod loadMode;
 
             Object temp;
             INode storeObj;
