@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -85,7 +86,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         if (r["similarity"].NodeType == NodeType.Literal)
                         {
-                            similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value)));
+                            similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value, CultureInfo.InvariantCulture)));
                         }
                     }
                 }
@@ -163,7 +164,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                         {
                             if (r["similarity"].NodeType == NodeType.Literal)
                             {
-                                similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value)));
+                                similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value, CultureInfo.InvariantCulture)));
                             }
                         }
 
