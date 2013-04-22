@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Writing.Formatting;
@@ -70,6 +71,7 @@ namespace VDS.RDF.Query
         public void SparqlOrderByDescendingScope()
         {
             //Test Case for CORE-350
+            //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
             IGraph g = new Graph();
             g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
@@ -103,6 +105,47 @@ namespace VDS.RDF.Query
             {
                 Triple t = new Triple(results[i]["s"], results[i]["p"], results[i]["o"]);
                 Assert.AreEqual(ts[i], t, "Element at position " + i + " is not as expected");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByNullInFirstCondition()
+        {
+            //Test Case for CORE-350
+            //If first condition has a null in it subsequent conditions are not applied
+
+            String query = @"SELECT * WHERE
+{
+  VALUES ( ?a ?b )
+  {
+    (UNDEF 2)
+    (UNDEF 1)
+    (UNDEF 3)
+    ('a' 3)
+    ('a' 2)
+    ('a' 1)
+  }
+} ORDER BY ?a ?b";
+
+            Graph g = new Graph();
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(6, results.Count);
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                if (i < 3)
+                {
+                    Assert.IsFalse(results[i].HasBoundValue("a"));
+                }
+                else
+                {
+                    Assert.IsTrue(results[i].HasBoundValue("a"));
+                }
+                int expected = (i % 3) + 1;
+                Assert.AreEqual(expected, results[i]["b"].AsValuedNode().AsInteger());
             }
         }
     }
