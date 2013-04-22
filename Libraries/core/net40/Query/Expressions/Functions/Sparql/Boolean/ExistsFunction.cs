@@ -123,17 +123,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <remarks>
         /// We only ever need to evaluate the Graph Pattern once to get the Results
         /// </remarks>
-        private void EvaluateInternal(SparqlEvaluationContext context)
+        private void EvaluateInternal(SparqlEvaluationContext origContext)
         {
             this._result = null;
+
+            //We must take a copy of the original context as otherwise we can have strange results
+            SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data);
+            context.InputMultiset = origContext.InputMultiset;
+            context.OutputMultiset = new Multiset();
             this._lastInput = context.InputMultiset.GetHashCode();
             this._lastCount = context.InputMultiset.Count;
 
             //REQ: Optimise the algebra here
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
-            BaseMultiset initialInput = context.InputMultiset;
             this._result = context.Evaluate(existsClause);
-            context.InputMultiset = initialInput;
 
             //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             //Downside is that it does require more memory than the old algorithm
