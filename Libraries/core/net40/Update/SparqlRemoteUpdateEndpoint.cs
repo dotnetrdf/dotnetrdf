@@ -32,14 +32,19 @@ using System.Text;
 #if !NO_WEB
 using System.Web;
 #endif
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Update
 {
     /// <summary>
     /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it
     /// </summary>
-    public class SparqlRemoteUpdateEndpoint : BaseEndpoint
+    public class SparqlRemoteUpdateEndpoint 
+        : BaseEndpoint
     {
+        //TODO: Needs to support IConfigurationSerializable
+
         const int LongUpdateLength = 2048;
 
         /// <summary>
@@ -259,6 +264,26 @@ namespace VDS.RDF.Update
                             }
                         }, null);
                 }, null);
+        }
+
+        /// <summary>
+        /// Serializes configuration for the endpoint
+        /// </summary>
+        /// <param name="context">Serialization Context</param>
+        public override void SerializeConfiguration(Configuration.ConfigurationSerializationContext context)
+        {
+            INode endpoint = context.NextSubject;
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateEndpoint));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+
+            context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(this.Uri)));
+
+            context.NextSubject = endpoint;
+            base.SerializeConfiguration(context);
         }
     }
 }

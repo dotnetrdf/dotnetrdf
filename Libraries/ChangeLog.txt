@@ -8,7 +8,11 @@ Added
 - Parsing API
  - New ITokenisingParser interface which exposes a TokenQueueMode property (CORE-332)
 - Global Options - new Options.DefaultTokenQueueMode (CORE-332)
-- ConfigurationLoader may now be used in a convenience instance mode (CORE-337)
+- Configuration
+ - ConfigurationLoader may now be used in a convenience instance mode (CORE-337)
+ - SparqlRemoteUpdateEndpoint now implements IConfigurationSerializable properly (CORE-346)
+- Storage
+ - New ReadWriteSparqlConnector for connecting to arbitrary triplestores that expose both a Query and Update endpoint (CORE-346)
 
 Changed
 - Bug Fixes
@@ -33,6 +37,8 @@ Changed
  - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
  - Graph equality should now be more performant (CORE-345)
  - HTTP Debugging is no longer debug build specific (CORE-347)
+- Configuration API
+ - New dnr:queryEndpoint, dnr:queryEndpointUri, dnr:updateEndpoint and dnr:updateEndpointUri properties for use in place of their generic equivalents (CORE-346)
 - Query
  - Wherever possible the order of variables in the SELECT clause will now be respected in SparqlResultSet objects (CORE-342)
 - Storage API
