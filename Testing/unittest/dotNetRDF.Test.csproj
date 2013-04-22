@@ -139,6 +139,7 @@
     <Compile Include="Query\DefaultGraphTests.cs" />
     <Compile Include="Query\DefaultGraphTests2.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
+    <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
     <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />

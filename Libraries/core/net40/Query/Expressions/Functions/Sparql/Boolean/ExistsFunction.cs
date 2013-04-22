@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
             //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             //Downside is that it does require more memory than the old algorithm
-            this._joinVars = context.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
+            this._joinVars = origContext.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
             if (this._joinVars.Count == 0) return;
 
             List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
 
             //First do a pass over the LHS Result to find all possible values for joined variables
-            foreach (ISet x in context.InputMultiset.Sets)
+            foreach (ISet x in origContext.InputMultiset.Sets)
             {
                 int i = 0;
                 foreach (System.String var in this._joinVars)
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     else
                     {
                         //Don't forget that a null will be potentially compatible with everything
-                        possMatches = (possMatches == null ? context.InputMultiset.SetIDs : possMatches.Intersect(context.InputMultiset.SetIDs));
+                        possMatches = (possMatches == null ? origContext.InputMultiset.SetIDs : possMatches.Intersect(origContext.InputMultiset.SetIDs));
                     }
                     i++;
                 }
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 foreach (int poss in possMatches)
                 {
                     if (this._exists.Contains(poss)) continue;
-                    if (context.InputMultiset[poss].IsCompatibleWith(y, this._joinVars))
+                    if (origContext.InputMultiset[poss].IsCompatibleWith(y, this._joinVars))
                     {
                         this._exists.Add(poss);
                     }
