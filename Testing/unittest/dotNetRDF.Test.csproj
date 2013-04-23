@@ -124,6 +124,7 @@
     <Compile Include="Parsing\Suites\TriX.cs" />
     <Compile Include="Parsing\Suites\Turtle11.cs" />
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
+    <Compile Include="Parsing\TriXTests.cs" />
     <Compile Include="Query\Aggregates\AggregatesOverNullTests.cs" />
     <Compile Include="Query\Aggregates\AggregateTests.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
