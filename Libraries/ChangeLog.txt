@@ -28,6 +28,9 @@ Changed
  - Fixed a bug where Graph equality could explode memory usage and be unable to determine equality on some blank node heavy equivalent graphs (CORE-345)
  - Fixed a bug with numeric literals not being parsed using the invariant culture (CORE-344)
  - Fixed a bug with the Ontology API not returning OWL datatype properties correctly (CORE-339)
+ - Fixed a bug where DESC() applied to a sort condition in SPARQL could propogate the DESC() to the subsequent sort condition (CORE-350)
+ - Fixed a bug where not all sort conditions in SPARQL were applied for rows where any column evaluated to null (CORE-350)
+ - Fixed a bug where EXISTS/NOT EXISTS used a child expression in a larger expression could cause incorrect results
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
  - Upgrade Json.Net to 5.0.3
