@@ -214,20 +214,11 @@ namespace VDS.RDF.Storage.Management
                     NTriplesWriter ntwriter = new NTriplesWriter();
                     ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugRequest(request);
-                    }
-#endif
+                    Tools.HttpDebugRequest(request);
+                    
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
                         //If we get then it was OK
                         response.Close();
                     }
@@ -279,15 +270,12 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here it completed OK
                     response.Close();
                 }
@@ -307,9 +295,8 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+                Tools.HttpDebugRequest(request);
+
                 ListStringsHandler handler = new ListStringsHandler("id");
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
@@ -466,18 +453,14 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                        if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                        Tools.HttpDebugResponse(response);
                         //If we get here it completed OK
                         response.Close();
                     }

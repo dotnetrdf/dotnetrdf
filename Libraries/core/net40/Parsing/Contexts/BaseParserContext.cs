@@ -303,12 +303,12 @@ namespace VDS.RDF.Parsing.Contexts
                 case TokenQueueMode.AsynchronousBufferDuringParsing:
                     this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
                     break;
-                case TokenQueueMode.SynchronousBufferDuringParsing:
-                    this._queue = new BufferedTokenQueue(tokeniser);
-                    break;
                 case TokenQueueMode.QueueAllBeforeParsing:
-                default:
                     this._queue = new TokenQueue(tokeniser);
+                    break;
+                case TokenQueueMode.SynchronousBufferDuringParsing:
+                default:
+                    this._queue = new BufferedTokenQueue(tokeniser);
                     break;
             }
             this._traceTokeniser = traceTokeniser;

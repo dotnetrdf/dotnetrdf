@@ -203,22 +203,12 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here it completed OK
                     response.Close();
                 }
@@ -263,12 +253,7 @@ namespace VDS.RDF.Storage
                             writer.Close();
                         }
 
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugRequest(request);
-                        }
-#endif
+                        Tools.HttpDebugRequest(request);
 
                         //Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
@@ -276,12 +261,7 @@ namespace VDS.RDF.Storage
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse(response);
-                                }
-#endif
+                                Tools.HttpDebugResponse(response);
                                 //If we get here it completed OK
                                 response.Close();
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);

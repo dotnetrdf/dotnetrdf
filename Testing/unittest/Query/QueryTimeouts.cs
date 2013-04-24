@@ -169,7 +169,11 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
-                processor.ProcessQuery(q);
+                //Try multiple times because sometimes machine load may mean we don't timeout
+                for (int i = 0; i < 10; i++)
+                {
+                    processor.ProcessQuery(q);
+                }
                 Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
             }
             catch (RdfQueryTimeoutException timeoutEx)
@@ -301,7 +305,11 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
-                processor.ProcessQuery(q);
+                //Try multiple times because sometimes machine load may mean we don't timeout
+                for (int i = 0; i < 100; i++)
+                {
+                    processor.ProcessQuery(q);
+                }
                 Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
             }
             catch (RdfQueryTimeoutException timeoutEx)

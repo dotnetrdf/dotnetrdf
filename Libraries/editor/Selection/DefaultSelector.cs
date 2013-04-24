@@ -30,13 +30,18 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
-    public class DefaultSelector<T> : BaseSelector<T>
+    /// <summary>
+    /// Selector which selects the symbol deliminated by a starting &lt; " or new line and by an ending &gt; " or new line.
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    public class DefaultSelector<T> 
+        : BaseSelector<T>
     {
         /// <summary>
         /// Gets whether a Character is a Starting Deliminator
         /// </summary>
         /// <param name="c">Character</param>
-        /// <returns></returns>
+        /// <returns>True if a character is a starting deliminator</returns>
         protected override bool IsStartingDeliminator(char c)
         {
             switch (c)
@@ -55,7 +60,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// Gets whether a Character is an Ending Deliminator
         /// </summary>
         /// <param name="c">Character</param>
-        /// <returns></returns>
+        /// <returns>True if a character is an ending deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
             switch (c)
@@ -74,7 +79,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// Gets whether a specific Starting Deliminator should be matched with a specific ending deliminator
         /// </summary>
         /// <param name="c">Starting Deliminator</param>
-        /// <returns></returns>
+        /// <returns>True if a matching deliminator is required, false otherwise</returns>
         protected override char? RequireMatchingDeliminator(char c)
         {
             switch (c)

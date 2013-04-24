@@ -30,14 +30,24 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public class QNameData : BaseCompletionData
+    /// <summary>
+    /// Completion data for QNames
+    /// </summary>
+    public class QNameData
+        : BaseCompletionData
     {
-        private String _qname, _description = String.Empty;
-        private double _priority = 0.0d;
-
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="qname">QName</param>
         public QNameData(String qname)
             : this(qname, String.Empty) { }
 
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <param name="description">Description</param>
         public QNameData(String qname, String description)
             : base(qname, qname, description) { }
     }

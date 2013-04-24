@@ -46,7 +46,7 @@ namespace VDS.RDF.Storage
     /// The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Graph Store HTTP Protocol</a> is defined as part of SPARQL 1.1 and is currently a working draft so implementations are not guaranteed to be fully compliant with the draft and the protocol may change in the future.
     /// </para>
     /// <para>
-    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
+    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 
@@ -229,21 +229,11 @@ namespace VDS.RDF.Storage
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
                 request = base.GetProxiedRequest(request);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -258,12 +248,7 @@ namespace VDS.RDF.Storage
                 //Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound) return;
                 }
                 throw StorageHelper.HandleHttpError(webEx, "loading a Graph from");
@@ -300,21 +285,11 @@ namespace VDS.RDF.Storage
                 request.Method = "HEAD";
                 request = base.GetProxiedRequest(request);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it was OK
                     response.Close();
                     return true;
@@ -326,12 +301,7 @@ namespace VDS.RDF.Storage
                 //Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
                     {
                         return false;
@@ -366,21 +336,11 @@ namespace VDS.RDF.Storage
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it was OK
                     response.Close();
                 }
@@ -442,21 +402,11 @@ namespace VDS.RDF.Storage
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it was OK
                     response.Close();
                 }
@@ -498,21 +448,11 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 request = base.GetProxiedRequest(request);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it was OK
                     response.Close();
                 }

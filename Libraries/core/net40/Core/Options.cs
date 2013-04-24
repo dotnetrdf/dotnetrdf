@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 using VDS.RDF.Query;
 
@@ -86,19 +87,17 @@ namespace VDS.RDF
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
         private static bool _forceBlockingIO = false;
         private static bool _forceHttpBasicAuth = false;
+        private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
 #endif
 
-#if DEBUG
-        //Debug Build Only
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
-#endif
 
         /// <summary>
-        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
+        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
         /// </summary>
         public static LiteralEqualityMode LiteralEqualityMode
         {
@@ -217,7 +216,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="NullExpression">NullExpression</see>
+        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>
         /// </summary>
         /// <remarks>When set to false a Parser Error will be thrown if the Function cannot be parsed into an Expression</remarks>
         public static bool QueryAllowUnknownFunctions
@@ -331,14 +330,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Controls whether the <see cref="IndexedTripleCollection">IndexedTripleCollection</see> will create full indexes for the Triples inserted into it
+        /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it
         /// </summary>
         /// <remarks>
         /// <para>
-        /// By default the <see cref="IndexedTripleCollection">IndexedTripleCollection</see> creates indexes on Triples based upon Subjects, Predicates and Objects alone.  When full indexing is enabled it also creates indexes based on Subject-Predicate, Predicate-Object and Subject-Object pairs which may improve query speed but will use additional memory.
+        /// By default indexes triple collections creates indexes on Triples based upon Subjects, Predicates and Objects alone.  When full indexing is enabled it also creates indexes based on Subject-Predicate, Predicate-Object and Subject-Object pairs which may improve query speed but will use additional memory.
         /// </para>
         /// <para>
-        /// Default setting for Full Indexing is enabled, enabling/disabling it only has an effect on <see cref="IndexedTripleCollection">IndexedTripleCollection</see> instances instantiated after full indexing was enabled/disabled i.e. existing Graphs in memory using the <see cref="IndexedTripleCollection">IndexedTripleCollection</see> continue to use the full indexing setting that was present when they were instantiated.
+        /// Default setting for Full Indexing is enabled, enabling/disabling it only has an effect on indexed triple collection instances instantiated after full indexing was enabled/disabled i.e. existing Graphs in memory using the indexed triple collections continue to use the full indexing setting that was present when they were instantiated.
         /// </para>
         /// </remarks>
         public static bool FullTripleIndexing
@@ -493,18 +492,24 @@ namespace VDS.RDF
             }
         }
 
-        #region Debug Build Only Options
-
-        #if DEBUG
-
+        /// <summary>
+        /// Gets/Sets the default token queue mode used for tokeniser based parsers
+        /// </summary>
+        public static TokenQueueMode DefaultTokenQueueMode
+        {
+            get
+            {
+                return _defaultTokenQueueMode;
+            }
+            set
+            {
+                _defaultTokenQueueMode = value;
+            }
+        }
+        
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// This does not guarentee that this information is output to the Console Standard Out, most code that makes HTTP requests should do this but it may vary depending on the Library build and the exact classes used.
-        /// </remarks>
         public static bool HttpDebugging {
             get
             {
@@ -519,11 +524,6 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// Only applies if <see cref="HttpDebugging">HttpDebugging</see> is enabled
-        /// </remarks>
         public static bool HttpFullDebugging
         {
             get
@@ -535,9 +535,5 @@ namespace VDS.RDF
                 _httpFullDebug = value;
             }
         }
-
-        #endif
-
-        #endregion
     }
 }

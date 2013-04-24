@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
@@ -46,7 +48,7 @@ namespace VDS.RDF.Storage
         /// Gets whether the connection with the underlying Store is read-only
         /// </summary>
         /// <remarks>
-        /// Any Manager which indicates it is read-only should also return false for the <see cref="IStorageCapbilities.UpdateSupported">UpdatedSupported</see> property and should throw a <see cref="RdfStorageException">RdfStorageException</see> if the <strong>SaveGraph()</strong> or <strong>UpdateGraph()</strong> methods are called
+        /// Any Manager which indicates it is read-only should also return false for the <see cref="IStorageCapabilities.UpdateSupported">UpdatedSupported</see> property and should throw a <see cref="RdfStorageException">RdfStorageException</see> if the <strong>SaveGraph()</strong> or <strong>UpdateGraph()</strong> methods are called
         /// </remarks>
         bool IsReadOnly
         {

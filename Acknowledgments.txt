@@ -96,3 +96,5 @@ improvements in the code:
  - Andrew Matthews
  - Nicolas Gauthier
  - Dimitri Kourkoulis
+ - George Abraham
+ - Dennis Ludl

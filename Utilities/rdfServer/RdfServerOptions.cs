@@ -32,6 +32,7 @@ using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.Web;
+using VDS.Web.Consoles;
 using VDS.Web.Handlers;
 using VDS.Web.Logging;
 
@@ -57,6 +58,11 @@ namespace VDS.RDF.Utilities.Server
     /// </summary>
     public class RdfServerOptions
     {
+        public const String DefaultServiceName = "rdfServerService";
+        public const int DefaultPort = 1986;
+        public const String ServerOptionsKey = "rdfServerOptions";
+        public const String DotNetRdfConfigKey = "dotNetRDFConfig";
+
         private RdfServerConsoleMode _mode = RdfServerConsoleMode.Run;
 
         private int _port = DefaultPort;
@@ -67,9 +73,6 @@ namespace VDS.RDF.Utilities.Server
         private bool _verbose = false, _quiet = false;
         private String _baseDir = null;
         private bool _restControl = false;
-
-        public const String DefaultServiceName = "rdfServerService";
-        public const int DefaultPort = 1986;
 
         /// <summary>
         /// Creates new options from the command line arguments
@@ -253,7 +256,7 @@ namespace VDS.RDF.Utilities.Server
             Console.WriteLine();
             Console.WriteLine("-l log.txt");
             Console.WriteLine("-log log.txt");
-            Console.WriteLine(" Sets the log file used for logging");
+            Console.WriteLine(" Sets the log file used for HTTP request logging");
             Console.WriteLine();
             Console.WriteLine("-p port");
             Console.WriteLine("-port port");
@@ -278,19 +281,28 @@ namespace VDS.RDF.Utilities.Server
         /// <returns></returns>
         public HttpServer GetServerInstance()
         {
-            IHttpListenerHandlerCollection handlers = new SparqlHandlersCollection(this);
-            if (this.RestControl) handlers.InsertMapping(new HttpRequestMapping("POST", "/control", typeof(RestControlHandler)), 0);
+            //Set up the server
+            IHttpListenerHandlerCollection handlers = new HttpListenerHandlerCollection();
+            if (this.RestControl) handlers.AddMapping(new HttpRequestMapping("POST", "/control", typeof(RestControlHandler)));
 
             HttpServer server = new HttpServer(this.Host, this.Port, handlers);
             server.BaseDirectory = this.BaseDirectory;
 
             ConfigurationLoader.PathResolver = new RdfServerPathResolver(server);
 
-            //Need to load up the Configuration Graph and add to Server State
-            server.State["ConfigurationGraph"] = this.LoadConfigurationGraph();
-            if (server.State["ConfigurationGraph"] == null)
+            //Add options to app settings for later use
+            server.AppSettings[ServerOptionsKey] = this;
+
+            //Configure handler mappings based on the configuration file
+            IGraph g = this.LoadConfigurationGraph();
+            if (g == null) throw new DotNetRdfConfigurationException("Specified Configuration File could not be found");
+            this.ApplyHandlerMappings(g, handlers);
+            if (handlers.Count == 0 || handlers.Count == 1 && this.RestControl) throw new DotNetRdfConfigurationException("Configuration File fails to specify any appropriate HTTP handler configuration");
+
+            //Add static file handler if appropriate
+            if (this.BaseDirectory != null)
             {
-                throw new HttpServerException("Unable to create a HttpServer instance as the Configuration Graph for the server could not be loaded");
+                handlers.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(StaticFileHandler)));
             }
 
             //Add MIME Type Mappings for RDF File Types
@@ -298,40 +310,62 @@ namespace VDS.RDF.Utilities.Server
             {
                 if (definition.FileExtensions.Any())
                 {
-                    server.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
+                    server.MimeTypes.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
                 }
             }
 
-            //Setup Logging appropriately
+            //Enable Log file
             if (this.LogFile != null)
             {
                 server.AddLogger(new FileLogger(this.LogFile, this.LogFormat));
             }
-            if (this.Mode == RdfServerConsoleMode.Run)
+
+            //Always enable process console
+            server.Console = new ProcessConsole();
+
+            //If Quite Mode is off then HTTP Request Logging to console is enabled
+            if (!this.QuietMode)
             {
-                if (!this.QuietMode)
-                {
-                    //Console Logging only applies when not in Quiet Mode
-                    if (this.VerboseMode)
-                    {
-                        server.AddLogger(new ConsoleLogger(this.LogFormat));
-                    }
-                    else
-                    {
-                        server.AddLogger(new ConsoleErrorLogger());
-                    }
-                }
+                server.AddLogger(new ConsoleLogger(this.LogFormat));
             }
 
-
             return server;
+        }
+
+        /// <summary>
+        /// Applies the handler mappings
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="handlers">Handlers Collection</param>
+        private void ApplyHandlerMappings(IGraph g, IHttpListenerHandlerCollection handlers)
+        {
+            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode httpHandler = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler));
+
+            foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, httpHandler))
+            {
+                INode pathNode = t.Subject;
+                if (pathNode.NodeType == NodeType.Uri)
+                {
+                    Uri pathUri = ((IUriNode)pathNode).Uri;
+                    if (pathUri.Scheme.Equals("dotnetrdf"))
+                    {
+                        String path = pathUri.AbsoluteUri.Substring(10);
+                        handlers.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, path, typeof(SparqlServerHandler)));
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
         }
 
         /// <summary>
         /// Loads the Configuration Graph
         /// </summary>
         /// <returns></returns>
-        private IGraph LoadConfigurationGraph()
+        internal IGraph LoadConfigurationGraph()
         {
             IGraph g = null;
 
@@ -358,12 +392,12 @@ namespace VDS.RDF.Utilities.Server
                     }
                 }
             }
-            catch (RdfParserSelectionException selectEx)
+            catch (RdfParserSelectionException)
             {
                 g = null;
                 Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' could not be loaded as a suitable parser was not found");
             }
-            catch (RdfParseException parseEx)
+            catch (RdfParseException)
             {
                 g = null;
                 Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not valid RDF");

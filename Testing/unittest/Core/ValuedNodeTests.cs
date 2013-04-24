@@ -25,8 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
@@ -34,18 +36,65 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Core
 {
     [TestClass]
-    public class ValuedNodeTests
+    public class ValuedNodeTests : BaseTest
     {
+        private Graph _graph;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            _graph = new Graph();
+        }
+
         [TestMethod]
         public void NodeAsValuedTimeSpan()
         {
-            Graph g = new Graph();
-            INode orig = new TimeSpan(1, 0, 0).ToLiteral(g);
+            INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
             IValuedNode valued = orig.AsValuedNode();
 
             Assert.AreEqual(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(((ILiteralNode)orig).DataType, ((ILiteralNode)valued).DataType));
             Assert.AreEqual(typeof(TimeSpanNode), valued.GetType());
+        }
+
+        [TestMethod]
+        public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
+        {
+            foreach (var ci in TestedCultureInfos)
+            {
+                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4m, n => n.AsDecimal()));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
+        {
+            foreach (var ci in TestedCultureInfos)
+            {
+                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4d, n => n.AsDouble()));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
+        {
+            foreach (var ci in TestedCultureInfos)
+            {
+                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4f, n => n.AsFloat()));
+            }
+        }
+
+        private void RoundTripValuedNodeConversion<T>(dynamic value, Func<IValuedNode, T> convertBack)
+        {
+            // given
+            ILiteralNode literalNode = LiteralExtensions.ToLiteral(value, _graph);
+
+            // when
+            IValuedNode valuedNode = literalNode.AsValuedNode();
+            T convertedBack = convertBack(valuedNode);
+
+            // then
+            Assert.AreEqual<T>(value, convertedBack);
         }
     }
 }

@@ -36,7 +36,9 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Storage.Management;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -69,10 +71,10 @@ namespace VDS.RDF.Storage
     public class SparqlConnector
         : IQueryableStorage, IConfigurationSerializable
     {
-        private SparqlRemoteEndpoint _endpoint;
-        private SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
-        private bool _skipLocalParsing = false;
-        private int _timeout;
+        protected SparqlRemoteEndpoint _endpoint;
+        protected SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
+        protected bool _skipLocalParsing = false;
+        protected int _timeout;
 
         /// <summary>
         /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint
@@ -144,7 +146,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets/Sets the HTTP Timeout used for communicating with the SPARQL Endpoint
         /// </summary>
-        public int Timeout
+        public virtual int Timeout
         {
             get 
             {
@@ -263,7 +265,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
@@ -273,7 +275,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
         }
@@ -283,13 +285,13 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            this.LoadGraph(new GraphHandler(g), graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -297,7 +299,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String query;
 
@@ -334,7 +336,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection</exception>
-        public void SaveGraph(IGraph g)
+        public virtual void SaveGraph(IGraph g)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
 
@@ -343,7 +345,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the IO Behaviour of SPARQL Connections
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public virtual IOBehaviour IOBehaviour
         {
             get
             {
@@ -357,7 +359,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -368,7 +370,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -376,7 +378,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Updates are not supported since this connection is read-only
         /// </summary>
-        public bool UpdateSupported
+        public virtual bool UpdateSupported
         {
             get 
             {
@@ -389,7 +391,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of this Graph to delete</param>
         /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
-        public void DeleteGraph(Uri graphUri)
+        public virtual void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -399,7 +401,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of this Graph to delete</param>
         /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
-        public void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -407,7 +409,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting graphs is not supported
         /// </summary>
-        public bool DeleteSupported
+        public virtual bool DeleteSupported
         {
             get
             {
@@ -419,10 +421,12 @@ namespace VDS.RDF.Storage
         /// Lists the Graphs in the Store
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Uri> ListGraphs()
+        public virtual IEnumerable<Uri> ListGraphs()
         {
             try
             {
+                //Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
+                //won't interpret GRAPH ?g { } correctly
                 Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
@@ -454,7 +458,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing graphs is supported
         /// </summary>
-        public bool ListGraphsSupported
+        public virtual bool ListGraphsSupported
         {
             get
             {
@@ -465,7 +469,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>
-        public bool IsReady
+        public virtual bool IsReady
         {
             get 
             {
@@ -476,7 +480,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is read-only
         /// </summary>
-        public bool IsReadOnly
+        public virtual bool IsReadOnly
         {
             get 
             {
@@ -505,26 +509,30 @@ namespace VDS.RDF.Storage
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode loadMode = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
 
+            //Basic information
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
 
-            //TODO: Serialize Load Mode here
+            //Serialize Load Mode
+            context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(this._mode.ToString())));
 
+            //Query Endpoint
             if (this._endpoint is IConfigurationSerializable)
             {
                 //Use the indirect serialization method
 
                 //Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 ((IConfigurationSerializable)this._endpoint).SerializeConfiguration(context);
@@ -535,7 +543,7 @@ namespace VDS.RDF.Storage
             else
             {
                 //Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri));
+                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
                 INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
                 INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
                 
@@ -548,6 +556,305 @@ namespace VDS.RDF.Storage
                 {
                     context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Class for connecting to any SPARQL server that provides both a query and update endpoint
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class is a wrapper around a <see cref="SparqlRemoteEndpoint"/> and a <see cref="SparqlRemoteUpdateEndpoint"/>.  The former is used for the query functionality while the latter is used for the update functionality.  As updates happen via SPARQL the behaviour with respects to adding and removing blank nodes will be somewhat up to the underlying SPARQL implementation.  This connector is <strong>not</strong> able to carry out <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{T},IEnumerable{T})"/> operations which attempt to delete blank nodes and cannot guarantee that added blank nodes bear any relation to existing blank nodes in the store.
+    /// </para>
+    /// <para>
+    /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing endpoint instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="ReadWriteSparqlConnector.Endpoint">Endpoint</see> and <see cref="ReadWriteSparqlConnector.UpdateEndpoint">UpdateEndpoint</see> properties and programmatically adding the settings.
+    /// </para>
+    /// </remarks>
+    public class ReadWriteSparqlConnector
+        : SparqlConnector, IUpdateableStorage
+    {
+        private SparqlFormatter _formatter = new SparqlFormatter();
+        private SparqlRemoteUpdateEndpoint _updateEndpoint;
+
+        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
+            : base(queryEndpoint, mode)
+        {
+            if (updateEndpoint == null) throw new ArgumentNullException("updateEndpoint", "Update Endpoint cannot be null, if you require a read-only SPARQL connector use the base class SparqlConnector instead");
+            this._updateEndpoint = updateEndpoint;
+        }
+
+        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
+            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
+
+        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint, SparqlConnectorLoadMethod mode)
+            : this(new SparqlRemoteEndpoint(queryEndpoint), new SparqlRemoteUpdateEndpoint(updateEndpoint), mode) { }
+
+        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
+            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
+
+        /// <summary>
+        /// Gets the underlying <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> which this class is a wrapper around
+        /// </summary>
+        [Description("The Remote Update Endpoint to which queries are sent using HTTP."), TypeConverter(typeof(ExpandableObjectConverter))]
+        public SparqlRemoteUpdateEndpoint UpdateEndpoint
+        {
+            get
+            {
+                return this._updateEndpoint;
+            }
+        }
+
+        /// <summary>
+        /// Gets that deleting graphs is supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets that the store is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the IO behaviour for the store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.CanUpdateTriples | IOBehaviour.OverwriteTriples;
+            }
+        }
+
+        /// <summary>
+        /// Gets that triple level updates are supported, see the remarks section of the <see cref="ReadWriteSparqlConnector"/> for exactly what is and isn't supported
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to delete</param>
+        public override void DeleteGraph(string graphUri)
+        {
+            this.DeleteGraph(graphUri.ToSafeUri());
+        }
+
+        /// <summary>
+        /// Deletes a graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to delete</param>
+        public override void DeleteGraph(Uri graphUri)
+        {
+            if (graphUri == null)
+            {
+                this.Update("DROP DEFAULT");
+            }
+            else
+            {
+                this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
+            }
+        }
+
+        /// <summary>
+        /// Saves a graph to the store
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        public override void SaveGraph(IGraph g)
+        {
+            StringBuilder updates = new StringBuilder();
+
+            //Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
+            if (g.BaseUri == null)
+            {
+                updates.AppendLine("CLEAR SILENT DEFAULT;");
+            }
+            else
+            {
+                updates.AppendLine("CLEAR SILENT GRAPH <" + this._formatter.FormatUri(g.BaseUri) + ">;");
+            }
+
+            //Insert preamble
+            //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+            if (g.BaseUri != null)
+            {
+                updates.AppendLine("WITH <" + this._formatter.FormatUri(g.BaseUri) + ">");
+            }
+            updates.AppendLine("INSERT");
+            updates.AppendLine("{");
+
+            //Serialize triples
+            foreach (Triple t in g.Triples)
+            {
+                updates.AppendLine(" " + this._formatter.Format(t));
+            }
+
+            //End
+            updates.AppendLine("} WHERE { }");
+
+            //Save the graph
+            this.Update(updates.ToString());
+        }
+
+        /// <summary>
+        /// Updates a graph in the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            this.UpdateGraph(graphUri.ToSafeUri(), additions, removals);
+        }
+
+        /// <summary>
+        /// Updates a graph in the store
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            StringBuilder updates = new StringBuilder();
+
+            if (additions != null)
+            {
+                if (additions.Any())
+                {
+                    //Insert preamble
+                    //Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
+                    if (graphUri != null)
+                    {
+                        updates.AppendLine("WITH <" + this._formatter.FormatUri(graphUri) + ">");
+                    }
+                    updates.AppendLine("INSERT");
+                    updates.AppendLine("{");
+
+                    //Serialize triples
+                    foreach (Triple t in additions)
+                    {
+                        updates.AppendLine(" " + this._formatter.Format(t));
+                    }
+
+                    //End
+                    updates.AppendLine("} WHERE { }");
+                    if (removals != null && removals.Any()) updates.AppendLine(";");
+                }
+            }
+            if (removals != null)
+            {
+                if (removals.Any())
+                {
+                    //Insert preamble
+                    //Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
+                    updates.AppendLine("DELETE DATA");
+                    updates.AppendLine("{");
+
+                    if (graphUri != null)
+                    {
+                        updates.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                    }
+
+                    //Serialize triples
+                    foreach (Triple t in removals)
+                    {
+                        if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
+                        updates.AppendLine("  " + this._formatter.Format(t));
+                    }
+
+                    //End
+                    if (graphUri != null) updates.AppendLine(" }");
+                    updates.AppendLine("}");
+                }
+            }
+
+            //Make an update if necessary
+            if (updates.Length > 0)
+            {
+                this.Update(updates.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Makes a SPARQL Update against the store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        public void Update(string sparqlUpdate)
+        {
+            if (!this._skipLocalParsing)
+            {
+                //Parse the update locally to validate it
+                //This also saves us wasting a HttpWebRequest on a malformed update
+                SparqlUpdateParser uparser = new SparqlUpdateParser();
+                uparser.ParseFromString(sparqlUpdate);
+
+                this._updateEndpoint.Update(sparqlUpdate);
+            }
+            else
+            {
+                //If we're skipping local parsing then we'll need to just make a raw update
+                this._updateEndpoint.Update(sparqlUpdate);
+            }
+        }
+
+        /// <summary>
+        /// Gets a String which gives details of the Connection
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "[SPARQL Query & Update] Query: " + this._endpoint.Uri.AbsoluteUri + " Update: " + this._updateEndpoint.Uri.AbsoluteUri;
+        }
+
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            //Call base SerializeConfiguration() first
+            INode manager = context.NextSubject;
+            context.NextSubject = manager;
+            base.SerializeConfiguration(context);
+            context.NextSubject = manager;
+
+            if (this._updateEndpoint is IConfigurationSerializable)
+            {
+                //Use the indirect serialization method
+
+                //Serialize the Endpoints Configuration
+                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+                INode endpointObj = context.Graph.CreateBlankNode();
+                context.NextSubject = endpointObj;
+                ((IConfigurationSerializable)this._updateEndpoint).SerializeConfiguration(context);
+
+                //Link that serialization to our serialization
+                context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
+            }
+            else
+            {
+                //Use the direct serialization method
+                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+
+                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.AbsoluteUri)));
             }
         }
     }

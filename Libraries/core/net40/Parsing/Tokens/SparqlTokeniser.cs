@@ -746,7 +746,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                     else
                     {
-                        this.HandleSparqlLocalNameEscapes();
+                        this.HandleComplexLocalNameEscapes();
                     }
                     next = this.Peek();
                     continue;
@@ -842,7 +842,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                     else
                     {
-                        this.HandleSparqlLocalNameEscapes();
+                        this.HandleComplexLocalNameEscapes();
                     }
                     next = this.Peek();
                     continue;

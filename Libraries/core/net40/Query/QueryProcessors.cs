@@ -32,7 +32,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>
+    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery(String)">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>
     /// </summary>
     public class SimpleQueryProcessor 
         : ISparqlQueryProcessor
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IQueryableStorage.Query">Query()</see> method of an <see cref="IQueryableStorage">IQueryableStorage</see>
+    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IQueryableStorage.Query(String)">Query()</see> method of an <see cref="IQueryableStorage">IQueryableStorage</see>
     /// </summary>
     public class GenericQueryProcessor 
         : ISparqlQueryProcessor

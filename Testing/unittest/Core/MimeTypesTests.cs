@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Core
@@ -1476,7 +1477,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetWriterByTypeUnknown()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/unknown");
-            Assert.IsInstanceOfType(writer, typeof(TurtleWriter));
+            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
         }
 
         [TestMethod]
@@ -2470,6 +2471,74 @@ namespace VDS.RDF.Core
         }
 
         [TestMethod]
+        public void MimeTypesApplyParserOptions1()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
+                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions2()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
+                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions3()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
+                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions4()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
+                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
         public void MimeTypesContentNegotiation1()
         {
             String[] types = new String[] { "application/turtle" , "application/rdf+xml", "text/plain" };
@@ -2593,6 +2662,34 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.5d, selectors[0].Quality);
             Assert.AreEqual("text/plain", selectors[1].Type);
             Assert.AreEqual(0.5d, selectors[1].Quality);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionByUpperCaseExt()
+        {
+            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            {
+                if (!def.HasFileExtensions) continue;
+                String ext = def.CanonicalFileExtension.ToUpper();
+                MimeTypeDefinition def2 = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault();
+                Assert.IsNotNull(def2);
+                Assert.AreEqual(def.SyntaxName, def2.SyntaxName);
+                Assert.AreEqual(def.CanonicalMimeType, def2.CanonicalMimeType);
+                Assert.AreEqual(def.HasFileExtensions, def2.HasFileExtensions);
+                Assert.AreEqual(def.CanonicalFileExtension, def2.CanonicalFileExtension);
+                Assert.AreEqual(def.CanParseRdf, def2.CanParseRdf);
+                Assert.AreEqual(def.CanParseRdfDatasets, def2.CanParseRdfDatasets);
+                Assert.AreEqual(def.CanParseSparqlResults, def2.CanParseSparqlResults);
+                Assert.AreEqual(def.CanWriteRdf, def2.CanWriteRdf);
+                Assert.AreEqual(def.CanWriteRdfDatasets, def2.CanWriteRdfDatasets);
+                Assert.AreEqual(def.CanWriteSparqlResults, def2.CanWriteSparqlResults);
+                Assert.AreEqual(def.RdfParserType, def2.RdfParserType);
+                Assert.AreEqual(def.RdfDatasetParserType, def2.RdfDatasetParserType);
+                Assert.AreEqual(def.SparqlResultsParserType, def2.SparqlResultsParserType);
+                Assert.AreEqual(def.RdfWriterType, def2.RdfWriterType);
+                Assert.AreEqual(def.RdfDatasetWriterType, def2.RdfDatasetWriterType);
+                Assert.AreEqual(def.SparqlResultsWriterType, def2.SparqlResultsWriterType);
+            }
         }
     }
 }

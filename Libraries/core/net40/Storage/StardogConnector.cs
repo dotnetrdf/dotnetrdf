@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
+    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="StardogConnector.Begin()">Begin()</see>, <see cref="StardogConnector.Commit()">Commit()</see> and <see cref="StardogConnector.Rollback()">Rollback()</see> methods.
     /// </para>
     /// <para>
     /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  
@@ -377,22 +377,13 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 //Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
+
                     StreamReader data = new StreamReader(response.GetResponseStream());
                     String ctype = response.ContentType;
                     try
@@ -493,21 +484,12 @@ namespace VDS.RDF.Storage
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
+
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
@@ -525,7 +507,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         /// <remarks>
         /// <para>
-        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph">UpdateGraph()</see> method instead
+        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
         /// </para>
         /// </remarks>
         public void SaveGraph(IGraph g)
@@ -557,20 +539,11 @@ namespace VDS.RDF.Storage
                 store.Add(g);
                 this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then it was OK
                     response.Close();
                 }
@@ -767,20 +740,12 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 }
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+
+                Tools.HttpDebugRequest(request);
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we get here then the Delete worked OK
                     response.Close();
                 }
@@ -939,23 +904,14 @@ namespace VDS.RDF.Storage
                             store.Add(g);
                             this._writer.Save(store, new StreamWriter(stream));
 
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
                                         Tools.HttpDebugResponse(response);
-                                    }
-#endif
+
                                     //If we get here then it was OK
                                     response.Close();
 
@@ -1069,24 +1025,15 @@ namespace VDS.RDF.Storage
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                     {
                         try
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
+
                             IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                             parser.Load(handler, new StreamReader(response.GetResponseStream()));
                             response.Close();
@@ -1182,23 +1129,14 @@ namespace VDS.RDF.Storage
                             store.Add(g);
                             this._writer.Save(store, new StreamWriter(stream));
 
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
-                                        Tools.HttpDebugResponse(response);
-                                    }
-#endif
+                                    Tools.HttpDebugResponse(response);
+                                    
                                     //If we get here then it was OK
                                     response.Close();
 
@@ -1221,23 +1159,15 @@ namespace VDS.RDF.Storage
                                                 store.Add(g);
                                                 this._writer.Save(store, new StreamWriter(stream));
 
-#if DEBUG
-                                                if (Options.HttpDebugging)
-                                                {
-                                                    Tools.HttpDebugRequest(request);
-                                                }
-#endif
+                                                Tools.HttpDebugRequest(request);
+
                                                 request.BeginGetResponse(r4 =>
                                                 {
                                                     try
                                                     {
                                                         response = (HttpWebResponse)request.EndGetResponse(r4);
-#if DEBUG
-                                                        if (Options.HttpDebugging)
-                                                        {
-                                                            Tools.HttpDebugResponse(response);
-                                                        }
-#endif
+                                                        Tools.HttpDebugResponse(response);
+
                                                         //If we get here then it was OK
                                                         response.Close();
 
@@ -1383,23 +1313,15 @@ namespace VDS.RDF.Storage
                             store.Add(g);
                             this._writer.Save(store, new StreamWriter(stream));
 
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                            Tools.HttpDebugRequest(request);
+
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
-                                        Tools.HttpDebugResponse(response);
-                                    }
-#endif
+                                    Tools.HttpDebugResponse(response);
+
                                     //If we get here then it was OK
                                     response.Close();
 
@@ -1533,23 +1455,15 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 }
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                    
+                Tools.HttpDebugRequest(request);
                 request.BeginGetResponse(r =>
                     {
                         try
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+
+                            Tools.HttpDebugResponse(response);
                             //If we get here then the Delete worked OK
                             response.Close();
 
@@ -1673,13 +1587,8 @@ namespace VDS.RDF.Storage
                                 writer.Write(HttpUtility.UrlEncode(query));
                                 writer.Close();
                             }
-
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
+                                
+                            Tools.HttpDebugRequest(request);
 
                             //Get the Response and process based on the Content Type
                             request.BeginGetResponse(r2 =>
@@ -1687,12 +1596,8 @@ namespace VDS.RDF.Storage
                                     try
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            Tools.HttpDebugResponse(response);
-                                        }
-#endif
+                                        Tools.HttpDebugResponse(response);
+                                        
                                         StreamReader data = new StreamReader(response.GetResponseStream());
                                         String ctype = response.ContentType;
                                         try
@@ -1845,22 +1750,14 @@ namespace VDS.RDF.Storage
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             try
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
+
                         tID = reader.ReadToEnd();
                         reader.Close();
                     }
@@ -1883,20 +1780,12 @@ namespace VDS.RDF.Storage
         {
             HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + tID, "text/plain"/* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+                
+            Tools.HttpDebugRequest(request);
+
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugResponse(response);
-                }
-#endif
+                Tools.HttpDebugResponse(response);
                 response.Close();
             }
 
@@ -2014,12 +1903,7 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     try
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugRequest(request);
-                        }
-#endif
+                        Tools.HttpDebugRequest(request);
                         request.BeginGetResponse(r =>
                         {
                             try
@@ -2028,12 +1912,7 @@ namespace VDS.RDF.Storage
                                 String tID;
                                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                                 {
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
-                                        Tools.HttpDebugResponse(response);
-                                    }
-#endif
+                                    Tools.HttpDebugResponse(response);
                                     tID = reader.ReadToEnd();
                                     reader.Close();
                                 }
@@ -2096,12 +1975,7 @@ namespace VDS.RDF.Storage
                 {
                     HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + this._activeTrans, "text/plain"/* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-        #if DEBUG
-                    if (Options.HttpDebugging)
-                    {
                         Tools.HttpDebugRequest(request);
-                    }
-        #endif
                     try
                     {
                         request.BeginGetResponse(r =>
@@ -2109,12 +1983,8 @@ namespace VDS.RDF.Storage
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse(response);
-                                }
-#endif
+
+                                Tools.HttpDebugResponse(response);
                                 response.Close();
                                 this._activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit), state);

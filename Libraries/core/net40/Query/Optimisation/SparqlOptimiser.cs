@@ -62,10 +62,10 @@ namespace VDS.RDF.Query.Optimisation
         /// <strong>Note:</strong> May be overridden by the Optimiser setting on a SparqlQueryParser
         /// </para>
         /// <para>
-        /// Unlike previous releases a Query may be reoptimised using a different optimiser if desired by calling the <see cref="SparqlQuery.Optimise">Optimise()</see> method again and providing a different Optimiser.  This may not always fully reoptimise the query since the first optimisation will have caused any Filters and Assignments to be placed in the Triple Pattern
+        /// Unlike previous releases a Query may be reoptimised using a different optimiser if desired by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method again and providing a different Optimiser.  This may not always fully reoptimise the query since the first optimisation will have caused any Filters and Assignments to be placed in the Triple Pattern
         /// </para>
         /// <para>
-        /// <em>Warning:</em> Setting this to null has no effect, to disable automatic optimisation use the global property <see cref="Options.QueryOptimisation">Options.QueryOptimisation</see>.  Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise">Optimise()</see> method.
+        /// <em>Warning:</em> Setting this to null has no effect, to disable automatic optimisation use the global property <see cref="Options.QueryOptimisation">Options.QueryOptimisation</see>.  Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </para>
         /// </remarks>
         public static IQueryOptimiser QueryOptimiser
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Unlike Query Optimisation multiple Algebra Optimisations may apply.  Algebra optimisers may also be specified and apply locally by the use of the relevant properties on the <see cref="SparqlQueryParser">SparqlQueryParser</see> and <see cref="SparqlQuery">SparqlQuery</see> classes.  Those specified on a parser will automatically be passed through to all queries parsed by the parser.  Locally specified optimisers apply prior to globally specified ones.
+        /// Unlike Query Optimisation multiple Algebra Optimisations may apply.  Algebra optimisers may also be specified and apply locally by the use of the relevant properties on the <see cref="VDS.RDF.Parsing.SparqlQueryParser">SparqlQueryParser</see> and <see cref="SparqlQuery">SparqlQuery</see> classes.  Those specified on a parser will automatically be passed through to all queries parsed by the parser.  Locally specified optimisers apply prior to globally specified ones.
         /// </para>
         /// </remarks>
         public static IEnumerable<IAlgebraOptimiser> AlgebraOptimisers

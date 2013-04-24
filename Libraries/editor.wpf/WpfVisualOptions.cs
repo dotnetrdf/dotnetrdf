@@ -31,9 +31,15 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
+    /// <summary>
+    /// Visual Options for AvalonEdit based editors
+    /// </summary>
     public class WpfVisualOptions
         : VisualOptions<FontFamily, Color>
     {
+        /// <summary>
+        /// Creates new visual options
+        /// </summary>
         public WpfVisualOptions()
         {
             this.Foreground = Colors.Black;

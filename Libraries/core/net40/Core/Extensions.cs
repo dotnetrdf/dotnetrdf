@@ -542,7 +542,7 @@ namespace VDS.RDF
         /// <param name="n">Node to copy</param>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph)">Tools.CopyNode()</see> method</remarks>
         public static INode CopyNode(this INode n, IGraph target)
         {
             return Tools.CopyNode(n, target);
@@ -555,7 +555,7 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph, bool)">Tools.CopyNode()</see> method</remarks>
         public static INode CopyNode(this INode n, IGraph target, bool keepOriginalGraphUri)
         {
             return Tools.CopyNode(n, target, keepOriginalGraphUri);
@@ -568,7 +568,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to copy</param>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph)">Tools.CopyTriple()</see> method</remarks>
         public static Triple CopyTriple(this Triple t, IGraph target)
         {
             return Tools.CopyTriple(t, target);
@@ -581,7 +581,7 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph, bool)">Tools.CopyTriple()</see> method</remarks>
         public static Triple CopyTriple(this Triple t, IGraph target, bool keepOriginalGraphUri)
         {
             return Tools.CopyTriple(t, target, keepOriginalGraphUri);

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
@@ -105,22 +106,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
             if (this._distinct) output.Append("DISTINCT ");
-            if (this._expr is ConcatFunction)
-            {
-                ConcatFunction concatFunc = (ConcatFunction)this._expr;
-                for (int i = 0; i < concatFunc.Arguments.Count(); i++)
-                {
-                    output.Append(concatFunc.Arguments.Skip(i).First().ToString());
-                    if (i < concatFunc.Arguments.Count() - 1)
-                    {
-                        output.Append(", ");
-                    }
-                }
-            }
-            else
-            {
-                output.Append(this._expr.ToString());
-            }
+            output.Append(this._expr.ToString());
             if (this._customSeparator)
             {
                 output.Append(" ; SEPARATOR = ");
@@ -128,6 +114,26 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
             output.Append(")");
             return output.ToString();
+        }
+
+        /// <summary>
+        /// Gets the value of the aggregate for the given binding
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
+        {
+            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
+            switch (temp.NodeType)
+            {
+                case NodeType.Literal:
+                case NodeType.Uri:
+                    return temp.AsString();
+                default:
+                    throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
+            }
         }
 
         /// <summary>

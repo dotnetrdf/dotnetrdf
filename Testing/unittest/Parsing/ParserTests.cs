@@ -540,9 +540,51 @@ namespace VDS.RDF.Parsing
         public void ParsingTurtleDBPediaMalformedData()
         {
             Graph g = new Graph();
-            TurtleParser parser = new TurtleParser();
+            TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
             parser.Load(g, "dbpedia_malformed.ttl");
             Assert.IsFalse(g.IsEmpty);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingDefaultPrefixFallbackTurtle1()
+        {
+            String data = @"@base <http://base/> . :subj :pred :obj .";
+            IRdfReader parser = new TurtleParser();
+            Graph g = new Graph();
+            parser.Load(g, new StringReader(data));
+        }
+
+        [TestMethod]
+        public void ParsingDefaultPrefixFallbackTurtle2()
+        {
+            String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
+            IRdfReader parser = new TurtleParser();
+            Graph g = new Graph();
+            parser.Load(g, new StringReader(data));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [TestMethod]
+        public void ParsingDefaultPrefixFallbackNotation3_1()
+        {
+            String data = @"@base <http://base/> . :subj :pred :obj .";
+            IRdfReader parser = new Notation3Parser();
+            Graph g = new Graph();
+            parser.Load(g, new StringReader(data));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [TestMethod]
+        public void ParsingDefaultPrefixFallbackNotation3_2()
+        {
+            String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
+            IRdfReader parser = new Notation3Parser();
+            Graph g = new Graph();
+            parser.Load(g, new StringReader(data));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
         }
     }
 }

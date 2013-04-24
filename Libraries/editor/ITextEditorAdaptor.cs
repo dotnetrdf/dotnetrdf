@@ -47,6 +47,12 @@ namespace VDS.RDF.Utilities.Editor
             get;
         }
 
+        /// <summary>
+        /// Apply visual options to an editor
+        /// </summary>
+        /// <typeparam name="TFont">Font Type</typeparam>
+        /// <typeparam name="TColor">Colour Type</typeparam>
+        /// <param name="options">Visual Options</param>
         void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
             where TFont : class
             where TColor : struct;
@@ -162,6 +168,12 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="length">Length</param>
         void Select(int offset, int length);
 
+        /// <summary>
+        /// Replaces the given range with new text
+        /// </summary>
+        /// <param name="offset">Offset to start replace at</param>
+        /// <param name="length">Length of the text to be replaced</param>
+        /// <param name="text">Text to replace with</param>
         void Replace(int offset, int length, String text);
 
         /// <summary>
@@ -177,8 +189,14 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="line">Line</param>
         void ScrollToLine(int line);
 
+        /// <summary>
+        /// Begins an update on the editor
+        /// </summary>
         void BeginUpdate();
 
+        /// <summary>
+        /// Ends an update on the editor
+        /// </summary>
         void EndUpdate();
 
         /// <summary>
@@ -211,6 +229,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         void Redo();
 
+        /// <summary>
+        /// Gets/Sets the symbol selector
+        /// </summary>
         ISymbolSelector<T> SymbolSelector
         {
             get;
@@ -272,6 +293,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         event TextEditorEventHandler<T> TextChanged;
 
+        /// <summary>
+        /// Event which is raised when the editor receives a double click
+        /// </summary>
         event TextEditorEventHandler<T> DoubleClick;
     }
 

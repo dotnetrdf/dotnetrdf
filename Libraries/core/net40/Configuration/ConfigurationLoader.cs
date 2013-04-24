@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -38,12 +37,12 @@ using SysConfig = System.Configuration;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// The Configuration Loader is responsible for the loading of Configuration information and objects based upon information encoded in a Graph but more generally may be used for the loading of any type of object whose configuration has been loaded in a Graph and for which a relevant <see cref="IObjectLoader">IObjectLoader</see> is available.
+    /// The Configuration Loader is responsible for the loading of Configuration information and objects based upon information encoded in a Graph but more generally may be used for the loading of any type of object whose configuration has been loaded in a Graph and for which a relevant <see cref="IObjectFactory">IObjectFactory</see> is available.
     /// </summary>
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public static class ConfigurationLoader
+    public class ConfigurationLoader
     {
         #region Constants
 
@@ -109,6 +108,10 @@ namespace VDS.RDF.Configuration
                             //Properties for Endpoints
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
+                            PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
+                            PropertyUpdateEndpointUri = ConfigurationNamespace + "updateEndpointUri",
+                            PropertyQueryEndpoint = ConfigurationNamespace + "queryEndpoint",
+                            PropertyUpdateEndpoint = ConfigurationNamespace + "updateEndpoint",
                             PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
                             PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
                             PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
@@ -171,6 +174,8 @@ namespace VDS.RDF.Configuration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
                             //Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
+                            ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
@@ -854,7 +859,7 @@ namespace VDS.RDF.Configuration
         /// String value of the first instance of the property or a null if no values or not a literal value
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,INode)">GetConfigurationValue</see> function instead
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, INode property)
@@ -891,7 +896,7 @@ namespace VDS.RDF.Configuration
         /// String value of the first instance of the first property or a null if no values or not a literal value
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,IEnumerable{INode})">GetConfigurationValue</see> function instead
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
@@ -1228,7 +1233,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectLoader">IObjectLoader</see> are potentially capable of creating the desired Object
+        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectFactory">IObjectFactory</see> are potentially capable of creating the desired Object
         /// </para>
         /// <para>
         /// Callers should also take care that any Objects returned from this method are disposed of when the caller no longer has a use for them as otherwise the reference kept in the cache here will cause the Object to remain in-memory consuming resources
@@ -1439,6 +1444,107 @@ namespace VDS.RDF.Configuration
                 return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
             }
 #endif
+        }
+
+        #endregion
+
+        #region Instance methods
+
+        private readonly IGraph _configGraph;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph)
+            : this(configGraph, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph, bool autoConfigure)
+        {
+            if (autoConfigure)
+            {
+                AutoConfigure(configGraph);
+            }
+            _configGraph = configGraph;
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file)
+            : this(file, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(file, autoConfigure);
+        }
+
+
+#if !SILVERLIGHT
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph from file and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri)
+            : this(graphUri, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(graphUri, autoConfigure);
+        }
+#endif
+
+        /// <summary>
+        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public T LoadObject<T>(string blankNodeIdentifier)
+        {
+            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+            if (blankNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
+            }
+
+            return (T)LoadObject(_configGraph, blankNode);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public T LoadObject<T>(Uri objectIdentifier)
+        {
+            IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
+            if (uriNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
+            }
+
+            return (T)LoadObject(_configGraph, uriNode);
         }
 
         #endregion

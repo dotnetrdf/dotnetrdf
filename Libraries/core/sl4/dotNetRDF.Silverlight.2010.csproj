@@ -53,8 +53,8 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\sl4\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\sl4\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.3\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -537,9 +537,6 @@
     </Compile>
     <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
       <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
-      <Link>Writing\InternalXmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
