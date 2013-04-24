@@ -112,6 +112,11 @@ namespace VDS.RDF.Parsing.Suites
             this._indeterminate = 0;
         }
 
+        /// <summary>
+        /// Runs all tests found in the manifest
+        /// </summary>
+        /// <param name="file">Manifest file</param>
+        /// <param name="shouldParse">Whether contained tests are expected to parse or not</param>
         protected void RunManifest(String file, bool shouldParse)
         {
             if (!File.Exists(file))
@@ -138,7 +143,9 @@ prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#>
 SELECT ?name ?input ?comment ?result
 WHERE
 {
-  ?test mf:action [ qt:data ?input ] .
+  { ?test mf:action [ qt:data ?input ] . }
+  UNION
+  { ?test mf:action ?input . FILTER(!ISBLANK(?input)) }
   OPTIONAL { ?test mf:name ?name }
   OPTIONAL { ?test rdfs:comment ?comment }
   OPTIONAL { ?test mf:result ?result }
@@ -155,6 +162,89 @@ WHERE
                 String input = this.GetFile(inputNode);
                 String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
                 String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+
+                this.RunTest(name, comment, input, results, shouldParse);
+            }
+        }
+
+        /// <summary>
+        /// Runs all tests found in the manifest, determines whether a test should pass/fail based on the test information
+        /// </summary>
+        /// <param name="file">Manifest file</param>
+        protected void RunManifest(String file, INode positiveSyntaxTest, INode negativeSyntaxTest)
+        {
+            if (!File.Exists(file))
+            {
+                Assert.Fail("Manifest file " + file + " not found");
+            }
+
+            Graph manifest = new Graph();
+            manifest.BaseUri = BaseUri;
+            try
+            {
+                manifest.LoadFromFile(file);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Bad Manifest", ex);
+                Assert.Fail("Failed to load Manifest " + file);
+            }
+            manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+
+            String findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> 
+prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
+prefix rdft:   <http://www.w3.org/ns/rdftest#>
+SELECT ?name ?input ?comment ?result ?type
+WHERE
+{
+  { ?test mf:action [ qt:data ?input ] . }
+  UNION
+  { ?test mf:action ?input . FILTER(!ISBLANK(?input)) }
+  OPTIONAL { ?test a ?type }
+  OPTIONAL { ?test mf:name ?name }
+  OPTIONAL { ?test rdfs:comment ?comment }
+  OPTIONAL { ?test mf:result ?result }
+}";
+
+            SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
+            if (tests == null) Assert.Fail("Failed to find tests in the Manifest");
+
+            foreach (SparqlResult test in tests)
+            {
+                INode nameNode, inputNode, commentNode, resultNode;
+                String name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
+                inputNode = test["input"];
+                String input = this.GetFile(inputNode);
+                String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
+                String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+
+                //Determine expected outcome
+                //Evaluation tests will have results and should always parse succesfully
+                bool? shouldParse = results != null ? true : false;
+                if (!shouldParse.Value)
+                {
+                    //No results declared so may be a positive/negative syntax test
+                    //Inspect returned type to determine, if no type assume test should fail
+                    INode type;
+                    if (test.TryGetBoundValue("type", out type))
+                    {
+                        if (type.Equals(positiveSyntaxTest))
+                        {
+                            shouldParse = true;
+                        }
+                        else if (type.Equals(negativeSyntaxTest))
+                        {
+                            shouldParse = false;
+                        }
+                        else
+                        {
+                            //Unable to determine what the expected result is
+                            shouldParse = null;
+                        }
+                    }
+                }
 
                 this.RunTest(name, comment, input, results, shouldParse);
             }
@@ -223,7 +313,7 @@ WHERE
             return null;
         }
 
-        private void RunTest(String name, String comment, String file, String resultFile, bool shouldParse)
+        private void RunTest(String name, String comment, String file, String resultFile, bool? shouldParse)
         {
             Console.WriteLine("### Running Test #" + this._count);
             if (name != null) Console.WriteLine("Test Name " + name);
@@ -246,12 +336,17 @@ WHERE
                 actual.BaseUri = new Uri(BaseUri, Path.GetFileName(file));
                 this._parser.Load(actual, file);
 
-                if (shouldParse)
+                if (!shouldParse.HasValue)
+                {
+                    Console.WriteLine("Unable to determine whether the test should pass/fail based on manifest information (Test Indeterminate)");
+                    this._indeterminate++;
+                }
+                else if (shouldParse.Value)
                 {
                     Console.WriteLine("Parsed input in OK");
 
                     //Validate if necessary
-                    if (this.CheckResults)
+                    if (this.CheckResults && resultFile != null)
                     {
                         if (!File.Exists(resultFile))
                         {
@@ -299,9 +394,29 @@ WHERE
             }
             catch (RdfParseException parseEx)
             {
-                if (shouldParse)
+                if (shouldParse.HasValue && shouldParse.Value)
                 {
                     Console.WriteLine("Failed when was expected to parse (Test Failed)");
+
+                    //Repeat parsing with tracing enabled if appropriate
+                    //This gives us more useful debugging output for failed tests
+                    if (this._parser is ITraceableTokeniser)
+                    {
+                        try
+                        {
+                            ((ITraceableTokeniser)this._parser).TraceTokeniser = true;
+                            this._parser.Load(new Graph(), Path.GetFileName(file));
+                        }
+                        catch
+                        {
+                            //Ignore errors the 2nd time around, we've already got a copy of the error to report
+                        }
+                        finally
+                        {
+                            ((ITraceableTokeniser)this._parser).TraceTokeniser = false;
+                        }
+                    }
+
                     TestTools.ReportError("Parse Error", parseEx);
                     this._fail++;
                 }

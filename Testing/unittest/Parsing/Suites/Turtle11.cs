@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -35,6 +35,30 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
+    [TestClass]
+    public class Turtle11Unofficial
+        : BaseRdfParserSuite
+    {
+        public Turtle11Unofficial()
+            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
+
+        [TestMethod]
+        public void ParsingSuiteTurtleW3CUnofficalTests()
+        {
+            //Run manifests
+            this.RunManifest("turtle11-unofficial/manifest.ttl", true);
+            this.RunManifest("turtle11-unofficial/manifest-bad.ttl", false);
+
+            if (this.Count == 0) Assert.Fail("No tests found");
+
+            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
+            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+
+            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+    }
+
    
     [TestClass]
     public class Turtle11
@@ -46,17 +70,113 @@ namespace VDS.RDF.Parsing.Suites
         [TestMethod]
         public void ParsingSuiteTurtleW3C()
         {
+            //Nodes for positive and negative tests
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+
             //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", true);
-            this.RunManifest("turtle11/manifest-bad.ttl", false);
+            this.RunManifest("turtle11/manifest.ttl", posSyntaxTest, negSyntaxTest);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
             Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+            if (this.Failed > 0)
+            {
+                if (this.Indeterminate == 0)
+                {
+                    Assert.Fail(this.Failed + " Tests failed");
+                }
+                else
+                {
+                    Assert.Fail(this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                }
+            }
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames1()
+        {
+            String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidPrefix(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames2()
+        {
+            String input = "AZazÀÖØöø˿ͰͽͿ῿‌‍⁰↏Ⰰ⿯、퟿豈﷏ﷰ�𐀀󯿿:o";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames3()
+        {
+            String input = ":a~b";
+            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames4()
+        {
+            String input = ":a%b";
+            Assert.IsFalse(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames5()
+        {
+            String input = @":a\~b";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames6()
+        {
+            String input = ":a%bb";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames7()
+        {
+            String input = @":\~";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames8()
+        {
+            String input = ":%bb";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames9()
+        {
+            String input = @"p:AZazÀÖØöø˿Ͱͽ΄῾‌‍⁰↉Ⰰ⿕、ퟻ﨎ﷇﷰ￯𐀀󠇯";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(input, TurtleSyntax.W3C));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CNumericLiterals1()
+        {
+            String input = "123.E+1";
+            Assert.IsTrue(TurtleSpecsHelper.IsValidDouble(input));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CNumericLiterals2()
+        {
+            String input = @"@prefix : <http://example.org/> .
+:subject :predicate 123.E+1.";
+            Graph g = new Graph();
+            g.LoadFromString(input, new TurtleParser(TurtleSyntax.W3C));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
         }
 
         [TestMethod]

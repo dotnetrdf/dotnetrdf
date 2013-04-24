@@ -513,10 +513,10 @@ namespace VDS.RDF.Query
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpointObj = context.NextSubject;
-            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlEndpoint));
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint));
+            INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
 
             context.Graph.Assert(new Triple(endpointObj, rdfType, endpointClass));
             context.Graph.Assert(new Triple(endpointObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));

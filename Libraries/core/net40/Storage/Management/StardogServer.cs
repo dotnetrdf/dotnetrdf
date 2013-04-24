@@ -134,18 +134,14 @@ namespace VDS.RDF.Storage.Management
         {
             //GET /admin/databases - application/json
             HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            Tools.HttpDebugRequest(request);
 
-#if DEBUG
-            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
             try
             {
                 List<String> stores = new List<string>();
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                    Tools.HttpDebugResponse(response);
 
                     String data = null;
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -259,16 +255,12 @@ namespace VDS.RDF.Storage.Management
                         stream.Close();
                     }
 
-#if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+                    Tools.HttpDebugRequest(request);
 
                     //Make the request
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
-#if DEBUG
-                        if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                        Tools.HttpDebugResponse(response);
 
                         //If we get here it completed OK
                         response.Close();
@@ -295,17 +287,14 @@ namespace VDS.RDF.Storage.Management
             //DELETE /admin/databases/{db}
             HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
-#if DEBUG
-            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                    Tools.HttpDebugResponse(response);
+
                     //If we get here then it completed OK
                     response.Close();
                 }
@@ -345,9 +334,8 @@ namespace VDS.RDF.Storage.Management
             //GET /admin/databases - application/json
             HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
-#if DEBUG
-            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+            Tools.HttpDebugRequest(request);
+
             try
             {
                 List<String> stores = new List<string>();
@@ -356,9 +344,8 @@ namespace VDS.RDF.Storage.Management
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+
+                        Tools.HttpDebugResponse(response);
 
                         String data = null;
                         using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -491,9 +478,7 @@ namespace VDS.RDF.Storage.Management
                                 stream.Close();
                             }
 
-#if DEBUG
-                                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+                            Tools.HttpDebugRequest(request);
 
                             //Make the request
                             request.BeginGetResponse(r2 =>
@@ -502,9 +487,8 @@ namespace VDS.RDF.Storage.Management
                                 {
                                     using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2))
                                     {
-#if DEBUG
-                                                if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+                                        Tools.HttpDebugResponse(response);
+
                                         //If we get here it completed OK
                                         response.Close();
                                     }
@@ -556,9 +540,7 @@ namespace VDS.RDF.Storage.Management
             //DELETE /admin/databases/{db}
             HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
-#if DEBUG
-            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
@@ -567,9 +549,9 @@ namespace VDS.RDF.Storage.Management
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
+
+                        Tools.HttpDebugResponse(response);
+
                         //If we get here then it completed OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);

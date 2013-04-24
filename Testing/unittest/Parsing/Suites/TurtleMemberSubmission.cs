@@ -145,5 +145,17 @@ namespace VDS.RDF.Parsing.Suites
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
+
+        [TestMethod]
+        public void ParsingTurtleOriginalPrefixedNames1()
+        {
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(":a1", TurtleSyntax.Original));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleOriginalPrefixedNames2()
+        {
+            this._parser.Load(new Graph(), @"turtle\test-14.ttl");
+        }
     }
 }

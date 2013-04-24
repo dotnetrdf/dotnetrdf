@@ -116,6 +116,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the value of the aggregate for the given binding
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = this._expr.Evaluate(context, bindingID);

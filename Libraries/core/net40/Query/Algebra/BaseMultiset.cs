@@ -888,6 +888,10 @@ namespace VDS.RDF.Query.Algebra
             get;
         }
 
+        /// <summary>
+        /// Gets the string representation of the multiset (intended for debugging only)
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return String.Join(", ", this.Variables.ToArray()) + " (" + this.Count + " Results)";

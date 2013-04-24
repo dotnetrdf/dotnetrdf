@@ -32,9 +32,20 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Extension methods for the Windows Phone builds to avoid having to do lots of #if WINDOWS_PHONE blocks
+    /// </summary>
     public static class WindowsPhoneCompatibility
     {
-        public static bool Any<TKey, TValue>(this Dictionary<TKey, TValue> source, Func<KeyValuePair<TKey, TValue>, bool> predicate)
+        /// <summary>
+        /// Determines whether any key value pairs meet the given criteria
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="source">Dictionary to operator over</param>
+        /// <param name="predicate">Criteria</param>
+        /// <returns>True if any key value pair fulfils the criteria, false otherwise</returns>
+        public static bool Any<TKey, TValue>(this IDictionary<TKey, TValue> source, Func<KeyValuePair<TKey, TValue>, bool> predicate)
         {
             foreach (KeyValuePair<TKey, TValue> kvp in source)
             {
@@ -43,6 +54,12 @@ namespace VDS.RDF
             return false;
         }
 
+        /// <summary>
+        /// Removes all elements that match a given criteria
+        /// </summary>
+        /// <typeparam name="T">Element Type</typeparam>
+        /// <param name="source">Hash Set</param>
+        /// <param name="predicate">Criteria</param>
         public static void RemoveWhere<T>(this HashSet<T> source, Func<T, bool> predicate)
         {
             foreach (T item in source.ToList())

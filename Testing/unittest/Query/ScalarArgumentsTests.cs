@@ -45,8 +45,8 @@ namespace VDS.RDF.Query
             String query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; SEPARATOR = \" - \") AS ?concat) WHERE {?s ?p ?o}";
             Console.WriteLine(query);
             Console.WriteLine();
-            this.CheckQueryParsesIn11(query);
-            this.CheckQueryParsesInExtended(query);
+            this.CheckQueryFailsToParseIn11(query);
+            this.CheckQueryFailsToParseInExtended(query);
         }
 
         [TestMethod]

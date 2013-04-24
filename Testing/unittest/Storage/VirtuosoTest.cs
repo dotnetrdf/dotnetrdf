@@ -270,6 +270,7 @@ namespace VDS.RDF.Storage
             //Create our Test Graph
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/bnodes/");
+            g.NamespaceMap.AddNamespace(String.Empty, g.BaseUri);
 
             IBlankNode b = g.CreateBlankNode("blank");
             IUriNode rdfType = g.CreateUriNode("rdf:type");
@@ -357,6 +358,8 @@ namespace VDS.RDF.Storage
                 //Make some Triples to add to the Graph
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/");
+                g.NamespaceMap.AddNamespace(String.Empty, g.BaseUri);
+
                 List<Triple> additions = new List<Triple>();
                 additions.Add(new Triple(g.CreateUriNode(":seven"), g.CreateUriNode("rdf:type"), g.CreateUriNode(":addedTriple")));
                 List<Triple> removals = new List<Triple>();
