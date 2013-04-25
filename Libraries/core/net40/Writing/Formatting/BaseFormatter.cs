@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
@@ -201,6 +202,22 @@ namespace VDS.RDF.Writing.Formatting
         public virtual String FormatBooleanResult(bool result)
         {
             return result.ToString().ToLower();
+        }
+
+        /// <summary>
+        /// Applies escapes to the given value
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="escapes">Escapes</param>
+        /// <returns>Escaped string</returns>
+        protected String Escape(String value, List<String[]> escapes)
+        {
+            foreach (String[] escape in escapes)
+            {
+                if (escape.Length != 2) continue;
+                value = value.Replace(escape[0], escape[1]);
+            }
+            return value;
         }
 
         /// <summary>
