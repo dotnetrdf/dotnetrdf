@@ -375,7 +375,7 @@ WHERE
                                 {
                                     Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
                                     this._fail++;
-                                    TestTools.ShowDifferences(diff, "Expected", "Actual");
+                                    TestTools.ShowDifferences(diff, "Expected (" + this._resultsParser.ToString() + ")", "Actual (" + this._parser.ToString() + ")");
                                 }
                             }
                             catch (RdfParseException)

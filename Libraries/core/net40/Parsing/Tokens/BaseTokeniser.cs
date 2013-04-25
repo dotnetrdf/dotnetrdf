@@ -613,10 +613,6 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
-                    else if (localOutput.ToString().Equals("0000"))
-                    {
-                        //Ignore the null escape
-                    }
                     else
                     {
                         this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
@@ -643,10 +639,6 @@ namespace VDS.RDF.Parsing.Tokens
                     if (localOutput.Length != 8)
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
-                    }
-                    else if (localOutput.ToString().Equals("00000000"))
-                    {
-                        //Ignore the null escape
                     }
                     else
                     {

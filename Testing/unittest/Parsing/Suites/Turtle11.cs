@@ -163,6 +163,24 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [TestMethod]
+        public void ParsingTurtleW3CComplexPrefixedNames10()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+
+            Graph ttl = new Graph();
+            ttl.LoadFromFile(@"turtle11\localName_with_non_leading_extras.ttl");
+            Assert.IsFalse(ttl.IsEmpty);
+            Console.WriteLine("Subject from Turtle: " + ttl.Triples.First().Subject.ToString(formatter));
+
+            Graph nt = new Graph();
+            nt.LoadFromFile(@"turtle11\localName_with_non_leading_extras.nt");
+            Assert.IsFalse(nt.IsEmpty);
+            Console.WriteLine("Subject from NTriples: " + nt.Triples.First().Subject.ToString(formatter));
+
+            Assert.AreEqual(ttl.Triples.First().Subject, nt.Triples.First().Subject, "Subjects should be equal");
+        }
+
+        [TestMethod]
         public void ParsingTurtleW3CNumericLiterals1()
         {
             String input = "123.E+1";
@@ -191,6 +209,24 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(NodeType.Literal, t.Object.NodeType);
             ILiteralNode lit = (ILiteralNode)t.Object;
             Assert.AreEqual(1, lit.Value.Length);
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CComplexLiterals1()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+
+            Graph ttl = new Graph();
+            ttl.LoadFromFile(@"turtle11\LITERAL1_ascii_boundaries.ttl");
+            Assert.IsFalse(ttl.IsEmpty);
+            Console.WriteLine("Object from Turtle: " + ttl.Triples.First().Object.ToString(formatter));
+
+            Graph nt = new Graph();
+            nt.LoadFromFile(@"turtle11\LITERAL1_ascii_boundaries.nt");
+            Assert.IsFalse(nt.IsEmpty);
+            Console.WriteLine("Object from NTriples: " + nt.Triples.First().Object.ToString(formatter));
+
+            Assert.AreEqual(ttl.Triples.First().Object, nt.Triples.First().Object, "Objects should be equal");
         }
 
         [TestMethod]
