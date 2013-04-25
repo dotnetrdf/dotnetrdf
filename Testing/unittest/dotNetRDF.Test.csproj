@@ -2782,6 +2782,9 @@
     <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib_p11_ontology.trix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
