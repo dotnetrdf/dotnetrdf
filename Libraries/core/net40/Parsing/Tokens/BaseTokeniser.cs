@@ -703,65 +703,8 @@ namespace VDS.RDF.Parsing.Tokens
                         return;
 
                     case 'u':
-                        //Need to consume the u first
-                        localOutput = new StringBuilder();
-                        this.SkipCharacter();
-
-                        next = this.Peek();
-
-                        //Try to get Four Hex Digits
-                        while (localOutput.Length < 4 && this.IsHexDigit(next))
-                        {
-                            localOutput.Append(next);
-                            this.SkipCharacter();
-                            next = this.Peek();
-                        }
-
-                        //Did we get four Hex Digits
-                        if (localOutput.Length != 4)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
-                        }
-                        else if (localOutput.ToString().Equals("0000"))
-                        {
-                            //Ignore the null escape
-                        }
-                        else
-                        {
-                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
-                        }
-
-                        return;
-
                     case 'U':
-                        //Need to consume the U first
-                        localOutput = new StringBuilder();
-                        this.SkipCharacter();
-
-                        next = this.Peek();
-
-                        //Try to get Eight Hex Digits
-                        while (localOutput.Length < 8 && this.IsHexDigit(next))
-                        {
-                            localOutput.Append(next);
-                            this.SkipCharacter();
-                            next = this.Peek();
-                        }
-
-                        //Did we get eight Hex Digits
-                        if (localOutput.Length != 8)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
-                        }
-                        else if (localOutput.ToString().Equals("00000000"))
-                        {
-                            //Ignore the null escape
-                        }
-                        else
-                        {
-                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
-                        }
-                        return;
+                        throw Error("Illegal unicode escape (\\u or \\U) in local name portion of a prefixed name");
 
                     default:
                         throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.!$&'()*+,;=/?#@%) in Local Names");
