@@ -37,9 +37,13 @@ namespace VDS.RDF.Parsing.Tokens
     public enum TokeniserEscapeMode
     {
         /// <summary>
-        /// Escaping for URIs (every escape but \" is valid)
+        /// Escaping for URIs (only \u and \U escapes are valid)
         /// </summary>
         Uri,
+        /// <summary>
+        /// Permissive escaping for URIs (only \" is invalid)
+        /// </summary>
+        PermissiveUri,
         /// <summary>
         /// Escaping for Quoted Literals (every escape but \&lt; is valid)
         /// </summary>
@@ -476,7 +480,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 case '\\':
                     //Backslash escape
-                    if (isLiteral)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Consume this one Backslash
                         this.ConsumeCharacter();
@@ -527,7 +531,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 case 'n':
                     //New Line Escape
-                    if (isLiteral)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
@@ -540,7 +544,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 'r':
                     //New Line Escape
-                    if (isLiteral)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
@@ -553,7 +557,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 't':
                     //Tab Escape
-                    if (isLiteral)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real Tab to the output
                         this.SkipCharacter();

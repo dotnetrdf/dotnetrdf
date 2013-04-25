@@ -605,9 +605,6 @@
     <Content Include="resources\turtle11-unofficial\test-28.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.ttl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="resources\turtle11-unofficial\test-30.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1282,6 +1279,7 @@
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -3196,9 +3194,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-28.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-30.out">

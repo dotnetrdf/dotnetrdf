@@ -677,7 +677,15 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                            switch (this._syntax)
+                                            {
+                                                case TurtleSyntax.Original:
+                                                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                                                    break;
+                                                default:
+                                                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                                    break;
+                                            }
                                         }
                                         continue;
                                     }
@@ -732,7 +740,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case ' ':
                                 case '\t':
-                                    if (next == ' ' && !rightangleallowed)
+                                    if (this._syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
                                     {
                                         throw Error("Illegal white space in URI");
                                     }
@@ -801,7 +809,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         this.ConsumeCharacter();
 
                                         //Produce the Token
-                                        if (!IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
+                                        if (this._syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
                                         return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
                                     }
                                     else if (!anycharallowed)

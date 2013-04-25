@@ -47,44 +47,94 @@ namespace VDS.RDF.Parsing
         {
             if (!value.Contains(':'))
             {
-                if (value.StartsWith("#"))
+                //No scheme so some form of relative IRI
+                if (value.StartsWith("?"))
                 {
+                    //Querystring and possibly a fragment
+                    if (value.Contains("#"))
+                    {
+                        //Querystring and a fragment
+                        String query = value.Substring(1, value.IndexOf('#'));
+                        String fragment = value.Substring(query.Length + 2);
+                        return IsIQuery(query) && IsIFragment(fragment);
+                    }
+                    else
+                    {
+                        //Just a querystring
+                        return IsIQuery(value.Substring(1));
+                    }
+                }
+                else if (value.Contains("?"))
+                {
+                    //Path and querystring plus possibly a fragment
+                    String part = value.Substring(0, value.IndexOf('?'));
+                    String rest = value.Substring(part.Length + 1);
+                    if (rest.Contains("#"))
+                    {
+                        //Has a path, querystring and fragment
+                        String query = rest.Substring(0, rest.IndexOf('#'));
+                        String fragment = rest.Substring(query.Length + 1);
+                        return IsIPath(part) && IsIQuery(query) && IsIFragment(fragment);
+                    }
+                    else
+                    {
+                        //Just a path and querystring
+                        return IsIPath(part) && IsIQuery(rest);
+                    }
+                }
+                else if (value.StartsWith("#"))
+                {
+                    //Just a fragment
                     return IsIFragment(value.Substring(1));
+                }
+                else if (value.Contains("#"))
+                {
+                    //Path and fragment
+                    String part = value.Substring(0, value.IndexOf('#'));
+                    String fragment = value.Substring(part.Length + 1);
+                    return IsIPath(part) && IsIFragment(fragment);
                 }
                 else
                 {
+                    //Assume a relative path
                     return IsIPath(value);
                 }
             }
             else
             {
+                //Has a scheme
                 String scheme = value.Substring(0, value.IndexOf(':'));
                 String rest = value.Substring(value.IndexOf(':') + 1);
                 if (rest.Contains("?"))
                 {
+                    //Has a path, querystring and possibly a fragment
                     String part = rest.Substring(0, rest.IndexOf('?'));
-                    String queryAndFragment = rest.Substring(rest.IndexOf('?') + 1);
+                    String queryAndFragment = rest.Substring(part.Length + 1);
                     String query, fragment;
                     if (queryAndFragment.Contains('#'))
                     {
+                        //Has a path, querystring and a fragment
                         query = queryAndFragment.Substring(0, queryAndFragment.IndexOf('#'));
                         fragment = queryAndFragment.Substring(queryAndFragment.IndexOf('#') + 1);
                         return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query) && IsIFragment(fragment);
                     }
                     else
                     {
+                        //Has a path and querystring
                         query = queryAndFragment;
                         return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
                     }
                 }
                 else if (rest.Contains('#'))
                 {
+                    //Has a path and fragment
                     String part = rest.Substring(0, rest.IndexOf('#'));
                     String fragment = rest.Substring(rest.IndexOf('#') + 1);
                     return IsScheme(scheme) && IsIHierPart(part) && IsIFragment(fragment);
                 }
                 else
                 {
+                    //Has a path
                     return IsScheme(scheme) && IsIHierPart(rest);
                 }
             }
