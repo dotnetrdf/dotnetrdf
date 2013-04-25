@@ -45,35 +45,48 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsIri(String value)
         {
-            if (!value.Contains(':')) return false;
-            String scheme = value.Substring(0, value.IndexOf(':'));
-            String rest = value.Substring(value.IndexOf(':') + 1);
-            if (rest.Contains("?"))
+            if (!value.Contains(':'))
             {
-                String part = rest.Substring(0, rest.IndexOf('?'));
-                String queryAndFragment = rest.Substring(rest.IndexOf('?') + 1);
-                String query, fragment;
-                if (queryAndFragment.Contains('#'))
+                if (value.StartsWith("#"))
                 {
-                    query = queryAndFragment.Substring(0, queryAndFragment.IndexOf('#'));
-                    fragment = queryAndFragment.Substring(queryAndFragment.IndexOf('#') + 1);
-                    return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query) && IsIFragment(fragment);
+                    return IsIFragment(value.Substring(1));
                 }
                 else
                 {
-                    query = queryAndFragment;
-                    return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
+                    return IsIPath(value);
                 }
-            } 
-            else if (rest.Contains('#'))
-            {
-                String part = rest.Substring(0, rest.IndexOf('#'));
-                String fragment = rest.Substring(rest.IndexOf('#') + 1);
-                return IsScheme(scheme) && IsIHierPart(part) && IsIFragment(fragment);
             }
             else
             {
-                return IsScheme(scheme) && IsIHierPart(rest);
+                String scheme = value.Substring(0, value.IndexOf(':'));
+                String rest = value.Substring(value.IndexOf(':') + 1);
+                if (rest.Contains("?"))
+                {
+                    String part = rest.Substring(0, rest.IndexOf('?'));
+                    String queryAndFragment = rest.Substring(rest.IndexOf('?') + 1);
+                    String query, fragment;
+                    if (queryAndFragment.Contains('#'))
+                    {
+                        query = queryAndFragment.Substring(0, queryAndFragment.IndexOf('#'));
+                        fragment = queryAndFragment.Substring(queryAndFragment.IndexOf('#') + 1);
+                        return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query) && IsIFragment(fragment);
+                    }
+                    else
+                    {
+                        query = queryAndFragment;
+                        return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
+                    }
+                }
+                else if (rest.Contains('#'))
+                {
+                    String part = rest.Substring(0, rest.IndexOf('#'));
+                    String fragment = rest.Substring(rest.IndexOf('#') + 1);
+                    return IsScheme(scheme) && IsIHierPart(part) && IsIFragment(fragment);
+                }
+                else
+                {
+                    return IsScheme(scheme) && IsIHierPart(rest);
+                }
             }
         }
 

@@ -801,6 +801,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         this.ConsumeCharacter();
 
                                         //Produce the Token
+                                        if (!IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
                                         return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
                                     }
                                     else if (!anycharallowed)
