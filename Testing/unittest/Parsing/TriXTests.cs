@@ -35,7 +35,7 @@ namespace VDS.RDF.Parsing
             this.TestTrixPerformance(1000, 10);
         }
 
-        [TestMethod, Timeout(12500)]
+        [TestMethod, Timeout(15000)]
         public void ParsingTriXPerformance4()
         {
             //1000 Graphs, 100 Triples per Graph = 100,000 Triples total
