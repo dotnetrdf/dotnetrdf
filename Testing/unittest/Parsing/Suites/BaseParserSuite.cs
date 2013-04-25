@@ -54,6 +54,9 @@ namespace VDS.RDF.Parsing.Suites
             this._parser = testParser;
             this._resultsParser = resultsParser;
             this._baseDir = baseDir;
+
+            this._parser.Warning += TestTools.WarningPrinter;
+            this._resultsParser.Warning += TestTools.WarningPrinter;
         }
 
         /// <summary>

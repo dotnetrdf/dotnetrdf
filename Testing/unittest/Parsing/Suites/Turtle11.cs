@@ -173,7 +173,9 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine("Subject from Turtle: " + ttl.Triples.First().Subject.ToString(formatter));
 
             Graph nt = new Graph();
-            nt.LoadFromFile(@"turtle11\localName_with_non_leading_extras.nt");
+            NTriplesParser parser = new NTriplesParser();
+            parser.Warning += TestTools.WarningPrinter;
+            nt.LoadFromFile(@"turtle11\localName_with_non_leading_extras.nt", parser);
             Assert.IsFalse(nt.IsEmpty);
             Console.WriteLine("Subject from NTriples: " + nt.Triples.First().Subject.ToString(formatter));
 
