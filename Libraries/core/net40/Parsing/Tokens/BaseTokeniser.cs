@@ -478,24 +478,6 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Consume this one Backslash
                         this.ConsumeCharacter();
-
-                        //TODO: I think this should be removed, commented out for now to test if it resolves a Turtle parser issue
-                        //      This will cause some regressions in the tests because there are some tests that assume this behaviour which I believe to actually be incorrect behaviour
-                        ////If this was a backslash escape i.e. \\
-                        ////Then need to check whether the subsequent character could be confused with a valid escape
-                        ////in the tokenised output and if so insert another backslash into the output
-                        //next = this.Peek();
-                        //switch (next)
-                        //{
-                        //    case 't':
-                        //    case 'n':
-                        //    case 'r':
-                        //    case 'u':
-                        //    case 'U':
-                        //        this._output.Append("\\");
-                        //        break;
-                        //}
-
                         return;
                     }
                     else
@@ -668,7 +650,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                     else
                     {
-                        this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                        this._output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
                     }
                     return;
 
@@ -676,17 +658,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 default:
                     //Not an escape character
-                    if (mode != TokeniserEscapeMode.QName)
-                    {
-                        //Append the \ and then return
-                        //Processing continues normally in the caller function
-                        this._output.Append(@"\");
-                        return;
-                    }
-                    else
-                    {
-                        throw Error("Unexpected Backslash Character encountered in a QName, the Backslash Character can only be used for Unicode escapes (\\u and \\U) in QNames");
-                    }
+                    throw Error("Invalid escape sequence encountered, \\" + next + " is not a valid escape sequence in the current token");
 
             }
         }
