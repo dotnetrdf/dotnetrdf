@@ -41,18 +41,6 @@ namespace VDS.RDF.Writing
         : CompressionTests
     {
 
-        private List<String> samples = new List<string>()
-            {
-                @":backslashes :string ""This example has some backslashes: C:\Program Files\somewhere"".",
-                ":no-escapes :string \"a piece of text with no escapes\".",
-                ":quote-escapes :string \"a piece of text containing \"quotes\"\".",
-                ":long-literal :string \"\"\"a piece of text containing \"quotes\"\"\"\".",
-                ":newline-longliteral-escapes :string \"\"\"this is a long literal\nwhich contains\nmultiple new lines\"\"\".",
-                ":newline-longliteral-escapes-alt :string \"\"\"this is another long literal which mixes both\n\r and \n\rnew line escapes\"\"\".",
-                ":tabs :string \"this string contains   unescaped tabs\".",
-                ":tabs-escaped :string \"this string contains \t escaped tabs\"."
-            };
-
         private String prefix = "@prefix : <http://example.org>.\n";
         
         [TestMethod]
@@ -87,105 +75,6 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Expected same number of Triples after serialization and reparsing");
 
-        }
-
-        [TestMethod]
-        public void WritingCharEscaping()
-        {
-            List<IRdfReader> readers = new List<IRdfReader>()
-            {
-                new TurtleParser(),
-                new Notation3Parser()
-            };
-            List<IRdfWriter> writers = new List<IRdfWriter>() 
-            {
-                new CompressingTurtleWriter(WriterCompressionLevel.High),
-                new Notation3Writer()
-            };
-
-            for (int i = 0; i < readers.Count; i++)
-            {
-                IRdfReader parser = readers[i];
-                IRdfWriter writer = writers[i];
-
-                foreach (String sample in samples)
-                {
-                    Graph g = new Graph();
-                    Console.WriteLine("Original RDF Fragment");
-                    Console.WriteLine(prefix + sample);
-                    StringParser.Parse(g, prefix + sample, parser);
-                    Console.WriteLine();
-                    Console.WriteLine("Triples in Original");
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString());
-                    }
-                    Console.WriteLine();
-
-                    String serialized = VDS.RDF.Writing.StringWriter.Write(g, writer);
-                    Console.WriteLine("Serialized RDF Fragment");
-                    Console.WriteLine(serialized);
-
-                    Graph h = new Graph();
-                    StringParser.Parse(h, serialized, parser);
-
-                    Console.WriteLine();
-                    Console.WriteLine("Triples in Serialized");
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString());
-                    }
-                    Console.WriteLine();
-
-                    Assert.AreEqual(g, h, "Graphs should have been equal");
-
-                    Console.WriteLine("Graphs were equal as expected");
-                    Console.WriteLine();
-                }
-            }
-        }
-
-        [TestMethod]
-        public void WritingNTriplesCharEscaping()
-        {
-            TurtleParser parser = new TurtleParser();
-            NTriplesParser ntparser = new NTriplesParser();
-            NTriplesWriter ntwriter = new NTriplesWriter();
-
-            foreach (String sample in samples)
-            {
-                Graph g = new Graph();
-                Console.WriteLine("Original RDF Fragment");
-                Console.WriteLine(prefix + sample);
-                StringParser.Parse(g, prefix + sample, parser);
-                Console.WriteLine();
-                Console.WriteLine("Triples in Original");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
-                String serialized = VDS.RDF.Writing.StringWriter.Write(g, ntwriter);
-                Console.WriteLine("Serialized RDF Fragment");
-                Console.WriteLine(serialized);
-
-                Graph h = new Graph();
-                StringParser.Parse(h, serialized, ntparser);
-
-                Console.WriteLine();
-                Console.WriteLine("Triples in Serialized");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
-                Assert.AreEqual(g, h, "Graphs should have been equal");
-
-                Console.WriteLine("Graphs were equal as expected");
-                Console.WriteLine();
-            }
         }
 
         [TestMethod]
