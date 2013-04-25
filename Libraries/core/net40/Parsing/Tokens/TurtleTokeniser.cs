@@ -154,6 +154,7 @@ namespace VDS.RDF.Parsing.Tokens
                 bool quotemarksallowed = true;
                 bool altquotemarksallowed = true;
                 bool longliteral = false;
+                bool altlongliteral = false;
 
                 try
                 {
@@ -437,7 +438,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             whitespaceallowed = true;
                                             altquotemarksallowed = false;
                                         }
-                                        else if (altquotemarksallowed && longliteral)
+                                        else if (altquotemarksallowed && altlongliteral)
                                         {
                                             //Could be the end of a Long Literal
 
@@ -493,7 +494,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                     //Turn on Support for Long Literal reading
                                                     newlineallowed = true;
                                                     altquotemarksallowed = true;
-                                                    longliteral = true;
+                                                    altlongliteral = true;
                                                 }
                                                 else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                                 {
@@ -731,6 +732,10 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case ' ':
                                 case '\t':
+                                    if (next == ' ' && !rightangleallowed)
+                                    {
+                                        throw Error("Illegal white space in URI");
+                                    }
                                     if (anycharallowed || whitespaceallowed)
                                     {
                                         //We're allowing anything/whitespace so continue

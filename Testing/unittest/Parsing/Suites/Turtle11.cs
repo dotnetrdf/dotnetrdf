@@ -229,6 +229,13 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(ttl.Triples.First().Object, nt.Triples.First().Object, "Objects should be equal");
         }
 
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CComplexLiterals2()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"turtle11\turtle-syntax-bad-string-04.ttl");
+        }
+
         [TestMethod]
         public void ParsingTurtleW3CBaseTurtleStyle1()
         {

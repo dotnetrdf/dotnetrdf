@@ -469,12 +469,14 @@ namespace VDS.RDF.Parsing.Tokens
             //Stuff for Unicode escapes
             StringBuilder localOutput;
 
+            bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate);
+
             next = this.Peek();
             switch (next)
             {
                 case '\\':
                     //Backslash escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Consume this one Backslash
                         this.ConsumeCharacter();
@@ -486,7 +488,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case '"':
                     //Quote escape (only valid in Quoted Literals)
-                    if (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate)
+                    if (mode == TokeniserEscapeMode.QuotedLiterals)
                     {
                         //Consume and return
                         this.ConsumeCharacter();
@@ -525,7 +527,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 case 'n':
                     //New Line Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
@@ -538,7 +540,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 'r':
                     //New Line Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
@@ -551,7 +553,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 't':
                     //Tab Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Discard and append a real Tab to the output
                         this.SkipCharacter();
@@ -564,7 +566,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 'b':
                     //Backspace Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Discard and append a real backspace to the output
                         this.SkipCharacter();
@@ -577,7 +579,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 'f':
                     //Form Feed Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral)
                     {
                         //Discard and append a real form feed to the output
                         this.SkipCharacter();
