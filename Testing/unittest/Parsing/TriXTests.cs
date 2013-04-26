@@ -35,11 +35,23 @@ namespace VDS.RDF.Parsing
             this.TestTrixPerformance(1000, 10);
         }
 
-        [TestMethod, Timeout(12500)]
+        [TestMethod, Timeout(25000)]
         public void ParsingTriXPerformance4()
         {
             //1000 Graphs, 100 Triples per Graph = 100,000 Triples total
             this.TestTrixPerformance(1000, 100);
+        }
+
+        [TestMethod, Timeout(2500)]
+        public void ParsingTriXPerformance5()
+        {
+            //Test case from CORE-351
+            TripleStore store = new TripleStore();
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this._parser.Load(store, @"lib_p11_ontology.trix");
+            timer.Stop();
+            Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
 
         private void TestTrixPerformance(int numGraphs, int triplesPerGraph)

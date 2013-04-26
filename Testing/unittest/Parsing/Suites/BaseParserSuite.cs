@@ -54,6 +54,9 @@ namespace VDS.RDF.Parsing.Suites
             this._parser = testParser;
             this._resultsParser = resultsParser;
             this._baseDir = baseDir;
+
+            this._parser.Warning += TestTools.WarningPrinter;
+            this._resultsParser.Warning += TestTools.WarningPrinter;
         }
 
         /// <summary>
@@ -173,6 +176,11 @@ WHERE
         /// <param name="file">Manifest file</param>
         protected void RunManifest(String file, INode positiveSyntaxTest, INode negativeSyntaxTest)
         {
+            this.RunManifest(file, new INode[] { positiveSyntaxTest }, new INode[] { negativeSyntaxTest });
+        }
+
+        protected void RunManifest(String file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
+        {
             if (!File.Exists(file))
             {
                 Assert.Fail("Manifest file " + file + " not found");
@@ -230,11 +238,11 @@ WHERE
                     INode type;
                     if (test.TryGetBoundValue("type", out type))
                     {
-                        if (type.Equals(positiveSyntaxTest))
+                        if (positiveSyntaxTests.Contains(type))
                         {
                             shouldParse = true;
                         }
-                        else if (type.Equals(negativeSyntaxTest))
+                        else if (negativeSyntaxTests.Contains(type))
                         {
                             shouldParse = false;
                         }
@@ -326,6 +334,7 @@ WHERE
             if (!File.Exists(file))
             {
                 Console.WriteLine("Input File not found");
+                Console.Error.WriteLine("Test " + name + " - Input File not found: " + file);
                 this._fail++;
                 return;
             }
@@ -351,6 +360,7 @@ WHERE
                         if (!File.Exists(resultFile))
                         {
                             Console.WriteLine("Expected Output File not found");
+                            Console.Error.WriteLine("Test " + name + " - Expected Output File not found: " + resultFile);
                             this._fail++;
                         }
                         else
@@ -369,8 +379,9 @@ WHERE
                                 else
                                 {
                                     Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
+                                    Console.Error.WriteLine("Test " + name + " - Parsed Graph did not match Expected Graph");
                                     this._fail++;
-                                    TestTools.ShowDifferences(diff);
+                                    TestTools.ShowDifferences(diff, "Expected (" + this._resultsParser.ToString() + ")", "Actual (" + this._parser.ToString() + ")");
                                 }
                             }
                             catch (RdfParseException)
@@ -389,6 +400,7 @@ WHERE
                 else
                 {
                     Console.WriteLine("Parsed when failure was expected (Test Failed)");
+                    Console.Error.WriteLine("Test " + name + " - Parsed when failure was expected");
                     this._fail++;
                 }
             }
@@ -396,7 +408,8 @@ WHERE
             {
                 if (shouldParse.HasValue && shouldParse.Value)
                 {
-                    Console.WriteLine("Failed when was expected to parse (Test Failed)");
+                    Console.WriteLine("Parsing failed when success was expected (Test Failed)");
+                    Console.Error.WriteLine("Test " + name + " - Failed to parse when success was expected");
 
                     //Repeat parsing with tracing enabled if appropriate
                     //This gives us more useful debugging output for failed tests
@@ -422,7 +435,7 @@ WHERE
                 }
                 else
                 {
-                    Console.WriteLine("Failed to parse as expected (Test Passed)");
+                    Console.WriteLine("Parsing Failed as expected (Test Passed)");
                     this._pass++;
                 }
             }

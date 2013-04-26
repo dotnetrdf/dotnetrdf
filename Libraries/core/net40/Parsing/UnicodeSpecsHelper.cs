@@ -108,6 +108,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static char ConvertToChar(String hex)
         {
+            if (hex.Length != 4) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 4 characters were expected but received " + hex.Length + " characters");
             try
             {
                 //Convert to an Integer
@@ -117,9 +118,33 @@ namespace VDS.RDF.Parsing
                 //Append to Output
                 return c;
             }
-            catch
+            catch (Exception ex)
             {
-                throw new RdfParseException("Unable to convert the String '" + hex + "' into a Unicode Character");
+                throw new RdfParseException("Unable to convert the String '" + hex + "' into a Unicode Character", ex);
+            }
+        }
+
+        public static char[] ConvertToChars(String hex)
+        {
+            if (hex.Length != 8) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 8 characters were expected but received " + hex.Length + " characters");
+            try
+            {
+                //Convert to an Integer
+                int i = Convert.ToInt32(hex, 16);
+                if (i > Char.MaxValue)
+                {
+                    //UTF-32 character so down-convert to UTF-16
+                    return Char.ConvertFromUtf32(i).ToCharArray();
+                }
+                else
+                {
+                    //Within single character range
+                    return new char[] { (char)i };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RdfParseException("Unable to convert the String '" + hex + "' into Unicode characters", ex);
             }
         }
     }

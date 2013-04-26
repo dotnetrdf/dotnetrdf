@@ -711,6 +711,7 @@ namespace VDS.RDF
         /// <param name="value">String value</param>
         /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash</param>
         /// <returns></returns>
+        [Obsolete("No longer necessary, do not use", true)]
         public static String EscapeBackslashes(this String value, char[] cs)
         {
             if (value.Length == 0) return value;
@@ -783,6 +784,7 @@ namespace VDS.RDF
         /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash</param>
         /// <param name="ds">Characters which must be escaped i.e. must be preceded by a backslash</param>
         /// <returns></returns>
+        [Obsolete("No longer necessary, do not use", true)]
         public static bool IsFullyEscaped(this String value, char[] cs, char[] ds)
         {
             if (value.Length == 0) return true;
@@ -842,6 +844,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible
         /// </remarks>
+        [Obsolete("No longer necessary, do not use", true)]
         public static String Escape(this String value, char toEscape)
         {
             return value.Escape(toEscape, toEscape);
@@ -857,6 +860,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible
         /// </remarks>
+        [Obsolete("No longer necessary, do not use", true)]
         public static String Escape(this String value, char toEscape, char escapeAs)
         {
             if (value.Length == 0) return value;

@@ -39,13 +39,16 @@ namespace VDS.RDF.Writing.Formatting
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
 
         /// <summary>
-        /// Set of characters that may follow a backslash and are legal escapes
-        /// </summary>
-        protected char[] _validEscapes = new char[] { '\\', '"', 'n', 'r', 't' };
-        /// <summary>
         /// Set of characters which must be escaped in Literals
         /// </summary>
-        protected char[] _litEscapes = new char[] { '"', '\n', '\r', '\t' };
+        protected List<String[]> _litEscapes = new List<String[]>
+        { 
+            new String[] { @"\", @"\\" }, 
+            new String[] { "\"", "\\\"" },
+            new String[] { "\n", @"\n" },
+            new String[] { "\r", @"\r" },
+            new String[] { "\t", @"\t" }
+        };
 
         /// <summary>
         /// Creates a new NTriples Formatter
@@ -88,21 +91,7 @@ namespace VDS.RDF.Writing.Formatting
 
             output.Append('"');
             value = l.Value;
-
-            if (!value.IsFullyEscaped(this._validEscapes, this._litEscapes))
-            {
-                //This first replace escapes all back slashes for good measure
-                value = value.EscapeBackslashes(this._validEscapes);
-
-                //Then these escape characters that can't occur in a NTriples literal
-                value = value.Replace("\n", "\\n");
-                value = value.Replace("\r", "\\r");
-                value = value.Replace("\t", "\\t");
-                value = value.Escape('"');
-
-                //Then remove null character since it doesn't change the meaning of the Literal
-                value = value.Replace("\0", "");
-            }
+            value = this.Escape(value, this._litEscapes);
 
             foreach (char c in value.ToCharArray())
             {

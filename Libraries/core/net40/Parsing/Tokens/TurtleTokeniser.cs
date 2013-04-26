@@ -154,6 +154,7 @@ namespace VDS.RDF.Parsing.Tokens
                 bool quotemarksallowed = true;
                 bool altquotemarksallowed = true;
                 bool longliteral = false;
+                bool altlongliteral = false;
 
                 try
                 {
@@ -437,7 +438,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             whitespaceallowed = true;
                                             altquotemarksallowed = false;
                                         }
-                                        else if (altquotemarksallowed && longliteral)
+                                        else if (altquotemarksallowed && altlongliteral)
                                         {
                                             //Could be the end of a Long Literal
 
@@ -493,7 +494,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                     //Turn on Support for Long Literal reading
                                                     newlineallowed = true;
                                                     altquotemarksallowed = true;
-                                                    longliteral = true;
+                                                    altlongliteral = true;
                                                 }
                                                 else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                                 {
@@ -676,7 +677,15 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                            switch (this._syntax)
+                                            {
+                                                case TurtleSyntax.Original:
+                                                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                                                    break;
+                                                default:
+                                                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                                    break;
+                                            }
                                         }
                                         continue;
                                     }
@@ -731,6 +740,10 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case ' ':
                                 case '\t':
+                                    if (this._syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
+                                    {
+                                        throw Error("Illegal white space in URI");
+                                    }
                                     if (anycharallowed || whitespaceallowed)
                                     {
                                         //We're allowing anything/whitespace so continue
@@ -796,6 +809,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         this.ConsumeCharacter();
 
                                         //Produce the Token
+                                        if (this._syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
                                         return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
                                     }
                                     else if (!anycharallowed)
@@ -884,11 +898,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case -1:
                         //Not sure which directive we might see yet
-                        if (next == 'b' || next == 'B')
+                        if (next == 'b')
                         {
                             directiveExpected = 2;
                         }
-                        else if (next == 'p' || next == 'P')
+                        else if (next == 'p')
                         {
                             directiveExpected = 1;
                         }
@@ -911,7 +925,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-                        if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
+                        if (this.Value.Equals("prefix", StringComparison.Ordinal))
                         {
                             //Got a Prefix Directive
                             this.LastTokenType = Token.PREFIXDIRECTIVE;
@@ -928,7 +942,7 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
-                        if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+                        if (this.Value.Equals("base", StringComparison.Ordinal))
                         {
                             //Got a Base Directive
                             this.LastTokenType = Token.BASEDIRECTIVE;

@@ -7,7 +7,7 @@ string with newlines in it.""".
 
 <#z> <#prop> "string with \" escaped quote marks".
 
-<#zz> <#escapes> "\\\"\a\b\f\r\t\v".
+<#zz> <#escapes> "\\\"\b\f\r\t".
 
 <#martin> <#surname> "D\u00fcrst".
 

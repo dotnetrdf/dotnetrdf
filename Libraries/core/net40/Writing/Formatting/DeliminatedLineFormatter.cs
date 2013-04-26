@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing.Formatting
         private char _escapeChar = '\\';
         private bool _fullLiteralOutput = true;
 
-        //REQ: Improve support for escape characters
+        private List<String[]> _delimEscapes;
 
         /// <summary>
         /// Creates a new Deliminated Line Formatter
@@ -67,6 +67,18 @@ namespace VDS.RDF.Writing.Formatting
             this._longLiteralWrapperChar = longLiteralWrapperChar;
             this._lineEndChar = lineEndChar;
             this._fullLiteralOutput = fullLiteralOutput;
+
+            this._delimEscapes = new List<string[]>();
+            this._delimEscapes.Add(new String[] { new String(new char[] { this._deliminatorChar }), new String(new char[] { this._escapeChar, this._deliminatorChar }) });
+            this._delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { this._escapeChar, 'n' }) });
+            this._delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { this._escapeChar, 'r' }) });
+            this._delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { this._escapeChar, 't' }) });
+
+            //TODO: Need to handle difference between standard and long literals better
+            if (this._literalWrapperChar.HasValue)
+            {
+                this._delimEscapes.Add(new String[] { new String(new char[] { this._literalWrapperChar.Value }), new String(new char[] { this._escapeChar, this._literalWrapperChar.Value }) });
+            }
         }
 
         /// <summary>
@@ -130,10 +142,7 @@ namespace VDS.RDF.Writing.Formatting
 
                 if (TurtleSpecsHelper.IsLongLiteral(value))
                 {
-                    value = value.Replace("\n", "\\n");
-                    value = value.Replace("\r", "\\r");
-                    value = value.Escape('"');
-                    value = value.Replace("\t", "\\t");
+                    value = this.Escape(value, this._delimEscapes);
 
                     //If there are no wrapper characters then we must escape the deliminator
                     if (value.Contains(this._deliminatorChar))
@@ -162,7 +171,7 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     //Replace the deliminator
-                    value = value.Replace(new String(new char[] { this._deliminatorChar }), new String(new char[] { this._escapeChar, this._deliminatorChar }));
+                    value = this.Escape(value, this._delimEscapes);
 
                     //Apply appropriate wrapper characters
                     if (this._literalWrapperChar != null)
