@@ -2413,4 +2413,9 @@
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Optimisation\OrderByDistinctOptimiser.cs">
+      <Link>Query\Optimisation\OrderByDistinctOptimiser.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

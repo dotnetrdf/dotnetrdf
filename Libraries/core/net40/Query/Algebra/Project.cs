@@ -43,16 +43,26 @@ namespace VDS.RDF.Query.Algebra
     {
         private ISparqlAlgebra _pattern;
         private List<SparqlVariable> _variables = new List<SparqlVariable>();
+        private bool _all = false;
 
         /// <summary>
         /// Creates a new Select
         /// </summary>
         /// <param name="pattern">Inner Pattern</param>
         /// <param name="variables">Variables to Select</param>
-        public Select(ISparqlAlgebra pattern, IEnumerable<SparqlVariable> variables)
+        public Select(ISparqlAlgebra pattern, bool selectAll, IEnumerable<SparqlVariable> variables)
         {
             this._pattern = pattern;
             this._variables.AddRange(variables);
+            this._all = selectAll;
+        }
+
+        public bool IsSelectAll
+        {
+            get
+            {
+                return this._all;
+            }
         }
 
         /// <summary>
@@ -82,33 +92,9 @@ namespace VDS.RDF.Query.Algebra
                 //If not partial results throw the error
                 if (context.Query == null || !context.Query.PartialResultsOnTimeout) throw;
             }
-            HashSet<SparqlVariable> vars;
-            bool selectAll = false;
-            if (context.Query != null)
-            {
-                switch (context.Query.QueryType)
-                {
-                    case SparqlQueryType.DescribeAll:
-                    case SparqlQueryType.SelectAll:
-                    case SparqlQueryType.SelectAllDistinct:
-                    case SparqlQueryType.SelectAllReduced:
-                        selectAll = true;
-                        break;
-                }
-                if (selectAll)
-                {
-                    vars = new HashSet<SparqlVariable>(context.Query.Variables);
-                }
-                else
-                {
-                    vars = new HashSet<SparqlVariable>(context.Query.Variables.Where(v => v.IsResultVariable));
-                }
-            }
-            else
-            {
-                vars = new HashSet<SparqlVariable>(this._variables);
-            }
 
+            //Ensure expected variables are present
+            HashSet<SparqlVariable> vars = new HashSet<SparqlVariable>(this._variables);
             if (context.InputMultiset is NullMultiset)
             {
                 context.InputMultiset = new Multiset(vars.Select(v => v.Name));
@@ -126,9 +112,9 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            if (!selectAll)
+            //Trim Variables that aren't being SELECTed
+            if (!this._all)
             {
-                //Trim Variables that aren't being SELECTed
                 foreach (String var in context.InputMultiset.Variables.ToList())
                 {
                     if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
@@ -149,8 +135,9 @@ namespace VDS.RDF.Query.Algebra
             }
 
             context.OutputMultiset = context.InputMultiset;
+
             //Apply variable ordering if applicable
-            if (!selectAll && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
+            if (!this._all && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
             {
                 context.OutputMultiset.SetVariableOrder(context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name));
             }
@@ -230,7 +217,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Select(optimiser.Optimise(this._pattern), this._variables);
+            return new Select(optimiser.Optimise(this._pattern), this._all, this._variables);
         }
     }
 
