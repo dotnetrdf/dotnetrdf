@@ -2427,8 +2427,5 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\CharHelper.cs">
-      <Link>Compatability\CharHelper.cs</Link>
-    </Compile>
   </ItemGroup>
 </Project>
