@@ -73,6 +73,12 @@ namespace VDS.RDF.Writing.Formatting
             this._delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { this._escapeChar, 'n' }) });
             this._delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { this._escapeChar, 'r' }) });
             this._delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { this._escapeChar, 't' }) });
+
+            //TODO: Need to handle difference between standard and long literals better
+            if (this._literalWrapperChar.HasValue)
+            {
+                this._delimEscapes.Add(new String[] { new String(new char[] { this._literalWrapperChar.Value }), new String(new char[] { this._escapeChar, this._literalWrapperChar.Value }) });
+            }
         }
 
         /// <summary>
