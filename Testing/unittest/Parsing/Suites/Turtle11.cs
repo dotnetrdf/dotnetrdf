@@ -70,33 +70,43 @@ namespace VDS.RDF.Parsing.Suites
         [TestMethod]
         public void ParsingSuiteTurtleW3C()
         {
-            //Nodes for positive and negative tests
-            Graph g = new Graph();
-            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
-            INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
-            INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
-            INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
-
-            //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
-
-            if (this.Count == 0) Assert.Fail("No tests found");
-
-            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
-
-            if (this.Failed > 0)
+            try
             {
-                if (this.Indeterminate == 0)
+                //Need IRI validation on to pass some of the tests
+                Options.ValidateIris = true;
+
+                //Nodes for positive and negative tests
+                Graph g = new Graph();
+                g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+                INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+                INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+                INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
+
+                //Run manifests
+                this.RunManifest("turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
+
+                if (this.Count == 0) Assert.Fail("No tests found");
+
+                Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed - " + this.Indeterminate + " Indeterminate");
+                Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+
+                if (this.Failed > 0)
                 {
-                    Assert.Fail(this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
+                    if (this.Indeterminate == 0)
+                    {
+                        Assert.Fail(this.Failed + " Tests failed and " + this.Passed + " Tests Passed");
+                    }
+                    else
+                    {
+                        Assert.Fail(this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+                    }
                 }
-                else
-                {
-                    Assert.Fail(this.Failed + " Test failed, " + this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
-                }
+                if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
             }
-            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate and " + this.Passed + " Tests Passed");
+            finally
+            {
+                Options.ValidateIris = false;
+            }
         }
 
         [TestMethod]
