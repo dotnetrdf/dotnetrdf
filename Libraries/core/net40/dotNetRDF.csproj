@@ -157,6 +157,7 @@
     <Compile Include="Query\Operators\SparqlOperatorType.cs" />
     <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />
     <Compile Include="Query\Optimisation\ImplicitJoinOptimiser.cs" />
+    <Compile Include="Query\Optimisation\OrderByDistinctOptimiser.cs" />
     <Compile Include="Query\Optimisation\PropertyFunctionOptimiser.cs" />
     <Compile Include="Query\Optimisation\VariableSubstitutionTransformer.cs" />
     <Compile Include="Query\Patterns\GraphPattern.cs" />
