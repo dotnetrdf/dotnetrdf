@@ -7,11 +7,14 @@
 					  dnr:queryProcessor _:sp2b10k .
 
 _:sp2b10k a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/sp2b10k.nt.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/sp2b10k.nt.gz" ] ] ] .
 
 <dotnetrdf:/sp2b/50k> a dnr:HttpHandler ;
 					  dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -19,11 +22,14 @@ _:sp2b10k a dnr:SparqlQueryProcessor ;
 					  dnr:timeout 300000 .
 
 _:sp2b50k a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/sp2b50k.nt.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/sp2b50k.nt.gz" ] ] ] .
  											 
 <dotnetrdf:/sp2b/250k> a dnr:HttpHandler ;
 					  dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -31,8 +37,11 @@ _:sp2b50k a dnr:SparqlQueryProcessor ;
 					  dnr:timeout 300000 .
 
 _:sp2b250k a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/sp2b250k.nt.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/sp2b250k.nt.gz" ] ] ] .
