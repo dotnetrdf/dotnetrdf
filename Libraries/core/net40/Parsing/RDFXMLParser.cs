@@ -340,6 +340,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine();
                 }
 
+                //Define XML namespace
+                context.Handler.HandleNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
+                context.Namespaces.AddNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
+
                 //Process the Queue
                 this.ProcessEventQueue(context);
 

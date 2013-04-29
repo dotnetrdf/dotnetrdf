@@ -217,10 +217,20 @@ namespace VDS.RDF.Parsing
         }
 
         [TestMethod]
-        public void ParsingRdfXmlElementUsesXmlNamespace()
+        public void ParsingRdfXmlElementUsesXmlNamespaceDom()
         {
             Graph g = new Graph();
-            g.LoadFromFile("xml-prop.rdf");
+            g.LoadFromFile("xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+
+        [TestMethod]
+        public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }
