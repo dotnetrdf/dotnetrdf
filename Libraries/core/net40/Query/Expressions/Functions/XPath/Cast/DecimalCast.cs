@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         {
                             //Already an integer type so valid as a xsd:decimal
                             decimal d;
-                            if (Decimal.TryParse(lit.Value, out d))
+                            if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 //Parsed OK
                                 return new DecimalNode(lit.Graph, d);
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         decimal d;
-                        if (Decimal.TryParse(lit.Value, out d))
+                        if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         {
                             //Parsed OK
                             return new DecimalNode(lit.Graph, d);

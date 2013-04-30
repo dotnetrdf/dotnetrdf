@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
@@ -100,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         {
                             case SparqlNumericType.Decimal:
                                 Decimal dec;
-                                if (Decimal.TryParse(lit.Value, out dec))
+                                if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
                                     if (dec.Equals(Decimal.Zero))
                                     {
@@ -118,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                             case SparqlNumericType.Double:
                                 Double dbl;
-                                if (Double.TryParse(lit.Value, out dbl))
+                                if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                 {
                                     if (Double.IsNaN(dbl) || dbl == 0.0d)
                                     {
