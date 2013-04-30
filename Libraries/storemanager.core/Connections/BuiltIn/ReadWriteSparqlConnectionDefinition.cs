@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Creates a new definition
         /// </summary>
         public ReadWriteSparqlConnectionDefinition()
-            : base("Read/Write SPARQL", "Connect to any SPARQL protocol compliant store that provides both a Query and Update connector", typeof(ReadWriteSparqlConnector)) { }
+            : base("SPARQL Query & Update", "Connect to any SPARQL protocol compliant store that provides both Query and Update endpoints", typeof(ReadWriteSparqlConnector)) { }
 
         /// <summary>
         /// Gets/Sets the Query Endpoint URI
