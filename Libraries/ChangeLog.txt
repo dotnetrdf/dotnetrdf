@@ -40,7 +40,7 @@ Changed
  - Fixed a bug with use of xml: as a prefix for element names in RDF/XML (CORE-358)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
- - Upgrade Json.Net to 5.0.3
+ - Upgrade Json.Net to 5.0.4
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API

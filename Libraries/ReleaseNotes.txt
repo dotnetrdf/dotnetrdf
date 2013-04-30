@@ -70,7 +70,7 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
 following third party libraries:
-- JSON.Net 5.0.3 which can be obtained from http://json.codeplex.com
+- JSON.Net 5.0.4 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack
 - VDS.Common 1.2.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
 
