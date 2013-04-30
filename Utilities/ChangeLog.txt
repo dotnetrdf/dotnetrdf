@@ -21,14 +21,16 @@ upgrade to these latest versions.
 rdfConvert
 - Fix a bug where converting from graph to dataset formats would lose prefixes (TOOLS-333)
 - Fix a bug where some invalid Turtle documents would be accepted as valid and generate incorrect URIs (CORE-341)
+- Improve support for latest W3C draft standard for Turtle (CORE-314)
 
 rdfEditor (Not available under Mono)
 - Fix a bug where an invalid Turtle document could be reported as valid (CORE-341)
+- Fix a bug where a valid RDF/XML document could be reported as invalid (CORE-358)
  
 rdfOptStats
    
 rdfQuery
-- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344)
+- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344, CORE-350, CORE-353)
 
 rdfServer
 - Fix a couple of bugs which meant that SPARQL updates would not work correctly (TOOLS-323, TOOLS-324)
@@ -45,8 +47,9 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344)
+- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344, CORE-350, CORE-353)
 
 StoreManager
 - Native SPARQL Update support for AllegroGraph (CORE-308)
+- Support for new ReadWriteSparqlConnector (CORE-346)
 

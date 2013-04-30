@@ -36,61 +36,61 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Indicates whether the Store is Read Only i.e. Saving is not supported
         /// </summary>
-        IsReadOnly = 0,
+        IsReadOnly = 1,
 
         /// <summary>
         /// Indicates that the Store is a Triple Store
         /// </summary>
-        IsTripleStore = 1,
+        IsTripleStore = 2,
         /// <summary>
         /// Indicates that the Store is a Quad (Graph) Store
         /// </summary>
-        IsQuadStore = 2,
+        IsQuadStore = 4,
 
         /// <summary>
         /// Indicates whether the Store has an explicit unnamed default graph
         /// </summary>
-        HasDefaultGraph = 4,
+        HasDefaultGraph = 8,
         /// <summary>
         /// Indicates whether the Store has named graphs
         /// </summary>
-        HasNamedGraphs = 8,
+        HasNamedGraphs = 16,
 
         /// <summary>
         /// Indicates that a Triple Store appends Triples when the SaveGraph() method is used
         /// </summary>
-        AppendTriples = 16,
+        AppendTriples = 32,
         /// <summary>
         /// Indicates that a Triple Store overwrites Triples when the SaveGraph() method is used
         /// </summary>
-        OverwriteTriples = 32,
+        OverwriteTriples = 64,
 
         /// <summary>
         /// Indicates that Graph data written to the Default Graph is always appended when the SaveGraph() method is used
         /// </summary>
-        AppendToDefault = 64,
+        AppendToDefault = 128,
         /// <summary>
         /// Indicates that Graph data written to the Default Graph overwrites existing data when the SaveGraph() method is used
         /// </summary>
-        OverwriteDefault = 128,
+        OverwriteDefault = 256,
 
         /// <summary>
         /// Indicates that Graph data written to Named Graphs is always appended when the SaveGraph() method is used
         /// </summary>
-        AppendToNamed = 256,
+        AppendToNamed = 512,
         /// <summary>
         /// Indicates that Graph data written to Named Graphs overwrites existing data when the SaveGraph() method is used
         /// </summary>
-        OverwriteNamed = 512,
+        OverwriteNamed = 1024,
 
         /// <summary>
         /// Indicates a Store that can do Triple Level additions on existing Graphs using the UpdateGraph() method
         /// </summary>
-        CanUpdateAddTriples = 1024,
+        CanUpdateAddTriples = 2048,
         /// <summary>
         /// Indicates a Store that can do Triple Level removals on existing Graphs using the UpdateGraph() method
         /// </summary>
-        CanUpdateDeleteTriples = 2048,
+        CanUpdateDeleteTriples = 4096,
 
         /// <summary>
         /// Indicates that a Store has a notion of explicit empty graphs
@@ -98,20 +98,20 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// For some quad stores the existence of a graph may only be defined in terms of one/more quads being stored in that graph
         /// </remarks>
-        ExplicitEmptyGraphs = 4096,
+        ExplicitEmptyGraphs = 8192,
 
         /// <summary>
         /// Indicates that the Store is from a system which provides access to multiple stores (such an implementation will usually implement the <see cref="IStorageServer">IStorageServer</see> interface) - at a minimum this usually means the store will allow you to list other available stores.  More complex abilities like creating and deleting stores are indicated by other flags.
         /// </summary>
-        HasMultipleStores = 8192,
+        HasMultipleStores = 16384,
         /// <summary>
         /// Indicates that the Store provides the means to create additional Stores
         /// </summary>
-        CanCreateStores = 16384,
+        CanCreateStores = 32768,
         /// <summary>
         /// Indicates that the Store provides the means to delete Stores
         /// </summary>
-        CanDeleteStores = 32768,
+        CanDeleteStores = 65536,
 
         /// <summary>
         /// Indicates a Store that can do Triple Level additions and removals on existing Graphs using the UpdateGraph() method

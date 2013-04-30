@@ -47,6 +47,7 @@ Changed
  - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
  - Graph equality should now be more performant (CORE-345)
  - HTTP Debugging is no longer debug build specific (CORE-347) 
+ - Various improvements to localalization support particularly around numeric value handling
 - Parsing
  - Updated support for Turtle to W3C Candidate Recommendation (19th Feb 2013 version) (CORE-314)
  - Escape handling is now much stricter and will throw errors on invalid escape sequences which previously would have been silently allowed (CORE-314)

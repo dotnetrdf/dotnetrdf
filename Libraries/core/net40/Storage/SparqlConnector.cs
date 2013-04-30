@@ -634,7 +634,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.CanUpdateTriples | IOBehaviour.OverwriteTriples;
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.CanUpdateTriples | IOBehaviour.OverwriteTriples | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed;
             }
         }
 
