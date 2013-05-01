@@ -436,6 +436,20 @@ namespace VDS.RDF.Storage
                 //Fix by Alexander Sidarov for Virtuoso's results for unbound variables in OPTIONALs
                 temp = null;
             }
+            else if (n is VirtuosoDateTime)
+            {
+                //New type in Virtuoso 7
+                VirtuosoDateTime vDateTime = (VirtuosoDateTime)n;
+                DateTime dateTime = new DateTime(vDateTime.Year, vDateTime.Month, vDateTime.Day, vDateTime.Hour, vDateTime.Minute, vDateTime.Second, vDateTime.Millisecond, vDateTime.Kind);
+                return dateTime.ToLiteral(factory);
+            }
+            else if (n is VirtuosoDateTimeOffset)
+            {
+                //New type in Virtuoso 7
+                VirtuosoDateTimeOffset vDateTimeOffset = (VirtuosoDateTimeOffset)n;
+                DateTimeOffset dateTimeOffset = new DateTimeOffset(vDateTimeOffset.Year, vDateTimeOffset.Month, vDateTimeOffset.Day, vDateTimeOffset.Hour, vDateTimeOffset.Minute, vDateTimeOffset.Second, vDateTimeOffset.Millisecond, vDateTimeOffset.Offset);
+                return dateTimeOffset.ToLiteral(factory);
+            }
             else
             {
                 throw new RdfStorageException("Unexpected Object Type '" + n.GetType().ToString() + "' returned from SPASQL SELECT query to the Virtuoso Quad Store");
