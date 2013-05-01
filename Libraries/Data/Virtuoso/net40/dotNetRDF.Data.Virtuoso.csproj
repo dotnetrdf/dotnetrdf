@@ -74,7 +74,6 @@
     <Compile Include="VirtuosoManager.cs" />
     <Compile Include="VirtuosoObjectFactory.cs" />
     <Compile Include="VirtuosoReader.cs" />
-    <Compile Include="VirtuosoTripleStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -94,9 +94,6 @@
     <Compile Include="..\net40\VirtuosoReader.cs">
       <Link>VirtuosoReader.cs</Link>
     </Compile>
-    <Compile Include="..\net40\VirtuosoTripleStore.cs">
-      <Link>VirtuosoTripleStore.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net35\dotNetRDF.Net35.csproj">
