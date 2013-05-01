@@ -58,6 +58,7 @@ Changed
 - Storage
  - SesameNativeTemplate is now a public class
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
+ - Latest version of Virtuoso drivers now used
 - Writing
  - Improved how characters are escaped (counterpart to stricter escape handling) which provides better round tripping of data (CORE-314)
 

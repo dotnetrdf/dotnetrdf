@@ -643,7 +643,7 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                this.Close(true, false);
+                this.Close(false);
             }
             catch
             {
@@ -924,7 +924,6 @@ namespace VDS.RDF.Storage
                     }
                     catch
                     {
-                        this.Close(true, true);
                         throw;
                     }
                 }
@@ -1068,14 +1067,17 @@ namespace VDS.RDF.Storage
                 }
 
                 if (resultsHandler != null) resultsHandler.EndResults(true);
+                this.Close(false);
             }
             catch (RdfParsingTerminatedException)
             {
                 if (resultsHandler != null) resultsHandler.EndResults(true);
+                this.Close(false);
             }
             catch
             {
                 if (resultsHandler != null) resultsHandler.EndResults(false);
+                this.Close(false);
                 throw;
             }
         }
@@ -1128,13 +1130,21 @@ namespace VDS.RDF.Storage
             }
             catch (RdfParseException)
             {
-                //Ignore failed parsing and attempt to execute anyway
-                VirtuosoCommand cmd = this._db.CreateCommand();
-                cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-                cmd.CommandText = "SPARQL " + sparqlUpdate;
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    //Ignore failed parsing and attempt to execute anyway
+                    VirtuosoCommand cmd = this._db.CreateCommand();
+                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                    cmd.CommandText = "SPARQL " + sparqlUpdate;
+                    cmd.ExecuteNonQuery();
 
-                this.Close(true);
+                    this.Close(true);
+                }
+                catch (Exception ex)
+                {
+                    this.Close(true, true);
+                    throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso", ex);
+                }
             }
             catch (SparqlUpdateException)
             {
@@ -1173,6 +1183,7 @@ namespace VDS.RDF.Storage
             {
                 this.Open(false);
                 this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + graphUri + "')");
+                this.Close(false);
             }
             catch
             {
