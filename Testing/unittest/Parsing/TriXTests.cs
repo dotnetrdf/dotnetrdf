@@ -74,7 +74,7 @@ namespace VDS.RDF.Parsing
             TripleStore store = new TripleStore();
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            this._parser.Load(store, @"lib_p11_ontology.trix");
+            this._parser.Load(store, @"resources\\lib_p11_ontology.trix");
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }

@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Suites
             return actual;
         }
 
-        protected override void TryValidateResults(string resultFile, TripleStore actual)
+        protected override void TryValidateResults(string testName, string resultFile, TripleStore actual)
         {
             TripleStore expected = new TripleStore();
             this.ResultsParser.Load(expected, resultFile);

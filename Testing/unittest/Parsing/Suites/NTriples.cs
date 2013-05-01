@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
+            g.LoadFromFile(@"resources\\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }
