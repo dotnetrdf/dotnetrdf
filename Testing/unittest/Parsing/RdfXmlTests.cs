@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("good", property.Uri.Segments[1]);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlElementUsesXmlNamespaceDom()
         {
             Graph g = new Graph();
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing
         }
 
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
         {
             Graph g = new Graph();

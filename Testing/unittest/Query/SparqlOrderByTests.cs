@@ -67,7 +67,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByDescendingScope1()
         {
             //Test Case for CORE-350
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByDescendingScope2()
         {
             //Test Case for CORE-350
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByNullInFirstCondition1()
         {
             //Test Case for CORE-350
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByNullInFirstCondition2()
         {
             //Test Case for CORE-350

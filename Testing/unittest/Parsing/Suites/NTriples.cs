@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();

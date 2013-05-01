@@ -25,7 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -186,7 +188,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(ttl.Triples.First().Subject, nt.Triples.First().Subject, "Subjects should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CNumericLiterals1()
         {
             String input = "123.E+1";
@@ -217,7 +219,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(1, lit.Value.Length);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CComplexLiterals1()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -235,14 +237,15 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(ttl.Triples.First().Object, nt.Triples.First().Object, "Objects should be equal");
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CComplexLiterals2()
         {
             Graph g = new Graph();
             g.LoadFromFile(@"turtle11\turtle-syntax-bad-string-04.ttl");
         }
 
-        [TestMethod]
+        [Test]
+        public void ParsingTurtleW3CBaseTurtleStyle1()
         {
             //Dot required
             String graph = "@base <http://example.org/> .";
@@ -269,10 +272,10 @@ namespace VDS.RDF.Parsing.Suites
             //@base is case sensitive in Turtle
             String graph = "@BASE <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CBaseSparqlStyle1()
         {
             //Forbidden dot
@@ -300,12 +303,12 @@ namespace VDS.RDF.Parsing.Suites
             //No dot required and case insensitive
             String graph = "BaSe <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CPrefixTurtleStyle1()
         {
             //Dot required
@@ -333,10 +336,10 @@ namespace VDS.RDF.Parsing.Suites
             //@prefix is case sensitive in Turtle
             String graph = "@PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleW3CPrefixSparqlStyle1()
         {
             //Forbidden dot
@@ -353,12 +356,12 @@ namespace VDS.RDF.Parsing.Suites
             //No dot required
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleW3CPrefixSparqlStyle3()
         {
             //No dot required and case insensitive

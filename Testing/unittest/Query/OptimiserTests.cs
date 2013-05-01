@@ -410,7 +410,10 @@ SELECT * WHERE
 WHERE
 {
   ?z a ?type .
-  {    ?s a ?v .    FILTER(?v = ?z)  }
+  {
+    ?s a ?v .
+    FILTER(?v = ?z)
+  }
 }";
 
             SparqlQuery q = this._parser.ParseFromString(query);
@@ -507,7 +510,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct1()
         {
             String query = "SELECT DISTINCT ?p WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -518,7 +521,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct2()
         {
             String query = "SELECT DISTINCT ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
@@ -529,7 +532,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct3()
         {
             String query = "SELECT DISTINCT * WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -542,7 +545,7 @@ WHERE
             Assert.IsFalse(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced1()
         {
             String query = "SELECT REDUCED ?p WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -553,7 +556,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced2()
         {
             String query = "SELECT REDUCED ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
@@ -564,7 +567,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced3()
         {
             String query = "SELECT REDUCED * WHERE { ?s ?p ?o } ORDER BY ?p";

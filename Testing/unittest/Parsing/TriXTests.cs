@@ -28,46 +28,46 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class TriXTests
     {
         private TriXWriter _writer = new TriXWriter();
         private TriXParser _parser = new TriXParser();
 
-        [TestMethod, Timeout(2500)]
+        [Test, Timeout(2500)]
         public void ParsingTriXPerformance1()
         {
             //1 Graph, 100 Triples per Graph = 100 Triples total
             this.TestTrixPerformance(1, 100);
         }
 
-        [TestMethod, Timeout(2500)]
+        [Test, Timeout(2500)]
         public void ParsingTriXPerformance2()
         {
             //10 Graphs, 1000 Triples per Graph = 10,000 Triples total
             this.TestTrixPerformance(10, 1000);
         }
 
-        [TestMethod, Timeout(2500)]
+        [Test, Timeout(2500)]
         public void ParsingTriXPerformance3()
         {
             //1000 Graphs, 10 Triples per Graph = 10,000 Triples total
             this.TestTrixPerformance(1000, 10);
         }
 
-        [TestMethod, Timeout(25000)]
+        [Test, Timeout(25000)]
         public void ParsingTriXPerformance4()
         {
             //1000 Graphs, 100 Triples per Graph = 100,000 Triples total
             this.TestTrixPerformance(1000, 100);
         }
 
-        [TestMethod, Timeout(2500)]
+        [Test, Timeout(2500)]
         public void ParsingTriXPerformance5()
         {
             //Test case from CORE-351
