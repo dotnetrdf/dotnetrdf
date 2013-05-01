@@ -664,7 +664,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             SparqlParameterizedString command = new SparqlParameterizedString();
             command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
-            command.CommandText = "INSERT { ?x foaf:mbox_sha1sum ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
+            command.CommandText = @"INSERT { ?x foaf:mbox_sha1sum ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf.org')) }";
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);

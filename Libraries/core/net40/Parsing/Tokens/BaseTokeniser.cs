@@ -37,9 +37,13 @@ namespace VDS.RDF.Parsing.Tokens
     public enum TokeniserEscapeMode
     {
         /// <summary>
-        /// Escaping for URIs (every escape but \" is valid)
+        /// Escaping for URIs (only \u and \U escapes are valid)
         /// </summary>
         Uri,
+        /// <summary>
+        /// Permissive escaping for URIs (only \" is invalid)
+        /// </summary>
+        PermissiveUri,
         /// <summary>
         /// Escaping for Quoted Literals (every escape but \&lt; is valid)
         /// </summary>
@@ -469,31 +473,17 @@ namespace VDS.RDF.Parsing.Tokens
             //Stuff for Unicode escapes
             StringBuilder localOutput;
 
+            bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate);
+
             next = this.Peek();
             switch (next)
             {
                 case '\\':
                     //Backslash escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Consume this one Backslash
                         this.ConsumeCharacter();
-
-                        //If this was a backslash escape i.e. \\
-                        //Then need to check whether the subsequent character could be confused with a valid escape
-                        //in the tokenised output and if so insert another backslash into the output
-                        next = this.Peek();
-                        switch (next)
-                        {
-                            case 't':
-                            case 'n':
-                            case 'r':
-                            case 'u':
-                            case 'U':
-                                this._output.Append("\\");
-                                break;
-                        }
-
                         return;
                     }
                     else
@@ -502,7 +492,7 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case '"':
                     //Quote escape (only valid in Quoted Literals)
-                    if (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate)
+                    if (mode == TokeniserEscapeMode.QuotedLiterals)
                     {
                         //Consume and return
                         this.ConsumeCharacter();
@@ -541,11 +531,11 @@ namespace VDS.RDF.Parsing.Tokens
 
                 case 'n':
                     //New Line Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
-                        this._output.Append("\n");
+                        this._output.Append('\n');
                         return;
                     }
                     else
@@ -554,11 +544,11 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 'r':
                     //New Line Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real New Line to the output
                         this.SkipCharacter();
-                        this._output.Append("\r");
+                        this._output.Append('\r');
                         return;
                     }
                     else
@@ -567,11 +557,37 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 case 't':
                     //Tab Escape
-                    if (mode != TokeniserEscapeMode.QName)
+                    if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
                     {
                         //Discard and append a real Tab to the output
                         this.SkipCharacter();
-                        this._output.Append("\t");
+                        this._output.Append('\t');
+                        return;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                case 'b':
+                    //Backspace Escape
+                    if (isLiteral)
+                    {
+                        //Discard and append a real backspace to the output
+                        this.SkipCharacter();
+                        this._output.Append('\b');
+                        return;
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                case 'f':
+                    //Form Feed Escape
+                    if (isLiteral)
+                    {
+                        //Discard and append a real form feed to the output
+                        this.SkipCharacter();
+                        this._output.Append('\f');
                         return;
                     }
                     else
@@ -603,10 +619,6 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
-                    else if (localOutput.ToString().Equals("0000"))
-                    {
-                        //Ignore the null escape
-                    }
                     else
                     {
                         this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
@@ -634,13 +646,9 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
                     }
-                    else if (localOutput.ToString().Equals("00000000"))
-                    {
-                        //Ignore the null escape
-                    }
                     else
                     {
-                        this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                        this._output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
                     }
                     return;
 
@@ -648,17 +656,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 default:
                     //Not an escape character
-                    if (mode != TokeniserEscapeMode.QName)
-                    {
-                        //Append the \ and then return
-                        //Processing continues normally in the caller function
-                        this._output.Append("\\");
-                        return;
-                    }
-                    else
-                    {
-                        throw Error("Unexpected Backslash Character encountered in a QName, the Backslash Character can only be used for Unicode escapes (\\u and \\U) in QNames");
-                    }
+                    throw Error("Invalid escape sequence encountered, \\" + next + " is not a valid escape sequence in the current token");
 
             }
         }
@@ -709,65 +707,8 @@ namespace VDS.RDF.Parsing.Tokens
                         return;
 
                     case 'u':
-                        //Need to consume the u first
-                        localOutput = new StringBuilder();
-                        this.SkipCharacter();
-
-                        next = this.Peek();
-
-                        //Try to get Four Hex Digits
-                        while (localOutput.Length < 4 && this.IsHexDigit(next))
-                        {
-                            localOutput.Append(next);
-                            this.SkipCharacter();
-                            next = this.Peek();
-                        }
-
-                        //Did we get four Hex Digits
-                        if (localOutput.Length != 4)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
-                        }
-                        else if (localOutput.ToString().Equals("0000"))
-                        {
-                            //Ignore the null escape
-                        }
-                        else
-                        {
-                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
-                        }
-
-                        return;
-
                     case 'U':
-                        //Need to consume the U first
-                        localOutput = new StringBuilder();
-                        this.SkipCharacter();
-
-                        next = this.Peek();
-
-                        //Try to get Eight Hex Digits
-                        while (localOutput.Length < 8 && this.IsHexDigit(next))
-                        {
-                            localOutput.Append(next);
-                            this.SkipCharacter();
-                            next = this.Peek();
-                        }
-
-                        //Did we get eight Hex Digits
-                        if (localOutput.Length != 8)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
-                        }
-                        else if (localOutput.ToString().Equals("00000000"))
-                        {
-                            //Ignore the null escape
-                        }
-                        else
-                        {
-                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
-                        }
-                        return;
+                        throw Error("Illegal unicode escape (\\u or \\U) in local name portion of a prefixed name");
 
                     default:
                         throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.!$&'()*+,;=/?#@%) in Local Names");
@@ -835,6 +776,7 @@ namespace VDS.RDF.Parsing.Tokens
                     case 'D':
                     case 'd':
                     case 'E':
+                    case 'e':
                     case 'f':
                     case 'F':
                         return true;

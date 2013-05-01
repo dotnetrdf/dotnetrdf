@@ -740,7 +740,7 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    if (!colonoccurred)
+                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
                         this.HandleEscapes(TokeniserEscapeMode.QName);
                     }
@@ -836,7 +836,7 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    if (!colonoccurred)
+                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
                         this.HandleEscapes(TokeniserEscapeMode.QName);
                     }

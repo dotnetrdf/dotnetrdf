@@ -197,5 +197,24 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("default", property.Uri.Host);
             Assert.AreEqual("good", property.Uri.Segments[1]);
         }
+
+        [TestMethod]
+        public void ParsingRdfXmlElementUsesXmlNamespaceDom()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+
+        [TestMethod]
+        public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
 	}
 }

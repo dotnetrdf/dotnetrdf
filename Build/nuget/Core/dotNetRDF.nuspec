@@ -12,12 +12,20 @@
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="4.5.11" />
+      <dependency id="Newtonsoft.Json" version="5.0.4" />
       <dependency id="HtmlAgilityPack" version="1.4.6" />
       <dependency id="VDS.Common" version="[1.2.0]" />
     </dependencies>
     <releaseNotes>
-
+     - Added new ReadWriteSparqlConnector for connecting to arbitrary SPARQL stores that provide query and update endpoints
+     - Added new instance mode for simplified Configuration API access
+     - Added new optimization for ORDER BY + DISTINCT queries
+     - Added full support for W3C Candidate Recommendation for Turtle
+     - Added native update support for AllegroGraph
+     - Improvements to culture insensitivity to resolve various bugs that could be seen when running under certain cultures
+     - Improvements to handling of escape sequences in parser and writer sub-systems
+     - Various performance and stability fixes to SPARQL engine, parser subsystem and Core APIs
+     - Updated dependencies to improve performance and resolve some known issues
     </releaseNotes>
   </metadata>
 </package>

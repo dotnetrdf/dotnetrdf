@@ -54,7 +54,7 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.3\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.4\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -2412,8 +2412,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\CharHelper.cs">
-      <Link>Compatability\CharHelper.cs</Link>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Optimisation\OrderByDistinctOptimiser.cs">
+      <Link>Query\Optimisation\OrderByDistinctOptimiser.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

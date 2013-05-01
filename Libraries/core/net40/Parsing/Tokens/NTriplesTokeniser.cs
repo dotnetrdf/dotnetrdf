@@ -288,7 +288,7 @@ namespace VDS.RDF.Parsing.Tokens
                 //Watch out for escapes
                 if (next == '\\')
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
                 }
                 else
                 {

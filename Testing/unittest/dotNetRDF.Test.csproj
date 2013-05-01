@@ -63,7 +63,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.5.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
 	<Reference Include="nunit.framework">
 		<HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
@@ -127,6 +127,7 @@
     <Compile Include="Parsing\Suites\TriX.cs" />
     <Compile Include="Parsing\Suites\Turtle11.cs" />
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
+    <Compile Include="Parsing\TriXTests.cs" />
     <Compile Include="Query\Aggregates\AggregatesOverNullTests.cs" />
     <Compile Include="Query\Aggregates\AggregateTests.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
     <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
+    <Compile Include="Query\BindTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
     <Compile Include="Query\ConstructWithOptionalTests.cs" />
     <Compile Include="Query\DatasetTests.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Query\DefaultGraphTests.cs" />
     <Compile Include="Query\DefaultGraphTests2.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
+    <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
     <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
@@ -603,9 +606,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-28.ttl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-30.ttl">
@@ -1282,6 +1282,7 @@
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2782,6 +2783,9 @@
     <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib_p11_ontology.trix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -3002,6 +3006,9 @@
     <Content Include="resources\Turtle.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\xml-prop.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\bnodes.srx">
@@ -3193,9 +3200,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-28.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-30.out">

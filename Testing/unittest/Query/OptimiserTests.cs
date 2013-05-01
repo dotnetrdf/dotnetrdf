@@ -506,5 +506,75 @@ WHERE
             Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByDistinct1()
+        {
+            String query = "SELECT DISTINCT ?p WHERE { ?s ?p ?o } ORDER BY ?p";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByDistinct2()
+        {
+            String query = "SELECT DISTINCT ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByDistinct3()
+        {
+            String query = "SELECT DISTINCT * WHERE { ?s ?p ?o } ORDER BY ?p";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+
+            //Should not apply since it does not have a fixed project list
+            Assert.IsFalse(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByReduced1()
+        {
+            String query = "SELECT REDUCED ?p WHERE { ?s ?p ?o } ORDER BY ?p";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByReduced2()
+        {
+            String query = "SELECT REDUCED ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraOrderByReduced3()
+        {
+            String query = "SELECT REDUCED * WHERE { ?s ?p ?o } ORDER BY ?p";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+
+            //Should not apply since it does not have a fixed project list
+            Assert.IsFalse(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");
+        }
     }
 }

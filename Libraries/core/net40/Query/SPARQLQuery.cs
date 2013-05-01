@@ -1211,13 +1211,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    //Apply Algebra Optimisation if enabled
-                    if (Options.AlgebraOptimisation)
-                    {
-                        algebra = this.ApplyAlgebraOptimisations(algebra);
-                    }
-                    
+                case SparqlQueryType.SelectReduced:                   
                     //GROUP BY is the first thing applied
                     //This applies if there is a GROUP BY or if there are aggregates
                     //With no GROUP BY it produces a single group of all results
@@ -1249,7 +1243,21 @@ namespace VDS.RDF.Query
                     //Select effectively trims the results so only result variables are left
                     //This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     //so we don't want to eliminate anything
-                    if (this._type != SparqlQueryType.Construct) algebra = new Select(algebra, this.Variables);
+                    if (this._type != SparqlQueryType.Construct)
+                    {
+                        switch (this._type)
+                        {
+                            case SparqlQueryType.Describe:
+                            case SparqlQueryType.Select:
+                            case SparqlQueryType.SelectDistinct:
+                            case SparqlQueryType.SelectReduced:
+                                algebra = new Select(algebra, false, this.Variables.Where(v => v.IsResultVariable));
+                                break;
+                            default:
+                                algebra = new Select(algebra, true, this.Variables);
+                                break;
+                        }
+                    }
 
                     //If we have a Distinct/Reduced then we'll apply those after Selection
                     if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
@@ -1265,6 +1273,12 @@ namespace VDS.RDF.Query
                     if (this._limit >= 0 || this._offset > 0)
                     {
                         algebra = new Slice(algebra, this._limit, this._offset);
+                    }
+
+                    //Apply Algebra Optimisation if enabled
+                    if (Options.AlgebraOptimisation)
+                    {
+                        algebra = this.ApplyAlgebraOptimisations(algebra);
                     }
 
                     return algebra;

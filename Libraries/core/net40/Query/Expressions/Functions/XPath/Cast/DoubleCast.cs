@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble) || dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                         {
                             double d;
-                            if (Double.TryParse(lit.Value, out d))
+                            if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 //Parsed OK
                                 return new DoubleNode(lit.Graph, d);
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         double d;
-                        if (Double.TryParse(lit.Value, out d))
+                        if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         {
                             //Parsed OK
                             return new DoubleNode(lit.Graph, d);

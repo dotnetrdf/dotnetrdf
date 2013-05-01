@@ -43,6 +43,8 @@ namespace VDS.RDF
         public void GraphEquality() {
             try
             {
+                Options.UriLoaderCaching = false;
+
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
@@ -103,6 +105,10 @@ namespace VDS.RDF
             catch (Exception ex)
             {
                 throw;
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
             }
         }
 

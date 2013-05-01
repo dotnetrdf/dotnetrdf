@@ -60,5 +60,14 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
+
+        [TestMethod]
+        public void ParsingNTriplesUnicodeEscapes1()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
     }
 }

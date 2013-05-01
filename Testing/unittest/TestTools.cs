@@ -168,7 +168,14 @@ namespace VDS.RDF
 
         public static void ShowDifferences(GraphDiffReport report)
         {
+            ShowDifferences(report, "1st Graph", "2nd Graph");
+        }
+
+        public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName)
+        {
             NTriplesFormatter formatter = new NTriplesFormatter();
+            lhsName = String.IsNullOrEmpty(lhsName) ? "1st Graph" : lhsName;
+            rhsName = String.IsNullOrEmpty(rhsName) ? "2nd Graph" : rhsName;
 
             if (report.AreEqual)
             {
@@ -184,13 +191,13 @@ namespace VDS.RDF
             {
                 Console.WriteLine("Graphs are non-equal");
                 Console.WriteLine();
-                Console.WriteLine("Triples added to 1st Graph to give 2nd Graph:");
+                Console.WriteLine("Triples added to " + lhsName + " to give " + rhsName + ":");
                 foreach (Triple t in report.AddedTriples)
                 {
                     Console.WriteLine(t.ToString(formatter));
                 }
                 Console.WriteLine();
-                Console.WriteLine("Triples removed from 1st Graph to given 2nd Graph:");
+                Console.WriteLine("Triples removed from " + lhsName + " to give " + rhsName + ":");
                 foreach (Triple t in report.RemovedTriples)
                 {
                     Console.WriteLine(t.ToString(formatter));
@@ -202,26 +209,32 @@ namespace VDS.RDF
                     Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
                 }
                 Console.WriteLine();
-                Console.WriteLine("MSGs added to 1st Graph to give 2nd Graph:");
-                foreach (IGraph msg in report.AddedMSGs)
+                if (report.AddedMSGs.Any())
                 {
-                    Console.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    Console.WriteLine("MSGs added to " + lhsName + " to give " + rhsName + ":");
+                    foreach (IGraph msg in report.AddedMSGs)
                     {
-                        Console.WriteLine(t.ToString(formatter));
+                        Console.WriteLine(msg.Triples.Count + " Triple(s):");
+                        foreach (Triple t in msg.Triples)
+                        {
+                            Console.WriteLine(t.ToString(formatter));
+                        }
+                        Console.WriteLine();
                     }
                     Console.WriteLine();
                 }
-                Console.WriteLine();
-                Console.WriteLine("MSGs removed from 1st Graph to give 2nd Graph:");
-                foreach (IGraph msg in report.RemovedMSGs)
+                if (report.RemovedMSGs.Any())
                 {
-                    Console.WriteLine(msg.Triples.Count + " Triple(s):");
-                    foreach (Triple t in msg.Triples)
+                    Console.WriteLine("MSGs removed from " + lhsName + " to give " + rhsName + ":");
+                    foreach (IGraph msg in report.RemovedMSGs)
                     {
-                        Console.WriteLine(t.ToString(formatter));
+                        Console.WriteLine(msg.Triples.Count + " Triple(s):");
+                        foreach (Triple t in msg.Triples)
+                        {
+                            Console.WriteLine(t.ToString(formatter));
+                        }
+                        Console.WriteLine();
                     }
-                    Console.WriteLine();
                 }
             }
         }

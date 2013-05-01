@@ -27,31 +27,44 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     /// <summary>
     /// Definition for read-only connection to SPARQL endpoints
     /// </summary>
-    public class SparqlQueryConnectionDefinition
+    public class ReadWriteSparqlConnectionDefinition
         : BaseHttpConnectionDefinition
     {
         /// <summary>
         /// Creates a new definition
         /// </summary>
-        public SparqlQueryConnectionDefinition()
-            : base("SPARQL Query", "Connect to any SPARQL Query endpoint as a read-only connection", typeof(SparqlConnector)) { }
+        public ReadWriteSparqlConnectionDefinition()
+            : base("SPARQL Query & Update", "Connect to any SPARQL protocol compliant store that provides both Query and Update endpoints", typeof(ReadWriteSparqlConnector)) { }
 
         /// <summary>
-        /// Gets/Sets the Endpoint URI
+        /// Gets/Sets the Query Endpoint URI
         /// </summary>
-        [Connection(DisplayName = "Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyQueryEndpointUri),
-         DefaultValue("http://example.org/sparql")]
-        public String EndpointUri
+        [Connection(DisplayName = "Query Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyQueryEndpointUri),
+         DefaultValue("http://example.org/query")]
+        public String QueryEndpointUri
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets/Sets the Query Endpoint URI
+        /// </summary>
+        [Connection(DisplayName = "Update Endpoint URI", DisplayOrder = 2, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyUpdateEndpoint, PopulateFrom = ConfigurationLoader.PropertyUpdateEndpointUri),
+         DefaultValue("http://example.org/update")]
+        public String UpdateEndpointUri
         {
             get;
             set;
@@ -60,8 +73,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <summary>
         /// Gets/Sets the Default Graph URI
         /// </summary>
-        [Connection(DisplayName = "Default Graph", DisplayOrder = 2, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
-        public String DefaultGraphUri
+        [Connection(DisplayName = "Query Default Graph", DisplayOrder = 3, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
+        public String QueryDefaultGraphUri
         {
             get;
             set;
@@ -84,12 +97,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.DefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.EndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.EndpointUri), this.DefaultGraphUri);
+            SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.QueryDefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.QueryEndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.QueryEndpointUri), this.QueryDefaultGraphUri);
+            SparqlRemoteUpdateEndpoint updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri(this.UpdateEndpointUri));
             if (this.UseProxy)
             {
-                endpoint.Proxy = this.GetProxy();
+                WebProxy proxy = this.GetProxy();
+                endpoint.Proxy = proxy;
+                updateEndpoint.Proxy = proxy;
             }
-            return new SparqlConnector(endpoint, this.LoadMode);
+            return new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
         }
     }
 }
