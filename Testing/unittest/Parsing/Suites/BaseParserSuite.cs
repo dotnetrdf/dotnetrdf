@@ -322,6 +322,7 @@ WHERE
             if (!File.Exists(file))
             {
                 Console.WriteLine("Input File not found");
+                Console.Error.WriteLine("Test " + name + " - Input File not found: " + file);
                 this._fail++;
                 return;
             }
@@ -340,18 +341,19 @@ WHERE
                     Console.WriteLine("Parsed input in OK");
 
                     //Validate if necessary
-                    if (this.CheckResults)
+                    if (this.CheckResults && resultFile != null)
                     {
                         if (!File.Exists(resultFile))
                         {
                             Console.WriteLine("Expected Output File not found");
+                            Console.Error.WriteLine("Test " + name + " - Expected Output File not found: " + resultFile);
                             this._fail++;
                         }
                         else
                         {
                             try
                             {
-                                TryValidateResults(resultFile, actual);
+                                TryValidateResults(name, resultFile, actual);
                             }
                             catch (RdfParseException)
                             {
@@ -369,6 +371,7 @@ WHERE
                 else
                 {
                     Console.WriteLine("Parsed when failure was expected (Test Failed)");
+                    Console.Error.WriteLine("Test " + name + " - Parsed when failure was expected");
                     this._fail++;
                 }
             }
@@ -376,13 +379,34 @@ WHERE
             {
                 if (shouldParse.HasValue && shouldParse.Value)
                 {
-                    Console.WriteLine("Failed when was expected to parse (Test Failed)");
+                    Console.WriteLine("Parsing failed when success was expected (Test Failed)");
+                    Console.Error.WriteLine("Test " + name + " - Failed to parse when success was expected");
+
+                    //Repeat parsing with tracing enabled if appropriate
+                    //This gives us more useful debugging output for failed tests
+                    if (this._parser is ITraceableTokeniser)
+                    {
+                        try
+                        {
+                            ((ITraceableTokeniser)this._parser).TraceTokeniser = true;
+                            ((IRdfReader)this._parser).Load(new Graph(), Path.GetFileName(file));
+                        }
+                        catch
+                        {
+                            //Ignore errors the 2nd time around, we've already got a copy of the error to report
+                        }
+                        finally
+                        {
+                            ((ITraceableTokeniser)this._parser).TraceTokeniser = false;
+                        }
+                    }
+
                     TestTools.ReportError("Parse Error", parseEx);
                     this._fail++;
                 }
                 else
                 {
-                    Console.WriteLine("Failed to parse as expected (Test Passed)");
+                    Console.WriteLine("Parsing Failed as expected (Test Passed)");
                     this._pass++;
                 }
             }
@@ -393,7 +417,7 @@ WHERE
 
         protected abstract TResult TryParseTestInput(string file);
 
-        protected abstract void TryValidateResults(string resultFile, TResult actual);
+        protected abstract void TryValidateResults(string testName, string resultFile, TResult actual);
 
         protected abstract string FileExtension { get; }
 

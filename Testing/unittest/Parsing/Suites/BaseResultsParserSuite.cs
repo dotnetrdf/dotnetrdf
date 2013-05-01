@@ -35,6 +35,8 @@ namespace VDS.RDF.Parsing.Suites
         protected BaseResultsParserSuite(ISparqlResultsReader testParser, ISparqlResultsReader resultsParser, String baseDir)
             : base(testParser, resultsParser, baseDir)
         {
+            this.Parser.Warning += TestTools.WarningPrinter;
+            this.ResultsParser.Warning += TestTools.WarningPrinter;
         }
 
         protected override SparqlResultSet TryParseTestInput(string file)
@@ -44,7 +46,7 @@ namespace VDS.RDF.Parsing.Suites
             return actual;
         }
 
-        protected override void TryValidateResults(string resultFile, SparqlResultSet actual)
+        protected override void TryValidateResults(string testName, string resultFile, SparqlResultSet actual)
         {
             SparqlResultSet expected = new SparqlResultSet();
             this.ResultsParser.Load(expected, resultFile);
