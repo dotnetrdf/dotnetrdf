@@ -92,7 +92,8 @@ namespace VDS.RDF
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            this._dictionary.Keys.CopyTo(array, arrayIndex);
+            //throw new NotImplementedException();
         }
 
         public bool Remove(T item)

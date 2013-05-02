@@ -318,23 +318,13 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         protected internal void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, AsyncStorageCallback callback, Object state)
         {
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
             request.BeginGetResponse(r =>
             {
                 try
                 {
                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -348,12 +338,7 @@ namespace VDS.RDF.Storage
                 {
                     if (webEx.Response != null)
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                        }
-#endif
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                         if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
                         {
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
@@ -394,24 +379,14 @@ namespace VDS.RDF.Storage
                     Stream reqStream = request.EndGetRequestStream(r);
                     writer.Save(g, new StreamWriter(reqStream));
 
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugRequest(request);
-                    }
-#endif
+                    Tools.HttpDebugRequest(request);
                     
                     request.BeginGetResponse(r2 =>
                     {
                         try
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
                             //If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
@@ -481,24 +456,14 @@ namespace VDS.RDF.Storage
                     Stream reqStream = request.EndGetRequestStream(r);
                     writer.Save(g, new StreamWriter(reqStream));
 
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugRequest(request);
-                    }
-#endif
+                    Tools.HttpDebugRequest(request);
 
                     request.BeginGetResponse(r2 =>
                     {
                         try
                         {
                             HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                            Tools.HttpDebugResponse(response);
                             //If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri), state);
@@ -553,12 +518,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         protected internal void DeleteGraphAsync(HttpWebRequest request, bool allow404, String graphUri, AsyncStorageCallback callback, Object state)
         {
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
             request.BeginGetResponse(r =>
                 {
                     try
@@ -571,12 +531,7 @@ namespace VDS.RDF.Storage
                     }
                     catch (WebException webEx)
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                        }
-#endif
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                         //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                         if (webEx.Response == null || (webEx.Response != null && (!allow404 || ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound)))
                         {
@@ -712,12 +667,7 @@ namespace VDS.RDF.Storage
             ManualResetEvent signal = new ManualResetEvent(false);
             foreach (HttpWebRequest request in requests)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
@@ -731,12 +681,7 @@ namespace VDS.RDF.Storage
                     }
                     catch (WebException webEx)
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                        }
-#endif
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("A HTTP Error occurred while making a sequence of asynchronous requests to the Store, see inner exception for details", webEx)), state);
                         return;
                     }

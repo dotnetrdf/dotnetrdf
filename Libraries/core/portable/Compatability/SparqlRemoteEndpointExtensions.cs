@@ -18,6 +18,7 @@ namespace VDS.RDF.Query
                     result = graph;
                     (state as AutoResetEvent).Set();
                 }, wait);
+            wait.WaitOne();
             return result;
         }
 
@@ -27,6 +28,7 @@ namespace VDS.RDF.Query
             endpoint.QueryWithResultGraph(handler, query,
                                           (rdfHandler, resultsHandler, state) => { (state as AutoResetEvent).Set(); },
                                           wait);
+            wait.WaitOne();
         }
 
         public static SparqlResultSet QueryWithResultSet(this SparqlRemoteEndpoint endpoint, string query)
@@ -38,6 +40,7 @@ namespace VDS.RDF.Query
                     resultSet = results;
                     (state as AutoResetEvent).Set();
                 }, wait);
+            wait.WaitOne();
             return resultSet;
         }
 
@@ -47,6 +50,7 @@ namespace VDS.RDF.Query
             var wait = new AutoResetEvent(false);
             endpoint.QueryWithResultSet(handler, query, (rdfHandler, resultsHandler, state) =>
                 { (state as AutoResetEvent).Set(); }, wait);
+            wait.WaitOne();
         }
 
     }

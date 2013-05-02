@@ -70,7 +70,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupNode3()
         {
@@ -214,7 +214,7 @@ _:a dnr:type ""not a boolean"" .";
             Assert.IsFalse(value);
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupBoolean5()
         {
@@ -283,7 +283,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupInt3()
         {
@@ -326,7 +326,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupLong3()
         {
@@ -371,7 +371,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsNull(value);
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupString3()
         {
@@ -425,7 +425,7 @@ _:a dnr:type <http://uri> .";
             Assert.AreEqual("http://uri/", value);
         }
 
-#if !SILVERLIGHT // No System.Configuration.ConfigurationManager
+#if !NO_SYSTEMCONFIGURATION
         [TestMethod]
         public void ConfigurationLookupValue3()
         {

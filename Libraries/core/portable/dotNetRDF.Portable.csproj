@@ -8,7 +8,7 @@
     <ProjectGuid>{8AAEC132-8EC5-4A53-B27B-960FBAB99E19}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dotNetRDF.Portable</RootNamespace>
+    <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF.Portable</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile2</TargetFrameworkProfile>
@@ -2368,6 +2368,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.4.5.11\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Portable.Runtime">
+      <HintPath>lib\Portable.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="VDS.Common">
       <HintPath>..\..\..\Testing\portable\packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
     </Reference>
@@ -2376,4 +2379,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

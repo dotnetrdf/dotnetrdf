@@ -22,6 +22,7 @@ rdfConvert
 - Fix a bug where converting from graph to dataset formats would lose prefixes (TOOLS-333)
 
 rdfEditor (Not available under Mono)
+- Fix a bug where an invalid Turtle document could be reported as valid (CORE-341)
  
 rdfOptStats
    
@@ -29,9 +30,13 @@ rdfQuery
 
 rdfServer
 - Fix a couple of bugs which meant that SPARQL updates would not work correctly (TOOLS-323, TOOLS-324)
+- Properly respect configuration file if one is provided (TOOLS-338)
+- Properly support multiple endpoints (TOOLS-338)
+- Fix a bug where after a stop/start previous state was still visible
 
 rdfServerGUI
- 
+- Removed pause/resume functionality since this was a misnomer as it was doing a Stop/Start behind the scenes
+  
 rdfWebDeploy
 - Fix Nuget Dependencies
 

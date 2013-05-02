@@ -34,7 +34,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Multiset when there are no possible Solutions
     /// </summary>
-    public class NullMultiset : BaseMultiset
+    public class NullMultiset 
+        : BaseMultiset
     {
         /// <summary>
         /// Joins another Multiset to this Null Mutliset
@@ -161,6 +162,15 @@ namespace VDS.RDF.Query.Algebra
         public override void AddVariable(string variable)
         {
             throw new RdfQueryException("Cannot add a Variable to the Null Multiset");
+        }
+
+        /// <summary>
+        /// Sets the variable ordering for the multiset
+        /// </summary>
+        /// <param name="variables">Variable Ordering</param>
+        public override void SetVariableOrder(IEnumerable<string> variables)
+        {
+            if (variables.Any()) throw new RdfQueryException("Cannot set variable ordering for the null multiset");
         }
 
         /// <summary>

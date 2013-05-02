@@ -468,6 +468,7 @@ namespace VDS.RDF.Writing
             context.Writer.WriteEndDocument();
 
             //Save to the Output Stream
+            context.Writer.Flush();
             context.Writer.Close();
         }
 

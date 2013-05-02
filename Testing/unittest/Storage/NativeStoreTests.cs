@@ -60,7 +60,7 @@ namespace VDS.RDF
             //Create our Native Managers
             List<IStorageProvider> managers = new List<IStorageProvider>() {
                 new InMemoryManager(),
-#if !PORTABLE // No Virtuoso support in PCL
+#if !NO_DATAEXTENSIONS
                 VirtuosoTest.GetConnection()
 #endif
             };

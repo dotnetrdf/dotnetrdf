@@ -39,6 +39,7 @@ namespace VDS.RDF.Writing
     [TestClass]
     public class OwlOneOf
     {
+
         [TestMethod]
         public void WritingSerializeOwnOneOf()
         {
@@ -73,6 +74,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
+#if !NO_XMLENTITIES
             //Now check that the Graphs are all equivalent
             Graph h = new Graph();
             h.LoadFromFile("owl-one-of.rdf");
@@ -84,7 +86,9 @@ namespace VDS.RDF.Writing
             j.LoadFromFile("owl-one-of-pretty.rdf");
             Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
             Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
+#endif
         }
+
 
         [TestMethod]
         public void WritingSerializeOwnOneOfVeryLarge()

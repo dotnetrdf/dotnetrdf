@@ -38,6 +38,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VDS.RDF.Writing.Serialization
 {
+#if !SILVERLIGHT
     [TestClass]
     public class TripleSerializationTests
     {
@@ -97,4 +98,5 @@ namespace VDS.RDF.Writing.Serialization
             stream.Dispose();
         }
     }
+#endif
 }

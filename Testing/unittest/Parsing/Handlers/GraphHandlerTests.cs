@@ -149,11 +149,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingGraphHandlerExplicitTest("temp.n3", new Notation3Parser(), true);
         }
 
+#if !NO_XMLENTITIES
         [TestMethod]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.rdf", new RdfXmlParser(), true);
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]

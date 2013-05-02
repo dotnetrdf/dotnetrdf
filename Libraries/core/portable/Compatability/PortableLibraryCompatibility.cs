@@ -118,13 +118,24 @@ namespace VDS.RDF
             Error.WriteLine();
         }
 
-        public static void Write(string fmt, params object[] args)
+        public static void Write(string str)
+        {
+            Out.Write(str);
+        }
+
+        public static void Write(string fmt, object[] args)
         {
             Out.Write(fmt, args);
         }
-        public static void WriteLine(string fmt, params object[] args)
+
+        public static void WriteLine(string fmt, object[] args)
         {
             Out.WriteLine(fmt, args);
+        }
+
+        public static void WriteLine(string str)
+        {
+            Out.WriteLine(str);
         }
 
         public static void WriteLine(object o)

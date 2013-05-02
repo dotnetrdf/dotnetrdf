@@ -1509,6 +1509,7 @@ namespace VDS.RDF.Configuration
 #endif
 
 #if !NO_SYNC_HTTP
+
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph from file and applies auto-configuration

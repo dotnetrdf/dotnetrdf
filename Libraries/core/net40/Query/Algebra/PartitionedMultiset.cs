@@ -42,6 +42,7 @@ namespace VDS.RDF.Query.Algebra
         private int _partitionSize, _numPartitions, _counter = -1;
         private List<Dictionary<int, ISet>> _partitions;
         private List<HashSet<String>> _variables;
+        private List<String> _orderedVariables;
 
         private Dictionary<String, HashSet<INode>> _containsCache;
         private bool _cacheInvalid = true;
@@ -179,6 +180,33 @@ namespace VDS.RDF.Query.Algebra
         {
             if (this._variables.Count == 0) this._variables.Add(new HashSet<string>());
             this._variables[0].Add(variable);
+            if (this._orderedVariables == null) this._orderedVariables = new List<string>(this.Variables);
+            if (!this._orderedVariables.Contains(variable)) this._orderedVariables.Add(variable);
+        }
+
+        /// <summary>
+        /// Sets the variable ordering for the multiset
+        /// </summary>
+        /// <param name="variables">Variable Ordering</param>
+        public override void SetVariableOrder(IEnumerable<string> variables)
+        {
+            //Validate that the ordering is applicable
+            HashSet<String> vars = new HashSet<string>();
+            foreach (HashSet<String> varList in this._variables)
+            {
+                foreach (String var in varList)
+                {
+                    vars.Add(var);
+                }
+            }
+            if (variables.Count() < vars.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
+            foreach (String var in vars)
+            {
+                if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
+            }
+
+            //Apply ordering
+            this._orderedVariables = new List<string>(vars);
         }
 
         /// <summary>
@@ -221,10 +249,17 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (from vs in this._variables
-                        from v in vs
-                        where v != null
-                        select v).Distinct();
+                if (this._orderedVariables != null)
+                {
+                    return this._orderedVariables;
+                }
+                else
+                {
+                    return (from vs in this._variables
+                            from v in vs
+                            where v != null
+                            select v).Distinct();
+                }
             }
         }
 

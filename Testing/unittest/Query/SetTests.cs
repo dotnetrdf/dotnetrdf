@@ -148,5 +148,73 @@ namespace VDS.RDF.Query
             Assert.AreEqual(2, results.Count);
             Assert.IsTrue(results.ContainsVariable("_:b"));
         }
+
+        [TestMethod]
+        public void SparqlSetDistinctnessComparer1()
+        {
+            ISet x = new Set();
+            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            ISet y = new Set();
+            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+
+
+            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
+            int xHash = comparer.GetHashCode(x);
+            int yHash = comparer.GetHashCode(y);
+
+            Assert.AreEqual(xHash, yHash);
+            Assert.IsTrue(comparer.Equals(x, y));
+        }
+
+        [TestMethod]
+        public void SparqlSetDistinctnessComparer2()
+        {
+            ISet x = new Set();
+            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("b", this._factory.CreateLiteralNode("x"));
+            ISet y = new Set();
+            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("b", this._factory.CreateLiteralNode("y"));
+            
+            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
+            int xHash = comparer.GetHashCode(x);
+            int yHash = comparer.GetHashCode(y);
+
+            Assert.AreEqual(xHash, yHash);
+            Assert.IsTrue(comparer.Equals(x, y));
+        }
+
+        [TestMethod]
+        public void SparqlSetDistinctnessComparer3()
+        {
+            ISet x = new Set();
+            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("b", this._factory.CreateLiteralNode("x"));
+            ISet y = new Set();
+            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("b", this._factory.CreateLiteralNode("y"));
+
+            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a", "b" });
+            int xHash = comparer.GetHashCode(x);
+            int yHash = comparer.GetHashCode(y);
+
+            Assert.AreNotEqual(xHash, yHash);
+            Assert.IsFalse(comparer.Equals(x, y));
+        }
+
+        [TestMethod]
+        public void SparqlSetDistinctnessComparer4()
+        {
+            ISet x = new Set();
+            ISet y = new Set();
+            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+
+            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
+            int xHash = comparer.GetHashCode(x);
+            int yHash = comparer.GetHashCode(y);
+
+            Assert.AreNotEqual(xHash, yHash);
+            Assert.IsFalse(comparer.Equals(x, y));
+        }
     }
 }

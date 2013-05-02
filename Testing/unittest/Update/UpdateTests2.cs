@@ -106,6 +106,7 @@ namespace VDS.RDF.Update
             }
         }
 
+#if !SILVERLIGHT
         [TestMethod]
         public void SparqlUpdateLoad()
         {
@@ -136,6 +137,7 @@ namespace VDS.RDF.Update
                 }
             }
         }
+#endif
 
         [TestMethod]
         public void SparqlUpdateModify()

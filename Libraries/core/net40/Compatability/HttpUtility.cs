@@ -55,8 +55,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlDecode(String value)
         {
-#if NO_HTMLAGILITYPACK
-            return HttpUtility.HtmlDecode(value);
+#if PORTABLE
+            return System.Net.WebUtility.HtmlDecode(value);
 #else
             return HtmlEntity.DeEntitize(value);
 #endif
@@ -69,8 +69,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlEncode(String value)
         {
-#if NO_HTMLAGILITYPACK
-            return HttpUtility.HtmlEncode(value);
+#if PORTABLE
+            return System.Net.WebUtility.HtmlEncode(value);
 #else
             return HtmlEntity.Entitize(value, true, true);
 #endif

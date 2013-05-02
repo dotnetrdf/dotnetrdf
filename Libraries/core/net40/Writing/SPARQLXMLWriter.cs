@@ -372,6 +372,7 @@ namespace VDS.RDF.Writing
 
             //End Document
             writer.WriteEndDocument();
+            writer.Flush();
             writer.Close();
         }
 

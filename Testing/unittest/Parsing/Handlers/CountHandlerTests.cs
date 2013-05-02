@@ -68,11 +68,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingCountHandler("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [TestMethod]
         public void ParsingCountHandlerRdfXml()
         {
             this.ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]

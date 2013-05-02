@@ -18,18 +18,21 @@ namespace VDS.RDF.Parsing
         {
             var wait = new ManualResetEvent(false);
             Load(g, u, null, (graph, state) => ((ManualResetEvent) state).Set(), wait);
+            wait.WaitOne();
         }
 
         public static void Load(IGraph g, Uri u, IRdfReader parser)
         {
             var wait = new ManualResetEvent(false);
             Load(g,u,parser, (graph, state) => ((ManualResetEvent) state).Set(), wait );
+            wait.WaitOne();
         }
 
         public static void Load(IRdfHandler handler, Uri u)
         {
             var wait = new ManualResetEvent(false);
             Load(handler, u, (rdfHandler, state) => ((ManualResetEvent)state).Set(), wait);
+            wait.WaitOne();
         }
     }
 }

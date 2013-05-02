@@ -225,7 +225,6 @@ namespace VDS.RDF.Writing
         //    this.CheckCompressionRoundTrip(g);
         //}
 
-
 #if !NO_SYNC_HTTP // No SparqlConnector
         [TestMethod]
         public void WritingCollectionCompressionComplex1()

@@ -127,11 +127,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [TestMethod]
         public void ParsingPagingHandlerRdfXml()
         {
             this.ParsingUsingPagingHandler("temp.rdf", new RdfXmlParser());
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]
@@ -169,11 +171,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler2("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [TestMethod]
         public void ParsingPagingHandlerRdfXml2()
         {
             this.ParsingUsingPagingHandler2("temp.rdf", new RdfXmlParser());
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]
@@ -211,11 +215,13 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler3("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [TestMethod]
         public void ParsingPagingHandlerRdfXml3()
         {
             this.ParsingUsingPagingHandler3("temp.rdf", new RdfXmlParser());
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]

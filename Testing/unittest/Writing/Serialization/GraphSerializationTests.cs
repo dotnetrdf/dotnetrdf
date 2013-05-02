@@ -40,6 +40,7 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Writing.Serialization
 {
+#if !SILVERLIGHT
     [TestClass]
     public class GraphSerializationTests
     {
@@ -368,4 +369,5 @@ namespace VDS.RDF.Writing.Serialization
             : base(info, context) { }
 #endif
     }
+#endif
 }

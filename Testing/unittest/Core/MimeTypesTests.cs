@@ -75,6 +75,7 @@ namespace VDS.RDF.Core
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(Notation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
+
 #if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
@@ -126,39 +127,39 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtNotation3_3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".n3.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtNotation3_4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("n3.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -166,6 +167,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -177,7 +179,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-turtle");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -185,6 +187,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -229,39 +232,41 @@ namespace VDS.RDF.Core
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+#endif
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".ttl.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtTurtle4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeNTriples1()
@@ -382,39 +387,39 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf+xml");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -422,6 +427,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -433,7 +439,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/xml");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -441,6 +447,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -452,7 +459,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xml");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -460,6 +467,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -491,39 +499,39 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rdf.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtRdfXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rdf.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/json");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -531,6 +539,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
@@ -542,7 +551,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/json");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -550,6 +559,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
@@ -581,33 +591,33 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtRdfJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtRdfJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
-#endif
         }
+#endif
 
 #if !NO_HTMLAGILITYPACK
         [TestMethod]
@@ -832,33 +842,33 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeSparqlJson1()
@@ -897,39 +907,41 @@ namespace VDS.RDF.Core
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
+#endif
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeSparqlCsv1()
@@ -993,33 +1005,33 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlCsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlCsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeSparqlTsv1()
@@ -1064,33 +1076,33 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
         }
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlTsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
+#if !NO_COMPRESSION
         [TestMethod]
         public void MimeTypesGetDefinitionsByExtSparqlTsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv.gz");
             Assert.AreEqual(1, defs.Count());
 
-#if !NO_COMPRESSION
             //Check GZipped definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
-#endif
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity1()
@@ -1177,7 +1189,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeExtraParams1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1185,6 +1197,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -1196,7 +1209,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeExtraParams2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; q=1.0");
-            Assert.AreEqual(2, defs.Count());
+            Assert.IsTrue(defs.Any());
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1204,6 +1217,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
+            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -1316,7 +1330,7 @@ namespace VDS.RDF.Core
             Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
         }
 
-#if !NO_COMPRESSION
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void MimeTypesGetParserByTypeRdfA1()
         {
@@ -1700,6 +1714,7 @@ namespace VDS.RDF.Core
             Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
         }
 
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void MimeTypesGetWriterByTypeRdfA1()
         {
@@ -1713,6 +1728,7 @@ namespace VDS.RDF.Core
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/xhtml+xml");
             Assert.IsInstanceOfType(writer, typeof(HtmlWriter));
         }
+#endif
 
         [TestMethod]
         public void MimeTypesGetWriterByExtNTriples1()
@@ -1864,6 +1880,7 @@ namespace VDS.RDF.Core
         }
 #endif
 
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void MimeTypesGetWriterByExtRdfA1()
         {
@@ -1877,6 +1894,7 @@ namespace VDS.RDF.Core
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("html");
             Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
         }
+
 
 #if !NO_COMPRESSION
         [TestMethod]
@@ -1952,6 +1970,7 @@ namespace VDS.RDF.Core
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("xhtml.gz");
             Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
         }
+#endif
 #endif
 
         [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
@@ -2807,6 +2826,34 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.5d, selectors[0].Quality);
             Assert.AreEqual("text/plain", selectors[1].Type);
             Assert.AreEqual(0.5d, selectors[1].Quality);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionByUpperCaseExt()
+        {
+            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            {
+                if (!def.HasFileExtensions) continue;
+                String ext = def.CanonicalFileExtension.ToUpper();
+                MimeTypeDefinition def2 = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault();
+                Assert.IsNotNull(def2);
+                Assert.AreEqual(def.SyntaxName, def2.SyntaxName);
+                Assert.AreEqual(def.CanonicalMimeType, def2.CanonicalMimeType);
+                Assert.AreEqual(def.HasFileExtensions, def2.HasFileExtensions);
+                Assert.AreEqual(def.CanonicalFileExtension, def2.CanonicalFileExtension);
+                Assert.AreEqual(def.CanParseRdf, def2.CanParseRdf);
+                Assert.AreEqual(def.CanParseRdfDatasets, def2.CanParseRdfDatasets);
+                Assert.AreEqual(def.CanParseSparqlResults, def2.CanParseSparqlResults);
+                Assert.AreEqual(def.CanWriteRdf, def2.CanWriteRdf);
+                Assert.AreEqual(def.CanWriteRdfDatasets, def2.CanWriteRdfDatasets);
+                Assert.AreEqual(def.CanWriteSparqlResults, def2.CanWriteSparqlResults);
+                Assert.AreEqual(def.RdfParserType, def2.RdfParserType);
+                Assert.AreEqual(def.RdfDatasetParserType, def2.RdfDatasetParserType);
+                Assert.AreEqual(def.SparqlResultsParserType, def2.SparqlResultsParserType);
+                Assert.AreEqual(def.RdfWriterType, def2.RdfWriterType);
+                Assert.AreEqual(def.RdfDatasetWriterType, def2.RdfDatasetWriterType);
+                Assert.AreEqual(def.SparqlResultsWriterType, def2.SparqlResultsWriterType);
+            }
         }
     }
 }

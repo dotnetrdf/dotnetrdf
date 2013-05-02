@@ -174,21 +174,11 @@ namespace VDS.RDF.Storage.Management
                 createParams.Add("override", "false");
                 request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     response.Close();
                 }
                 return true;
@@ -197,12 +187,8 @@ namespace VDS.RDF.Storage.Management
             {
                 if (webEx.Response != null)
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    
                     //Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -231,22 +217,11 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
-
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     response.Close();
                 }
             }
@@ -406,24 +381,14 @@ namespace VDS.RDF.Storage.Management
                 createParams.Add("override", "false");
                 HttpWebRequest request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                     }
@@ -431,12 +396,8 @@ namespace VDS.RDF.Storage.Management
                     {
                         if (webEx.Response != null)
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            }
-#endif
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            
                             //Got a Response so we can analyse the Response Code
                             HttpWebResponse response = (HttpWebResponse)webEx.Response;
                             int code = (int)response.StatusCode;
@@ -465,12 +426,8 @@ namespace VDS.RDF.Storage.Management
             {
                 if (webEx.Response != null)
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    
                     //Got a Response so we can analyse the Response Code
                     HttpWebResponse response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -507,24 +464,15 @@ namespace VDS.RDF.Storage.Management
             {
                 HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
                     Tools.HttpDebugRequest(request);
-                }
-#endif
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
+                        Tools.HttpDebugResponse(response);
+                        
                         //If we get here then the operation completed OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
