@@ -451,7 +451,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, filename);
 
-                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -470,7 +470,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(filename));
 
-                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -489,7 +489,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -508,7 +508,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, filename);
 
-                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -522,7 +522,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = MimeTypesHelper.GetSparqlParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
                 reader.Load(results, filename);
 
-                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -541,7 +541,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(filename));
 
-                Assert.AreEqual(this._results, results, "Graphs for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Graphs for file " + filename + " were not equal");
             }
         }
 
@@ -560,7 +560,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.AreEqual(this._results, results, "Graphs for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Graphs for file " + filename + " were not equal");
             }
         }
     }
