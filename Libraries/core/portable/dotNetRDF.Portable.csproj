@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Compatability\AsyncOperationState.cs" />
     <Compile Include="Compatability\CryptoConfig.cs" />
     <Compile Include="Compatability\PortableLibraryCompatibility.cs" />
     <Compile Include="Compatability\SparqlRemoteEndpointExtensions.cs" />

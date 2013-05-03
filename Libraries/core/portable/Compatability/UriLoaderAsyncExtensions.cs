@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.RDF.Compatability;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -16,23 +17,23 @@ namespace VDS.RDF.Parsing
     {
         public static void Load(IGraph g, Uri u)
         {
-            var wait = new ManualResetEvent(false);
-            Load(g, u, null, (graph, state) => ((ManualResetEvent) state).Set(), wait);
-            wait.WaitOne();
+            var state = new AsyncOperationState();
+            Load(g, u, null, (graph, aos) => ((AsyncOperationState) aos).OperationCompleted(), state);
+            state.WaitForCompletion();
         }
 
         public static void Load(IGraph g, Uri u, IRdfReader parser)
         {
-            var wait = new ManualResetEvent(false);
-            Load(g,u,parser, (graph, state) => ((ManualResetEvent) state).Set(), wait );
-            wait.WaitOne();
+            var state = new AsyncOperationState();
+            Load(g,u,parser, (graph, aos) => ((AsyncOperationState) aos).OperationCompleted(), state );
+            state.WaitForCompletion();
         }
 
         public static void Load(IRdfHandler handler, Uri u)
         {
-            var wait = new ManualResetEvent(false);
-            Load(handler, u, (rdfHandler, state) => ((ManualResetEvent)state).Set(), wait);
-            wait.WaitOne();
+            var state = new AsyncOperationState();
+            Load(handler, u, (rdfHandler, aos) => ((AsyncOperationState)aos).OperationCompleted(), state);
+            state.WaitForCompletion();
         }
     }
 }

@@ -54,7 +54,11 @@ namespace VDS.RDF.Core
         {
             int count = MimeTypesHelper.Definitions.Count();
             Console.WriteLine(count + " Definitions registered");
+#if PORTABLE
+            Assert.AreEqual(16, count);
+#else
             Assert.AreEqual(30, count);
+#endif
         }
 
         [TestMethod]
@@ -62,14 +66,22 @@ namespace VDS.RDF.Core
         {
             int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
+#if PORTABLE
+            Assert.AreEqual(16, count);
+#else
             Assert.AreEqual(30, count);
+#endif
         }
 
         [TestMethod]
         public void MimeTypesGetDefinitionsByTypeNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/n3");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -88,7 +100,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNotation3_2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/rdf+n3");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -159,7 +175,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -167,7 +187,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -179,7 +198,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-turtle");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -187,7 +210,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -199,7 +221,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -272,7 +298,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNTriples1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf-triples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -291,7 +321,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNTriples2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/plain");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -310,7 +344,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -329,7 +367,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples+turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -348,7 +390,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeNTriples5()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-ntriples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -419,7 +465,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf+xml");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -427,7 +477,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -439,7 +488,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/xml");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -447,7 +500,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -459,7 +511,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xml");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -467,7 +523,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
@@ -531,7 +586,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/json");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -539,7 +598,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
@@ -551,7 +609,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/json");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -559,7 +621,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
@@ -803,7 +864,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeSparqlXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+xml");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -874,7 +939,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeSparqlJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+json");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -947,7 +1016,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeSparqlCsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/csv");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -966,7 +1039,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeSparqlCsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/comma-separated-values");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1037,7 +1114,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeSparqlTsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/tab-separated-values");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1108,7 +1189,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/TURTLE");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1127,7 +1212,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1146,7 +1235,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TeXt/TuRtLe");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1189,7 +1282,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeExtraParams1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1197,7 +1294,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
@@ -1209,7 +1305,11 @@ namespace VDS.RDF.Core
         public void MimeTypesGetDefinitionsByTypeExtraParams2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; q=1.0");
-            Assert.IsTrue(defs.Any());
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
+            Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
@@ -1217,7 +1317,6 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
 #if !NO_COMPRESSION
-            Assert.AreEqual(2, defs.Count());
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);

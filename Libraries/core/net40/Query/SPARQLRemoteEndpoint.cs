@@ -33,6 +33,9 @@ using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
+#if PORTABLE
+using VDS.RDF.Compatability;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -789,34 +792,61 @@ namespace VDS.RDF.Query
 
             request.BeginGetRequestStream(result =>
             {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
+                try
                 {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                    Stream stream = request.EndGetRequestStream(result);
+                    using (StreamWriter writer = new StreamWriter(stream))
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
+                        writer.Write("query=");
+                        writer.Write(HttpUtility.UrlEncode(query));
 
-                    writer.Close();
+                        foreach (String u in this.DefaultGraphs)
+                        {
+                            writer.Write("&default-graph-uri=");
+                            writer.Write(HttpUtility.UrlEncode(u));
+                        }
+                        foreach (String u in this.NamedGraphs)
+                        {
+                            writer.Write("&named-graph-uri=");
+                            writer.Write(HttpUtility.UrlEncode(u));
+                        }
+
+                        writer.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+#if PORTABLE
+                    if (state is AsyncOperationState)
+                    {
+                        (state as AsyncOperationState).OperationFailed(ex);
+                    }
+#endif
+                    callback(handler, null, state);
+                    return;
                 }
 
                 request.BeginGetResponse(innerResult =>
                 {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-                    Tools.HttpDebugResponse(response);
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                    try
+                    {
+                        HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult);
+                        Tools.HttpDebugResponse(response);
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
-                    callback(handler, null, state);
+                        callback(handler, null, state);
+                    }
+                    catch (Exception ex)
+                    {
+#if PORTABLE
+                        if (state is AsyncOperationState)
+                        {
+                            (state as AsyncOperationState).OperationFailed(ex);
+                        }
+#endif
+                        callback(handler, null, state);
+                    }
                 }, null);
             }, null);
         }
