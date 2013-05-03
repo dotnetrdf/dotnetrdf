@@ -99,8 +99,8 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- Turtle W3C support is 100% to the latest specification as far as we are aware, there are some things that 
-  may change and the test suite is a little limited so we do not guarantee 100% compliance
+- The W3C First Public Working Draft of TriG (9th April 2013) are not yet supported
+- The W3C Note on NTriples and NQuads (9th April 2013) are not yet supported
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
