@@ -714,7 +714,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             SparqlParameterizedString command = new SparqlParameterizedString();
             command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
-            command.CommandText = "DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
+            command.CommandText = @"DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
 
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
