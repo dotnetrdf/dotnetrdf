@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <summary>
         /// Internal method which evaluates the Graph Pattern
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="origContext">Evaluation Context</param>
         /// <remarks>
         /// We only ever need to evaluate the Graph Pattern once to get the Results
         /// </remarks>

@@ -49,6 +49,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Select
         /// </summary>
         /// <param name="pattern">Inner Pattern</param>
+        /// <param name="selectAll">Whether we are selecting all variables</param>
         /// <param name="variables">Variables to Select</param>
         public Select(ISparqlAlgebra pattern, bool selectAll, IEnumerable<SparqlVariable> variables)
         {
@@ -57,6 +58,9 @@ namespace VDS.RDF.Query.Algebra
             this._all = selectAll;
         }
 
+        /// <summary>
+        /// Does this operator select all variables?
+        /// </summary>
         public bool IsSelectAll
         {
             get
