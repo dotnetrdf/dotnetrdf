@@ -57,6 +57,7 @@ Changed
 - Storage
  - SesameNativeTemplate is now a public class
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
+ - Fix target framework profile for dotNetRDF.Data.Virtuoso.ClientProfile
 - Writing
  - Improved how characters are escaped (counterpart to stricter escape handling) which provides better round tripping of data (CORE-314)
 
