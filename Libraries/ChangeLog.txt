@@ -57,6 +57,7 @@ Changed
 - Storage
  - SesameNativeTemplate is now a public class
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
+ - Fix target framework profile for dotNetRDF.Data.Virtuoso.ClientProfile
 - Writing
  - Improved how characters are escaped (counterpart to stricter escape handling) which provides better round tripping of data (CORE-314)
 
@@ -65,6 +66,7 @@ Removed
 - Removed defunct internal class InternalXmlWriter
 - Marked DydraConnector with an obsolete usable due to continuing inconsistency and transient failures from the Dydra API
 - Removed defunct Project class
+- Marked IInMemoryQueryableStore.ExecuteQuery() methods as deprecated in favour of using ISparqlQueryProcessor
 
 
 0.9.0 RC4

@@ -36,10 +36,22 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class UnicodeSpecsHelper
     {
+        /// <summary>
+        /// Start of high surrogate range
+        /// </summary>
         public const int HighSurrogateStart = 0xD800;
+        /// <summary>
+        /// End of high surrogate range
+        /// </summary>
         public const int HighSurrogateEnd = 0xDBFF;
 
+        /// <summary>
+        /// Start of low surrogate range
+        /// </summary>
         public const int LowSurrogateStart = 0xDC00;
+        /// <summary>
+        /// End of low surrogate range
+        /// </summary>
         public const int LowSurrogateEnd = 0xDFFF;
 
         /// <summary>

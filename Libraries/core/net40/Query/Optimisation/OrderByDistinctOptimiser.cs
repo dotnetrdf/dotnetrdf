@@ -33,10 +33,25 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
+    /// <summary>
+    /// An optimizer that handles a special case for ORDER BY + DISTINCT combinations which can significantly improve performance by eliminating duplicates prior to sorting when the default SPARQL behaviour is to do a potentially costly sort over many duplicates and then eliminate distincts.
+    /// </summary>
+    /// <remarks>
+    /// Only applies to queries which meet the following criteria:
+    /// <ul>
+    /// <li>Has an ORDER BY and a DISTNCT on the same level of the query</li>
+    /// <li>Selects a fixed list of variables i.e. not a SELECT DISTINCT *</li>
+    /// <li>All variables used in the ORDER BY expressions also occur in the project list</li>
+    /// </ul>
+    /// </remarks>
     public class OrderByDistinctOptimiser
         : IAlgebraOptimiser
     {
-
+        /// <summary>
+        /// Optimizes the given algebra
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <returns>Optimized algebra</returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
             if (algebra is Distinct)
@@ -148,6 +163,11 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Returns that this is not applicable to updates
+        /// </summary>
+        /// <param name="cmds">Update commands</param>
+        /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return false;

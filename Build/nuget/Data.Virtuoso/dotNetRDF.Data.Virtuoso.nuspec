@@ -12,7 +12,7 @@
     <description>dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</description>
     <tags>RDF Semantic Web SPARQL Virtuoso OpenLink</tags>
     <dependencies>
-      <dependency id="dotNetRDF" version="1.0.0" />
+      <dependency id="dotNetRDF" version="1.0.0.2473" />
       <dependency id="OpenLink.Data.Virtuoso" version="6.2.3128.1" />
     </dependencies>
     <releaseNotes>
