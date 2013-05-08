@@ -216,20 +216,20 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
         {
             Graph g = new Graph();
-            g.LoadFromFile("missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(9, g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceStreaming()
         {
             Graph g = new Graph();
-            g.LoadFromFile("missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
+            g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(9, g.Triples.Count);
         }
