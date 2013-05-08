@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE rdf:RDF [<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>]>
+<!-- The ns2914 and ns194 and ns195 namespaces are not defined but since there is an xml:base it is implicitly the namespace for any undefined namespaces per XML rules -->
+<rdf:RDF xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+         xml:base="http://www.example.org/" 
+         xmlns:dnr="http://www.dotnetrdf.org/configuration#" 
+         xmlns:nss="http://www.example.org/startTime" 
+         xmlns:nse="http://www.example.org/endTime#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ >
+  <rdf:Description rdf:about="Fadi">
+    <ns2914:be xmlns:ns2914="http://example.org/">May</ns2914:be>
+    <nss:startTime>00:00:13</nss:startTime>
+    <nse:endTime>00:00:16</nse:endTime>
+  </rdf:Description>
+  <rdf:Description rdf:about="Fadi">
+    <ns194:not xmlns:ns194="http://example.org/">Good</ns194:not>
+    <nss:startTime>00:00:19</nss:startTime>
+    <nse:endTime>00:00:21</nse:endTime>
+  </rdf:Description>
+  <rdf:Description rdf:about="She">
+    <ns195:be xmlns:ns195="http://example.org/">Good</ns195:be>
+    <nss:startTime>00:00:21</nss:startTime>
+    <nse:endTime>00:00:24</nse:endTime>
+   </rdf:Description>
+</rdf:RDF>
