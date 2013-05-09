@@ -9,6 +9,10 @@ Added
 Changed
 - Bug Fixes
 
+- Build
+ - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
+   are still not signed
+
 
 Removed
 

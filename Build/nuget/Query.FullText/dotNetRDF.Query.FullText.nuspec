@@ -14,7 +14,6 @@
     <dependencies>
       <dependency id="dotNetRDF" version="1.0.1" />
       <dependency id="Lucene.Net" version="3.0.3" />
-      <dependency id="SharpZipLib" version="0.86.0" />
     </dependencies>
     <releaseNotes>
 
