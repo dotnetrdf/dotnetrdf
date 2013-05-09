@@ -4087,7 +4087,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"
-$(SolutionDir)Build\SyncProjects\SyncProjects.exe disk "$(ProjectPath)"</PreBuildEvent>
+"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -4120,5 +4120,6 @@ $(SolutionDir)Build\SyncProjects\SyncProjects.exe disk "$(ProjectPath)"</PreBuil
     <Compile Include="Query\Builder\Expressions\TypedLiteralExpressionTests.cs" />
     <Compile Include="Query\Builder\Expressions\VariableExpressionTests.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
 </Project>
