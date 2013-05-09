@@ -548,9 +548,6 @@
     <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
       <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
-      <Link>Writing\InternalXmlWriter.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
     </Compile>
@@ -2497,10 +2494,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\CharHelper.cs">
-      <Link>Compatability\CharHelper.cs</Link>
-      <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpressionExtensions.cs">
@@ -2564,6 +2557,23 @@
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\SparqlCastBuilder.cs">
       <Link>Query\Builder\SparqlCastBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\OrderByDistinctOptimiser.cs">
+      <Link>Query\Optimisation\OrderByDistinctOptimiser.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
