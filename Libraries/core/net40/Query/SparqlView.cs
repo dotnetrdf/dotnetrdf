@@ -347,16 +347,22 @@ namespace VDS.RDF.Query
                 Object results = ((IInMemoryQueryableStore)this._store).ExecuteQuery(this._q);
                 if (results is IGraph)
                 {
+                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    //This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     IGraph g = (IGraph)results;
+                    TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection();
                     foreach (Triple t in g.Triples)
                     {
-                        this._triples.Add(t.CopyTriple(this));
+                        triples.Add(t.CopyTriple(this));
                     }
+                    this._triples = triples;
                     this.AttachEventHandlers(this._triples);
                 }
                 else
                 {
+                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    //This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     this.AttachEventHandlers(this._triples);

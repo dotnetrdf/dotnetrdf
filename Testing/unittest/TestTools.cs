@@ -160,7 +160,7 @@ namespace VDS.RDF
             }
             Console.WriteLine(g.Triples.Count + " Triples");
             NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
+            foreach (Triple t in g.Triples.ToList())
             {
                 Console.WriteLine(t.ToString(formatter));
             }
