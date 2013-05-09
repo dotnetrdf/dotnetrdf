@@ -133,12 +133,50 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\DescribeBuilder.cs" />
+    <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpressionExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\NumericExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\IriExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\RdfTermExpression.cs" />
+    <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\GraphPatternType.cs" />
+    <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ISelectBuilder.cs" />
+    <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\IQueryWithVariablesBuilder.cs" />
+    <Compile Include="Query\Builder\PatternItemFactory.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
+    <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
+    <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\SelectBuilder.cs" />
+    <Compile Include="Query\Builder\SparqlCastBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
+    <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\ExternalDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Builder\IQueryBuilder.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
@@ -173,6 +211,7 @@
     <Compile Include="Query\PropertyFunctions\ISparqlPropertyFunction.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
+    <Compile Include="Query\Builder\QueryBuilder.cs" />
     <Compile Include="Query\SparqlExpressionParser.cs" />
     <Compile Include="Query\SparqlResult.cs" />
     <Compile Include="Query\SparqlResultBinder.cs" />
@@ -896,4 +935,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Build\SyncProjects\SyncProjects.exe disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

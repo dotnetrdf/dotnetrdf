@@ -2,6 +2,10 @@
 syntax: glob
 
 # Temporary Build Artifacts
+bin/
+**/bin
+**/obj
+**/Debug
 TestResults/
 Build/ndoc3/docs
 Build/nuget/*/*.nupkg
@@ -10,7 +14,7 @@ dotNetRDF*.zip
 _UpgradeReport*
 UpgradeLog*
 log-file.txt
-ToolkitInstaller
+
 
 # Files not to version control
 *.suo
@@ -19,7 +23,6 @@ ToolkitInstaller
 temp*.txt
 _ReSharper*/
 *.lnk
-*.PublicKey
 
 # NuGet Package Management Stuff
 .nuget/*.exe
@@ -27,8 +30,3 @@ packages/
 
 # Developer/Environment specific config files
 Testing\unittest\resources\UnitTestConfig.properties
-
-# use regex here
-syntax: regexp
-[Bb]in
-[Oo]bj
