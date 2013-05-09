@@ -570,7 +570,6 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -583,7 +582,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -621,7 +619,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -634,7 +631,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -647,7 +643,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -660,7 +655,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -673,7 +667,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -686,7 +679,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -699,7 +691,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -712,7 +703,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -725,7 +715,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -738,7 +727,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -751,7 +739,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -764,7 +751,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
@@ -777,7 +763,6 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
