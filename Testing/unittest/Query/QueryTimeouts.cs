@@ -297,6 +297,7 @@ namespace VDS.RDF.Query
             String query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
+            Console.WriteLine(q.ToAlgebra().ToString());
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();

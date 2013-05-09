@@ -134,8 +134,10 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             bool halt;
+            context.CheckTimeout();
             BaseMultiset results = this.StreamingEvaluate(context, 0, out halt);
             if (results is Multiset && results.IsEmpty) results = new NullMultiset();
+            context.CheckTimeout();
 
             context.OutputMultiset = results;
             context.OutputMultiset.Trim();
