@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1305,7 +1306,7 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Decimal:
                                     //Should be a decimal
                                     Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, out dec))
+                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                     {
                                         if (dec == Decimal.Zero)
                                         {
@@ -1328,7 +1329,7 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Double:
                                     //Should be a double
                                     Double dbl;
-                                    if (Double.TryParse(lit.Value, out dbl))
+                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
                                         if (dbl == 0.0d || dbl == Double.NaN)
                                         {

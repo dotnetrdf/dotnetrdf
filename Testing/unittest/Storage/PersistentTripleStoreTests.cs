@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -36,7 +36,7 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class PersistentTripleStoreTests
     {
         private const String TestGraphUri1 = "http://example.org/persistence/graphs/1",
@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage
             manager.SaveGraph(g);
 
             g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri(TestGraphUri2);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
@@ -76,7 +76,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod,ExpectedException(typeof(ArgumentNullException))]
+        [Test,ExpectedException(typeof(ArgumentNullException))]
         public void StoragePersistentTripleStoreBadInstantiation()
         {
             PersistentTripleStore store = new PersistentTripleStore(null);
@@ -109,21 +109,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemContains()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestContains(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiContains()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestContains(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoContains()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -151,7 +151,7 @@ namespace VDS.RDF.Storage
                 Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graphs[]");
 
                 Graph bExpected = new Graph();
-                bExpected.LoadFromFile("InferenceTest.ttl");
+                bExpected.LoadFromFile("resources\\InferenceTest.ttl");
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 bExpected.BaseUri = new Uri(TestGraphUri2);
                 IGraph bActual = store[bExpected.BaseUri];
@@ -174,21 +174,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemGetGraph()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestGetGraph(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestGetGraph(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoGetGraph()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -230,21 +230,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddTriplesFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddTriplesFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddTriplesFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -282,21 +282,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddTriplesDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddTriplesDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -338,21 +338,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveTriplesFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveTriplesFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -390,21 +390,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveTriplesDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveTriplesDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -441,21 +441,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddGraphFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddGraphFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -497,21 +497,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddGraphDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddGraphDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -554,21 +554,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveGraphFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveGraphFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -600,21 +600,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveGraphDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveGraphDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -656,21 +656,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddThenRemoveGraphFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddThenRemoveGraphFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -708,21 +708,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestAddThenRemoveGraphDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddThenRemoveGraphDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -763,21 +763,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveThenAddGraphFlushed(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveThenAddGraphFlushed(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -814,21 +814,21 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestRemoveThenAddGraphDiscarded(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveThenAddGraphDiscarded(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -932,49 +932,49 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod,ExpectedException(typeof(RdfQueryException))]
+        [Test,ExpectedException(typeof(RdfQueryException))]
         public void StoragePersistentTripleStoreMemQueryUnsynced()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestQueryUnsynced(manager);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfQueryException))]
+        [Test, ExpectedException(typeof(RdfQueryException))]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryUnsynced(fuseki);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfQueryException))]
+        [Test, ExpectedException(typeof(RdfQueryException))]
         public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryUnsynced(virtuoso);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemQuerySelect()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoQuerySelect()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemQueryAsk()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -982,7 +982,7 @@ namespace VDS.RDF.Storage
             this.TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiQueryAsk()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -990,7 +990,7 @@ namespace VDS.RDF.Storage
             this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoQueryAsk()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -998,42 +998,42 @@ namespace VDS.RDF.Storage
             this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemQueryConstruct()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemQueryDescribe()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiQueryDescribe()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
@@ -1089,42 +1089,42 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        [Test, ExpectedException(typeof(SparqlUpdateException))]
         public void StoragePersistentTripleStoreMemUpdateUnsynced()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestUpdateUnsynced(manager);
         }
 
-        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        [Test, ExpectedException(typeof(SparqlUpdateException))]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestUpdateUnsynced(fuseki);
         }
 
-        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        [Test, ExpectedException(typeof(SparqlUpdateException))]
         public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestUpdateUnsynced(virtuoso);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreMemUpdate()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestUpdate(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreFusekiUpdate()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestUpdate(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoUpdate()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();

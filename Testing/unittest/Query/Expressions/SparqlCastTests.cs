@@ -23,7 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
@@ -31,18 +31,18 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlCastTests : BaseTest
     {
         private INodeFactory _graph;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _graph = new Graph();
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyEvaluateDecimalCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyEvaluateDoubleCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldSuccesfullyEvaluateFloatCastRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)

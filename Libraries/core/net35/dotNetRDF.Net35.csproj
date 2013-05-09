@@ -12,8 +12,8 @@
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>VDSOpenSourceKey.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -36,6 +36,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,7 +46,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoWarn>0659,1574,0067,0419,0628</NoWarn>
     <WarningsAsErrors>0672,0108</WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -64,7 +64,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net20\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.4\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -547,6 +547,9 @@
     </Compile>
     <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
       <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
+      <Link>Writing\InternalXmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
@@ -2422,13 +2425,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
-    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
-      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>    
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\BlankNodeExpression.cs">
       <Link>Query\Builder\Expressions\BlankNodeExpression.cs</Link>
     </Compile>
@@ -2437,16 +2438,6 @@
     </Compile>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
       <Link>Query\Builder\ExpressionBuilder.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
-      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\net40\Compatability\CharHelper.cs">
-      <Link>Compatability\CharHelper.cs</Link>   
     </Compile>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
@@ -2506,10 +2497,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs">
-      <Link>Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs">
+    <Compile Include="..\net40\Compatability\CharHelper.cs">
+      <Link>Compatability\CharHelper.cs</Link>
       <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
     </Compile>
   </ItemGroup>

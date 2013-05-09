@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public abstract class BaseAsyncTests
     {
         private const String SaveGraphUri = "http://localhost/storage/async/SaveGraph";
@@ -477,7 +477,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAsyncSaveLoad()
         {
             Graph g = new Graph();
@@ -485,7 +485,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncSaveLoad(g);
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAsyncDeleteGraph()
         {
             Graph g = new Graph();
@@ -493,7 +493,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDelete(g);
         }
         
-        [TestMethod]
+        [Test]
         public void StorageAsyncRemoveTriples()
         {
             Graph g = new Graph();
@@ -501,7 +501,7 @@ namespace VDS.RDF.Storage
             this.TestAsyncDeleteTriples(g);
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAsyncAddTriples()
         {
             Graph g = new Graph();
@@ -509,13 +509,13 @@ namespace VDS.RDF.Storage
             this.TestAsyncAddTriples(g);
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAsyncListGraphs()
         {
             this.TestAsyncListGraphs();
         }
 
-        [TestMethod]
+        [Test]
         public void StorageAsyncQuery()
         {
             Graph g = new Graph();

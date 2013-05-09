@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Handlers
             //Do the parsing and thus the loading
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri);
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(handler, new StreamReader("writetostore.nq"));
+            parser.Load(handler, new StreamReader("resources\\writetostore.nq"));
 
             //Load the expected Graphs
             Graph def = new Graph();
@@ -183,39 +183,39 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void ParsingWriteToStoreHandlerBadInstantiation()
         {
             WriteToStoreHandler handler = new WriteToStoreHandler(null, null);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        [Test, ExpectedException(typeof(ArgumentException))]
         public void ParsingWriteToStoreHandlerBadInstantiation2()
         {
             WriteToStoreHandler handler = new WriteToStoreHandler(new ReadOnlyConnector(new InMemoryManager()), null);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        [Test, ExpectedException(typeof(ArgumentException))]
         public void ParsingWriteToStoreHandlerBadInstantiation4()
         {
             WriteToStoreHandler handler = new WriteToStoreHandler(new InMemoryManager(), null, 0);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestWriteToStoreHandler(virtuoso);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             this.TestWriteToStoreHandler(agraph);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerFuseki()
         {
             try
@@ -230,49 +230,49 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerInMemory()
         {
             InMemoryManager mem = new InMemoryManager();
             this.TestWriteToStoreHandler(mem);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestWriteToStoreDatasetsHandler(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestWriteToStoreDatasetsHandler(virtuoso);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             this.TestWriteToStoreHandlerWithBNodes(agraph);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestWriteToStoreHandlerWithBNodes(fuseki);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestWriteToStoreHandlerWithBNodes(manager);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();

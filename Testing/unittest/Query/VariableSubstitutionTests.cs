@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -39,7 +39,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class VariableSubstitutionTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub1()
         {
             String query = "SELECT * WHERE { ?s ?p ?o }";
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub2()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . ?s a ?type }";
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub3()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISBLANK(?s)) }";
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub4()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . BIND(ISBLANK(?s) AS ?blank) }";
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub5()
         {
             try
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub6()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . FILTER(EXISTS { ?s a ?type }) }";
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub7()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . { ?s a ?type } }";
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub8()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } }";
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x", "OPTIONAL" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub9()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?s a ?type } }";
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x", "GRAPH" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub10()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?s a ?type } }";
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x", "MINUS" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub11()
         {
             String query = "SELECT * WHERE { { ?s ?p ?o . } UNION { ?s a ?type } }";
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?x", "UNION" }, new String[] { "?s" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSub12()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "g", "x", new String[] { "?x", "GRAPH" }, new String[] { "?g" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub1()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . }";
@@ -234,7 +234,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub2()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . ?o ?x ?y }";
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub3()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?o)) }";
@@ -252,7 +252,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub4()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?o) AS ?uri) }";
@@ -261,7 +261,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub5()
         {
             try
@@ -279,7 +279,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub6()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?o ?x ?y } }";
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub7()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?o ?x ?y } }";
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub8()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?o ?x ?y } }";
@@ -306,7 +306,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub9()
         {
             String query = "SELECT * WHERE { { ?s ?p ?o .} UNION { ?o ?x ?y } }";
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "o", this._factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraTermSub10()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "g", this._factory.CreateUriNode(UriFactory.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSubBad1()
         {
             String query = "SELECT * WHERE { ?s <http://predicate>+ ?o }";
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?s", "+" }, new String[] { "?x" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSubBad2()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?s" }, new String[] { "?x" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSubBad3()
         {
             String query = "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }";
@@ -347,7 +347,7 @@ namespace VDS.RDF.Query
             this.TestSubstitution(q, "s", "x", new String[] { "?s", "SERVICE" }, new String[] { "?x" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraVarSubBad4()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";

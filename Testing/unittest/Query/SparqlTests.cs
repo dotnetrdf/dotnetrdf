@@ -30,7 +30,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -40,10 +40,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlJoinWithoutVars1()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.Result);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlJoinWithoutVars2()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.Result);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlJoinWithoutVars3()
         {
             String data = @"<http://s> <http://p> <http://o> .
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(0, results.Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParameterizedStringWithNulls()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query
             Console.WriteLine(query.ToString());
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        [Test, ExpectedException(typeof(ArgumentNullException))]
         public void SparqlParameterizedStringWithNulls2()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query
             query.SetUri("s", null);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParameterizedStringShoulNotDecodeEncodedCharactersInUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParameterizedStringShouldNotEncodeUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDBPedia()
         {
             try
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlRemoteVirtuosoWithSponging()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDbPediaDotIssue()
         {
             try
@@ -244,7 +244,7 @@ where {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetEquality()
         {
             SparqlXmlParser parser = new SparqlXmlParser();
@@ -252,8 +252,8 @@ where {
             SparqlResultSet a = new SparqlResultSet();
             SparqlResultSet b = new SparqlResultSet();
 
-            parser.Load(a, "list-3.srx");
-            parser.Load(b, "list-3.srx.out");
+            parser.Load(a, "resources\\list-3.srx");
+            parser.Load(b, "resources\\list-3.srx.out");
 
             a.Trim();
             b.Trim();
@@ -261,8 +261,8 @@ where {
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            parser.Load(a, "no-distinct-opt.srx");
-            parser.Load(b, "no-distinct-opt.srx.out");
+            parser.Load(a, "resources\\no-distinct-opt.srx");
+            parser.Load(b, "resources\\no-distinct-opt.srx.out");
 
             a.Trim();
             b.Trim();
@@ -270,15 +270,15 @@ where {
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            rdfparser.Load(a, "result-opt-3.ttl");
-            parser.Load(b, "result-opt-3.ttl.out");
+            rdfparser.Load(a, "resources\\result-opt-3.ttl");
+            parser.Load(b, "resources\\result-opt-3.ttl.out");
 
             a.Trim();
             b.Trim();
             Assert.IsTrue(a.Equals(b));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlJsonResultSet()
         {
             Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
@@ -287,7 +287,7 @@ where {
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "json.owl");
+            FileLoader.Load(g, "resources\\json.owl");
             store.Add(g);
 
             Object results = store.ExecuteQuery(query);
@@ -332,7 +332,7 @@ where {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlInjection()
         {
             String baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
@@ -363,7 +363,7 @@ SELECT * WHERE {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlConflictingParamNames()
         {
             String baseQuery = @"SELECT * WHERE {
@@ -407,7 +407,7 @@ SELECT * WHERE {
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParameterizedString()
         {
             String test = @"INSERT DATA { GRAPH @graph {
@@ -421,7 +421,7 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlEndpointWithExtensions()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql))
@@ -463,32 +463,32 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBNodeIDsInResults()
         {
             SparqlXmlParser xmlparser = new SparqlXmlParser();
             SparqlResultSet results = new SparqlResultSet();
-            xmlparser.Load(results, "bnodes.srx");
+            xmlparser.Load(results, "resources\\bnodes.srx");
 
             TestTools.ShowResults(results);
             Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
 
             SparqlJsonParser jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
-            jsonparser.Load(results, "bnodes.json");
+            jsonparser.Load(results, "resources\\bnodes.json");
 
             TestTools.ShowResults(results);
             Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAnton()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "anton.rdf");
+            FileLoader.Load(g, "resources\\anton.rdf");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("anton.rq");
+            SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
 
             Object results = g.ExecuteQuery(query);
             if (results is SparqlResultSet)
@@ -506,7 +506,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             }
         }
 
-        [TestMethod]
+        [Test]
         [Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
         public void SparqlBindMultiple()
         {
@@ -560,7 +560,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSimpleQuery1()
         {
             TripleStore store = new TripleStore();

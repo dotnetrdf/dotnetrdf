@@ -27,20 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class ConfigLookupTests
     {
         public const String Prefixes = @"@prefix rdf: <" + NamespaceMapper.RDF + @"> .
 @prefix xsd: <"+ NamespaceMapper.XMLSCHEMA + @"> .
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .";
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode1()
         {
             String graph = Prefixes + @"
@@ -55,7 +55,7 @@ _:a dnr:type ""literal"" .";
             Assert.AreEqual("literal", ((ILiteralNode)value).Value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode2()
         {
             String graph = Prefixes + @"
@@ -70,7 +70,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode3()
         {
             String graph = Prefixes + @"
@@ -87,7 +87,7 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
             Assert.AreEqual("literal", ((ILiteralNode)value).Value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode4()
         {
             Graph g = new Graph();
@@ -95,7 +95,7 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
             Assert.IsNull(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode5()
         {
             String graph = Prefixes + @"
@@ -111,7 +111,7 @@ _:a dnr:other ""other"" ;
             Assert.AreEqual("other", ((ILiteralNode)value).Value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode6()
         {
             String graph = Prefixes + @"
@@ -127,7 +127,7 @@ _:a dnr:other <http://other> ;
             Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://other"), ((IUriNode)value).Uri));
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode7()
         {
             String graph = Prefixes + @"
@@ -143,7 +143,7 @@ _:a dnr:other <http://other> ;
             Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode8()
         {
             Graph g = new Graph();
@@ -152,7 +152,7 @@ _:a dnr:other <http://other> ;
             Assert.IsNull(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupNode9()
         {
             Graph g = new Graph();
@@ -160,7 +160,7 @@ _:a dnr:other <http://other> ;
             Assert.IsNull(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean1()
         {
             String graph = Prefixes + @"
@@ -173,7 +173,7 @@ _:a dnr:type true .";
             Assert.IsTrue(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean2()
         {
             String graph = Prefixes + @"
@@ -186,7 +186,7 @@ _:a dnr:type false .";
             Assert.IsFalse(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean3()
         {
             String graph = Prefixes + @"
@@ -199,7 +199,7 @@ _:a dnr:type ""not a boolean"" .";
             Assert.IsTrue(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean4()
         {
             String graph = Prefixes + @"
@@ -212,7 +212,7 @@ _:a dnr:type ""not a boolean"" .";
             Assert.IsFalse(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean5()
         {
             String graph = Prefixes + @"
@@ -227,7 +227,7 @@ _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
             Assert.IsTrue(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean6()
         {
             String graph = Prefixes + @"
@@ -240,7 +240,7 @@ _:a dnr:other false ; dnr:type true .";
             Assert.IsFalse(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupBoolean7()
         {
             String graph = Prefixes + @"
@@ -253,7 +253,7 @@ _:a dnr:other false ; dnr:type true .";
             Assert.IsTrue(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupInt1()
         {
             String graph = Prefixes + @"
@@ -266,7 +266,7 @@ _:a dnr:type 123 .";
             Assert.AreEqual(123, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupInt2()
         {
             String graph = Prefixes + @"
@@ -279,7 +279,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupInt3()
         {
             String graph = Prefixes + @"
@@ -294,7 +294,7 @@ _:a dnr:type <appsetting:ConfigurationLookupInt3> .";
             Assert.AreEqual(123, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupLong1()
         {
             String graph = Prefixes + @"
@@ -307,7 +307,7 @@ _:a dnr:type 123 .";
             Assert.AreEqual(123, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupLong2()
         {
             String graph = Prefixes + @"
@@ -320,7 +320,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupLong3()
         {
             String graph = Prefixes + @"
@@ -335,7 +335,7 @@ _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
             Assert.AreEqual(123, value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupString1()
         {
             String graph = Prefixes + @"
@@ -349,7 +349,7 @@ _:a dnr:type ""literal"" .";
             Assert.AreEqual("literal", value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupString2()
         {
             String graph = Prefixes + @"
@@ -363,7 +363,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsNull(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupString3()
         {
             String graph = Prefixes + @"
@@ -379,7 +379,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Assert.AreEqual("literal", value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupString4()
         {
             Graph g = new Graph();
@@ -387,7 +387,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Assert.IsNull(value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupValue1()
         {
             String graph = Prefixes + @"
@@ -401,7 +401,7 @@ _:a dnr:type ""literal"" .";
             Assert.AreEqual("literal", value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupValue2()
         {
             String graph = Prefixes + @"
@@ -415,7 +415,7 @@ _:a dnr:type <http://uri> .";
             Assert.AreEqual("http://uri/", value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupValue3()
         {
             String graph = Prefixes + @"
@@ -431,7 +431,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
             Assert.AreEqual("literal", value);
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLookupValue4()
         {
             Graph g = new Graph();

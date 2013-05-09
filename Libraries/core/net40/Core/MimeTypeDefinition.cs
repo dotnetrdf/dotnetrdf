@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -858,7 +859,7 @@ namespace VDS.RDF
                             charset = data[1].Trim();
                             break;
                         case "q":
-                            if (!Double.TryParse(data[1].Trim(), out quality))
+                            if (!Double.TryParse(data[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out quality))
                             {
                                 quality = 1.0d;
                             }

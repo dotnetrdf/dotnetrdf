@@ -28,7 +28,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
@@ -38,7 +38,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Summary description for FourStoreTest
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class FourStoreTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -52,11 +52,11 @@ namespace VDS.RDF.Storage
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreSaveGraph()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -68,13 +68,13 @@ namespace VDS.RDF.Storage
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreLoadGraph()
         {
             StorageFourStoreSaveGraph();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Storage
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreDeleteGraph()
         {
             StorageFourStoreSaveGraph();
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(g.IsEmpty, "Graph should be empty as it was deleted from 4store");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreAddTriples()
         {
             StorageFourStoreDeleteGraph();
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreRemoveTriples()
         {
             StorageFourStoreAddTriples();
@@ -136,7 +136,7 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFourStoreUpdate()
         {
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
