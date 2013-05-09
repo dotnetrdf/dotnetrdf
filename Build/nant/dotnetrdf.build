@@ -51,6 +51,21 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
+  <target name="projectsync" description="Sync project files" unless="${dotnetrdf.nocompile}" 
+	depends="projectsync-core-net35,
+		 projectsync-core-silverlight,
+		 projectsync-core-windowsphone,
+		 projectsync-core-clientprofile,
+	         projectsync-core-clientprofile-net35,
+		 projectsync-query-fulltext-clientprofile,
+		 projectsync-query-fulltext-clientprofile-net35,
+		 projectsync-query-fulltext-net35,
+		 projectsync-data-virtuoso-clientprofile,
+		 projectsync-data-virtuoso-clientprofile-net35,
+		 projectsync-data-virtuoso-net35">
+
+  </target>
+
   <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
     <exec program="Build/SyncProjects/SyncProjects.exe">
