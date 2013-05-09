@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Describe
@@ -51,7 +52,7 @@ namespace VDS.RDF.Query.Describe
             HashSet<INode> expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
             {
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n))
+                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
                     {
@@ -61,7 +62,7 @@ namespace VDS.RDF.Query.Describe
                 }
                 if (n.NodeType == NodeType.Blank)
                 {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
+                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n).ToList())
                     {
                         if (t.Subject.NodeType == NodeType.Blank)
                         {
@@ -74,7 +75,7 @@ namespace VDS.RDF.Query.Describe
                         if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                     }
                 }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n))
+                foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
@@ -91,7 +92,7 @@ namespace VDS.RDF.Query.Describe
                 if (expandedBNodes.Contains(n)) continue;
                 expandedBNodes.Add(n);
 
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n))
+                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
                     {
@@ -101,7 +102,7 @@ namespace VDS.RDF.Query.Describe
                 }
                 if (n.NodeType == NodeType.Blank)
                 {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
+                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n).ToList())
                     {
                         if (t.Subject.NodeType == NodeType.Blank)
                         {
@@ -114,7 +115,7 @@ namespace VDS.RDF.Query.Describe
                         if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                     }
                 }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n))
+                foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
