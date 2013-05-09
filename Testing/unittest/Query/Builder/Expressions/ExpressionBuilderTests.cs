@@ -18,7 +18,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         private ExpressionBuilder Builder { get; set; }
         private Mock<INamespaceMapper> _prefixes;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _prefixes = new Mock<INamespaceMapper>(MockBehavior.Strict);
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             Assert.AreEqual("10 ", Builder.Constant(10m).Expression.ToString());
             Assert.AreEqual("\"10\"^^<http://www.w3.org/2001/XMLSchema#float>", Builder.Constant(10f).Expression.ToString());
             Assert.AreEqual("\"10\"^^<http://www.w3.org/2001/XMLSchema#double>", Builder.Constant(10d).Expression.ToString());
-            Assert.AreEqual("\"2010-10-16T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>", Builder.Constant(new DateTime(2010, 10, 16)).Expression.ToString());
+            Assert.AreEqual("\"2010-10-16T00:00:00.000000\"^^<http://www.w3.org/2001/XMLSchema#dateTime>", Builder.Constant(new DateTime(2010, 10, 16)).Expression.ToString());
         }
 
         [Test]

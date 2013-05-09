@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Builder.Expressions
     [TestFixture]
     public class NumericExpressionTests : SparqlExpressionTestsBase
     {
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             Left = 10.ToConstantTerm();

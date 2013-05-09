@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Builder.Expressions
     {
         private const string TestingStringValue = "text";
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             Left = "text".ToConstantTerm();

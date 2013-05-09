@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Builder
         private GraphPatternBuilder _builder;
         private Mock<INamespaceMapper> _namespaceMapper;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);

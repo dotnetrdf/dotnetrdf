@@ -14,14 +14,14 @@ namespace VDS.RDF.Query.Builder
         private TriplePatternBuilder _builder;
         private Mock<INamespaceMapper> _namespaceMapper;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);
             _builder = new TriplePatternBuilder(_namespaceMapper.Object);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             _namespaceMapper.VerifyAll();
@@ -363,7 +363,7 @@ namespace VDS.RDF.Query.Builder
             Assert.AreEqual(1, _builder.Patterns.Length);
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
-            Assert.AreEqual("2012-10-13T20:35:10+01:30", ((dynamic)pattern.Object).Node.Value);
+            Assert.AreEqual("2012-10-13T20:35:10.000000+01:30", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
             Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }

@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         private SparqlCastBuilder _castCall;
         private SparqlExpression _variable;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _variable = new VariableExpression("var");
