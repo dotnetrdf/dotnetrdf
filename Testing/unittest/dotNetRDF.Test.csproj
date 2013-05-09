@@ -4102,7 +4102,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>
+    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"
+$(SolutionDir)Build\SyncProjects\SyncProjects.exe disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -4112,4 +4113,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="UpdateTests.cs" />
+    <Compile Include="Interop\JenaInteropTests.cs" />
+    <Compile Include="Interop\SemWebInteropTests.cs" />
+    <Compile Include="Query\NegationTests.cs" />
+    <Compile Include="Query\OperatorTests.cs" />
+    <Compile Include="Query\ParallelEvaluation.cs" />
+  </ItemGroup>
 </Project>
