@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class ExpressionBuilderTests
     {
-        [TestMethod]
+        [Test]
         public void CanCreateBoundFunctionUsingVariableTerm()
         {
             // when
@@ -21,7 +21,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(bound.Expression.Arguments.ElementAt(0) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateBoundFunctionUsingVariableName()
         {
             // given
@@ -35,7 +35,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variableTerm.Expression, bound.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIfFunctionCall()
         {
             // given
@@ -53,7 +53,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(expression.Expression.Arguments.ElementAt(2), elseExpr.Expression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIfFunctionCallUsingVariables()
         {
             // given
@@ -71,7 +71,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(elseExpr.Expression, expression.Expression.Arguments.ElementAt(2));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTheCoalesceFunctionCall()
         {
             // given

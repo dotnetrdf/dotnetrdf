@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class TypedLiteralExpressionTests : SparqlExpressionTestsBase
     {
-        [TestMethod]
+        [Test]
         public void ShouldAllowComparisonOperationOnTypedLiteralExpressions()
         {
             // given
@@ -25,7 +25,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(left != right);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowComparisonOperationOnTypedLiteralExpressionAndLiteralValue()
         {
             // given
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, value));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowComparisonOperationOnLiteralValueAndTypedLiteralExpression()
         {
             // given

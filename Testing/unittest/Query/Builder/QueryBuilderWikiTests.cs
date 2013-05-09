@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions.Comparison;
@@ -9,15 +9,15 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder
+namespace VDS.RDF.Query.Builder
 {
     /// <summary>
     /// Test class for queries used on the <a href="https://bitbucket.org/romanticweb/dotnetrdf/wiki">wiki</a>, so that it stays updated
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class QueryBuilderWikiTests
     {
-        [TestMethod]
+        [Test]
         public void SimpleSelectWithOneGraphPatternAndReturnVariables()
         {
             // given
@@ -36,7 +36,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SimpleSelectWithOneGraphPatternAndReturnVariablesAlternative()
         {
             // given
@@ -55,7 +55,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void DescribeWithoutGraphPattern()
         {
             // given
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(uriString, q.DescribeVariables.Single().Value);
         }
 
-        [TestMethod]
+        [Test]
         public void DescribeWithGraphPattern()
         {
             // given
@@ -89,7 +89,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void DescribeWithMixedVariablesAndUrIs()
         {
             // given
@@ -108,7 +108,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SimpleOptional()
         {
             // given
@@ -128,7 +128,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MultipleOptionals()
         {
             // given
@@ -148,7 +148,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.ElementAt(1).TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void MultipleWheresInOptional()
         {
             // given
@@ -167,7 +167,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void FilterInRootGraphPattern()
         {
             // given
@@ -187,7 +187,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void FilterInOptionalPattern()
         {
             // given
@@ -209,7 +209,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().Filter.Expression is LessThanExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void NotExistsFilter()
         {
             // given
@@ -230,7 +230,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.First() is ExistsFunction);
         }
 
-        [TestMethod]
+        [Test]
         public void MinusGraphPattern()
         {
             // given
@@ -250,7 +250,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void FilterInsideNotExists()
         {
             // given
@@ -269,7 +269,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(((GraphPatternTerm)exists.Arguments.Single()).Pattern.IsFiltered);
         }
 
-        [TestMethod]
+        [Test]
         public void SomewhatComplexFilterSample()
         {
             // given
@@ -298,7 +298,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(1).Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void BindAssignment()
         {
             // given
@@ -322,7 +322,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.UnplacedAssignments.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void SelectExpression()
         {
             // given
@@ -345,7 +345,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable));
         }
 
-        [TestMethod]
+        [Test]
         public void BasicConstruct()
         {
             // given
@@ -365,7 +365,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ConstructWhere()
         {
             // given
@@ -382,7 +382,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void Ask()
         {
             // given

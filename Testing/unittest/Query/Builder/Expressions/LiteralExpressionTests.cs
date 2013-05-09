@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class LiteralExpressionTests : SparqlExpressionTestsBase
     {
         private const string TestingStringValue = "text";
@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Right = "text".ToConstantTerm();
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowEuqlityComparisonBetweenLiteralExpressionAndString()
         {
             // given
@@ -30,7 +30,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowEuqlityComparisonBetweenStringAndLiteralExpression()
         {
             // given
@@ -43,7 +43,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowExtractingUntypedLiteral()
         {
             // given

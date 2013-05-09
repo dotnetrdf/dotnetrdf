@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
     public class SparqlExpressionTestsBase
     {

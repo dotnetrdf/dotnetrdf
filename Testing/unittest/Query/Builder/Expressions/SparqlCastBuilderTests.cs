@@ -1,12 +1,12 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlCastBuilderTests
     {
         private SparqlCastBuilder _castCall;
@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             _castCall = new SparqlCastBuilder(_variable);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsInteger()
         {
             // when
@@ -30,7 +30,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsFloat()
         {
             // when
@@ -41,7 +41,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsDateTime()
         {
             // when
@@ -52,7 +52,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsDecimal()
         {
             // when
@@ -63,7 +63,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsDouble()
         {
             // when
@@ -74,7 +74,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsString()
         {
             // when
@@ -85,7 +85,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(_variable.Expression, cast.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsBoolean()
         {
             // when

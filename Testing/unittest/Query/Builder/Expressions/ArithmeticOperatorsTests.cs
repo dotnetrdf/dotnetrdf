@@ -1,15 +1,15 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class ArithmeticOperatorsTests
     {
-        [TestMethod]
+        [Test]
         public void CanMultiplyTypedNumericsOfMatchingTypes()
         {
             // given
@@ -25,7 +25,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplyTypedNumericsOfdifferentTypes()
         {
             // given
@@ -41,7 +41,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplyTypedNumericAndUntypedNumeric()
         {
             // given
@@ -57,7 +57,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplyTypedNumericAndUntypedNumeric2()
         {
             // given
@@ -73,7 +73,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplyTypedNumericBySimpleValue()
         {
             // given
@@ -88,7 +88,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplySimpleValueByTypedNumeric()
         {
             // given
@@ -103,7 +103,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplyNumericBySimpleValue()
         {
             // given
@@ -118,7 +118,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanMultiplySimpleValueByNumeric()
         {
             // given
@@ -133,7 +133,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanChainMultiplicationOfNumerics()
         {
             // given
@@ -150,7 +150,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideTypedNumericsOfMatchingTypes()
         {
             // given
@@ -166,7 +166,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideTypedNumericsOfdifferentTypes()
         {
             // given
@@ -182,7 +182,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideTypedNumericByUntypedNumeric()
         {
             // given
@@ -198,7 +198,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideTypedNumericByUntypedNumeric2()
         {
             // given
@@ -214,7 +214,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideTypedNumericBySimpleValue()
         {
             // given
@@ -229,7 +229,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanDivideSimpleValueByTypedNumeric()
         {
             // given
@@ -244,7 +244,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanChainDivisionsOfNumerics()
         {
             // given
@@ -261,7 +261,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTypedNumericsOfMatchingTypes()
         {
             // given
@@ -277,7 +277,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTypedNumericsOfdifferentTypes()
         {
             // given
@@ -293,7 +293,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTypedNumericToUntypedNumeric()
         {
             // given
@@ -309,7 +309,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTypedNumericToUntypedNumeric2()
         {
             // given
@@ -325,7 +325,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddSimpleValueToTypedNumeric()
         {
             // given
@@ -340,7 +340,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTypedNumericToSimpleValue()
         {
             // given
@@ -355,7 +355,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanChainAdditionsOfNumerics()
         {
             // given
@@ -372,7 +372,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractTypedNumericsOfMatchingTypes()
         {
             // given
@@ -388,7 +388,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractTypedNumericsOfdifferentTypes()
         {
             // given
@@ -404,7 +404,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractTypedNumericToUntypedNumeric()
         {
             // given
@@ -420,7 +420,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractTypedNumericToUntypedNumeric2()
         {
             // given
@@ -436,7 +436,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractSimpleValueFromTypedNumeric()
         {
             // given
@@ -451,7 +451,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanSubtractTypedNumericFromSimpleValue()
         {
             // given
@@ -466,7 +466,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanChainSubtractionsOfNumerics()
         {
             // given

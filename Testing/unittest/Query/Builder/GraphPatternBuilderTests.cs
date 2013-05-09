@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
@@ -8,9 +8,9 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Test.Builder
+namespace VDS.RDF.Query.Builder
 {
-    [TestClass]
+    [TestFixture]
     public class GraphPatternBuilderTests
     {
         private GraphPatternBuilder _builder;
@@ -23,7 +23,7 @@ namespace VDS.RDF.Test.Builder
             _builder = new GraphPatternBuilder();
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingISparqlExpressionForFilter()
         {
             // given
@@ -38,7 +38,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreSame(expression, graphPattern.Filter.Expression);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingUnionOfTwoGraphPatterns()
         {
             // given
@@ -58,7 +58,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(3, graphPattern.ChildGraphPatterns[1].Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingUnionOfMultipleGraphPatterns()
         {
             // given
@@ -83,7 +83,7 @@ namespace VDS.RDF.Test.Builder
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingSimpleChildGraphPatterns()
         {
             // given

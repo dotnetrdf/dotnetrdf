@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlExpressionTests
     {
         private class TestingSparqlExpression : SparqlExpression
@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateInFunction()
         {
             // given

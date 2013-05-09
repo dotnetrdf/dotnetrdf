@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Test.Builder
+namespace VDS.RDF.Query.Builder
 {
-    [TestClass]
+    [TestFixture]
     public class TriplePatternBuilderTests
     {
         private TriplePatternBuilder _builder;
@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Builder
             _namespaceMapper.VerifyAll();
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternUsingVariableNames()
         {
             // when
@@ -44,7 +44,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingUriForPredicate()
         {
             // given
@@ -64,7 +64,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingQNameForSubject()
         {
             // given
@@ -85,7 +85,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingQNameForPredicate()
         {
             // given
@@ -106,7 +106,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingUriForSubject()
         {
             // when
@@ -123,7 +123,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingUriForObject()
         {
             // when
@@ -140,7 +140,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(new Uri("http://xmlns.com/foaf/0.1/Person"), ((dynamic)pattern.Object).Node.Uri);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingQNameForObject()
         {
             // given
@@ -161,7 +161,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(new Uri("http://xmlns.com/foaf/0.1/Person"), ((dynamic)pattern.Object).Node.Uri);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingBlankNodeForObject()
         {
             // when
@@ -178,7 +178,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("_:bnode", ((BlankNodePattern)pattern.Object).ID);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingBlankNodeForSubject()
         {
             // when
@@ -195,7 +195,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingINodeForSubject()
         {
             // given
@@ -215,7 +215,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingIUriNodeForPredicate()
         {
             // given
@@ -235,7 +235,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("o", pattern.Object.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingINodeForObject()
         {
             // given
@@ -255,7 +255,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("s", pattern.Subject.VariableName);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingIntegerLiteralObject()
         {
             // when
@@ -270,7 +270,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingTypedLiteralObject()
         {
             // when
@@ -284,7 +284,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), ((dynamic)pattern.Object).Node.DataType);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag()
         {
             // when
@@ -299,7 +299,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag2()
         {
             // when
@@ -314,7 +314,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingDateLiteralObject()
         {
             // given
@@ -332,7 +332,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingDateTimeLiteralObject()
         {
             // given
@@ -350,7 +350,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingDateTimeOffsetLiteralObject()
         {
             // given
@@ -368,7 +368,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateTriplePatternsUsingActualPatternItems()
         {
             // given

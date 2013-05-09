@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
@@ -10,9 +10,9 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public partial class ExpressionBuilderTests
     {
         private ExpressionBuilder Builder { get; set; }
@@ -25,7 +25,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Builder = new ExpressionBuilder(_prefixes.Object);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateVariableTerm()
         {
             // when
@@ -35,7 +35,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual("varName", variable.Variables.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateConstantTerms()
         {
             Assert.AreEqual("10 ", Builder.Constant(10).Expression.ToString());
@@ -45,7 +45,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual("\"2010-10-16T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>", Builder.Constant(new DateTime(2010, 10, 16)).Expression.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyNegationToBooleanExpression()
         {
             // given
@@ -59,7 +59,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(mail.Expression, negatedBound.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateExistsFunction()
         {
             // given
@@ -75,7 +75,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(3, graphPatternTerm.Pattern.Variables.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSameTermFunction()
         {
             // given
@@ -91,7 +91,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(right.Expression, sameTerm.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSameTermFunctionUsingVariableNameForFirstParameter()
         {
             // given
@@ -107,7 +107,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(right.Expression, sameTerm.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSameTermFunctionUsingVariableNameForSecondParameter()
         {
             // given
@@ -123,7 +123,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(right.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSameTermFunctionUsingVariableNameForBothParameter()
         {
             // given
@@ -139,7 +139,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(right.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsIRIFunction()
         {
             // given
@@ -153,7 +153,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, sameTerm.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsIRIFunctionUsingVariableName()
         {
             // given
@@ -167,7 +167,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(variable.Expression.ToString(), isIRI.Expression.Arguments.ElementAt(0).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsBlankFunction()
         {
             // given
@@ -181,7 +181,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, isBlank.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsBlankFunctionUsingVariableName()
         {
             // given
@@ -195,7 +195,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(variable.Expression.ToString(), isBlank.Expression.Arguments.ElementAt(0).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsLiteralFunction()
         {
             // given
@@ -209,7 +209,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, isLiteral.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsLiteralFunctionUsingVariableName()
         {
             // given
@@ -223,7 +223,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(variable.Expression.ToString(), isLiteral.Expression.Arguments.ElementAt(0).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsNumericFunction()
         {
             // given
@@ -237,7 +237,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, isNumeric.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateIsNumericFunctionUsingVariableName()
         {
             // given
@@ -251,7 +251,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(variable.Expression.ToString(), isNumeric.Expression.Arguments.ElementAt(0).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateStrFunctionWithVariableParameter()
         {
             // given
@@ -265,7 +265,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, str.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateStrFunctionWithLiteralParameter()
         {
             // given
@@ -279,7 +279,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, str.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateStrFunctionWithIriLiteral()
         {
             // given
@@ -293,7 +293,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iri.Expression, str.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateLangFunctionWithVariableParameter()
         {
             // given
@@ -307,7 +307,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(variable.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateLangFunctionWithLiteralParameter()
         {
             // given
@@ -321,7 +321,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateDatatypeFunctionWithVariableParameter()
         {
             // given
@@ -335,7 +335,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateDatatypeFunctionWithLiteralParameter()
         {
             // given
@@ -349,7 +349,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateOldDatatypeFunctionWithVariableParameter()
         {
             // given
@@ -363,7 +363,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateOldDatatypeFunctionWithLiteralParameter()
         {
             // given
@@ -377,7 +377,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateBNodeFunctionWithoutParameter()
         {
             // when
@@ -388,7 +388,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsFalse(bnode.Expression.Arguments.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateBNodeFunctionWithSimpleLiteralExpressionParameter()
         {
             // given
@@ -402,7 +402,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(expression.Expression, bnode.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateBNodeFunctionWithStringLiteralExpressionParameter()
         {
             // given
@@ -416,7 +416,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(expression.Expression, bnode.Expression.Arguments.ElementAt(0));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndIriExpressionParameters()
         {
             // given
@@ -432,7 +432,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithStringAnrIriExpressionParameters()
         {
             // given
@@ -448,7 +448,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndUriParameters()
         {
             // given
@@ -464,7 +464,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithVariableExpressionAndUriParameters()
         {
             // given
@@ -480,7 +480,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithStringAndUriParameters()
         {
             // given
@@ -496,7 +496,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithStringAndVariableParameters()
         {
             // given
@@ -512,7 +512,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndVariableExpressionParameters()
         {
             // given
@@ -528,7 +528,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithTwoVariableParameters()
         {
             // given
@@ -544,7 +544,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrdtFunctionWithVariableAndIriExpressionParameters()
         {
             // given
@@ -560,7 +560,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingStrUuidFucntionCall()
         {
             // when
@@ -570,7 +570,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(uuid.Expression is StrUUIDFunction);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCreatingUuidFucntionCall()
         {
             // when
@@ -580,7 +580,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(uuid.Expression is UUIDFunction);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowCastingAsXsdInt()
         {
             // given

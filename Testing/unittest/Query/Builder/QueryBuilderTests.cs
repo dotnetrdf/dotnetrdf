@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
@@ -11,12 +11,12 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Test.Builder
+namespace VDS.RDF.Query.Builder
 {
-    [TestClass]
+    [TestFixture]
     public class QueryBuilderTests
     {
-        [TestMethod]
+        [Test]
         public void CanCreateSelectStarQuery()
         {
             SparqlQuery q = QueryBuilder
@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsNotNull(q.RootGraphPattern);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSelectDistinctStarQuery()
         {
             SparqlQuery q = QueryBuilder
@@ -40,7 +40,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsNotNull(q.RootGraphPattern);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTriplePatternsWithTriplePatternBuilder()
         {
             var builder = QueryBuilder.SelectAll();
@@ -55,7 +55,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(4, q.RootGraphPattern.TriplePatterns.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddTriplePatternsAsObjects()
         {
             // given
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.TriplePatterns.Contains(p2));
         }
 
-        [TestMethod]
+        [Test]
         public void AddingTriplePatternsCallDelegateOnlyOnce()
         {
             // given
@@ -92,7 +92,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, callCount);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddOptionalTriplePatterns()
         {
             // given
@@ -112,7 +112,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddMultipleChildGraphPatterns()
         {
             // given
@@ -134,7 +134,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void GetExectuableQueryReturnsNewInstance()
         {
             // given
@@ -148,7 +148,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreNotSame(query1, query2);
         }
 
-        [TestMethod]
+        [Test]
         public void CanStartQueryWithGivenVariablesStrings()
         {
             // given
@@ -166,7 +166,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(query.Variables.All(var => var.IsResultVariable));
         }
 
-        [TestMethod]
+        [Test]
         public void CanStartQueryWithGivenVariables()
         {
             // given
@@ -186,7 +186,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(query.Variables.Contains(o));
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddOptionalGraphPatternsAfterRegular()
         {
             // given
@@ -207,7 +207,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, query.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddOptionalGraphPatternsBeforeRegular()
         {
             // given
@@ -228,7 +228,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, query.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SubsequentWhereCallsShouldAddToRootGraphPattern()
         {
             // given
@@ -246,7 +246,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, query.RootGraphPattern.ChildGraphPatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void CanAddMultipleSelectVariablesOneByOne()
         {
             // given
@@ -262,7 +262,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldEnsureSparqlVariablesAreReturnVariables()
         {
             // when
@@ -274,7 +274,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldBeCreatedWithEmptyNamespaceMap()
         {
             // when
@@ -284,7 +284,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, builder.Prefixes.Prefixes.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateSelectQueryWithExpressionFirst()
         {
             // when
@@ -300,7 +300,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.Variables.Count(v => !v.IsProjection && v.IsResultVariable && v.Name == "o"));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingISparqlExpressionForFilter()
         {
             // given
@@ -315,7 +315,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreSame(expression, q.RootGraphPattern.Filter.Expression);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingLimit()
         {
             // when
@@ -329,7 +329,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingNegativeLimit()
         {
             // when
@@ -343,7 +343,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingOffset()
         {
             // when
@@ -357,7 +357,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(10, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingLimitMultipleTimes()
         {
             // given
@@ -374,7 +374,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingOffsetMultipleTimes()
         {
             // given
@@ -391,7 +391,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(offset, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowAddingLimitAndOffset()
         {
             // when
@@ -405,7 +405,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(10, q.Offset);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowBuildingAskQueries()
         {
             // when
@@ -417,7 +417,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(SparqlQueryType.Ask, q.QueryType);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowBuildingConstructQueries()
         {
             // when
@@ -431,7 +431,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.ConstructTemplate.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowBuildingConstructQueriesWithNullBuilderFunction()
         {
             // when
@@ -445,7 +445,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowBuildingConstructQueriesWithoutBuilderFunction()
         {
             // when
@@ -464,7 +464,7 @@ namespace VDS.RDF.Test.Builder
             tpb.Subject("s").Predicate("p").Object("o");
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowOrderingQueryByVariableAscending()
         {
             // when
@@ -481,7 +481,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("s", (sparqlQuery.OrderBy as OrderByVariable).Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowOrderingQueryByVariableDescending()
         {
             // when
@@ -498,7 +498,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual("s", (sparqlQuery.OrderBy as OrderByVariable).Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowOrderingQueryByExpressionAscending()
         {
             // when
@@ -515,7 +515,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue((sparqlQuery.OrderBy as OrderByExpression).Expression is StrFunction);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowOrderingQueryByExpressionDescending()
         {
             // when
@@ -532,7 +532,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue((sparqlQuery.OrderBy as OrderByExpression).Expression is StrFunction);
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowChainingMultipleVariableAndExpressionOrderings()
         {
             // when

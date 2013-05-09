@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class VariableExpressionTests : SparqlExpressionTestsBase
     {
         [TestInitialize]
@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Right = 15.ToConstantTerm();
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndInteger()
         {
             // given
@@ -33,7 +33,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithIntegerAndVariableExpression()
         {
             // given
@@ -51,7 +51,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndShortInteger()
         {
             // given
@@ -69,7 +69,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithShortIntegerAndVariableExpression()
         {
             // given
@@ -87,7 +87,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndLongInteger()
         {
             // given
@@ -105,7 +105,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithLongIntegerAndVariableExpression()
         {
             // given
@@ -123,7 +123,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndByte()
         {
             // given
@@ -141,7 +141,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithByteAndVariableExpression()
         {
             // given
@@ -159,7 +159,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndSignedByte()
         {
             // given
@@ -177,7 +177,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithSignedByteAndVariableExpression()
         {
             // given
@@ -195,7 +195,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDecimal()
         {
             // given
@@ -213,7 +213,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithDecimalAndVariableExpression()
         {
             // given
@@ -231,7 +231,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndFloat()
         {
             // given
@@ -249,7 +249,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithFloatAndVariableExpression()
         {
             // given
@@ -267,7 +267,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndDouble()
         {
             // given
@@ -285,7 +285,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsWithDoubleAndVariableExpression()
         {
             // given
@@ -303,7 +303,7 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldAllowUsingArithmeticOperatorsBetweenVariableExpressions()
         {
             // given

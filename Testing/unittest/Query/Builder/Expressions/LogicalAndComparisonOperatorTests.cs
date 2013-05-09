@@ -1,17 +1,17 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Builder.Expressions
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    [TestClass]
+    [TestFixture]
     public class LogicalAndComparisonOperatorTests
     {
-        [TestMethod]
+        [Test]
         public void CanJoinTwoBooleanExpressionWithAndOperator()
         {
             // given 
@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(b2.Expression, conjunction.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldReturnTheExpressionIfAppliedLogicalOperatoWithNull()
         {
             // todo: TP: not sure this is expected behaviour
@@ -43,7 +43,7 @@ namespace VDS.RDF.Test.Builder.Expressions
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
         }
 
-        [TestMethod]
+        [Test]
         public void CanJoinTwoExpressionWithOrOperator()
         {
             // given 
@@ -59,7 +59,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(b2.Expression, disjunction.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenVariables()
         {
             // given
@@ -75,7 +75,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenVariableAndLiteral()
         {
             // given
@@ -91,7 +91,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValue()
         {
             // given
@@ -106,7 +106,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValueReversed()
         {
             // given
@@ -121,7 +121,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValue()
         {
             // given
@@ -136,7 +136,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValueReversed()
         {
             // given
@@ -151,7 +151,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenConstantAndVariable()
         {
             // given
@@ -167,7 +167,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateGreaterThanOperatorBetweenVariables()
         {
             // given
@@ -183,7 +183,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateGreaterThanOperatorBetweenVariableAndLiteral()
         {
             // given
@@ -199,7 +199,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateGreaterThanOrEqualOperatorBetweenVariables()
         {
             // given
@@ -215,7 +215,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateLessThanOperatorBetweenVariables()
         {
             // given
@@ -231,7 +231,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateLessThanOrEqualOperatorBetweenVariables()
         {
             // given
@@ -247,7 +247,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateEqualityComparisonBetweenRdfTerms()
         {
             // given
@@ -263,7 +263,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(right.Expression, areEqual.Arguments.ElementAt(1));
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyLessThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
@@ -286,7 +286,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue((var < new DateTime(2010, 10, 10)).Expression is LessThanExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyLessThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
@@ -309,7 +309,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue((var <= new DateTime(2010, 10, 10)).Expression is LessThanOrEqualToExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyGreaterThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
@@ -332,7 +332,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue((var > new DateTime(2010, 10, 10)).Expression is GreaterThanExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyGreaterThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
@@ -355,7 +355,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue((var >= new DateTime(2010, 10, 10)).Expression is GreaterThanOrEqualToExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
@@ -378,7 +378,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue((var == new DateTime(2010, 10, 10)).Expression is EqualsExpression);
         }
 
-        [TestMethod]
+        [Test]
         public void CanApplyNotEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
