@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
@@ -55,16 +56,16 @@ namespace VDS.RDF.Query
         protected ITripleStore _store;
 
         private UpdateViewDelegate _async;
-        private IAsyncResult _asyncResult;
         private bool _requiresInvalidate = false;
         private RdfQueryException _lastError;
+        private ReaderWriterLock _lock = new ReaderWriterLock();
 
         /// <summary>
         /// Creates a new SPARQL View
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(String sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             this._q = parser.ParseFromString(sparqlQuery);
@@ -79,7 +80,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
         {
             this._q = sparqlQuery;
             this._store = store;
@@ -123,7 +124,7 @@ namespace VDS.RDF.Query
             //Attach a Handler to the Store's Graph Added, Removed and Changed events
             this._store.GraphChanged += this.OnGraphChanged;
             this._store.GraphAdded += this.OnGraphAdded;
-            this._store.GraphAdded += this.OnGraphRemoved;
+            this._store.GraphRemoved += this.OnGraphRemoved;
             this._store.GraphMerged += this.OnGraphMerged;
 
             //Fill the Graph with the results of the Query
@@ -136,13 +137,21 @@ namespace VDS.RDF.Query
         private void InvalidateView()
         {
             //Can't invalidate if an async UpdateView() call is in progress
-            if (this._asyncResult != null)
+            if (this._lock.IsWriterLockHeld)
             {
                 this._requiresInvalidate = true;
                 return;
             }
 
-            this._asyncResult = this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
+            this._lock.AcquireWriterLock(1000);
+            if (this._lock.IsWriterLockHeld)
+            {
+                this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
+            }
+            else
+            {
+                throw new RdfQueryException("Unable to acquire lock to update SPARQL view");
+            }
         }
 
         /// <summary>
@@ -154,7 +163,7 @@ namespace VDS.RDF.Query
             try
             {
                 this._async.EndInvoke(result);
-                this._asyncResult = null;
+                this._lock.ReleaseWriterLock();
 
                 //If we've been further invalidated then need to re-query
                 if (this._requiresInvalidate)
@@ -163,9 +172,10 @@ namespace VDS.RDF.Query
                     this._requiresInvalidate = false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 //Ignore errors
+                this.LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
             }
         }
 
@@ -176,14 +186,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void UpdateView()
         {
-            if (this._asyncResult != null)
-            {
-                this._asyncResult.AsyncWaitHandle.WaitOne(new TimeSpan(1000));
-            }
-            else
-            {
-                this.UpdateViewInternal();
-            }
+            this.UpdateViewInternal();
             if (this.LastError != null) throw this.LastError;
         }
 

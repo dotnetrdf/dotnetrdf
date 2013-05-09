@@ -37,7 +37,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture,Ignore]
+    [TestFixture]
     public class ViewTests
     {
         [Test]
