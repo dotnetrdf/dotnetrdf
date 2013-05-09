@@ -55,6 +55,12 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -73,6 +79,7 @@
     <Compile Include="Algebra\FullTextQuery.cs" />
     <Compile Include="PropertyFunctions\FullTextMatchPropertyFunction.cs" />
     <Compile Include="PropertyFunctions\FullTextPropertyFunctionFactory.cs" />
+    <None Include="dotNetRDF.snk" />
     <None Include="Expressions\FullTextFunctionFactory.cs" />
     <None Include="Expressions\Functions\FullTextMatchFunction.cs" />
     <Compile Include="Datasets\FullTextIndexedDataset.cs" />
