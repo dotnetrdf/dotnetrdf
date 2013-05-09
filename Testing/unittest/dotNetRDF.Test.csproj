@@ -101,19 +101,6 @@
       <Link>Query\FullText\FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
-    <Compile Include="Builder\Expressions\ArithmeticOperatorsTests.cs" />
-    <Compile Include="Builder\Expressions\ExpressionBuilderTests.cs" />
-    <Compile Include="Builder\Expressions\FunctionalFormsBuildingTests.cs" />
-    <Compile Include="Builder\Expressions\LiteralExpressionTests.cs" />
-    <Compile Include="Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
-    <Compile Include="Builder\Expressions\NumericExpressionTests.cs" />
-    <Compile Include="Builder\Expressions\RdfTermExpressionTests.cs" />
-    <Compile Include="Builder\Expressions\ExpressionBuilderStringFunctionTests.cs" />
-    <Compile Include="Builder\Expressions\SparqlCastBuilderTests.cs" />
-    <Compile Include="Builder\Expressions\SparqlExpressionTestsBase.cs" />
-    <Compile Include="Builder\Expressions\TypedLiteralExpressionTests.cs" />
-    <Compile Include="Builder\Expressions\VariableExpressionTests.cs" />
-    <Compile Include="Builder\GraphPatternBuilderTests.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
@@ -176,10 +163,7 @@
     <Compile Include="Core\NamespaceMapperTest.cs" />
     <Compile Include="Query\GroupByTests.cs" />
     <Compile Include="Query\LeviathanTests.cs" />
-    <Compile Include="Builder\QueryBuilderTests.cs" />
-    <Compile Include="Builder\QueryBuilderWikiTests.cs" />
     <Compile Include="Query\OptimiserTests.cs" />
-    <Compile Include="Builder\TriplePatternBuilderTests.cs" />
     <Compile Include="Query\ParsingTests.cs" />
     <Compile Include="Query\PropertyPathEvaluationTests.cs" />
     <Compile Include="Query\PropertyPathTransformationTests.cs" />
@@ -4115,10 +4099,26 @@ $(SolutionDir)Build\SyncProjects\SyncProjects.exe disk "$(ProjectPath)"</PreBuil
   -->
   <ItemGroup>
     <Compile Include="UpdateTests.cs" />
-    <Compile Include="Interop\JenaInteropTests.cs" />
-    <Compile Include="Interop\SemWebInteropTests.cs" />
     <Compile Include="Query\NegationTests.cs" />
     <Compile Include="Query\OperatorTests.cs" />
     <Compile Include="Query\ParallelEvaluation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Query\Builder\GraphPatternBuilderTests.cs" />
+    <Compile Include="Query\Builder\QueryBuilderTests.cs" />
+    <Compile Include="Query\Builder\QueryBuilderWikiTests.cs" />
+    <Compile Include="Query\Builder\TriplePatternBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ArithmeticOperatorsTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ExpressionBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\FunctionalFormsBuildingTests.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
+    <Compile Include="Query\Builder\Expressions\NumericExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\RdfTermExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlCastBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpressionTestsBase.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionTests.cs" />
   </ItemGroup>
 </Project>
