@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
 		Acknowledgments.txt = Acknowledgments.txt
+		Build\dotNetRDF.snk = Build\dotNetRDF.snk
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
 		License.txt = License.txt
 		Todo.txt = Todo.txt

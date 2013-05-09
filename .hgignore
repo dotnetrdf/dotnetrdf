@@ -19,6 +19,7 @@ ToolkitInstaller
 temp*.txt
 _ReSharper*/
 *.lnk
+*.PublicKey
 
 # NuGet Package Management Stuff
 .nuget/*.exe
