@@ -37,11 +37,11 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
-    [TestFixture,Ignore]
+    [TestFixture]
     public class ViewTests
     {
         [Test]
-        public void SparqlViewConstruct()
+        public void SparqlViewConstruct1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store);
@@ -68,7 +68,17 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlViewDescribe()
+        public void SparqlViewConstruct2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewConstruct1();
+            }
+        }
+
+        [Test]
+        public void SparqlViewDescribe1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
@@ -85,7 +95,7 @@ namespace VDS.RDF.Query
                 g.BaseUri = null;
                 store.Add(g, true);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
@@ -95,7 +105,17 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlViewSelect()
+        public void SparqlViewDescribe2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewDescribe1();
+            }
+        }
+
+        [Test]
+        public void SparqlViewSelect1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }", store);
@@ -122,7 +142,17 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlViewAndReasonerInteraction()
+        public void SparqlViewSelect2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewSelect1();
+            }
+        }
+
+        [Test]
+        public void SparqlViewAndReasonerInteraction1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store);
@@ -161,6 +191,16 @@ namespace VDS.RDF.Query
         }
 
         [Test]
+        public void SparqlViewAndReasonerInteraction2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewAndReasonerInteraction1();
+            }
+        }
+
+        [Test]
         public void SparqlViewNativeAllegroGraph()
         {
                 AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
@@ -180,7 +220,7 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlViewGraphScope()
+        public void SparqlViewGraphScope1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
@@ -224,6 +264,16 @@ namespace VDS.RDF.Query
                 view.UpdateView();
 
                 Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the removed Graph is not in the set of Graphs over which the query operates");
+        }
+
+        [Test]
+        public void SparqlViewGraphScope2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewGraphScope1();
+            }
         }
     }
 }
