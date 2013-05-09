@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
         private UpdateViewDelegate _async;
         private bool _requiresInvalidate = false;
         private RdfQueryException _lastError;
-        private ReaderWriterLock _lock = new ReaderWriterLock();
+        private Object _lock = new Object();
 
         /// <summary>
         /// Creates a new SPARQL View
@@ -136,22 +136,7 @@ namespace VDS.RDF.Query
         /// </summary>
         private void InvalidateView()
         {
-            //Can't invalidate if an async UpdateView() call is in progress
-            if (this._lock.IsWriterLockHeld)
-            {
-                this._requiresInvalidate = true;
-                return;
-            }
-
-            this._lock.AcquireWriterLock(1000);
-            if (this._lock.IsWriterLockHeld)
-            {
-                this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to acquire lock to update SPARQL view");
-            }
+            this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
         }
 
         /// <summary>
@@ -163,7 +148,6 @@ namespace VDS.RDF.Query
             try
             {
                 this._async.EndInvoke(result);
-                this._lock.ReleaseWriterLock();
 
                 //If we've been further invalidated then need to re-query
                 if (this._requiresInvalidate)
@@ -186,8 +170,11 @@ namespace VDS.RDF.Query
         /// </summary>
         public void UpdateView()
         {
-            this.UpdateViewInternal();
-            if (this.LastError != null) throw this.LastError;
+            lock (this._lock)
+            {
+                this.UpdateViewInternal();
+                if (this.LastError != null) throw this.LastError;
+            }
         }
 
         /// <summary>
