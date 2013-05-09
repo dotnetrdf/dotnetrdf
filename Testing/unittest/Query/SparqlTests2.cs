@@ -37,7 +37,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 
-namespace VDS.RDF
+namespace VDS.RDF.Query
 {
     [TestFixture]
     public class SparqlTests2

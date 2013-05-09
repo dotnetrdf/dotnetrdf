@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
             _parser = new TriXParser();
         }
 
-        [Test, Timeout(2500)]
+        [Test, Timeout(5000)]
         public void ParsingTriXPerformanceCore351()
         {
             //Test case from CORE-351
@@ -56,14 +56,14 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
 
-        [Timeout(25000)]
+        [Timeout(50000)]
         [TestCase(1000, 100)]
         public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
         {
             ParsingTriXPerformance(numGraphs, triplesPerGraph);
         }
 
-        [Timeout(2500)]
+        [Timeout(5000)]
         [TestCase(1000, 10)]
         [TestCase(10, 1000)]
         [TestCase(1, 100)]
