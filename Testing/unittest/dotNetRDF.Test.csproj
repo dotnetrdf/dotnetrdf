@@ -12,7 +12,7 @@
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -49,10 +49,16 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
@@ -62,14 +68,14 @@
       <HintPath>..\..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.5.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -124,10 +130,13 @@
     <Compile Include="Core\TripleCollectionTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\Suites\BaseDatasetParserSuite.cs" />
     <Compile Include="Parsing\Suites\BaseParserSuite.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\Suites\BaseRdfParserSuite.cs" />
+    <Compile Include="Parsing\Suites\BaseResultsParserSuite.cs" />
     <Compile Include="Parsing\Suites\N3.cs" />
     <Compile Include="Parsing\Suites\NTriples.cs" />
     <Compile Include="Parsing\Suites\RdfA.cs" />
@@ -619,9 +628,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-28.ttl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-30.ttl">
@@ -1298,6 +1304,7 @@
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="resources\turtle11\turtle-subm-27.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1972,6 +1979,7 @@
     <Content Include="resources\rdfxml-good-property.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
     <Content Include="resources\rdfa\0001.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2798,6 +2806,12 @@
     <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib_p11_ontology.trix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\missing-namespace-declarations.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -3018,6 +3032,9 @@
     <Content Include="resources\Turtle.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\xml-prop.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\bnodes.srx">
@@ -3209,9 +3226,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-28.out">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\turtle11-unofficial\test-29.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\turtle11-unofficial\test-30.out">

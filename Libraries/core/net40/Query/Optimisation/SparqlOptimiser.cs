@@ -43,6 +43,8 @@ namespace VDS.RDF.Query.Optimisation
             new LazyBgpOptimiser(),
             //Optimise into Strict Algebra - makes further optimisations easier to do
             new StrictAlgebraOptimiser(),
+            //Optimise ORDER BY + DISTINCT/REDUCED combinations
+            new OrderByDistinctOptimiser(),
             //Optimise for special filter constructs which improve performance
             new IdentityFilterOptimiser(),
             new ImplicitJoinOptimiser(),

@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
@@ -72,9 +73,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                     try
                     {
 #if !SILVERLIGHT
-                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero)));
+                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
 #else
-                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble())));
+                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble()), CultureInfo.InvariantCulture));
 #endif
                     }
                     catch (RdfQueryException)

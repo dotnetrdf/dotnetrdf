@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Lucene.Net;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -43,12 +43,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextIncrementalIndexAndSearch
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        [TestMethod]
+        [Test]
         public void FullTextIncrementalIndexingLucene1()
         {
             //Lucene Index
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.FullText
             indexer.Dispose();
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIncrementalIndexingLucene2()
         {
             //Lucene Index

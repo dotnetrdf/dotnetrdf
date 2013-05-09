@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using VDS.RDF.Compatability;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 
@@ -197,6 +196,12 @@ namespace VDS.RDF.Parsing
             return IsValidQName(value, TurtleSyntax.Original);
         }
 
+        /// <summary>
+        /// Gets whether the given value is a valid prefix in Turtle
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        /// <returns></returns>
         public static bool IsValidPrefix(String value, TurtleSyntax syntax)
         {
             //W3C Standard Turtle
@@ -214,6 +219,12 @@ namespace VDS.RDF.Parsing
             return IsPNPrefix(value.Substring(0, value.Length - 1), syntax);
         }
 
+        /// <summary>
+        /// Gets whether the given value is the valid prefix portion of a prefixed name in Turtle
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        /// <returns></returns>
         public static bool IsPNPrefix(String value, TurtleSyntax syntax)
         {
             char[] cs = value.ToCharArray();
@@ -229,7 +240,7 @@ namespace VDS.RDF.Parsing
                     if (!IsPNCharsBase(cs[0])) 
                     {
                         //Handle surrogate pairs for UTF-32 characters
-                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsPNCharsBase(cs[0], cs[1])) return false;
                             start++;
@@ -247,12 +258,12 @@ namespace VDS.RDF.Parsing
                         if (cs[i] != '.' && !IsPNChars(cs[i]))
                         {
                             //Handle surrogate pairs for UTF-32 characters
-                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
+                            if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                             {
                                 if (!IsPNChars(cs[i], cs[i + 1])) return false;
                                 i++;
                             }
-                            else if (CharHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
+                            else if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                             {
                                 //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                                 return IsPNChars(cs[i], cs[i + 1]);
@@ -273,10 +284,10 @@ namespace VDS.RDF.Parsing
                     if (cs.Length == 0) return true;
 
                     //First character must be a name start char and not a _
-                    if (!IsNameStartChar(cs[0]))
+                    if (!IsNameStartChar(cs[0]) || cs[0] == '_')
                     {
                         //Handle surrogate pairs for UTF-32
-                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsNameStartChar(cs[0], cs[1])) return false;
                             start++;
@@ -294,7 +305,7 @@ namespace VDS.RDF.Parsing
                         if (!IsNameChar(cs[i]))
                         {
                             //Handle surrogate pairs for UTF-32
-                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
                             {
                                 if (!IsNameChar(cs[i], cs[i + 1])) return false;
                                 i++;
@@ -309,6 +320,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether the given value is the valid local name portion of a prefixed name in Turtle
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        /// <returns></returns>
         public static bool IsValidLocalName(String value, TurtleSyntax syntax)
         {
             char[] cs = value.ToCharArray();
@@ -360,7 +377,7 @@ namespace VDS.RDF.Parsing
                     //Validate first character is a nameStartChar
                     if (!IsNameStartChar(cs[0]))
                     {
-                        if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                        if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                         {
                             if (!IsNameStartChar(cs[0], cs[1])) return false;
                             start++;
@@ -378,7 +395,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (!IsNameChar(cs[i]))
                         {
-                            if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
+                            if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 1)
                             {
                                 if (!IsNameChar(cs[i], cs[i + 1])) return false;
                                 i++;
@@ -393,6 +410,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether the given value matches the PN_LOCAL rule from the Turtle specification
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
         public static bool IsPNLocal(String value)
         {
             //PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
@@ -404,7 +426,7 @@ namespace VDS.RDF.Parsing
             if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
                 //Handle surrogate pairs for UTF-32 characters
-                if (CharHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
+                if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
                 {
                     if (!IsPNCharsU(cs[0], cs[1])) return false;
                     start++;
@@ -426,13 +448,13 @@ namespace VDS.RDF.Parsing
                 if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
                 {
                     //Handle surrogate pairs for UTF-32 characters
-                    if (CharHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
+                    if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
                     {
                         if (!IsPNChars(cs[i], cs[i + 1])) return false;
                         i++;
                         j = i;
                     }
-                    else if (CharHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
+                    else if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i == cs.Length - 2)
                     {
                         //This case handles the case where the final character is a UTF-32 character representing by a surrogate pair
                         return IsPNChars(cs[i], cs[i + 1]);
@@ -676,11 +698,17 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a surrogate pair matches the PN_CHARS_BASE production from the Turtle specifications
+        /// </summary>
+        /// <param name="c">High surrogate</param>
+        /// <param name="d">Low surrogate</param>
+        /// <returns></returns>
         public static bool IsPNCharsBase(char c, char d)
         {
-            if (CharHelper.IsHighSurrogate(c) && CharHelper.IsLowSurrogate(d))
+            if (UnicodeSpecsHelper.IsHighSurrogate(c) && UnicodeSpecsHelper.IsLowSurrogate(d))
             {
-                int codepoint = CharHelper.ConvertToUtf32(c, d);
+                int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
@@ -727,6 +755,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a surrogate pair matches the PN_CHARS production from the Turtle specification
+        /// </summary>
+        /// <param name="c">High surrogate</param>
+        /// <param name="d">Low surrogate</param>
+        /// <returns></returns>
         public static bool IsPNChars(char c, char d)
         {
             //PN_CHARS	::=	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
@@ -736,7 +770,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets whether a character matches the PN_CHARS_U production from the Turtle specification
         /// </summary>
-        /// <param name="c"></param>
+        /// <param name="c">Character</param>
         /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
@@ -744,6 +778,12 @@ namespace VDS.RDF.Parsing
             return c == '_' || IsPNCharsBase(c);
         }
 
+        /// <summary>
+        /// Gets whether a surrogate pair matches the PN_CHARS_U production from the Turtle specification
+        /// </summary>
+        /// <param name="c">High surrogate</param>
+        /// <param name="d">Low surrogate</param>
+        /// <returns></returns>
         public static bool IsPNCharsU(char c, char d)
         {
             //PN_CHARS_U	::=	PN_CHARS_BASE | '_'
@@ -754,6 +794,11 @@ namespace VDS.RDF.Parsing
 
         #region Member Submission Turtle Character Productions
 
+        /// <summary>
+        /// Gets whether a character matches the nameStartChar production from the Turtle specification
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public static bool IsNameStartChar(char c)
         {
             //[30]	nameStartChar	::=	[A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
@@ -789,11 +834,17 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a surrogate pair matches the nameStartChar production from the Turtle specification
+        /// </summary>
+        /// <param name="c">High surrogate</param>
+        /// <param name="d">Low surrogate</param>
+        /// <returns></returns>
         public static bool IsNameStartChar(char c, char d)
         {
-            if (CharHelper.IsHighSurrogate(c) && CharHelper.IsLowSurrogate(d))
+            if (UnicodeSpecsHelper.IsHighSurrogate(c) && UnicodeSpecsHelper.IsLowSurrogate(d))
             {
-                int codepoint = CharHelper.ConvertToUtf32(c, d);
+                int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
@@ -802,6 +853,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a character matches the nameChar production from the Turtle specification
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public static bool IsNameChar(char c)
         {
             //[31]	nameChar	::=	nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
@@ -827,6 +883,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a surrogate pair matches the nameChar production from the Turtle specification
+        /// </summary>
+        /// <param name="c">High surrogate</param>
+        /// <param name="d">Low surrogate</param>
+        /// <returns></returns>
         public static bool IsNameChar(char c, char d)
         {
             return IsNameStartChar(c, d);

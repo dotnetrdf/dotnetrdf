@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -35,12 +35,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class QueryFormattingTests
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
 
-        [TestMethod]
+        [Test]
         public void SparqlFormattingFilter1()
         {
             String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(formatted.Contains("FILTER"), "Format() form should contain FILTER");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlFormattingFilter2()
         {
             String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";

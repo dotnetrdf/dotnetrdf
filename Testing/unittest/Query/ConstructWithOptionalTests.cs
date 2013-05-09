@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
 
-    [TestClass]
+    [TestFixture]
     public class ConstructWithOptionalTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -132,11 +132,11 @@ namespace VDS.RDF.Query
             Assert.AreEqual(expected, result, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlConstructWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             Graph expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -147,11 +147,11 @@ namespace VDS.RDF.Query
             this.TestConstruct(g, expected, query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateInsertWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph expected = new Graph();
@@ -163,11 +163,11 @@ namespace VDS.RDF.Query
             this.TestUpdate(g, expected, update);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateDeleteWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph def = new Graph();
@@ -188,11 +188,11 @@ namespace VDS.RDF.Query
             this.TestUpdate(store, expected, update);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateModifyWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph expected = new Graph();
@@ -204,11 +204,11 @@ namespace VDS.RDF.Query
             this.TestUpdate(g, expected, update);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateModifyWithOptional2()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph def = new Graph();

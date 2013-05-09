@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlTsvTests
     {
         private InMemoryDataset _dataset;
@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
                 store.Add(g);
 
@@ -60,7 +60,13 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void TestTsvRoundTrip(String query)
+        [TestCase("SELECT * WHERE { ?s a ?type }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }")]
+        [TestCase("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }")]
+        [TestCase("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }")]
+        [TestCase("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
+        public void TestTsvRoundTrip(String query)
         {
             this.EnsureTestData();
 
@@ -87,42 +93,6 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(original, results, "Result Sets should be equal");
             
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv1()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type }");
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv2()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . ?s ex:Speed ?speed }");
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv3()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }");
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv4()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }");
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv5()
-        {
-            this.TestTsvRoundTrip("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }");
-        }
-
-        [TestMethod]
-        public void WritingSparqlTsv6()
-        {
-            this.TestTsvRoundTrip("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }");
         }
     }
 }

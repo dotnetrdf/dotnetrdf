@@ -183,11 +183,12 @@
      #   mf:result  <test-28.out>
      #]
 
-     [  mf:name      "test-29" ;
-        rdfs:comment "Escaping U+0001 to U+007F in a URI" ;
-        mf:action [ qt:data   <test-29.ttl> ] ;
-        mf:result  <test-29.out>
-     ]
+	 # The latest draft of Turtle renders this test invalid
+     #[  mf:name      "test-29" ;
+     #   rdfs:comment "Escaping U+0001 to U+007F in a URI" ;
+     #   mf:action [ qt:data   <test-29.ttl> ] ;
+     #   mf:result  <test-29.out>
+     #]
 
      [  mf:name      "test-30" ;
         rdfs:comment "@base" ;

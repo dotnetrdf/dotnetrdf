@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -44,16 +44,16 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class LeviathanTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlBgpEvaluation()
         {
             //Prepare the Store
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "Turtle.ttl");
+            FileLoader.Load(g, "resources\\Turtle.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -121,7 +121,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlMultisetLeftJoin()
         {
             //Create a load of Nodes to use in the tests
@@ -292,13 +292,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathParser()
         {
             //Load our test data
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             List<String> testQueries = new List<string>();
@@ -358,13 +358,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlStreamingBgpAskEvaluation()
         {
             //Get the Data we want to query
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
             //FileLoader.Load(g, "noise.ttl");
@@ -436,7 +436,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlEvaluationGraphNonExistentUri()
         {
             String query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
@@ -457,7 +457,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetListGraphs()
         {
             InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
@@ -466,13 +466,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Assert.IsTrue(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlStreamingBgpSelectEvaluation()
         {
             //Get the Data we want to query
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
             //FileLoader.Load(g, "noise.ttl");

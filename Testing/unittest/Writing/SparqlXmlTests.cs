@@ -27,17 +27,17 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlXmlTests
     {
-        [TestMethod]
+        [Test]
         public void WritingSparqlXmlWithNulls()
         {
             TripleStore store = new TripleStore();
@@ -75,7 +75,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingSparqlXmlWithSpecialCharacters()
         {
             TripleStore store = new TripleStore();

@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Summary description for DefaultGraphTests
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class DefaultGraphTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlDefaultGraphExists()
         {
             TripleStore store = new TripleStore();
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDefaultGraphExists2()
         {
             TripleStore store = new TripleStore();
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagement()
         {
             TripleStore store = new TripleStore();
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagement2()
         {
             TripleStore store = new TripleStore();
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate()
         {
             TripleStore store = new TripleStore();
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
             TripleStore store = new TripleStore();
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
             TripleStore store = new TripleStore();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
             TripleStore store = new TripleStore();
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(h.HasSubGraph(g), "First Graph should be a subgraph of the Second Graph");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
             TripleStore store = new TripleStore();
@@ -251,7 +251,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.HasSubGraph(g), "First Graph should not be a subgraph of the Second Graph as the DELETE should have eliminated the subgraph relationship");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGraphClause()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "InferenceTest.ttl");
+            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -283,7 +283,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGraphClause2()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "InferenceTest.ttl");
+            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -313,7 +313,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGraphClause3()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "InferenceTest.ttl");
+            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -345,7 +345,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGraphClause4()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
@@ -354,7 +354,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "InferenceTest.ttl");
+            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -375,7 +375,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlGraphClause5()
         {
             String query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "InferenceTest.ttl");
+            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/named");
             store.Add(ex);
             IGraph ex2 = new Graph();

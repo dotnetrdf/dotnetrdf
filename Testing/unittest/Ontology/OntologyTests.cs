@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
@@ -35,16 +35,16 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF.Ontology
 {
-    [TestClass]
+    [TestFixture]
     public class OntologyTests
     {
-        [TestMethod]
+        [Test]
         public void OntologyClassBasic()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the class of Ground Vehicles
             OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
@@ -76,13 +76,13 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyIndividualCreation()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Try and get a non-existent individual, should fail
             try
@@ -130,13 +130,13 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertyBasic()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
             Console.WriteLine("Ranges");
@@ -167,13 +167,13 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyReasonerGraph()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             OntologyClass c = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
             Console.WriteLine("Things which are cars in an Ontology Graph");
@@ -214,13 +214,13 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyResourceCasting()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the eg:FordFiesta resource
             OntologyResource resource = g.CreateOntologyResource(new Uri("http://example.org/vehicles/FordFiesta"));
@@ -231,11 +231,11 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyDomainAndRangeOfClassProperties()
         {
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the Class of interest
             OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
@@ -259,11 +259,11 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyDomainAndRangeOfClassManual()
         {
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the Class of interest
             OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
@@ -300,13 +300,13 @@ namespace VDS.RDF.Ontology
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassSubClasses()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the class of Ground Vehicles
             OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
@@ -323,13 +323,13 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassSiblings()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the class of Cars
             OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
@@ -340,13 +340,13 @@ namespace VDS.RDF.Ontology
             Assert.IsFalse(siblings.Contains(car));
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassTopAndBottom()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the class of Vehicles
             OntologyClass vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
@@ -364,13 +364,13 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(sportsCar.IsBottomClass);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertySubProperties()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the property of Ground Speed
             OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
@@ -387,13 +387,13 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(0, speed.IndirectSubProperties.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertyTopAndBottom()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the property Speed
             OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
@@ -406,13 +406,13 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(airSpeed.IsBottomProperty);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyPropertySiblings()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the property LimitedSpeed
             OntologyProperty limitedSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/LimitedSpeed"));
@@ -423,11 +423,11 @@ namespace VDS.RDF.Ontology
             Assert.IsFalse(siblings.Contains(limitedSpeed));
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyProperties()
         {
             OntologyGraph g = new OntologyGraph();
-            g.LoadFromFile("ontology.ttl");
+            g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Property Counts
             Assert.AreEqual(1, g.RdfProperties.Count());
@@ -438,11 +438,11 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(4, g.AllProperties.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClasses()
         {
             OntologyGraph g = new OntologyGraph();
-            g.LoadFromFile("ontology.ttl");
+            g.LoadFromFile("resources\\ontology.ttl");
 
             //Check Class Counts
             Assert.AreEqual(1, g.RdfClasses.Count());
@@ -450,11 +450,11 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(2, g.AllClasses.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassCount1()
         {
             OntologyGraph g = new OntologyGraph();
-            g.LoadFromFile("swrc.owl");
+            g.LoadFromFile("resources\\swrc.owl");
             Assert.IsFalse(g.IsEmpty);
 
             //Count classes, raw and distinct count should be same
@@ -467,11 +467,11 @@ namespace VDS.RDF.Ontology
             Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
         }
 
-        [TestMethod]
+        [Test]
         public void OntologyClassCount2()
         {
             OntologyGraph g = new OntologyGraph();
-            g.LoadFromFile("swrc.owl");
+            g.LoadFromFile("resources\\swrc.owl");
             Assert.IsFalse(g.IsEmpty);
 
             OntologyClass classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));

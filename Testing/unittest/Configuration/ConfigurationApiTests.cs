@@ -29,16 +29,16 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class ConfigurationApiTests
     {
-        [TestMethod,ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test,ExpectedException(typeof(DotNetRdfConfigurationException))]
         public void ConfigurationCircularReference()
         {
             String graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
@@ -53,7 +53,7 @@ _:b a dnr:Graph ;
             ConfigurationLoader.LoadObject(g, g.GetBlankNode("a"));
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationImports1()
         {
             //Single Import
@@ -79,7 +79,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationImports2()
         {
             //Chained Import
@@ -113,7 +113,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationImports3()
         {
             //Multiple Imports
@@ -145,7 +145,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationImports4()
         {
             //Repeated Imports
@@ -177,7 +177,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationImportsCircular1()
         {
             String graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";

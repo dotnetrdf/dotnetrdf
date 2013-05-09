@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -35,10 +35,10 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class AlgebraReverseTranslation
     {
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraReverseSimple()
         {
             List<String> tests = new List<string>()

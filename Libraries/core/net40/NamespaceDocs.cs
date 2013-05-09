@@ -47,6 +47,7 @@ namespace VDS.RDF
     ///     <li>Fuseki</li>
     ///     <li>Any Sesame HTTP Protocol compliant store e.g. Sesame, OWLIM</li>
     ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
+    ///     <li>Any SPARQL store that exposes a Query and/or Update endpoint</li>
     ///     <li>Stardog</li>
     ///     <li>Virtuoso</li>
     /// </ul>
@@ -65,7 +66,7 @@ namespace VDS.RDF
     /// </para>
     /// <h3>Notes</h3>
     /// <para>
-    /// dotNetRDF 1.0.0 is now a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
+    /// dotNetRDF 1.0.0 is now considered a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
     /// </para>
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>

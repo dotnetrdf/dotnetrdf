@@ -48,16 +48,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets either the String form of the URI of the Empty String
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns>Result of calling <strong>AbsoluteUri</strong> on non-null URIs and the empty string for null URIs</returns>
-        internal static String ToSafeString(this Uri u)
-        {
-            return (u != null ? u.AbsoluteUri : String.Empty);
-        }
-
-        /// <summary>
         /// Ensures that a specific Object Factory type is registered in a Configuration Graph
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>

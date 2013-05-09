@@ -59,8 +59,6 @@
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net20\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\net35\Newtonsoft.Json.dll</HintPath>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -537,9 +535,6 @@
     </Compile>
     <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
       <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
-      <Link>Writing\InternalXmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
@@ -2421,17 +2416,19 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-    <Compile Include="..\net40\Query\Builder\Expressions\BlankNodeExpression.cs">
-      <Link>Query\Builder\Expressions\BlankNodeExpression.cs</Link>
-    <Compile Include="..\net40\Query\Builder\Expressions\BooleanExpression.cs">
-      <Link>Query\Builder\Expressions\BooleanExpression.cs</Link>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
+      <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
-      <Link>Query\Builder\ExpressionBuilder.cs</Link>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
+      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatability\CharHelper.cs">
+      <Link>Compatability\CharHelper.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\IriExpression.cs">
-      <Link>Query\Builder\Expressions\IriExpression.cs</Link>
+  </ItemGroup>
 </Project>

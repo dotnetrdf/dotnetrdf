@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -38,7 +38,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class PropertyPathEvaluationTests
     {
         private NodeFactory _factory = new NodeFactory();
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLength()
         {
             EnsureTestData();
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermEnd()
         {
             EnsureTestData();
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(rdfsClass, results[1]["x"], "Expected 1 Result set to rdfs:Class");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermStart()
         {
             EnsureTestData();
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithBothTerms()
         {
             EnsureTestData();
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results is NullMultiset, "Results should be Null");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationNegatedPropertySet()
         {
             EnsureTestData();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationInverseNegatedPropertySet()
         {
             EnsureTestData();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationSequencedAlternatives()
         {
             EnsureTestData();
@@ -222,12 +222,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");            
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePath()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -240,12 +240,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePathForward()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -259,12 +259,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -278,12 +278,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePath()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -296,12 +296,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePathForward()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
@@ -315,12 +315,12 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
@@ -334,7 +334,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationGraphInteraction()
         {
             String query = @"PREFIX ex: <http://www.example.org/schema#>
@@ -360,15 +360,15 @@ WHERE
             Assert.AreEqual(0, results.Results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("schema-org.ttl");
+            g.LoadFromFile("resources\\schema-org.ttl");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("schema-org.rq");
-            SparqlQuery qDistinct = parser.ParseFromFile("schema-org.rq");
+            SparqlQuery q = parser.ParseFromFile("resources\\schema-org.rq");
+            SparqlQuery qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
             qDistinct.QueryType = SparqlQueryType.SelectDistinct;
 
             InMemoryDataset dataset = new InMemoryDataset(g);

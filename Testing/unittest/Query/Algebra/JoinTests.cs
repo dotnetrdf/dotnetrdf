@@ -27,17 +27,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
-    [TestClass]
+    [TestFixture]
     public class JoinTests
     {
         private NodeFactory _factory = new NodeFactory();
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinSingleVariable1()
         {
             ISet x = new Set();
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.AreEqual(1, joined.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinSingleVariable2()
         {
             ISet x = new Set();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.AreEqual(2, joined.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinMultiVariable1()
         {
             ISet x = new Set();
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.AreEqual(2, joined.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinMultiVariable2()
         {
             ISet x1 = new Set();
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.AreEqual(2, joined.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinMultiVariable3()
         {
             ISet x1 = new Set();
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Algebra
             Assert.AreEqual(2, joined.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAlgebraJoinMultiVariable4()
         {
             ISet x1 = new Set();

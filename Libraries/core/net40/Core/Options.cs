@@ -87,6 +87,7 @@ namespace VDS.RDF
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
         private static bool _forceBlockingIO = false;
         private static bool _forceHttpBasicAuth = false;
+        private static bool _validateIris = false;
         private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
 #if NET40 && !SILVERLIGHT
@@ -400,6 +401,24 @@ namespace VDS.RDF
             set
             {
                 _utf8Bom = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether IRIs are validated by parsers which support this functionality
+        /// </summary>
+        /// <remarks>
+        /// When enabled certain parsers will validate all IRIs they see to ensure that they are valid and throw a parser error if they are not.  Since there is a performance penalty associated with this and many older RDF standards were written pre-IRIs (thus enforcing IRI validity would reject data considered valid by those specifications) this feature is disabled by default.
+        /// </remarks>
+        public static bool ValidateIris
+        {
+            get
+            {
+                return _validateIris;
+            }
+            set
+            {
+                _validateIris = value;
             }
         }
 

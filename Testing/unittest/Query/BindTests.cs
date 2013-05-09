@@ -1,16 +1,41 @@
-﻿using System;
+/*
+dotNetRDF is free and open source software licensed under the MIT License
+
+-----------------------------------------------------------------------------
+
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class BindTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlBindExistsAsChildExpression1()
         {
             String query = @"SELECT * WHERE
@@ -35,7 +60,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.All(r => r.HasBoundValue("hasRange")));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindExistsAsChildExpression2()
         {
             String query = @"SELECT * WHERE
@@ -58,6 +83,64 @@ namespace VDS.RDF.Query
             TestTools.ShowResults(results);
 
             Assert.IsTrue(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
+        }
+
+        [Test]
+        public void SparqlBindOverEmptyFilter1()
+        {
+            String query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+            IGraph g = new Graph();
+            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+            Assert.IsTrue(results.IsEmpty);
+        }
+
+        [Test]
+        public void SparqlBindOverEmptyFilter2()
+        {
+            String query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+            IGraph g = new Graph();
+            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void SparqlBindEmpty1()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+            IGraph g = new Graph();
+            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+            Assert.IsTrue(results.IsEmpty);
+        }
+
+        [Test]
+        public void SparqlBindEmpty2()
+        {
+            String query = "SELECT * WHERE { BIND('test' AS ?test) }";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+
+            IGraph g = new Graph();
+            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(1, results.Count);
         }
     }
 }

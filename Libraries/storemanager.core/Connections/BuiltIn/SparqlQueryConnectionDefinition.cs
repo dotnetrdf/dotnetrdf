@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <summary>
         /// Gets/Sets the Endpoint URI
         /// </summary>
-        [Connection(DisplayName = "Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyEndpoint, PopulateFrom = ConfigurationLoader.PropertyEndpointUri),
+        [Connection(DisplayName = "Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyQueryEndpointUri),
          DefaultValue("http://example.org/sparql")]
         public String EndpointUri
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <summary>
         /// Gets/Sets the Default Graph URI
         /// </summary>
-        [Connection(DisplayName = "Default Graph", DisplayOrder = 2, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
+        [Connection(DisplayName = "Default Graph", DisplayOrder = 2, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
         public String DefaultGraphUri
         {
             get;
@@ -70,7 +70,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <summary>
         /// Gets/Sets the Load Method
         /// </summary>
-        [Connection(DisplayName = "Load Method", DisplayOrder = 3, Type = ConnectionSettingType.Enum, PopulateVia = ConfigurationLoader.PropertyEndpoint, PopulateFrom = ConfigurationLoader.PropertyLoadMode),
+        [Connection(DisplayName = "Load Method", DisplayOrder = 3, Type = ConnectionSettingType.Enum, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyLoadMode),
          DefaultValue(SparqlConnectorLoadMethod.Construct)]
         public SparqlConnectorLoadMethod LoadMode
         {

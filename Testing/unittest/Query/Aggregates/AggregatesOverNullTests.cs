@@ -27,20 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestClass]
+    [TestFixture]
     public class AggregatesOverNullTests
     {
         private INodeFactory _factory = new NodeFactory();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private LeviathanQueryProcessor _processor = new LeviathanQueryProcessor(new InMemoryDataset());
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullCount1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(*) AS ?Count) WHERE { ?s ?p ?o }");
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullCount2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(?s) AS ?Count) WHERE { ?s ?p ?o }");
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullCount3()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(*) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullCount4()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(?s) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullSum1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o }");
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullSum2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullAvg1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o }");
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullAvg2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullMax1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o }");
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.IsNull(r["Max"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullMax2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.IsNull(r["Max"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullMin1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o }");
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullMin2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o } GROUP BY ?s");
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.IsNull(r["Min"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullGroupConcat1()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o }");
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Aggregates
             Assert.AreEqual(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesOverNullGroupConcat2()
         {
             SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o } GROUP BY ?s");
