@@ -68,7 +68,7 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlViewDescribe()
+        public void SparqlViewDescribe1()
         {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
@@ -85,13 +85,23 @@ namespace VDS.RDF.Query
                 g.BaseUri = null;
                 store.Add(g, true);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
                 TestTools.ShowGraph(view);
 
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
+        }
+
+        [Test]
+        public void SparqlViewDescribe2()
+        {
+            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
+            for (int i = 1; i <= 50; i++)
+            {
+                this.SparqlViewDescribe1();
+            }
         }
 
         [Test]
