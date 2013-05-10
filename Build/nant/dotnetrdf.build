@@ -1405,6 +1405,8 @@
       <arg value="dotNetRDF.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
 
@@ -1457,6 +1459,8 @@
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
 
@@ -1509,6 +1513,8 @@
       <arg value="dotNetRDF.Query.FullText.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
   
