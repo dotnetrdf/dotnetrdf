@@ -1143,6 +1143,7 @@
     <copy todir="bin/stable/Libraries/" overwrite="true">
       <fileset basedir="bin/nightlies/Libraries">
         <include name="**/*" />
+        <exclude name="**/*.pdb" />
       </fileset>
     </copy>
   </target>
