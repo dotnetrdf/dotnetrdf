@@ -42,7 +42,7 @@ namespace VDS.RDF.Configuration
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public class ConfigurationLoader
+    public class ConfigurationLoader : IConfigurationLoader
     {
         #region Constants
 
