@@ -33,7 +33,7 @@
   <property name="dotnetrdf.releasetype" value="stable" />
   <property name="dotnetrdf.toolsversion" value="101" />
   <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.1" />
+  <property name="dotnetrdf.nuspecversion" value="1.0.0.2533" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -1390,6 +1390,8 @@
       <arg value="dotNetRDF.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
 
@@ -1442,6 +1444,8 @@
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
 
@@ -1494,6 +1498,8 @@
       <arg value="dotNetRDF.Query.FullText.nuspec" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
   
