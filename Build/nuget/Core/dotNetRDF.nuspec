@@ -17,7 +17,7 @@
       <dependency id="VDS.Common" version="[1.2.0]" />
     </dependencies>
     <releaseNotes>
-
+     - Ensure NuGet packaged assemblies are signed (except Silverlight assemblies)
     </releaseNotes>
   </metadata>
 </package>
