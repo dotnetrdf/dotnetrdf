@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     /// <summary>
     /// Abstract set of Triple Stores tests which can be used to test any <see cref="ITripleStore"/> implementation

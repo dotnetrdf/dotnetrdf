@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     [TestFixture]
     public class ComparisonHelperTests : BaseTest

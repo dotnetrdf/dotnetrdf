@@ -31,7 +31,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     [TestFixture]
     public class LiteralNodeTests
