@@ -49,5 +49,21 @@ namespace VDS.RDF.Configuration
         /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
         /// </remarks>
         T LoadObject<T>(string blankNodeIdentifier);
+
+        /// <summary>
+        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        object LoadObject(string blankNodeIdentifier);
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        object LoadObject(Uri objectIdentifier);
     }
 }
