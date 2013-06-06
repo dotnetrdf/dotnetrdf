@@ -2557,4 +2557,9 @@
       <Link>Query\Builder\QueryBuilder.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Configuration\IConfigurationLoader.cs">
+      <Link>Configuration\IConfigurationLoader.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
