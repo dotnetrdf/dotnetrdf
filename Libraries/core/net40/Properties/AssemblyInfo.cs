@@ -57,9 +57,10 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.1.2533")]
+[assembly: AssemblyFileVersion("1.0.1.2533")]
 [assembly: InternalsVisibleTo("dotNetRDF.Test, PublicKey=0024000004800000940000000602000000240000525341310004000001000100d9118ebaf78c95309b80c81fe948290c8bd462fca5fc60d4f1a291bc32406feac610f9955f9bdb535f0a4b0609b06805f51b20a36703443546528f0fa27c1b63dce6133dec56f63d950ccfa059d7fe02270ee293da1a95228a15c414a89143962a03e3f48c1a42eaa09254403a1edd764980bc55bab37cf8908f1faadf4ae1b9")]
+
 
 
 

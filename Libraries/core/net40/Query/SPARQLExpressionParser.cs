@@ -1051,7 +1051,7 @@ namespace VDS.RDF.Query
                     }
 
                     //Try to return a numeric expression, enforce the need for a valid numeric value where relevant
-                    LiteralNode lit = new LiteralNode(null, literal.Value, dtUri);
+                    LiteralNode lit = new LiteralNode(null, literal.Value, UriFactory.Create(dtUri));
                     IValuedNode value = lit.AsValuedNode();
                     if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                     {

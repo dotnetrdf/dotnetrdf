@@ -8,17 +8,22 @@ Added
 
 Changed
 - Bug Fixes
-
-- Build
- - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
-   are still not signed
+ - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
 
 
 Removed
 
 
-1.0.0
------
+1.0.0.2533
+----------
+
+Changed
+- Build
+ - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
+   are still not signed
+
+1.0.0.2473
+----------
 
 Added
 - Parsing

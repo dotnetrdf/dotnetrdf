@@ -171,7 +171,9 @@ Release History
 
 3/5/2013 - Release of Version 1.0.0 (Build 1.0.0.2473)
 
-?/?/2013 - Release of Version 1.0.1 (Build 1.0.1.?)
+4/6/2013 - Re-release of Version 1.0.0 (Build 1.0.0.2533)
+
+?/?/2013 - Release ov Version 1.0.1 (Build 1.0.1.?)
 
 Acknowledgements
 ----------------
