@@ -1,4 +1,3 @@
-
 <?xml version="1.0"?>
 <project name="dotNetRDF Core Library" default="build-nightly" basedir="../../">
   <description>Generates the dotNetRDF Core Library Builds</description>
