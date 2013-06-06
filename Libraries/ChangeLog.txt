@@ -8,6 +8,7 @@ Added
 
 Changed
 - Bug Fixes
+ - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
 
 
 Removed
