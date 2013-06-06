@@ -9,6 +9,7 @@ Added
 Changed
 - Bug Fixes
  - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
+ - Fix a Stack Overflow that could occur in ThreadSafeGraph
 
 
 Removed
