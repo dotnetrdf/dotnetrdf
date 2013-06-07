@@ -92,7 +92,6 @@ namespace VDS.RDF.Writing.Formatting
             output.Append('"');
             value = l.Value;
             value = this.Escape(value, this._litEscapes);
-
             output.Append(this.FormatChar(value.ToCharArray()));
             output.Append('"');
 
