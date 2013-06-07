@@ -209,6 +209,7 @@
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Update\UpdateTests1.cs" />
     <Compile Include="Writing\GraphVizTests.cs" />
+    <Compile Include="Writing\NTriplesTests.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
