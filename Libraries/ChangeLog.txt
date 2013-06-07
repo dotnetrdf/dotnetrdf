@@ -5,14 +5,19 @@
 -----
 
 Added
+- Formatting API
+ - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
 
 Changed
 - Bug Fixes
  - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
- - Fix a Stack Overflow that could occur in ThreadSafeGraph
+ - Fix a Stack Overflow that could occur in ThreadSafeGraph (CORE-363)
+- Writing
+ - Significantly improve performance of writing non-ASCII characters to NTriples (CORE-357)
 
 
 Removed
+- Marked as obsolete usable the old ICharFormatter.FormatChar() method
 
 
 1.0.0.2533
