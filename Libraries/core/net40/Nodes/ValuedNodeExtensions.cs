@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -255,6 +256,50 @@ namespace VDS.RDF.Nodes
         {
             if (n == null) throw new RdfQueryException("Cannot cast a null to a boolean");
             return n.AsBoolean();
+        }
+
+        /// <summary>
+        /// Gets whether the given Node has the given data type URI
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="typeUri">Type URI</param>
+        /// <returns>True if the Node has the given data type URI, false otherwise</returns>
+        public static bool IsTypedAs(this IValuedNode n, Uri typeUri)
+        {
+            return n.IsTypedAs(typeUri.AbsoluteUri);
+        }
+
+        /// <summary>
+        /// Gets whether the given Node has the given data type URI
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="typeUri">Type URI</param>
+        /// <returns>True if the Node has the given data type URI, false otherwise</returns>
+        public static bool IsTypedAs(this IValuedNode n, String typeUri)
+        {
+            return n.EffectiveType.Equals(typeUri);
+        }
+
+        /// <summary>
+        /// Gets whether the given Node has one of the given data type URIs
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="typeUris">Type URIs</param>
+        /// <returns>True if the Node has one of the given data type URI, false otherwise</returns>
+        public static bool IsTypedAs(this IValuedNode n, IEnumerable<Uri> typeUris)
+        {
+            return n.IsTypedAs(typeUris.Select(u => u.AbsoluteUri));
+        }
+
+        /// <summary>
+        /// Gets whether the given Node has one of the given data type URIs
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="typeUris">Type URIs</param>
+        /// <returns>True if the Node has the given data type URI, false otherwise</returns>
+        public static bool IsTypedAs(this IValuedNode n, IEnumerable<String> typeUris)
+        {
+            return typeUris.Any(t => n.EffectiveType.Equals(t));
         }
     }
 }
