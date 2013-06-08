@@ -45,7 +45,13 @@ namespace VDS.RDF.Query.Operators
         private static SparqlOperatorType[] _operatorTypes = new[]
                                                                  {
                                                                      SparqlOperatorType.Add, SparqlOperatorType.Subtract,
-                                                                     SparqlOperatorType.Multiply, SparqlOperatorType.Divide
+                                                                     SparqlOperatorType.Multiply, SparqlOperatorType.Divide, 
+                                                                     SparqlOperatorType.Not,
+                                                                     SparqlOperatorType.Plus, SparqlOperatorType.Minus,
+                                                                     SparqlOperatorType.Or, SparqlOperatorType.And,
+                                                                     SparqlOperatorType.Equal, SparqlOperatorType.NotEqual,
+                                                                     SparqlOperatorType.LessThan, SparqlOperatorType.LessThanOrEqual,
+                                                                     SparqlOperatorType.GreaterThan, SparqlOperatorType.GreaterThanOrEqual
                                                                  };
 #endif
         /// <summary>
@@ -70,18 +76,39 @@ namespace VDS.RDF.Query.Operators
                     _operators.Add(type, new List<ISparqlOperator>());
                 }
 #endif
-                //Register default operators
-                //Numerics
+                //Register default operators required by SPARQL specification
+                //See SPARQL Operator Mapping - http://www.w3.org/TR/sparql11-query/#OperatorMapping
+
+                //XQuery Unary Operators
+                //TODO: Register Not, Plus and Minus
+
+                //Logical Connectives
+                //TODO: Register Or and And
+
+                //XPath Tests
+                //TODO: Register common types operators for Equals, NotEquals, LessThan, LessThanOrEqual, GreaterThan and GreaterThanOrEqual
+
+                //XPath Arithmetic
                 _operators[SparqlOperatorType.Add].Add(new AdditionOperator());
                 _operators[SparqlOperatorType.Subtract].Add(new SubtractionOperator());
                 _operators[SparqlOperatorType.Divide].Add(new DivisionOperator());
                 _operators[SparqlOperatorType.Multiply].Add(new MultiplicationOperator());
-                //Date Time
+
+
+                //Register default extended operators
+                //Anything you register here should report itself as being not applicable if Options.StrictOperators is set to true
+
+                //Date Time Arithmetic
                 _operators[SparqlOperatorType.Add].Add(new DateTimeAddition());
                 _operators[SparqlOperatorType.Subtract].Add(new DateTimeSubtraction());
-                //Time Span
+                //Time Span Arithmetic
                 _operators[SparqlOperatorType.Add].Add(new TimeSpanAddition());
                 _operators[SparqlOperatorType.Subtract].Add(new TimeSpanSubtraction());
+
+                //Register final default operators required by SPARQL specification
+                //We do this after registering our extended operators since we may want to extend these final cases
+                //SPARQL Tests
+                //TODO: Register Equal and NotEqual for RDF terms
 
                 _init = true;
             }

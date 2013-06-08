@@ -50,6 +50,50 @@ namespace VDS.RDF.Query.Operators
         /// <summary>
         /// Division
         /// </summary>
-        Divide
+        Divide,
+        /// <summary>
+        /// Negation
+        /// </summary>
+        Not,
+        /// <summary>
+        /// Unary plus
+        /// </summary>
+        Plus,
+        /// <summary>
+        /// Unary minus
+        /// </summary>
+        Minus,
+        /// <summary>
+        /// Logical Or
+        /// </summary>
+        Or,
+        /// <summary>
+        /// Logical And
+        /// </summary>
+        And,
+        /// <summary>
+        /// Equality
+        /// </summary>
+        Equal,
+        /// <summary>
+        /// Inequality
+        /// </summary>
+        NotEqual,
+        /// <summary>
+        /// Less Than
+        /// </summary>
+        LessThan,
+        /// <summary>
+        /// Less Than or Equal To
+        /// </summary>
+        LessThanOrEqual,
+        /// <summary>
+        /// Greater Than
+        /// </summary>
+        GreaterThan,
+        /// <summary>
+        /// Greater Than or Equal To
+        /// </summary>
+        GreaterThanOrEqual
     }
 }
