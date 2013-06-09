@@ -33,7 +33,7 @@ using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     [TestFixture]
     public class ValuedNodeTests : BaseTest

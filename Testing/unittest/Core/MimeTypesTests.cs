@@ -32,7 +32,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     [TestFixture]
     public class MimeTypesTests

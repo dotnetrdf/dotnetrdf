@@ -107,6 +107,7 @@
     <Compile Include="Configuration\ConfigurationLoaderInstanceTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
+    <Compile Include="Core\AbstractGraphTests.cs" />
     <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Update\UpdateTests1.cs" />
     <Compile Include="Writing\GraphVizTests.cs" />
+    <Compile Include="Writing\NTriplesTests.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>

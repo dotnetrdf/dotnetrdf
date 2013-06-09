@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     [TestFixture]
     public class GraphCollectionTests
