@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Query.Inference.Pellet;
@@ -36,12 +36,12 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 namespace VDS.RDF
 {
 #if !SILVERLIGHT
-    [TestClass]
+    [TestFixture]
     public class PelletTests
     {
         public const String PelletTestServer = "http://ps.clarkparsia.com/";
 
-        [TestMethod]
+        [Test]
         public void PelletKBList()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -61,7 +61,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletQuery()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -91,7 +91,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletRealize()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -114,7 +114,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletConsistency()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -136,7 +136,7 @@ namespace VDS.RDF
                 }
          }
 
-        [TestMethod]
+        [Test]
         public void PelletSearch()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -161,7 +161,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletNamespace()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -187,7 +187,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletIcv()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -217,7 +217,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletCluster()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -245,7 +245,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletClusterWithType()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -273,7 +273,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletSimilarity()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -297,7 +297,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletSimilarity2()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -324,7 +324,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletPredict()
         {
                 PelletServer server = new PelletServer(PelletTestServer);
@@ -348,7 +348,7 @@ namespace VDS.RDF
                 }
         }
 
-        [TestMethod]
+        [Test]
         public void PelletPredict2()
         {
                 PelletServer server = new PelletServer(PelletTestServer);

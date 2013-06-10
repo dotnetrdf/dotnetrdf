@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Describe
@@ -58,7 +59,7 @@ namespace VDS.RDF.Query.Describe
             foreach (INode n in nodes)
             {
                 //Get Triples where the Node is the Subject
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n))
+                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
                     {
@@ -74,7 +75,7 @@ namespace VDS.RDF.Query.Describe
                     if (expandedBNodes.Contains(bsubj)) continue;
                     expandedBNodes.Add(bsubj);
 
-                    foreach (Triple t2 in context.Data.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel))
+                    foreach (Triple t2 in context.Data.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
                     {
                         if (!handler.HandleTriple((this.RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
                     }

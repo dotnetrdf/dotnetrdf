@@ -340,18 +340,18 @@ namespace VDS.RDF.Storage
                     String ctype = response.ContentType;
                     try
                     {
-                        //Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
-                        resreader.Load(resultsHandler, data);
+                        //Is the Content Type referring to a RDF format?
+                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        rdfreader.Load(rdfHandler, data);
                         response.Close();
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+                        //If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
 
-                        //Is the Content Type referring to a RDF format?
-                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        rdfreader.Load(rdfHandler, data);
+                        //Is the Content Type referring to a Sparql Result Set format?
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
+                        resreader.Load(resultsHandler, data);
                         response.Close();
                     }
                 }

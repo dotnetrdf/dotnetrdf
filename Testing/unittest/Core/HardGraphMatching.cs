@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// <summary>
     /// Some Tests for Hard Graph Matching based on the types of tests that Jena uses
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class HardGraphMatching
     {
         private const int Runs = 5;
@@ -49,7 +49,7 @@ namespace VDS.RDF
         private NodeFactory _factory = new NodeFactory();
         private INodeFormatter _formatter = new NTriplesFormatter();
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatch1()
         {
             IGraph g = new Graph();
@@ -82,7 +82,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatch2()
         {
             IGraph g = new Graph();
@@ -115,7 +115,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatchCyclic()
         {
             Random rnd = new Random();
@@ -136,7 +136,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatchCyclic2()
         {
             Random rnd = new Random();
@@ -157,7 +157,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatchCyclic3()
         {
             Console.WriteLine("This test is just to verify that our Cyclic Graph generation is working properly");
@@ -167,7 +167,7 @@ namespace VDS.RDF
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphHardMatchStar()
         {
             for (int i = 0; i < Runs; i++)
@@ -188,20 +188,20 @@ namespace VDS.RDF
 
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
-            g.LoadFromFile("turtle11/test-13.ttl");
+            g.LoadFromFile("resources/turtle11-unofficial/test-13.ttl");
             Graph h = new Graph();
-            h.LoadFromFile("turtle11/test-13.out", new NTriplesParser());
+            h.LoadFromFile("resources/turtle11-unofficial/test-13.out", new NTriplesParser());
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
             Assert.IsTrue(report.AreEqual);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchTrivial2()
         {
             Graph g = new Graph();
@@ -235,42 +235,53 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test]
+        public void GraphHardTrivial3()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("resources/turtle11/first.ttl");
+            Graph h = new Graph();
+            h.LoadFromFile("resources/turtle11/first.ttl");
+
+            Assert.AreEqual(g, h);
+        }
+
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase1()
         {
             const string testGraphName = "case1";
             TestGraphMatch(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase2()
         {
             const string testGraphName = "case2";
             TestGraphMatch(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase3()
         {
             const string testGraphName = "case3";
             TestGraphMatch(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase4()
         {
             const string testGraphName = "case4";
             TestGraphMatch(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase5()
         {
             const string testGraphName = "case5";
             TestGraphMatch(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphMatchSlowOnEqualGraphsCase6()
         {
             const string testGraphName = "case6";
@@ -280,9 +291,9 @@ namespace VDS.RDF
         private static void TestGraphMatch(string testGraphName)
         {
             Graph a = new Graph();
-            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
             Graph b = new Graph();
-            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             Assert.IsTrue(a.Equals(b));
             Assert.IsTrue(b.Equals(a));
@@ -359,7 +370,7 @@ namespace VDS.RDF
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchBruteForce1()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -378,7 +389,7 @@ namespace VDS.RDF
             Assert.IsFalse(generated.All(m => m[a].Equals(b1)));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchBruteForce2()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -398,7 +409,7 @@ namespace VDS.RDF
             Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchBruteForce3()
         {
             Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
@@ -418,7 +429,7 @@ namespace VDS.RDF
             Assert.IsTrue(generated.All(m => m.ContainsKey(a1)));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchBruteForce4()
         {
             Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>();
@@ -453,28 +464,28 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchNull1()
         {
             GraphMatcher matcher = new GraphMatcher();
             Assert.IsTrue(matcher.Equals(null, null));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchNull2()
         {
             GraphMatcher matcher = new GraphMatcher();
             Assert.IsFalse(matcher.Equals(new Graph(), null));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchNull3()
         {
             GraphMatcher matcher = new GraphMatcher();
             Assert.IsFalse(matcher.Equals(null, new Graph()));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMatchNull4()
         {
             IGraph g = new Graph();

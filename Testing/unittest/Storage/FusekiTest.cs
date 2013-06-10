@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -40,7 +40,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
 //#if !NO_SYNC_HTTP
-    [TestClass]
+    [TestFixture]
     public class FusekiTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -54,7 +54,7 @@ namespace VDS.RDF.Storage
             return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveGraph()
         {
             try
@@ -64,7 +64,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
@@ -92,7 +92,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveDefaultGraph()
         {
             try
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveDefaultGraph2()
         {
             try
@@ -141,7 +141,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -170,7 +170,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiLoadGraph()
         {
             try
@@ -182,7 +182,7 @@ namespace VDS.RDF.Storage
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -207,7 +207,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteGraph()
         {
             try
@@ -244,7 +244,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteDefaultGraph()
         {
             try
@@ -280,7 +280,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteDefaultGraph2()
         {
             try
@@ -316,7 +316,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiAddTriples()
         {
             try
@@ -344,7 +344,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiRemoveTriples()
         {
             try
@@ -372,7 +372,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiQuery()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -388,7 +388,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiUpdate()
         {
             try
@@ -426,7 +426,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDescribe()
         {
             try

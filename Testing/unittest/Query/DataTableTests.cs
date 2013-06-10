@@ -29,17 +29,17 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
 #if !NO_DATA
-    [TestClass]
+    [TestFixture]
     public class DataTableTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable()
         {
             String query = "SELECT * WHERE {?s ?p ?o}";
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable2()
         {
             String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable3()
         {
             String query = "SELECT * WHERE {?s ?p ?o}";
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable4()
         {
             String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -227,7 +227,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable5()
         {
             String query = "ASK WHERE {?s ?p ?o}";
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -265,7 +265,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable6()
         {
             String query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
@@ -273,7 +273,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
@@ -303,7 +303,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable7()
         {
             SparqlResultSet rset = new SparqlResultSet(true);
@@ -326,7 +326,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable8()
         {
             SparqlResultSet rset = new SparqlResultSet(false);
@@ -349,7 +349,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetToDataTable9()
         {
             SparqlResultSet results = new SparqlResultSet();

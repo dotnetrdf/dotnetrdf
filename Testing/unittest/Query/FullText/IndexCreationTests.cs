@@ -29,7 +29,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Lucene.Net.Search;
 using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
@@ -40,7 +40,7 @@ using VDS.RDF.Query.FullText.Search.Lucene;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class IndexCreationTests
     {
         private IGraph GetTestData()
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.FullText
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexCreationLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexCreationLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexCreationLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexDestructionLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexDestructionLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexDestructionLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexMultiOccurrenceRemoval()
         {
             IFullTextIndexer indexer = null;

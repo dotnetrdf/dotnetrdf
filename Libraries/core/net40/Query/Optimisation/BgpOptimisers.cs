@@ -58,11 +58,6 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     temp = new LazyBgp(((Bgp)algebra).TriplePatterns);
                 }
-                //else if (algebra is ILeftJoin)
-                //{
-                //    ILeftJoin join = (ILeftJoin)algebra;
-                //    temp = new LeftJoin(this.OptimiseInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
-                //}
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
@@ -75,21 +70,17 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         //If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
                         //solutions on either side to guarantee a product which meets/exceeds the required results
-                        //temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                         temp = join.Transform(this);
                     }
                     else
                     {
                         //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
                         //solutions that match
-                        //temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
                         temp = join.TransformRhs(this);
                     }
                 }
-                else if (algebra is Algebra.Graph)
+                else if (algebra is Algebra.Graph || algebra is Select || algebra is Slice || algebra is OrderBy)
                 {
-                    //Algebra.Graph g = (Algebra.Graph)algebra;
-                    //temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                     IUnaryOperator op = (IUnaryOperator)algebra;
                     temp = op.Transform(this);
                 }

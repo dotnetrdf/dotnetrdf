@@ -42,29 +42,34 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Turtle Formatter
         /// </summary>
         public UncompressedTurtleFormatter()
-            : base("Turtle (Uncompressed)") 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
-        }
+            : base("Turtle (Uncompressed)") { }
 
         /// <summary>
         /// Creates a new Uncompressed Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
         protected UncompressedTurtleFormatter(String formatName)
-            : base(formatName) 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
-        }
+            : base(formatName) { }
 
         /// <summary>
         /// Formats characters
         /// </summary>
         /// <param name="c">Character</param>
         /// <returns></returns>
+        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
         {
             return c.ToString();
+        }
+
+        /// <summary>
+        /// Formats a sequence of characters as a String
+        /// </summary>
+        /// <param name="cs">Characters</param>
+        /// <returns>String</returns>
+        public override string FormatChar(char[] cs)
+        {
+            return new string(cs);
         }
     }
 
@@ -76,17 +81,25 @@ namespace VDS.RDF.Writing.Formatting
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
         /// <summary>
-        /// Set of characters which are valid as escapes when preceded by a backslash
-        /// </summary>
-        protected char[] _validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
-        /// <summary>
         /// Set of characters that must be escaped for Long Literals
         /// </summary>
-        protected char[] _longLitMustEscape = new char[] { '"' };
+        protected List<String[]> _longLitMustEscape = new List<String[]>
+        { 
+            new String[] { @"\", @"\\" }, 
+            new String[] { "\"", "\\\"" }
+        };
+
         /// <summary>
         /// Set of characters that must be escaped for Literals
         /// </summary>
-        protected char[] _litMustEscape = new char[] { '"', '\n', '\r', '\t' };
+        protected List<String[]> _litMustEscape = new List<String[]>
+        { 
+            new String[] { @"\", @"\\" }, 
+            new String[] { "\"", "\\\"" },
+            new String[] { "\n", @"\n" },
+            new String[] { "\r", @"\r" },
+            new String[] { "\t", @"\t" }
+        };
 
         /// <summary>
         /// Creates a new Turtle Formatter
@@ -189,27 +202,8 @@ namespace VDS.RDF.Writing.Formatting
                 if (longlit) output.Append("\"\"");
 
                 value = l.Value;
+                value = longlit ? this.Escape(value, this._longLitMustEscape) : this.Escape(value, this._litMustEscape);
 
-                bool fullyEscaped = (longlit) ? value.IsFullyEscaped(this._validEscapes, this._longLitMustEscape) : value.IsFullyEscaped(this._validEscapes, this._litMustEscape);
-
-                if (!fullyEscaped)
-                {
-                    //This first replace escapes all back slashes for good measure
-                    value = value.EscapeBackslashes(this._validEscapes);
-
-                    //Then remove null character since it doesn't change the meaning of the Literal
-                    value = value.Replace("\0", "");
-
-                    //Don't need all the other escapes for long literals as the characters that would be escaped are permitted in long literals
-                    //Need to escape " still
-                    value = value.Escape('"');
-
-                    if (!longlit)
-                    {
-                        //Then if we're not a long literal we'll escape tabs
-                        value = value.Replace("\t", "\\t");
-                    }
-                }
                 output.Append(value);
                 output.Append('"');
                 if (longlit) output.Append("\"\"");

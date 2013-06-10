@@ -27,17 +27,17 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class ObjectParserTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingObjectsListAvailable()
         {
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingObjectsQueryTypeCheck()
         {
             Type target = typeof(SparqlQueryParser);
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(target, def.GetObjectParserType<SparqlQuery>());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingObjectsUpdateTypeCheck()
         {
             Type target = typeof(SparqlUpdateParser);
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(target, def.GetObjectParserType<SparqlUpdateCommandSet>());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingObjectsQueryParserCheck()
         {
             Type target = typeof(SparqlQueryParser);
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing
             Console.WriteLine(q.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingObjectsUpdateParserCheck()
         {
             Type target = typeof(SparqlUpdateParser);

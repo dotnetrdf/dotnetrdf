@@ -23,72 +23,71 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
+using NUnit.Framework;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class FileLoaderHandlerTests
     {
-        private void EnsureTestData(String testFile)
+        private const string TestDataFile = "resources\\temp.ttl";
+
+        [SetUp]
+        public void Setup()
         {
-            if (!File.Exists(testFile))
+            if (File.Exists(TestDataFile))
             {
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.SaveToFile(testFile);
+                File.Delete(TestDataFile);
             }
+            
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.SaveToFile(TestDataFile);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingFileLoaderGraphHandlerImplicitTurtle()
         {
-            EnsureTestData("temp.ttl");
-
             Graph g = new Graph();
-            g.LoadFromFile("temp.ttl");
-
-            TestTools.ShowGraph(g);
-            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-        }
-
-        [TestMethod]
-        public void ParsingFileLoaderGraphHandlerExplicitTurtle()
-        {
-            EnsureTestData("temp.ttl");
-            Graph g = new Graph();
-            GraphHandler handler = new GraphHandler(g);
 #if PORTABLE
-            using (var input = File.OpenRead("temp.ttl"))
-            {
-                StreamLoader.Load(handler, "temp.ttl", input);
-            }
+            g.LoadFromFile(TestDataFile);
 #else
-            FileLoader.Load(handler, "temp.ttl");
+            FileLoader.Load(g, TestDataFile);
 #endif
 
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
 
-        [TestMethod]
+        [Test]
+        public void ParsingFileLoaderGraphHandlerExplicitTurtle()
+        {
+            Graph g = new Graph();
+            GraphHandler handler = new GraphHandler(g);
+#if PORTABLE
+            using (var input = File.OpenRead(TestDataFile))
+            {
+                StreamLoader.Load(handler, TestDataFile, input);
+            }
+#else
+            FileLoader.Load(handler, TestDataFile);
+#endif
+
+            TestTools.ShowGraph(g);
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+        }
+
+        [Test]
         public void ParsingFileLoaderCountHandlerTurtle()
         {
-            EnsureTestData("temp.ttl");
             Graph orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
 #if PORTABLE
-            using (var input = File.OpenRead("temp.ttl"))
+            using (var input = File.OpenRead(TestDataFile))
             {
-                StreamLoader.Load(handler, "temp.ttl", input);
+                StreamLoader.Load(handler, TestDataFile, input);
             }
 #else
             FileLoader.Load(handler, "temp.ttl");

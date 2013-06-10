@@ -29,7 +29,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Indexing;
@@ -40,7 +40,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class IndexSearchTests
     {
         private IGraph GetTestData()
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.FullText
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneObjects()
         {
             IFullTextIndexer indexer = null;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneObjectsWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneObjectsWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneObjectsWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneSubjects()
         {
             IFullTextIndexer indexer = null;
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneSubjectsWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneSubjectsWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLuceneSubjectsWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLucenePredicates()
         {
             IFullTextIndexer indexer = null;
@@ -354,7 +354,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLucenePredicatesWithLimit()
         {
             IFullTextIndexer indexer = null;
@@ -389,7 +389,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLucenePredicatesWithThreshold()
         {
             IFullTextIndexer indexer = null;
@@ -422,7 +422,7 @@ namespace VDS.RDF.Query.FullText
 
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextIndexSearchLucenePredicatesWithLimitAndThreshold()
         {
             IFullTextIndexer indexer = null;

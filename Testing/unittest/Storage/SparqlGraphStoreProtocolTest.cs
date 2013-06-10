@@ -30,7 +30,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlGraphStoreProtocolTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                g.LoadFromFile("Turtle.ttl");
+                FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Save Graph to SPARQL Uniform Protocol
@@ -106,7 +106,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
@@ -116,7 +116,7 @@ namespace VDS.RDF.Storage
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
-                g.LoadFromFile("Turtle.ttl");
+                FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -160,7 +160,7 @@ namespace VDS.RDF.Storage
         }
 
 #if !NO_SYNC_HTTP // There is currently no async version of HasGraph to delegate to
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
@@ -180,7 +180,7 @@ namespace VDS.RDF.Storage
         }
 #endif
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
@@ -225,7 +225,7 @@ namespace VDS.RDF.Storage
 
                 Graph g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
@@ -246,14 +246,14 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
             {
                 SetUriLoaderCaching(false);
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 try
                 {
@@ -279,7 +279,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
@@ -289,7 +289,7 @@ namespace VDS.RDF.Storage
             request.ContentType = "application/rdf+xml";
 
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
@@ -324,13 +324,13 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             List<Uri> uris = new List<Uri>();
             for (int i = 0; i < 10; i++)

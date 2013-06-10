@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ResultAccessTests
     {
         private ISparqlDataset _dataset;
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        [TestInitialize]
+        [SetUp]
         public void EnsureDataset()
         {
             Graph g = new Graph();
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultAccessByName()
         {
             String query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod,ExpectedException(typeof(RdfException))]
+        [Test,ExpectedException(typeof(RdfException))]
         public void SparqlResultAccessByNameError()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultAccessByNameSafeHasValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultAccessByNameSafeTryGetValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultAccessByNameSafeTryGetBoundValue()
         {
             String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultAccessByIndex()
         {
             String query = "SELECT * WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder1()
         {
             String query = "SELECT ?s ?type ?comment WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -194,7 +194,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "s", "type", "comment" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder2()
         {
             String query = "SELECT ?s ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "s", "comment", "type" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder3()
         {
             String query = "SELECT ?comment ?type ?s WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "comment", "type", "s"});
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder4()
         {
             String query = "SELECT ?comment ?type WHERE { ?s a ?type ; rdfs:comment ?comment }";
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<String>() { "comment", "type" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder5()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<string>() { "a", "b" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder6()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query
             this.TestVariableOrder(results, new List<string>() { "b", "a" });
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlResultSetVariableOrder7()
         {
             String data = @"<?xml version=""1.0"" encoding=""utf-8""?>

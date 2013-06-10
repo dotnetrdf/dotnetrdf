@@ -28,15 +28,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
     /// Factory class for producing SPARQL Endpoints from Configuration Graphs
     /// </summary>
-    public class SparqlEndpointFactory : IObjectFactory
+    public class SparqlEndpointFactory 
+        : IObjectFactory
     {
-        private const String Endpoint = "VDS.RDF.Query.SparqlRemoteEndpoint",
+        private const String QueryEndpoint = "VDS.RDF.Query.SparqlRemoteEndpoint",
+                             UpdateEndpoint = "VDS.RDF.Update.SparqlRemoteUpdateEndpoint",
                              FederatedEndpoint = "VDS.RDF.Query.FederatedSparqlRemoteEndpoint";
 
         /// <summary>
@@ -54,22 +57,29 @@ namespace VDS.RDF.Configuration
 
             switch (targetType.FullName)
             {
-                case Endpoint:
-                    String endpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)));
-                    if (endpointUri == null) return false;
+                case QueryEndpoint:
+                    String queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    if (queryEndpointUri == null) return false;
 
                     //Get Default/Named Graphs if specified
                     IEnumerable<String> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                         select n.ToString();
                     IEnumerable<String> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                       select n.ToString();
-                    endpoint = new SparqlRemoteEndpoint(UriFactory.Create(endpointUri), defaultGraphs, namedGraphs);
+                    endpoint = new SparqlRemoteEndpoint(UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
+                    break;
 
+                case UpdateEndpoint:
+                    String updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    if (updateEndpointUri == null) return false;
+
+                    endpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(updateEndpointUri));
                     break;
 
 #if !SILVERLIGHT
                 case FederatedEndpoint:
-                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
+                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
+                        .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
                     foreach (INode e in endpoints)
                     {
                         Object temp = ConfigurationLoader.LoadObject(g, e);
@@ -86,7 +96,7 @@ namespace VDS.RDF.Configuration
                         }
                         else
                         {
-                            throw new DotNetRdfConfigurationException("Unable to load the SPARQL Endpoint identified by the Node '" + e.ToString() + "' as one of the values for the dnr:endpoint property points to an Object which cannot be loaded as an object which is a SparqlRemoteEndpoint");
+                            throw new DotNetRdfConfigurationException("Unable to load the SPARQL Endpoint identified by the Node '" + e.ToString() + "' as one of the values for the dnr:queryEndpoint/dnr:endpoint property points to an Object which cannot be loaded as an object which is a SparqlRemoteEndpoint");
                         }
                     }
                     break;
@@ -141,7 +151,8 @@ namespace VDS.RDF.Configuration
         {
             switch (t.FullName)
             {
-                case Endpoint:
+                case QueryEndpoint:
+                case UpdateEndpoint:
 #if !SILVERLIGHT
                 case FederatedEndpoint:
 #endif

@@ -1,14 +1,50 @@
 ﻿Change Log
 ==========
 
-1.0.0
+1.0.1
 -----
 
 Added
-- Parsing API
+- Formatting API
+ - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
+
+Changed
+- Bug Fixes
+ - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
+ - Fix a Stack Overflow that could occur in ThreadSafeGraph (CORE-363)
+- Writing
+ - Significantly improve performance of writing non-ASCII characters to NTriples (CORE-357)
+
+
+Removed
+- Marked as obsolete usable the old ICharFormatter.FormatChar() method
+
+
+1.0.0.2533
+----------
+
+Changed
+- Build
+ - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
+   are still not signed
+
+1.0.0.2473
+----------
+
+Added
+- Parsing
  - New ITokenisingParser interface which exposes a TokenQueueMode property (CORE-332)
-- Global Options - new Options.DefaultTokenQueueMode (CORE-332)
-- ConfigurationLoader may now be used in a convenience instance mode (CORE-337)
+- Global Options
+ - New Options.DefaultTokenQueueMode controls default queue mode for tokeniser based parsers (CORE-332)
+ - New Options.ValidateIris controls whether certain parsers perform strict IRI validation, currently only Turtle W3C syntax supports this (CORE-314)
+- Configuration 
+ - ConfigurationLoader may now be used in a convenience instance mode (CORE-337)
+ - SparqlRemoteUpdateEndpoint now implements IConfigurationSerializable properly (CORE-346)
+ - New dnr:queryEndpoint, dnr:queryEndpointUri, dnr:updateEndpoint and dnr:updateEndpointUri properties for use in place of their generic equivalents (CORE-346)
+- Query
+ - New optimization improves performance for some queries using ORDER BY + DISTINCT combinations (CORE-353)
+- Storage
+ - New ReadWriteSparqlConnector for connecting to arbitrary triple stores that expose both a Query and Update endpoint (CORE-346)
 
 Changed
 - Bug Fixes
@@ -22,23 +58,42 @@ Changed
  - Fixed a corner case bug where the Turtle parser could accept some invalid input and generate incorrect URIs for it (CORE-341)
  - Fixed a bug where certain triple patterns could trigger a bug in the scan logic and explode the solution space (CORE-343)
  - Fixed a bug where Graph equality could explode memory usage and be unable to determine equality on some blank node heavy equivalent graphs (CORE-345)
+ - Fixed a bug with numeric literals not being parsed using the invariant culture (CORE-344)
+ - Fixed a bug with the Ontology API not returning OWL datatype properties correctly (CORE-339)
+ - Fixed a bug where DESC() applied to a sort condition in SPARQL could propogate the DESC() to the subsequent sort condition (CORE-350)
+ - Fixed a bug where not all sort conditions in SPARQL were applied for rows where any column evaluated to null (CORE-350)
+ - Fixed a bug where EXISTS/NOT EXISTS used a child expression in a larger expression could cause incorrect results
+ - Fixed various corner case bugs in Turtle parsing highlighted by updating to support latest W3C recommendation (CORE-314)
+ - Fixed a bug with use of xml: as a prefix for element names in RDF/XML (CORE-358)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
+ - Upgrade Json.Net to 5.0.4
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API
  - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
+ - Graph equality should now be more performant (CORE-345)
+ - HTTP Debugging is no longer debug build specific (CORE-347) 
+ - Various improvements to localalization support particularly around numeric value handling
+- Parsing
+ - Updated support for Turtle to W3C Candidate Recommendation (19th Feb 2013 version) (CORE-314)
+ - Escape handling is now much stricter and will throw errors on invalid escape sequences which previously would have been silently allowed (CORE-314)
+ - Optional IRI validation for Turtle W3C which is disabled by default, use Options.ValidateIris to enable (CORE-314)
 - Query
  - Wherever possible the order of variables in the SELECT clause will now be respected in SparqlResultSet objects (CORE-342)
-- Storage API
+- Storage
  - SesameNativeTemplate is now a public class
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
+ - Fix target framework profile for dotNetRDF.Data.Virtuoso.ClientProfile
+- Writing
+ - Improved how characters are escaped (counterpart to stricter escape handling) which provides better round tripping of data (CORE-314)
 
 Removed
 - Removed defunct TalisException
 - Removed defunct internal class InternalXmlWriter
 - Marked DydraConnector with an obsolete usable due to continuing inconsistency and transient failures from the Dydra API
 - Removed defunct Project class
+- Marked IInMemoryQueryableStore.ExecuteQuery() methods as deprecated in favour of using ISparqlQueryProcessor
 
 
 0.9.0 RC4

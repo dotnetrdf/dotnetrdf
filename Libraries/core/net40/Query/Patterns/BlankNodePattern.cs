@@ -32,9 +32,10 @@ using VDS.RDF.Query.Construct;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Pattern which matches Blank Nodes
+    /// Pattern which matches temporary variables
     /// </summary>
-    public class BlankNodePattern : PatternItem
+    public class BlankNodePattern 
+        : PatternItem
     {
         private String _name;
 

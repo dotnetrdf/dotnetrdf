@@ -123,12 +123,12 @@ namespace VDS.RDF
             Out.Write(str);
         }
 
-        public static void Write(string fmt, object[] args)
+        public static void Write(string fmt, params object[] args)
         {
             Out.Write(fmt, args);
         }
 
-        public static void WriteLine(string fmt, object[] args)
+        public static void WriteLine(string fmt, params object[] args)
         {
             Out.WriteLine(fmt, args);
         }

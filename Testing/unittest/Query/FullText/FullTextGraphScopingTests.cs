@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Store;
 using LucUtil = Lucene.Net.Util;
@@ -42,7 +42,7 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextGraphScopingTests
     {
         private const String FullTextPrefix = "PREFIX pf: <" + FullTextHelper.FullTextMatchNamespace + ">";
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.FullText
         private TripleStore _store;
         private Directory _index;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             String data = @"<http://x> <http://p> ""This is sample text"" <http://g1> .
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphScoping1()
         {
             //With no Graph scope all results should be returned
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphScoping2()
         {
             //With Graph scope to g1 only one result should be returned
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.FullText
         }
 
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphScoping3()
         {
             //With Graph scope to g2 only two results should be returned
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping1()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping2()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping3()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping4()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping5()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextGraphSparqlScoping6()
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);

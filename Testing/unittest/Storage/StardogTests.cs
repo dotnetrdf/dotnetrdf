@@ -28,7 +28,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -36,11 +36,10 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class StardogTests
         : GenericUpdateProcessorTests
     {
@@ -68,8 +67,8 @@ namespace VDS.RDF.Storage
         }
 
 #if !NO_SYNC_HTTP // Many of these tests require a synchronous API
+        [Test]
 
-        [TestMethod]
         public void StorageStardogLoadDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();;
@@ -85,7 +84,7 @@ namespace VDS.RDF.Storage
             Assert.IsFalse(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogLoadNamedGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();;
@@ -101,7 +100,7 @@ namespace VDS.RDF.Storage
             Assert.IsFalse(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogSaveToDefaultGraph()
         {
             try
@@ -133,7 +132,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogSaveToNamedGraph()
         {
             try
@@ -157,7 +156,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogSaveToNamedGraph2()
         {
             try
@@ -182,7 +181,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogSaveToNamedGraphOverwrite()
         {
             try
@@ -219,7 +218,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogUpdateNamedGraphRemoveTriples()
         {
             try
@@ -256,7 +255,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogUpdateNamedGraphAddTriples()
         {
             try
@@ -297,7 +296,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogDeleteNamedGraph()
         {
             try
@@ -334,7 +333,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogReasoningQL()
         {
             try
@@ -345,7 +344,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();;
 
                 Graph g = new Graph();
-                g.LoadFromFile("InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/reasoning");
                 stardog.SaveGraph(g);
 
@@ -385,7 +384,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogTransactionTest()
         {
             try
@@ -403,7 +402,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogAmpersandsInDataTest()
         {
             try
@@ -453,7 +452,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageStardogCreateNewStore()
         {
             Guid guid;

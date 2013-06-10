@@ -28,11 +28,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public abstract class BaseTest
     {
         protected TestContext testContextInstance;

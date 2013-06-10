@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,11 +36,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class OwlOneOf
     {
-
-        [TestMethod]
+        [Test]
         public void WritingSerializeOwnOneOf()
         {
             //Create the Graph for the Test and Generate a List of URIs
@@ -89,8 +88,7 @@ namespace VDS.RDF.Writing
 #endif
         }
 
-
-        [TestMethod]
+        [Test]
         public void WritingSerializeOwnOneOfVeryLarge()
         {
                 //Create the Graph for the Test and Generate a List of URIs

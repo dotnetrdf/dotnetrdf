@@ -538,7 +538,7 @@ namespace VDS.RDF
                                 double aDouble, bDouble;
                                 if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDouble))
                                 {
-                                    if (Double.TryParse(b.Value, out bDouble))
+                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDouble))
                                     {
                                         return aDouble.CompareTo(bDouble);
                                     }
@@ -575,7 +575,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (decimal.TryParse(b.Value, out bDecimal))
+                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDecimal))
                                     {
                                         return 1;
                                     }

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -38,36 +38,36 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlParsingComplex
     {
-        [TestMethod]
+        [Test]
         public void SparqlParsingNestedGraphPatternFirstItem()
         {
                 SparqlQueryParser parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromFile("childgraphpattern.rq");
+                SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern.rq");
 
                 Console.WriteLine(q.ToString());
                 Console.WriteLine();
                 Console.WriteLine(q.ToAlgebra().ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNestedGraphPatternFirstItem2()
         {
                 SparqlQueryParser parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromFile("childgraphpattern2.rq");
+                SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern2.rq");
 
                 Console.WriteLine(q.ToString());
                 Console.WriteLine();
                 Console.WriteLine(q.ToAlgebra().ToString());
          }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             String query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        //[TestMethod]
+        //[Test]
         //public void SparqlNonNormalizedUris()
         //{
         //    try
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query
         //    }
         //}
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingDescribeHangingWhere()
         {
             List<String> valid = new List<string>()
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingConstructShortForm()
         {
             List<String> valid = new List<string>()
@@ -233,14 +233,14 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlEvaluationMultipleOptionals()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromFile("multiple-options.trig");
+            store.LoadFromFile("resources\\multiple-options.trig");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("multiple-optionals.rq");
+            SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals.rq");
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
             Object results = processor.ProcessQuery(query);
@@ -254,14 +254,14 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlEvaluationMultipleOptionals2()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromFile("multiple-options.trig");
+            store.LoadFromFile("resources\\multiple-options.trig");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("multiple-optionals-alternate.rq");
+            SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals-alternate.rq");
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
             Object results = processor.ProcessQuery(query);
@@ -275,7 +275,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void SparqlParsingSubqueries1()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSubqueries2()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void SparqlParsingSubqueries3()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSubqueries4()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";

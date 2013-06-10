@@ -31,7 +31,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -40,7 +40,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Parsing.Suites
 {
 #if !NO_HTMLAGILITYPACK
-    [TestClass]
+    [TestFixture]
     public class RdfA
     {
         private void reportError(String header, Exception ex)
@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing.Suites
             Console.WriteLine(ex.StackTrace);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteRdfA10()
         {
             String[] wantOutput = {  };

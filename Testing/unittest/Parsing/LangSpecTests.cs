@@ -28,16 +28,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class LangSpecTests
     {
+        private const string NTriplesLangSpec = "resources\\langspec.nt";
+        private const string TurtleLangSpec = "resources\\langspec.ttl";
+        private const string N3LangSpec = "resources\\langspec.n3";
+        private const string TrigLangSpec = "resources\\langspec.trig";
+        private const string NQuadsLangSpec = "resources\\langspec.nq";
+
         private IGraph _original;
         private TripleStore _store;
 
@@ -84,7 +90,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TestLangSpecParsing(String file)
+        [TestCase(NTriplesLangSpec)]
+        [TestCase(TurtleLangSpec)]
+        [TestCase(N3LangSpec)]
+        [TestCase(TrigLangSpec)]
+        [TestCase(NQuadsLangSpec)]
+        public void TestLangSpecParsing(String file)
         {
             this.EnsureTestData(file);
 
@@ -112,34 +123,22 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
-        public void ParsingLangSpecNTriples()
+        [TestFixtureSetUp]
+        public void Setup()
         {
-            this.TestLangSpecParsing("langspec.nt");            
+            DeleteLangSpec(NTriplesLangSpec);
+            DeleteLangSpec(TurtleLangSpec);
+            DeleteLangSpec(N3LangSpec);
+            DeleteLangSpec(TrigLangSpec);
+            DeleteLangSpec(NQuadsLangSpec);
         }
 
-        [TestMethod]
-        public void ParsingLangSpecTurtle()
+        private static void DeleteLangSpec(string langSpecFile)
         {
-            this.TestLangSpecParsing("langspec.ttl");
-        }
-
-        [TestMethod]
-        public void ParsingLangSpecN3()
-        {
-            this.TestLangSpecParsing("langspec.n3");
-        }
-
-        [TestMethod]
-        public void ParsingLangSpecTriG()
-        {
-            this.TestLangSpecParsing("langspec.trig");
-        }
-
-        [TestMethod]
-        public void ParsingLangSpecNQuads()
-        {
-            this.TestLangSpecParsing("langspec.nq");
+            if (File.Exists(langSpecFile))
+            {
+                File.Delete(langSpecFile);
+            }
         }
     }
 }

@@ -28,13 +28,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class TriGTests
     {
         private ITripleStore TestParsing(String data, TriGSyntax syntax, bool shouldParse)
@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing
             return store;
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGBaseDeclaration1()
         {
             String fragment = "@base <http://example.org/base/> .";
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGBaseDeclaration2()
         {
             String fragment = "{ @base <http://example.org/base/> . }";
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGBaseDeclaration3()
         {
             String fragment = "<http://graph> { @base <http://example.org/base/> . }";
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGPrefixDeclaration1()
         {
             String fragment = "@prefix ex: <http://example.org/> .";
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGPrefixDeclaration2()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . }";
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTriGPrefixDeclaration3()
         {
             String fragment = "<http://graph> { @prefix ex: <http://example.org/> . }";
@@ -104,7 +104,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigBaseScope1()
         {
             String fragment = "@base <http://example.org/base/> . { <subj> <pred> <obj> . }";
@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigBaseScope2()
         {
             String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . }";
@@ -120,7 +120,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigBaseScope3()
         {
             String fragment = "{ @base <http://example.org/base/> . } <http://graph> { <subj> <pred> <obj> . }";
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigBaseScope4()
         {
             String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . } <http://graph> { <subj> <pred> <obj> . }";
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigPrefixScope1()
         {
             String fragment = "@prefix ex: <http://example.org/> . { ex:subj ex:pred ex:obj . }";
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigPrefixScope2()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . }";
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigPrefixScope3()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . } <http://graph> { ex:subj ex:pred ex:obj . }";
@@ -160,7 +160,7 @@ namespace VDS.RDF.Parsing
             this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTrigPrefixScope4()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . } <http://graph> { ex:subj ex:pred ex:obj . }";

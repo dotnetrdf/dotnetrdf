@@ -230,12 +230,12 @@ namespace VDS.RDF.Parsing
             catch (XmlException xmlEx)
             {
                 //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML since System.Xml was unable to parse the document, see Inner Exception for details", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
+                throw new RdfParseException("Unable to Parse this RDF/XML since System.Xml was unable to parse the document, see Inner Exception for details of the XML exception that occurred", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
             }
             catch (IOException ioEx)
             {
                 //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception, see Inner Exception for details", ioEx);
+                throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception, see Inner Exception for details of the IO exception that occurred", ioEx);
             }
             catch (Exception)
             {
@@ -343,6 +343,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("NestingLevel EventType [Description]");
                     Console.WriteLine();
                 }
+
+                //Define XML namespace
+                context.Handler.HandleNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
+                context.Namespaces.AddNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
 
                 //Process the Queue
                 this.ProcessEventQueue(context);

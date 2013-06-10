@@ -27,24 +27,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class NativeStoreTests
         : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void StorageNativeGraph()
         {
             //Load in our Test Graph
             TurtleParser ttlparser = new TurtleParser();
             Graph g = new Graph();
-            ttlparser.Load(g, "Turtle.ttl");
+            ttlparser.Load(g, "resources\\Turtle.ttl");
 
             Console.WriteLine("Loaded Test Graph OK");
             Console.WriteLine("Test Graph contains:");

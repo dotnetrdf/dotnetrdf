@@ -184,7 +184,14 @@ namespace VDS.RDF.Query.Ordering
             {
                 if (y[this._varname] == null)
                 {
-                    return 0;
+                    if (this._child != null)
+                    {
+                        return this._child.Compare(x, y);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 }
                 else
                 {
@@ -193,12 +200,11 @@ namespace VDS.RDF.Query.Ordering
             }
             else
             {
-                //int c = xval.CompareTo(y[this._varname]);
                 int c = this._comparer.Compare(xval, y[this._varname]);
 
                 if (c == 0 && this._child != null)
                 {
-                    return this._modifier * this._child.Compare(x, y);
+                    return this._child.Compare(x, y);
                 }
                 else
                 {
@@ -373,7 +379,7 @@ namespace VDS.RDF.Query.Ordering
                         int c = this._comparer.Compare(a, b);
                         if (c == 0 && this._child != null)
                         {
-                            return this._modifier * this._child.Compare(x, y);
+                            return this._child.Compare(x, y);
                         }
                         else
                         {
@@ -388,8 +394,25 @@ namespace VDS.RDF.Query.Ordering
                 }
                 catch
                 {
-                    //If evaluating a errors consider this a NULL and rank a < b
-                    return this._modifier * -1;
+                    try
+                    {
+                        b = this._expr.Evaluate(this._context, y.ID);
+
+                        //If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
+                        return this._modifier * -1;
+                    }
+                    catch
+                    {
+                        //If both error then use child if any to evaluate, otherwise consider a = b
+                        if (this._child != null)
+                        {
+                            return this._child.Compare(x, y);
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
                 }
 
             }

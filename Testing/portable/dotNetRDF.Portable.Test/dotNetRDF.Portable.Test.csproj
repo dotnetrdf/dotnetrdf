@@ -17,6 +17,8 @@
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,8 +39,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -61,6 +69,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Compatibility\FileLoader.cs" />
     <Compile Include="Compatibility\FileStreamHelper.cs" />
     <Compile Include="Compatibility\GraphExtensions.cs" />
     <Compile Include="Compatibility\ObjectParserExtensions.cs" />
@@ -633,5 +642,101 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup>
+    <Compile Include="..\..\unittest\Configuration\ConfigurationLoaderInstanceTests.cs">
+      <Link>Configuration\ConfigurationLoaderInstanceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\AbstractGraphTests.cs">
+      <Link>Core\AbstractGraphTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\ComparisonHelperTests.cs">
+      <Link>Core\ComparisonHelperTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseDatasetParserSuite.cs">
+      <Link>Parsing\Suites\BaseDatasetParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseRdfParserSuite.cs">
+      <Link>Parsing\Suites\BaseRdfParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseResultsParserSuite.cs">
+      <Link>Parsing\Suites\BaseResultsParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\TriXTests.cs">
+      <Link>Parsing\TriXTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\AggregateTests.cs">
+      <Link>Query\Aggregates\AggregateTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\GroupConcatTests.cs">
+      <Link>Query\Aggregates\GroupConcatTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Algebra\JoinTests.cs">
+      <Link>Query\Algebra\JoinTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\BindTests.cs">
+      <Link>Query\BindTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ExistsTests.cs">
+      <Link>Query\ExistsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Expressions\SparqlCastTests.cs">
+      <Link>Query\Expressions\SparqlCastTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\ReadWriteSparqlTest.cs">
+      <Link>Storage\ReadWriteSparqlTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\NTriplesTests.cs">
+      <Link>Writing\NTriplesTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\GraphPatternBuilderTests.cs">
+      <Link>Query\Builder\GraphPatternBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\QueryBuilderTests.cs">
+      <Link>Query\Builder\QueryBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\QueryBuilderWikiTests.cs">
+      <Link>Query\Builder\QueryBuilderWikiTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\TriplePatternBuilderTests.cs">
+      <Link>Query\Builder\TriplePatternBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ArithmeticOperatorsTests.cs">
+      <Link>Query\Builder\Expressions\ArithmeticOperatorsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs">
+      <Link>Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ExpressionBuilderTests.cs">
+      <Link>Query\Builder\Expressions\ExpressionBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\FunctionalFormsBuildingTests.cs">
+      <Link>Query\Builder\Expressions\FunctionalFormsBuildingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\LiteralExpressionTests.cs">
+      <Link>Query\Builder\Expressions\LiteralExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs">
+      <Link>Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\NumericExpressionTests.cs">
+      <Link>Query\Builder\Expressions\NumericExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\RdfTermExpressionTests.cs">
+      <Link>Query\Builder\Expressions\RdfTermExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\SparqlCastBuilderTests.cs">
+      <Link>Query\Builder\Expressions\SparqlCastBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\SparqlExpressionTestsBase.cs">
+      <Link>Query\Builder\Expressions\SparqlExpressionTestsBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\TypedLiteralExpressionTests.cs">
+      <Link>Query\Builder\Expressions\TypedLiteralExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\VariableExpressionTests.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionTests.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

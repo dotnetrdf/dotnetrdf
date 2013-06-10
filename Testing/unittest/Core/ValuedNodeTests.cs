@@ -29,24 +29,24 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class ValuedNodeTests : BaseTest
     {
         private Graph _graph;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _graph = new Graph();
         }
 
-        [TestMethod]
+        [Test]
         public void NodeAsValuedTimeSpan()
         {
             INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
@@ -57,7 +57,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(TimeSpanNode), valued.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -66,7 +66,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -75,7 +75,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -94,7 +94,7 @@ namespace VDS.RDF.Core
             T convertedBack = convertBack(valuedNode);
 
             // then
-            Assert.AreEqual<T>(value, convertedBack);
+            Assert.AreEqual(value, convertedBack);
         }
     }
 }

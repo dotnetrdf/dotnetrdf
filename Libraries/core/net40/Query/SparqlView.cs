@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
@@ -55,16 +56,16 @@ namespace VDS.RDF.Query
         protected ITripleStore _store;
 
         private UpdateViewDelegate _async;
-        private IAsyncResult _asyncResult;
         private bool _requiresInvalidate = false;
         private RdfQueryException _lastError;
+        private Object _lock = new Object();
 
         /// <summary>
         /// Creates a new SPARQL View
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(String sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             this._q = parser.ParseFromString(sparqlQuery);
@@ -79,7 +80,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
@@ -87,7 +88,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="store">Triple Store to query</param>
-        public BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
         {
             this._q = sparqlQuery;
             this._store = store;
@@ -123,7 +124,7 @@ namespace VDS.RDF.Query
             //Attach a Handler to the Store's Graph Added, Removed and Changed events
             this._store.GraphChanged += this.OnGraphChanged;
             this._store.GraphAdded += this.OnGraphAdded;
-            this._store.GraphAdded += this.OnGraphRemoved;
+            this._store.GraphRemoved += this.OnGraphRemoved;
             this._store.GraphMerged += this.OnGraphMerged;
 
             //Fill the Graph with the results of the Query
@@ -135,14 +136,7 @@ namespace VDS.RDF.Query
         /// </summary>
         private void InvalidateView()
         {
-            //Can't invalidate if an async UpdateView() call is in progress
-            if (this._asyncResult != null)
-            {
-                this._requiresInvalidate = true;
-                return;
-            }
-
-            this._asyncResult = this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
+            this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
         }
 
         /// <summary>
@@ -154,7 +148,6 @@ namespace VDS.RDF.Query
             try
             {
                 this._async.EndInvoke(result);
-                this._asyncResult = null;
 
                 //If we've been further invalidated then need to re-query
                 if (this._requiresInvalidate)
@@ -163,9 +156,10 @@ namespace VDS.RDF.Query
                     this._requiresInvalidate = false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 //Ignore errors
+                this.LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
             }
         }
 
@@ -176,15 +170,11 @@ namespace VDS.RDF.Query
         /// </summary>
         public void UpdateView()
         {
-            if (this._asyncResult != null)
-            {
-                this._asyncResult.AsyncWaitHandle.WaitOne(new TimeSpan(1000));
-            }
-            else
+            lock (this._lock)
             {
                 this.UpdateViewInternal();
+                if (this.LastError != null) throw this.LastError;
             }
-            if (this.LastError != null) throw this.LastError;
         }
 
         /// <summary>
@@ -357,16 +347,22 @@ namespace VDS.RDF.Query
                 Object results = ((IInMemoryQueryableStore)this._store).ExecuteQuery(this._q);
                 if (results is IGraph)
                 {
+                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    //This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     IGraph g = (IGraph)results;
+                    TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection();
                     foreach (Triple t in g.Triples)
                     {
-                        this._triples.Add(t.CopyTriple(this));
+                        triples.Add(t.CopyTriple(this));
                     }
+                    this._triples = triples;
                     this.AttachEventHandlers(this._triples);
                 }
                 else
                 {
+                    //Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
+                    //This does mean that while the update is occurring the user may be viewing a stale graph
                     this.DetachEventHandlers(this._triples);
                     this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     this.AttachEventHandlers(this._triples);

@@ -141,6 +141,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Syntax\trix.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Syntax\turtle.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

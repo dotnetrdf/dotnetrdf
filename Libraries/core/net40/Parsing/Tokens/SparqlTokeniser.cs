@@ -740,13 +740,13 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    if (!colonoccurred)
+                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
                         this.HandleEscapes(TokeniserEscapeMode.QName);
                     }
                     else
                     {
-                        this.HandleSparqlLocalNameEscapes();
+                        this.HandleComplexLocalNameEscapes();
                     }
                     next = this.Peek();
                     continue;
@@ -836,13 +836,13 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    if (!colonoccurred)
+                    if (!colonoccurred || this._syntax == SparqlQuerySyntax.Sparql_1_0)
                     {
                         this.HandleEscapes(TokeniserEscapeMode.QName);
                     }
                     else
                     {
-                        this.HandleSparqlLocalNameEscapes();
+                        this.HandleComplexLocalNameEscapes();
                     }
                     next = this.Peek();
                     continue;

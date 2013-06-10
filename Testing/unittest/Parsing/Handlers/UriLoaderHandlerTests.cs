@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class UriLoaderHandlerTests
     {
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
             Graph g = new Graph();
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderGraphHandlerExplicit()
         {
             Graph g = new Graph();
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderCountHandler()
         {
             Graph orig = new Graph();

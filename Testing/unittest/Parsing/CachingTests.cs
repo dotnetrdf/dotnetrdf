@@ -28,19 +28,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
 #if !NO_URICACHE
-    [TestClass]
+    [TestFixture]
     public class CachingTests
     {
         private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderCache()
         {
             //Load the Graph
@@ -54,8 +54,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(g, h);
         }
 
-
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderCustomCache()
         {
             String original = UriLoader.CacheDirectory;
@@ -71,7 +70,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderUriSantisation()
         {
             Uri a = new Uri(ConfigurationLoader.ClassTripleStore);
@@ -93,7 +92,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(g, h, "Two Graphs should be equal since they come from the same URI");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingUriLoaderResponseUriCaching()
         {
             int defaultTimeout = Options.UriLoaderTimeout;

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
 #if !NO_XMLENTITIES // RDF/XML output generates entity declarations that the parser cannot process
-    [TestClass]
+    [TestFixture]
     public class RdfXmlWriterTests
     {
         private List<IRdfWriter> _writers = new List<IRdfWriter>()
@@ -134,7 +134,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiteralsWithLanguageTags()
         {
             Graph g = new Graph();
@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiteralsWithReservedCharacters()
         {
             Graph g = new Graph();
@@ -158,7 +158,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiteralsWithReservedCharacters2()
         {
             Graph g = new Graph();
@@ -170,7 +170,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g, new Type[] { typeof(PrettyRdfXmlWriter) });
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiteralsWithReservedCharacters3()
         {
             Graph g = new Graph();
@@ -182,7 +182,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiterals()
         {
             Graph g = new Graph();
@@ -194,7 +194,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlLiterals2()
         {
             Graph g = new Graph();
@@ -206,7 +206,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlUrisWithReservedCharacters()
         {
             Graph g = new Graph();
@@ -218,7 +218,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlBNodes1()
         {
             Graph g = new Graph();
@@ -236,7 +236,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlBNodes2()
         {
             String data = "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a [] .";
@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlSimpleBNodeCollection()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ].";
@@ -257,7 +257,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlSimpleBNodeCollection2()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ; :another :thing ].";
@@ -268,7 +268,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlSimpleBNodeCollection3()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred [ a :BNode ; :another :thing ].";
@@ -279,7 +279,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlSimpleCollection()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
@@ -290,17 +290,17 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlComplex()
         {
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser();
-            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "chado-in-owl.ttl");
+            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "resources\\chado-in-owl.ttl");
 
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlWithDtds()
         {
             String fragment = "@prefix xsd: <" + NamespaceMapper.XMLSCHEMA + ">. @prefix : <http://example.org/>. :subj a :obj ; :has \"string\"^^xsd:string ; :has 23 .";
@@ -310,7 +310,7 @@ namespace VDS.RDF.Writing
             this.CheckRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlInvalidPredicates1()
         {
             String fragment = "@prefix ex: <http://example.org/>. ex:subj ex:123 ex:object .";
@@ -320,7 +320,7 @@ namespace VDS.RDF.Writing
             this.CheckFailure(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingRdfXmlPrettySubjectCollection1()
         {
             String graph = @"@prefix ex: <http://example.com/>. (1) ex:someProp ""Value"".";

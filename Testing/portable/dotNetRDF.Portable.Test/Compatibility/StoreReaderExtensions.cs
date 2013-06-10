@@ -25,4 +25,17 @@ namespace VDS.RDF
             }
         }
     }
+
+    public static class StoreWriterExtensions
+    {
+        public static void Save(this IStoreWriter writer, ITripleStore store, string filename)
+        {
+            using (var output = new StreamWriter(filename))
+            {
+                writer.Save(store, output);
+                output.Flush();
+                output.Close();
+            }
+        }
+    }
 }

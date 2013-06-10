@@ -416,7 +416,16 @@ namespace VDS.RDF.Parsing.Tokens
                 //Watch out for escapes
                 if (next == '\\')
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                    switch (this._syntax)
+                    {
+                        case TriGSyntax.MemberSubmission:
+                        case TriGSyntax.Original:
+                            this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                            break;
+                        default:
+                            this.HandleEscapes(TokeniserEscapeMode.Uri);
+                            break;
+                    }
                 }
                 else
                 {

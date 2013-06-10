@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -951,7 +952,7 @@ namespace VDS.RDF.Query
             endIndex = startIndex;
             if (cs[startIndex] == '%')
             {
-                if (startIndex > cs.Length - 2)
+                if (startIndex >= cs.Length - 2)
                 {
                     //If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
@@ -988,7 +989,7 @@ namespace VDS.RDF.Query
                         case '~':
                         case '-':
                         case '.':
-                        case '|':
+                        case '!':
                         case '$':
                         case '&':
                         case '\'':
@@ -1052,7 +1053,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Unescapes SPARQL 1.1 QNames
+        /// Unescapes local name escapes from QNames
         /// </summary>
         /// <param name="value">Value to unescape</param>
         /// <returns></returns>
@@ -1075,7 +1076,7 @@ namespace VDS.RDF.Query
                             case '~':
                             case '-':
                             case '.':
-                            case '|':
+                            case '!':
                             case '$':
                             case '&':
                             case '\'':
@@ -1100,18 +1101,23 @@ namespace VDS.RDF.Query
                     }
                     else if (cs[i] == '%')
                     {
+                        //Remember that we are supposed to preserve precent encoded characters as-is
+                        //Simply need to validate that they are valid encoding
                         if (i > cs.Length - 2)
                         {
                             throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
                         }
                         else
                         {
-#if !SILVERLIGHT
-                            output.Append(Uri.HexUnescape(value, ref i));
-#else
-                            output.Append(SilverlightExtensions.HexUnescape(value, ref i));
-#endif
-                            i--;
+                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
+                            {
+                                throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
+                            }
+                            else
+                            {
+                                output.Append(cs, i, 3);
+                                i += 2;
+                            }
                         }
                     }
                     else
@@ -1300,7 +1306,7 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Decimal:
                                     //Should be a decimal
                                     Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, out dec))
+                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                     {
                                         if (dec == Decimal.Zero)
                                         {
@@ -1323,7 +1329,7 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Double:
                                     //Should be a double
                                     Double dbl;
-                                    if (Double.TryParse(lit.Value, out dbl))
+                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
                                         if (dbl == 0.0d || dbl == Double.NaN)
                                         {

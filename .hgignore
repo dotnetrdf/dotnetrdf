@@ -1,3 +1,9 @@
+
+
+
+
+
+
 # use glob syntax.
 syntax: glob
 
@@ -8,8 +14,9 @@ bin/
 **/Debug
 TestResults/
 Build/ndoc3/docs
-Build/nuget/*/*.nupkg
-Build/nuget/*/lib/*
+Build/nuget/**/*.nupkg
+Build/nuget/**/lib/*
+Build/nuget/Symbols/*/src/*
 dotNetRDF*.zip
 _UpgradeReport*
 UpgradeLog*
@@ -23,6 +30,7 @@ log-file.txt
 temp*.txt
 _ReSharper*/
 *.lnk
+*.PublicKey
 
 # NuGet Package Management Stuff
 .nuget/*.exe

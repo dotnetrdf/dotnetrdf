@@ -29,17 +29,17 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class LoaderTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingDataUri()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingDBPedia()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
@@ -157,7 +157,8 @@ namespace VDS.RDF.Parsing
             Options.UriLoaderCaching = cachingEnabled;
 #endif
         }
-        [TestMethod]
+
+        [Test]
         public void ParsingUriLoaderDBPedia()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -184,7 +185,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
@@ -195,7 +196,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
@@ -210,7 +211,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
@@ -225,7 +226,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
             TripleStore store = new TripleStore();
@@ -235,7 +236,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, store.Graphs.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
             Graph g = new Graph();

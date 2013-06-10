@@ -110,6 +110,10 @@ namespace VDS.RDF.Configuration
                             //Properties for Endpoints
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
+                            PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
+                            PropertyUpdateEndpointUri = ConfigurationNamespace + "updateEndpointUri",
+                            PropertyQueryEndpoint = ConfigurationNamespace + "queryEndpoint",
+                            PropertyUpdateEndpoint = ConfigurationNamespace + "updateEndpoint",
                             PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
                             PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
                             PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
@@ -172,6 +176,8 @@ namespace VDS.RDF.Configuration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
                             //Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
+                            ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
@@ -1540,7 +1546,7 @@ namespace VDS.RDF.Configuration
             IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
             if (blankNode == null)
             {
-                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
             }
 
             return (T)LoadObject(_configGraph, blankNode);

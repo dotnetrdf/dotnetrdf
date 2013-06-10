@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF</id>
-    <version>1.0.0</version>
+    <version>$version$</version>
     <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
@@ -12,12 +12,12 @@
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="4.5.11" />
+      <dependency id="Newtonsoft.Json" version="5.0.4" />
       <dependency id="HtmlAgilityPack" version="1.4.6" />
       <dependency id="VDS.Common" version="[1.2.0]" />
     </dependencies>
     <releaseNotes>
-
+     - Ensure NuGet packaged assemblies are signed (except Silverlight assemblies)
     </releaseNotes>
   </metadata>
 </package>

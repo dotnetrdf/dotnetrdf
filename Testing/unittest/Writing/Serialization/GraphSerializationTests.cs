@@ -32,7 +32,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using VDS.RDF.Parsing;
@@ -41,7 +41,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Writing.Serialization
 {
 #if !SILVERLIGHT
-    [TestClass]
+    [TestFixture]
     public class GraphSerializationTests
     {
         private void TestGraphSerializationXml<T>(T g)
@@ -169,7 +169,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson<IGraph>(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraph()
         {
             Graph g = new Graph();
@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraph2()
         {
             Graph g = new Graph();
@@ -187,7 +187,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraph3()
         {
             Graph g = new Graph();
@@ -196,16 +196,16 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationXml(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationXmlGraph5()
         {
             Graph g = new Graph();
@@ -214,7 +214,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationXml<MockWrapperGraph>(new MockWrapperGraph(g));
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraph()
         {
             Graph g = new Graph();
@@ -223,7 +223,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraph2()
         {
             Graph g = new Graph();
@@ -232,7 +232,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraph3()
         {
             Graph g = new Graph();
@@ -241,16 +241,16 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationBinary(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryGraph5()
         {
             Graph g = new Graph();
@@ -259,7 +259,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationBinary<MockWrapperGraph>(new MockWrapperGraph(g));
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraph()
         {
             Graph g = new Graph();
@@ -268,7 +268,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraph2()
         {
             Graph g = new Graph();
@@ -277,7 +277,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraph3()
         {
             Graph g = new Graph();
@@ -286,16 +286,16 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationDataContract(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationDataContractGraph5()
         {
             Graph g = new Graph();
@@ -304,7 +304,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationDataContract(new MockWrapperGraph(g));
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();
@@ -313,7 +313,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationJsonGraph2()
         {
             Graph g = new Graph();
@@ -322,7 +322,7 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationJsonGraph3()
         {
             Graph g = new Graph();
@@ -331,16 +331,16 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationJsonGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationJson(g);
         }
 
-        //[TestMethod]
+        //[Test]
         //public void SerializationJsonGraph5()
         //{
         //    Graph g = new Graph();

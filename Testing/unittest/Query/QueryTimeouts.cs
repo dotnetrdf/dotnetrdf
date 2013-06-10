@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class QueryTimeouts
     {
         private long[] _timeouts = new long[] { 50, 100, 250, 500, 1000 };
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeout()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2}";
@@ -169,7 +169,11 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
-                processor.ProcessQuery(q);
+                //Try multiple times because sometimes machine load may mean we don't timeout
+                for (int i = 0; i < 10; i++)
+                {
+                    processor.ProcessQuery(q);
+                }
                 Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
             }
             catch (RdfQueryTimeoutException timeoutEx)
@@ -181,7 +185,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProduct()
         {
             Graph g = new Graph();
@@ -191,7 +195,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProduct2()
         {
             Graph g = new Graph();
@@ -201,7 +205,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, false, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutGlobalDuringProduct()
         {
             Graph g = new Graph();
@@ -211,7 +215,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutGlobalDuringProduct2()
         {
             Graph g = new Graph();
@@ -221,7 +225,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeout(g, query, true, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal()
         {
             Graph g = new Graph();
@@ -231,7 +235,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductOverriddenByGlobal2()
         {
             Graph g = new Graph();
@@ -241,7 +245,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 1000, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal()
         {
             Graph g = new Graph();
@@ -251,7 +255,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductNotOverriddenByGlobal2()
         {
             Graph g = new Graph();
@@ -261,7 +265,7 @@ namespace VDS.RDF.Query
             this.TestProductTimeoutGlobalOverride(g, query, 0, g.Triples.Count * g.Triples.Count * g.Triples.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductLazy()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z } LIMIT 5000";
@@ -287,12 +291,13 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutDuringProductLazy2()
         {
             String query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
+            Console.WriteLine(q.ToAlgebra().ToString());
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
@@ -301,7 +306,11 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
-                processor.ProcessQuery(q);
+                //Try multiple times because sometimes machine load may mean we don't timeout
+                for (int i = 0; i < 100; i++)
+                {
+                    processor.ProcessQuery(q);
+                }
                 Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
             }
             catch (RdfQueryTimeoutException timeoutEx)
@@ -313,7 +322,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutNone()
         {
             Graph g = new Graph();
@@ -349,7 +358,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryTimeoutMinimal()
         {
             Graph g = new Graph();

@@ -39,13 +39,16 @@ namespace VDS.RDF.Writing.Formatting
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
 
         /// <summary>
-        /// Set of characters that may follow a backslash and are legal escapes
-        /// </summary>
-        protected char[] _validEscapes = new char[] { '\\', '"', 'n', 'r', 't' };
-        /// <summary>
         /// Set of characters which must be escaped in Literals
         /// </summary>
-        protected char[] _litEscapes = new char[] { '"', '\n', '\r', '\t' };
+        protected List<String[]> _litEscapes = new List<String[]>
+        { 
+            new String[] { @"\", @"\\" }, 
+            new String[] { "\"", "\\\"" },
+            new String[] { "\n", @"\n" },
+            new String[] { "\r", @"\r" },
+            new String[] { "\t", @"\t" }
+        };
 
         /// <summary>
         /// Creates a new NTriples Formatter
@@ -88,26 +91,8 @@ namespace VDS.RDF.Writing.Formatting
 
             output.Append('"');
             value = l.Value;
-
-            if (!value.IsFullyEscaped(this._validEscapes, this._litEscapes))
-            {
-                //This first replace escapes all back slashes for good measure
-                value = value.EscapeBackslashes(this._validEscapes);
-
-                //Then these escape characters that can't occur in a NTriples literal
-                value = value.Replace("\n", "\\n");
-                value = value.Replace("\r", "\\r");
-                value = value.Replace("\t", "\\t");
-                value = value.Escape('"');
-
-                //Then remove null character since it doesn't change the meaning of the Literal
-                value = value.Replace("\0", "");
-            }
-
-            foreach (char c in value.ToCharArray())
-            {
-                output.Append(this.FormatChar(c));
-            }
+            value = this.Escape(value, this._litEscapes);
+            output.Append(this.FormatChar(value.ToCharArray()));
             output.Append('"');
 
             if (!l.Language.Equals(String.Empty))
@@ -118,10 +103,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (l.DataType != null)
             {
                 output.Append("^^<");
-                foreach (char c in this.FormatUri(l.DataType))
-                {
-                    output.Append(this.FormatChar(c));
-                }
+                output.Append(this.FormatUri(l.DataType));
                 output.Append('>');
             }
 
@@ -133,6 +115,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="c">Character</param>
         /// <returns></returns>
+        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
         {
             if (c <= 127)
@@ -142,16 +125,43 @@ namespace VDS.RDF.Writing.Formatting
             }
             else
             {
-                if (c <= 65535)
+                //Small Unicode Escape required
+                return "\\u" + ((int)c).ToString("X4");
+            }
+        }
+
+        /// <summary>
+        /// Formats a sequence of characters as a String
+        /// </summary>
+        /// <param name="cs">Characters</param>
+        /// <returns>String</returns>
+        public override string FormatChar(char[] cs)
+        {
+            StringBuilder builder = new StringBuilder();
+            int start = 0, length = 0;
+            for (int i = 0; i < cs.Length; i++)
+            {
+                char c = cs[i];
+                if (c <= 127)
                 {
-                    //Small Unicode Escape required
-                    return "\\u" + ((int)c).ToString("X4");
+                    length++;
                 }
                 else
                 {
-                    //Big Unicode Escape required
-                    return "\\U" + ((int)c).ToString("X8");
+                    builder.Append(cs, start, length);
+                    start = i + 1;
+                    length = 0;
+                    builder.Append("\\u");
+                    builder.Append(((int) c).ToString("X4"));
                 }
+            }
+            if (length == cs.Length)
+            {
+                return new string(cs);
+            }
+            else
+            {
+                return builder.ToString();
             }
         }
 
@@ -174,12 +184,7 @@ namespace VDS.RDF.Writing.Formatting
         public override string FormatUri(string u)
         {
             String temp = base.FormatUri(u);
-            StringBuilder output = new StringBuilder();
-            foreach (char c in temp.ToCharArray())
-            {
-                output.Append(this.FormatChar(c));
-            }
-            return output.ToString();
+            return this.FormatChar(temp.ToCharArray());
         }
     }
 }

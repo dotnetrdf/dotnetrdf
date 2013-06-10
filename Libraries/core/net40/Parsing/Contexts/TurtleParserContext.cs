@@ -139,5 +139,22 @@ namespace VDS.RDF.Parsing.Contexts
                 return this._syntax;
             }
         }
+
+        /// <summary>
+        /// Function for unescaping QNames
+        /// </summary>
+        public Func<String, String> QNameUnescapeFunction
+        {
+            get
+            {
+                switch (this._syntax)
+                {
+                    case TurtleSyntax.W3C:
+                        return TurtleSpecsHelper.UnescapeQName;
+                    default:
+                        return s => s;
+                }
+            }
+        }
     }
 }
