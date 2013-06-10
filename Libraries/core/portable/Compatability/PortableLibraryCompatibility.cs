@@ -118,10 +118,10 @@ namespace VDS.RDF
             Error.WriteLine();
         }
 
-        public static void Write(string str)
-        {
-            Out.Write(str);
-        }
+        //public static void Write(string str)
+        //{
+        //    Out.Write(str);
+        //}
 
         public static void Write(string fmt, params object[] args)
         {
@@ -133,10 +133,10 @@ namespace VDS.RDF
             Out.WriteLine(fmt, args);
         }
 
-        public static void WriteLine(string str)
-        {
-            Out.WriteLine(str);
-        }
+        //public static void WriteLine(string str)
+        //{
+        //    Out.WriteLine(str);
+        //}
 
         public static void WriteLine(object o)
         {
