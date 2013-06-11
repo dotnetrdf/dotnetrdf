@@ -355,8 +355,7 @@ namespace VDS.RDF
         public void GraphToDataTable()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             DataTable table = (DataTable)g;
 
