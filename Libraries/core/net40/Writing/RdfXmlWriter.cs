@@ -525,7 +525,14 @@ namespace VDS.RDF.Writing
                     {
                         //Terminate list with an rdf:nil
                         context.Writer.WriteStartAttribute("rdf", "resource", NamespaceMapper.RDF);
-                        context.Writer.WriteRaw("&rdf;nil");
+                        if (context.UseDtd)
+                        {
+                            context.Writer.WriteRaw("&rdf;nil");
+                        }
+                        else
+                        {
+                            context.Writer.WriteRaw(NamespaceMapper.RDF + "nil");
+                        }
                         context.Writer.WriteEndAttribute();
                     }
                 }
