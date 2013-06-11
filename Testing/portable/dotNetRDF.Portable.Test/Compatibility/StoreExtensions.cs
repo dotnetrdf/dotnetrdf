@@ -12,11 +12,40 @@ namespace VDS.RDF
     {
         public static void LoadFromFile(this ITripleStore store, string fileName)
         {
+            IStoreReader parser = null;
             using (var input = new StreamReader(fileName))
             {
-                IStoreReader reader =
-                    MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(fileName));
-                reader.Load(store, input);
+                string ext = MimeTypesHelper.GetTrueFileExtension(fileName);
+                try
+                {
+                    parser = MimeTypesHelper.GetStoreParserByFileExtension(ext);
+                }
+                catch (RdfParserSelectionException)
+                {
+                    try
+                    {
+                        IRdfReader rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
+                        var storeHandler = new StoreHandler(store);
+                        rdfParser.Load(storeHandler, input);
+                        return;
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // Ignore this. Will try and use format guessing and assume it is a dataset format
+                    }
+                }
+                if (parser == null)
+                {
+                    string data = input.ReadToEnd();
+                    input.Close();
+                    parser = StringParser.GetDatasetParser(data);
+                    var handler = new StoreHandler(store);
+                    parser.Load(handler, new StringReader(data));
+                }
+                else
+                {
+                    parser.Load(new StoreHandler(store), input );
+                }
             }
         }
 
