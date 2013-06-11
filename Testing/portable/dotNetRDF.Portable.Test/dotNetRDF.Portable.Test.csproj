@@ -738,5 +738,10 @@
     <Compile Include="..\..\unittest\Query\Builder\Expressions\VariableExpressionTests.cs">
       <Link>Query\Builder\Expressions\VariableExpressionTests.cs</Link>
     </Compile>
+	<None Include="..\..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>resources\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
   </ItemGroup>
 </Project>
