@@ -74,6 +74,38 @@ _:a a dnr:TripleCollection ;
         }
 
         [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNodeUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject("a");
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is ThreadSafeTripleCollection);
+        }
+
+        [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUriUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject(new Uri("http://example.com/indexedCollection"));
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+        }
+
+        [Test]
         public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
         {
             // given

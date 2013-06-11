@@ -44,7 +44,7 @@ namespace VDS.RDF.Configuration
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public class ConfigurationLoader
+    public class ConfigurationLoader : IConfigurationLoader
     {
         #region Constants
 
@@ -1543,13 +1543,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(string blankNodeIdentifier)
         {
-            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
-            if (blankNode == null)
-            {
-                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
-            }
-
-            return (T)LoadObject(_configGraph, blankNode);
+            return (T)LoadObject(blankNodeIdentifier);
         }
 
         /// <summary>
@@ -1560,13 +1554,41 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(Uri objectIdentifier)
         {
+            return (T)LoadObject(objectIdentifier);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public object LoadObject(string blankNodeIdentifier)
+        {
+            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+            if (blankNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
+            }
+
+            return LoadObject(_configGraph, blankNode);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public object LoadObject(Uri objectIdentifier)
+        {
             IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
             if (uriNode == null)
             {
                 throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
             }
 
-            return (T)LoadObject(_configGraph, uriNode);
+            return LoadObject(_configGraph, uriNode);
         }
 
         #endregion
