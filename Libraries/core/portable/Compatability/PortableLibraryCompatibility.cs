@@ -137,7 +137,28 @@ namespace VDS.RDF
 
     public class ConsoleStream : TextWriter
     {
-        // TODO: Make this a more robust implementation of TextWriter.
+        private readonly StringBuilder _lineBuilder = new StringBuilder();
+
+        
+        public override void Write(char[] buffer)
+        {
+            foreach (var c in buffer)
+            {
+                if (c == '\n')
+                {
+                    Flush();
+                }
+                else
+                {
+                    _lineBuilder.Append(c);
+                }
+            }
+        }
+
+        public override void WriteLine(string value)
+        {
+            System.Diagnostics.Debug.WriteLine(value);
+        }
 
         public override void WriteLine()
         {
@@ -178,8 +199,10 @@ namespace VDS.RDF
             }
         }
 
-        public void Flush()
+        public override void Flush()
         {
+            System.Diagnostics.Debug.WriteLine(_lineBuilder.ToString());
+            _lineBuilder.Clear();
         }
 
         public override void Write(char value)

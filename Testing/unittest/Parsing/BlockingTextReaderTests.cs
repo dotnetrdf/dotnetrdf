@@ -51,7 +51,12 @@ namespace VDS.RDF.Parsing
             using (StreamReader stream = new StreamReader("ParsingTextReaderCreation1.txt"))
             {
                 ParsingTextReader reader = ParsingTextReader.Create(stream);
+#if PORTABLE
+                // Portable class library uses blocking IO for file streams
+                Assert.IsInstanceOf<BlockingTextReader>(reader);
+#else
                 Assert.IsInstanceOf<NonBlockingTextReader>(reader);
+#endif
                 stream.Close();
             }
         }

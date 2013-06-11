@@ -162,6 +162,7 @@ namespace VDS.RDF.Query
         }
 #endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
@@ -183,7 +184,9 @@ namespace VDS.RDF.Query
             Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the LOAD command");
             Assert.IsTrue(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
@@ -206,6 +209,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the second LOAD command");
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+#endif
 
 #if !SILVERLIGHT
         [Test]

@@ -93,6 +93,7 @@ namespace VDS.RDF.Writing
 
                 //Save the XML to disk
                 writer.WriteEndDocument();
+                writer.Flush();
                 writer.Close();
                 output.Close();
             }

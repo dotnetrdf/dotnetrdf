@@ -37,7 +37,8 @@ namespace VDS.RDF.Query.Algebra
     public sealed class Set 
         : BaseSet, IEquatable<Set>
 #if PORTABLE
-        , IComparable<Set>
+        , IComparable<Set>,
+        IComparable
 #endif
     {
         private Dictionary<String, INode> _values;
@@ -270,6 +271,15 @@ namespace VDS.RDF.Query.Algebra
                 if (cmp != 0) return cmp;
             }
             return 0;
+        }
+
+        public int CompareTo(object other)
+        {
+            if (other is Set)
+            {
+                return CompareTo(other as Set);
+            }
+            return -1;
         }
 #endif
     }

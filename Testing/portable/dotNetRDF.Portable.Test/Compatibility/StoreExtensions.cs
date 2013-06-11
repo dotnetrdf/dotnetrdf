@@ -12,9 +12,11 @@ namespace VDS.RDF
     {
         public static void LoadFromFile(this ITripleStore store, string fileName)
         {
-            using (var fileStream = File.OpenRead(fileName))
+            using (var input = new StreamReader(fileName))
             {
-                StreamLoader.Load(new StoreHandler(store), fileName, fileStream);
+                IStoreReader reader =
+                    MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(fileName));
+                reader.Load(store, input);
             }
         }
 

@@ -207,7 +207,9 @@ namespace VDS.RDF.Writing
             {
                 new CompressingTurtleWriter(),
                 new PrettyRdfXmlWriter(),
+#if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
+#endif
                 new Notation3Writer(),
                 new NTriplesWriter(),
                 new PrettyRdfXmlWriter(),

@@ -1186,12 +1186,14 @@ namespace VDS.RDF.Storage
         }
 #endif
 
+#if !SILVERLIGHT // SPARQL LOAD command not supported
         [Test]
         public void StoragePersistentTripleStoreMemUpdate()
         {
             InMemoryManager manager = new InMemoryManager();
             this.TestUpdate(manager);
         }
+#endif
 
 #if !NO_SYNC_HTTP
         [Test]
