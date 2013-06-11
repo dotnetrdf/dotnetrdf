@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml;
@@ -118,11 +116,6 @@ namespace VDS.RDF
             Error.WriteLine();
         }
 
-        //public static void Write(string str)
-        //{
-        //    Out.Write(str);
-        //}
-
         public static void Write(string fmt, params object[] args)
         {
             Out.Write(fmt, args);
@@ -132,11 +125,6 @@ namespace VDS.RDF
         {
             Out.WriteLine(fmt, args);
         }
-
-        //public static void WriteLine(string str)
-        //{
-        //    Out.WriteLine(str);
-        //}
 
         public static void WriteLine(object o)
         {
@@ -156,9 +144,21 @@ namespace VDS.RDF
             System.Diagnostics.Debug.WriteLine(String.Empty);
         }
 
+        public override void WriteLine(object value)
+        {
+            System.Diagnostics.Debug.WriteLine(value);
+        }
+
         public override void WriteLine(string fmt, params object[] args)
         {
-            System.Diagnostics.Debug.WriteLine(fmt, args);
+            if (args.Length == 0)
+            {
+                System.Diagnostics.Debug.WriteLine(fmt);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine(fmt, args);
+            }
         }
 
         public override Encoding Encoding
@@ -168,7 +168,14 @@ namespace VDS.RDF
 
         public override void Write(string fmt, params object[] args)
         {
-            System.Diagnostics.Debug.WriteLine(fmt, args); // No Write method to use
+            if (args.Length == 0)
+            {
+                System.Diagnostics.Debug.WriteLine(fmt);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine(fmt, args); // No Write method to use
+            }
         }
 
         public void Flush()
