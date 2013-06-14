@@ -79,6 +79,7 @@ namespace VDS.RDF
             Assert.IsTrue(collection.GraphUris.Contains(null));
         }
 
+#if !NO_FILE
         [Test]
         public void GraphCollectionDiskDemand1()
         {
@@ -108,7 +109,9 @@ namespace VDS.RDF
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void GraphCollectionWebDemand1()
         {
@@ -140,5 +143,6 @@ namespace VDS.RDF
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
+#endif
     }
 }

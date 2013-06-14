@@ -21,6 +21,7 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
+- Upgrade AvalonEdit to 4.3.1.9430
 
 rdfOptStats
    

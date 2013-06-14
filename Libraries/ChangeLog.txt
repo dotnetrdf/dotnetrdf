@@ -5,13 +5,18 @@
 -----
 
 Added
+- Portable Class Library builds are now included
 - Formatting API
  - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
 
 Changed
 - Bug Fixes
- - Fix a bug where SPARQL parsing could incorrectly lose type for some literals used in expressions
+ - Fix a bug where SPARQL parsing could incorrectly lose type information for some literals used in expressions
  - Fix a Stack Overflow that could occur in ThreadSafeGraph (CORE-363)
+- Dependencies
+ - Upgraded Json.Net to 5.0.6
+- Configuration API
+ - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing
  - Significantly improve performance of writing non-ASCII characters to NTriples (CORE-357)
 

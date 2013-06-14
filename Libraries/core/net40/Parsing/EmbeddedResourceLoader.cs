@@ -36,7 +36,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public static class EmbeddedResourceLoader
     {
-        private static String _currAsmName = Assembly.GetExecutingAssembly().GetName().Name;
+        private static String _currAsmName = GetAssemblyName(Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Loads a Graph from an Embedded Resource
@@ -131,13 +131,17 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
         private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, String resource, IRdfReader parser)
         {
+            // KA: TMP
+            var resourceNames = asm.GetManifestResourceNames();
+            System.Diagnostics.Debug.WriteLine(String.Join("\n", resourceNames));
+            // KA: END TMP
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {
                 if (s == null)
                 {
                     //Resource did not exist in this assembly
-                    throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + asm.GetName().Name);
+                    throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
                 else
                 {
@@ -167,7 +171,9 @@ namespace VDS.RDF.Parsing
                             using (StreamReader reader = new StreamReader(s))
                             {
                                 data = reader.ReadToEnd();
+#if !PORTABLE
                                 reader.Close();
+#endif
                             }
                             parser = StringParser.GetParser(data);
                             parser.Load(handler, new StringReader(data));
@@ -276,7 +282,7 @@ namespace VDS.RDF.Parsing
                 if (s == null)
                 {
                     //Resource did not exist in this assembly
-                    throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + asm.GetName().Name);
+                    throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
                 else
                 {
@@ -314,7 +320,9 @@ namespace VDS.RDF.Parsing
                                 using (StreamReader reader = new StreamReader(s))
                                 {
                                     data = reader.ReadToEnd();
+#if !PORTABLE
                                     reader.Close();
+#endif
                                 }
                                 parser = StringParser.GetDatasetParser(data);
                                 parser.Load(handler, new StringReader(data));
@@ -323,6 +331,15 @@ namespace VDS.RDF.Parsing
                     }
                 }
             }
+        }
+
+        private static string GetAssemblyName(Assembly asm)
+        {
+#if PORTABLE
+            return asm.FullName;
+#else
+            return asm.GetName().Name;
+#endif
         }
     }
 }

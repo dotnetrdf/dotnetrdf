@@ -68,6 +68,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream
         /// </summary>
@@ -83,6 +84,7 @@ namespace VDS.RDF.Writing
 
             this.Save(g, output);
         }
+#endif
 
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream

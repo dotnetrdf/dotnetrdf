@@ -127,17 +127,21 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [Test]
         public void ParsingPagingHandlerRdfXml()
         {
             this.ParsingUsingPagingHandler("temp.rdf", new RdfXmlParser());
         }
+#endif
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void ParsingPagingHandlerRdfA()
         {
             this.ParsingUsingPagingHandler("temp.html", new RdfAParser());
         }
+#endif
 
         [Test]
         public void ParsingPagingHandlerRdfJson()
@@ -167,17 +171,21 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler2("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [Test]
         public void ParsingPagingHandlerRdfXml2()
         {
             this.ParsingUsingPagingHandler2("temp.rdf", new RdfXmlParser());
         }
+#endif
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void ParsingPagingHandlerRdfA2()
         {
             this.ParsingUsingPagingHandler2("temp.html", new RdfAParser());
         }
+#endif
 
         [Test]
         public void ParsingPagingHandlerRdfJson2()
@@ -207,17 +215,21 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingPagingHandler3("temp.n3", new Notation3Parser());
         }
 
+#if !NO_XMLENTITIES
         [Test]
         public void ParsingPagingHandlerRdfXml3()
         {
             this.ParsingUsingPagingHandler3("temp.rdf", new RdfXmlParser());
         }
+#endif
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void ParsingPagingHandlerRdfA3()
         {
             this.ParsingUsingPagingHandler3("temp.html", new RdfAParser());
         }
+#endif
 
         [Test]
         public void ParsingPagingHandlerRdfJson3()

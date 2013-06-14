@@ -74,13 +74,51 @@ _:a a dnr:TripleCollection ;
         }
 
         [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNodeUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject("a");
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is ThreadSafeTripleCollection);
+        }
+
+        [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUriUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject(new Uri("http://example.com/indexedCollection"));
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+        }
+
+        [Test]
         public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
         {
             // given
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
+#endif
             var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
 
             // then
@@ -95,8 +133,13 @@ _:a a dnr:TripleCollection ;
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
-
+#endif
             // then
             configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject"));
         }
@@ -108,7 +151,13 @@ _:a a dnr:TripleCollection ;
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
+#endif
 
             // then
             configuration.LoadObject<BaseTripleCollection>("store");
@@ -121,8 +170,13 @@ _:a a dnr:TripleCollection ;
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
-
+#endif
             // then
             configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection"));
         } 

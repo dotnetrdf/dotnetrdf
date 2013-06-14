@@ -78,7 +78,7 @@ namespace VDS.RDF.Configuration
             //We can load any object which implements IObjectLoader and has a public unparameterized constructor
             if (t.GetInterfaces().Any(i => i.Equals(iobjloader)))
             {
-                ConstructorInfo c = t.GetConstructor(System.Type.EmptyTypes);
+                ConstructorInfo c = t.GetConstructor(new Type[0]);
                 if (c != null)
                 {
                     return c.IsPublic;

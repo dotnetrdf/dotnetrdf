@@ -33,7 +33,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
@@ -190,7 +189,7 @@ namespace VDS.RDF.Query
                 TestTools.ShowGraph(view);
         }
 
-        [Test]
+#if !NO_SYNC_HTTP // AllegroGraphConnector does  not implement IStorageProvider
         public void SparqlViewAndReasonerInteraction2()
         {
             //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
@@ -218,6 +217,7 @@ namespace VDS.RDF.Query
                 TestTools.ShowGraph(view);
                 Console.WriteLine();
         }
+#endif
 
         [Test]
         public void SparqlViewGraphScope1()

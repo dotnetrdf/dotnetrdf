@@ -90,8 +90,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -114,8 +116,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -147,6 +151,13 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private void SetUriLoaderCaching(bool cachingEnabled)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = cachingEnabled;
+#endif
+        }
+
         [Test]
         public void ParsingUriLoaderDBPedia()
         {
@@ -154,7 +165,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 Options.HttpDebugging = true;
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
@@ -169,7 +180,7 @@ namespace VDS.RDF.Parsing
             finally
             {
                 Options.HttpDebugging = false;
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -189,7 +200,11 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
+#if PORTABLE
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF.Portable");
+#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
+#endif
 
             TestTools.ShowGraph(g);
 
@@ -200,7 +215,11 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
+#if PORTABLE
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Portable.Test");
+#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
+#endif
 
             TestTools.ShowGraph(g);
 
@@ -225,6 +244,7 @@ namespace VDS.RDF.Parsing
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
             TripleStore store = new TripleStore();
+            
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 
             Assert.IsTrue(store.Triples.Count() > 0);

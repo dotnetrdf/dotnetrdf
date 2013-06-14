@@ -36,7 +36,6 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage
 {
@@ -67,7 +66,9 @@ namespace VDS.RDF.Storage
             return (IStorageProvider)StardogTests.GetConnection();
         }
 
+#if !NO_SYNC_HTTP // Many of these tests require a synchronous API
         [Test]
+
         public void StorageStardogLoadDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();;
@@ -479,5 +480,6 @@ namespace VDS.RDF.Storage
 
             stardog.Dispose();
         }
+#endif
     }
 }

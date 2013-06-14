@@ -44,7 +44,7 @@ namespace VDS.RDF.Ontology
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Get the class of Ground Vehicles
             OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));

@@ -39,6 +39,7 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Writing.Serialization
 {
+#if !SILVERLIGHT
     [TestFixture]
     public class NodeSerializationTests
     {
@@ -327,4 +328,5 @@ namespace VDS.RDF.Writing.Serialization
 
         #endregion
     }
+#endif
 }

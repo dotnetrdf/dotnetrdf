@@ -94,7 +94,11 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+#if PORTABLE
+            this._agraphBase = this._baseUri.Copy();
+#else
             this._agraphBase = String.Copy(this._baseUri);
+#endif
             if (catalogID != null)
             {
                 this._baseUri += "catalogs/" + catalogID + "/";

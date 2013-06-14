@@ -41,6 +41,7 @@ namespace VDS.RDF.Writing
     {
         private TsvFormatter _formatter = new TsvFormatter();
 
+#if !NO_FILE
         /// <summary>
         /// Saves a SPARQL Result Set to TSV format
         /// </summary>
@@ -50,6 +51,7 @@ namespace VDS.RDF.Writing
         {
             this.Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
+#endif
 
         /// <summary>
         /// Saves a SPARQL Result Set to TSV format

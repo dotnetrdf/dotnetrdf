@@ -901,6 +901,7 @@ WHERE
             }
         }
 
+#if !NO_COMPRESSION
         [Test]
         public void SparqlOrderByComplexLazyPerformance()
         {
@@ -962,6 +963,7 @@ WHERE
             }
             Options.AlgebraOptimisation = true;
         }
+#endif
 
         [Test]
         public void SparqlOrderByComplexLazy2()

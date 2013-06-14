@@ -32,6 +32,7 @@ using System.Text;
 #if !NO_WEB
 using System.Web;
 #endif
+using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -394,6 +395,41 @@ namespace VDS.RDF.Storage
             }
         }
 
+#else
+        public Object Query(string sparqlQuery)
+        {
+            var wait = new AutoResetEvent(false);
+            Object ret = null;
+            Query(sparqlQuery, (sender, args, state) =>
+                {
+                    ret = args.QueryResults;
+                    (state as AutoResetEvent).Set();
+                }, wait);
+            wait.WaitOne();
+            return ret;
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            var wait = new AutoResetEvent(false);
+            Query(rdfHandler, resultsHandler, sparqlQuery, (sender, args, state) =>
+                { (state as AutoResetEvent).Set(); }, wait);
+            wait.WaitOne();
+        }
+
+        public void Update(string update)
+        {
+            var wait = new AutoResetEvent(false);
+            Update(update, (sender, args, state) => { (state as AutoResetEvent).Set(); }, wait);
+            wait.WaitOne();
+        }
 #endif
 
         /// <summary>

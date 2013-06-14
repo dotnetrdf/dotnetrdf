@@ -38,6 +38,7 @@ namespace VDS.RDF.Parsing.Handlers
     [TestFixture]
     public class GraphHandlerTests
     {
+#if !NO_SYNC_HTTP
         [Test]
         public void ParsingGraphHandlerImplicitBaseUriPropogation()
         {
@@ -80,6 +81,7 @@ namespace VDS.RDF.Parsing.Handlers
                 Options.UriLoaderCaching = true;
             }
         }
+#endif
 
         [Test]
         public void ParsingGraphHandlerImplicitTurtle()
@@ -107,7 +109,14 @@ namespace VDS.RDF.Parsing.Handlers
 
             Graph h = new Graph();
             GraphHandler handler = new GraphHandler(h);
+#if PORTABLE
+            using (var reader = new StreamReader(tempFile))
+            {
+                parser.Load(handler, reader);
+            }
+#else
             parser.Load(handler, tempFile);
+#endif
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
@@ -140,17 +149,21 @@ namespace VDS.RDF.Parsing.Handlers
             this.ParsingUsingGraphHandlerExplicitTest("temp.n3", new Notation3Parser(), true);
         }
 
+#if !NO_XMLENTITIES
         [Test]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.rdf", new RdfXmlParser(), true);
         }
+#endif
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void ParsingGraphHandlerExplicitRdfA()
         {
             this.ParsingUsingGraphHandlerExplicitTest("temp.html", new RdfAParser(), false);
         }
+#endif
 
         [Test]
         public void ParsingGraphHandlerExplicitRdfJson()

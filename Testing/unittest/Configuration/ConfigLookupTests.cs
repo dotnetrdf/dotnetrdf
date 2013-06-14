@@ -70,6 +70,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupNode3()
         {
@@ -86,6 +87,7 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
             Assert.AreEqual(NodeType.Literal, value.NodeType);
             Assert.AreEqual("literal", ((ILiteralNode)value).Value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupNode4()
@@ -212,6 +214,7 @@ _:a dnr:type ""not a boolean"" .";
             Assert.IsFalse(value);
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupBoolean5()
         {
@@ -226,6 +229,7 @@ _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
             Assert.IsTrue(value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupBoolean6()
@@ -279,6 +283,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupInt3()
         {
@@ -293,6 +298,7 @@ _:a dnr:type <appsetting:ConfigurationLookupInt3> .";
             int value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
             Assert.AreEqual(123, value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupLong1()
@@ -320,6 +326,7 @@ _:a dnr:type ""not an integer"" .";
             Assert.AreEqual(0, value);
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupLong3()
         {
@@ -334,6 +341,7 @@ _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
             long value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
             Assert.AreEqual(123, value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupString1()
@@ -363,6 +371,7 @@ _:a dnr:type <http://uri> .";
             Assert.IsNull(value);
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupString3()
         {
@@ -378,6 +387,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
 
             Assert.AreEqual("literal", value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupString4()
@@ -415,6 +425,7 @@ _:a dnr:type <http://uri> .";
             Assert.AreEqual("http://uri/", value);
         }
 
+#if !NO_SYSTEMCONFIGURATION
         [Test]
         public void ConfigurationLookupValue3()
         {
@@ -430,6 +441,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
 
             Assert.AreEqual("literal", value);
         }
+#endif
 
         [Test]
         public void ConfigurationLookupValue4()

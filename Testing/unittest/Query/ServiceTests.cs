@@ -33,6 +33,7 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
+#if !SILVERLIGHT // SERVICE keyword not supported
     [TestFixture]
     public class ServiceTests
     {
@@ -115,4 +116,5 @@ namespace VDS.RDF.Query
             }
         }
     }
+#endif
 }

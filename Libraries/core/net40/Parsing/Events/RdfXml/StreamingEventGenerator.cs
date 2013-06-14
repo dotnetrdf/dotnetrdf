@@ -96,6 +96,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._currentBaseUri = baseUri;
         }
 
+#if !NO_FILE
         /// <summary>
         /// Creates a new Streaming Event Generator
         /// </summary>
@@ -116,6 +117,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         {
             this._currentBaseUri = baseUri;
         }
+#endif
 
         /// <summary>
         /// Initialises the XML Reader settings
@@ -124,7 +126,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if SILVERLIGHT || NET40
+#if PORTABLE
+            settings.DtdProcessing = DtdProcessing.Ignore;
+#elif SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;

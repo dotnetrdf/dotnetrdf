@@ -38,6 +38,7 @@ namespace VDS.RDF.Update
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
+#if !SILVERLIGHT // LOAD not supported
         [Test]
         public void SparqlUpdateTimeout()
         {
@@ -63,5 +64,6 @@ namespace VDS.RDF.Update
 
             }
         }
+#endif
     }
 }

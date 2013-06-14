@@ -79,6 +79,7 @@ namespace VDS.RDF
         }
     }
 
+#if !NO_RWLOCK // No ThreadSafeGraph
     [TestFixture]
     public class GraphTests
         : AbstractGraphTests
@@ -108,4 +109,6 @@ namespace VDS.RDF
             return new NonIndexedGraph();
         }
     }
+#endif
+
 }
