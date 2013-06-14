@@ -1413,6 +1413,16 @@
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Core/net40/">
@@ -1448,6 +1458,22 @@
       <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
         <include name="dotNetRDF.*dll" />
         <include name="dotNetRDF.*xml" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/portable-win+net40+sl4+wp/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*dll" />
+        <include name="dotNetRDF.*xml" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/portable-windows8+net45/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*dll" />
+        <include name="dotNetRDF.*xml" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
@@ -1498,6 +1524,16 @@
         <include name="**/*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Symbols/Core/lib/net40/">
       <fileset basedir="bin/nightlies/Libraries/Core/net40/">
@@ -1527,6 +1563,20 @@
     <copy todir="Build/nuget/Symbols/Core/lib/sl4-wp/">
       <fileset basedir="bin/nightlies/Libraries/Core/sl4-wp/">
         <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Symbols/Core/lib/portable-win+net40+sl4+wp/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Symbols/Core/lib/portable-windows8+net45/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Symbols/Core/src/">
