@@ -20,26 +20,38 @@
 
       <!-- These only apply to non-portable builds -->
       <group targetFramework="net35-client">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net35">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40-client">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4-wp7">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
     </dependencies>
     <releaseNotes>
-     - Ensure NuGet packaged assemblies are signed (except Silverlight assemblies)
+     - Include Portable Class Library builds
     </releaseNotes>
   </metadata>
 </package>
