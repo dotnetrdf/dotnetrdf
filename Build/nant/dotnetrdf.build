@@ -57,13 +57,15 @@
 		 projectsync-core-silverlight,
 		 projectsync-core-windowsphone,
 		 projectsync-core-clientprofile,
-	         projectsync-core-clientprofile-net35,
+	   projectsync-core-clientprofile-net35,
+     projectsync-core-portable,
 		 projectsync-query-fulltext-clientprofile,
 		 projectsync-query-fulltext-clientprofile-net35,
 		 projectsync-query-fulltext-net35,
 		 projectsync-data-virtuoso-clientprofile,
 		 projectsync-data-virtuoso-clientprofile-net35,
-		 projectsync-data-virtuoso-net35">
+		 projectsync-data-virtuoso-net35,
+     projectsync-test-portable">
 
   </target>
 
@@ -225,6 +227,8 @@
       <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
+  
+  <!-- TODO: Probably need a license-core-portable target that ensures we don't overwrite 3rd Party Licenses -->
 
   <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
@@ -560,7 +564,8 @@
                    compile-core-silverlight,
                    compile-core-windowsphone,
                    compile-core-clientprofile,
-                   compile-core-clientprofile-net35">  
+                   compile-core-clientprofile-net35,
+                   compile-core-portable">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
@@ -661,6 +666,18 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
+    </exec>
+  </target>
+
+  <target name="compile-core-portable" description="Compiles the dotNetRDF Portable Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-portable">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core/portable/dotNetRDF.Portable.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
