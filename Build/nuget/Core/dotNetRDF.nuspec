@@ -22,6 +22,21 @@
       <group targetFramework="net35-client">
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
+      <group targetFramework="net35">
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="net40-client">
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="sl4">
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="sl4-wp7">
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
     </dependencies>
     <releaseNotes>
      - Ensure NuGet packaged assemblies are signed (except Silverlight assemblies)
