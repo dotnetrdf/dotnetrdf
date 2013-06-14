@@ -1011,13 +1011,22 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
   </target>
 
-  <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
+  <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile 3.5 Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.pdb" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/VDS.Common.dll" />
+  </target>
+
+  <target name="build-core-portable" description="Copy the latest Portable build to the Portable Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-portable">
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.pdb" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Portable.Runtime.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
