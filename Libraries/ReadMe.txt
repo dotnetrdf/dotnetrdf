@@ -12,6 +12,11 @@ This package contains the Core Library for the following .Net profiles:
 - .Net 3.5 Client Profile
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
+- Portable Class Library for:
+ - .Net 4.0 and Higher
+ - Silverlight 4 and Higher
+ - Windows Phone 7 and Higher
+ - .Net for Windows Store
 
 It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
@@ -44,6 +49,9 @@ Security
 
 From 0.7.2 onwards most builds of dotNetRDF are once again strong named signed, if you need unsigned
 builds for any reason please build yourself from source code.
+
+The Silverlight, Windows Phone and Portable Class Library builds are not signed because assembly signing
+has known limitations on those platforms due to lack of Assembly Redirects support on those platforms.
 
 Acknowledgements
 ----------------
