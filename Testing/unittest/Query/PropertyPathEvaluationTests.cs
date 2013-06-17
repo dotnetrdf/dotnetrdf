@@ -436,11 +436,7 @@ WHERE
                 Assert.IsNotNull(results);
 
                 Console.WriteLine();
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                foreach (SparqlResult result in results)
-                {
-                    Console.WriteLine(result.ToString(formatter));
-                }
+                TestTools.ShowResults(results);
 
                 Assert.AreEqual(2, results.Count);
             }
@@ -476,13 +472,38 @@ WHERE
                 Assert.IsNotNull(results);
 
                 Console.WriteLine();
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                foreach (SparqlResult result in results)
-                {
-                    Console.WriteLine(result.ToString(formatter));
-                }
+                TestTools.ShowResults(results);
 
                 Assert.AreEqual(2, results.Count);
+            }
+            finally
+            {
+                Options.RigorousEvaluation = false;
+            }
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationNonRigorous()
+        {
+            try
+            {
+                Graph g = new Graph();
+                g.LoadFromFile(@"resources\InferenceTest.ttl");
+                InMemoryDataset dataset = new InMemoryDataset(g);
+
+                String query = "SELECT * WHERE { ?subClass <http://www.w3.org/2000/01/rdf-schema#subClassOf>* ?class }";
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+
+                Console.WriteLine();
+                TestTools.ShowResults(results);
+
+                Assert.AreEqual(73, results.Count);
             }
             finally
             {
