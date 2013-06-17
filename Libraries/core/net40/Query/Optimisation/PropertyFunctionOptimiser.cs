@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     //Track where we need to insert the property function back into the BGP
                     ITriplePattern first = propFunc.OriginalPatterns.First();
-                    int origLocation = ps.FindIndex(p => ps.Equals(first));
+                    int origLocation = ps.FindIndex(p => p.Equals(first));
                     foreach (ITriplePattern tp in propFunc.OriginalPatterns)
                     {
                         int location = ps.FindIndex(p => p.Equals(tp));
