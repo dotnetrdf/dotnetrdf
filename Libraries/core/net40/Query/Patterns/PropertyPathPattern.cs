@@ -54,6 +54,8 @@ namespace VDS.RDF.Query.Patterns
             this._subj = subj;
             this._path = path;
             this._obj = obj;
+            this._subj.RigorousEvaluation = true;
+            this._obj.RigorousEvaluation = true;
 
             //Build our list of Variables
             if (this._subj.VariableName != null)
@@ -129,14 +131,18 @@ namespace VDS.RDF.Query.Patterns
             context["PathTransformID"] = transformContext.NextID;
 
             //Now we can evaluate the resulting algebra
-            //Note: We may need to preserve Blank Node variables across evaluations
-            //which we usually don't do BUT because of the way we translate only part of the path
-            //into an algebra at a time and may need to do further nested translate calls we do
-            //need to do this here
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
+            bool rigMode = Options.RigorousEvaluation;
             try
             {
+                //Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
+                Options.RigorousEvaluation = true;
+
+                //Note: We may need to preserve Blank Node variables across evaluations
+                //which we usually don't do BUT because of the way we translate only part of the path
+                //into an algebra at a time and may need to do further nested translate calls we do
+                //need to do this here
                 context.TrimTemporaryVariables = false;
                 BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
                 //Also note that we don't trim temporary variables here even if we've set the setting back
@@ -158,7 +164,7 @@ namespace VDS.RDF.Query.Patterns
             finally
             {
                 context.TrimTemporaryVariables = trimMode;
-                //context.RigorousEvaluation = rigMode;
+                Options.RigorousEvaluation = rigMode;
             }
         }
 

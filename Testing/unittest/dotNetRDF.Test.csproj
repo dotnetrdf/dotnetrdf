@@ -231,6 +231,9 @@
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\core-349.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\diff_cases\case1_a.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
