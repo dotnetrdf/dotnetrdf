@@ -429,10 +429,13 @@ WHERE
 ?subject a ?type . } ";
 
                 SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.IsNotNull(results);
 
+                Console.WriteLine();
                 NTriplesFormatter formatter = new NTriplesFormatter();
                 foreach (SparqlResult result in results)
                 {
@@ -466,10 +469,13 @@ WHERE
 ?subject a ?type . } ";
 
                 SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
                 SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.IsNotNull(results);
 
+                Console.WriteLine();
                 NTriplesFormatter formatter = new NTriplesFormatter();
                 foreach (SparqlResult result in results)
                 {

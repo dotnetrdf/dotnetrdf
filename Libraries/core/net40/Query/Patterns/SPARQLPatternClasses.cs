@@ -45,6 +45,7 @@ namespace VDS.RDF.Query.Patterns
         protected SparqlResultBinder _context = null;
 
         private bool _repeated = false;
+        private bool _rigorousEvaluation = false;
 
         /// <summary>
         /// Checks whether the Pattern Item accepts the given Node in the given Context
@@ -70,6 +71,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 this._context = value;
             }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether rigorous evaluation is used, note that this setting may be overridden by the global <see cref="Options.RigorousEvaluation" /> option
+        /// </summary>
+        public bool RigorousEvaluation
+        {
+            get { return this._rigorousEvaluation; }
+            set { this._rigorousEvaluation = value; }
+
         }
 
         /// <summary>

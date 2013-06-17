@@ -54,6 +54,8 @@ namespace VDS.RDF.Query.Patterns
             this._subj = subj;
             this._path = path;
             this._obj = obj;
+            this._subj.RigorousEvaluation = true;
+            this._obj.RigorousEvaluation = true;
 
             //Build our list of Variables
             if (this._subj.VariableName != null)
