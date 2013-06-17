@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Indexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
-        public void Index(Triple t)
+        public virtual void Index(Triple t)
         {
             this.Index(t.GraphUri.ToSafeString(), t);
         }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Indexes a Graph
         /// </summary>
         /// <param name="g">Graph</param>
-        public void Index(IGraph g)
+        public virtual void Index(IGraph g)
         {
             foreach (Triple t in g.Triples)
             {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Indexes a Dataset
         /// </summary>
         /// <param name="dataset">Dataset</param>
-        public void Index(ISparqlDataset dataset)
+        public virtual void Index(ISparqlDataset dataset)
         {
             foreach (Uri u in dataset.GraphUris)
             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Unindexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
-        public void Unindex(Triple t)
+        public virtual void Unindex(Triple t)
         {
             this.Unindex(t.GraphUri.ToSafeString(), t);
         }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Unindexes a Graph
         /// </summary>
         /// <param name="g">Graph</param>
-        public void Unindex(IGraph g)
+        public virtual void Unindex(IGraph g)
         {
             foreach (Triple t in g.Triples)
             {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Unindexes a Dataset
         /// </summary>
         /// <param name="dataset">Dataset</param>
-        public void Unindex(ISparqlDataset dataset)
+        public virtual void Unindex(ISparqlDataset dataset)
         {
             foreach (Uri u in dataset.GraphUris)
             {
