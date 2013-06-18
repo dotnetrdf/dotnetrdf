@@ -46,7 +46,7 @@
       <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -738,10 +738,9 @@
     <Compile Include="..\..\unittest\Query\Builder\Expressions\VariableExpressionTests.cs">
       <Link>Query\Builder\Expressions\VariableExpressionTests.cs</Link>
     </Compile>
-	<None Include="..\..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+    <None Include="..\..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
       <Link>resources\dataset_50.ttl.gz</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-
   </ItemGroup>
 </Project>
