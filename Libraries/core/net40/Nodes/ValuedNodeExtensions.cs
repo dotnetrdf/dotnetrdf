@@ -44,7 +44,7 @@ namespace VDS.RDF.Nodes
         /// <returns>Valued Node</returns>
         public static IValuedNode AsValuedNode(this INode n)
         {
-            if (n == null) return (IValuedNode)n;
+            if (n == null) return null;
             if (n is IValuedNode) return (IValuedNode)n;
 
             switch (n.NodeType)
@@ -86,7 +86,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
                                 DateTimeOffset date;
-                                if (DateTimeOffset.TryParse(lit.Value, out date))
+                                if (DateTimeOffset.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
                                 {
                                     return new DateNode(n.Graph, date, lit.Value);
                                 }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
                                 DateTimeOffset dateTime;
-                                if (DateTimeOffset.TryParse(lit.Value, out dateTime))
+                                if (DateTimeOffset.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
                                 {
                                     return new DateTimeNode(n.Graph, dateTime, lit.Value);
                                 }
