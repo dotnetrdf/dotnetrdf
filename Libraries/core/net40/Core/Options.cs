@@ -101,6 +101,8 @@ namespace VDS.RDF
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
 
+        private static StringComparison _defaultCollation = StringComparison.CurrentCultureIgnoreCase;
+
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
         /// </summary>
@@ -558,5 +560,24 @@ namespace VDS.RDF
                 _httpFullDebug = value;
             }
         }
+
+        /// <summary>
+        /// Gets/Sets the default collation for literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
+        /// </summary>
+        /// <remarks>
+        /// The default is set to the current thread culture 
+        /// </remarks>
+        public static StringComparison DefaultCollation
+        {
+            get
+            {
+                return _defaultCollation;
+            }
+            set
+            {
+                _defaultCollation = value;
+            }
+        }
+
     }
 }
