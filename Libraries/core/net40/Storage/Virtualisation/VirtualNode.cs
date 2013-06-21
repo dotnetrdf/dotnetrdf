@@ -1240,7 +1240,7 @@ namespace VDS.RDF.Storage.Virtualisation
                 case StringComparison.OrdinalIgnoreCase:
                     return ComparisonHelper.CompareLiterals(this, other, true);
                 default:
-                    return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture);
+                    return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture); 
             }
         }
 

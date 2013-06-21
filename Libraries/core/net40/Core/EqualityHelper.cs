@@ -810,7 +810,7 @@ namespace VDS.RDF
                                 else if (culture == null && !ignoreCase)
                                 {
                                     return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                                }
+                                } 
                                 return String.Compare(a.Value, b.Value, ignoreCase, culture);
                         }
                     }

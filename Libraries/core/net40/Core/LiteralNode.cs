@@ -456,7 +456,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture);
+            return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture); 
         }
 
         /// <summary>
