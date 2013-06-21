@@ -73,8 +73,7 @@ namespace VDS.RDF
         {
             INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
-            Assert.AreEqual(TimeSpan.Zero, valued.AsDateTime().Offset);
-            Assert.AreEqual(DateTimeKind.Unspecified, valued.AsDateTime().DateTime.Kind);
+            Assert.AreEqual(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
         }
 
         [Test]
@@ -82,9 +81,8 @@ namespace VDS.RDF
         {
             INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
-            Assert.AreEqual(TimeSpan.Zero, valued.AsDateTime().Offset);
             Assert.AreEqual(16, valued.AsDateTime().Hour);
-            Assert.AreEqual(DateTimeKind.Local, valued.AsDateTime().DateTime.Kind);
+            Assert.AreEqual(DateTimeKind.Utc, valued.AsDateTime().Kind);
         }
 
         [Test]

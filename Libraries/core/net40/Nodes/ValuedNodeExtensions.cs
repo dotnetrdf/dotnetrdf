@@ -85,8 +85,8 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                DateTimeOffset date;
-                                if (DateTimeOffset.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
+                                DateTime date;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
                                 {
                                     return new DateNode(n.Graph, date, lit.Value);
                                 }
@@ -95,8 +95,9 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                DateTimeOffset dateTime;
-                                if (DateTimeOffset.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
+                                DateTime dateTime;
+                                DateTimeOffset offset;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
                                 {
                                     return new DateTimeNode(n.Graph, dateTime, lit.Value);
                                 }

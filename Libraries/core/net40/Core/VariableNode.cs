@@ -449,11 +449,19 @@ namespace VDS.RDF
         /// Throws an error as variables cannot be converted to types
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
 
         /// <summary>
         /// Throws an error as variables cannot be cast to a time span
