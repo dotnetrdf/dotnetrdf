@@ -30,6 +30,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
+using System.Threading;
 
 namespace VDS.RDF
 {
@@ -455,7 +456,7 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            return ComparisonHelper.CompareLiterals(this, other);
+            return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture);
         }
 
         /// <summary>
