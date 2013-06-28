@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage.Virtualisation
                     else if (other.NodeType == NodeType.Literal)
                     {
                         //Compare Literals appropriately
-                        return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other, true, Thread.CurrentThread.CurrentUICulture);
+                        return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other, Options.DefaultCulture, Options.DefaultComparisonOptions);
                     }
                     else
                     {
@@ -1227,21 +1227,8 @@ namespace VDS.RDF.Storage.Virtualisation
             bool areEqual;
             if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
-            switch (Options.DefaultCollation)
-            {
-                case StringComparison.CurrentCulture:
-                    return ComparisonHelper.CompareLiterals(this, other, false, Thread.CurrentThread.CurrentUICulture);
-                case StringComparison.InvariantCulture:
-                    return ComparisonHelper.CompareLiterals(this, other, false, CultureInfo.InvariantCulture);
-                case StringComparison.InvariantCultureIgnoreCase:
-                    return ComparisonHelper.CompareLiterals(this, other, true, CultureInfo.InvariantCulture);
-                case StringComparison.Ordinal:
-                    return ComparisonHelper.CompareLiterals(this, other, false);
-                case StringComparison.OrdinalIgnoreCase:
-                    return ComparisonHelper.CompareLiterals(this, other, true);
-                default:
-                    return ComparisonHelper.CompareLiterals(this, other, true, Thread.CurrentThread.CurrentUICulture); 
-            }
+            return String.Compare(this.Value, other.Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
+
         }
 
         /// <summary>

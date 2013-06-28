@@ -314,7 +314,7 @@ namespace VDS.RDF
         /// <param name="a">First Literal Node</param>
         /// <param name="b">Second Literal Node</param>
         /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, bool ignoreCase, CultureInfo culture = null)
+        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture = null, CompareOptions comparisonOptions = CompareOptions.None)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -325,6 +325,16 @@ namespace VDS.RDF
             else if (b == null)
             {
                 return 1;
+            }
+
+            // initialize required culture and comparison options
+            if (culture==null) 
+            {
+                culture = Options.DefaultCulture;
+            }
+            if (comparisonOptions ==CompareOptions.None)
+            {
+                comparisonOptions = Options.DefaultComparisonOptions;
             }
 
             //Literal Nodes are ordered based on Type and lexical form
@@ -342,16 +352,7 @@ namespace VDS.RDF
             }
             else if (a.DataType == null && b.DataType == null)
             {
-                //If neither are typed use specified order on the value
-                if (culture == null && ignoreCase)
-                {
-                    return String.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-                }
-                else if (culture == null && !ignoreCase)
-                { 
-                    return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                }
-                return String.Compare(a.Value, b.Value, ignoreCase, culture);
+                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
             }
             else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
@@ -360,15 +361,7 @@ namespace VDS.RDF
                 if (!XmlSpecsHelper.IsSupportedType(type))
                 {
                     //Don't know how to order so use specified order on the value
-                    if (culture == null && ignoreCase)
-                    {
-                        return String.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-                    }
-                    else if (culture == null && !ignoreCase)
-                    {
-                        return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                    }
-                    return String.Compare(a.Value, b.Value, ignoreCase, culture);
+                    return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                 }
                 else
                 {
@@ -378,16 +371,7 @@ namespace VDS.RDF
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
                                 //Can use Lexical ordering for this so use specified order on the value
-                                if (culture == null && ignoreCase)
-                                {
-                                    return String.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-                                }
-                                else if (culture == null && !ignoreCase)
-                                {
-                                    return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                                }
-
-                                return String.Compare(a.Value.ToLower(), b.Value.ToLower(), ignoreCase, culture);
+                                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
 
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 //Remember that xsd:byte is actually equivalent to SByte in .Net
@@ -803,15 +787,7 @@ namespace VDS.RDF
 
                             default:
                                 //Don't know how to order so use specified order on the value
-                                if (culture == null && ignoreCase)
-                                {
-                                    return String.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-                                }
-                                else if (culture == null && !ignoreCase)
-                                {
-                                    return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                                } 
-                                return String.Compare(a.Value, b.Value, ignoreCase, culture);
+                                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                         }
                     }
                     catch
@@ -819,15 +795,7 @@ namespace VDS.RDF
                         //There was some error suggesting a non-valid value for a type
                         //e.g. "example"^^xsd:integer
                         //In this case just use specified order on the value
-                        if (culture == null && ignoreCase)
-                        {
-                            return String.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase);
-                        }
-                        else if (culture == null && !ignoreCase)
-                        {
-                            return String.Compare(a.Value, b.Value, StringComparison.Ordinal);
-                        }
-                        return String.Compare(a.Value, b.Value, ignoreCase, culture);
+                        return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                     }
                 }
             }
