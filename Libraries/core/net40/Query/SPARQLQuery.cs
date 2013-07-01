@@ -718,6 +718,18 @@ namespace VDS.RDF.Query
             }
         }
 
+        private int _virtualCount = -1;
+        public int VirtualCount
+        {
+            get
+            {
+                return this._virtualCount;
+            }
+            internal set
+            {
+                this._virtualCount = value;
+            }
+        }
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)
