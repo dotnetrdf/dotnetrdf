@@ -249,7 +249,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithObject(new UriNode(null, u));
+            return GetTriplesWithObject(graphUris, new UriNode(null, u));
         }
 
         /// <summary>
