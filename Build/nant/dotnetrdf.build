@@ -1672,6 +1672,8 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1679,6 +1681,8 @@
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1686,6 +1690,8 @@
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
