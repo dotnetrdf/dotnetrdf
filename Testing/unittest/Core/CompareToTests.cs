@@ -286,7 +286,7 @@ namespace VDS.RDF
         }
 
         [Test]
-        public void NodeCompareToCaseSensitivity()
+        public void NodeCompareToWithCompareOptions()
         {
             Graph g = new Graph();
 
