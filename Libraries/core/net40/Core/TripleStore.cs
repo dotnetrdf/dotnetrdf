@@ -292,7 +292,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithPredicate(new UriNode(null, u));
+            return GetTriplesWithPredicate(graphUris, new UriNode(null, u));
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithSubject(new UriNode(null, u));
+            return GetTriplesWithSubject(graphUris, new UriNode(null, u));
         }
 
         #endregion
