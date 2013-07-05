@@ -441,7 +441,16 @@ namespace VDS.RDF
         /// Throws an error as Graph Literals cannot be cast to a date time
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        /// <summary>
+        /// Throws an error as Graph Literals cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
         }

@@ -155,6 +155,7 @@
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\DateTimeTests.cs" />
     <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
@@ -428,6 +429,9 @@
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
     <Content Include="resources\schema-org.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\data-3.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\trix\curies.xml">
@@ -2799,6 +2803,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\missing-namespace-declarations.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-2-result.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-2.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-3-result.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-3.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">

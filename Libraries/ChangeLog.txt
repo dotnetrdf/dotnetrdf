@@ -16,8 +16,11 @@ Changed
  - Property Path * operator could produce incorrect results (CORE-349)
  - Correct an error message re: extension point in Full Text Indexing (FTXT-366)
  - Some full text queries could cause BIND clauses to result in unbound values (FTXT-364)
+ - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
+- Query
+ - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
 - Configuration API
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing
