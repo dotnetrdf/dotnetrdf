@@ -30,6 +30,8 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
+using System.Threading;
+using System.Globalization;
 
 namespace VDS.RDF
 {
@@ -454,8 +456,13 @@ namespace VDS.RDF
         public override int CompareTo(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-
-            return ComparisonHelper.CompareLiterals(this, other);
+            if (other == null)
+            {
+                //Everything is greater than a null
+                //Return a 1 to indicate this
+                return 1;
+            }
+            return String.Compare(this.Value, other.Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
         }
 
         /// <summary>
