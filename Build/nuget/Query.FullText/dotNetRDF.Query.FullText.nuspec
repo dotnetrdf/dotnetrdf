@@ -16,7 +16,7 @@
       <dependency id="Lucene.Net" version="3.0.3" />
     </dependencies>
     <releaseNotes>
-
+      - Fix a bug related to interaction of full text query extensions with other query clauses
     </releaseNotes>
   </metadata>
 </package>
