@@ -405,21 +405,19 @@ namespace VDS.RDF.Query
                 switch (c.Kind)
                 {
                     case DateTimeKind.Unspecified:
-                        if (d.Kind != DateTimeKind.Unspecified) throw new RdfQueryException(
-                                "Dates are incomparable, one specifies time zone information while the other does not");
                         break;
                     case DateTimeKind.Local:
-                        if (d.Kind == DateTimeKind.Unspecified) throw new RdfQueryException(
-                                "Dates are incomparable, one specifies time zone information while the other does not");
                         c = c.ToUniversalTime();
                         if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
                         break;
                     default:
-                        if (d.Kind == DateTimeKind.Unspecified) throw new RdfQueryException(
-                                "Dates are incomparable, one specifies time zone information while the other does not");
                         if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
                         break;
                 }
+
+                // Timezone irrelevant for date comparisons since we don't have any time to normalize to
+                // Thus Open World Assumption means we can compare
+                // For Local times we normalize to UTC
 
                 // Compare on the Unspecified/UTC form as appropriate
                 int res = c.Year.CompareTo(d.Year);
@@ -715,57 +713,6 @@ namespace VDS.RDF.Query
             {
                 //If not Literals use Node ordering
                 return x.CompareTo(y);
-            }
-        }
-
-        /// <summary>
-        /// Compares two Dates for Date ordering
-        /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
-        /// <returns></returns>
-        protected override int DateCompare(IValuedNode x, IValuedNode y)
-        {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
-            try
-            {
-                DateTime c = x.AsDateTime();
-                DateTime d = y.AsDateTime();
-
-                switch (c.Kind)
-                {
-                    case DateTimeKind.Unspecified:
-                        // Sort the unspecified date before local/UTC date
-                        if (d.Kind != DateTimeKind.Unspecified) return -1;
-                        break;
-                    case DateTimeKind.Local:
-                        // Sort local date after unspecified date
-                        if (d.Kind == DateTimeKind.Unspecified) return 1;
-                        c = c.ToUniversalTime();
-                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
-                        break;
-                    default:
-                        // Sort UTC date after unspecified date
-                        if (d.Kind == DateTimeKind.Unspecified) return 1;
-                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
-                        break;
-                }
-
-                // Otherwise sort based on Unspecified/UTC form as appropriate
-                int res = c.Year.CompareTo(d.Year);
-                if (res == 0)
-                {
-                    res = c.Month.CompareTo(d.Month);
-                    if (res == 0)
-                    {
-                        res = c.Day.CompareTo(d.Day);
-                    }
-                }
-                return res;
-            }
-            catch (FormatException)
-            {
-                throw new RdfQueryException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
             }
         }
 
