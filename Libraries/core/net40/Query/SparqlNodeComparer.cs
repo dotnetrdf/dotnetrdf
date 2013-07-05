@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
                                 return DateTimeCompare(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string ordering
-                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                             default:
                                 //Use node ordering
                                 return x.CompareTo(y);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
                                 return DateTimeCompare(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string ordering
-                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                             default:
                                 //Use node ordering
                                 return x.CompareTo(y);
@@ -537,7 +537,7 @@ namespace VDS.RDF.Query
                                     return DateTimeCompare(x, y);
                                 case XmlSpecsHelper.XmlSchemaDataTypeString:
                                     //Both Strings so use Lexical string ordering
-                                    return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                    return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                                 default:
                                     //Use node ordering
                                     return x.CompareTo(y);
