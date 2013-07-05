@@ -130,7 +130,16 @@ namespace VDS.RDF.Nodes
         /// Gets the date time value of the node
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot convert Time Spans to other types");
+        }
+
+        /// <summary>
+        /// Gets the date time value of the node
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot convert Time Spans to other types");
         }

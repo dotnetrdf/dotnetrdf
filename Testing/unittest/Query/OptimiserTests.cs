@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -42,13 +42,13 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class OptimiserTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQuerySimple()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -66,7 +66,7 @@ SELECT * WHERE
             Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].IsAcceptAll, "Second Triple Pattern should be the ?s ?p ?o pattern");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQuerySimple2()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -87,7 +87,7 @@ SELECT * WHERE
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryJoins()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -108,7 +108,7 @@ SELECT * WHERE
             Assert.IsFalse(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[1].Variables.Contains("s"), "Second triple pattern of the child graph pattern should not contain ?s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryFilterPlacement()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -129,7 +129,7 @@ SELECT * WHERE
             Assert.IsFalse(q.RootGraphPattern.TriplePatterns[2].PatternType == TriplePatternType.Filter, "Third Triple Pattern should not be the FilterPattern");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryFilterPlacement2()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -156,7 +156,7 @@ SELECT * WHERE
             Assert.AreEqual("type", q.RootGraphPattern.TriplePatterns[3].Variables.First(), "Second Filters Variable should be type");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryFilterPlacement3()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -184,7 +184,7 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("Filter("), "Algebra should have a Filter() operator in it");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryFilterPlacement4()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -213,7 +213,7 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("LeftJoin("), "Algebra should have a LeftJoin() operator in it");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserQueryFilterPlacement5()
         {
             // given
@@ -236,11 +236,11 @@ SELECT * WHERE
             var algebra = query.ToAlgebra();
 
             // then
-            Assert.IsInstanceOfType(algebra, typeof(Select));
-            Assert.IsInstanceOfType(((Select)algebra).InnerAlgebra, typeof(Filter));
+            Assert.IsInstanceOf<Select>(algebra);
+            Assert.IsInstanceOf<Filter>(((Select)algebra).InnerAlgebra);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraAskSimple()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -259,7 +259,7 @@ ASK WHERE
             Assert.IsTrue(algebra.Contains("AskBgp("), "Algebra should be optimised to use AskBgp()'s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraAskUnion()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -280,7 +280,7 @@ ASK WHERE
             Assert.IsTrue(algebra.Contains("AskUnion("), "Algebra should be optimised to use AskUnion()'s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraSelectSimple()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -299,7 +299,7 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraSelectUnion()
         {
             String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -320,7 +320,7 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("LazyUnion("), "Algebra should be optimised to use LazyUnion()'s");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinSimple1()
         {
             String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(?x = ?y) }";
@@ -334,7 +334,7 @@ SELECT * WHERE
             Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinSimple2()
         {
             String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(SAMETERM(?x, ?y)) }";
@@ -348,7 +348,7 @@ SELECT * WHERE
             Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinSimple3()
         {
             String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(?a = ?b) }";
@@ -362,7 +362,7 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("Filter"), "Algebra should be optimised to use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinSimple4()
         {
             String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(SAMETERM(?a, ?b)) }";
@@ -376,7 +376,7 @@ SELECT * WHERE
             Assert.IsFalse(algebra.Contains("Filter("), "Algebra should not be optimised to not use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinComplex1()
         {
             String query = "SELECT * WHERE { ?x a ?type . { SELECT ?y WHERE { ?y a ?type } }. FILTER(?x = ?y) }";
@@ -389,7 +389,7 @@ SELECT * WHERE
             Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplicitJoinComplex2()
         {
             String query = "SELECT * WHERE { ?x a ?type . OPTIONAL { ?y a ?type } . FILTER(?x = ?y) }";
@@ -403,14 +403,17 @@ SELECT * WHERE
             Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraImplictJoinComplex3()
         {
             String query = @"SELECT ?s ?v ?z
 WHERE
 {
   ?z a ?type .
-  {    ?s a ?v .    FILTER(?v = ?z)  }
+  {
+    ?s a ?v .
+    FILTER(?v = ?z)
+  }
 }";
 
             SparqlQuery q = this._parser.ParseFromString(query);
@@ -423,7 +426,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraFilteredProduct1()
         {
             String query = @"SELECT *
@@ -444,7 +447,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraFilteredProduct2()
         {
             String query = @"SELECT *
@@ -465,7 +468,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraFilteredProduct3()
         {
             String query = @"SELECT *
@@ -486,7 +489,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraFilteredProduct4()
         {
             String query = @"SELECT *
@@ -507,7 +510,7 @@ WHERE
             Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct1()
         {
             String query = "SELECT DISTINCT ?p WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -518,7 +521,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct2()
         {
             String query = "SELECT DISTINCT ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
@@ -529,7 +532,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByDistinct3()
         {
             String query = "SELECT DISTINCT * WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -542,7 +545,7 @@ WHERE
             Assert.IsFalse(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced1()
         {
             String query = "SELECT REDUCED ?p WHERE { ?s ?p ?o } ORDER BY ?p";
@@ -553,7 +556,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced2()
         {
             String query = "SELECT REDUCED ?s ?p WHERE { ?s ?p ?o } ORDER BY CONCAT(?s, ?p)";
@@ -564,7 +567,7 @@ WHERE
             Assert.IsTrue(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOptimiserAlgebraOrderByReduced3()
         {
             String query = "SELECT REDUCED * WHERE { ?s ?p ?o } ORDER BY ?p";

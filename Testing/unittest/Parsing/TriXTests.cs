@@ -24,62 +24,50 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class TriXTests
     {
-        private TriXWriter _writer = new TriXWriter();
-        private TriXParser _parser = new TriXParser();
+        private TriXWriter _writer;
+        private TriXParser _parser;
 
-        [TestMethod, Timeout(2500)]
-        public void ParsingTriXPerformance1()
+        [SetUp]
+        public void Setup()
         {
-            //1 Graph, 100 Triples per Graph = 100 Triples total
-            this.TestTrixPerformance(1, 100);
+            _writer = new TriXWriter();
+            _parser = new TriXParser();
         }
 
-        [TestMethod, Timeout(2500)]
-        public void ParsingTriXPerformance2()
-        {
-            //10 Graphs, 1000 Triples per Graph = 10,000 Triples total
-            this.TestTrixPerformance(10, 1000);
-        }
-
-        [TestMethod, Timeout(2500)]
-        public void ParsingTriXPerformance3()
-        {
-            //1000 Graphs, 10 Triples per Graph = 10,000 Triples total
-            this.TestTrixPerformance(1000, 10);
-        }
-
-        [TestMethod, Timeout(25000)]
-        public void ParsingTriXPerformance4()
-        {
-            //1000 Graphs, 100 Triples per Graph = 100,000 Triples total
-            this.TestTrixPerformance(1000, 100);
-        }
-
-        [TestMethod, Timeout(2500)]
-        public void ParsingTriXPerformance5()
+        [Test, Timeout(5000)]
+        public void ParsingTriXPerformanceCore351()
         {
             //Test case from CORE-351
             TripleStore store = new TripleStore();
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            this._parser.Load(store, @"lib_p11_ontology.trix");
+            this._parser.Load(store, @"resources\\lib_p11_ontology.trix");
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
 
-        private void TestTrixPerformance(int numGraphs, int triplesPerGraph)
+        [Timeout(50000)]
+        [TestCase(1000, 100)]
+        public void ParsingTriXPerformance_LargeDataset(int numGraphs, int triplesPerGraph)
+        {
+            ParsingTriXPerformance(numGraphs, triplesPerGraph);
+        }
+
+        [Timeout(5000)]
+        [TestCase(1000, 10)]
+        [TestCase(10, 1000)]
+        [TestCase(1, 100)]
+        public void ParsingTriXPerformance(int numGraphs, int triplesPerGraph)
         {
             //Generate data
             TripleStore store = new TripleStore();

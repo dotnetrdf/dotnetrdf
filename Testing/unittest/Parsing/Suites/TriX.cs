@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing.Suites
 {
    
-    [TestClass]
+    [TestFixture]
     public class TriX
         : BaseDatasetParserSuite
     {
@@ -46,12 +46,27 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+#if NO_XSL
+        private readonly string[] _trixFilesRequiringStylesheet = new string[]
+            {
+                "resources\\trix\\curies.xml",
+                "resources\\trix\\datatypes.xml",
+                "resources\\trix\\multiple-stylesheets.xml"
+            };
+#endif
+
+        [Test]
         public void ParsingSuiteTriX()
         {
+#if NO_XSL
+            //Run manifests
+            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad") && !_trixFilesRequiringStylesheet.Contains(f), true);
+            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad") && !_trixFilesRequiringStylesheet.Contains(f), false);
+#else
             //Run manifests
             this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
             this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
+#endif
 
             if (this.Count == 0) Assert.Fail("No tests found");
 

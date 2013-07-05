@@ -27,21 +27,21 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
-    [TestClass]
+    [TestFixture]
     public abstract class GenericUpdateProcessorTests
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
         protected abstract IStorageProvider GetManager();
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
             IStorageProvider manager = this.GetManager();
@@ -59,7 +59,7 @@ namespace VDS.RDF.Update
             Assert.AreEqual(1, g.Triples.Count, "[" + manager.ToString() + "] Graph should have 1 Triple");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
             IStorageProvider manager = this.GetManager();

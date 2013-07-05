@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -39,7 +39,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+//#if !NO_SYNC_HTTP
+    [TestFixture]
     public class FusekiTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -53,15 +54,17 @@ namespace VDS.RDF.Storage
             return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveGraph()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
@@ -83,19 +86,23 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveDefaultGraph()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -118,19 +125,23 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiSaveDefaultGraph2()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -153,22 +164,25 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiLoadGraph()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -187,16 +201,20 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteGraph()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 StorageFusekiSaveGraph();
 
@@ -220,17 +238,20 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteDefaultGraph()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveDefaultGraph();
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -253,17 +274,20 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDeleteDefaultGraph2()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveDefaultGraph();
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -286,17 +310,20 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiAddTriples()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
@@ -311,17 +338,20 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiRemoveTriples()
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
@@ -336,11 +366,13 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiQuery()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -356,7 +388,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiUpdate()
         {
             try
@@ -394,7 +426,7 @@ namespace VDS.RDF.Storage
             
         }
 
-        [TestMethod]
+        [Test]
         public void StorageFusekiDescribe()
         {
             try
@@ -419,4 +451,5 @@ namespace VDS.RDF.Storage
             }
         }
     }
+//#endif
 }

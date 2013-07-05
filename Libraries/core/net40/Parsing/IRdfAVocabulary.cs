@@ -94,6 +94,7 @@ namespace VDS.RDF.Parsing
         }
     }
 
+#if !NO_HTMLAGILITYPACK
     /// <summary>
     /// Vocabulary for XHTML+RDFa (and HTML+RDFa)
     /// </summary>
@@ -219,7 +220,7 @@ namespace VDS.RDF.Parsing
             }
         }
     }
-
+#endif
     /// <summary>
     /// Represents a dynamic vocabulary for RDFa
     /// </summary>

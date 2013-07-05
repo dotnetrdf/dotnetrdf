@@ -89,6 +89,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Store in NQuads format
         /// </summary>
@@ -103,7 +104,7 @@ namespace VDS.RDF.Writing
             this.Save(store, new StreamWriter(filename));
 #endif
         }
-
+#endif
 
         /// <summary>
         /// Saves a Store in NQuads format
@@ -299,6 +300,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
+#if !PORTABLE // PCL doesn't provide Thread.Abort() or ThreadAbortException
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything
@@ -306,6 +308,7 @@ namespace VDS.RDF.Writing
                 Thread.ResetAbort();
 #endif
             }
+#endif
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);

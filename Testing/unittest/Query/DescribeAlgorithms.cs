@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -35,7 +35,7 @@ using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class DescribeAlgorithms
     {
         private const String DescribeQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> DESCRIBE ?x WHERE {?x foaf:name \"Dave\" }";
@@ -44,19 +44,19 @@ namespace VDS.RDF.Query
         private InMemoryDataset _data;
         private LeviathanQueryProcessor _processor;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._parser = new SparqlQueryParser();
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "describe-algos.ttl");
+            g.LoadFromFile("resources\\describe-algos.ttl");
             store.Add(g);
             this._data = new InMemoryDataset(store);
             this._processor = new LeviathanQueryProcessor(this._data);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             this._parser = null;
@@ -68,57 +68,25 @@ namespace VDS.RDF.Query
             return this._parser.ParseFromString(DescribeQuery);
         }
 
-        private Graph RunDescribeTest(ISparqlDescribe describer)
+        [TestCase(typeof(ConciseBoundedDescription))]
+        [TestCase(typeof(SymmetricConciseBoundedDescription))]
+        [TestCase(typeof(SimpleSubjectDescription))]
+        [TestCase(typeof(SimpleSubjectObjectDescription))]
+        [TestCase(typeof(MinimalSpanningGraph))]
+        [TestCase(typeof(LabelledDescription))]
+        public void ShouldSucceedDescribingWithSpecificAlgorithm(Type describerType)
         {
             SparqlQuery q = this.GetQuery();
-            q.Describer = describer;
+            q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
             Object results = this._processor.ProcessQuery(q);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);
-                return (Graph)results;
             }
-            else 
+            else
             {
                 Assert.Fail("Expected a Graph as the Result");
-                return null;
             }
-        }
-
-        [TestMethod]
-        public void SparqlDescribeCBD()
-        {
-            this.RunDescribeTest(new ConciseBoundedDescription());
-        }
-
-        [TestMethod]
-        public void SparqlDescribeSCBD()
-        {
-            this.RunDescribeTest(new SymmetricConciseBoundedDescription());
-        }
-
-        [TestMethod]
-        public void SparqlDescribeSubject()
-        {
-            this.RunDescribeTest(new SimpleSubjectDescription());
-        }
-
-        [TestMethod]
-        public void SparqlDescribeSubjectObject()
-        {
-            this.RunDescribeTest(new SimpleSubjectObjectDescription());
-        }
-
-        [TestMethod]
-        public void SparqlDescribeMSG()
-        {
-            this.RunDescribeTest(new MinimalSpanningGraph());
-        }
-
-        [TestMethod]
-        public void SparqlDescribeLabelled()
-        {
-            this.RunDescribeTest(new LabelledDescription());
         }
     }
 }

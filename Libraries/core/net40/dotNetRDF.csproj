@@ -12,9 +12,8 @@
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -38,6 +37,7 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,7 +47,6 @@
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoWarn>0659,1574,0067,0419,0628</NoWarn>
     <WarningsAsErrors>0672,0108</WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -56,7 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -66,7 +65,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -91,6 +90,7 @@
     <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
     <Compile Include="Configuration\CollectionFactory.cs" />
+    <Compile Include="Configuration\IConfigurationLoader.cs" />
     <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\OperatorFactory.cs" />
     <Compile Include="Core\BaseDemandGraphCollection.cs" />
@@ -134,12 +134,50 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\DescribeBuilder.cs" />
+    <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpressionExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\NumericExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\IriExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\RdfTermExpression.cs" />
+    <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\GraphPatternType.cs" />
+    <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ISelectBuilder.cs" />
+    <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\IQueryWithVariablesBuilder.cs" />
+    <Compile Include="Query\Builder\PatternItemFactory.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
+    <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
+    <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\SelectBuilder.cs" />
+    <Compile Include="Query\Builder\SparqlCastBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
+    <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\ExternalDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Builder\IQueryBuilder.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
@@ -174,6 +212,7 @@
     <Compile Include="Query\PropertyFunctions\ISparqlPropertyFunction.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
+    <Compile Include="Query\Builder\QueryBuilder.cs" />
     <Compile Include="Query\SparqlExpressionParser.cs" />
     <Compile Include="Query\SparqlResult.cs" />
     <Compile Include="Query\SparqlResultBinder.cs" />
@@ -876,6 +915,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -896,4 +936,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

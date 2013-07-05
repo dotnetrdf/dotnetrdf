@@ -29,24 +29,25 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class ValuedNodeTests : BaseTest
     {
         private Graph _graph;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _graph = new Graph();
         }
 
-        [TestMethod]
+        [Test]
         public void NodeAsValuedTimeSpan()
         {
             INode orig = new TimeSpan(1, 0, 0).ToLiteral(_graph);
@@ -57,7 +58,51 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(TimeSpanNode), valued.GetType());
         }
 
-        [TestMethod]
+        [Test]
+        public void NodeAsValuedDateTime1()
+        {
+            INode orig = DateTime.Now.ToLiteral(_graph);
+            IValuedNode valued = orig.AsValuedNode();
+
+            Assert.AreEqual(((ILiteralNode)orig).Value, ((ILiteralNode)valued).Value);
+            Assert.AreEqual(typeof(DateTimeNode), valued.GetType());
+        }
+
+        [Test]
+        public void NodeAsValuedDateTime2()
+        {
+            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            IValuedNode valued = orig.AsValuedNode();
+            Assert.AreEqual(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
+        }
+
+        [Test]
+        public void NodeAsValuedDateTime3()
+        {
+            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            IValuedNode valued = orig.AsValuedNode();
+            Assert.AreEqual(16, valued.AsDateTime().Hour);
+            Assert.AreEqual(DateTimeKind.Utc, valued.AsDateTime().Kind);
+        }
+
+        [Test]
+        public void NodeDateTimeParsing()
+        {
+            String input = "2013-06-19T09:58:00";
+            DateTime dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+            Assert.AreEqual(DateTimeKind.Unspecified, dt.Kind);
+
+            input = "2013-06-19T09:58:00-07:00";
+            dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+            Assert.AreEqual(DateTimeKind.Utc, dt.Kind);
+            Assert.AreEqual(16, dt.Hour);
+
+            input = "2013-06-19T09:58:00Z";
+            dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+            Assert.AreEqual(DateTimeKind.Utc, dt.Kind);
+        }
+
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfDecimalValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -66,7 +111,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfDoubleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -75,7 +120,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ShouldCorrectlyPerformRoundtripConversionOfSingleValuedNodesRegardlessOfCulture()
         {
             foreach (var ci in TestedCultureInfos)
@@ -94,7 +139,7 @@ namespace VDS.RDF.Core
             T convertedBack = convertBack(valuedNode);
 
             // then
-            Assert.AreEqual<T>(value, convertedBack);
+            Assert.AreEqual(value, convertedBack);
         }
     }
 }

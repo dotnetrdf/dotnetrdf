@@ -22,12 +22,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#if !NO_FULLTEXT
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -41,7 +42,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextSparqlTests2
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -126,13 +127,13 @@ namespace VDS.RDF.Query.FullText
             }
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects1()
         {
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", Enumerable.Empty<INode>());
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects2()
         {
             this.EnsureTestData();
@@ -148,7 +149,7 @@ namespace VDS.RDF.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects3()
         {
             this.EnsureTestData();
@@ -164,7 +165,7 @@ namespace VDS.RDF.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects4()
         {
             this.EnsureTestData();
@@ -181,7 +182,7 @@ namespace VDS.RDF.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match }", expected);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects5()
         {
             this.EnsureTestData();
@@ -198,7 +199,7 @@ namespace VDS.RDF.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextSparqlComplexLuceneSubjects6()
         {
             this.EnsureTestData();
@@ -213,3 +214,4 @@ namespace VDS.RDF.Query.FullText
         }
     }
 }
+#endif

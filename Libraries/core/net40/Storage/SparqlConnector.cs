@@ -71,9 +71,21 @@ namespace VDS.RDF.Storage
     public class SparqlConnector
         : IQueryableStorage, IConfigurationSerializable
     {
+        /// <summary>
+        /// Underlying SPARQL query endpoint
+        /// </summary>
         protected SparqlRemoteEndpoint _endpoint;
+        /// <summary>
+        /// Method for loading graphs
+        /// </summary>
         protected SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
+        /// <summary>
+        /// Whether to skip local parsing
+        /// </summary>
         protected bool _skipLocalParsing = false;
+        /// <summary>
+        /// Timeout for endpoints
+        /// </summary>
         protected int _timeout;
 
         /// <summary>
@@ -565,7 +577,7 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class is a wrapper around a <see cref="SparqlRemoteEndpoint"/> and a <see cref="SparqlRemoteUpdateEndpoint"/>.  The former is used for the query functionality while the latter is used for the update functionality.  As updates happen via SPARQL the behaviour with respects to adding and removing blank nodes will be somewhat up to the underlying SPARQL implementation.  This connector is <strong>not</strong> able to carry out <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{T},IEnumerable{T})"/> operations which attempt to delete blank nodes and cannot guarantee that added blank nodes bear any relation to existing blank nodes in the store.
+    /// This class is a wrapper around a <see cref="SparqlRemoteEndpoint"/> and a <see cref="SparqlRemoteUpdateEndpoint"/>.  The former is used for the query functionality while the latter is used for the update functionality.  As updates happen via SPARQL the behaviour with respects to adding and removing blank nodes will be somewhat up to the underlying SPARQL implementation.  This connector is <strong>not</strong> able to carry out <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})"/> operations which attempt to delete blank nodes and cannot guarantee that added blank nodes bear any relation to existing blank nodes in the store.
     /// </para>
     /// <para>
     /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing endpoint instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="ReadWriteSparqlConnector.Endpoint">Endpoint</see> and <see cref="ReadWriteSparqlConnector.UpdateEndpoint">UpdateEndpoint</see> properties and programmatically adding the settings.
@@ -577,6 +589,12 @@ namespace VDS.RDF.Storage
         private SparqlFormatter _formatter = new SparqlFormatter();
         private SparqlRemoteUpdateEndpoint _updateEndpoint;
 
+        /// <summary>
+        /// Creates a new connection
+        /// </summary>
+        /// <param name="queryEndpoint">Query Endpoint</param>
+        /// <param name="updateEndpoint">Update Endpoint</param>
+        /// <param name="mode">Method for loading graphs</param>
         public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
             : base(queryEndpoint, mode)
         {
@@ -584,12 +602,28 @@ namespace VDS.RDF.Storage
             this._updateEndpoint = updateEndpoint;
         }
 
+        /// <summary>
+        /// Creates a new connection
+        /// </summary>
+        /// <param name="queryEndpoint">Query Endpoint</param>
+        /// <param name="updateEndpoint">Update Endpoint</param>
         public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
             : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
+        /// <summary>
+        /// Creates a new connection
+        /// </summary>
+        /// <param name="queryEndpoint">Query Endpoint</param>
+        /// <param name="updateEndpoint">Update Endpoint</param>
+        /// <param name="mode">Method for loading graphs</param>
         public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(queryEndpoint), new SparqlRemoteUpdateEndpoint(updateEndpoint), mode) { }
 
+        /// <summary>
+        /// Creates a new connection
+        /// </summary>
+        /// <param name="queryEndpoint">Query Endpoint</param>
+        /// <param name="updateEndpoint">Update Endpoint</param>
         public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
             : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
@@ -602,6 +636,23 @@ namespace VDS.RDF.Storage
             get
             {
                 return this._updateEndpoint;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the HTTP Timeout used for communicating with the SPARQL Endpoint
+        /// </summary>
+        public override int Timeout
+        {
+            get
+            {
+                return this._timeout;
+            }
+            set
+            {
+                this._timeout = value;
+                this._endpoint.Timeout = value;
+                this._updateEndpoint.Timeout = value;
             }
         }
 

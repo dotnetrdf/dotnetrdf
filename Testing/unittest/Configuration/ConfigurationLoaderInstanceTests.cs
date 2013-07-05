@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class ConfigurationLoaderInstanceTests
     {
         private const string TestConfigGraph = ConfigLookupTests.Prefixes + @"
@@ -41,7 +41,7 @@ _:a a dnr:TripleCollection ;
 <indexedCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
 
-        [TestMethod]
+        [Test]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNode()
         {
             // given
@@ -57,7 +57,7 @@ _:a a dnr:TripleCollection ;
             Assert.IsTrue(collection is ThreadSafeTripleCollection);
         }
 
-        [TestMethod]
+        [Test]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUri()
         {
             // given
@@ -73,14 +73,52 @@ _:a a dnr:TripleCollection ;
             Assert.IsTrue(collection is TreeIndexedTripleCollection);
         }
 
-        [TestMethod]
+        [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNodeUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject("a");
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is ThreadSafeTripleCollection);
+        }
+
+        [Test]
+        public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUriUsingTypeAsParameter()
+        {
+            // given
+            Graph g = new Graph();
+            g.LoadFromString(TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader(g);
+            var collection = (BaseTripleCollection)configuration.LoadObject(new Uri("http://example.com/indexedCollection"));
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+        }
+
+        [Test]
         public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
         {
             // given
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
+#endif
             var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
 
             // then
@@ -88,41 +126,57 @@ _:a a dnr:TripleCollection ;
             Assert.IsTrue(collection is TreeIndexedTripleCollection);
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException), "Resource <http://example.com/notSuchObject> was not found is configuration graph")]
+        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource <http://example.com/notSuchObject> was not found is configuration graph")]
         public void ShouldThrowWhenUriNodeIsNotFound()
         {
             // given
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
-
+#endif
             // then
             configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject"));
         }
 
-        [TestMethod, ExpectedException(typeof(ArgumentException), "Resource _:store was not found is configuration graph")]
+        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource _:store was not found is configuration graph")]
         public void ShouldThrowWhenBlankNodeIsNotFound()
         {
             // given
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
+#endif
 
             // then
             configuration.LoadObject<BaseTripleCollection>("store");
         }
 
-        [TestMethod, ExpectedException(typeof(InvalidCastException))]
+        [Test, ExpectedException(typeof(InvalidCastException))]
         public void ShouldThrowWhenTryingToLoadWrongType()
         {
             // given
             File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
+#if PORTABLE
+            var g= new Graph();
+            g.LoadFromFile("configuration.ttl");
+            var configuration = new ConfigurationLoader(g);
+#else
             var configuration = new ConfigurationLoader("configuration.ttl");
-
+#endif
             // then
             configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection"));
         } 

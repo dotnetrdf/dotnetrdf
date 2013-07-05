@@ -23,13 +23,15 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !NO_FULLTEXT
+
 using System;
 using System.Text;
 using System.Collections.Generic;
 using DirInfo = System.IO.DirectoryInfo;
 using System.Linq;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
@@ -47,7 +49,7 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.FullText
 {
-    [TestClass]
+    [TestFixture]
     public class FullTextConfigTests
     {
         private FullTextObjectFactory _factory = new FullTextObjectFactory();
@@ -61,7 +63,7 @@ namespace VDS.RDF.Query.FullText
             return g;
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSchemaDefault()
         {
             IGraph g = this.GetBaseGraph();
@@ -78,7 +80,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigAnalyzerLuceneStandard()
         {
             IGraph g = this.GetBaseGraph();
@@ -95,7 +97,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Analyzer, "Should have returned an Analyzer Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigAnalyzerLuceneStandardWithVersion()
         {
             IGraph g = this.GetBaseGraph();
@@ -113,7 +115,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Analyzer, "Should have returned an Analyzer Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigIndexLuceneRAM()
         {
             IGraph g = this.GetBaseGraph();
@@ -130,7 +132,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Directory, "Should have returned a Directory Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigIndexLuceneFS()
         {
             IGraph g = this.GetBaseGraph();
@@ -149,7 +151,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Directory, "Should have returned a Directory Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigIndexerLuceneSubjects()
         {
             //Add and test the Index Configuration
@@ -201,7 +203,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigIndexerLuceneObjects()
         {
             //Add and test the Index Configuration
@@ -253,7 +255,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigIndexerLucenePredicates()
         {
             //Add and test the Index Configuration
@@ -305,7 +307,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSearchProviderLucene()
         {
             //Add and test the Index Configuration
@@ -358,7 +360,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextSearchProvider, "Should have returned a IFullTextSearchProvider Instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSearchProviderLuceneWithBuildIndex()
         {
             //Add and test the Index Configuration
@@ -429,7 +431,7 @@ namespace VDS.RDF.Query.FullText
             }          
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeSchemaDefault()
         {
             DefaultIndexSchema schema = new DefaultIndexSchema();
@@ -446,7 +448,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeIndexLuceneRAM()
         {
             RAMDirectory directory = new RAMDirectory();
@@ -463,7 +465,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Directory, "Should have returned a Directory instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeIndexLuceneFS()
         {
             FSDirectory directory = FSDirectory.Open(new DirInfo("test"));
@@ -481,7 +483,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Directory, "Should have returned a Directory instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeAnalyzerLuceneStandard()
         {
             StandardAnalyzer analyzer = new StandardAnalyzer(LuceneTestHarness.LuceneVersion);
@@ -498,7 +500,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is Analyzer, "Should have returned a Analyzer instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeIndexerLuceneSubjects()
         {
             LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
@@ -516,7 +518,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeIndexerLuceneObjects()
         {
             LuceneObjectsIndexer indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
@@ -534,7 +536,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeIndexerLucenePredicates()
         {
             LucenePredicatesIndexer indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
@@ -552,7 +554,7 @@ namespace VDS.RDF.Query.FullText
             Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
         }
 
-        [TestMethod]
+        [Test]
         public void FullTextConfigSerializeFullTextOptimiser()
         {
             try
@@ -580,3 +582,4 @@ namespace VDS.RDF.Query.FullText
         }
     }
 }
+#endif

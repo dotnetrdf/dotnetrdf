@@ -27,15 +27,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class BindTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlBindExistsAsChildExpression1()
         {
             String query = @"SELECT * WHERE
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.All(r => r.HasBoundValue("hasRange")));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindExistsAsChildExpression2()
         {
             String query = @"SELECT * WHERE
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.All(r => r.HasBoundValue("hasRangeAndDomain")));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindOverEmptyFilter1()
         {
             String query = "SELECT * WHERE { FILTER(false). BIND('test' AS ?test) }";
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindOverEmptyFilter2()
         {
             String query = "SELECT * WHERE { FILTER(true). BIND('test' AS ?test) }";
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindEmpty1()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . BIND('test' AS ?test) }";
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBindEmpty2()
         {
             String query = "SELECT * WHERE { BIND('test' AS ?test) }";

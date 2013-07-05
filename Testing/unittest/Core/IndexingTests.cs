@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
 using VDS.RDF.Parsing;
@@ -38,10 +38,10 @@ namespace VDS.RDF
     /// <summary>
     /// Summary description for IndexingTests
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class IndexingTests
     {
-        [TestMethod]
+        [Test]
         public void IndexingNodesInMultiDictionary1()
         {
             Graph g = new Graph();
@@ -62,7 +62,7 @@ namespace VDS.RDF
             Assert.AreEqual(2, dictionary[canonical]);
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingNodesInMultiDictionary2()
         {
             Graph g = new Graph();
@@ -77,7 +77,7 @@ namespace VDS.RDF
             Assert.AreEqual(2, dictionary[alternate]);
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingNodesInMultiDictionary3()
         {
             Graph g = new Graph();
@@ -100,7 +100,7 @@ namespace VDS.RDF
             Assert.AreNotEqual(2, dictionary[canonical]);
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingNodesInBinaryTree1()
         {
             Graph g = new Graph();
@@ -125,7 +125,7 @@ namespace VDS.RDF
             Assert.AreEqual(1, tree.Keys.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingNodesInBinaryTree2()
         {
             Graph g = new Graph();
@@ -149,7 +149,7 @@ namespace VDS.RDF
             Assert.AreEqual(2, tree.Keys.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingTriplesInBinaryTree1()
         {
             Graph g = new Graph();
@@ -176,7 +176,7 @@ namespace VDS.RDF
             Assert.AreEqual(1, tree.Keys.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void IndexingTriplesInBinaryTree2()
         {
             Graph g = new Graph();

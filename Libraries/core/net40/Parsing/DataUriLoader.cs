@@ -121,7 +121,11 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
+#if PORTABLE
+                        throw new FormatException("This data: URI appears to be malformed as encountered the parameter value '" + meta[i] + "' in the metadata section of the URI");
+#else
                         throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + meta[i] + "' in the metadata section of the URI");
+#endif
                     }
                 }
             }
@@ -142,7 +146,11 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
+#if PORTABLE
+                    throw new FormatException("This data: URI appears to be malformed as encountered the parameter value '" + metadata + "' in the metadata section of the URI");
+#else
                     throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + metadata + "' in the metadata section of the URI");
+#endif
                 }
             }
 

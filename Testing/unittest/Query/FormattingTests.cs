@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -36,12 +36,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class FormattingTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
-        [TestMethod]
+        [Test]
         public void SparqlFormattingOptionalAtRoot()
         {
             SparqlQuery q = new SparqlQuery { QueryType = SparqlQueryType.Select };

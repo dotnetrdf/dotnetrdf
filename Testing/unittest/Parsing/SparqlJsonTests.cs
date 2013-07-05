@@ -28,18 +28,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlJsonTests
     {
         private SparqlJsonParser _parser = new SparqlJsonParser();
 
-        [TestMethod]
+        [Test]
         public void ParsingSparqlJsonDates1()
         {
             String data = @"{
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSparqlJsonNumerics1()
         {
             String data = @"{
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingSparqlJsonNumerics2()
         {
             String data = @"{
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSparqlJsonBoolean1()
         {
             String data = @"{
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingSparqlJsonBoolean2()
         {
             String data = @"{
@@ -129,7 +129,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSparqlJsonGuid1()
         {
             String data = @"{

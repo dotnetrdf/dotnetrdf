@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1024,11 +1025,11 @@ namespace VDS.RDF.Query
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else
                     {
@@ -1050,7 +1051,7 @@ namespace VDS.RDF.Query
                     }
 
                     //Try to return a numeric expression, enforce the need for a valid numeric value where relevant
-                    LiteralNode lit = new LiteralNode(null, literal.Value, dtUri);
+                    LiteralNode lit = new LiteralNode(null, literal.Value, UriFactory.Create(dtUri));
                     IValuedNode value = lit.AsValuedNode();
                     if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                     {

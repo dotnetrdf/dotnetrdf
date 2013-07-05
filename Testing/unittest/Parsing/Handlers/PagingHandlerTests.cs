@@ -27,14 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class PagingHandlerTests
     {
         public void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
@@ -109,37 +109,41 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region These tests take two slices from the graph (0-25) and (26-50) and ensure they are different
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNTriples()
         {
             this.ParsingUsingPagingHandler("temp.nt", new NTriplesParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerTurtle()
         {
             this.ParsingUsingPagingHandler("temp.ttl", new TurtleParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNotation3()
         {
             this.ParsingUsingPagingHandler("temp.n3", new Notation3Parser());
         }
 
-        [TestMethod]
+#if !NO_XMLENTITIES
+        [Test]
         public void ParsingPagingHandlerRdfXml()
         {
             this.ParsingUsingPagingHandler("temp.rdf", new RdfXmlParser());
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void ParsingPagingHandlerRdfA()
         {
             this.ParsingUsingPagingHandler("temp.html", new RdfAParser());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerRdfJson()
         {
             this.ParsingUsingPagingHandler("temp.json", new RdfJsonParser());
@@ -149,37 +153,41 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region These tests take 0 triples from the graph and ensure it is empty
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNTriples2()
         {
             this.ParsingUsingPagingHandler2("temp.nt", new NTriplesParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerTurtle2()
         {
             this.ParsingUsingPagingHandler2("temp.ttl", new TurtleParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNotation3_2()
         {
             this.ParsingUsingPagingHandler2("temp.n3", new Notation3Parser());
         }
 
-        [TestMethod]
+#if !NO_XMLENTITIES
+        [Test]
         public void ParsingPagingHandlerRdfXml2()
         {
             this.ParsingUsingPagingHandler2("temp.rdf", new RdfXmlParser());
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void ParsingPagingHandlerRdfA2()
         {
             this.ParsingUsingPagingHandler2("temp.html", new RdfAParser());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerRdfJson2()
         {
             this.ParsingUsingPagingHandler2("temp.json", new RdfJsonParser());
@@ -189,37 +197,41 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region These tests discard the first 100 triples and take the rest
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNTriples3()
         {
             this.ParsingUsingPagingHandler3("temp.nt", new NTriplesParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerTurtle3()
         {
             this.ParsingUsingPagingHandler3("temp.ttl", new TurtleParser());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerNotation3_3()
         {
             this.ParsingUsingPagingHandler3("temp.n3", new Notation3Parser());
         }
 
-        [TestMethod]
+#if !NO_XMLENTITIES
+        [Test]
         public void ParsingPagingHandlerRdfXml3()
         {
             this.ParsingUsingPagingHandler3("temp.rdf", new RdfXmlParser());
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void ParsingPagingHandlerRdfA3()
         {
             this.ParsingUsingPagingHandler3("temp.html", new RdfAParser());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ParsingPagingHandlerRdfJson3()
         {
             this.ParsingUsingPagingHandler3("temp.json", new RdfJsonParser());

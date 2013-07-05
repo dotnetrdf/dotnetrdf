@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
@@ -36,10 +36,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class VariableNodeTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingN3Variables()
         {
             String TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
             StringWriter.Write(g, new Notation3Writer());
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingN3GraphLiterals()
         {
             String TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingN3VariableContexts()
         {
             String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingN3Reasoner()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             Graph data = new Graph();
-            FileLoader.Load(data, "InferenceTest.ttl");
+            FileLoader.Load(data, "resources\\InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             int origCount = data.Triples.Count;
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingN3ReasonerWithForAll()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             Graph data = new Graph();
-            FileLoader.Load(data, "InferenceTest.ttl");
+            FileLoader.Load(data, "resources\\InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             int origCount = data.Triples.Count;

@@ -27,12 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Storage;
 
+#if !NO_DATAEXTENSIONS
 namespace VDS.RDF.Storage.Async
 {
-    [TestClass]
+#if !PORTABLE // No Virtuoso support in PCL
+    [TestFixture]
     public class VirtuosoAsync
         : BaseAsyncTests
     {
@@ -41,4 +43,6 @@ namespace VDS.RDF.Storage.Async
             return VirtuosoTest.GetConnection();
         }
     }
+#endif
 }
+#endif

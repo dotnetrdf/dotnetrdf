@@ -25,13 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class StoreWriterTests
     {
         private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel)
@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
             g.BaseUri = null;
             store.Add(g);
             g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
 
@@ -76,13 +76,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(writer, reader, useMultiThreaded, Options.DefaultCompressionLevel);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingNQuads()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.WritingNQuadsActual));
         }
 
-        [TestMethod]
+        [Test]
         public void WritingNQuadsSingleThreaded()
         {
             this.TestWriter(new NQuadsWriter(), new NQuadsParser(), false);
@@ -93,13 +93,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(), new NQuadsParser(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingTriG()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.WritingTriGActual));
         }
 
-        [TestMethod]
+        [Test]
         public void WritingTriGSingleThreaded()
         {
             this.TestWriter(new TriGWriter(), new TriGParser(), false);
@@ -110,13 +110,13 @@ namespace VDS.RDF.Writing
             this.TestWriter(new TriGWriter(), new TriGParser(), true);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingTriGUncompressed()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.WritingTriGUncompressedActual));
         }
 
-        [TestMethod]
+        [Test]
         public void WritingTriGUncompressedSingleThreaded()
         {
             this.TestWriter(new TriGWriter(), new TriGParser(), false, WriterCompressionLevel.None);
@@ -127,7 +127,7 @@ namespace VDS.RDF.Writing
             this.TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingTriX()
         {
             this.TestWriter(new TriXWriter(), new TriXParser(), false);

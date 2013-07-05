@@ -27,11 +27,11 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class ListTests
     {
         private INode TestListsBasic(IGraph g)
@@ -61,7 +61,7 @@ namespace VDS.RDF
             return listRoot;
         }
 
-        [TestMethod]
+        [Test]
         public void GraphLists1()
         {
             Graph g = new Graph();
@@ -71,7 +71,7 @@ namespace VDS.RDF
             Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphLists2()
         {
             Graph g = new Graph();
@@ -95,7 +95,7 @@ namespace VDS.RDF
             Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphLists3()
         {
             Graph g = new Graph();
@@ -119,49 +119,49 @@ namespace VDS.RDF
             Assert.AreEqual(0, g.Triples.Count, "Should be no triples after the list is retracted");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphLists4()
         {
             Graph g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
-        [TestMethod]
+        [Test]
         public void GraphLists5()
         {
             Graph g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void GraphListsError1()
         {
             Graph g = new Graph();
             g.GetListItems(g.CreateBlankNode());
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void GraphListsError2()
         {
             Graph g = new Graph();
             g.GetListAsTriples(g.CreateBlankNode());
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void GraphListsError3()
         {
             Graph g = new Graph();
             g.RetractList(g.CreateBlankNode());
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void GraphListsError4()
         {
             Graph g = new Graph();
             g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void GraphListsError5()
         {
             Graph g = new Graph();

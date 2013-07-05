@@ -12,7 +12,7 @@
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -49,10 +49,16 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
@@ -62,11 +68,14 @@
       <HintPath>..\..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.5.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -98,6 +107,7 @@
     <Compile Include="Configuration\ConfigurationLoaderInstanceTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
+    <Compile Include="Core\AbstractGraphTests.cs" />
     <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
@@ -108,10 +118,13 @@
     <Compile Include="Core\TripleCollectionTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\Suites\BaseDatasetParserSuite.cs" />
     <Compile Include="Parsing\Suites\BaseParserSuite.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\Suites\BaseRdfParserSuite.cs" />
+    <Compile Include="Parsing\Suites\BaseResultsParserSuite.cs" />
     <Compile Include="Parsing\Suites\N3.cs" />
     <Compile Include="Parsing\Suites\NTriples.cs" />
     <Compile Include="Parsing\Suites\RdfA.cs" />
@@ -142,6 +155,7 @@
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\DateTimeTests.cs" />
     <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
@@ -151,10 +165,7 @@
     <Compile Include="Core\NamespaceMapperTest.cs" />
     <Compile Include="Query\GroupByTests.cs" />
     <Compile Include="Query\LeviathanTests.cs" />
-    <Compile Include="Query\NegationTests.cs" />
-    <Compile Include="Query\OperatorTests.cs" />
     <Compile Include="Query\OptimiserTests.cs" />
-    <Compile Include="Query\ParallelEvaluation.cs" />
     <Compile Include="Query\ParsingTests.cs" />
     <Compile Include="Query\PropertyPathEvaluationTests.cs" />
     <Compile Include="Query\PropertyPathTransformationTests.cs" />
@@ -199,6 +210,7 @@
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Update\UpdateTests1.cs" />
     <Compile Include="Writing\GraphVizTests.cs" />
+    <Compile Include="Writing\NTriplesTests.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +230,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Query\SampleWeightings.n3" />
     <Content Include="resources\bad_rdfa.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-349.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\diff_cases\case1_a.ttl">
@@ -414,6 +429,9 @@
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
     <Content Include="resources\schema-org.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\data-3.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\trix\curies.xml">
@@ -1954,6 +1972,7 @@
     <Content Include="resources\rdfxml-good-property.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
     <Content Include="resources\rdfa\0001.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2781,6 +2800,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\lib_p11_ontology.trix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\missing-namespace-declarations.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-2-result.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-2.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-3-result.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\date-3.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">
@@ -4073,7 +4107,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>
+    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"
+"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -4083,4 +4118,29 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="Query\NegationTests.cs" />
+    <Compile Include="Query\OperatorTests.cs" />
+    <Compile Include="Query\ParallelEvaluation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Query\Builder\GraphPatternBuilderTests.cs" />
+    <Compile Include="Query\Builder\QueryBuilderTests.cs" />
+    <Compile Include="Query\Builder\QueryBuilderWikiTests.cs" />
+    <Compile Include="Query\Builder\TriplePatternBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ArithmeticOperatorsTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\ExpressionBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\FunctionalFormsBuildingTests.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
+    <Compile Include="Query\Builder\Expressions\NumericExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\RdfTermExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlCastBuilderTests.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpressionTestsBase.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpressionTests.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionTests.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
 </Project>

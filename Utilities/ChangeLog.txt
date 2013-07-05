@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.0
+Version 1.0.1
 
 dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
@@ -19,37 +19,23 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
-- Fix a bug where converting from graph to dataset formats would lose prefixes (TOOLS-333)
-- Fix a bug where some invalid Turtle documents would be accepted as valid and generate incorrect URIs (CORE-341)
-- Improve support for latest W3C draft standard for Turtle (CORE-314)
 
 rdfEditor (Not available under Mono)
-- Fix a bug where an invalid Turtle document could be reported as valid (CORE-341)
-- Fix a bug where a valid RDF/XML document could be reported as invalid (CORE-358)
- 
+- Upgrade AvalonEdit to 4.3.1.9430
+
 rdfOptStats
    
 rdfQuery
-- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344, CORE-350, CORE-353)
 
 rdfServer
-- Fix a couple of bugs which meant that SPARQL updates would not work correctly (TOOLS-323, TOOLS-324)
-- Properly respect configuration file if one is provided (TOOLS-338)
-- Properly support multiple endpoints (TOOLS-338)
-- Fix a bug where after a stop/start previous state was still visible
 
 rdfServerGUI
-- Removed pause/resume functionality since this was a misnomer as it was doing a Stop/Start behind the scenes
-  
+ 
 rdfWebDeploy
-- Fix Nuget Dependencies
 
 soh 
 
 SparqlGUI
-- Various SPARQL engine fixes (CORE-336, CORE-340, CORE-342, CORE-343, CORE-344, CORE-350, CORE-353)
 
 StoreManager
-- Native SPARQL Update support for AllegroGraph (CORE-308)
-- Support for new ReadWriteSparqlConnector (CORE-346)
 

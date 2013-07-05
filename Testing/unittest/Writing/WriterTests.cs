@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,14 +36,14 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class WriterTests
         : CompressionTests
     {
 
         private String prefix = "@prefix : <http://example.org>.\n";
         
-        [TestMethod]
+        [Test]
         public void WritingBlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
@@ -77,11 +77,11 @@ namespace VDS.RDF.Writing
 
         }
 
-        [TestMethod]
+        [Test]
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "charescaping.owl");
+            FileLoader.Load(g, "resources\\charescaping.owl");
 
             Console.WriteLine("Original Triples");
             foreach (Triple t in g.Triples)
@@ -106,11 +106,12 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
             String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
@@ -132,19 +133,27 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void WritingCollections()
         {
             Graph g = new Graph();
+#if !NO_URICACHE
             Options.UriLoaderCaching = false;
+#endif
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+#if PORTABLE
+            var tmpWriter = new StreamWriter(new MemoryStream());
+            ttlwriter.Save(g, tmpWriter);
+#else
             ttlwriter.Save(g, Console.Out);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void WritingXmlAmpersandEscaping()
         {
             List<String> inputs = new List<string>()
@@ -179,7 +188,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingUriEscaping()
         {
             Graph g = new Graph();
@@ -198,7 +207,9 @@ namespace VDS.RDF.Writing
             {
                 new CompressingTurtleWriter(),
                 new PrettyRdfXmlWriter(),
+#if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
+#endif
                 new Notation3Writer(),
                 new NTriplesWriter(),
                 new PrettyRdfXmlWriter(),
@@ -210,7 +221,9 @@ namespace VDS.RDF.Writing
             {
                 new TurtleParser(),
                 new RdfXmlParser(),
+#if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
+#endif
                 new Notation3Parser(),
                 new NTriplesParser(),
                 new RdfXmlParser(),
@@ -258,7 +271,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingQNameValidation()
         {
             Graph g = new Graph();

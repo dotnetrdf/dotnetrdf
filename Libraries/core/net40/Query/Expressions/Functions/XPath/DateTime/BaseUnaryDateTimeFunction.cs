@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             IValuedNode temp = this._expr.Evaluate(context, bindingID);
             if (temp != null)
             {
-                return this.ValueInternal(temp.AsDateTime());
+                return this.ValueInternal(temp.AsDateTimeOffset());
             }
             else
             {

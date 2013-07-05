@@ -1,8 +1,49 @@
 ﻿Change Log
 ==========
 
-1.0.0
+1.0.1
 -----
+
+Added
+- Portable Class Library builds are now included
+- Formatting API
+ - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
+- Global Options
+ - Add new DefaultCulture and DefaultComparisonOptions used for lexical ordering of literal values in the cases
+   where more natural ordering (e.g. numeric) does not apply (CORE-367)
+
+Changed
+- Bug Fixes
+ - Fix a bug where SPARQL parsing could incorrectly lose type information for some literals used in expressions
+ - Fix a Stack Overflow that could occur in ThreadSafeGraph (CORE-363)
+ - Property Path * operator could produce incorrect results (CORE-349)
+ - Correct an error message re: extension point in Full Text Indexing (FTXT-366)
+ - Some full text queries could cause BIND clauses to result in unbound values (FTXT-364)
+ - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
+- Dependencies
+ - Upgraded Json.Net to 5.0.6
+- Query
+ - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
+- Configuration API
+ - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
+- Writing
+ - Significantly improve performance of writing non-ASCII characters to NTriples (CORE-357)
+
+
+Removed
+- Marked as obsolete usable the old ICharFormatter.FormatChar() method (CORE-357)
+
+
+1.0.0.2533
+----------
+
+Changed
+- Build
+ - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
+   are still not signed
+
+1.0.0.2473
+----------
 
 Added
 - Parsing
@@ -41,7 +82,6 @@ Changed
 - Dependencies
  - Upgraded VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
  - Upgraded Json.Net to 5.0.4
- - Upgraded Virtuoso ADO.Net Provider to 7.0.3202.3
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API
@@ -58,7 +98,7 @@ Changed
 - Storage
  - SesameNativeTemplate is now a public class
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
- - Latest version of Virtuoso drivers now used
+ - Fix target framework profile for dotNetRDF.Data.Virtuoso.ClientProfile
 - Writing
  - Improved how characters are escaped (counterpart to stricter escape handling) which provides better round tripping of data (CORE-314)
 
@@ -67,6 +107,7 @@ Removed
 - Removed defunct internal class InternalXmlWriter
 - Marked DydraConnector with an obsolete usable due to continuing inconsistency and transient failures from the Dydra API
 - Removed defunct Project class
+- Marked IInMemoryQueryableStore.ExecuteQuery() methods as deprecated in favour of using ISparqlQueryProcessor
 
 
 0.9.0 RC4

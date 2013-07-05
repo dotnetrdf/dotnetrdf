@@ -29,14 +29,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture, Category("parsing speed")]
     public class SpeedTesting
     {
         private void EnsureTestData(int triples, String file, ITripleFormatter formatter)
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Triples/Second = " + tps);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle10Thousand()
         {
             try
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "10thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
             } 
             finally 
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle100Thousand()
         {
             try
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "100thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
             }
             finally
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle500Thousand()
         {
             try
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "500thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(500000, watch);
             }
             finally
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle10ThousandCountOnly()
         {
             try
@@ -157,10 +157,17 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
+#if PORTABLE
+                using (var input = new StreamReader("10thou.ttl"))
+                {
+                    parser.Load(handler, input);
+                }
+#else
                 parser.Load(handler, "10thou.ttl");
+#endif
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
 
                 Assert.AreEqual(10000, handler.Count);
@@ -171,7 +178,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedTurtle100ThousandCountOnly()
         {
             try
@@ -184,10 +191,17 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
+#if PORTABLE
+                using (var input = new StreamReader("100thou.ttl"))
+                {
+                    parser.Load(handler, input);
+                }
+#else
                 parser.Load(handler, "100thou.ttl");
+#endif
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
 
                 Assert.AreEqual(100000, handler.Count);
@@ -198,7 +212,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples10Thousand()
         {
             try
@@ -214,7 +228,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "10thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
             }
             finally
@@ -223,7 +237,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples100Thousand()
         {
             try
@@ -239,7 +253,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "100thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
             }
             finally
@@ -248,7 +262,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples500Thousand()
         {
             try
@@ -264,7 +278,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "500thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(500000, watch);
             }
             finally
@@ -273,7 +287,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSpeedNTriples1Million()
         {
             try
@@ -289,7 +303,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "million.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(1000000, watch);
             }
             finally

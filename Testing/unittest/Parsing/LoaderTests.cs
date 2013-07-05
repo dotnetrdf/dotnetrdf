@@ -29,17 +29,17 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class LoaderTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingDataUri()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingDBPedia()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
@@ -90,8 +90,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -114,8 +116,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -147,14 +151,21 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [TestMethod]
+        private void SetUriLoaderCaching(bool cachingEnabled)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = cachingEnabled;
+#endif
+        }
+
+        [Test]
         public void ParsingUriLoaderDBPedia()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
                 Options.HttpDebugging = true;
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
@@ -169,12 +180,12 @@ namespace VDS.RDF.Parsing
             finally
             {
                 Options.HttpDebugging = false;
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
@@ -185,29 +196,37 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
+#if PORTABLE
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF.Portable");
+#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
+#endif
 
             TestTools.ShowGraph(g);
 
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
+#if PORTABLE
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Portable.Test");
+#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
+#endif
 
             TestTools.ShowGraph(g);
 
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
             TripleStore store = new TripleStore();
@@ -217,7 +236,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, store.Graphs.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
             Graph g = new Graph();
@@ -225,6 +244,7 @@ namespace VDS.RDF.Parsing
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
             TripleStore store = new TripleStore();
+            
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 
             Assert.IsTrue(store.Triples.Count() > 0);

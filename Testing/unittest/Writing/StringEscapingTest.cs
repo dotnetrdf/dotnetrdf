@@ -29,14 +29,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class StringEscapingTest
     {
         private List<String> _values = new List<string>()
@@ -99,43 +99,43 @@ new line",
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingNTriples()
         {
             this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(), new NTriplesParser());
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingTurtle1()
         {
             this.TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingTurtle2()
         {
             this.TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingNotation3_1()
         {
             this.TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingNotation3_2()
         {
             this.TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingSparql()
         {
             this.TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingStringBackslashEscapingTsv()
         {
             this.TestEscaping<TsvFormatter>(new TsvFormatter(), null);

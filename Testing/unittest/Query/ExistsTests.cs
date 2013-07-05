@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ExistsTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlExistsSimple1()
         {
             Graph g = new Graph();
@@ -56,7 +56,7 @@ WHERE
             Assert.IsFalse(results.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlExistsSimple2()
         {
             Graph g = new Graph();

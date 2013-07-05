@@ -23,12 +23,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !NO_DATAEXTENSIONS
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -38,7 +40,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    [TestClass]
+    [TestFixture]
     public class VirtuosoTest : BaseTest
     {
         public static VirtuosoManager GetConnection()
@@ -50,7 +52,7 @@ namespace VDS.RDF.Storage
             return new VirtuosoManager(TestConfigManager.GetSetting(TestConfigManager.VirtuosoServer), TestConfigManager.GetSettingAsInt(TestConfigManager.VirtuosoPort), TestConfigManager.GetSetting(TestConfigManager.VirtuosoDatabase), TestConfigManager.GetSetting(TestConfigManager.VirtuosoUser), TestConfigManager.GetSetting(TestConfigManager.VirtuosoPassword));
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoLoadGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -67,7 +69,7 @@ namespace VDS.RDF.Storage
                 testData.BaseUri = new Uri("http://localhost/VirtuosoTest");
                 manager.SaveGraph(testData);
                 testData = new Graph();
-                FileLoader.Load(testData, "Turtle.ttl");
+                FileLoader.Load(testData, "resources\\Turtle.ttl");
                 testData.BaseUri = new Uri("http://localhost/TurtleImportTest");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -115,7 +117,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoLoadGraphWithNullHandler()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -128,7 +130,7 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, "Turtle.ttl");
+                FileLoader.Load(testData, "resources\\Turtle.ttl");
                 testData.BaseUri = new Uri("http://example.org/virtuoso/tests/null");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -142,7 +144,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoSaveGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -205,7 +207,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoDeleteGraph()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -218,7 +220,7 @@ namespace VDS.RDF.Storage
                 //Load in our Test Graph
                 TurtleParser ttlparser = new TurtleParser();
                 Graph g = new Graph();
-                ttlparser.Load(g, "Turtle.ttl");
+                ttlparser.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/deleteMe");
 
                 Console.WriteLine();
@@ -264,7 +266,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodePersistence()
         {
             //Create our Test Graph
@@ -345,7 +347,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoUpdateGraph()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -390,7 +392,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeQuery()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -497,7 +499,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeQueryBifContains1()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -520,7 +522,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoNativeUpdate()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -559,7 +561,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoEncoding()
         {
             //Get the Virtuoso Manager
@@ -598,7 +600,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoConfigSerialization()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -665,7 +667,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoQueryRegex()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -709,7 +711,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodeInsert()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -737,7 +739,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [TestMethod]
+        [Test]
         public void StorageVirtuosoBlankNodeDelete()
         {
             //First ensure data is present in the store
@@ -828,3 +830,4 @@ namespace VDS.RDF.Storage
         }
     }
 }
+#endif

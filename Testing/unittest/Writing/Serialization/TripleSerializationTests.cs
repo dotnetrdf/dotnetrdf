@@ -33,15 +33,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 
 namespace VDS.RDF.Writing.Serialization
 {
-    [TestClass]
+#if !SILVERLIGHT
+    [TestFixture]
     public class TripleSerializationTests
     {
-        [TestMethod]
+        [Test]
         public void SerializationXmlTriple()
         {
             System.IO.StringWriter writer = new System.IO.StringWriter();
@@ -65,7 +66,7 @@ namespace VDS.RDF.Writing.Serialization
             Assert.AreEqual(t, t2, "Triples should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void SerializationBinaryTriple()
         {
             MemoryStream stream = new MemoryStream();
@@ -97,4 +98,5 @@ namespace VDS.RDF.Writing.Serialization
             stream.Dispose();
         }
     }
+#endif
 }

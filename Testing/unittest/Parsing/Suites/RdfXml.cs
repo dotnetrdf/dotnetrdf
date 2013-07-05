@@ -28,15 +28,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
-   
-    [TestClass]
+#if !NO_XMLDOM
+    [TestFixture]
     public class RdfXmlDomParser
         : BaseRdfParserSuite
     {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteRdfXmlDOM()
         {
             //Run manifests
@@ -62,16 +62,17 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlIDsDOM()
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
+#endif
 
-    [TestClass]
+    [TestFixture]
     public class RdfXmlStreamingParser
         : BaseRdfParserSuite
     {
@@ -81,13 +82,28 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+#if PORTABLE
+        private readonly string[] _portableIgnoreTests = new string[]
+            {
+                "resources\\rdfxml\\amp-in-url\\test001.rdf", // Has a DOCTYPE declaration which cannot be parsed in PCL
+                "resources\\rdfxml\\rdf-containers-syntax-vs-schema\\test005.rdf", // Has no root element -- note that this test is not run by the NET40 build either
+                "resources\\rdfxml\\xmlbase\\test012.rdf", // Has no root element -- again this test is not run byt the NET40 build
+                "resources\\rdfxml\\rdf-charmod-uris\\error001.rdf" // Tests for normalization but there is no support for this in PCL
+            };
+#endif
+
+        [Test]
         public void ParsingSuiteRdfXmlStreaming()
         {
+#if PORTABLE
+            //Run manifests
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error") && !_portableIgnoreTests.Contains(f), true);
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error") && !_portableIgnoreTests.Contains(f), false);
+#else
             //Run manifests
             this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
             this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
-
+#endif
             if (this.Count == 0) Assert.Fail("No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
@@ -97,12 +113,12 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingRdfXmlIDsStreaming()
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 }

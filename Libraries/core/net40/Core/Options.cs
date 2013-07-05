@@ -31,6 +31,8 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 using VDS.RDF.Query;
+using System.Globalization;
+using System.Threading;
 
 namespace VDS.RDF
 {
@@ -81,7 +83,11 @@ namespace VDS.RDF
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = false;
+#if PORTABLE
+        private static bool _useDTDs = false; // Default to false because the PCL XML parser cannot handle entity declarations
+#else
         private static bool _useDTDs = true;
+#endif
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
@@ -96,6 +102,9 @@ namespace VDS.RDF
 
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
+
+        private static CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
+        private static CompareOptions _defaultComparisonOptions = CompareOptions.Ordinal;
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
@@ -554,5 +563,43 @@ namespace VDS.RDF
                 _httpFullDebug = value;
             }
         }
+
+
+        /// <summary>
+        /// Gets/Sets the default culture literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
+        /// </summary>
+        /// <remarks>
+        /// The default is set to the invariant culture to preserve behavioural backwards compatibility with past versions of dotNetRDF
+        /// </remarks>
+        public static CultureInfo DefaultCulture
+        {
+            get
+            {
+                return _defaultCulture;
+            }
+            set
+            {
+                _defaultCulture = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the default collation for literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
+        /// </summary>
+        /// <remarks>
+        /// The default is set to <see cref="CompareOptions.Ordinal"/> to preserve behavioural backwards compatibility with past versions of dotNetRDF
+        /// </remarks>
+        public static CompareOptions DefaultComparisonOptions
+        {
+            get
+            {
+                return _defaultComparisonOptions;
+            }
+            set
+            {
+                _defaultComparisonOptions = value;
+            }
+        }
+
     }
 }

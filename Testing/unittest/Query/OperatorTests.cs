@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Operators;
@@ -37,12 +37,12 @@ using VDS.RDF.Configuration;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class OperatorTests
     {
         private List<IValuedNode> _numArgs, _someNullArgs, _dtArgs, _tsArgs;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             this._numArgs = new List<IValuedNode>() 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup1()
         {
             this.TestLookup(SparqlOperatorType.Add, null, Enumerable.Empty<IValuedNode>(), false);
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
             this.TestLookup(SparqlOperatorType.Add, typeof(AdditionOperator), this._numArgs, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup2()
         {
             this.TestLookup(SparqlOperatorType.Subtract, null, Enumerable.Empty<IValuedNode>(), false);
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query
             this.TestLookup(SparqlOperatorType.Subtract, typeof(SubtractionOperator), this._numArgs, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup3()
         {
             this.TestLookup(SparqlOperatorType.Divide, null, Enumerable.Empty<IValuedNode>(), false);
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query
             this.TestLookup(SparqlOperatorType.Divide, typeof(DivisionOperator), this._numArgs, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup4()
         {
             this.TestLookup(SparqlOperatorType.Multiply, null, Enumerable.Empty<IValuedNode>(), false);
@@ -168,35 +168,35 @@ namespace VDS.RDF.Query
             this.TestLookup(SparqlOperatorType.Multiply, typeof(MultiplicationOperator), this._numArgs, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup5()
         {
             this.TestLookup(SparqlOperatorType.Add, typeof(DateTimeAddition), this._dtArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Add, null, this._dtArgs, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup6()
         {
             this.TestLookup(SparqlOperatorType.Subtract, typeof(DateTimeSubtraction), this._dtArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._dtArgs, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup7()
         {
             this.TestLookup(SparqlOperatorType.Add, typeof(TimeSpanAddition), this._tsArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Add, null, this._tsArgs, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorLookup8()
         {
             this.TestLookup(SparqlOperatorType.Subtract, typeof(TimeSpanSubtraction), this._tsArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._tsArgs, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric2()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric3()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric4()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric5()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -256,7 +256,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric6()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -268,7 +268,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric7()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric8()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric9()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddNumeric10()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -316,7 +316,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -328,7 +328,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric2()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -340,7 +340,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric3()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -352,7 +352,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric4()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -364,7 +364,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric5()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -376,7 +376,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric6()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -388,7 +388,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric7()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -400,7 +400,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric8()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -412,7 +412,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric9()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -424,7 +424,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractNumeric10()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -436,7 +436,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -448,7 +448,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric2()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -460,7 +460,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric3()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -472,7 +472,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric4()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -484,7 +484,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric5()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -496,7 +496,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric6()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -508,7 +508,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric7()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -520,7 +520,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric8()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -532,7 +532,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric9()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -544,7 +544,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationDivideNumeric10()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -556,7 +556,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -568,7 +568,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric2()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -580,7 +580,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric3()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -592,7 +592,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric4()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -604,7 +604,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric5()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -616,7 +616,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric6()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -628,7 +628,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric7()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -640,7 +640,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric8()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -652,7 +652,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric9()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -664,7 +664,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationMultiplyNumeric10()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -676,7 +676,7 @@ namespace VDS.RDF.Query
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationAddDateTime1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
@@ -690,7 +690,7 @@ namespace VDS.RDF.Query
             this.TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorApplicationSubtractDateTime1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
@@ -704,7 +704,7 @@ namespace VDS.RDF.Query
             this.TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorRegistration1()
         {
             try
@@ -720,7 +720,7 @@ namespace VDS.RDF.Query
                 SparqlOperators.Reset();
             }
         }
-        [TestMethod]
+        [Test]
         public void SparqlOperatorRegistration2()
         {
             try
@@ -737,7 +737,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOperatorRegistration3()
         {
             try

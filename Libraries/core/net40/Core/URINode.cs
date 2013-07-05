@@ -496,7 +496,16 @@ namespace VDS.RDF
         /// Throws an error as URIs cannot be cast to a date time
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing.Suites
 {
    
-    [TestClass]
+    [TestFixture]
     public class N3
         : BaseRdfParserSuite
     {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Suites
             this.CheckResults = false;
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteN3()
         {
             //Run manifests

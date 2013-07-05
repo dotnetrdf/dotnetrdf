@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Ordering;
@@ -34,10 +34,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlOrderByTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithRawVariableName()
         {
             // when
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithVariableNameWithDollarSign()
         {
             // when
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByWithVariableNameWithQuestionMark()
         {
             // when
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("name", ordering.Variables.Single());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByDescendingScope1()
         {
             //Test Case for CORE-350
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByDescendingScope2()
         {
             //Test Case for CORE-350
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByNullInFirstCondition1()
         {
             //Test Case for CORE-350
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlOrderByNullInFirstCondition2()
         {
             //Test Case for CORE-350

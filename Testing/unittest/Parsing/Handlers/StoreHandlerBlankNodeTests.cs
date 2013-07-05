@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class StoreHandlerBlankNodeTests
     {
         private const String TestFragment = @"@prefix : <http://example.org/bnodes#> .
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(4, subjects.Count, "Expected 4 distinct subjects");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerBlankNodesTriG()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesTriGActual));
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerBlankNodesTriX()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesTriXActual));
@@ -124,7 +124,7 @@ namespace VDS.RDF.Parsing.Handlers
             EnsureTestResults(store);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingStoreHandlerBlankNodesNQuads()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesNQuadsActual));

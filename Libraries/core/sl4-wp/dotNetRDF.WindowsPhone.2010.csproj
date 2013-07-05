@@ -49,7 +49,7 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.4\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -2404,8 +2404,130 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\BindAssignmentVariableNamePart.cs">
+      <Link>Query\Builder\BindAssignmentVariableNamePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\DescribeBuilder.cs">
+      <Link>Query\Builder\DescribeBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\DescribeGraphPatternBuilder.cs">
+      <Link>Query\Builder\DescribeGraphPatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
+      <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\BlankNodeExpression.cs">
+      <Link>Query\Builder\Expressions\BlankNodeExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\BooleanExpression.cs">
+      <Link>Query\Builder\Expressions\BooleanExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilder.cs">
+      <Link>Query\Builder\ExpressionBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
+      <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilderStringExtensions.cs">
+      <Link>Query\Builder\ExpressionBuilderStringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpressionExtensions.cs">
+      <Link>Query\Builder\Expressions\LiteralExpressionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\NumericExpression.cs">
+      <Link>Query\Builder\Expressions\NumericExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\IriExpression.cs">
+      <Link>Query\Builder\Expressions\IriExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpression.cs">
+      <Link>Query\Builder\Expressions\LiteralExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\RdfTermExpression.cs">
+      <Link>Query\Builder\Expressions\RdfTermExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\GraphPatternBuilder.cs">
+      <Link>Query\Builder\GraphPatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\GraphPatternType.cs">
+      <Link>Query\Builder\GraphPatternType.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\AssignmentVariableNamePart.cs">
+      <Link>Query\Builder\AssignmentVariableNamePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDescribeGraphPatternBuilder.cs">
+      <Link>Query\Builder\IDescribeGraphPatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDescribeBuilder.cs">
+      <Link>Query\Builder\IDescribeBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IGraphPatternBuilder.cs">
+      <Link>Query\Builder\IGraphPatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ISelectBuilder.cs">
+      <Link>Query\Builder\ISelectBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ITriplePatternBuilder.cs">
+      <Link>Query\Builder\ITriplePatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IQueryWithVariablesBuilder.cs">
+      <Link>Query\Builder\IQueryWithVariablesBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\PatternItemFactory.cs">
+      <Link>Query\Builder\PatternItemFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\SparqlExpression.cs">
+      <Link>Query\Builder\Expressions\SparqlExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\TypedLiteralExpression.cs">
+      <Link>Query\Builder\Expressions\TypedLiteralExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\QueryBuilderExtensions.cs">
+      <Link>Query\Builder\QueryBuilderExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\SelectAssignmentVariableNamePart.cs">
+      <Link>Query\Builder\SelectAssignmentVariableNamePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\SelectBuilder.cs">
+      <Link>Query\Builder\SelectBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\SparqlCastBuilder.cs">
+      <Link>Query\Builder\SparqlCastBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\TriplePatternBuilder.cs">
+      <Link>Query\Builder\TriplePatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\TriplePatternObjectPart.cs">
+      <Link>Query\Builder\TriplePatternObjectPart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\TriplePatternPredicatePart.cs">
+      <Link>Query\Builder\TriplePatternPredicatePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpression.cs">
+      <Link>Query\Builder\Expressions\VariableExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IQueryBuilder.cs">
+      <Link>Query\Builder\IQueryBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\net40\Query\Optimisation\OrderByDistinctOptimiser.cs">
       <Link>Query\Optimisation\OrderByDistinctOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\QueryBuilder.cs">
+      <Link>Query\Builder\QueryBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Configuration\IConfigurationLoader.cs">
+      <Link>Configuration\IConfigurationLoader.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
