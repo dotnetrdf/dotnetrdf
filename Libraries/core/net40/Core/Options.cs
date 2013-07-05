@@ -569,7 +569,7 @@ namespace VDS.RDF
         /// Gets/Sets the default culture literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
         /// </summary>
         /// <remarks>
-        /// The default is set to the current thread culture 
+        /// The default is set to the invariant culture to preserve behavioural backwards compatibility with past versions of dotNetRDF
         /// </remarks>
         public static CultureInfo DefaultCulture
         {
@@ -587,7 +587,7 @@ namespace VDS.RDF
         /// Gets/Sets the default collation for literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
         /// </summary>
         /// <remarks>
-        /// The default is set to the current thread culture 
+        /// The default is set to <see cref="CompareOptions.Ordinal"/> to preserve behavioural backwards compatibility with past versions of dotNetRDF
         /// </remarks>
         public static CompareOptions DefaultComparisonOptions
         {
