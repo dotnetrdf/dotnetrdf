@@ -17,6 +17,7 @@
     </dependencies>
     <releaseNotes>
       - Fix a bug related to interaction of full text query extensions with other query clauses
+      - Split source and PDBs into separate symbols package
     </releaseNotes>
   </metadata>
 </package>
