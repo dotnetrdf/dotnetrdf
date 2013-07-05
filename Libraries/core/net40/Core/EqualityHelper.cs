@@ -309,12 +309,25 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Literal Nodes
+        /// Compares two Literal Nodes using global default comparison options where applicable
         /// </summary>
         /// <param name="a">First Literal Node</param>
         /// <param name="b">Second Literal Node</param>
         /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture = null, CompareOptions comparisonOptions = CompareOptions.None)
+        public static int CompareLiterals(ILiteralNode a, ILiteralNode b)
+        {
+            return CompareLiterals(a, b, Options.DefaultCulture, Options.DefaultComparisonOptions);
+        }
+
+        /// <summary>
+        /// Compares two Literal Nodes
+        /// </summary>
+        /// <param name="a">First Literal Node</param>
+        /// <param name="b">Second Literal Node</param>
+        /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable</param>
+        /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable</param>
+        /// <returns></returns>
+        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture, CompareOptions comparisonOptions)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -328,14 +341,8 @@ namespace VDS.RDF
             }
 
             // initialize required culture and comparison options
-            if (culture==null) 
-            {
-                culture = Options.DefaultCulture;
-            }
-            if (comparisonOptions ==CompareOptions.None)
-            {
-                comparisonOptions = Options.DefaultComparisonOptions;
-            }
+            if (culture == null) culture = Options.DefaultCulture;
+            if (comparisonOptions == CompareOptions.None) comparisonOptions = Options.DefaultComparisonOptions;
 
             //Literal Nodes are ordered based on Type and lexical form
             if (a.DataType == null && b.DataType != null)
@@ -371,7 +378,26 @@ namespace VDS.RDF
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
                                 //Can use Lexical ordering for this so use specified order on the value
-                                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                                bool aBool, bBool;
+                                if (Boolean.TryParse(a.Value, out aBool))
+                                {
+                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    {
+                                        return aBool.CompareTo(bBool);
+                                    }
+                                    else
+                                    {
+                                        return -1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    {
+                                        return 1;
+                                    }
+                                    goto default;
+                                }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 //Remember that xsd:byte is actually equivalent to SByte in .Net
@@ -786,7 +812,7 @@ namespace VDS.RDF
                                 }
 
                             default:
-                                //Don't know how to order so use specified order on the value
+                                //Don't know how to order so use lexical ordering on the value
                                 return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                         }
                     }
@@ -794,7 +820,7 @@ namespace VDS.RDF
                     {
                         //There was some error suggesting a non-valid value for a type
                         //e.g. "example"^^xsd:integer
-                        //In this case just use specified order on the value
+                        //In this case just use lexical ordering on the value
                         return String.Compare(a.Value, b.Value, culture, comparisonOptions);
                     }
                 }

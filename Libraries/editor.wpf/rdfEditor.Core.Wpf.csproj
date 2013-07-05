@@ -172,6 +172,7 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Syntax\turtle11.xshd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

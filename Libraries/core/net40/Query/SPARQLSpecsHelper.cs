@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
@@ -1607,11 +1608,32 @@ namespace VDS.RDF.Query
                         switch (xtype)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return !DateEquality(x, y);
+                                try
+                                {
+                                    return !DateEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return !DateTimeEquality(x, y);
+                                try
+                                {
+                                    return !DateTimeEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
-                                return !TimeSpanEquality(x, y);
+                                try
+                                {
+                                    return !TimeSpanEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
                                 return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
@@ -1632,9 +1654,23 @@ namespace VDS.RDF.Query
                             switch (commontype)
                             {
                                 case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return !DateEquality(x, y);
+                                    try
+                                    {
+                                        return !DateEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return !DateTimeEquality(x, y);
+                                    try
+                                    {
+                                        return !DateTimeEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 default:
                                     return true;
                             }
@@ -1694,17 +1730,44 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool DateTimeEquality(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                DateTime c = x.AsValuedNode().AsDateTime();
+                DateTime d = y.AsValuedNode().AsDateTime();
 
-                return ToDateTime(a).Equals(ToDateTime(b));
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        if (d.Kind != DateTimeKind.Unspecified)
+                        {
+                            // If non-equal kinds and either is unespecified kind then non-comparable
+                            throw new RdfQueryException("Dates are incomparable, one specifies time zone information while the other does not");
+                        }
+                        // Both unspecified so compare
+                        return c.Equals(d);
+                    case DateTimeKind.Local:
+                        // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
+                        // Adjust to UTC and compare
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Unspecified)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        goto default;
+                    default:
+                        // Covers UTC based comparison
+                        if (d.Kind == DateTimeKind.Unspecified)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+
+                        return c.Equals(d);
+                }
             }
             catch (FormatException)
             {
-                throw new RdfQueryException("Cannot evaluate date time equality since one of the arguments does not have a valid lexical value for a Date Time");
+                throw new RdfQueryException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
             }
         }
 
@@ -1719,14 +1782,41 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                IValuedNode a = x.AsValuedNode();
+                IValuedNode b = y.AsValuedNode();
 
-                DateTimeOffset c = ToDateTimeOffset(a);
-                DateTimeOffset d = ToDateTimeOffset(b);
+                bool strictEquals = (a.EffectiveType != b.EffectiveType);
 
-                if (!c.Offset.Equals(d.Offset)) return false;
-                return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                DateTime c = a.AsDateTime();
+                DateTime d = b.AsDateTime();
+
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // One/Both unspecified so just compare
+                        return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                    case DateTimeKind.Local:
+                        // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        goto default;
+                    default:
+                        // Covers UTC based comparison
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+
+                        return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                }
             }
             catch (FormatException)
             {
@@ -1764,6 +1854,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDecimal() instead")]
         public static Decimal ToDecimal(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
@@ -1775,6 +1866,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDouble() instead")]
         public static Double ToDouble(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
@@ -1786,6 +1878,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsFloat() instead")]
         public static Single ToFloat(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
@@ -1797,6 +1890,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsInteger() instead")]
         public static Int64 ToInteger(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
@@ -1808,6 +1902,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDateTime() instead")]
         public static DateTime ToDateTime(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
@@ -1819,6 +1914,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead")]
         public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
@@ -1830,6 +1926,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsTimeSpan() instead")]
         public static TimeSpan ToTimeSpan(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
