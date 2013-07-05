@@ -8,13 +8,22 @@ Added
 - Portable Class Library builds are now included
 - Formatting API
  - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
+- Global Options
+ - Add new DefaultCulture and DefaultComparisonOptions used for lexical ordering of literal values in the cases
+   where more natural ordering (e.g. numeric) does not apply (CORE-367)
 
 Changed
 - Bug Fixes
  - Fix a bug where SPARQL parsing could incorrectly lose type information for some literals used in expressions
  - Fix a Stack Overflow that could occur in ThreadSafeGraph (CORE-363)
+ - Property Path * operator could produce incorrect results (CORE-349)
+ - Correct an error message re: extension point in Full Text Indexing (FTXT-366)
+ - Some full text queries could cause BIND clauses to result in unbound values (FTXT-364)
+ - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
+- Query
+ - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
 - Configuration API
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing
@@ -22,7 +31,7 @@ Changed
 
 
 Removed
-- Marked as obsolete usable the old ICharFormatter.FormatChar() method
+- Marked as obsolete usable the old ICharFormatter.FormatChar() method (CORE-357)
 
 
 1.0.0.2533

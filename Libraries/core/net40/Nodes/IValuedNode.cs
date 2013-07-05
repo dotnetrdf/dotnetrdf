@@ -92,7 +92,14 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <returns></returns>
         /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time</exception>
-        DateTimeOffset AsDateTime();
+        DateTime AsDateTime();
+
+        /// <summary>
+        /// Gets the Date Time Offset value of the Node
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time Offset</exception>
+        DateTimeOffset AsDateTimeOffset();
 
         /// <summary>
         /// Gets the Time Span value of the Node

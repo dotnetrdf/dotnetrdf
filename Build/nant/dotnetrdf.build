@@ -34,7 +34,7 @@
   <property name="dotnetrdf.releasetype" value="stable" />
   <property name="dotnetrdf.toolsversion" value="101" />
   <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.1.2533" />
+  <property name="dotnetrdf.nuspecversion" value="1.0.1-RC2" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -1423,171 +1423,65 @@
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/src/">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Core/net40/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Core/net40-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Core/net35/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Core/net35-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4/">
       <fileset basedir="bin/stable/Libraries/Core/sl4/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4-wp/">
       <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/portable-win+net40+sl4+wp/">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
         <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/portable-windows8+net45/">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
         <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
         <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/src/">
+      <fileset basedir="Libraries/core/net40/">
+        <include name="**/*.cs" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-      <arg value="-Version" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-    </exec>
-  </target>
-
-  <target name="dist-libs-nuget-core-symbols" description="Creates the Core Library NuGet Symbols package" depends="build-libs" unless="${dotnetrdf.nodist}">
-    <!-- Firstly clean out the relevant directories -->
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/net40/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/net40-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/net35/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/net35-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/sl4">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/lib/sl4-wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Core/src/">
-        <include name="**/*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <!-- Then create the Core library package -->
-    <copy todir="Build/nuget/Symbols/Core/lib/net40/">
-      <fileset basedir="bin/nightlies/Libraries/Core/net40/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/net40-client/">
-      <fileset basedir="bin/nighlies/Libraries/Core/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/net35/">
-      <fileset basedir="bin/nightlies/Libraries/Core/net35/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/net35-client/">
-      <fileset basedir="bin/nightlies/Libraries/Core/net35-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/sl4/">
-      <fileset basedir="bin/nightlies/Libraries/Core/sl4/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/sl4-wp/">
-      <fileset basedir="bin/nightlies/Libraries/Core/sl4-wp/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/portable-win+net40+sl4+wp/">
-      <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/lib/portable-windows8+net45/">
-      <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Core/src/">
-      <fileset basedir="Libraries/core/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
-    <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/Symbols/Core/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.symbols.nuspec" />
       <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
@@ -1600,121 +1494,59 @@
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40-client">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35-client">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/src/">
+        <include name="*" />
       </fileset>
     </delete>
     <!-- Then create the Data.Virtuoso package -->
     <copy todir="Build/nuget/Data.Virtuoso/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net40/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net40-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Data.Virtuoso/src/">
+      <fileset basedir="Libraries/Data/Virtuoso/net40/">
+        <include name="**/*.cs" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-      <arg value="-Version" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-    </exec>
-  </target>
-
-  <target name="dist-libs-nuget-data-virtuoso-symbols" description="Creates the Data.Virtuoso Library NuGet Symbols package" depends="build-libs" unless="${dotnetrdf.nodist}">
-    <!-- Firstly clean out the relevant directories -->
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Data.Virtuoso/lib/net40/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Data.Virtuoso/lib/net40-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Data.Virtuoso/lib/net35/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Data.Virtuoso/lib/net35-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Data.Virtuoso/src/">
-        <include name="**/*" />
-      </fileset>
-    </delete>
-    <!-- Then create the Data.Virtuoso library package -->
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/lib/net40/">
-      <fileset basedir="bin/nightlies/Libraries/Data/Virtuoso/net40/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/lib/net40-client/">
-      <fileset basedir="bin/nighlies/Libraries/Data/Virtuoso/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/lib/net35/">
-      <fileset basedir="bin/nightlies/Libraries/Data/Virtuoso/net35/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/lib/net35-client/">
-      <fileset basedir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/src/">
-      <fileset basedir="Libraries/Data/Virtuoso/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
-    <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/Symbols/Data.Virtuoso/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.Data.Virtuoso.symbols.nuspec" />
       <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
@@ -1722,7 +1554,7 @@
       <arg value="${dotnetrdf.nuspecversion}" />
     </exec>
   </target>
-
+ 
   <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
@@ -1745,99 +1577,41 @@
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Query.FullText/src/">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Query.FullText package -->
     <copy todir="Build/nuget/Query.FullText/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35-client/">
-        <include name="dotNetRDF.*dll" />
-        <include name="dotNetRDF.*xml" />
+        <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Query.FullText/src/">
+      <fileset basedir="Libraries/Query/FullText/net40/">
+        <include name="**/*.cs" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Query.FullText.nuspec" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-      <arg value="-Version" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-    </exec>
-  </target>
-
-  <target name="dist-libs-nuget-query-fulltext-symbols" description="Creates the Query.FullText Library NuGet Symbols package" depends="build-libs" unless="${dotnetrdf.nodist}">
-    <!-- Firstly clean out the relevant directories -->
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Query.FullText/lib/net40/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Query.FullText/lib/net40-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Query.FullText/lib/net35/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Query.FullText/lib/net35-client/">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Symbols/Query.FullText/src/">
-        <include name="**/*" />
-      </fileset>
-    </delete>
-    <!-- Then create the Query.FullText library package -->
-    <copy todir="Build/nuget/Symbols/Query.FullText/lib/net40/">
-      <fileset basedir="bin/nightlies/Libraries/Query/FullText/net40/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Query.FullText/lib/net40-client/">
-      <fileset basedir="bin/nighlies/Libraries/Query/FullText/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Query.FullText/lib/net35/">
-      <fileset basedir="bin/nightlies/Libraries/Query/FullText/net35/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Query.FullText/lib/net35-client/">
-      <fileset basedir="bin/nightlies/Libraries/Query/FullText/net35-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Symbols/Query.FullText/src/">
-      <fileset basedir="Libraries/Query/FullText/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
-    <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/Symbols/Query.FullText/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.Query.FullText.symbols.nuspec" />
       <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
@@ -1898,6 +1672,8 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1905,6 +1681,8 @@
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1912,20 +1690,26 @@
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.nupkg" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
   <target name="patch-nuspec" description="Changes the dependency version for dotNetRDF in library packages">
-      <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
-          <parameters>
-              <parameter name="version" value="${version}" />
-          </parameters>
-          <infiles>
-              <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
-              <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-          </infiles>
-      </style>
-      <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
-      <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+    <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
+      <parameters>
+        <parameter name="version" value="${version}" />
+      </parameters>
+      <infiles>
+        <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+        <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+        <include name="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
+        <include name="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
+      </infiles>
+    </style>
+    <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+    <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+    <move file="Build/nant/dotNetRDF.Data.Virtuoso.symbols.html" tofile="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
+    <move file="Build/nant/dotNetRDF.Query.FullText.symbols.html" tofile="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
   </target>
 </project>

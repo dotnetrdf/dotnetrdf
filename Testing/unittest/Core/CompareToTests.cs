@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Globalization;
 using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -282,6 +283,39 @@ namespace VDS.RDF
             this.CheckCombinations(nodes);
             this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
             this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+        }
+
+        [Test]
+        public void NodeCompareToWithCompareOptions()
+        {
+            Graph g = new Graph();
+
+            List<INode> nodes = new List<INode>()
+            {
+                g.CreateLiteralNode("something"),
+                g.CreateLiteralNode("Something"),
+                g.CreateLiteralNode("thing")
+            };
+
+            CompareOptions current = Options.DefaultComparisonOptions;
+
+            try
+            {
+                // Test each comparison mode
+                foreach (CompareOptions comparison in Enum.GetValues(typeof (StringComparison)))
+                {
+                    Options.DefaultComparisonOptions = comparison;
+                    this.ShowOrdering(nodes);
+
+                    this.CheckCombinations(nodes);
+                    this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+                    this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+                }
+            }
+            finally
+            {
+                Options.DefaultComparisonOptions = current;
+            }
         }
 
         [Test]
