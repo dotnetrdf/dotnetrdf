@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsLetter(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.LowercaseLetter:
                 case UnicodeCategory.ModifierLetter:
@@ -74,6 +74,14 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private static UnicodeCategory GetUnicodeCategory(char c)
+        {
+#if PORTABLE
+            return CharUnicodeInfo.GetUnicodeCategory(c);
+#else
+            return Char.GetUnicodeCategory(c);
+#endif
+        }
         /// <summary>
         /// Checks whether a given Character is considered a Letter or Digit
         /// </summary>
@@ -91,7 +99,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsLetterModifier(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.ModifierLetter:
                 case UnicodeCategory.NonSpacingMark:
@@ -108,7 +116,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsDigit(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.DecimalDigitNumber:
                 case UnicodeCategory.LetterNumber:
@@ -226,13 +234,14 @@ namespace VDS.RDF.Parsing
                     //UTF16 HiSurrogate = HI_SURROGATE_START | (W << 6) | X >> 10;
                     //where X, U and W correspond to the labels used in Table 3-5 UTF-16 Bit Distribution. 
                     int u = (i >> 16) & ((1 << 5) - 1);
+                    var x = (ushort) i;
                     int w = u - 1;
-                    int high = HighSurrogateStart | (w << 6) | (i >> 10);
+                    int high = HighSurrogateStart | (w << 6) | (x >> 10);
 
                     //The next snippet does the same for the low surrogate.
                     //UTF16 X = (UTF16) C;
                     //UTF16 LoSurrogate = (UTF16) (LO_SURROGATE_START | X & ((1 << 10) - 1));
-                    int low = LowSurrogateStart | i & ((1 << 10) - 1);
+                    int low = LowSurrogateStart | x & ((1 << 10) - 1);
                     return new char[] { (char)high, (char)low };
 #else
                     return Char.ConvertFromUtf32(i).ToCharArray();

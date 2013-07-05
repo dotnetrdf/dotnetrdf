@@ -34,6 +34,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
+#if !NO_URICACHE
     [TestFixture]
     public class CachingTests
     {
@@ -115,4 +116,5 @@ namespace VDS.RDF.Parsing
             }
         }
     }
+#endif
 }

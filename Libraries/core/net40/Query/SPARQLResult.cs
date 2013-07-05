@@ -318,9 +318,10 @@ namespace VDS.RDF.Query
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                if (this._resultValues[var] != null)
+                INode value;
+                if (this._resultValues.TryGetValue(var, out value) && value != null)
                 {
-                    output.Append(this._resultValues[var].ToString());
+                    output.Append(value.ToString());
                 }
 
                 output.Append(" , ");
@@ -353,11 +354,11 @@ namespace VDS.RDF.Query
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                if (this._resultValues[var] != null)
+                INode value;
+                if (this._resultValues.TryGetValue(var, out value) && value != null)
                 {
-                    output.Append(this._resultValues[var].ToString(formatter));
+                    output.Append(value.ToString(formatter));
                 }
-
                 output.Append(" , ");
             }
 

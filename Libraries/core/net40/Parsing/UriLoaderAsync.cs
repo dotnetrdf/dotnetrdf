@@ -26,6 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Net;
+#if PORTABLE
+using VDS.RDF.Compatability;
+#endif
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -62,6 +65,10 @@ namespace VDS.RDF.Parsing
             if (u.IsFile)
 #endif
             {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
+
                 //Invoke FileLoader instead
                 UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -75,6 +82,7 @@ namespace VDS.RDF.Parsing
                 //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                 callback(g, state);
                 return;
+#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -146,6 +154,9 @@ namespace VDS.RDF.Parsing
                 if (u.IsFile)
 #endif
                 {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -159,6 +170,7 @@ namespace VDS.RDF.Parsing
                     //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
+#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -196,33 +208,56 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if PORTABLE
+                    request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     request.UserAgent = _userAgent;
+#endif
                 }
 
                 Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(result =>
                     {
-                        using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-
-                            //Get a Parser and load the RDF
-                            if (parser == null)
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
                             {
-                                //Only need to auto-detect the parser if a specific one wasn't specified
-                                parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Tools.HttpDebugResponse(response);
+
+                                //Get a Parser and load the RDF
+                                if (parser == null)
+                                {
+                                    //Only need to auto-detect the parser if a specific one wasn't specified
+                                    parser = MimeTypesHelper.GetParser(response.ContentType);
+                                }
+                                parser.Warning += RaiseWarning;
+
+                                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                                //Finally can invoke the callback
+                                callback(handler, state);
                             }
-                            parser.Warning += RaiseWarning;
-
-                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
-
-                            //Finally can invoke the callback
+                        }
+                        catch (Exception ex)
+                        {
+#if PORTABLE
+                            if (state is AsyncOperationState)
+                            {
+                                (state as AsyncOperationState).OperationFailed(ex);
+                            }
                             callback(handler, state);
+#else
+                            throw;
+#endif
                         }
                     }, null);
             }
+#if PORTABLE
+            catch(FormatException uriEx)
+#else
             catch (UriFormatException uriEx)
+#endif
             {
                 //URI Format Invalid
                 throw new RdfParseException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
@@ -322,6 +357,9 @@ namespace VDS.RDF.Parsing
                 if (u.IsFile)
 #endif
                 {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -335,6 +373,7 @@ namespace VDS.RDF.Parsing
                     //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
+#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -370,7 +409,11 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if PORTABLE
+                    request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     request.UserAgent = _userAgent;
+#endif
                 }
 
                 Tools.HttpDebugRequest(request);
@@ -421,7 +464,11 @@ namespace VDS.RDF.Parsing
                     }
                 }, null);
             }
+#if PORTABLE
+            catch(FormatException uriEx)
+#else
             catch (UriFormatException uriEx)
+#endif
             {
                 //Uri Format Invalid
                 throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);

@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     /// <summary>
     /// Abstract set of Triple Stores tests which can be used to test any <see cref="ITripleStore"/> implementation
@@ -137,6 +137,7 @@ namespace VDS.RDF.Core
         }
     }
 
+#if !SILVERLIGHT
     [TestFixture]
     public class WebDemandTripleStoreTests
         : AbstractTripleStoreTests
@@ -146,7 +147,9 @@ namespace VDS.RDF.Core
             return new WebDemandTripleStore();
         }
     }
+#endif
 
+#if !NO_FILE
     [TestFixture]
     public class DiskDemandTripleStoreTests
         : AbstractTripleStoreTests
@@ -156,4 +159,5 @@ namespace VDS.RDF.Core
             return new DiskDemandTripleStore();
         }
     }
+#endif
 }

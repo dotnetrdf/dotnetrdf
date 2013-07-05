@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
@@ -170,6 +169,7 @@ namespace VDS.RDF.Configuration
             }
         }
 
+#if NET40 && !SILVERLIGHT
         [Test]
         public void ConfigurationStaticOptionsBooleanProperty()
         {
@@ -189,6 +189,7 @@ namespace VDS.RDF.Configuration
                 Options.UsePLinqEvaluation = current;
             }
         }
+#endif
 
         [Test]
         public void ConfigurationAutoOperators1()

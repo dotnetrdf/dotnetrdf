@@ -28,3 +28,10 @@ HAP developers that it is fully compatible with Windows Phone:
 Note if you add this DLL to a Windows Phone project via VS you will receive a warning message, we suggest you add this manually to Windows Phone
 project files so you can use the environment variable and make your project file portable since adding via VS will use a relative path based on
 your project file location
+
+Portable Class Library Build
+----------------------------
+
+The Portable Class Library Build includes Portable.Runtime.dll in addition to the dotNetRDF DLLs since Portable.Runtime.dll is not yet available
+via NuGet.  Depending on your target .Net profile you may need to add additional platform specific dependencies, please see their documentation
+at http://pclcontrib.codeplex.com for more information.

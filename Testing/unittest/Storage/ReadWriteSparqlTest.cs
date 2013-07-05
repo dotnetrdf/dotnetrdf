@@ -40,6 +40,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
+#if !NO_SYNC_HTTP // No ReadWriteSparqlConnector
     [TestFixture]
     public class ReadWriteSparqlTests
     {
@@ -50,15 +51,22 @@ namespace VDS.RDF.Storage
             return new ReadWriteSparqlConnector(RemoteEndpoints.GetQueryEndpoint(), RemoteEndpoints.GetUpdateEndpoint());
         }
 
+        private void SetUriLoaderCaching(bool newValue)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = newValue;
+#endif
+        }
+
         [Test]
         public void StorageReadWriteSparqlSaveGraph()
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Save Graph to ReadWriteSparql
@@ -80,7 +88,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -89,10 +97,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -115,7 +123,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -124,10 +132,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -150,7 +158,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -159,13 +167,13 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageReadWriteSparqlSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -184,7 +192,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -193,7 +201,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageReadWriteSparqlSaveGraph();
 
@@ -217,7 +225,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -226,7 +234,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageReadWriteSparqlSaveDefaultGraph();
 
@@ -250,7 +258,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -259,7 +267,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageReadWriteSparqlSaveDefaultGraph();
 
@@ -283,7 +291,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -292,7 +300,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageReadWriteSparqlSaveGraph();
 
@@ -308,7 +316,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -317,7 +325,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageReadWriteSparqlSaveGraph();
 
@@ -333,7 +341,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -435,4 +443,5 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
         }
     }
+#endif
 }

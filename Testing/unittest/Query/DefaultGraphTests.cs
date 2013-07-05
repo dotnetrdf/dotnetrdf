@@ -139,6 +139,7 @@ namespace VDS.RDF.Query
             }
         }
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate()
         {
@@ -159,7 +160,9 @@ namespace VDS.RDF.Query
             Assert.IsTrue(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
             Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
@@ -181,7 +184,9 @@ namespace VDS.RDF.Query
             Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the LOAD command");
             Assert.IsTrue(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
@@ -204,7 +209,9 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the second LOAD command");
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
@@ -227,7 +234,9 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the LOAD command");
             Assert.IsTrue(h.HasSubGraph(g), "First Graph should be a subgraph of the Second Graph");
         }
+#endif
 
+#if !SILVERLIGHT
         [Test]
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
@@ -250,6 +259,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the  LOAD command");
             Assert.IsFalse(h.HasSubGraph(g), "First Graph should not be a subgraph of the Second Graph as the DELETE should have eliminated the subgraph relationship");
         }
+#endif
 
         [Test]
         public void SparqlGraphClause()

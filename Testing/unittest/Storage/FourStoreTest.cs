@@ -35,6 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
+
     /// <summary>
     /// Summary description for FourStoreTest
     /// </summary>
@@ -52,7 +53,9 @@ namespace VDS.RDF.Storage
             return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
         }
 
+#if !NO_SYNC_HTTP // The tests here all use the synchronous API
         [Test]
+
         public void StorageFourStoreSaveGraph()
         {
             Graph g = new Graph();
@@ -154,5 +157,6 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");
             Assert.AreNotEqual(g, h, "Graphs should not be equal");
         }
+#endif
     }
 }

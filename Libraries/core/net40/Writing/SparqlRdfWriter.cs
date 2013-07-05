@@ -55,6 +55,8 @@ namespace VDS.RDF.Writing
             this._writer = writer;
         }
 
+        
+#if !NO_FILE
         /// <summary>
         /// Saves the SPARQL Result Set to the given File
         /// </summary>
@@ -64,6 +66,7 @@ namespace VDS.RDF.Writing
         {
             this._writer.Save(this.GenerateOutput(results), filename);
         }
+#endif
 
         /// <summary>
         /// Saves the SPARQL Result Set to the given Stream

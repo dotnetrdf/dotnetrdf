@@ -39,6 +39,8 @@ namespace VDS.RDF.Writing
     public class GraphVizWriter 
         : IRdfWriter
     {
+
+#if !NO_FILE
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format
         /// </summary>
@@ -52,6 +54,7 @@ namespace VDS.RDF.Writing
             //Call the other version of Save to do the actual work
             this.Save(g, output);
         }
+#endif
 
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format

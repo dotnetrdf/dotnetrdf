@@ -32,7 +32,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+#if !NO_HTMLAGILITYPACK
 using HtmlAgilityPack;
+#endif
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -53,8 +55,19 @@ namespace VDS.RDF
         /// <returns></returns>
         public static string[] Split(this string value, char[] chars, int count)
         {
-            String[] items = value.Split(chars);
-            return items.Length > count ? items.Take(count-1).Concat(String.Join(new String(chars), items, count, items.Length-(count-1)).AsEnumerable()).ToArray() : items;
+            int start = 0;
+            var ix = value.IndexOfAny(chars);
+            var ret = new List<string>();
+            while (ix >= 0 && ret.Count < (count - 1))
+            {
+                ret.Add(value.Substring(start, ix - start));
+                start = ix + 1;
+                ix = value.IndexOfAny(chars, start);
+            }
+            ret.Add(start < value.Length ? value.Substring(start) : String.Empty);
+            return ret.ToArray();
+            //String[] items = value.Split(chars);
+            //return items.Length > count ? items.Take(count-1).Concat(String.Join(new String(chars), items, count, items.Length-(count-1)).AsEnumerable()).ToArray() : items;
         }
 
         /// <summary>
@@ -81,7 +94,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static bool IsFile(this Uri u)
         {
+#if PORTABLE
+            return u.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
+#else
             return u.Scheme.Equals(Uri.UriSchemeFile);
+#endif
         }
 
         /// <summary>
@@ -149,6 +166,7 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_HTMLAGILITYPACK
         public static HtmlNode SelectSingleNode(this HtmlNode node, String xpath)
         {
             if (!xpath.ToCharArray().All(c => Char.IsLetterOrDigit(c) || c == '/') || xpath.Contains("//"))
@@ -199,6 +217,7 @@ namespace VDS.RDF
 
             return results;
         }
+#endif
 
         public static int FindIndex<T>(this List<T> list, Predicate<T> match)
         {

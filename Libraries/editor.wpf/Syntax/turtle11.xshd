@@ -1,0 +1,17 @@
+﻿<SyntaxDefinition name="Turtle" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="EscapedChar" foreground="Teal" />
+	
+	<RuleSet>
+    <!-- TODO: Need to add modified rules to cover broad productions for some elements in Turtle W3C -->
+    <Import ruleSet="Turtle/" />
+  </RuleSet>
+</SyntaxDefinition>

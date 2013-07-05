@@ -72,7 +72,11 @@ namespace VDS.RDF.Storage.Management
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+#if PORTABLE
+            this._agraphBase = this._baseUri.Copy();
+#else
             this._agraphBase = String.Copy(this._baseUri);
+#endif
             if (catalogID != null)
             {
                 this._baseUri += "catalogs/" + catalogID + "/";
@@ -276,7 +280,11 @@ namespace VDS.RDF.Storage.Management
         public override IStorageProvider GetStore(String storeID)
         {
             //Otherwise return a new instance
-            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
+            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd
+#if !NO_PROXY
+                , this.Proxy
+#endif
+                );
         }
 
 #endif

@@ -1,4 +1,3 @@
-
 <?xml version="1.0"?>
 <project name="dotNetRDF Core Library" default="build-nightly" basedir="../../">
   <description>Generates the dotNetRDF Core Library Builds</description>
@@ -13,7 +12,8 @@
   <property name="dotnetrdf.nodist" value="" />
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
-
+  <property name="dotnetrdf.noportable" value="${dotnetrdf.nosilverlight}" />
+  
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
   
@@ -57,13 +57,15 @@
 		 projectsync-core-silverlight,
 		 projectsync-core-windowsphone,
 		 projectsync-core-clientprofile,
-	         projectsync-core-clientprofile-net35,
+	   projectsync-core-clientprofile-net35,
+     projectsync-core-portable,
 		 projectsync-query-fulltext-clientprofile,
 		 projectsync-query-fulltext-clientprofile-net35,
 		 projectsync-query-fulltext-net35,
 		 projectsync-data-virtuoso-clientprofile,
 		 projectsync-data-virtuoso-clientprofile-net35,
-		 projectsync-data-virtuoso-net35">
+		 projectsync-data-virtuoso-net35,
+     projectsync-test-portable">
 
   </target>
 
@@ -103,6 +105,23 @@
     </exec>
   </target>
 
+  <target name="projectsync-core-portable" unless="${dotnetrdf.noportable == 'true' or dotnetrdf.nocompile == 'true'}">
+	<exec program="Build/SyncProjects/SyncProjects.exe">
+		<arg value="sync" />
+		<arg value="Libraries/core/net40/dotNetRDF.csproj" />
+		<arg value="Libraries/core/portable/dotNetRDF.Portable.csproj" />
+	</exec>
+  </target>
+  
+  <target name="projectsync-test-portable" unless="${dotnetrdf.noportable == 'true' or dotnetrdf.nocompile == 'true'}">
+	<exec program="Build/SyncProjects/SyncProjects.exe">
+		<arg value="sync" />
+		<arg value="Testing/unittest/dotNetRDF.Test.csproj" />
+		<arg value="Testing/portable/dotNetRDF.Portable.Test/dotNetRDF.Portable.Test.csproj" />
+		<arg value="..\..\unittest\" />
+	</exec>
+  </target>
+  
   <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
     <exec program="Build/SyncProjects/SyncProjects.exe">
@@ -208,6 +227,8 @@
       <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
+  
+  <!-- TODO: Probably need a license-core-portable target that ensures we don't overwrite 3rd Party Licenses -->
 
   <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
@@ -543,7 +564,8 @@
                    compile-core-silverlight,
                    compile-core-windowsphone,
                    compile-core-clientprofile,
-                   compile-core-clientprofile-net35">  
+                   compile-core-clientprofile-net35,
+                   compile-core-portable">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
@@ -644,6 +666,18 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
+    </exec>
+  </target>
+
+  <target name="compile-core-portable" description="Compiles the dotNetRDF Portable Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-portable">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core/portable/dotNetRDF.Portable.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
@@ -977,13 +1011,22 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
   </target>
 
-  <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
+  <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile 3.5 Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.pdb" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/VDS.Common.dll" />
+  </target>
+
+  <target name="build-core-portable" description="Copy the latest Portable build to the Portable Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-portable">
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.pdb" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Portable.Runtime.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
@@ -1333,9 +1376,9 @@
   </target>
 
   <target name="dist-libs-nuget" description="Creates the NuGet packages" unless="${dotnetrdf.nodist}" 
-          depends="dist-libs-nuget-core,
-                   dist-libs-nuget-data-virtuoso,
-                   dist-libs-nuget-query-fulltext">
+          depends="dist-libs-nuget-core,dist-libs-nuget-core-symbols,
+                   dist-libs-nuget-data-virtuoso,dist-libs-nuget-data-virtuoso-symbols,
+                   dist-libs-nuget-query-fulltext,dist-libs-nuget-query-fulltext-symbols">
   </target>
 
   <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
@@ -1367,6 +1410,16 @@
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Core/lib/sl4-wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
         <include name="*" />
       </fileset>
     </delete>
@@ -1405,6 +1458,22 @@
       <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
         <include name="dotNetRDF.*dll" />
         <include name="dotNetRDF.*xml" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/portable-win+net40+sl4+wp/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*dll" />
+        <include name="dotNetRDF.*xml" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/portable-windows8+net45/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*dll" />
+        <include name="dotNetRDF.*xml" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
@@ -1455,6 +1524,16 @@
         <include name="**/*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Symbols/Core/lib/net40/">
       <fileset basedir="bin/nightlies/Libraries/Core/net40/">
@@ -1484,6 +1563,20 @@
     <copy todir="Build/nuget/Symbols/Core/lib/sl4-wp/">
       <fileset basedir="bin/nightlies/Libraries/Core/sl4-wp/">
         <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Symbols/Core/lib/portable-win+net40+sl4+wp/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Symbols/Core/lib/portable-windows8+net45/">
+      <fileset basedir="bin/stable/Libraries/Core/portable/">
+        <include name="dotNetRDF.*" />
+        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
+        <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Symbols/Core/src/">
@@ -1796,15 +1889,22 @@
   </target>
 
   <target name="upload-libs-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" 
-          depends="upload-libs-nuget-core,
-                   upload-libs-nuget-data-virtuoso,
-                   upload-libs-nuget-query-fulltext">
+          depends="upload-libs-nuget-core,upload-libs-nuget-core-symbols,
+                   upload-libs-nuget-data-virtuoso,upload-libs-nuget-data-virtuoso-symbols,
+                   upload-libs-nuget-query-fulltext,upload-libs-nuget-query-fulltext-symbols">
   </target>
 
   <target name="upload-libs-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-libs-nuget-core">
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+  </target>
+
+  <target name="upload-libs-nuget-core-symbols" description="Uploads the Core Library Symbols Package to the NuGet Symbol Server" depends="dist-libs-nuget-core-symbols">
+    <exec workingdir="Build/nuget/Symbols/Core/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.symbols.nupkg" />
     </exec>
   </target>
 
@@ -1815,6 +1915,13 @@
     </exec>
   </target>
 
+  <target name="upload-libs-nuget-data-virtuoso-symbols" description="Uploads the Data.Virtuoso Library Symbols Package to the NuGet Symbol Server" depends="dist-libs-nuget-data-virtuoso-symbols">
+    <exec workingdir="Build/nuget/Symbols/Data.Virtuoso/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.symbols.nupkg" />
+    </exec>
+  </target>
+
   <target name="upload-libs-nuget-query-fulltext" description="Uploads the Query.FullText Library package to the NuGet Gallery" depends="dist-libs-nuget-query-fulltext">
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="push" />
@@ -1822,17 +1929,28 @@
     </exec>
   </target>
 
+  <target name="upload-libs-nuget-query-fulltext-symbols" description="Uploads the Query.FullText Library Symbols Package to the NuGet Symbol Server" depends="dist-libs-nuget-query-fulltext-symbols">
+    <exec workingdir="Build/nuget/Symbols/Query.FullText/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.symbols.nupkg" />
+    </exec>
+  </target>
+
   <target name="patch-nuspec" description="Changes the dependency version for dotNetRDF in library packages">
-      <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
-          <parameters>
-              <parameter name="version" value="${version}" />
-          </parameters>
-          <infiles>
-              <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
-              <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-          </infiles>
-      </style>
-      <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
-      <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+    <style style="Build/nant/patch-nuspec.xsl" destdir="Build/nant/">
+      <parameters>
+        <parameter name="version" value="${version}" />
+      </parameters>
+      <infiles>
+        <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+        <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+        <include name="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
+        <include name="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
+      </infiles>
+    </style>
+    <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
+    <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
+    <move file="Build/nant/dotNetRDF.Data.Virtuoso.symbols.html" tofile="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
+    <move file="Build/nant/dotNetRDF.Query.FullText.symbols.html" tofile="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
   </target>
 </project>

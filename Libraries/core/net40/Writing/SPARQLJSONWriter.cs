@@ -38,6 +38,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlJsonWriter : ISparqlResultsWriter
     {
+
+#if !NO_FILE
         /// <summary>
         /// Saves the Result Set to the given File in the SPARQL Results JSON Format
         /// </summary>
@@ -48,6 +50,7 @@ namespace VDS.RDF.Writing
             StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(results, output);
         }
+#endif
 
         /// <summary>
         /// Saves the Result Set to the given Stream in the SPARQL Results JSON Format

@@ -38,6 +38,7 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Serialization
 {
+#if !SILVERLIGHT
     [TestFixture]
     public class ResultSerializationTests
     {
@@ -238,4 +239,5 @@ namespace VDS.RDF.Writing.Serialization
             this.TestDataContractSerialization(this.GetResults());
         }
     }
+#endif
 }

@@ -54,6 +54,8 @@ namespace VDS.RDF.Query.Paths
             this._start = start;
             this._end = end;
             if (this._start.VariableName == null && this._end.VariableName == null) this._earlyAbort = true;
+            this._start.RigorousEvaluation = true;
+            this._end.RigorousEvaluation = true;
         }
 
         /// <summary>

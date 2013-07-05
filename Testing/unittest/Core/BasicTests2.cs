@@ -43,8 +43,9 @@ namespace VDS.RDF
         public void GraphEquality() {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
@@ -108,7 +109,9 @@ namespace VDS.RDF
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -239,13 +242,19 @@ namespace VDS.RDF
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
+#if !NO_HTMLAGILITYPACK // Resource returns RDFa
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
+#endif
                     new Uri("http://dbpedia.org/resource/Southampton"),
+#if !NO_FILE // file: urls not supported
                     new Uri("file:///resources\\MergePart1.ttl"),
+#endif
                     new Uri("http://www.dotnetrdf.org/configuration#")
                 };
 
@@ -278,7 +287,9 @@ namespace VDS.RDF
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -339,11 +350,12 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_DATA
         [Test]
         public void GraphToDataTable()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             DataTable table = (DataTable)g;
 
@@ -379,6 +391,7 @@ namespace VDS.RDF
                 Console.WriteLine();
             }
         }
+#endif
 
         [Test]
         public void GraphPersistenceWrapperNodeCreation()

@@ -12,12 +12,49 @@
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="5.0.4" />
-      <dependency id="HtmlAgilityPack" version="1.4.6" />
-      <dependency id="VDS.Common" version="[1.2.0]" />
+      <!-- These dependencies apply to all builds -->
+      <group>
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+      </group>
+
+      <!-- These only apply to non-portable builds -->
+      <group targetFramework="net35-client">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="net35">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="net40-client">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="sl4">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="sl4-wp7">
+        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
     </dependencies>
     <releaseNotes>
-
+      - Include Portable Class Library builds
+      - Various bug fixes
+      - Improved performance of NTriples serializer for non-ASCII data
+      - Upgraded Json.Net dependency to 5.0.6
     </releaseNotes>
   </metadata>
 </package>

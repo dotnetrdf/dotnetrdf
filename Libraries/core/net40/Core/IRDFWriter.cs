@@ -34,6 +34,7 @@ namespace VDS.RDF
     /// </summary>
     public interface IRdfWriter
     {
+#if !NO_FILE
         /// <summary>
         /// Method for Saving a Graph to a Concrete RDF Syntax in a file based format
         /// </summary>
@@ -42,6 +43,7 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer</exception>
         /// <exception cref="IOException">Thrown if the Writer is unable to write to the File</exception>
         void Save(IGraph g, String filename);
+#endif
 
         /// <summary>
         /// Method for Saving a Graph to a Concrete RDF Syntax via some arbitrary <see cref="TextWriter">TextWriter</see>

@@ -32,6 +32,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
+#if !NO_FILE
     /// <summary>
     /// Class for representing Triple Stores which are collections of RDF Graphs
     /// </summary>
@@ -47,4 +48,5 @@ namespace VDS.RDF
         public DiskDemandTripleStore()
             : base(new DiskDemandGraphCollection()) { }
     }
+#endif
 }
