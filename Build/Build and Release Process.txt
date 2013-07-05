@@ -14,14 +14,14 @@ To build dotNetRDF you will need one of the following:
 
 You will also need the following installed on your machine:
 
- - NuGet (http://nuget.codeplex.com
+ - NuGet (http://nuget.codeplex.com)
  - Silverlight 4 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=18149)
  - Windows Phone 7 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=27570 and http://www.microsoft.com/en-us/download/details.aspx?id=29233
 
 Standard (Visual Studio) Build
 ------------------------------
 
-The standard build is very simple, load dotNetRDF.sln into Visual Studio and simply do a Build All
+The standard build is very simple, load dotNetRDF.sln into Visual Studio and simply do a Rebuild All
 
 Alternatively to build via nant run the following command:
 
@@ -37,6 +37,11 @@ To build everything simply run the following:
 nant build
 
 This will build all the libraries and toolkkit utilities and copy them to the bin/nightlies directory.
+
+If you prefer you can compile in VS and then run the following to prepare the directory structures that subsequent
+release steps expect:
+
+nant no-compile build
 
 Release Process
 ===============
@@ -70,7 +75,8 @@ If you know the code is good you can just run the following:
 
 nant build-release
 
-This will rebuild all the nightlies and then copy them to the bin/stable directory
+This will rebuild all the nightlies and then copy them to the bin/stable directory.  However it can't build the toolkit
+installer so you may want to compile with VS first and then run with the no-compile target instead.
 
 3 - Create ZIP Distributions
 ----------------------------
@@ -90,16 +96,17 @@ This will generate you four ZIP files comprising the libraries, source code, too
 Upload ZIPs to desired distribution locations, for official releases the following locations should be used:
 
 - dotnetrdf.org
-- sourceforge.net
-- codeplex.com
+- sourceforge.net/projects/dotnetrdf
+- dotnetrdf.codeplex.com
+- bitbucket.org/dotnetrdf/dotnetrdf/
 
 5 - Update NuGet Packages
 -------------------------
 
 For official releases the NuGet packages should be generated and uploaded.
 
-First check that the property for nuspec version is up to date in the dotnetrdf.build file, also ensure that the
-versions given in the nuspec files match the version being released especially for dependencies.
+First check that the property for nuspec version is up to date in the dotnetrdf.build file, this is inserted into
+the NuSpec files so there should be no need to modify the NuSpec files manually.
 
 You can then upload the NuGet packages using the following nant command:
 

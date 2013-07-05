@@ -179,9 +179,20 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="c">Character</param>
         /// <returns></returns>
+        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public virtual String FormatChar(char c)
         {
             return c.ToString();
+        }
+
+        /// <summary>
+        /// Formats a sequence of characters as a String
+        /// </summary>
+        /// <param name="cs">Characters</param>
+        /// <returns>String</returns>
+        public virtual String FormatChar(char[] cs)
+        {
+            return new String(cs);
         }
 
         /// <summary>

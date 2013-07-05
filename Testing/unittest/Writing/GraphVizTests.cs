@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !NO_PROCESS
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,7 @@ namespace VDS.RDF.Writing
             writer.Save(g, "WritingGraphViz1.dot");
         }
 
+#if !NO_PROCESS
         [Test]
         public void WritingGraphViz2()
         {
@@ -79,5 +82,8 @@ namespace VDS.RDF.Writing
             GraphVizGenerator generator = new GraphVizGenerator("png");
             generator.Generate(g, "WritingGraphViz3.png", false);
         }
+#endif
     }
 }
+
+#endif

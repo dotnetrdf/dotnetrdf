@@ -124,11 +124,19 @@ namespace VDS.RDF.Nodes
         /// Throws an error as the string cannot be cast to a date time
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
         {
             throw new RdfQueryException("Cannot cast this literal node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as the string cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            throw new RdfQueryException("Cannot cast this literal node to a type");
+        }
 
         /// <summary>
         /// Throws an error as the string cannot be cast to a time span

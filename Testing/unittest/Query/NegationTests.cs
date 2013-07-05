@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
         {
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             dataset.AddGraph(g);
 
             return dataset;

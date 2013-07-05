@@ -66,6 +66,7 @@ namespace VDS.RDF.Parsing
             this.Load(new ResultSetHandler(results), input);
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads a Result Set from a File
         /// </summary>
@@ -77,6 +78,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             this.Load(results, new StreamReader(filename));
         }
+#endif
 
         /// <summary>
         /// Loads a Result Set from an Input using a Results Handler
@@ -122,6 +124,7 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads a Result Set from a file using a Results Handler
         /// </summary>
@@ -132,6 +135,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             this.Load(handler, new StreamReader(filename));
         }
+#endif
 
         /// <summary>
         /// Initialises the XML Reader settings
@@ -140,7 +144,9 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if SILVERLIGHT || NET40
+#if PORTABLE
+            settings.DtdProcessing = DtdProcessing.Ignore;
+#elif SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;

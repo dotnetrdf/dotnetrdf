@@ -68,16 +68,20 @@ Dependencies for each library can be found in the directory with the build.
 Requirements
 ------------
 
-To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
-following third party libraries:
-- JSON.Net 5.0.4 which can be obtained from http://json.codeplex.com
-- HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack
+We recommend using NuGet to install dotNetRDF libraries since that will manage depdendencies for you.
+
+To use this library you will need .Net Framework 3.5 SP1 or higher.
+
+The Core Library depends on the following third party libraries:
+- JSON.Net 5.0.6 which can be obtained from http://json.codeplex.com
+- HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack (Not required if using the PCL build)
 - VDS.Common 1.2.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
+- Portable.Runtime 0.1.0 which can be obtained from http://pclcontrib.codeplex.com (Only required if using the PCL build)
 
 The relevant DLLs are included with this release and if you wish to use the library you may need to reference these
 DLLs as well to ensure it is available in your project for dotNetRDF to use.
 
-To use either the any of the other libraries you must include the Core library and its dependencies
+To use any of the other libraries you must include the appropriate version of the Core library and its dependencies
 
 If you wish to use the optional Data.Virtuoso library that is also included you will need the additional
 OpenLink Virtuoso ADO.Net provider which can be found in the folder with the Data.Virtuoso library
@@ -96,6 +100,8 @@ NuGet
 - There is a requirement for Silverlight/Windows Phone projects using this library to reference
   System.Xml.XPath because it is required by HtmlAgilityPack which cannot be handled automatically by
   NuGet at this time
+- Portable Class Library users may need to add additional PCLContrib dependencies for their target profiles
+  manually since these are not yet available via NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
@@ -170,6 +176,10 @@ Release History
 30/1/2013 - Release of Version 0.9.0 RC 4 (Build 0.9.0.2110)
 
 3/5/2013 - Release of Version 1.0.0 (Build 1.0.0.2473)
+
+4/6/2013 - Re-release of Version 1.0.0 (Build 1.0.0.2533)
+
+14/6/2013 - Pre-release of Version 1.0.1-portableRC1 (Build 1.0.1.2648)
 
 ?/?/2013 - Release of Version 1.0.1 (Build 1.0.1.?)
 

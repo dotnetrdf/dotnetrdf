@@ -1,0 +1,32 @@
+﻿@prefix :        <http://example.org/unnamed#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+ 
+:Level1
+      rdf:type rdfs:Class .
+ 
+:Level1_1
+      rdf:type rdfs:Class ;
+      rdfs:subClassOf :Level1 .
+ 
+:Level1_2
+      rdf:type rdfs:Class ;
+      rdfs:subClassOf :Level1 .
+ 
+:level1_1_item1
+      rdf:type :Level1_1 ;
+      rdfs:label "level1_1 item 1" .
+ 
+:level1_2_item_1
+      rdf:type :Level1_2 ;
+      rdfs:label "level1_2 item 1" .
+ 
+:level1_2_item_2
+      rdf:type :Level1_2 ;
+      rdfs:label "level1_2 item 2" .
+ 
+:level_1_1_item_2
+      rdf:type :Level1_1 ;
+      rdfs:label "level1_1 item 2" .

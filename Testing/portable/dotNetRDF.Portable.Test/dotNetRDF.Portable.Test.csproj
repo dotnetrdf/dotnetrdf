@@ -1,0 +1,746 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A2F3A026-4BE2-41F1-A9AB-77B8CB11B50C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Portable.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PORTABLE;NO_DATAEXTENSIONS;NO_FULLTEXT, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE, NO_XMLENTITIES</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;PORTABLE;NO_DATAEXTENSIONS;NO_FULLTEXT, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.XML" />
+    <Reference Include="VDS.Common">
+      <HintPath>..\..\..\packages\VDS.Common.1.2.0\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="Compatibility\FileLoader.cs" />
+    <Compile Include="Compatibility\FileStreamHelper.cs" />
+    <Compile Include="Compatibility\GraphExtensions.cs" />
+    <Compile Include="Compatibility\ObjectParserExtensions.cs" />
+    <Compile Include="Compatibility\RdfReaderExtensions.cs" />
+    <Compile Include="Compatibility\RdfWriterExtensions.cs" />
+    <Compile Include="Compatibility\SparqlResultsReaderExtensions.cs" />
+    <Compile Include="Compatibility\SparqlResultsWriterExtensions.cs" />
+    <Compile Include="Compatibility\StoreExtensions.cs" />
+    <Compile Include="Compatibility\StoreReaderExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\core\portable\dotNetRDF.Portable.csproj">
+      <Project>{8aaec132-8ec5-4a53-b27b-960fbab99e19}</Project>
+      <Name>dotNetRDF.Portable</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\..\unittest\BaseTest.cs">
+      <Link>BaseTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\AutoConfigTests.cs">
+      <Link>Configuration\AutoConfigTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\ConfigLookupTests.cs">
+      <Link>Configuration\ConfigLookupTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\ConfigSerializationTests.cs">
+      <Link>Configuration\ConfigSerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\DefaultTypeTests.cs">
+      <Link>Configuration\DefaultTypeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\LoadObjectTests.cs">
+      <Link>Configuration\LoadObjectTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\AbstractTripleStoreTests.cs">
+      <Link>Core\AbstractTripleStoreTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\BasicTests1.cs">
+      <Link>Core\BasicTests1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\BasicTests2.cs">
+      <Link>Core\BasicTests2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\GraphCollectionTests.cs">
+      <Link>Core\GraphCollectionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\LiteralNodeTests.cs">
+      <Link>Core\LiteralNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\MimeTypesTests.cs">
+      <Link>Core\MimeTypesTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\TripleCollectionTests.cs">
+      <Link>Core\TripleCollectionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\UriTests.cs">
+      <Link>Core\UriTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\ValuedNodeTests.cs">
+      <Link>Core\ValuedNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseParserSuite.cs">
+      <Link>Parsing\Suites\BaseParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\CachingTests.cs">
+      <Link>Parsing\CachingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\GZipTests.cs">
+      <Link>Parsing\GZipTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\LangSpecTests.cs">
+      <Link>Parsing\LangSpecTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\N3.cs">
+      <Link>Parsing\Suites\N3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\NTriples.cs">
+      <Link>Parsing\Suites\NTriples.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\RdfA.cs">
+      <Link>Parsing\Suites\RdfA.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\RdfXml.cs">
+      <Link>Parsing\Suites\RdfXml.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\RelativeUriTests.cs">
+      <Link>Parsing\RelativeUriTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\SparqlJsonTests.cs">
+      <Link>Parsing\SparqlJsonTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\SparqlResultsXml.cs">
+      <Link>Parsing\Suites\SparqlResultsXml.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\TriG.cs">
+      <Link>Parsing\Suites\TriG.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\TriGTests.cs">
+      <Link>Parsing\TriGTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\TriX.cs">
+      <Link>Parsing\Suites\TriX.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\Turtle11.cs">
+      <Link>Parsing\Suites\Turtle11.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\TurtleMemberSubmission.cs">
+      <Link>Parsing\Suites\TurtleMemberSubmission.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\AggregatesOverNullTests.cs">
+      <Link>Query\Aggregates\AggregatesOverNullTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\CountDistinctAggregateTests.cs">
+      <Link>Query\Aggregates\CountDistinctAggregateTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\AlgebraReverseTranslation.cs">
+      <Link>Query\AlgebraReverseTranslation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\BindingsTests.cs">
+      <Link>Query\BindingsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\BlankNodeVariableTests.cs">
+      <Link>Query\BlankNodeVariableTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ConstructWithOptionalTests.cs">
+      <Link>Query\ConstructWithOptionalTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\DatasetTests.cs">
+      <Link>Query\DatasetTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\DataTableTests.cs">
+      <Link>Query\DataTableTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\DefaultGraphTests.cs">
+      <Link>Query\DefaultGraphTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\DefaultGraphTests2.cs">
+      <Link>Query\DefaultGraphTests2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\DescribeAlgorithms.cs">
+      <Link>Query\DescribeAlgorithms.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ExplainProcessorTests.cs">
+      <Link>Query\ExplainProcessorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Expressions\ReplaceFunctionTests.cs">
+      <Link>Query\Expressions\ReplaceFunctionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FilterPlacementTests.cs">
+      <Link>Query\FilterPlacementTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FormattingTests.cs">
+      <Link>Query\FormattingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextGraphScopingTests.cs">
+      <Link>Query\FullText\FullTextGraphScopingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\LoaderTests.cs">
+      <Link>Parsing\LoaderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\NamespaceMapperTest.cs">
+      <Link>Core\NamespaceMapperTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\GroupByTests.cs">
+      <Link>Query\GroupByTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\LeviathanTests.cs">
+      <Link>Query\LeviathanTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\NegationTests.cs">
+      <Link>Query\NegationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\OperatorTests.cs">
+      <Link>Query\OperatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\OptimiserTests.cs">
+      <Link>Query\OptimiserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ParallelEvaluation.cs">
+      <Link>Query\ParallelEvaluation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ParsingTests.cs">
+      <Link>Query\ParsingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\PropertyPathEvaluationTests.cs">
+      <Link>Query\PropertyPathEvaluationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\PropertyPathTransformationTests.cs">
+      <Link>Query\PropertyPathTransformationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\QNameEscapingTests.cs">
+      <Link>Query\QNameEscapingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\QueryFormattingTests.cs">
+      <Link>Query\QueryFormattingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\QueryThreadSafety.cs">
+      <Link>Query\QueryThreadSafety.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\QueryTimeouts.cs">
+      <Link>Query\QueryTimeouts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\RemoteEndpoints.cs">
+      <Link>Query\RemoteEndpoints.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ResultAccessTests.cs">
+      <Link>Query\ResultAccessTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ResultSetWriterTests.cs">
+      <Link>Query\ResultSetWriterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ScalarArgumentsTests.cs">
+      <Link>Query\ScalarArgumentsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SequenceTests.cs">
+      <Link>Query\SequenceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ServiceTests.cs">
+      <Link>Query\ServiceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SetTests.cs">
+      <Link>Query\SetTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlNewFunctions.cs">
+      <Link>Query\SparqlNewFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlOrderByTests.cs">
+      <Link>Query\SparqlOrderByTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlParsingComplex.cs">
+      <Link>Query\SparqlParsingComplex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlProcessorsWithHandlersTests.cs">
+      <Link>Query\SparqlProcessorsWithHandlersTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlQueryTests.cs">
+      <Link>Query\SparqlQueryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlTests.cs">
+      <Link>Query\SparqlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\SparqlTests2.cs">
+      <Link>Query\SparqlTests2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\StrictOptimiserTest.cs">
+      <Link>Query\StrictOptimiserTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\VariableSubstitutionTests.cs">
+      <Link>Query\VariableSubstitutionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ViewTests.cs">
+      <Link>Query\ViewTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\WeightedOptimiserTests.cs">
+      <Link>Query\WeightedOptimiserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\NativeStoreTests.cs">
+      <Link>Storage\NativeStoreTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Ontology\OntologyTests.cs">
+      <Link>Ontology\OntologyTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\ParserTests.cs">
+      <Link>Parsing\ParserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\AllegroGraphAsync.cs">
+      <Link>Storage\Async\AllegroGraphAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\DydraAsync.cs">
+      <Link>Storage\Async\DydraAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\FourStoreAsync.cs">
+      <Link>Storage\Async\FourStoreAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\FusekiAsync.cs">
+      <Link>Storage\Async\FusekiAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\SesameAsync.cs">
+      <Link>Storage\Async\SesameAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\SparqlGraphStoreAsync.cs">
+      <Link>Storage\Async\SparqlGraphStoreAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\StardogAsync.cs">
+      <Link>Storage\Async\StardogAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\VirtuosoAsync.cs">
+      <Link>Storage\Async\VirtuosoAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\TestConfigManager.cs">
+      <Link>TestConfigManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\TestTools.cs">
+      <Link>TestTools.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\UpdateTests2.cs">
+      <Link>Update\UpdateTests2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\VirtuosoTest.cs">
+      <Link>Storage\VirtuosoTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\UpdateTests1.cs">
+      <Link>Update\UpdateTests1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\GraphVizTests.cs">
+      <Link>Writing\GraphVizTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\WriterTests.cs">
+      <Link>Writing\WriterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\CompareToTests.cs">
+      <Link>Core\CompareToTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\GraphDiffTests.cs">
+      <Link>Core\GraphDiffTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\HardGraphMatching.cs">
+      <Link>Core\HardGraphMatching.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\Hypercube.cs">
+      <Link>Core\Hypercube.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\IndexingTests.cs">
+      <Link>Core\IndexingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\ListTests.cs">
+      <Link>Core\ListTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\BaseUriAssignmentTests.cs">
+      <Link>Parsing\BaseUriAssignmentTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\BlockingTextReaderTests.cs">
+      <Link>Parsing\BlockingTextReaderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\EmptyFileParsing.cs">
+      <Link>Parsing\EmptyFileParsing.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\ChainedHandlerTests.cs">
+      <Link>Parsing\Handlers\ChainedHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\UriLoaderHandlerTests.cs">
+      <Link>Parsing\Handlers\UriLoaderHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\CountHandlerTests.cs">
+      <Link>Parsing\Handlers\CountHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\FileLoaderHandlerTests.cs">
+      <Link>Parsing\Handlers\FileLoaderHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\GraphHandlerTests.cs">
+      <Link>Parsing\Handlers\GraphHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\MultiHandlerTests.cs">
+      <Link>Parsing\Handlers\MultiHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\PagingHandlerTests.cs">
+      <Link>Parsing\Handlers\PagingHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\ResultSetHandlerTests.cs">
+      <Link>Parsing\Handlers\ResultSetHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\StoreHandlerBlankNodeTests.cs">
+      <Link>Parsing\Handlers\StoreHandlerBlankNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\StoreHandlerTests.cs">
+      <Link>Parsing\Handlers\StoreHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\WriteThroughHandlerTests.cs">
+      <Link>Parsing\Handlers\WriteThroughHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Handlers\WriteToStoreHandlerTests.cs">
+      <Link>Parsing\Handlers\WriteToStoreHandlerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\ObjectParserTests.cs">
+      <Link>Parsing\ObjectParserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\RdfXmlNamespaces.cs">
+      <Link>Parsing\RdfXmlNamespaces.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\SpeedTesting.cs">
+      <Link>Parsing\SpeedTesting.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\StringReaderEncodingTests.cs">
+      <Link>Parsing\StringReaderEncodingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextConfigTests.cs">
+      <Link>Query\FullText\FullTextConfigTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextDatasetTests.cs">
+      <Link>Query\FullText\FullTextDatasetTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextHelperTests.cs">
+      <Link>Query\FullText\FullTextHelperTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextIncrementalIndexAndSearch.cs">
+      <Link>Query\FullText\FullTextIncrementalIndexAndSearch.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextOptimiserTests.cs">
+      <Link>Query\FullText\FullTextOptimiserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextSparqlTests.cs">
+      <Link>Query\FullText\FullTextSparqlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\FullTextSparqlTests2.cs">
+      <Link>Query\FullText\FullTextSparqlTests2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\IndexCreationTests.cs">
+      <Link>Query\FullText\IndexCreationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\IndexSearchTests.cs">
+      <Link>Query\FullText\IndexSearchTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\FullText\LuceneTestHarness.cs">
+      <Link>Query\FullText\LuceneTestHarness.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\BaseAsyncTests.cs">
+      <Link>Storage\Async\BaseAsyncTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\Async\InMemoryAsync.cs">
+      <Link>Storage\Async\InMemoryAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\AllegroGraphTests.cs">
+      <Link>Storage\AllegroGraphTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Configuration\ConfigurationApiTests.cs">
+      <Link>Configuration\ConfigurationApiTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\DydraTests.cs">
+      <Link>Storage\DydraTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\FourStoreTest.cs">
+      <Link>Storage\FourStoreTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\FusekiTest.cs">
+      <Link>Storage\FusekiTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\PersistentTripleStoreTests.cs">
+      <Link>Storage\PersistentTripleStoreTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\SesameTests.cs">
+      <Link>Storage\SesameTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\EventTests.cs">
+      <Link>Core\EventTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\StardogTests.cs">
+      <Link>Storage\StardogTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\GenericUpdateProcessorTests.cs">
+      <Link>Update\GenericUpdateProcessorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\TransactionalUpdateQuadTests.cs">
+      <Link>Update\TransactionalUpdateQuadTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\TransactionalUpdateTests.cs">
+      <Link>Update\TransactionalUpdateTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Update\UpdateTimeouts.cs">
+      <Link>Update\UpdateTimeouts.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Web\ConnegTests.cs">
+      <Link>Web\ConnegTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\CollectionCompressionTests.cs">
+      <Link>Writing\CollectionCompressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\CompressionTests.cs">
+      <Link>Writing\CompressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\FormattingTests.cs">
+      <Link>Writing\FormattingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\PelletTests.cs">
+      <Link>Query\PelletTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\RdfATests.cs">
+      <Link>Parsing\RdfATests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\RdfXmlTests.cs">
+      <Link>Parsing\RdfXmlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\SparqlGraphStoreProtocolTest.cs">
+      <Link>Storage\SparqlGraphStoreProtocolTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\VariableNodeTests.cs">
+      <Link>Parsing\VariableNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Web\ETagTests.cs">
+      <Link>Web\ETagTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Web\ServiceDescription.cs">
+      <Link>Web\ServiceDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\OwlOneOf.cs">
+      <Link>Writing\OwlOneOf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\RdfXmlWriterTests.cs">
+      <Link>Writing\RdfXmlWriterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\SchemaWriter.cs">
+      <Link>Writing\SchemaWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\Serialization\GraphSerializationTests.cs">
+      <Link>Writing\Serialization\GraphSerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\Serialization\NodeSerializationTests.cs">
+      <Link>Writing\Serialization\NodeSerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\Serialization\ResultSerializationTests.cs">
+      <Link>Writing\Serialization\ResultSerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\Serialization\TripleSerializationTests.cs">
+      <Link>Writing\Serialization\TripleSerializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\SparqlTsvTests.cs">
+      <Link>Writing\SparqlTsvTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\SparqlXmlTests.cs">
+      <Link>Writing\SparqlXmlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\StringEscapingTest.cs">
+      <Link>Writing\StringEscapingTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\StoreWriterTests.cs">
+      <Link>Writing\StoreWriterTests.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\unittest\resources\**\*.*">
+      <Link>resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\unittest\Query\SampleWeightings.n3">
+      <Link>Query\SampleWeightings.n3</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\unittest\embedded.ttl">
+      <Link>embedded.ttl</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup>
+    <Compile Include="..\..\unittest\Configuration\ConfigurationLoaderInstanceTests.cs">
+      <Link>Configuration\ConfigurationLoaderInstanceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\AbstractGraphTests.cs">
+      <Link>Core\AbstractGraphTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Core\ComparisonHelperTests.cs">
+      <Link>Core\ComparisonHelperTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseDatasetParserSuite.cs">
+      <Link>Parsing\Suites\BaseDatasetParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseRdfParserSuite.cs">
+      <Link>Parsing\Suites\BaseRdfParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\Suites\BaseResultsParserSuite.cs">
+      <Link>Parsing\Suites\BaseResultsParserSuite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Parsing\TriXTests.cs">
+      <Link>Parsing\TriXTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\AggregateTests.cs">
+      <Link>Query\Aggregates\AggregateTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Aggregates\GroupConcatTests.cs">
+      <Link>Query\Aggregates\GroupConcatTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Algebra\JoinTests.cs">
+      <Link>Query\Algebra\JoinTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\BindTests.cs">
+      <Link>Query\BindTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\ExistsTests.cs">
+      <Link>Query\ExistsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Expressions\SparqlCastTests.cs">
+      <Link>Query\Expressions\SparqlCastTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Storage\ReadWriteSparqlTest.cs">
+      <Link>Storage\ReadWriteSparqlTest.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Writing\NTriplesTests.cs">
+      <Link>Writing\NTriplesTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\GraphPatternBuilderTests.cs">
+      <Link>Query\Builder\GraphPatternBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\QueryBuilderTests.cs">
+      <Link>Query\Builder\QueryBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\QueryBuilderWikiTests.cs">
+      <Link>Query\Builder\QueryBuilderWikiTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\TriplePatternBuilderTests.cs">
+      <Link>Query\Builder\TriplePatternBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ArithmeticOperatorsTests.cs">
+      <Link>Query\Builder\Expressions\ArithmeticOperatorsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs">
+      <Link>Query\Builder\Expressions\ExpressionBuilderStringFunctionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\ExpressionBuilderTests.cs">
+      <Link>Query\Builder\Expressions\ExpressionBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\FunctionalFormsBuildingTests.cs">
+      <Link>Query\Builder\Expressions\FunctionalFormsBuildingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\LiteralExpressionTests.cs">
+      <Link>Query\Builder\Expressions\LiteralExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs">
+      <Link>Query\Builder\Expressions\LogicalAndComparisonOperatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\NumericExpressionTests.cs">
+      <Link>Query\Builder\Expressions\NumericExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\RdfTermExpressionTests.cs">
+      <Link>Query\Builder\Expressions\RdfTermExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\SparqlCastBuilderTests.cs">
+      <Link>Query\Builder\Expressions\SparqlCastBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\SparqlExpressionTestsBase.cs">
+      <Link>Query\Builder\Expressions\SparqlExpressionTestsBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\TypedLiteralExpressionTests.cs">
+      <Link>Query\Builder\Expressions\TypedLiteralExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\unittest\Query\Builder\Expressions\VariableExpressionTests.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionTests.cs</Link>
+    </Compile>
+    <None Include="..\..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>resources\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

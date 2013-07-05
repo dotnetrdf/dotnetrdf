@@ -823,7 +823,11 @@ namespace VDS.RDF.Storage.Management
                         Uri u = new Uri(uri);
                         return u.IsAbsoluteUri;
                     }
+#if PORTABLE
+                    catch(FormatException)
+#else
                     catch (UriFormatException)
+#endif
                     {
                         return false;
                     }

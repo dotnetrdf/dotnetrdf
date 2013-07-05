@@ -138,6 +138,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
+#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw() 
         [Test]
         public void SparqlDBPedia()
         {
@@ -170,7 +171,9 @@ namespace VDS.RDF.Query
                 Options.HttpDebugging = false;
             }
         }
+#endif
 
+#if !PORTABLE // No VirtuosoManager in PCL
         [Test]
         public void SparqlRemoteVirtuosoWithSponging()
         {
@@ -186,7 +189,9 @@ namespace VDS.RDF.Query
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
+#endif
 
+#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
         [Test]
         public void SparqlDbPediaDotIssue()
         {
@@ -243,6 +248,7 @@ where {
                 Options.HttpDebugging = false;
             }
         }
+#endif
 
         [Test]
         public void SparqlResultSetEquality()
@@ -421,6 +427,7 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
+#if !NO_SYNC_HTTP // No SparqlConnector
         [Test]
         public void SparqlEndpointWithExtensions()
         {
@@ -462,6 +469,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
                 Assert.Fail("Query should run fine when local parsing is skipped");
             }
         }
+#endif
 
         [Test]
         public void SparqlBNodeIDsInResults()

@@ -49,6 +49,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Creates a new Pattern representing a Blank Node
+        /// </summary>
+        /// <param name="name">Blank Node ID</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation</param>
+        public BlankNodePattern(String name, bool rigorousEvaluation)
+            : this(name)
+        {
+            this.RigorousEvaluation = rigorousEvaluation;
+        }
+
+        /// <summary>
         /// Gets the Blank Node ID
         /// </summary>
         public String ID
@@ -67,7 +78,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation)
+            if (Options.RigorousEvaluation || this.RigorousEvaluation)
             {
                 if (context.InputMultiset.ContainsVariable(this._name))
                 {

@@ -35,6 +35,7 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
+#if !NO_DATA
     [TestFixture]
     public class DataTableTests
     {
@@ -366,4 +367,5 @@ namespace VDS.RDF.Query
             }
         }
     }
+#endif
 }

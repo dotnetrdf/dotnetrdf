@@ -32,6 +32,8 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using System.Globalization;
+using System.Threading;
 
 namespace VDS.RDF.Storage.Virtualisation
 {
@@ -877,7 +879,16 @@ namespace VDS.RDF.Storage.Virtualisation
         /// Throws an error as blank nodes cannot be cast to types
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
@@ -1090,7 +1101,16 @@ namespace VDS.RDF.Storage.Virtualisation
         /// Throws an error as graph literal nodes cannot be cast to types
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
@@ -1225,6 +1245,7 @@ namespace VDS.RDF.Storage.Virtualisation
             if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareLiterals(this, other);
+
         }
 
         /// <summary>
@@ -1370,10 +1391,23 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <remarks>
         /// Forces a materialisation of the value
         /// </remarks>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsDateTime();
+        }
+
+        /// <summary>
+        /// Gets the value as a date time
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsDateTimeOffset();
         }
 
         /// <summary>
@@ -1589,7 +1623,16 @@ namespace VDS.RDF.Storage.Virtualisation
         /// Throws an error as URI nodes cannot be cast to a date time
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
@@ -1802,7 +1845,16 @@ namespace VDS.RDF.Storage.Virtualisation
         /// Throws an error as variables nodes cannot be cast to types
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }

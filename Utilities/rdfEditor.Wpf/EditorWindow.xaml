@@ -201,7 +201,8 @@
                         <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" Click="mnuSetHighlighter_Click" />
                         <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" Click="mnuSetHighlighter_Click" />
                         <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" Click="mnuSetHighlighter_Click" />
-                        <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="Turtle (Member Submission)" IsCheckable="True" Tag="Turtle" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="Turtle (W3C Recommendation)" IsCheckable="True" Tag="Turtle11" Click="mnuSetHighlighter_Click" />
                         <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3" Click="mnuSetHighlighter_Click" />
                         <MenuItem Header="(X)HTML+RDFa" IsCheckable="True" Tag="XHtmlRdfA" Click="mnuSetHighlighter_Click" />
                         <Separator />

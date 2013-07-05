@@ -117,6 +117,7 @@ _:b a dnr:GraphCollection ;
             Assert.AreEqual(typeof(ThreadSafeGraphCollection), collection.GetType());
         }
 
+#if !NO_FILE // No DiskDemandGraphCollection
         [Test]
         public void ConfigurationLoadObjectGraphCollection3()
         {
@@ -134,7 +135,9 @@ _:b a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(DiskDemandGraphCollection), collection.GetType());
         }
+#endif
 
+#if !SILVERLIGHT // No WebDemandGraphCollection
         [Test]
         public void ConfigurationLoadObjectGraphCollection4()
         {
@@ -152,7 +155,9 @@ _:b a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+#endif
 
+#if !SILVERLIGHT // No WebDemandGraphCollection
         [Test]
         public void ConfigurationLoadObjectGraphCollection5()
         {
@@ -173,6 +178,7 @@ _:c a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+#endif
 
         [Test]
         public void ConfigurationLoadObjectGraphEmpty1()
@@ -189,6 +195,7 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(Graph), result.GetType());
         }
 
+#if !NO_RWLOCK // No ThreadSafeGraph
         [Test]
         public void ConfigurationLoadObjectGraphEmpty2()
         {
@@ -203,6 +210,7 @@ _:a a dnr:Graph ;
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(ThreadSafeGraph), result.GetType());
         }
+#endif
 
         [Test]
         public void ConfigurationLoadObjectGraphEmpty3()
@@ -238,6 +246,7 @@ _:a a dnr:TripleStore ;
             Assert.AreEqual(typeof(TripleStore), result.GetType());
         }
 
+#if !SILVERLIGHT // No WebDemandTripleStore
         [Test]
         public void ConfigurationLoadObjectTripleStoreEmpty2()
         {
@@ -252,6 +261,7 @@ _:a a dnr:TripleStore ;
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(WebDemandTripleStore), result.GetType());
         }
+#endif
 
         [Test]
         public void ConfigurationLoadObjectTripleStoreEmpty3()

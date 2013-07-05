@@ -62,14 +62,18 @@ namespace VDS.RDF.Query.Algebra
             context["PathTransformID"] = transformContext.NextID;
 
             //Now we can evaluate the resulting algebra
-            //Note: We may need to preserve Blank Node variables across evaluations
-            //which we usually don't do BUT because of the way we translate only part of the path
-            //into an algebra at a time and may need to do further nested translate calls we do
-            //need to do this here
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
+            bool rigMode = Options.RigorousEvaluation;
             try
             {
+                //Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
+                Options.RigorousEvaluation = true;
+
+                //Note: We may need to preserve Blank Node variables across evaluations
+                //which we usually don't do BUT because of the way we translate only part of the path
+                //into an algebra at a time and may need to do further nested translate calls we do
+                //need to do this here
                 context.TrimTemporaryVariables = false;
                 BaseMultiset result = context.Evaluate(algebra);
 
@@ -82,6 +86,7 @@ namespace VDS.RDF.Query.Algebra
             finally
             {
                 context.TrimTemporaryVariables = trimMode;
+                Options.RigorousEvaluation = rigMode;
             }
 
             return context.OutputMultiset;

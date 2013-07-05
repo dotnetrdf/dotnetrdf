@@ -73,17 +73,19 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
+#if !NO_XMLENTITIES
             //Now check that the Graphs are all equivalent
             Graph h = new Graph();
-            FileLoader.Load(h, "owl-one-of.rdf");
+            h.LoadFromFile("owl-one-of.rdf");
             Assert.AreEqual(g, h, "Graphs should be equal (RdfXmlWriter)");
             Console.WriteLine("RdfXmlWriter serialization was OK");
             Console.WriteLine();
 
             Graph j = new Graph();
-            FileLoader.Load(j, "owl-one-of-pretty.rdf");
+            j.LoadFromFile("owl-one-of-pretty.rdf");
             Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
             Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
+#endif
         }
 
         [Test]
@@ -124,13 +126,13 @@ namespace VDS.RDF.Writing
 
                 //Now check that the Graphs are all equivalent
                 Graph h = new Graph();
-                FileLoader.Load(h, "owl-one-of.rdf");
+                h.LoadFromFile("owl-one-of.rdf");
                 Assert.AreEqual(g, h, "Graphs should be equal (RdfXmlWriter)");
                 Console.WriteLine("RdfXmlWriter serialization was OK");
                 Console.WriteLine();
 
                 Graph j = new Graph();
-                FileLoader.Load(j, "owl-one-of-pretty.rdf");
+                j.LoadFromFile("owl-one-of-pretty.rdf");
                 Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
                 Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
         }

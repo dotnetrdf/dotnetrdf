@@ -64,6 +64,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_XMLDOM
         [Test]
         public void ParsingRdfXmlEmptyStrings()
         {
@@ -93,6 +94,7 @@ namespace VDS.RDF.Parsing
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+#endif
 
         private void TestRdfXmlSequence(IRdfReader parser, String file)
         {
@@ -106,6 +108,7 @@ namespace VDS.RDF.Parsing
             TestTools.ShowGraph(g);
         }
 
+#if !NO_XMLDOM
         [TestCase(RdfXmlParserMode.DOM, "resources\\sequence.rdf")]
         [TestCase(RdfXmlParserMode.Streaming, "resources\\sequence.rdf")]
         [TestCase(RdfXmlParserMode.DOM, "resources\\sequence2.rdf")]
@@ -115,7 +118,9 @@ namespace VDS.RDF.Parsing
             RdfXmlParser parser = new RdfXmlParser(parsingMode);
             this.TestRdfXmlSequence(parser, path);
         }
+#endif
 
+#if !NO_XMLDOM
         [Test]
         public void ParsingRdfXmlWithUrlEscapedNodes()
         {
@@ -144,7 +149,9 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
         }
+#endif
 
+#if !NO_XMLDOM
         [Test]
         public void ParsingRdfXmlWithUrlEscapedNodes2()
         {
@@ -174,6 +181,7 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
+#endif
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRdfXmlPropertyInDefaultNamespaceBad()
@@ -198,6 +206,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("good", property.Uri.Segments[1]);
         }
 
+#if !NO_XMLDOM
         [Test]
         public void ParsingRdfXmlElementUsesXmlNamespaceDom()
         {
@@ -206,6 +215,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }
+#endif
 
         [Test]
         public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
@@ -216,6 +226,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, g.Triples.Count);
         }
 
+#if !NO_XMLDOM
         [Test]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceDom()
         {
@@ -224,6 +235,7 @@ namespace VDS.RDF.Parsing
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(9, g.Triples.Count);
         }
+#endif
 
         [Test]
         public void ParsingRdfXmlElementUsesUndeclaredNamespaceStreaming()

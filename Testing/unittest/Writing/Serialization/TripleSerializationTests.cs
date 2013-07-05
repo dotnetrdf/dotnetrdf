@@ -38,6 +38,7 @@ using NUnit.Framework;
 
 namespace VDS.RDF.Writing.Serialization
 {
+#if !SILVERLIGHT
     [TestFixture]
     public class TripleSerializationTests
     {
@@ -97,4 +98,5 @@ namespace VDS.RDF.Writing.Serialization
             stream.Dispose();
         }
     }
+#endif
 }

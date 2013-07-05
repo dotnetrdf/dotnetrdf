@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
                                 return DateTimeCompare(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string ordering
-                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                             default:
                                 //Use node ordering
                                 return x.CompareTo(y);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
                                 return DateTimeCompare(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string ordering
-                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                             default:
                                 //Use node ordering
                                 return x.CompareTo(y);
@@ -292,27 +292,9 @@ namespace VDS.RDF.Query
         /// <param name="y">Node</param>
         /// <param name="type">Numeric Type</param>
         /// <returns></returns>
-        protected int NumericCompare(INode x, INode y, SparqlNumericType type)
+        protected virtual int NumericCompare(INode x, INode y, SparqlNumericType type)
         {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate numeric ordering when one or both arguments are Null");
-            if (type == SparqlNumericType.NaN) throw new RdfQueryException("Cannot evaluate numeric ordering when the Numeric Type is NaN");
-
-            ILiteralNode a = (ILiteralNode)x;
-            ILiteralNode b = (ILiteralNode)y;
-
-            switch (type)
-            {
-                case SparqlNumericType.Decimal:
-                    return SparqlSpecsHelper.ToDecimal(a).CompareTo(SparqlSpecsHelper.ToDecimal(b));
-                case SparqlNumericType.Double:
-                    return SparqlSpecsHelper.ToDouble(a).CompareTo(SparqlSpecsHelper.ToDouble(b));
-                case SparqlNumericType.Float:
-                    return SparqlSpecsHelper.ToFloat(a).CompareTo(SparqlSpecsHelper.ToFloat(b));
-                case SparqlNumericType.Integer:
-                    return SparqlSpecsHelper.ToInteger(a).CompareTo(SparqlSpecsHelper.ToInteger(b));
-                default:
-                    throw new RdfQueryException("Cannot evaluate numeric equality since of the arguments is not numeric");
-            }
+            return NumericCompare(x.AsValuedNode(), y.AsValuedNode(), type);
         }
 
         /// <summary>
@@ -322,7 +304,7 @@ namespace VDS.RDF.Query
         /// <param name="y">Node</param>
         /// <param name="type">Numeric Type</param>
         /// <returns></returns>
-        protected int NumericCompare(IValuedNode x, IValuedNode y, SparqlNumericType type)
+        protected virtual int NumericCompare(IValuedNode x, IValuedNode y, SparqlNumericType type)
         {
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate numeric ordering when one or both arguments are Null");
             if (type == SparqlNumericType.NaN) throw new RdfQueryException("Cannot evaluate numeric ordering when the Numeric Type is NaN");
@@ -348,25 +330,9 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        protected int DateTimeCompare(INode x, INode y)
+        protected virtual int DateTimeCompare(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
-            try
-            {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
-
-                DateTimeOffset c = SparqlSpecsHelper.ToDateTimeOffset(a);
-                DateTimeOffset d = SparqlSpecsHelper.ToDateTimeOffset(b);
-
-                if (!c.Offset.Equals(d.Offset)) throw new RdfQueryException("Cannot order Dates which are from different time zones");
-
-                return c.CompareTo(d);
-            }
-            catch (FormatException)
-            {
-                throw new RdfQueryException("Cannot evaluate date time equality since one of the arguments does not have a valid lexical value for a Date Time");
-            }
+            return DateTimeCompare(x.AsValuedNode(), y.AsValuedNode());
         }
 
         /// <summary>
@@ -375,21 +341,39 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        protected int DateTimeCompare(IValuedNode x, IValuedNode y)
+        protected virtual int DateTimeCompare(IValuedNode x, IValuedNode y)
         {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time comparison when one or both arguments are Null");
             try
             {
-                DateTimeOffset a = x.AsDateTime();
-                DateTimeOffset b = y.AsDateTime();
+                DateTime c = x.AsDateTime();
+                DateTime d = y.AsDateTime();
 
-                if (!a.Offset.Equals(b.Offset)) throw new RdfQueryException("Cannot order Dates which are from different time zones");
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        if (d.Kind != DateTimeKind.Unspecified) throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        break;
+                    case DateTimeKind.Local:
+                        if (d.Kind == DateTimeKind.Unspecified) throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                    default:
+                        if (d.Kind == DateTimeKind.Unspecified) throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                }
 
-                return a.CompareTo(b);
+                // Compare on unspecified/UTC form as appropriate
+                return c.CompareTo(d);
             }
             catch (FormatException)
             {
-                throw new RdfQueryException("Cannot evaluate date time equality since one of the arguments does not have a valid lexical value for a Date Time");
+                throw new RdfQueryException("Cannot evaluate date time comparison since one of the arguments does not have a valid lexical value for a Date");
             }
         }
 
@@ -399,19 +383,43 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        protected int DateCompare(INode x, INode y)
+        protected virtual int DateCompare(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
+            return DateCompare(x.AsValuedNode(), y.AsValuedNode());
+        }
+
+        /// <summary>
+        /// Compares two Dates for Date ordering
+        /// </summary>
+        /// <param name="x">Node</param>
+        /// <param name="y">Node</param>
+        /// <returns></returns>
+        protected virtual int DateCompare(IValuedNode x, IValuedNode y)
+        {
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date comparison when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                DateTime c = x.AsDateTime();
+                DateTime d = y.AsDateTime();
 
-                DateTimeOffset c = SparqlSpecsHelper.ToDateTimeOffset(a);
-                DateTimeOffset d = SparqlSpecsHelper.ToDateTimeOffset(b);
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        break;
+                    case DateTimeKind.Local:
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                    default:
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                }
 
-                if (!c.Offset.Equals(d.Offset)) throw new RdfQueryException("Cannot order Dates which are from different time zones");
+                // Timezone irrelevant for date comparisons since we don't have any time to normalize to
+                // Thus Open World Assumption means we can compare
+                // For Local times we normalize to UTC
 
+                // Compare on the Unspecified/UTC form as appropriate
                 int res = c.Year.CompareTo(d.Year);
                 if (res == 0)
                 {
@@ -425,25 +433,13 @@ namespace VDS.RDF.Query
             }
             catch (FormatException)
             {
-                throw new RdfQueryException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
+                throw new RdfQueryException("Cannot evaluate date comparison since one of the arguments does not have a valid lexical value for a Date");
             }
-        }
-
-        /// <summary>
-        /// Compares two Dates for Date ordering
-        /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
-        /// <returns></returns>
-        protected int DateCompare(IValuedNode x, IValuedNode y)
-        {
-            //For some reason using valued nodes for this comparison breaks things, safer to use the known way for the time being
-            return this.DateCompare((INode)x, (INode)y);
         }
     }
 
     /// <summary>
-    /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur
+    /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur it makes an appropriate decision
     /// </summary>
     public class SparqlOrderingComparer 
         : SparqlNodeComparer
@@ -541,7 +537,7 @@ namespace VDS.RDF.Query
                                     return DateTimeCompare(x, y);
                                 case XmlSpecsHelper.XmlSchemaDataTypeString:
                                     //Both Strings so use Lexical string ordering
-                                    return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                                    return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
                                 default:
                                     //Use node ordering
                                     return x.CompareTo(y);
@@ -717,6 +713,48 @@ namespace VDS.RDF.Query
             {
                 //If not Literals use Node ordering
                 return x.CompareTo(y);
+            }
+        }
+
+        /// <summary>
+        /// Compares two Date Times for Date Time ordering
+        /// </summary>
+        /// <param name="x">Node</param>
+        /// <param name="y">Node</param>
+        /// <returns></returns>
+        protected override int DateTimeCompare(IValuedNode x, IValuedNode y)
+        {
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time comparison when one or both arguments are Null");
+            try
+            {
+                DateTime c = x.AsDateTime();
+                DateTime d = y.AsDateTime();
+
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        // Sort unspecified lower than Local/UTC date
+                        if (d.Kind != DateTimeKind.Unspecified) return -1;
+                        break;
+                    case DateTimeKind.Local:
+                        // Sort Local higher than Unspecified
+                        if (d.Kind == DateTimeKind.Unspecified) return 1;
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                    default:
+                        // Sort UTC higher than Unspecified
+                        if (d.Kind == DateTimeKind.Unspecified) return 1;
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        break;
+                }
+
+                // Compare on unspecified/UTC form as appropriate
+                return c.CompareTo(d);
+            }
+            catch (FormatException)
+            {
+                throw new RdfQueryException("Cannot evaluate date time comparison since one of the arguments does not have a valid lexical value for a Date");
             }
         }
     }

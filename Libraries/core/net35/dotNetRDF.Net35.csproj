@@ -64,7 +64,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net20\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.5\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -2574,6 +2574,11 @@
     </Compile>
     <Compile Include="..\net40\Query\Optimisation\OrderByDistinctOptimiser.cs">
       <Link>Query\Optimisation\OrderByDistinctOptimiser.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Configuration\IConfigurationLoader.cs">
+      <Link>Configuration\IConfigurationLoader.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

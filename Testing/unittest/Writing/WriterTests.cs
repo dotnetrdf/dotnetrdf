@@ -106,6 +106,7 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void WritingHtmlWriter()
         {
@@ -132,16 +133,24 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
+#endif
 
         [Test]
         public void WritingCollections()
         {
             Graph g = new Graph();
+#if !NO_URICACHE
             Options.UriLoaderCaching = false;
+#endif
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+#if PORTABLE
+            var tmpWriter = new StreamWriter(new MemoryStream());
+            ttlwriter.Save(g, tmpWriter);
+#else
             ttlwriter.Save(g, Console.Out);
+#endif
         }
 
         [Test]
@@ -198,7 +207,9 @@ namespace VDS.RDF.Writing
             {
                 new CompressingTurtleWriter(),
                 new PrettyRdfXmlWriter(),
+#if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
+#endif
                 new Notation3Writer(),
                 new NTriplesWriter(),
                 new PrettyRdfXmlWriter(),
@@ -210,7 +221,9 @@ namespace VDS.RDF.Writing
             {
                 new TurtleParser(),
                 new RdfXmlParser(),
+#if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
+#endif
                 new Notation3Parser(),
                 new NTriplesParser(),
                 new RdfXmlParser(),

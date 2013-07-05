@@ -38,6 +38,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
+#if !SILVERLIGHT // No PelletTests class
     [TestFixture]
     public class SparqlProcessorsWithHandlersTests
     {
@@ -329,4 +330,5 @@ namespace VDS.RDF.Query
 
         #endregion
     }
+#endif
 }

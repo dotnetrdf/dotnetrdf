@@ -29,7 +29,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if !NO_HTMLAGILITYPACK
 using HtmlAgilityPack;
+#endif
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -53,7 +55,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlDecode(String value)
         {
+#if PORTABLE
+            return System.Net.WebUtility.HtmlDecode(value);
+#else
             return HtmlEntity.DeEntitize(value);
+#endif
         }
 
         /// <summary>
@@ -63,7 +69,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String HtmlEncode(String value)
         {
+#if PORTABLE
+            return System.Net.WebUtility.HtmlEncode(value);
+#else
             return HtmlEntity.Entitize(value, true, true);
+#endif
         }
 
         /// <summary>

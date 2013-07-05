@@ -367,7 +367,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
-            //FileLoader.Load(g, "noise.ttl");
+            //g.LoadFromFile("noise.ttl");
             //store.Add(g);
 
             Console.WriteLine(store.Triples.Count() + " Triples in Store");
@@ -475,7 +475,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
-            //FileLoader.Load(g, "noise.ttl");
+            //g.LoadFromFile("noise.ttl");
             //store.Add(g);
 
             Console.WriteLine(store.Triples.Count() + " Triples in Store");

@@ -375,6 +375,7 @@ namespace VDS.RDF.Parsing
                 }
         }
 
+#if !NO_HTMLAGILITYPACK
         [Test]
         public void ParsingMalformedRdfA()
         {
@@ -404,6 +405,7 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine();
             }
         }
+#endif
 
         [Test]
         public void ParsingRdfXmlStreaming()

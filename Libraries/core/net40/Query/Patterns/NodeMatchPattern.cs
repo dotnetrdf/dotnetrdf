@@ -49,6 +49,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Creates a new Node Match Pattern
+        /// </summary>
+        /// <param name="n">Exact Node to match</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation regardless of the global setting</param>
+        public NodeMatchPattern(INode n, bool rigorousEvaluation)
+            : this(n)
+        {
+            this.RigorousEvaluation = rigorousEvaluation;
+        }
+
+        /// <summary>
         /// Checks whether the given Node matches the Node this pattern was instantiated with
         /// </summary>
         /// <param name="context">Evaluation Context</param>
@@ -56,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation)
+            if (Options.RigorousEvaluation || this.RigorousEvaluation)
             {
                 return this._node.Equals(obj);
             }

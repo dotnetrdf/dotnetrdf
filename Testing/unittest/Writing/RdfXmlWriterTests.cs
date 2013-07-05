@@ -37,6 +37,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
+#if !NO_XMLENTITIES // RDF/XML output generates entity declarations that the parser cannot process
     [TestFixture]
     public class RdfXmlWriterTests
     {
@@ -339,4 +340,5 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
     }
+#endif
 }

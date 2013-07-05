@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             IValuedNode temp = this._expr.Evaluate(context, bindingID);
             if (temp != null)
             {
-                DateTimeOffset dt = temp.AsDateTime();
+                DateTimeOffset dt = temp.AsDateTimeOffset();
                 //Regex based check to see if the value has a Timezone component
                 //If not then the result is a null
                 if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return null;
