@@ -1376,9 +1376,9 @@
   </target>
 
   <target name="dist-libs-nuget" description="Creates the NuGet packages" unless="${dotnetrdf.nodist}" 
-          depends="dist-libs-nuget-core,
-                   dist-libs-nuget-data-virtuoso,
-                   dist-libs-nuget-query-fulltext">
+          depends="dist-libs-nuget-core,dist-libs-nuget-core-symbols,
+                   dist-libs-nuget-data-virtuoso,dist-libs-nuget-data-virtuoso-symbols,
+                   dist-libs-nuget-query-fulltext,dist-libs-nuget-query-fulltext-symbols">
   </target>
 
   <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
