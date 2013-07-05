@@ -155,6 +155,7 @@
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\DateTimeTests.cs" />
     <Compile Include="Query\Expressions\SparqlCastTests.cs" />
     <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
