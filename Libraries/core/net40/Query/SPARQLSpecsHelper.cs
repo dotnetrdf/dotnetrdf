@@ -1608,11 +1608,32 @@ namespace VDS.RDF.Query
                         switch (xtype)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return !DateEquality(x, y);
+                                try
+                                {
+                                    return !DateEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return !DateTimeEquality(x, y);
+                                try
+                                {
+                                    return !DateTimeEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
-                                return !TimeSpanEquality(x, y);
+                                try
+                                {
+                                    return !TimeSpanEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
                                 return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
@@ -1633,9 +1654,23 @@ namespace VDS.RDF.Query
                             switch (commontype)
                             {
                                 case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return !DateEquality(x, y);
+                                    try
+                                    {
+                                        return !DateEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return !DateTimeEquality(x, y);
+                                    try
+                                    {
+                                        return !DateTimeEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 default:
                                     return true;
                             }
@@ -1747,34 +1782,37 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                DateTime c = x.AsValuedNode().AsDateTime();
-                DateTime d = y.AsValuedNode().AsDateTime();
+                IValuedNode a = x.AsValuedNode();
+                IValuedNode b = y.AsValuedNode();
+
+                bool strictEquals = (a.EffectiveType != b.EffectiveType);
+
+                DateTime c = a.AsDateTime();
+                DateTime d = b.AsDateTime();
 
                 switch (c.Kind)
                 {
                     case DateTimeKind.Unspecified:
-                        if (d.Kind != DateTimeKind.Unspecified)
-                        {
-                            // If non-equal kinds and either is unespecified kind then non-comparable
+                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
                             throw new RdfQueryException(
                                 "Dates are incomparable, one specifies time zone information while the other does not");
-                        }
-                        // Both unspecified so compare
+                        // One/Both unspecified so just compare
                         return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
                     case DateTimeKind.Local:
                         // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
-                        // Adjust to UTC and compare
-                        c = c.ToUniversalTime();
-                        if (d.Kind == DateTimeKind.Unspecified)
+                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
                             throw new RdfQueryException(
                                 "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
+                        c = c.ToUniversalTime();
                         if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
                         goto default;
                     default:
                         // Covers UTC based comparison
-                        if (d.Kind == DateTimeKind.Unspecified)
+                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
                             throw new RdfQueryException(
                                 "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
                         if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
 
                         return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
