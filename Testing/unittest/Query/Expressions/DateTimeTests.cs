@@ -10,8 +10,8 @@ namespace VDS.RDF.Query.Expressions
     [TestFixture]
     public class DateTimeTests
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlXmlParser _resultsParser = new SparqlXmlParser();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlXmlParser _resultsParser = new SparqlXmlParser();
 
         [TestCase("2013-07-05T12:00:00Z", "2013-07-05T04:00:00-08:00", true)]
         [TestCase("2013-07-05T12:00:00Z", "2013-07-05T12:00:00+14:00", false)]
@@ -168,6 +168,51 @@ namespace VDS.RDF.Query.Expressions
             TestTools.ShowResults(expected);
 
             Assert.IsTrue(expected.Equals(actual));
+        }
+
+        [TestCase("2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z")]
+        [TestCase("2013-01-01T12:00:00", "2013-01-01T12:00:00Z")]
+        [TestCase("2013-01-01T12:00:00", "2013-01-01T12:00:00-08:00")]
+        public void SparqlDateTimeCompare(String x, String y)
+        {
+            IGraph g = new Graph();
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+
+            SparqlOrderingComparer comparer = new SparqlOrderingComparer();
+
+            // Expected result is that x < y so return should be -1
+            Assert.AreEqual(-1, comparer.Compare(dateTime1, dateTime2));
+            // Thus inverse should give 1
+            Assert.AreEqual(1, comparer.Compare(dateTime2, dateTime1));
+
+            // Also both should compare equal to self
+            Assert.AreEqual(0, comparer.Compare(dateTime1, dateTime1));
+            Assert.AreEqual(0, comparer.Compare(dateTime2, dateTime2));
+        }
+
+        [TestCase(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T03:00:00-08:00" }, new String[] { "2013-01-01T03:00:00-08:00", "2013-01-01T12:00:00Z" })]
+        [TestCase(new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" }, new String[] { "2013-01-01T12:00:00Z", "2013-01-01T12:00:00-08:00" })]
+        public void SparqlDateTimeSorting(String[] input, String[] output)
+        {
+            IGraph g = new Graph();
+            List<INode> orig =
+                input.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
+                     .OfType<INode>().ToList();
+            List<INode> sorted = new List<INode>(orig);
+            sorted.Sort(new SparqlOrderingComparer());
+
+            List<INode> expected =
+                output.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
+                      .OfType<INode>()
+                      .ToList();
+
+            Assert.AreEqual(expected.Count, sorted.Count);
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], sorted[i], "Incorrect value at index " + i);
+            }
         }
     }
 }
