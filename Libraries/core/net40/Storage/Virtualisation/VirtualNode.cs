@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage.Virtualisation
                     else if (other.NodeType == NodeType.Literal)
                     {
                         //Compare Literals appropriately
-                        return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other, Options.DefaultCulture, Options.DefaultComparisonOptions);
+                        return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other);
                     }
                     else
                     {
@@ -1230,10 +1230,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Literal Node using the default collation
+        /// Compares this Node to another Literal Node
         /// </summary>
         /// <param name="other">Other Literal Node</param>
-        /// <param name="collation">The collation to use</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1245,7 +1244,7 @@ namespace VDS.RDF.Storage.Virtualisation
             bool areEqual;
             if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
-            return String.Compare(this.Value, other.Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
+            return ComparisonHelper.CompareLiterals(this, other);
 
         }
 
