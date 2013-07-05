@@ -1800,7 +1800,7 @@ namespace VDS.RDF.Query
                         return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
                     case DateTimeKind.Local:
                         // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
-                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
                             throw new RdfQueryException(
                                 "Dates are incomparable, one specifies time zone information while the other does not");
                         // Adjust to UTC and compare
@@ -1809,7 +1809,7 @@ namespace VDS.RDF.Query
                         goto default;
                     default:
                         // Covers UTC based comparison
-                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
                             throw new RdfQueryException(
                                 "Dates are incomparable, one specifies time zone information while the other does not");
                         // Adjust to UTC and compare
