@@ -1473,7 +1473,7 @@
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Symbols/Core/src/">
+    <copy todir="Build/nuget/Core/src/">
       <fileset basedir="Libraries/core/net40/">
         <include name="**/*.cs" />
       </fileset>
@@ -1538,7 +1538,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Symbols/Data.Virtuoso/src/">
+    <copy todir="Build/nuget/Data.Virtuoso/src/">
       <fileset basedir="Libraries/Data/Virtuoso/net40/">
         <include name="**/*.cs" />
       </fileset>
@@ -1603,7 +1603,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Symbols/Query.FullText/src/">
+    <copy todir="Build/nuget/Query.FullText/src/">
       <fileset basedir="Libraries/Query/FullText/net40/">
         <include name="**/*.cs" />
       </fileset>
