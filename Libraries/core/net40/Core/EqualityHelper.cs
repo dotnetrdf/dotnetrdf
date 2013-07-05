@@ -378,7 +378,26 @@ namespace VDS.RDF
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
                                 //Can use Lexical ordering for this so use specified order on the value
-                                return String.Compare(a.Value, b.Value, culture, comparisonOptions);
+                                bool aBool, bBool;
+                                if (Boolean.TryParse(a.Value, out aBool))
+                                {
+                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    {
+                                        return aBool.CompareTo(bBool);
+                                    }
+                                    else
+                                    {
+                                        return -1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    {
+                                        return 1;
+                                    }
+                                    goto default;
+                                }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 //Remember that xsd:byte is actually equivalent to SByte in .Net
