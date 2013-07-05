@@ -12,7 +12,7 @@
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="5.0.4" />
+      <dependency id="Newtonsoft.Json" version="5.0.6" />
       <dependency id="HtmlAgilityPack" version="1.4.6" />
       <dependency id="VDS.Common" version="[1.2.0]" />
     </dependencies>
