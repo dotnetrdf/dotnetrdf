@@ -8,6 +8,8 @@ Added
 - Portable Class Library builds are now included
 - Formatting API
  - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
+- Query
+ - First version of new Fluent Query builder API (CORE-260)
 - Global Options
  - Add new DefaultCulture and DefaultComparisonOptions used for lexical ordering of literal values in the cases
    where more natural ordering (e.g. numeric) does not apply (CORE-367)
