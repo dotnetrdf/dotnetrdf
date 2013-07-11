@@ -24,6 +24,6 @@ if %SIZE% gtr 0 (
   type %FOUND%
   exit /b 1
 ) else (
-  echo Commit has no unversioned files
+  echo Commit has no unversioned files, OK to proceed
   exit /b 0
 )
