@@ -34,9 +34,6 @@ using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
-#if PORTABLE
-using VDS.RDF.Compatability;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;

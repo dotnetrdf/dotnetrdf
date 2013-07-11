@@ -76,15 +76,6 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
-        //internal Set(JoinedSet x)
-        //{
-        //    this._values = new Dictionary<string, INode>();
-        //    foreach (String var in x.Variables)
-        //    {
-        //        this._values.Add(var, x[var]);
-        //    }
-        //}
-
         /// <summary>
         /// Creates a new Set which is a copy of an existing Set
         /// </summary>
@@ -247,8 +238,6 @@ namespace VDS.RDF.Query.Algebra
             //return new JoinedSet(this);
         }
 
-
-
         /// <summary>
         /// Gets whether the Set is equal to another set
         /// </summary>
@@ -261,6 +250,8 @@ namespace VDS.RDF.Query.Algebra
         }
 
 #if PORTABLE
+        //TODO: CORE-303 clean up - why is this necessary?
+
         public int CompareTo(Set other)
         {
             foreach (var pair in _values.OrderBy(v => v.Key))
@@ -283,244 +274,4 @@ namespace VDS.RDF.Query.Algebra
         }
 #endif
     }
-
-#if EXPERIMENTAL
-
-    /// <summary>
-    /// Represents one possible set of values which is a solution to the query where those values are the result of joining one or more possible sets
-    /// </summary>
-    public sealed class JoinedSet
-        : BaseSet, IEquatable<JoinedSet>
-    {
-        private List<ISet> _sets = new List<ISet>();
-        private bool _added = false;
-        private Dictionary<String, INode> _cache = new Dictionary<string, INode>();
-
-        /// <summary>
-        /// Creates a Joined Set
-        /// </summary>
-        /// <param name="x">Set</param>
-        /// <param name="y">Another Set</param>
-        public JoinedSet(ISet x, ISet y)
-        {
-            this._sets.Add(x);
-            this._sets.Add(y);
-        }
-
-        public JoinedSet(ISet x, JoinedSet y)
-        {
-            this._sets.Add(x);
-            this._sets.AddRange(y._sets);
-            this._cache = y._cache;
-        }
-
-        /// <summary>
-        /// Creates a Joined Set
-        /// </summary>
-        /// <param name="x">Set</param>
-        /// <param name="ys">Other Set(s)</param>
-        internal JoinedSet(ISet x, IEnumerable<ISet> ys)
-        {
-            this._sets.Add(x);
-            this._sets.AddRange(ys);
-        }
-
-        /// <summary>
-        /// Creates a Joined Set which is simply a copy of another set
-        /// </summary>
-        /// <param name="x">Set</param>
-        internal JoinedSet(ISet x)
-        {
-            this._sets.Add(x);
-        }
-
-        /// <summary>
-        /// Creates a Joined Set
-        /// </summary>
-        /// <param name="x">Set</param>
-        internal JoinedSet(JoinedSet x)
-        {
-            this._sets.AddRange(x._sets);
-            this._cache = x._cache;
-        }
-
-        /// <summary>
-        /// Adds a Value for a Variable to the Set
-        /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
-        public override void Add(string variable, INode value)
-        {
-            //When we first add to the joined set we create a new empty set to make the adds into as
-            //we cannot add into the existing sets since they may well be being used in multiple
-            //places and trying to do so will break things horribly
-            if (!this._added)
-            {
-                this._sets.Insert(0, new Set());
-                //this._sets.Add(new Set());
-                this._added = true;
-            }
-            //Joined Sets are thus left associative so always add to the leftmost set
-            this._sets[0].Add(variable, value);
-            //this._sets[this._sets.Count - 1].Add(variable, value);
-        }
-
-        /// <summary>
-        /// Checks whether the Set contains a given Variable
-        /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <returns></returns>
-        public override bool ContainsVariable(string variable)
-        {
-            return this._sets.Any(s => s.ContainsVariable(variable));
-        }
-
-        /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
-        /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
-        /// <returns></returns>
-        public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
-        {
-            return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
-        }
-
-        /// <summary>
-        /// Removes a Value for a Variable from the Set
-        /// </summary>
-        /// <param name="variable">Variable</param>
-        public override void Remove(string variable)
-        {
-            this._sets.ForEach(s => s.Remove(variable));
-        }
-
-        /// <summary>
-        /// Retrieves the Value in this set for the given Variable
-        /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <returns>Either a Node or a null</returns>
-        public override INode this[string variable]
-        {
-            get
-            {
-                INode temp = null;
-
-                if (this._cache.TryGetValue(variable, out temp))
-                {
-                    //Use cache wherever possible
-                    return temp;
-                }
-                else
-                {
-                    int i = 0;
-
-                    //Find the first set that has a value for the variable and return it
-                    do
-                    {
-                        temp = this._sets[i][variable];
-                        if (temp != null)
-                        {
-                            this._cache.Add(variable, temp);
-                            return temp;
-                        }
-                        i++;
-                    } while (i < this._sets.Count);
-
-                    //Return null if no sets have a value for the variable
-                    return null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the Values in the Set
-        /// </summary>
-        public override IEnumerable<INode> Values
-        {
-            get
-            {
-                return (from v in this.Variables
-                        select this[v]);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables in the Set
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get
-            {
-                return (from s in this._sets
-                        from v in s.Variables
-                        select v).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Joins the set to another set
-        /// </summary>
-        /// <param name="other">Other Set</param>
-        /// <returns></returns>
-        public override ISet Join(ISet other)
-        {
-            //return new Set(this, other);
-            //if (this._sets.Count > 3)
-            //{
-            //    //After a certain point it is better to flatten
-            //    return new JoinedSet(other, new Set(this));
-            //}
-            //else
-            //{
-                return new JoinedSet(other, this);
-            //}
-        }
-
-        /// <summary>
-        /// Copies the Set
-        /// </summary>
-        /// <returns></returns>
-        public override ISet Copy()
-        {
-            //return new Set(this);
-            return new JoinedSet(this);
-        }
-
-        /// <summary>
-        /// Gets the Hash Code of the Set
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return this.ToString().GetHashCode();
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Set
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            foreach (String v in this.Variables)
-            {
-                if (output.Length > 0) output.Append(" , ");
-                output.Append("?" + v + " = " + this[v].ToSafeString());
-            }
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets whether the Set is equal to another set
-        /// </summary>
-        /// <param name="other">Set to compare with</param>
-        /// <returns></returns>
-        public bool Equals(JoinedSet other)
-        {
-            return this.Equals((ISet)other);
-        }
-    }
-    
-#endif
 }
