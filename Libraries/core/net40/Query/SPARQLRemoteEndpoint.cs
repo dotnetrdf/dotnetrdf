@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Net;
 using System.IO;
@@ -687,41 +688,74 @@ namespace VDS.RDF.Query
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetRequestStream(result =>
+            try
             {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
 
-                    writer.Close();
-                }
+                                foreach (String u in this.DefaultGraphs)
+                                {
+                                    writer.Write("&default-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+                                foreach (String u in this.NamedGraphs)
+                                {
+                                    writer.Write("&named-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
 
-                request.BeginGetResponse(innerResult =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
-                    {
-                        Tools.HttpDebugResponse(response);
-                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                writer.Close();
+                            }
 
-                        response.Close();
-                        callback(null, handler, state);
-                    }
-                }, null);
-            }, null);
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                                            response.Close();
+                                            callback(null, handler, state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(null, handler, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        callback(null, handler, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                                    }
+                                }, null);
+                        }
+                        catch (WebException webEx)
+                        {
+                            callback(null, handler, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                        }
+                    }, null);
+            }
+            catch (Exception ex)
+            {
+                callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+            }
         }
 
         /// <summary>
