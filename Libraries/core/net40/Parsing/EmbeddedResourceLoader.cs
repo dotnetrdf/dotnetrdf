@@ -131,10 +131,6 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
         private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, String resource, IRdfReader parser)
         {
-            // KA: TMP
-            var resourceNames = asm.GetManifestResourceNames();
-            System.Diagnostics.Debug.WriteLine(String.Join("\n", resourceNames));
-            // KA: END TMP
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {

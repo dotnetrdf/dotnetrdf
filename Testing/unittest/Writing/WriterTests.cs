@@ -135,6 +135,8 @@ namespace VDS.RDF.Writing
         }
 #endif
 
+#if !PORTABLE
+
         [Test]
         public void WritingCollections()
         {
@@ -152,6 +154,8 @@ namespace VDS.RDF.Writing
             ttlwriter.Save(g, Console.Out);
 #endif
         }
+
+#endif
 
         [Test]
         public void WritingXmlAmpersandEscaping()

@@ -26,9 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Net;
-#if PORTABLE
-using VDS.RDF.Compatability;
-#endif
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -241,15 +238,7 @@ namespace VDS.RDF.Parsing
                         }
                         catch (Exception ex)
                         {
-#if PORTABLE
-                            if (state is AsyncOperationState)
-                            {
-                                (state as AsyncOperationState).OperationFailed(ex);
-                            }
-                            callback(handler, state);
-#else
                             throw;
-#endif
                         }
                     }, null);
             }
