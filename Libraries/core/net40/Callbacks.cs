@@ -37,6 +37,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="results">SPARQL Results</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void SparqlResultsCallback(SparqlResultSet results, Object state);
 
     /// <summary>
@@ -44,6 +47,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="g">Graph</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void GraphCallback(IGraph g, Object state);
 
     /// <summary>
@@ -51,6 +57,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="store">Triple Store</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void TripleStoreCallback(ITripleStore store, Object state);
 
     /// <summary>
@@ -58,6 +67,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="handler">RDF Handler</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void RdfHandlerCallback(IRdfHandler handler, Object state);
 
     /// <summary>
@@ -65,6 +77,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="handler">SPARQL Results Handler</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void SparqlResultsHandlerCallback(ISparqlResultsHandler handler, Object state);
 
     /// <summary>
@@ -73,12 +88,18 @@ namespace VDS.RDF
     /// <param name="rdfHandler">RDF Handler</param>
     /// <param name="resultsHandler">SPARQL Results Handler</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void QueryCallback(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Object state);
 
     /// <summary>
     /// Callbacks for methods that perform SPARQL Updates
     /// </summary>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void UpdateCallback(Object state);
 
     /// <summary>
@@ -86,6 +107,9 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="nsmap">Namespace Map</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void NamespaceCallback(INamespaceMapper nsmap, Object state);
 
     /// <summary>
@@ -93,7 +117,37 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="nodes">Node List</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void NodeListCallback(List<INode> nodes, Object state);
+
+    /// <summary>
+    /// Marker that will be passed to your callback in the event that an async error occurs, provides access to the error and any state that you passed in originally
+    /// </summary>
+    public class AsyncError
+    {
+        /// <summary>
+        /// Creates new async error
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        /// <param name="state">State</param>
+        public AsyncError(Exception ex, Object state)
+        {
+            this.Error = ex;
+            this.State = state;
+        }
+
+        /// <summary>
+        /// Gets the error that occurred
+        /// </summary>
+        public Exception Error { get; private set; }
+
+        /// <summary>
+        /// Gets the original state that was passed in to the async call
+        /// </summary>
+        public Object State { get; private set; }
+    }
 
 }
 
