@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
 
         #region Query Methods
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
@@ -677,6 +677,7 @@ namespace VDS.RDF.Query
                                     }
                                     catch (WebException webEx)
                                     {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                         callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
@@ -691,6 +692,7 @@ namespace VDS.RDF.Query
                         }
                         catch (WebException webEx)
                         {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
@@ -767,6 +769,7 @@ namespace VDS.RDF.Query
                                     }
                                     catch (WebException webEx)
                                     {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                         callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
@@ -777,6 +780,7 @@ namespace VDS.RDF.Query
                         }
                         catch (WebException webEx)
                         {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
@@ -851,6 +855,7 @@ namespace VDS.RDF.Query
                                     }
                                     catch (WebException webEx)
                                     {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                         callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
@@ -865,6 +870,7 @@ namespace VDS.RDF.Query
                         }
                         catch (WebException webEx)
                         {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
@@ -936,6 +942,7 @@ namespace VDS.RDF.Query
                             }
                             catch (WebException webEx)
                             {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                 callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                             }
                             catch (Exception ex)
@@ -950,6 +957,7 @@ namespace VDS.RDF.Query
                 }
                 catch (WebException webEx)
                 {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                 }
                 catch (Exception ex)

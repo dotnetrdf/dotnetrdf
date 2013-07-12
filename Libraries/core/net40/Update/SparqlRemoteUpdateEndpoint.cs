@@ -44,8 +44,6 @@ namespace VDS.RDF.Update
     public class SparqlRemoteUpdateEndpoint 
         : BaseEndpoint
     {
-        //TODO: Needs to support IConfigurationSerializable
-
         const int LongUpdateLength = 2048;
 
         /// <summary>
@@ -276,6 +274,7 @@ namespace VDS.RDF.Update
                                     }
                                     catch (WebException webEx)
                                     {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                         callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
@@ -290,6 +289,7 @@ namespace VDS.RDF.Update
                         }
                         catch (WebException webEx)
                         {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
