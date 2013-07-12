@@ -1147,6 +1147,8 @@ WHERE
             }
         }
 
+#if !PORTABLE
+
         [Test]
         public void SparqlFilterLazyDBPedia()
         {
@@ -1237,6 +1239,8 @@ WHERE
                 Assert.Fail("Expected a SPARQL Result Set");
             }
         }
+
+#endif
 
         [Test]
         public void SparqlLazyLimitSimple1()

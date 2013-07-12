@@ -108,6 +108,8 @@ namespace VDS.RDF.Web
             }
         }
 
+#if !PORTABLE
+
         [Test]
         public void ServiceDescriptionDescriptionUriSparqlServer()
         {
@@ -124,6 +126,8 @@ namespace VDS.RDF.Web
 
             Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
         }
+
+#endif
 
         [Test]
         public void ServiceDescriptionOptionsRequestOnQueryHandler()
