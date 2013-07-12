@@ -5,7 +5,8 @@
 -----
 
 Added
-- Portable Class Library builds are now included
+- Portable Class Library builds are now included (CORE-303)
+ - Note that synchronous APIs for some functionality are not supported in the PCL builds (CORE-371)
 - Formatting API
  - Add new more efficient FormatChar() overload to ICharFormatter (CORE-357)
 - Query
@@ -22,6 +23,7 @@ Changed
  - Correct an error message re: extension point in Full Text Indexing (FTXT-366)
  - Some full text queries could cause BIND clauses to result in unbound values (FTXT-364)
  - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
+ - Fixes to asynchronous error propagation for some async APIs (CORE-370)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
 - Query
@@ -30,7 +32,6 @@ Changed
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing
  - Significantly improve performance of writing non-ASCII characters to NTriples (CORE-357)
-
 
 Removed
 - Marked as obsolete usable the old ICharFormatter.FormatChar() method (CORE-357)
@@ -41,7 +42,7 @@ Removed
 
 Changed
 - Build
- - Relevant roject files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
+ - Relevant project files now specify signing keys directly so VS builds will be signed in the same way that NAnt builds were previously, Silverlight builds
    are still not signed
 
 1.0.0.2473
