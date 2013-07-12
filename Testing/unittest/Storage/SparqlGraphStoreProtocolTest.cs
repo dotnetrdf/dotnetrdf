@@ -52,6 +52,8 @@ namespace VDS.RDF.Storage
             return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
         }
 
+#if !NO_SYNC_HTTP
+
         [Test]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
@@ -388,5 +390,7 @@ namespace VDS.RDF.Storage
             Options.UriLoaderCaching = cacheEnabled;
 #endif
         }
+
+#endif
     }
 }

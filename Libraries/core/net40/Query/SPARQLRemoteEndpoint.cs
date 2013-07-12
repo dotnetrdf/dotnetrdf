@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
 
         #region Query Methods
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
@@ -629,44 +629,82 @@ namespace VDS.RDF.Query
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetRequestStream(result =>
+            try
             {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-
-                    writer.Close();
-                }
-
-                request.BeginGetResponse(innerResult =>
-                    {
-                        using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-                            
-                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                            SparqlResultSet rset = new SparqlResultSet();
-                            parser.Load(rset, new StreamReader(response.GetResponseStream()));
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
 
-                            response.Close();
-                            callback(rset, state);
+                                foreach (String u in this.DefaultGraphs)
+                                {
+                                    writer.Write("&default-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+                                foreach (String u in this.NamedGraphs)
+                                {
+                                    writer.Write("&named-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+
+                                writer.Close();
+                            }
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+
+                                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                            SparqlResultSet rset = new SparqlResultSet();
+                                            parser.Load(rset, new StreamReader(response.GetResponseStream()));
+
+                                            response.Close();
+                                            callback(rset, state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (SecurityException secEx)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                         }
                     }, null);
-            }, null);
-
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>
@@ -727,31 +765,33 @@ namespace VDS.RDF.Query
                                     }
                                     catch (SecurityException secEx)
                                     {
-                                        callback(null, handler, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                                        callback(null, handler, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
                                     }
                                     catch (WebException webEx)
                                     {
-                                        callback(null, handler, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
                                     {
-                                        callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                                        callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                                     }
                                 }, null);
                         }
                         catch (WebException webEx)
                         {
-                            callback(null, handler, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
                         {
-                            callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                            callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                         }
                     }, null);
             }
             catch (Exception ex)
             {
-                callback(null, handler, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
             }
         }
 
@@ -811,35 +851,37 @@ namespace VDS.RDF.Query
                                     }
                                     catch (SecurityException secEx)
                                     {
-                                        callback(null, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                                        callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
                                     }
                                     catch (WebException webEx)
                                     {
-                                        callback(null, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
                                     {
-                                        callback(null, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                                        callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                                     }
                                 }, null);
                         }
                         catch (SecurityException secEx)
                         {
-                            callback(null, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                            callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
                         }
                         catch (WebException webEx)
                         {
-                            callback(null, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
                         {
-                            callback(null, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                            callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                         }
                     }, null);
             }
             catch (Exception ex)
             {
-                callback(null, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
             }
         }
 
@@ -896,29 +938,31 @@ namespace VDS.RDF.Query
                             }
                             catch (SecurityException secEx)
                             {
-                                callback(handler, null, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                                callback(handler, null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
                             }
                             catch (WebException webEx)
                             {
-                                callback(handler, null, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                             }
                             catch (Exception ex)
                             {
-                                callback(handler, null, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                                callback(handler, null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                             }
                         }, null);
                 }
                 catch (SecurityException secEx)
                 {
-                    callback(handler, null, new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx));
+                    callback(handler, null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
                 }
                 catch (WebException webEx)
                 {
-                    callback(handler, null, new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx));
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
                 }
                 catch (Exception ex)
                 {
-                    callback(handler, null, new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex));
+                    callback(handler, null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                 }
             }, null);
         }

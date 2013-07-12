@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._searchUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the list of Search Results which match the given search term
@@ -128,6 +128,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="text">Search Term</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
             String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
@@ -138,43 +141,67 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             Tools.HttpDebugRequest(request);
 
-            String jsonText;
-            JArray json;
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+            try
+            {
+                String jsonText;
+                JArray json;
+                request.BeginGetResponse(result =>
                     {
-                        Tools.HttpDebugResponse(response);
-                        jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                        json = JArray.Parse(jsonText);
-
-                        response.Close();
-
-                        //Parse the Response into Search Results
-
-                        List<SearchServiceResult> results = new List<SearchServiceResult>();
-
-                        foreach (JToken res in json.Children())
+                        try
                         {
-                            JToken hit = res.SelectToken("hit");
-                            String type = (String)hit.SelectToken("type");
-                            INode node;
-                            if (type.ToLower().Equals("uri"))
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
                             {
-                                node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
-                            }
-                            else
-                            {
-                                node = new BlankNode(null, (String)hit.SelectToken("value"));
-                            }
-                            double score = (double)res.SelectToken("score");
+                                Tools.HttpDebugResponse(response);
+                                jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                json = JArray.Parse(jsonText);
 
-                            results.Add(new SearchServiceResult(node, score));
+                                response.Close();
+
+                                //Parse the Response into Search Results
+
+                                List<SearchServiceResult> results = new List<SearchServiceResult>();
+
+                                foreach (JToken res in json.Children())
+                                {
+                                    JToken hit = res.SelectToken("hit");
+                                    String type = (String) hit.SelectToken("type");
+                                    INode node;
+                                    if (type.ToLower().Equals("uri"))
+                                    {
+                                        node = new UriNode(null, UriFactory.Create((String) hit.SelectToken("value")));
+                                    }
+                                    else
+                                    {
+                                        node = new BlankNode(null, (String) hit.SelectToken("value"));
+                                    }
+                                    double score = (double) res.SelectToken("score");
+
+                                    results.Add(new SearchServiceResult(node, score));
+                                }
+
+                                callback(results, state);
+                            }
                         }
-
-                        callback(results, state);
-                    }
-                }, null);
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 
