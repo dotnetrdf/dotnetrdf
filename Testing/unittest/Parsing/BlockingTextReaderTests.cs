@@ -430,6 +430,8 @@ namespace VDS.RDF.Parsing
 #endif
         }
 
+#if !PORTABLE
+
         [Test]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
@@ -504,6 +506,8 @@ namespace VDS.RDF.Parsing
                 SetUriLoaderCaching(true);
             }
         }
+
+#endif
 
         private void EnsureNIOData()
         {

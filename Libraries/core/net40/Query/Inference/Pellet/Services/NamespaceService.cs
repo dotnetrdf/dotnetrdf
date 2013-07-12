@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the Namespaces used in the Knowledge Base
@@ -102,6 +102,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void GetNamespaces(NamespaceCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
@@ -110,28 +113,52 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             Tools.HttpDebugRequest(request);
 
-            String jsonText;
-            JObject json;
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+            try
+            {
+                String jsonText;
+                JObject json;
+                request.BeginGetResponse(result =>
                     {
-                        Tools.HttpDebugResponse(response);
-                        jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                        json = JObject.Parse(jsonText);
+                        try
+                        {
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                json = JObject.Parse(jsonText);
 
-                        response.Close();
-                    }
+                                response.Close();
+                            }
 
-                    //Parse the Response into a NamespaceMapper
-                    NamespaceMapper nsmap = new NamespaceMapper(true);
-                    foreach (JProperty nsDef in json.Properties())
-                    {
-                        nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String)nsDef.Value));
-                    }
+                            //Parse the Response into a NamespaceMapper
+                            NamespaceMapper nsmap = new NamespaceMapper(true);
+                            foreach (JProperty nsDef in json.Properties())
+                            {
+                                nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String) nsDef.Value));
+                            }
 
-                    callback(nsmap, state);
-                }, null);
+                            callback(nsmap, state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }

@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining the result of the SPARQL Query
@@ -108,7 +108,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Explain(String sparqlQuery, GraphCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._explainUri + "?query=" + HttpUtility.UrlEncode(sparqlQuery));
@@ -117,19 +119,43 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+            try
+            {
+                request.BeginGetResponse(result =>
                     {
-                        Tools.HttpDebugResponse(response);
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                        try
+                        {
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                        response.Close();
-                        callback(g, state);
-                    }
-                }, null);
+                                response.Close();
+                                callback(g, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 
@@ -147,7 +173,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainUnsatService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining why a Class is unsatisfiable
@@ -171,7 +197,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="cls">Class</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainUnsatisfiable(INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", cls);
@@ -196,7 +224,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInstanceService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining why an Instance is of the given Class
@@ -222,7 +250,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="cls">Class</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", instance);
@@ -247,7 +277,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainSubclassService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining why the given Class is a subclass of the given Super Class
@@ -273,7 +303,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="superclass">Super Class</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainSubclass(INode subclass, INode superclass, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", subclass);
@@ -298,7 +330,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInconsistentService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining why the Knowledge Base is inconsistent
@@ -316,7 +348,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainInconsistent(GraphCallback callback, Object state)
         {
             base.Explain(String.Empty, callback, state);
@@ -337,7 +371,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainPropertyService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a Graph explaining why the given Triple was derived
@@ -374,7 +408,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="obj">Object</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainProperty(INode subj, INode pred, INode obj, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", subj);
@@ -390,6 +426,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="t">Triple</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ExplainProprety(Triple t, GraphCallback callback, Object state)
         {
             this.ExplainProperty(t.Subject, t.Predicate, t.Object, callback, state);

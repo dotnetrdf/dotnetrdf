@@ -57,6 +57,8 @@ namespace VDS.RDF.Parsing
             Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
         }
 
+#if !PORTABLE
+
         [Test]
         public void ParsingBaseUriAssignmentUriLoader()
         {
@@ -76,6 +78,8 @@ namespace VDS.RDF.Parsing
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
+
+#endif
 
         [Test]
         public void ParsingBaseUriAssignmentRdfXml()
