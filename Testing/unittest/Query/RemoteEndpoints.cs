@@ -61,6 +61,8 @@ namespace VDS.RDF.Query
             return new SparqlRemoteUpdateEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri)));
         }
 
+#if !PORTABLE
+
         [Test]
         public void SparqlRemoteEndpointLongQuery()
         {
@@ -223,6 +225,8 @@ results.Dispose()
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
 
+#endif
+
         [Test]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
@@ -255,6 +259,8 @@ results.Dispose()
             Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 
+#if !PORTABLE
+
         [Test]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
@@ -274,6 +280,7 @@ results.Dispose()
             IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
+
 
         [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
@@ -542,5 +549,7 @@ results.Dispose()
 
             Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         }
+
+#endif
     }
 }

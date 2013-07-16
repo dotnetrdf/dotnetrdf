@@ -38,7 +38,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     public class PredictService
         : PelletService
     {
-
         private String _predictUri;
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the list of Predictions for the given Individual and Property
@@ -123,14 +122,24 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="property">QName of a Property</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Predict(String individual, String property, NodeListCallback callback, Object state)
         {
             this.PredictRaw(individual, property, (g, s) =>
                 {
-                    List<INode> predictions = (from t in g.Triples
-                                               select t.Object).Distinct().ToList();
+                    if (s is AsyncError)
+                    {
+                        callback(null, s);
+                    }
+                    else
+                    {
+                        List<INode> predictions = (from t in g.Triples
+                                                   select t.Object).Distinct().ToList();
 
-                    callback(predictions, state);
+                        callback(predictions, state);
+                    }
                 }, state);
         }
 
@@ -141,6 +150,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="property">QName of a Property</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
         {
             String requestUri = this._predictUri + individual + "/" + property;
@@ -151,20 +163,44 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+            try
+            {
+                request.BeginGetResponse(result =>
                     {
-                        Tools.HttpDebugResponse(response);
-                        
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                        try
+                        {
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
 
-                        response.Close();
-                        callback(g, state);
-                    }
-                }, null);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                                response.Close();
+                                callback(g, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }
