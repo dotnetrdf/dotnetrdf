@@ -74,7 +74,7 @@ namespace VDS.RDF.Query
         [TestCase(typeof(SimpleSubjectObjectDescription))]
         [TestCase(typeof(MinimalSpanningGraph))]
         [TestCase(typeof(LabelledDescription))]
-        public void ShouldSucceedDescribingWithSpecificAlgorithm(Type describerType)
+        public void SparqlDescribeAlgorithms(Type describerType)
         {
             SparqlQuery q = this.GetQuery();
             q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
@@ -87,6 +87,70 @@ namespace VDS.RDF.Query
             {
                 Assert.Fail("Expected a Graph as the Result");
             }
+        }
+
+        [Test]
+        public void SparqlDescribeDefaultGraphHandling1()
+        {
+            InMemoryDataset dataset = new InMemoryDataset();
+
+            IGraph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            g.BaseUri = UriFactory.Create("http://graph");
+            dataset.AddGraph(g);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { ?s ?p ?o }")) as IGraph;
+            Assert.IsNotNull(description);
+            Assert.IsFalse(description.IsEmpty);
+        }
+
+        [Test]
+        public void SparqlDescribeDefaultGraphHandling2()
+        {
+            InMemoryDataset dataset = new InMemoryDataset();
+
+            IGraph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            g.BaseUri = UriFactory.Create("http://graph");
+            dataset.AddGraph(g);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+            Assert.IsNotNull(description);
+            Assert.IsTrue(description.IsEmpty);
+        }
+
+        [Test]
+        public void SparqlDescribeDefaultGraphHandling3()
+        {
+            InMemoryDataset dataset = new InMemoryDataset();
+
+            IGraph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            g.BaseUri = UriFactory.Create("http://graph");
+            dataset.AddGraph(g);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+            Assert.IsNotNull(description);
+            Assert.IsTrue(description.IsEmpty);
+        }
+
+        [Test]
+        public void SparqlDescribeDefaultGraphHandling4()
+        {
+            InMemoryDataset dataset = new InMemoryDataset();
+
+            IGraph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            g.BaseUri = UriFactory.Create("http://graph");
+            dataset.AddGraph(g);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            IGraph description = processor.ProcessQuery(this._parser.ParseFromString("DESCRIBE ?s FROM <http://graph> FROM NAMED <http://graph> WHERE { GRAPH <http://graph> { ?s ?p ?o } }")) as IGraph;
+            Assert.IsNotNull(description);
+            Assert.IsFalse(description.IsEmpty);
         }
     }
 }
