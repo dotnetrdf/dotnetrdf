@@ -242,11 +242,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
-#if PORTABLE
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF.Portable");
-#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
-#endif
 
             TestTools.ShowGraph(g);
 
