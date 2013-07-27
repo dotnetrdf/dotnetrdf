@@ -926,28 +926,20 @@ namespace VDS.RDF
             }
         }
 
-        [Test]
-        public void UriEncoding()
+        [TestCase("The following String needs URL Encoding <node>Test</node> 100% not a percent encode")]
+        [TestCase("This string contains UTF-8 納豆 characters")]
+        [TestCase("This string contains UTF-8 ç´è± characters")]
+        public void UriEncoding(string test)
         {
-            List<String> tests = new List<string>()
-            {
-                "The following String needs URL Encoding <node>Test</node> 100% not a percent encode",
-                "This string contains UTF-8 納豆 characters",
-                "This string contains UTF-8 ç´è± characters"
-            };
-
-            foreach (String test in tests)
-            {
-                Console.WriteLine(test);
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(test));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
-            }
+            Console.WriteLine(test);
+            Console.WriteLine();
+            Console.WriteLine(HttpUtility.UrlEncode(test));
+            Console.WriteLine();
+            Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
+            Console.WriteLine();
+            Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
+            Console.WriteLine();
+            Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
         }
 
         [Test]
