@@ -1389,8 +1389,11 @@
                    dist-libs-nuget-data-virtuoso,
                    dist-libs-nuget-query-fulltext">
   </target>
+  
+  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-core" unless="${dotnetrdf.nodist}">
+  </target>
 
-  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="do-dist-libs-nuget-core" description="Creates the Core Library NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1499,7 +1502,10 @@
     </exec>
   </target>
 
-  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-data-virtuoso" unless="${dotnetrdf.nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1564,7 +1570,10 @@
     </exec>
   </target>
  
-  <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="dist-libs-nuget-query-fulltext" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-query-fulltext" unless="${dotnetrdf.nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">
