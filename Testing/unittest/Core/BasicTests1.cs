@@ -926,6 +926,7 @@ namespace VDS.RDF
             }
         }
 
+#if PORTABLE
         [TestCase("The following String needs URL Encoding <node>Test</node> 100% not a percent encode")]
         [TestCase("This string contains UTF-8 納豆 characters")]
         [TestCase("This string contains UTF-8 ç´è± characters")]
@@ -941,6 +942,7 @@ namespace VDS.RDF
             Console.WriteLine();
             Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
         }
+#endif
 
         [Test]
         public void UriPathAndQuery()
