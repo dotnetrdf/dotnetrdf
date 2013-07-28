@@ -2371,6 +2371,9 @@
     <Reference Include="Portable.Runtime">
       <HintPath>lib\Portable.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml" />
     <Reference Include="VDS.Common">
       <HintPath>..\..\..\packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
     </Reference>
