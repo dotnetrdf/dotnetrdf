@@ -926,10 +926,10 @@ namespace VDS.RDF
             }
         }
 
-//#if PORTABLE
+#if PORTABLE
         [TestCase("The following String needs URL Encoding <node>Test</node> 100% not a percent encode", "The%20following%20String%20needs%20URL%20Encoding%20%3Cnode%3ETest%3C%2Fnode%3E%20100%25%20not%20a%20percent%20encode")]
-        [TestCase("This string contains UTF-8 納豆 characters", "This%20string%20contains%20UTF%2D8%20%E7%B4%8D%E8%B1%86%20characters")]
-        [TestCase("This string contains UTF-8 ç´è± characters", "This%20string%20contains%20UTF%2D8%20%C3%A7%C2%B4%C2%8D%C3%A8%C2%B1%C2%86%20characters")]
+        [TestCase("This string contains UTF-8 納豆 characters", "This%20string%20contains%20UTF-8%20%E7%B4%8D%E8%B1%86%20characters")]
+        [TestCase("This string contains UTF-8 ç´è± characters", "This%20string%20contains%20UTF-8%20%C3%A7%C2%B4%C2%8D%C3%A8%C2%B1%C2%86%20characters")]
         public void UriEncoding(string test, string expectedEncoded)
         {
             string encoded = HttpUtility.UrlEncode(test);
@@ -947,7 +947,7 @@ namespace VDS.RDF
             Assert.That(decoded, Is.EqualTo(test));
             Assert.That(decodedTwice, Is.EqualTo(test));
         }
-//#endif
+#endif
 
         [Test]
         public void UriPathAndQuery()
