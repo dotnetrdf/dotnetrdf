@@ -1187,7 +1187,6 @@
     <copy todir="bin/stable/Libraries/" overwrite="true">
       <fileset basedir="bin/nightlies/Libraries">
         <include name="**/*" />
-        <exclude name="**/*.pdb" />
       </fileset>
     </copy>
   </target>
@@ -1206,7 +1205,8 @@
           depends="clean-nightlies,clean-stable,
                    clean-intermediaries,
                    clean-dist,
-                   clean-ndoc">
+                   clean-ndoc,
+                   clean-nuget">
   </target>
 
   <target name="clean-nightlies" description="Cleans the nightly build directory">
@@ -1256,6 +1256,15 @@
         <include name="Build/ndoc3/docs/*" />
       </fileset>
     </delete>
+  </target>
+
+  <target name="clean-nuget" description="Cleans the NuGet working directories">
+   <delete failonerror="false">
+     <fileset>
+       <include name="Build/nuget/**/lib/*" />
+       <include name="Build/nuget/**/*.nupkg" />
+     </fileset>
+   </delete>
   </target>
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
@@ -1380,8 +1389,11 @@
                    dist-libs-nuget-data-virtuoso,
                    dist-libs-nuget-query-fulltext">
   </target>
+  
+  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-core" unless="${dotnetrdf.nodist}">
+  </target>
 
-  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="do-dist-libs-nuget-core" description="Creates the Core Library NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1490,7 +1502,10 @@
     </exec>
   </target>
 
-  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-data-virtuoso" unless="${dotnetrdf.nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1555,7 +1570,10 @@
     </exec>
   </target>
  
-  <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
+  <target name="dist-libs-nuget-query-fulltext" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-query-fulltext" unless="${dotnetrdf.nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package (no dependency)" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">

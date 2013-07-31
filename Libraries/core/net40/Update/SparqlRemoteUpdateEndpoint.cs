@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 #if !NO_WEB
 using System.Web;
@@ -43,8 +44,6 @@ namespace VDS.RDF.Update
     public class SparqlRemoteUpdateEndpoint 
         : BaseEndpoint
     {
-        //TODO: Needs to support IConfigurationSerializable
-
         const int LongUpdateLength = 2048;
 
         /// <summary>
@@ -89,7 +88,7 @@ namespace VDS.RDF.Update
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes an update request to the remote endpoint
@@ -242,28 +241,67 @@ namespace VDS.RDF.Update
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetRequestStream(result =>
-                {
-                    Stream stream = request.EndGetRequestStream(result);
-                    using (StreamWriter writer = new StreamWriter(stream))
+            try
+            {
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("update=");
-                        writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
-
-                        writer.Close();
-                    }
-
-                    request.BeginGetResponse(innerResult =>
+                        try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
                             {
-                                Tools.HttpDebugResponse(response);
+                                writer.Write("update=");
+                                writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
 
-                                response.Close();
-                                callback(state);
+                                writer.Close();
                             }
-                        }, null);
-                }, null);
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+
+                                            response.Close();
+                                            callback(state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(new AsyncError(new SparqlUpdateException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (SecurityException secEx)
+                        {
+                            callback(new AsyncError(new SparqlUpdateException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (Exception ex)
+            {
+                callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>

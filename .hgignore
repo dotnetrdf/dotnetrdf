@@ -22,6 +22,7 @@ log-file.txt
 *.temp
 *.user
 temp*.txt
+found*.txt
 _ReSharper*/
 *.lnk
 *.PublicKey

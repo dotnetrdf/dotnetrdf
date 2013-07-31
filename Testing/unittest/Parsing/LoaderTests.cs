@@ -39,8 +39,46 @@ namespace VDS.RDF.Parsing
     [TestFixture]
     public class LoaderTests
     {
+
         [Test]
-        public void ParsingDataUri()
+        public void ParsingDataUri1()
+        {
+            String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
+            String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
+            String rdfAscii = Uri.EscapeDataString(rdfFragment);
+            List<String> uris = new List<string>()
+            {
+                "data:text/turtle;charset=UTF-8;base64," + rdfBase64,
+                "data:text/turtle;base64," + rdfBase64,
+                "data:;base64," + rdfBase64,
+                "data:text/turtle;charset=UTF-8," + rdfAscii,
+                "data:text/tutle," + rdfAscii,
+                "data:," + rdfAscii
+            };
+
+            foreach (String uri in uris)
+            {
+                Uri u = new Uri(uri);
+
+                Console.WriteLine("Testing URI " + u.AbsoluteUri);
+
+                Graph g = new Graph();
+                DataUriLoader.Load(g, u);
+
+                Assert.AreEqual(1, g.Triples.Count, "Expected 1 Triple to be produced");
+
+                Console.WriteLine("Triples produced:");
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+                Console.WriteLine();
+            }
+        }
+
+#if !PORTABLE
+        [Test]
+        public void ParsingDataUri2()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
             String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
@@ -116,10 +154,8 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
-#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
-#endif
                 }
             }
             catch (WebException webEx)
@@ -151,12 +187,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#endif
+
         private void SetUriLoaderCaching(bool cachingEnabled)
         {
 #if !NO_URICACHE
             Options.UriLoaderCaching = cachingEnabled;
 #endif
         }
+
+#if !PORTABLE
 
         [Test]
         public void ParsingUriLoaderDBPedia()
@@ -185,6 +225,8 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#endif
+
         [Test]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
@@ -200,11 +242,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
-#if PORTABLE
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF.Portable");
-#else
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
-#endif
 
             TestTools.ShowGraph(g);
 

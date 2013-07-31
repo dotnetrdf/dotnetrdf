@@ -39,8 +39,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-//#if !NO_SYNC_HTTP
-    [TestFixture]
+   [TestFixture]
     public class FusekiTest
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -53,6 +52,8 @@ namespace VDS.RDF.Storage
             }
             return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
         }
+
+#if !NO_SYNC_HTTP
 
         [Test]
         public void StorageFusekiSaveGraph()
@@ -450,6 +451,7 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = false;
             }
         }
+
+#endif
     }
-//#endif
 }
