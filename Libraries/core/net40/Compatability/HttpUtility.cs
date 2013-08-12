@@ -142,72 +142,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String UrlDecode(String value)
         {
-            //Safe to use this regardless of String length as no limit on input size
+            // Safe to use this regardless of String length as no limit on input size
             return Uri.UnescapeDataString(value);
-
-            ////Commented out as this doesn't work with UTF-8
-            //char c, d, e, f;
-            //StringBuilder output = new StringBuilder();
-            //for (int i = 0; i < value.Length; i++)
-            //{
-            //    c = value[i];
-            //    if (c == '%')
-            //    {
-            //        if (i <= value.Length - 2)
-            //        {
-            //            d = value[i + 1];
-            //            e = value[i + 2];
-            //            if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
-            //            {
-            //                //Has valid hex digits after it so decode
-            //                c = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
-            //                i += 2;
-
-            //                //if (c > 127 && i <= value.Length - 3)
-            //                //{
-            //                //    f = value[i + 1];
-            //                //    if (f == '%')
-            //                //    {
-            //                //        d = value[i + 2];
-            //                //        e = value[i + 3];
-            //                //        f = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
-
-            //                //        if (Char.IsSurrogatePair(c, f))
-            //                //        {
-            //                //            throw new NotImplementedException();
-            //                //            i += 3;
-            //                //        }
-            //                //        else
-            //                //        {
-            //                //            continue;
-            //                //        }
-            //                //    }
-            //                //}
-            //                //else
-            //                //{
-            //                    output.Append(c);
-            //                //}
-            //            }
-            //            else
-            //            {
-            //                //Just a bare percent character
-            //                output.Append(c);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            //Just a bare percent character
-            //            output.Append(c);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //No need to decode if not a percent encoded character
-            //        output.Append(c);
-            //    }
-            //}
-
-            //return output.ToString();
         }
 
         private static bool IsUnsafeUrlString(String value)
@@ -255,7 +191,10 @@ namespace VDS.RDF
 
         private static bool IsSafeCharacter(char c)
         {
-            if (c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122)
+            // Safe characters which should not be percent encoded per RFC 3986 Section 2.3
+            // http://tools.ietf.org/html/rfc3986#section-2.3
+            // Alpha (65-90 and 97-122), Digits (48-57), Hyphen (45), Period (46), Underscore (95) and Tilde (126)
+            if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57) || c == 45 || c == 46 || c == 95 || c == 126)
             {
                 return true;
             }
