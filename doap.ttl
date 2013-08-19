@@ -63,7 +63,6 @@
                 ] ;
     doap:developer
                 [ a           foaf:Person ;
-                  foaf:mbox   <mailto:rvesse@dotnetrdf.org> ;
                   foaf:name   "Ron Michael Zettlemoyer"
                 ] ;
     doap:download-page
