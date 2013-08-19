@@ -1,3 +1,4 @@
+@base <http://www.w3.org/2013/TurtleTests/> .
 # In-scope base URI is <http://www.w3.org/2013/TurtleTests/turtle-subm-27.ttl> at this point
 <a1> <b1> <c1> .
 @base <http://example.org/ns/> .
