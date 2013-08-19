@@ -1,3 +1,5 @@
+@base <http://www.dotnetrdf.org/project#> .
+
 @prefix foaf:    <http://xmlns.com/foaf/0.1/> .
 @prefix doap:    <http://usefulinc.com/ns/doap#> .
 
