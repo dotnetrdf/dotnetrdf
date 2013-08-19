@@ -1,2 +1,2 @@
 # Bad lang tag
-<http://example/s> <http://example/p> "string"@1 .
+<http://www.w3.org/2013/TurtleTests/s> <http://www.w3.org/2013/TurtleTests/p> "string"@1 .
