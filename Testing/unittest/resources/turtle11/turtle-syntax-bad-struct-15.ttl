@@ -1,2 +1,2 @@
 # Literal as predicate
-<http://example/s> "abc" <http://example/p>  .
+<http://www.w3.org/2013/TurtleTests/s> "abc" <http://www.w3.org/2013/TurtleTests/p>  .

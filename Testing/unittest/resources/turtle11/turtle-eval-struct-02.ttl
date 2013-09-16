@@ -1,4 +1,4 @@
-<http://example/s> 
-      <http://example/p1> <http://example/o1> ;
-      <http://example/p2> <http://example/o2> ; 
+<http://www.w3.org/2013/TurtleTests/s> 
+      <http://www.w3.org/2013/TurtleTests/p1> <http://www.w3.org/2013/TurtleTests/o1> ;
+      <http://www.w3.org/2013/TurtleTests/p2> <http://www.w3.org/2013/TurtleTests/o2> ; 
       .

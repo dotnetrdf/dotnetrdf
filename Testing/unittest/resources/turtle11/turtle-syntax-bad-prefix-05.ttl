@@ -1,2 +1,2 @@
 # @prefix without :
-@prefix x <http://example/> .
+@prefix x <http://www.w3.org/2013/TurtleTests/> .

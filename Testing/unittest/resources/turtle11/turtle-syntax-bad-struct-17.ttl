@@ -1,2 +1,2 @@
 # BNode as predicate
-<http://example/s> _:a <http://example/p>  .
+<http://www.w3.org/2013/TurtleTests/s> _:a <http://www.w3.org/2013/TurtleTests/p>  .
