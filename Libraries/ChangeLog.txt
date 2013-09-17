@@ -36,6 +36,7 @@ Changed
 
 Removed
 - Marked as obsolete usable the old ICharFormatter.FormatChar() method (CORE-357)
+- Marked DydraConnector obsolete unusable per deprecation policy
 
 
 1.0.0.2533

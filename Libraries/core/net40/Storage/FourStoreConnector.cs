@@ -395,11 +395,6 @@ namespace VDS.RDF.Storage
                                 insert.AppendLine(t.ToString(this._formatter));
                             }
                             insert.AppendLine("}}");
-
-                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
-                            request.Method = "POST";
-                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                            request = base.GetProxiedRequest(request);
                         }
                     }
 
@@ -694,11 +689,6 @@ namespace VDS.RDF.Storage
                                 insert.AppendLine(t.ToString(this._formatter));
                             }
                             insert.AppendLine("}}");
-
-                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
-                            request.Method = "POST";
-                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                            request = base.GetProxiedRequest(request);
                         }
                     }
 
@@ -843,7 +833,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._endpoint.Uri);
                 request.Accept = accept;
                 request.Method = "POST";
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 request = base.GetProxiedRequest(request);
 
                 Tools.HttpDebugRequest(request);
@@ -853,7 +843,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream))
+                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                         {
                             writer.Write("query=");
                             writer.Write(HttpUtility.UrlEncode(sparqlQuery));

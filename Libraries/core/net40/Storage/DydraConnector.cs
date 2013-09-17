@@ -48,7 +48,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
-    [Obsolete("The dotNetRDF team does not recommend usage of Dydra because their API frequently exhibits inconsistency, transient failures and other errors", false)]
+    [Obsolete("The dotNetRDF team does not recommend usage of Dydra because their API frequently exhibits inconsistency, transient failures and other errors", true)]
     public class DydraConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
@@ -518,13 +518,15 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest("/sparql", accept, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
-                    writer.Write(postData);
-                    writer.Close();
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                    {
+                        writer.Write(postData);
+                        writer.Close();
+                    }
                 }
 
                 Tools.HttpDebugRequest(request);
@@ -847,7 +849,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 request = this.CreateRequest("/sparql", accept, "POST", queryParams);
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
 
                 Tools.HttpDebugRequest(request);
 
@@ -856,7 +858,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(sparqlQuery));
