@@ -552,8 +552,8 @@ namespace VDS.RDF.Query
             if (!postData.Equals(String.Empty))
             {
                 httpRequest.Method = "POST";
-                httpRequest.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream()))
+                httpRequest.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -624,7 +624,7 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
             Tools.HttpDebugRequest(request);
@@ -636,7 +636,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -718,7 +718,7 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
             Tools.HttpDebugRequest(request);
@@ -730,7 +730,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -805,7 +805,7 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
             Tools.HttpDebugRequest(request);
@@ -817,7 +817,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -896,7 +896,7 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
             Tools.HttpDebugRequest(request);
@@ -906,7 +906,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     Stream stream = request.EndGetRequestStream(result);
-                    using (StreamWriter writer = new StreamWriter(stream))
+                    using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                     {
                         writer.Write("query=");
                         writer.Write(HttpUtility.UrlEncode(query));
