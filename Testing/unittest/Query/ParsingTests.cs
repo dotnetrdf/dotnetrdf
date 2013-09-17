@@ -241,6 +241,20 @@ SELECT ?X WHERE
         }
 
         [Test]
+        public void SparqlParsingExistsWithinSubQuery1()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { ?s a <http://restricted> } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinSubQuery2()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { { ?s a <http://restricted> } UNION { ?s a <http://other> } } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
         public void SparqlVarNames()
         {
             List<String> names = new List<String>
@@ -345,33 +359,13 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://res
         [Test]
         public void SparqlParsingExistsWithinUpdateWhereClause7()
         {
-            String update = @"PREFIX myschema: <http://www.example.com/schema#>
-    INSERT {
-        GRAPH <data:public> {
-            ?s ?p ?o
-        }
-    } WHERE {
-        GRAPH <input:source> {
-            ?s ?p ?o .
-        } .
-        FILTER NOT EXISTS {?p a myschema:PrivateProperty}
-            UNION { ?s a myschema:PrivateResource }
-            UNION { ?o a myschema:PrivateResource }
-        })
-    }";
-            TestUpdate(update);
-        }
-
-        [Test]
-        public void SparqlParsingExistsWithinUpdateWhereClause8()
-        {
             String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
 WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
             TestUpdate(update);
         }
 
         [Test]
-        public void SparqlParsingExistsWithinUpdateWhereClause9()
+        public void SparqlParsingExistsWithinUpdateWhereClause8()
         {
             String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
 WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
