@@ -280,6 +280,57 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = false;
             }
         }
+
+        [Test]
+        public void StorageSesameSparqlUpdate3()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+
+                // Ensure required graph is present
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/sesame/chinese");
+                FileLoader.Load(g, @"resources\chinese.ttl");
+                sesame.SaveGraph(g);
+
+                String ask = "ASK WHERE {?s ?p '例子'}";
+
+                // Issue query to validate data was added
+                Object results = sesame.Query(ask);
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                    Assert.IsTrue(((SparqlResultSet)results).Result);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Result Set as expected");
+                }
+
+                // Issue a DELETE for the Chinese literal
+                String update = "DELETE WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
+                sesame.Update(update);
+
+                // Re-issue query to validate triple was deleted
+                results = sesame.Query(ask);
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                    Assert.IsFalse(((SparqlResultSet)results).Result);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Result Set as expected");
+                }
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
 #endif
     }
 }
