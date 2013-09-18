@@ -24,6 +24,7 @@ Changed
  - Some full text queries could cause BIND clauses to result in unbound values (FTXT-364)
  - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
  - Fixes to asynchronous error propagation for some async APIs (CORE-370)
+ - Fixes to parsing of EXISTS/NOT EXISTS within the WHERE clause of a SPARQL Update (CORE-373)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
 - Query

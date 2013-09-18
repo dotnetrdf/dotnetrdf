@@ -46,13 +46,24 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
-        private void TestQuery(String query)
+        private SparqlQuery TestQuery(String query)
         {
             SparqlQuery q = this._parser.ParseFromString(query);
 
             Console.WriteLine(q.ToString());
             Console.WriteLine();
             Console.WriteLine(q.ToAlgebra().ToString());
+
+            return q;
+        }
+
+        private SparqlUpdateCommandSet TestUpdate(String update)
+        {
+            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
+
+            Console.WriteLine(cmds.ToString());
+
+            return cmds;
         }
 
         [Test]
@@ -230,6 +241,20 @@ SELECT ?X WHERE
         }
 
         [Test]
+        public void SparqlParsingExistsWithinSubQuery1()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { ?s a <http://restricted> } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinSubQuery2()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { { ?s a <http://restricted> } UNION { ?s a <http://other> } } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
         public void SparqlVarNames()
         {
             List<String> names = new List<String>
@@ -256,14 +281,95 @@ SELECT ?X WHERE
         public void SparqlParsingInsertDataWithGraphVar()
         {
             String update = "INSERT DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
         }
 
         [Test, ExpectedException(typeof (RdfParseException))]
         public void SparqlParsingDeleteDataWithGraphVar()
         {
             String update = "DELETE DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause1()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause2()
+        {
+            String update = @"WITH <http://source>
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause3()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause4()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause5()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause6()
+        {
+            String update = @"PREFIX myschema: <http://www.example.com/schema#>
+    INSERT {
+        GRAPH <data:public> {
+            ?s ?p ?o
+        }
+    } WHERE {
+        GRAPH <input:source> {
+            ?s ?p ?o .
+        } .
+        FILTER( NOT EXISTS {
+            {?p a myschema:PrivateProperty}
+            UNION { ?s a myschema:PrivateResource }
+            UNION { ?o a myschema:PrivateResource }
+        })
+    }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause7()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause8()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
         }
 
         [Test]
