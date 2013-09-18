@@ -130,7 +130,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTime AsDateTime()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>

@@ -201,21 +201,6 @@ namespace VDS.RDF
                 _internUris = value;
             }
         }
-
-        /// <summary>
-        /// Gets/Sets the default token queue mode used for tokeniser based parsers
-        /// </summary>
-        public static TokenQueueMode DefaultTokenQueueMode
-        {
-            get
-            {
-                return _defaultTokenQueueMode;
-            }
-            set
-            {
-                _defaultTokenQueueMode = value;
-            }
-        }
         
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes

@@ -464,7 +464,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTime AsDateTime()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>

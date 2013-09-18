@@ -33,6 +33,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query

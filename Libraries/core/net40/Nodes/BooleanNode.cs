@@ -131,7 +131,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
         /// <summary>

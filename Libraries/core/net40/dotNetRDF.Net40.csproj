@@ -112,17 +112,6 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\SparqlNumericType.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
-    <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
-    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
-    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
-    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
-    <Compile Include="Query\Builder\ISelectBuilder.cs" />
-    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
-    <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
-    <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
-    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
-    <Compile Include="Query\Builder\IQueryBuilder.cs" />
-    <Compile Include="Query\Builder\QueryBuilder.cs" />
     <Compile Include="Core\BlankNode.cs" />
     <Compile Include="Core\Graph.cs" />
     <Compile Include="Collections\GraphCollection.cs" />
@@ -258,7 +247,6 @@
     <Compile Include="Specifications\TurtleSpecsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Writing\WriterUtilities.cs" />
@@ -269,4 +257,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
+  </ItemGroup>
 </Project>

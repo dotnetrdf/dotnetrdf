@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="g">Graph</param>
         public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("Notation 3", new QNameOutputMapper(g.Namespaces)) { }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Namespace Map

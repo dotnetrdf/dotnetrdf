@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Specifications
 {
     /// <summary>
     /// Helper Class which defines some Test Functions for testing the Unicode Category of Characters

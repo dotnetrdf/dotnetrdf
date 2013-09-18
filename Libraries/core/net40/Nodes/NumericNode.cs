@@ -103,7 +103,7 @@ namespace VDS.RDF.Nodes
                 case SparqlNumericType.Double:
                     return this.AsDouble() != 0.0d && this.AsDouble() != Double.NaN;
                 default:
-                    return SparqlSpecsHelper.EffectiveBooleanValue(this);
+                    return false;
             }
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
         {
-            throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
+            throw new NodeValueException("Numeric Types cannot be converted into Date Times");
         }
 
         /// <summary>
