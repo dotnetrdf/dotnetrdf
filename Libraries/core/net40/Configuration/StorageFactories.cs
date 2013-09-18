@@ -145,24 +145,7 @@ namespace VDS.RDF.Configuration
 #endif
 
                 case Dydra:
-                    //Get the Account Name and Store
-                    String account = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
-                    if (account == null) return false;
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-
-                    //Get User Credentials
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null)
-                    {
-                        storageProvider = new DydraConnector(account, store, user);
-                    }
-                    else
-                    {
-                        storageProvider = new DydraConnector(account, store);
-                    }
-                    break;
+                    throw new DotNetRdfConfigurationException("DydraConnector is no longer supported by dotNetRDF and is considered obsolete");
 
                 case FourStore:
                     //Get the Server and whether Updates are enabled

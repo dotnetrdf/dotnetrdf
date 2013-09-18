@@ -367,9 +367,6 @@
     <Compile Include="..\..\unittest\Storage\Async\AllegroGraphAsync.cs">
       <Link>Storage\Async\AllegroGraphAsync.cs</Link>
     </Compile>
-    <Compile Include="..\..\unittest\Storage\Async\DydraAsync.cs">
-      <Link>Storage\Async\DydraAsync.cs</Link>
-    </Compile>
     <Compile Include="..\..\unittest\Storage\Async\FourStoreAsync.cs">
       <Link>Storage\Async\FourStoreAsync.cs</Link>
     </Compile>
@@ -525,9 +522,6 @@
     </Compile>
     <Compile Include="..\..\unittest\Configuration\ConfigurationApiTests.cs">
       <Link>Configuration\ConfigurationApiTests.cs</Link>
-    </Compile>
-    <Compile Include="..\..\unittest\Storage\DydraTests.cs">
-      <Link>Storage\DydraTests.cs</Link>
     </Compile>
     <Compile Include="..\..\unittest\Storage\FourStoreTest.cs">
       <Link>Storage\FourStoreTest.cs</Link>

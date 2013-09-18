@@ -149,7 +149,7 @@ namespace VDS.RDF.Storage
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
-                FileLoader.Load(g, "cyrillic.rdf");
+                FileLoader.Load(g, @"resources\cyrillic.rdf");
                 sesame.SaveGraph(g);
 
                 String ask = "ASK WHERE {?s ?p 'литерал'}";
