@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
-    [TestClass]
+    [TestFixture]
     public class ResultSetHandlerTests
     {
         private void EnsureTestData(String file)
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlXml()
         {
             this.EnsureTestData("test.srx");
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlJson()
         {
             this.EnsureTestData("test.srj");
@@ -98,7 +98,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlRdfNTriples()
         {
             this.EnsureTestData("test.sparql.nt", new SparqlRdfWriter(new NTriplesWriter()));
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlRdfTurtle()
         {
             this.EnsureTestData("test.sparql.ttl", new SparqlRdfWriter(new CompressingTurtleWriter()));
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlRdfNotation3()
         {
             this.EnsureTestData("test.sparql.n3", new SparqlRdfWriter(new Notation3Writer()));
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlRdfXml()
         {
             this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerImplicitSparqlRdfJson()
         {
             this.EnsureTestData("test.sparql.json", new SparqlRdfWriter(new RdfJsonWriter()));
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlXml()
         {
             this.EnsureTestData("test.srx");
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlJson()
         {
             this.EnsureTestData("test.srj");
@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlRdfNTriples()
         {
             this.EnsureTestData("test.sparql.nt", new SparqlRdfWriter(new NTriplesWriter()));
@@ -250,7 +250,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlRdfTurtle()
         {
             this.EnsureTestData("test.sparql.ttl", new SparqlRdfWriter(new CompressingTurtleWriter()));
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlRdfNotation3()
         {
             this.EnsureTestData("test.sparql.n3", new SparqlRdfWriter(new Notation3Writer()));
@@ -288,7 +288,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlRdfXml()
         {
             this.EnsureTestData("test.sparql.rdf", new SparqlRdfWriter(new RdfXmlWriter()));
@@ -307,7 +307,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultSetHandlerExplicitSparqlRdfJson()
         {
             this.EnsureTestData("test.sparql.json", new SparqlRdfWriter(new RdfJsonWriter()));
@@ -326,7 +326,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingMergingResultSetHandler()
         {
             this.EnsureTestData("test.srx", new SparqlXmlWriter());
@@ -347,7 +347,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.AreEqual(count * 2, results.Count, "Expected result count to have doubled");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingResultsWriteThroughHandlerSparqlXml()
         {
             Graph g = new Graph();

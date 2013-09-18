@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
     /// TriX permits Graphs to be named with Blank Node IDs, since the library only supports Graphs named with URIs these are converted to URIs of the form <strong>trix:local:ID</strong>
     /// </para>
     /// </remarks>
-    public class TriXParser 
+    public class TriXParser
         : IStoreReader
     {
         /// <summary>
@@ -59,6 +59,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
 
+
+#if !NO_FILE
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store
         /// </summary>
@@ -69,6 +71,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(store, new StreamReader(filename, Encoding.UTF8));
         }
+#endif
 
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store
@@ -82,6 +85,8 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), input);
         }
 
+
+#if !NO_FILE
         /// <summary>
         /// Loads the RDF Dataset from the TriX input using a RDF Handler
         /// </summary>
@@ -92,6 +97,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
+#endif
 
 #if !NO_XMLDOM
 
@@ -432,7 +438,9 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if SILVERLIGHT
+#if PORTABLE
+            settings.DtdProcessing = DtdProcessing.Ignore;
+#elif SILVERLIGHT
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;
@@ -683,7 +691,7 @@ namespace VDS.RDF.Parsing
 
             if (reader.Name.Equals("uri"))
             {
-               return handler.CreateUriNode(new Uri(reader.ReadInnerXml()));
+                return handler.CreateUriNode(new Uri(reader.ReadInnerXml()));
             }
             else if (reader.Name.Equals("id"))
             {
@@ -706,16 +714,16 @@ namespace VDS.RDF.Parsing
                     reader.MoveToContent();
                     if (!lang.Equals(String.Empty))
                     {
-                        return handler.CreateLiteralNode(reader.ReadInnerXml(), lang);
+                        return handler.CreateLiteralNode(reader.ReadElementContentAsString(), lang);
                     }
                     else
                     {
-                        return handler.CreateLiteralNode(reader.ReadInnerXml());
+                        return handler.CreateLiteralNode(reader.ReadElementContentAsString());
                     }
                 }
                 else
                 {
-                    return handler.CreateLiteralNode(reader.ReadInnerXml());
+                    return handler.CreateLiteralNode(reader.ReadElementContentAsString());
                 }
             }
             else if (reader.Name.Equals("typedLiteral"))

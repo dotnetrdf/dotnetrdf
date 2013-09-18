@@ -13,13 +13,16 @@
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_10.ttl.gz.gz" ] ] .								 									 
+																		   dnr:fromFile "~/App_Data/stats_10.ttl.gz" ] ] .								 									 
 _:bsbm10 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_10.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_10.ttl.gz" ] ] ] .
  											 
 																		    											 
 <dotnetrdf:/bsbm/50> a dnr:HttpHandler ;
@@ -36,11 +39,14 @@ _:bsbm10 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_50.ttl.gz" ] ] .
 									 									 
 _:bsbm50 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_50.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_50.ttl.gz" ] ] ] .
  											  											 
 <dotnetrdf:/bsbm/100> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -56,11 +62,14 @@ _:bsbm50 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_100.ttl.gz" ] ] .
 									 									 
 _:bsbm100 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_100.ttl.gz" ] ] .											 
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_100.ttl.gz" ] ] ] .									 
  											 
  											 
 <dotnetrdf:/bsbm/250> a dnr:HttpHandler ;
@@ -77,11 +86,14 @@ _:bsbm100 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_250.ttl.gz" ] ] .
 									 									 
 _:bsbm250 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_250.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_250.ttl.gz" ] ] ] .
  											 
 <dotnetrdf:/bsbm/500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -97,11 +109,14 @@ _:bsbm250 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_500.ttl.gz" ] ] .
 									 									 
 _:bsbm500 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_500.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_500.ttl.gz" ] ] ] .
  											 
 <dotnetrdf:/bsbm/1000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -117,11 +132,14 @@ _:bsbm500 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_1000.ttl.gz" ] ] .
 									 									 
 _:bsbm1000 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_1000.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_1000.ttl.gz" ] ] ] .
  											 
 <dotnetrdf:/bsbm/1500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -137,11 +155,14 @@ _:bsbm1000 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_1500.ttl.gz" ] ] .
 									 									 
 _:bsbm1500 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_1500.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_1500.ttl.gz" ] ] ] .
  											 
 <dotnetrdf:/bsbm/2000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -157,11 +178,14 @@ _:bsbm1500 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_2000.ttl.gz" ] ] .
 									 									 
 _:bsbm2000 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2000.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_2000.ttl.gz" ] ] ] .
  											 
 <dotnetrdf:/bsbm/2500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -177,11 +201,14 @@ _:bsbm2000 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_2500.ttl.gz" ] ] .
 									 									 
 _:bsbm2500 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2500.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_2500.ttl.gz" ] ] ] .
  											 
  											 
 <dotnetrdf:/bsbm/2785> a dnr:HttpHandler ;
@@ -198,9 +225,12 @@ _:bsbm2500 a dnr:SparqlQueryProcessor ;
 																		   dnr:fromFile "~/App_Data/stats_2785.ttl.gz" ] ] .
 									 									 
 _:bsbm2785 a dnr:SparqlQueryProcessor ;
-		   dnr:usingStore [ a dnr:TripleStore ;
-		   					dnr:type "VDS.RDF.TripleStore" ;
- 							dnr:usingGraph [ a dnr:Graph ; 
- 											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2785.ttl.gz" ] ] .
+		   dnr:usingDataset [ a dnr:SparqlDataset ;
+						      dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+							  dnr:unionDefaultGraph true ;
+							  dnr:usingStore [ a dnr:TripleStore ;
+		   									   dnr:type "VDS.RDF.TripleStore" ;
+ 											   dnr:usingGraph [ a dnr:Graph ; 
+ 												                dnr:type "VDS.RDF.Graph" ; 
+ 																dnr:fromFile "~/App_Data/dataset_2785.ttl.gz" ] ] ] .
  		   

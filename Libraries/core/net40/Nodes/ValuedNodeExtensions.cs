@@ -45,7 +45,7 @@ namespace VDS.RDF.Nodes
         /// <returns>Valued Node</returns>
         public static IValuedNode AsValuedNode(this INode n)
         {
-            if (n == null) return (IValuedNode)n;
+            if (n == null) return null;
             if (n is IValuedNode) return (IValuedNode)n;
 
             switch (n.NodeType)
@@ -86,8 +86,8 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                DateTimeOffset date;
-                                if (DateTimeOffset.TryParse(lit.Value, out date))
+                                DateTime date;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
                                 {
                                     return new DateNode(date, lit.Value);
                                 }
@@ -96,8 +96,9 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                DateTimeOffset dateTime;
-                                if (DateTimeOffset.TryParse(lit.Value, out dateTime))
+                                DateTime dateTime;
+                                DateTimeOffset offset;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
                                 {
                                     return new DateTimeNode(dateTime, lit.Value);
                                 }
@@ -257,162 +258,5 @@ namespace VDS.RDF.Nodes
             if (n == null) throw new NodeValueException("Cannot cast a null to a boolean");
             return n.AsBoolean();
         }
-
-        //private static bool IsCoerceableDatatype(ILiteralNode lit)
-        //{
-        //    return lit.DataType == null || !lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-        //}
-
-        //public static IValuedNode CoerceToInteger(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is LongNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType))
-        //    {
-        //        case SparqlNumericType.Integer:
-        //        case SparqlNumericType.Decimal:
-        //        case SparqlNumericType.Double:
-        //        case SparqlNumericType.Float:
-        //            //No need to coerce as either already an integer or cast will happen automatically if possible
-        //            return n;
-        //        default:
-        //            if (!IsCoerceableDatatype(lit)) return n;
-        //            //May coerce if lexical form parses as an integer
-        //            long l;
-        //            if (Int64.TryParse(lit.Value, out l))
-        //            {
-        //                return new LongNode(null, l);
-        //            }
-        //            else
-        //            {
-        //                return n;
-        //            }
-        //    }
-        //}
-
-        //public static IValuedNode CoerceToDecimal(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is DecimalNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType))
-        //    {
-        //        case SparqlNumericType.Integer:
-        //        case SparqlNumericType.Decimal:
-        //        case SparqlNumericType.Double:
-        //        case SparqlNumericType.Float:
-        //            //No need to coerce as either already a decimal or cast will happen automatically if possible
-        //            return n;
-        //        default:
-        //            if (!IsCoerceableDatatype(lit)) return n;
-        //            //May coerce if lexical form parses as a decimal
-        //            decimal d;
-        //            if (Decimal.TryParse(lit.Value, out d))
-        //            {
-        //                return new DecimalNode(null, d);
-        //            }
-        //            else
-        //            {
-        //                return n;
-        //            }
-        //    }
-        //}
-
-        //public static IValuedNode CoerceToDouble(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is DoubleNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType))
-        //    {
-        //        case SparqlNumericType.Integer:
-        //        case SparqlNumericType.Decimal:
-        //        case SparqlNumericType.Double:
-        //        case SparqlNumericType.Float:
-        //            //No need to coerce as either already a double or cast will happen automatically if possible
-        //            return n;
-        //        default:
-        //            if (!IsCoerceableDatatype(lit)) return n;
-        //            //May coerce if lexical form parses as a double
-        //            double d;
-        //            if (Double.TryParse(lit.Value, out d))
-        //            {
-        //                return new DoubleNode(null, d);
-        //            }
-        //            else
-        //            {
-        //                return n;
-        //            }
-        //    }
-        //}
-
-        //public static IValuedNode CoerceToFloat(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is FloatNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType))
-        //    {
-        //        case SparqlNumericType.Integer:
-        //        case SparqlNumericType.Decimal:
-        //        case SparqlNumericType.Double:
-        //        case SparqlNumericType.Float:
-        //            //No need to coerce as either already a double or cast will happen automatically if possible
-        //            return n;
-        //        default:
-        //            if (!IsCoerceableDatatype(lit)) return n;
-        //            //May coerce if lexical form parses as a double
-        //            float f;
-        //            if (Single.TryParse(lit.Value, out f))
-        //            {
-        //                return new FloatNode(null, f);
-        //            }
-        //            else
-        //            {
-        //                return n;
-        //            }
-        //    }
-        //}
-
-        //public static IValuedNode CoerceToBoolean(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is BooleanNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    if (!IsCoerceableDatatype(lit)) return n;
-        //    bool b;
-        //    if (Boolean.TryParse(lit.Value, out b))
-        //    {
-        //        return new BooleanNode(null, b);
-        //    }
-        //    else
-        //    {
-        //        return n;
-        //    }
-        //}
-
-        //public static IValuedNode CoerceToDateTime(this IValuedNode n)
-        //{
-        //    if (n == null) return n;
-        //    if (n is DateTimeNode) return n;
-        //    if (n.NodeType != NodeType.Literal) return n;
-        //    ILiteralNode lit = (ILiteralNode)n;
-        //    if (!IsCoerceableDatatype(lit)) return n;
-        //    DateTimeOffset dt;
-        //    if (DateTimeOffset.TryParse(lit.Value, out dt))
-        //    {
-        //        return new DateTimeNode(null, dt);
-        //    }
-        //    else
-        //    {
-        //        return n;
-        //    }
-        //}
     }
 }

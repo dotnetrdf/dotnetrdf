@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class LoadObjectTests
     {
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectPropertyFunctionFactory()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -51,7 +51,7 @@ _:a a dnr:SparqlPropertyFunctionFactory ;
             Assert.AreEqual(typeof(MockPropertyFunctionFactory), factory.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectTripleCollection1()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -66,7 +66,7 @@ _:a a dnr:TripleCollection ;
             Assert.AreEqual(typeof(TreeIndexedTripleCollection), collection.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectTripleCollection2()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -84,7 +84,7 @@ _:b a dnr:TripleCollection ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), collection.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectGraphCollection1()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -99,7 +99,7 @@ _:a a dnr:GraphCollection ;
             Assert.AreEqual(typeof(GraphCollection), collection.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectGraphCollection2()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -117,7 +117,8 @@ _:b a dnr:GraphCollection ;
             Assert.AreEqual(typeof(ThreadSafeGraphCollection), collection.GetType());
         }
 
-        [TestMethod]
+#if !NO_FILE // No DiskDemandGraphCollection
+        [Test]
         public void ConfigurationLoadObjectGraphCollection3()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -134,8 +135,10 @@ _:b a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(DiskDemandGraphCollection), collection.GetType());
         }
+#endif
 
-        [TestMethod]
+#if !SILVERLIGHT // No WebDemandGraphCollection
+        [Test]
         public void ConfigurationLoadObjectGraphCollection4()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -152,8 +155,10 @@ _:b a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+#endif
 
-        [TestMethod]
+#if !SILVERLIGHT // No WebDemandGraphCollection
+        [Test]
         public void ConfigurationLoadObjectGraphCollection5()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -173,8 +178,9 @@ _:c a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectGraphEmpty1()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -189,7 +195,8 @@ _:a a dnr:Graph ;
             Assert.AreEqual(typeof(Graph), result.GetType());
         }
 
-        [TestMethod]
+#if !NO_RWLOCK // No ThreadSafeGraph
+        [Test]
         public void ConfigurationLoadObjectGraphEmpty2()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -203,8 +210,9 @@ _:a a dnr:Graph ;
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(ThreadSafeGraph), result.GetType());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectGraphEmpty3()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -223,7 +231,7 @@ _:b a dnr:TripleCollection ;
             Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectTripleStoreEmpty1()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -238,7 +246,8 @@ _:a a dnr:TripleStore ;
             Assert.AreEqual(typeof(TripleStore), result.GetType());
         }
 
-        [TestMethod]
+#if !SILVERLIGHT // No WebDemandTripleStore
+        [Test]
         public void ConfigurationLoadObjectTripleStoreEmpty2()
         {
             String graph = ConfigLookupTests.Prefixes + @"
@@ -252,8 +261,9 @@ _:a a dnr:TripleStore ;
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(WebDemandTripleStore), result.GetType());
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ConfigurationLoadObjectTripleStoreEmpty3()
         {
             String graph = ConfigLookupTests.Prefixes + @"

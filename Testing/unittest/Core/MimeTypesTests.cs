@@ -27,79 +27,99 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class MimeTypesTests
     {
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             MimeTypesHelper.ResetDefinitions();
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Teardown()
         {
             MimeTypesHelper.ResetDefinitions();
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsAll()
         {
             int count = MimeTypesHelper.Definitions.Count();
             Console.WriteLine(count + " Definitions registered");
+#if PORTABLE
+            Assert.AreEqual(16, count);
+#else
             Assert.AreEqual(30, count);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeAny()
         {
             int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
+#if PORTABLE
+            Assert.AreEqual(16, count);
+#else
             Assert.AreEqual(30, count);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/n3");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(Notation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNotation3_2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/rdf+n3");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(Notation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".n3");
@@ -111,7 +131,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtNotation3_2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("n3");
@@ -123,7 +143,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(Notation3Writer), d.RdfWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtNotation3_3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".n3.gz");
@@ -134,8 +155,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtNotation3_4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("n3.gz");
@@ -146,59 +169,78 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedNotation3Parser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNotation3Writer), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtTurtle1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".ttl");
@@ -210,19 +252,22 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtTurtle2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtTurtle3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".ttl.gz");
@@ -233,8 +278,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtTurtle4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("ttl.gz");
@@ -245,93 +292,124 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNTriples1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf-triples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(NTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNTriples2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/plain");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(NTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
        
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(NTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/ntriples+turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(NTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeNTriples5()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/x-ntriples");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(NTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtNTriples1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt");
@@ -343,7 +421,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtNTriples2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt");
@@ -355,7 +433,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(NTriplesWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtNTriples3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".nt.gz");
@@ -366,8 +445,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtNTriples4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("nt.gz");
@@ -378,59 +459,78 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedNTriplesParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedNTriplesWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/rdf+xml");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(RdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/xml");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(RdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xml");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(RdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rdf");
@@ -442,7 +542,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rdf");
@@ -454,7 +554,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rdf.gz");
@@ -465,8 +566,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rdf.gz");
@@ -477,42 +580,55 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/json");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/json");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj");
@@ -524,7 +640,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj");
@@ -536,7 +652,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj.gz");
@@ -547,8 +664,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj.gz");
@@ -559,8 +678,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfA1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xhtml+xml");
@@ -577,7 +698,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeRdfA2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/html");
@@ -594,7 +715,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html");
@@ -606,7 +727,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html");
@@ -618,7 +739,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html.gz");
@@ -630,7 +751,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html.gz");
@@ -642,7 +763,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA5()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm");
@@ -654,7 +775,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA6()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm");
@@ -666,7 +787,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA7()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm.gz");
@@ -678,7 +799,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA8()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm.gz");
@@ -690,7 +811,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA9()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml");
@@ -702,7 +823,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA10()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml");
@@ -714,7 +835,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA11()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml.gz");
@@ -726,7 +847,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtRdfA12()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml.gz");
@@ -737,25 +858,32 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeSparqlXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+xml");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlXml1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx");
@@ -767,7 +895,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlXml2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx");
@@ -779,7 +907,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlXml3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx.gz");
@@ -790,8 +919,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlXml4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx.gz");
@@ -802,25 +933,32 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeSparqlJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+json");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlJson1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj");
@@ -832,19 +970,22 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlJson2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj");
             Assert.AreEqual(1, defs.Count());
 
+#if !NO_COMPRESSION
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlJson3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj.gz");
@@ -855,8 +996,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlJson4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj.gz");
@@ -867,42 +1010,55 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeSparqlCsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/csv");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeSparqlCsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/comma-separated-values");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlCsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv");
@@ -914,7 +1070,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlCsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv");
@@ -926,7 +1082,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlCsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv.gz");
@@ -937,8 +1094,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlCsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv.gz");
@@ -949,25 +1108,32 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeSparqlTsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/tab-separated-values");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(SparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlTsv1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv");
@@ -979,7 +1145,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlTsv2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv");
@@ -991,7 +1157,8 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlTsv3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv.gz");
@@ -1002,8 +1169,10 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetDefinitionsByExtSparqlTsv4()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv.gz");
@@ -1014,59 +1183,78 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/TURTLE");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/turtle");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeCaseSensitivity3()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TeXt/TuRtLe");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtCaseSensitivity1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".TTL");
@@ -1078,7 +1266,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByExtCaseSensitivity2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tTl");
@@ -1090,1319 +1278,1393 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeExtraParams1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionsByTypeExtraParams2()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; q=1.0");
+#if PORTABLE
+            Assert.AreEqual(1, defs.Count());
+#else
             Assert.AreEqual(2, defs.Count());
+#endif
 
             //Check normal definition
             MimeTypeDefinition d = defs.First();
             Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
 
+#if !NO_COMPRESSION
             //Check GZipped definition
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNTriples1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/plain");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNTriples2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/ntriples");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNTriples3()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/ntriples+turtle");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNTriples4()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/rdf-triples");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNTriples5()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/x-ntriples");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeTurtle1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/turtle");
-            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+            Assert.IsInstanceOf<TurtleParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeTurtle2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/x-turtle");
-            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+            Assert.IsInstanceOf<TurtleParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeTurtle3()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
-            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+            Assert.IsInstanceOf<TurtleParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNotation3_1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+            Assert.IsInstanceOf<Notation3Parser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeNotation3_2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/rdf+n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+            Assert.IsInstanceOf<Notation3Parser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfXml1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/xml");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+            Assert.IsInstanceOf<RdfXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfXml2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/rdf+xml");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+            Assert.IsInstanceOf<RdfXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfXml3()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/xml");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+            Assert.IsInstanceOf<RdfXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfJson1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/json");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+            Assert.IsInstanceOf<RdfJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfJson2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/json");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+            Assert.IsInstanceOf<RdfJsonParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void MimeTypesGetParserByTypeRdfA1()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("text/html");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByTypeRdfA2()
         {
             IRdfReader parser = MimeTypesHelper.GetParser("application/xhtml+xml");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
+#endif
 
-        [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test, ExpectedException(typeof(RdfParserSelectionException))]
         public void MimeTypesGetParserByTypeUnknown()
         {
             IRdfReader reader = MimeTypesHelper.GetParser("application/unknown");
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNTriples1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".nt");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNTriples2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("nt");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+            Assert.IsInstanceOf<NTriplesParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetParserByExtNTriples3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".nt.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesParser));
+            Assert.IsInstanceOf<GZippedNTriplesParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNTriples4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("nt.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesParser));
+            Assert.IsInstanceOf<GZippedNTriplesParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtTurtle1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
-            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+            Assert.IsInstanceOf<TurtleParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtTurtle2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("ttl");
-            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+            Assert.IsInstanceOf<TurtleParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetParserByExtTurtle3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleParser));
+            Assert.IsInstanceOf<GZippedTurtleParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtTurtle4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("ttl.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleParser));
+            Assert.IsInstanceOf<GZippedTurtleParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNotation3_1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+            Assert.IsInstanceOf<Notation3Parser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNotation3_2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+            Assert.IsInstanceOf<Notation3Parser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetParserByExtNotation3_3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".n3.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Parser));
+            Assert.IsInstanceOf<GZippedNotation3Parser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtNotation3_4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("n3.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Parser));
+            Assert.IsInstanceOf<GZippedNotation3Parser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfXml1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rdf");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+            Assert.IsInstanceOf<RdfXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfXml2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rdf");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+            Assert.IsInstanceOf<RdfXmlParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetParserByExtRdfXml3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rdf.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlParser));
+            Assert.IsInstanceOf<GZippedRdfXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfXml4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rdf.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlParser));
+            Assert.IsInstanceOf<GZippedRdfXmlParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfJson1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rj");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+            Assert.IsInstanceOf<RdfJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfJson2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rj");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+            Assert.IsInstanceOf<RdfJsonParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetParserByExtRdfJson3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonParser));
+            Assert.IsInstanceOf<GZippedRdfJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfJson4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonParser));
+            Assert.IsInstanceOf<GZippedRdfJsonParser>(parser);
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void MimeTypesGetParserByExtRdfA1()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".html");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA2()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("html");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA3()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".html.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA4()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("html.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA5()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".htm");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA6()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("htm");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA7()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".htm.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA8()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("htm.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA9()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".xhtml");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA10()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml");
-            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+            Assert.IsInstanceOf<RdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA11()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".xhtml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetParserByExtRdfA12()
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+            Assert.IsInstanceOf<GZippedRdfAParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeUnknown()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/unknown");
-            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeAny()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.Any);
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNTriples1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/plain");
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNTriples2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/ntriples");
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNTriples3()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/ntriples+turtle");
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNTriples4()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf-triples");
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNTriples5()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/x-ntriples");
-            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeTurtle1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/turtle");
-            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeTurtle2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/x-turtle");
-            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeTurtle3()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle");
-            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNotation3_1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/n3");
-            Assert.IsInstanceOfType(writer, typeof(Notation3Writer));
+            Assert.IsInstanceOf<Notation3Writer>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeNotation3_2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/rdf+n3");
-            Assert.IsInstanceOfType(writer, typeof(Notation3Writer));
+            Assert.IsInstanceOf<Notation3Writer>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfXml1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/xml");
-            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+            Assert.IsInstanceOf<RdfXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfXml2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/xml");
-            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+            Assert.IsInstanceOf<RdfXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfXml3()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf+xml");
-            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+            Assert.IsInstanceOf<RdfXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfJson1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/json");
-            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+            Assert.IsInstanceOf<RdfJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfJson2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/json");
-            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+            Assert.IsInstanceOf<RdfJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfJson3()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf+json");
-            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+            Assert.IsInstanceOf<RdfJsonWriter>(writer);
         }
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void MimeTypesGetWriterByTypeRdfA1()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("text/html");
-            Assert.IsInstanceOfType(writer, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByTypeRdfA2()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/xhtml+xml");
-            Assert.IsInstanceOfType(writer, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(writer);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNTriples1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".nt");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNTriples2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("nt");
-            Assert.IsInstanceOfType(parser, typeof(NTriplesWriter));
+            Assert.IsInstanceOf<NTriplesWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtNTriples3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".nt.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesWriter));
+            Assert.IsInstanceOf<GZippedNTriplesWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNTriples4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("nt.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesWriter));
+            Assert.IsInstanceOf<GZippedNTriplesWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtTurtle1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".ttl");
-            Assert.IsInstanceOfType(parser, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtTurtle2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("ttl");
-            Assert.IsInstanceOfType(parser, typeof(CompressingTurtleWriter));
+            Assert.IsInstanceOf<CompressingTurtleWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtTurtle3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".ttl.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleWriter));
+            Assert.IsInstanceOf<GZippedTurtleWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtTurtle4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("ttl.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleWriter));
+            Assert.IsInstanceOf<GZippedTurtleWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNotation3_1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Writer));
+            Assert.IsInstanceOf<Notation3Writer>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNotation3_2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("n3");
-            Assert.IsInstanceOfType(parser, typeof(Notation3Writer));
+            Assert.IsInstanceOf<Notation3Writer>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtNotation3_3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".n3.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Writer));
+            Assert.IsInstanceOf<GZippedNotation3Writer>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtNotation3_4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("n3.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Writer));
+            Assert.IsInstanceOf<GZippedNotation3Writer>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfXml1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".rdf");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlWriter));
+            Assert.IsInstanceOf<RdfXmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfXml2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("rdf");
-            Assert.IsInstanceOfType(parser, typeof(RdfXmlWriter));
+            Assert.IsInstanceOf<RdfXmlWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtRdfXml3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".rdf.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlWriter));
+            Assert.IsInstanceOf<GZippedRdfXmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfXml4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("rdf.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlWriter));
+            Assert.IsInstanceOf<GZippedRdfXmlWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfJson1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".rj");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonWriter));
+            Assert.IsInstanceOf<RdfJsonWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfJson2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("rj");
-            Assert.IsInstanceOfType(parser, typeof(RdfJsonWriter));
+            Assert.IsInstanceOf<RdfJsonWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtRdfJson3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".rj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonWriter));
+            Assert.IsInstanceOf<GZippedRdfJsonWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfJson4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("rj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonWriter));
+            Assert.IsInstanceOf<GZippedRdfJsonWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void MimeTypesGetWriterByExtRdfA1()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".html");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA2()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("html");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
+#if !NO_COMPRESSION
         public void MimeTypesGetWriterByExtRdfA3()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".html.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA4()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("html.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA5()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".htm");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA6()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("htm");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtRdfA7()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".htm.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA8()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("htm.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA9()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".xhtml");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA10()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("xhtml");
-            Assert.IsInstanceOfType(parser, typeof(HtmlWriter));
+            Assert.IsInstanceOf<HtmlWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetWriterByExtRdfA11()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension(".xhtml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetWriterByExtRdfA12()
         {
             IRdfWriter parser = MimeTypesHelper.GetWriterByFileExtension("xhtml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAWriter));
+            Assert.IsInstanceOf<GZippedRdfAWriter>(parser);
         }
+#endif
+#endif
 
-        [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test, ExpectedException(typeof(RdfParserSelectionException))]
         public void MimeTypesGetSparqlParserByTypeUnknown()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/unknown");
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlXml1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
-            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+            Assert.IsInstanceOf<SparqlXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlXml2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/xml");
-            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+            Assert.IsInstanceOf<SparqlXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlJson1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/sparql-results+json");
-            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+            Assert.IsInstanceOf<SparqlJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlJson2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/json");
-            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+            Assert.IsInstanceOf<SparqlJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlCsv1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("text/csv");
-            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+            Assert.IsInstanceOf<SparqlCsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlCsv2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("text/comma-separated-values");
-            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+            Assert.IsInstanceOf<SparqlCsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeSparqlTsv1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("text/tab-separated-values");
-            Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
+            Assert.IsInstanceOf<SparqlTsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlXml1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srx");
-            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+            Assert.IsInstanceOf<SparqlXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlXml2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srx");
-            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+            Assert.IsInstanceOf<SparqlXmlParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlXml3()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srx.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlXmlParser));
+            Assert.IsInstanceOf<GZippedSparqlXmlParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlXml4()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srx.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlXmlParser));
+            Assert.IsInstanceOf<GZippedSparqlXmlParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlJson1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srj");
-            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+            Assert.IsInstanceOf<SparqlJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlJson2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srj");
-            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+            Assert.IsInstanceOf<SparqlJsonParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlJson3()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlJsonParser));
+            Assert.IsInstanceOf<GZippedSparqlJsonParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlJson4()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srj.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlJsonParser));
+            Assert.IsInstanceOf<GZippedSparqlJsonParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlTsv1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".tsv");
-            Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
+            Assert.IsInstanceOf<SparqlTsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlTsv2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("tsv");
-            Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
+            Assert.IsInstanceOf<SparqlTsvParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlTsv3()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".tsv.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlTsvParser));
+            Assert.IsInstanceOf<GZippedSparqlTsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlTsv4()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("tsv.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlTsvParser));
+            Assert.IsInstanceOf<GZippedSparqlTsvParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlCsv1()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".csv");
-            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+            Assert.IsInstanceOf<SparqlCsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlCsv2()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("csv");
-            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+            Assert.IsInstanceOf<SparqlCsvParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlCsv3()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".csv.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlCsvParser));
+            Assert.IsInstanceOf<GZippedSparqlCsvParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlParserByExtSparqlCsv4()
         {
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("csv.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlCsvParser));
+            Assert.IsInstanceOf<GZippedSparqlCsvParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeUnknown()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/unknown");
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeAny()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(MimeTypesHelper.Any);
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlXml1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/sparql-results+xml");
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlXml2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/xml");
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlJson1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/sparql-results+json");
-            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+            Assert.IsInstanceOf<SparqlJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlJson2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/json");
-            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+            Assert.IsInstanceOf<SparqlJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlCsv1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/csv");
-            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+            Assert.IsInstanceOf<SparqlCsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlCsv2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/comma-separated-values");
-            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+            Assert.IsInstanceOf<SparqlCsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByTypeSparqlTsv1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/tab-separated-values");
-            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+            Assert.IsInstanceOf<SparqlTsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlXml1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srx");
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlXml2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srx");
-            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+            Assert.IsInstanceOf<SparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlXml3()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srx.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlXmlWriter));
+            Assert.IsInstanceOf<GZippedSparqlXmlWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlXml4()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srx.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlXmlWriter));
+            Assert.IsInstanceOf<GZippedSparqlXmlWriter>(writer);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlJson1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srj");
-            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+            Assert.IsInstanceOf<SparqlJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlJson2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srj");
-            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+            Assert.IsInstanceOf<SparqlJsonWriter>(writer);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlJson3()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srj.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlJsonWriter));
+            Assert.IsInstanceOf<GZippedSparqlJsonWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlJson4()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srj.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlJsonWriter));
+            Assert.IsInstanceOf<GZippedSparqlJsonWriter>(writer);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlTsv1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".tsv");
-            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+            Assert.IsInstanceOf<SparqlTsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlTsv2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("tsv");
-            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+            Assert.IsInstanceOf<SparqlTsvWriter>(writer);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlTsv3()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".tsv.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlTsvWriter));
+            Assert.IsInstanceOf<GZippedSparqlTsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlTsv4()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("tsv.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlTsvWriter));
+            Assert.IsInstanceOf<GZippedSparqlTsvWriter>(writer);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlCsv1()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".csv");
-            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+            Assert.IsInstanceOf<SparqlCsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlCsv2()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("csv");
-            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+            Assert.IsInstanceOf<SparqlCsvWriter>(writer);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlCsv3()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".csv.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
+            Assert.IsInstanceOf<GZippedSparqlCsvWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetSparqlWriterByExtSparqlCsv4()
         {
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("csv.gz");
-            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
+            Assert.IsInstanceOf<GZippedSparqlCsvWriter>(writer);
         }
+#endif
 
-        [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test, ExpectedException(typeof(RdfParserSelectionException))]
         public void MimeTypesGetStoreParserByTypeUnknown()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParser("application/unknown");
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByTypeNQuads1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+            Assert.IsInstanceOf<NQuadsParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByTypeTriG1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParser("application/x-trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+            Assert.IsInstanceOf<TriGParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByTypeTriX1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParser("application/trix");
-            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+            Assert.IsInstanceOf<TriXParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtNQuads1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+            Assert.IsInstanceOf<NQuadsParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtNQuads2()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("nq");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+            Assert.IsInstanceOf<NQuadsParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreParserByExtNQuads3()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsParser));
+            Assert.IsInstanceOf<GZippedNQuadsParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtNQuads4()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("nq.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsParser));
+            Assert.IsInstanceOf<GZippedNQuadsParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriG1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+            Assert.IsInstanceOf<TriGParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriG2()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+            Assert.IsInstanceOf<TriGParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreParserByExtTriG3()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".trig.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriGParser));
+            Assert.IsInstanceOf<GZippedTriGParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriG4()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("trig.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriGParser));
+            Assert.IsInstanceOf<GZippedTriGParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriX1()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".xml");
-            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+            Assert.IsInstanceOf<TriXParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriX2()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("xml");
-            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+            Assert.IsInstanceOf<TriXParser>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreParserByExtTriX3()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".xml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriXParser));
+            Assert.IsInstanceOf<GZippedTriXParser>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreParserByExtTriX4()
         {
             IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("xml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriXParser));
+            Assert.IsInstanceOf<GZippedTriXParser>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByTypeUnknown()
         {
             IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/unknown");
-            Assert.IsInstanceOfType(writer, typeof(NQuadsWriter));
+            Assert.IsInstanceOf<NQuadsWriter>(writer);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByTypeNQuads1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriter("text/x-nquads");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+            Assert.IsInstanceOf<NQuadsWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByTypeTriG1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriter("application/x-trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+            Assert.IsInstanceOf<TriGWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByTypeTriX1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriter("application/trix");
-            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+            Assert.IsInstanceOf<TriXWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtNQuads1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".nq");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+            Assert.IsInstanceOf<NQuadsWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtNQuads2()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("nq");
-            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+            Assert.IsInstanceOf<NQuadsWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreWriterByExtNQuads3()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".nq.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsWriter));
+            Assert.IsInstanceOf<GZippedNQuadsWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtNQuads4()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("nq.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsWriter));
+            Assert.IsInstanceOf<GZippedNQuadsWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriG1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+            Assert.IsInstanceOf<TriGWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriG2()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("trig");
-            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+            Assert.IsInstanceOf<TriGWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriG3()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".trig.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriGWriter));
+            Assert.IsInstanceOf<GZippedTriGWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriG4()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("trig.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriGWriter));
+            Assert.IsInstanceOf<GZippedTriGWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriX1()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".xml");
-            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+            Assert.IsInstanceOf<TriXWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriX2()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("xml");
-            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+            Assert.IsInstanceOf<TriXWriter>(parser);
         }
 
-        [TestMethod]
+#if !NO_COMPRESSION
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriX3()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".xml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriXWriter));
+            Assert.IsInstanceOf<GZippedTriXWriter>(parser);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetStoreWriterByExtTriX4()
         {
             IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("xml.gz");
-            Assert.IsInstanceOfType(parser, typeof(GZippedTriXWriter));
+            Assert.IsInstanceOf<GZippedTriXWriter>(parser);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyWriterOptions1()
         {
             int compressionLevel = Options.DefaultCompressionLevel;
@@ -2410,7 +2672,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultCompressionLevel = WriterCompressionLevel.High;
                 IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle");
-                Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+                Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
                 Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
             }
             finally
@@ -2419,7 +2681,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyWriterOptions2()
         {
             int compressionLevel = Options.DefaultCompressionLevel;
@@ -2427,7 +2689,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultCompressionLevel = WriterCompressionLevel.High;
                 IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(".ttl");
-                Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+                Assert.IsInstanceOf<CompressingTurtleWriter>(writer);
                 Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
             }
             finally
@@ -2436,7 +2698,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyWriterOptions3()
         {
             int compressionLevel = Options.DefaultCompressionLevel;
@@ -2444,7 +2706,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultCompressionLevel = WriterCompressionLevel.High;
                 IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/x-trig");
-                Assert.IsInstanceOfType(writer, typeof(TriGWriter));
+                Assert.IsInstanceOf<TriGWriter>(writer);
                 Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
             }
             finally
@@ -2453,7 +2715,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyWriterOptions4()
         {
             int compressionLevel = Options.DefaultCompressionLevel;
@@ -2461,7 +2723,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultCompressionLevel = WriterCompressionLevel.High;
                 IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(".trig");
-                Assert.IsInstanceOfType(writer, typeof(TriGWriter));
+                Assert.IsInstanceOf<TriGWriter>(writer);
                 Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
             }
             finally
@@ -2470,7 +2732,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyParserOptions1()
         {
             TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
@@ -2478,7 +2740,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
                 IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
-                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.IsInstanceOf<TurtleParser>(parser);
                 Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
             }
             finally
@@ -2487,7 +2749,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyParserOptions2()
         {
             TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
@@ -2495,7 +2757,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
                 IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
-                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.IsInstanceOf<TurtleParser>(parser);
                 Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
             }
             finally
@@ -2504,7 +2766,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyParserOptions3()
         {
             TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
@@ -2512,7 +2774,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
                 IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
-                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.IsInstanceOf<NQuadsParser>(parser);
                 Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
             }
             finally
@@ -2521,7 +2783,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesApplyParserOptions4()
         {
             TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
@@ -2529,7 +2791,7 @@ namespace VDS.RDF.Core
             {
                 Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
                 IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
-                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.IsInstanceOf<NQuadsParser>(parser);
                 Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
             }
             finally
@@ -2538,7 +2800,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesContentNegotiation1()
         {
             String[] types = new String[] { "application/turtle" , "application/rdf+xml", "text/plain" };
@@ -2547,7 +2809,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(TurtleParser), def.RdfParserType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesContentNegotiation2()
         {
             String[] types = new String[] { "application/rdf+xml", "application/turtle", "text/plain" };
@@ -2556,7 +2818,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(RdfXmlParser), def.RdfParserType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesContentNegotiation3()
         {
             String[] types = new String[] { "text/plain", "application/rdf+xml", "application/turtle" };
@@ -2565,14 +2827,14 @@ namespace VDS.RDF.Core
             Assert.AreEqual(typeof(NTriplesParser), def.RdfParserType);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesContentNegotiation4()
         {
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).FirstOrDefault();
             Assert.IsNotNull(def);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesContentNegotiation5()
         {
             String[] types = new String[] { "application/turtle; q=0.8", "application/rdf+xml", "text/plain; q=0.9" };
@@ -2589,7 +2851,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors1()
         {
             String[] types = new String[] { "audio/*; q=0.2", "audio/basic" };
@@ -2603,7 +2865,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.2d, selectors[1].Quality);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors2()
         {
             String[] types = new String[] { "text/plain; q=0.5", "text/turtle" };
@@ -2615,7 +2877,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.5d, selectors[1].Quality);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors3()
         {
             String[] types = new String[] { "text/plain", "text/turtle" };
@@ -2626,7 +2888,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual("text/turtle", selectors[1].Type);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors4()
         {
             String[] types = new String[] { "text/*", "text/html", "*/*" };
@@ -2638,7 +2900,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(MimeTypesHelper.Any, selectors[2].Type);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors5()
         {
             String[] types = new String[] { "text/plain; q=0.5", "text/turtle; q=0.5" };
@@ -2651,7 +2913,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.5d, selectors[1].Quality);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesSelectors6()
         {
             String[] types = new String[] { "text/turtle; q=0.5", "text/plain; q=0.5" };
@@ -2664,7 +2926,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(0.5d, selectors[1].Quality);
         }
 
-        [TestMethod]
+        [Test]
         public void MimeTypesGetDefinitionByUpperCaseExt()
         {
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)

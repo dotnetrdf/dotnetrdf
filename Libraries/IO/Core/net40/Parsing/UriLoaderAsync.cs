@@ -50,6 +50,9 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// <strong>Note:</strong> UriLoader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
+        /// </para>
         /// </remarks>
         public static void Load(IGraph g, Uri u, IRdfReader parser, GraphCallback callback, Object state)
         {
@@ -62,6 +65,10 @@ namespace VDS.RDF.Parsing
             if (u.IsFile)
 #endif
             {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
+
                 //Invoke FileLoader instead
                 UriLoader.RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -75,6 +82,7 @@ namespace VDS.RDF.Parsing
                 //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                 callback(g, state);
                 return;
+#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -89,7 +97,7 @@ namespace VDS.RDF.Parsing
             //Set Base URI if necessary
             if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
 
-            UriLoader.Load(new GraphHandler(g), u, parser, (_,s) => callback(g, s), state);
+            UriLoader.Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
         }
 
         /// <summary>
@@ -108,6 +116,9 @@ namespace VDS.RDF.Parsing
         /// </para>
         /// <para>
         /// <strong>Note:</strong> UriLoader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
         public static void Load(IGraph g, Uri u, GraphCallback callback, Object state)
@@ -133,6 +144,9 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
         /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
+        /// </para>
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IRdfReader parser, RdfHandlerCallback callback, Object state)
         {
@@ -146,6 +160,9 @@ namespace VDS.RDF.Parsing
                 if (u.IsFile)
 #endif
                 {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -159,6 +176,7 @@ namespace VDS.RDF.Parsing
                     //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
+#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -196,58 +214,68 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if PORTABLE
+                    request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     request.UserAgent = _userAgent;
+#endif
                 }
 
-#if DEBUG
-                //HTTP Debugging
-                if (Options.HttpDebugging)
+                Tools.HttpDebugRequest(request);
+
+                try
                 {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
-
-                request.BeginGetResponse(result =>
-                    {
-                        using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    request.BeginGetResponse(result =>
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
+                            try
                             {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
+                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                                {
+                                    Tools.HttpDebugResponse(response);
 
-                            //Get a Parser and load the RDF
-                            if (parser == null)
+                                    //Get a Parser and load the RDF
+                                    if (parser == null)
+                                    {
+                                        //Only need to auto-detect the parser if a specific one wasn't specified
+                                        parser = MimeTypesHelper.GetParser(response.ContentType);
+                                    }
+                                    parser.Warning += RaiseWarning;
+
+                                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                                    //Finally can invoke the callback
+                                    callback(handler, state);
+                                }
+                            }
+                            catch (WebException webEx)
                             {
-                                //Only need to auto-detect the parser if a specific one wasn't specified
-                                parser = MimeTypesHelper.GetParser(response.ContentType);
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                             }
-                            parser.Warning += RaiseWarning;
-
-                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
-
-                            //Finally can invoke the callback
-                            callback(handler, state);
-                        }
-                    }, null);
+                            catch (Exception ex)
+                            {
+                                callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
+                            }
+                        }, null);
+                }
+                catch (WebException webEx)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse) webEx.Response);
+                    callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
+                }
+                catch (Exception ex)
+                {
+                    callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
+                }
             }
+#if PORTABLE
+            catch(FormatException uriEx)
+#else
             catch (UriFormatException uriEx)
+#endif
             {
                 //URI Format Invalid
                 throw new RdfParseException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-
-                throw new WebException("A HTTP Error occurrred resolving the URI '" + u.AbsoluteUri + "', see inner exception for details", webEx);
             }
         }
 
@@ -262,12 +290,14 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// Attempts to autodetect the RDF format based on the Content-Type header of the HTTP response
         /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
+        /// </para>
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
         {
             UriLoader.Load(handler, u, (IRdfReader)null, callback, state);
         }
-
 
         /// <summary>
         /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store
@@ -283,6 +313,9 @@ namespace VDS.RDF.Parsing
         /// </para>
         /// <para>
         /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+        /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
         public static void Load(ITripleStore store, Uri u, IStoreReader parser, TripleStoreCallback callback, Object state)
@@ -302,6 +335,9 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
         public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, Object state)
@@ -324,6 +360,9 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
         /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
+        /// </para>
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IStoreReader parser, RdfHandlerCallback callback, Object state)
         {
@@ -338,6 +377,9 @@ namespace VDS.RDF.Parsing
                 if (u.IsFile)
 #endif
                 {
+#if PORTABLE
+                    throw new PlatformNotSupportedException("FileLoader is not supported by the Portable Class Library build");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -351,6 +393,7 @@ namespace VDS.RDF.Parsing
                     //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
                     callback(handler, state);
                     return;
+#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -386,84 +429,93 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if PORTABLE
+                    request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     request.UserAgent = _userAgent;
+#endif
                 }
 
-#if DEBUG
-                //HTTP Debugging
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
 
-                request.BeginGetResponse(result =>
+                try
                 {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
-                    {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-
-                        //Get a Parser and load the RDF
-                        if (parser == null)
+                    request.BeginGetResponse(result =>
                         {
                             try
                             {
-                                //Only need to auto-detect the parser if a specific one wasn't specified
-                                parser = MimeTypesHelper.GetStoreParser(response.ContentType);
-                                parser.Warning += RaiseWarning;
-                                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                                {
+                                    Tools.HttpDebugResponse(response);
+
+                                    //Get a Parser and load the RDF
+                                    if (parser == null)
+                                    {
+                                        try
+                                        {
+                                            //Only need to auto-detect the parser if a specific one wasn't specified
+                                            parser = MimeTypesHelper.GetStoreParser(response.ContentType);
+                                            parser.Warning += RaiseWarning;
+                                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                        }
+                                        catch (RdfParserSelectionException)
+                                        {
+                                            RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + response.ContentType + " - seeing if the content is an RDF Graph instead");
+
+                                            try
+                                            {
+                                                //If not a RDF Dataset format see if it is a Graph
+                                                IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                                                rdfParser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                            }
+                                            catch (RdfParserSelectionException)
+                                            {
+                                                String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                                parser = StringParser.GetDatasetParser(data);
+                                                parser.Warning += RaiseStoreWarning;
+                                                parser.Load(handler, new StringReader(data));
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        parser.Warning += RaiseStoreWarning;
+                                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                    }
+
+                                    //Finally can invoke the callback
+                                    callback(handler, state);
+                                }
                             }
-                            catch (RdfParserSelectionException)
+                            catch (WebException webEx)
                             {
-                                RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + response.ContentType + " - seeing if the content is an RDF Graph instead");
-
-                                try
-                                {
-                                    //If not a RDF Dataset format see if it is a Graph
-                                    IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
-                                    rdfParser.Load(handler, new StreamReader(response.GetResponseStream()));
-                                }
-                                catch (RdfParserSelectionException)
-                                {
-                                    String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                                    parser = StringParser.GetDatasetParser(data);
-                                    parser.Warning += RaiseStoreWarning;
-                                    parser.Load(handler, new StringReader(data));
-                                }
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                             }
-                        }
-                        else
-                        {
-                            parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                        }
-
-                        //Finally can invoke the callback
-                        callback(handler, state);
-                    }
-                }, null);
+                            catch (Exception ex)
+                            {
+                                callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
+                            }
+                        }, null);
+                }
+                catch (WebException webEx)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
+                }
+                catch (Exception ex)
+                {
+                    callback(handler, new AsyncError(new RdfParseException("Unexpected error while loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exception for details", ex), state));
+                }
             }
+#if PORTABLE
+            catch(FormatException uriEx)
+#else
             catch (UriFormatException uriEx)
+#endif
             {
                 //Uri Format Invalid
                 throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                //Some sort of HTTP Error occurred
-                throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);
-
             }
         }
 
@@ -477,6 +529,9 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
         public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)

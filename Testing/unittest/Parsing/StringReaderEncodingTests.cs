@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-    [TestClass]
+    [TestFixture]
     public class StringReaderEncodingTests
     {
-        [TestMethod]
+        [Test]
         public void ParsingStringReaderEncoding()
         {
             String test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";

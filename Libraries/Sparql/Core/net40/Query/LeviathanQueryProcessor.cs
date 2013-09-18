@@ -291,6 +291,9 @@ namespace VDS.RDF.Query
         /// <param name="rdfCallback">Callback for queries that return a Graph</param>
         /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// In the event of a success the appropriate callback will be invoked, if there is an error both callbacks will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
+        /// </remarks>
         public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
         {
             Graph g = new Graph();
@@ -298,14 +301,28 @@ namespace VDS.RDF.Query
             ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
             d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
             {
-                d.EndInvoke(r);
-                if (rset.ResultsType != SparqlResultsType.Unknown)
+                try
                 {
-                    resultsCallback(rset, state);
+                    d.EndInvoke(r);
+                    if (rset.ResultsType != SparqlResultsType.Unknown)
+                    {
+                        resultsCallback(rset, state);
+                    }
+                    else
+                    {
+                        rdfCallback(g, state);
+                    }
                 }
-                else
+                catch (RdfQueryException queryEx)
                 {
-                    rdfCallback(g, state);
+                    if (rdfCallback != null) rdfCallback(null, new AsyncError(queryEx, state));
+                    if (resultsCallback != null) resultsCallback(null, new AsyncError(queryEx, state));
+                }
+                catch (Exception ex)
+                {
+                    RdfQueryException queryEx = new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex);
+                    if (rdfCallback != null) rdfCallback(null, new AsyncError(queryEx, state));
+                    if (resultsCallback != null) resultsCallback(null, new AsyncError(queryEx, state));
                 }
             }, state);
         }
@@ -318,13 +335,27 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// In the event of a success the callback will be invoked, if there is an error the callback will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
+        /// </remarks>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
         {
             ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
             d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
             {
-                d.EndInvoke(r);
-                callback(rdfHandler, resultsHandler, state);
+                try
+                {
+                    d.EndInvoke(r);
+                    callback(rdfHandler, resultsHandler, state);
+                }
+                catch (RdfQueryException queryEx)
+                {
+                    callback(rdfHandler, resultsHandler, new AsyncError(queryEx, state));
+                }
+                catch (Exception ex)
+                {
+                    callback(rdfHandler, resultsHandler, new AsyncError(new RdfQueryException("Unexpected error making an asynchronous query", ex), state));
+                }
             }, state);
         }
 

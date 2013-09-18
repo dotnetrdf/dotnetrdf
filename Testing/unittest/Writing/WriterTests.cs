@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,28 +36,14 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class WriterTests
         : CompressionTests
     {
 
-        private List<String> samples = new List<string>()
-            {
-                @":backslashes :string ""This example has some backslashes: C:\Program Files\somewhere"".",
-                ":no-escapes :string \"a piece of text with no escapes\".",
-                ":quote-escapes :string \"a piece of text containing \\\"quotes\\\"\".",
-                ":long-literal :string \"\"\"a piece of text containing \"quotes\\\"\"\"\".",
-                ":newline-escapes :string \"this contains a \\nnew line\".",
-                ":newline-longliteral-escapes :string \"\"\"this is a long literal\nwhich contains\nmultiple new lines\"\"\".",
-                ":newline-escapes-alt :string \"this contains another \\rnew line\".",
-                ":newline-longliteral-escapes-alt :string \"\"\"this is another long literal which mixes both\n \\r and \\n\rnew line escapes\"\"\".",
-                ":tabs :string \"this string contains   unescaped tabs\".",
-                ":tabs-escaped :string \"this string contains \\t escaped tabs\"."
-            };
-
         private String prefix = "@prefix : <http://example.org>.\n";
         
-        [TestMethod]
+        [Test]
         public void WritingBlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
@@ -91,110 +77,11 @@ namespace VDS.RDF.Writing
 
         }
 
-        [TestMethod]
-        public void WritingCharEscaping()
-        {
-            List<IRdfReader> readers = new List<IRdfReader>()
-            {
-                new TurtleParser(),
-                new Notation3Parser()
-            };
-            List<IRdfWriter> writers = new List<IRdfWriter>() 
-            {
-                new CompressingTurtleWriter(WriterCompressionLevel.High),
-                new Notation3Writer()
-            };
-
-            for (int i = 0; i < readers.Count; i++)
-            {
-                IRdfReader parser = readers[i];
-                IRdfWriter writer = writers[i];
-
-                foreach (String sample in samples)
-                {
-                    Graph g = new Graph();
-                    Console.WriteLine("Original RDF Fragment");
-                    Console.WriteLine(prefix + sample);
-                    StringParser.Parse(g, prefix + sample, parser);
-                    Console.WriteLine();
-                    Console.WriteLine("Triples in Original");
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString());
-                    }
-                    Console.WriteLine();
-
-                    String serialized = VDS.RDF.Writing.StringWriter.Write(g, writer);
-                    Console.WriteLine("Serialized RDF Fragment");
-                    Console.WriteLine(serialized);
-
-                    Graph h = new Graph();
-                    StringParser.Parse(h, serialized, parser);
-
-                    Console.WriteLine();
-                    Console.WriteLine("Triples in Serialized");
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString());
-                    }
-                    Console.WriteLine();
-
-                    Assert.AreEqual(g, h, "Graphs should have been equal");
-
-                    Console.WriteLine("Graphs were equal as expected");
-                    Console.WriteLine();
-                }
-            }
-        }
-
-        [TestMethod]
-        public void WritingNTriplesCharEscaping()
-        {
-            TurtleParser parser = new TurtleParser();
-            NTriplesParser ntparser = new NTriplesParser();
-            NTriplesWriter ntwriter = new NTriplesWriter();
-
-            foreach (String sample in samples)
-            {
-                Graph g = new Graph();
-                Console.WriteLine("Original RDF Fragment");
-                Console.WriteLine(prefix + sample);
-                StringParser.Parse(g, prefix + sample, parser);
-                Console.WriteLine();
-                Console.WriteLine("Triples in Original");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
-                String serialized = VDS.RDF.Writing.StringWriter.Write(g, ntwriter);
-                Console.WriteLine("Serialized RDF Fragment");
-                Console.WriteLine(serialized);
-
-                Graph h = new Graph();
-                StringParser.Parse(h, serialized, ntparser);
-
-                Console.WriteLine();
-                Console.WriteLine("Triples in Serialized");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
-                Assert.AreEqual(g, h, "Graphs should have been equal");
-
-                Console.WriteLine("Graphs were equal as expected");
-                Console.WriteLine();
-            }
-        }
-
-        [TestMethod]
+        [Test]
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "charescaping.owl");
+            FileLoader.Load(g, "resources\\charescaping.owl");
 
             Console.WriteLine("Original Triples");
             foreach (Triple t in g.Triples)
@@ -219,11 +106,12 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod]
+#if !NO_HTMLAGILITYPACK
+        [Test]
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
             String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
@@ -245,19 +133,31 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
+#endif
 
-        [TestMethod]
+#if !PORTABLE
+
+        [Test]
         public void WritingCollections()
         {
             Graph g = new Graph();
+#if !NO_URICACHE
             Options.UriLoaderCaching = false;
+#endif
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+#if PORTABLE
+            var tmpWriter = new StreamWriter(new MemoryStream());
+            ttlwriter.Save(g, tmpWriter);
+#else
             ttlwriter.Save(g, Console.Out);
+#endif
         }
 
-        [TestMethod]
+#endif
+
+        [Test]
         public void WritingXmlAmpersandEscaping()
         {
             List<String> inputs = new List<string>()
@@ -292,61 +192,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
-        public void WritingBackslashEscaping()
-        {
-            Graph g = new Graph();
-            INode subj = g.CreateBlankNode();
-            INode pred = g.CreateUriNode(new Uri("ex:string"));
-            INode obj = g.CreateLiteralNode(@"C:\Program Files\some\path\\to\file.txt");
-            g.Assert(subj, pred, obj);
-            obj = g.CreateLiteralNode(@"\");
-            g.Assert(subj, pred, obj);
-            obj = g.CreateLiteralNode(@"C:\\new\\real\\ugly\\Under has all the possible escape character interactions");
-            g.Assert(subj, pred, obj);
-
-            List<IRdfWriter> writers = new List<IRdfWriter>()
-            {
-                new NTriplesWriter(),
-                new TurtleWriter(),
-                new CompressingTurtleWriter(WriterCompressionLevel.High),
-                new Notation3Writer()
-            };
-
-            List<IRdfReader> parsers = new List<IRdfReader>()
-            {
-                new NTriplesParser(),
-                new TurtleParser(),
-                new TurtleParser(),
-                new Notation3Parser()
-            };
-
-            Console.WriteLine("Original Graph");
-            TestTools.ShowGraph(g);
-            Console.WriteLine();
-
-            for (int i = 0; i < writers.Count; i++)
-            {
-                IRdfWriter writer = writers[i];
-                Console.WriteLine("Testing Writer " + writer.GetType().Name);
-
-                System.IO.StringWriter strWriter = new System.IO.StringWriter();
-                writer.Save(g, strWriter);
-
-                Console.WriteLine("Written as:");
-                Console.WriteLine(strWriter.ToString());
-                Console.WriteLine();
-
-                Graph h = new Graph();
-                StringParser.Parse(h, strWriter.ToString(), parsers[i]);
-                Console.WriteLine("Parsed Graph");
-                TestTools.ShowGraph(h);
-                Console.WriteLine();
-                Assert.AreEqual(g, h, "Graphs should be equal");
-            }
-        }
-
-        [TestMethod]
+        [Test]
         public void WritingUriEscaping()
         {
             Graph g = new Graph();
@@ -365,7 +211,9 @@ namespace VDS.RDF.Writing
             {
                 new CompressingTurtleWriter(),
                 new PrettyRdfXmlWriter(),
+#if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
+#endif
                 new Notation3Writer(),
                 new NTriplesWriter(),
                 new PrettyRdfXmlWriter(),
@@ -377,7 +225,9 @@ namespace VDS.RDF.Writing
             {
                 new TurtleParser(),
                 new RdfXmlParser(),
+#if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
+#endif
                 new Notation3Parser(),
                 new NTriplesParser(),
                 new RdfXmlParser(),
@@ -425,7 +275,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [TestMethod]
+        [Test]
         public void WritingQNameValidation()
         {
             Graph g = new Graph();

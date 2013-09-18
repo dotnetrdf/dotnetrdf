@@ -12,9 +12,8 @@
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -38,6 +37,7 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,7 +47,6 @@
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoWarn>0659,1574,0067,0419,0628</NoWarn>
     <WarningsAsErrors>0672,0108</WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -56,7 +55,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -66,7 +65,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -95,6 +94,7 @@
     <Compile Include="Compatability\HtmlTextWriterTag.cs" />
     <Compile Include="Compatability\HttpUtility.cs" />
     <Compile Include="Compatability\SilverlightCompatability.cs" />
+    <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
     <Compile Include="Core\BaseGraphStore.cs" />
@@ -112,6 +112,17 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\SparqlNumericType.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
+    <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
+    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\ISelectBuilder.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
+    <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
+    <Compile Include="Query\Builder\IQueryBuilder.cs" />
+    <Compile Include="Query\Builder\QueryBuilder.cs" />
     <Compile Include="Core\BlankNode.cs" />
     <Compile Include="Core\Graph.cs" />
     <Compile Include="Collections\GraphCollection.cs" />
@@ -193,6 +204,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -217,7 +229,6 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\HttpHelper.cs" />
     <Compile Include="Core\URINode.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -256,5 +267,6 @@
   <ItemGroup>
     <Compile Include="Writing\BlankNodeOutputMapper.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
 </Project>

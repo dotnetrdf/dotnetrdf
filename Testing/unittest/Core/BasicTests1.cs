@@ -30,17 +30,17 @@ using System.Reflection;
 using System.Text;
 using System.Net;
 using System.Web;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class BasicTests1 : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void NodesDistinct()
         {
             Graph g = new Graph();
@@ -74,7 +74,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCreation1()
         {
             //Create a new Empty Graph
@@ -161,7 +161,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCreation2()
         {
             //Create a new Empty Graph
@@ -193,7 +193,7 @@ namespace VDS.RDF
             Assert.IsTrue(g.Triples.Count == 5);
         }
 
-        [TestMethod]
+        [Test]
         public void UriResolution()
         {
             String[] baseUris = { "http://www.bbc.co.uk",
@@ -265,7 +265,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriResolutionWithGraphBase()
         {
             IGraph g = new Graph();
@@ -276,7 +276,7 @@ namespace VDS.RDF
             Assert.AreEqual(expected, actual.Uri);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfException))]
+        [Test, ExpectedException(typeof(RdfException))]
         public void UriResolutionUriProvidedToQNameMethod()
         {
             try
@@ -291,7 +291,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
@@ -309,7 +309,7 @@ namespace VDS.RDF
             Assert.AreEqual(test1.GetHashCode(), test3.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void NodesHashCodes()
         {
             Console.WriteLine("Tests that Literal and URI Nodes produce different Hashes");
@@ -392,7 +392,7 @@ namespace VDS.RDF
 
         }
 
-        [TestMethod]
+        [Test]
         public void NodesUriNodeEquality()
         {
             //Create the Nodes
@@ -430,7 +430,7 @@ namespace VDS.RDF
             TestTools.CompareNodes(k, l, true);
         }
 
-        [TestMethod]
+        [Test]
         public void NodesBlankNodeEquality()
         {
             try
@@ -478,7 +478,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesLiteralNodeEquality()
         {
             try
@@ -574,7 +574,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesSorting()
         {
             //Stream for Output
@@ -667,7 +667,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesSortingSparqlOrder()
         {
             SparqlOrderingComparer comparer = new SparqlOrderingComparer();
@@ -752,7 +752,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NodesNullNodeEquality()
         {
             UriNode nullUri = null;
@@ -807,7 +807,7 @@ namespace VDS.RDF
             Assert.IsFalse(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphMerging()
         {
             try
@@ -818,8 +818,8 @@ namespace VDS.RDF
                 Graph h = new Graph();
                 Assert.IsNotNull(g);
                 Assert.IsNotNull(h);
-                ttlparser.Load(g, "MergePart1.ttl");
-                ttlparser.Load(h, "MergePart2.ttl");
+                ttlparser.Load(g, "resources\\MergePart1.ttl");
+                ttlparser.Load(h, "resources\\MergePart2.ttl");
 
                 Console.WriteLine("Merge Test Data Loaded OK");
                 Console.WriteLine();
@@ -857,7 +857,7 @@ namespace VDS.RDF
 
                 //Need to reload g from disk
                 g = new Graph();
-                ttlparser.Load(g, "MergePart1.ttl");
+                ttlparser.Load(g, "resources\\MergePart1.ttl");
 
                 //Do the actual merge
                 i.Merge(g);
@@ -877,7 +877,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphTripleCreation()
         {
             //Create two Graphs
@@ -926,31 +926,31 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
-        public void UriEncoding()
+#if PORTABLE
+        [TestCase("The following String needs URL Encoding <node>Test</node> 100% not a percent encode", "The%20following%20String%20needs%20URL%20Encoding%20%3Cnode%3ETest%3C%2Fnode%3E%20100%25%20not%20a%20percent%20encode")]
+        [TestCase("This string contains UTF-8 納豆 characters", "This%20string%20contains%20UTF-8%20%E7%B4%8D%E8%B1%86%20characters")]
+        [TestCase("This string contains UTF-8 ç´è± characters", "This%20string%20contains%20UTF-8%20%C3%A7%C2%B4%C2%8D%C3%A8%C2%B1%C2%86%20characters")]
+        [TestCase("This string has safe characters -._~", "This%20string%20has%20safe%20characters%20-._~")]
+        public void UriEncoding(string test, string expectedEncoded)
         {
-            List<String> tests = new List<string>()
-            {
-                "The following String needs URL Encoding <node>Test</node> 100% not a percent encode",
-                "This string contains UTF-8 納豆 characters",
-                "This string contains UTF-8 ç´è± characters"
-            };
+            string encoded = HttpUtility.UrlEncode(test);
+            string encodedTwice = HttpUtility.UrlEncode(encoded); 
+            string decoded = HttpUtility.UrlDecode(encoded);
+            string decodedTwice = HttpUtility.UrlDecode(decoded);
 
-            foreach (String test in tests)
-            {
-                Console.WriteLine(test);
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(test));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
-            }
+            Console.WriteLine("Encoded once:  {0}", encoded);
+            Console.WriteLine("Encoded twice: {0}", encodedTwice);
+            Console.WriteLine("Decoded once:  {0}", decoded);
+            Console.WriteLine("Decoded twice: {0}", decodedTwice);
+
+            Assert.That(encoded, Is.EqualTo(expectedEncoded));
+            Assert.That(encodedTwice, Is.EqualTo(expectedEncoded));
+            Assert.That(decoded, Is.EqualTo(test));
+            Assert.That(decodedTwice, Is.EqualTo(test));
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void UriPathAndQuery()
         {
             Uri u = new Uri("http://example.org/some/path/with?query=some&param=values");
@@ -964,7 +964,7 @@ namespace VDS.RDF
             Assert.AreEqual(pathAndQuery, absPathPlusQuery);
         }
 
-        [TestMethod]
+        [Test]
         public void UriQuery()
         {
             Uri withQuery = new Uri("http://example.org/with?some=query");
@@ -974,7 +974,7 @@ namespace VDS.RDF
             Assert.AreEqual(String.Empty, withoutQuery.Query);
         }
 
-        //[TestMethod]
+        //[Test]
         //public void UriTrailingDot()
         //{
         //    Uri u = new Uri("http://example.org/path.");

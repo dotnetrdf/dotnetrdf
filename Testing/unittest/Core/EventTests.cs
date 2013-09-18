@@ -27,16 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class EventTests
     {
         private bool _graphAdded, _graphRemoved, _graphChanged;
 
-        [TestMethod]
+        [Test]
         public void GraphEventBubbling()
         {
             try

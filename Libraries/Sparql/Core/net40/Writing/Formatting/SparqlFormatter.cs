@@ -53,31 +53,22 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Creates a new SPARQL Formatter
         /// </summary>
-        public SparqlFormatter() 
-            : base("SPARQL", new QNameOutputMapper())
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
-        }
+        public SparqlFormatter()
+            : base("SPARQL", new QNameOutputMapper()) { }
 
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
         public SparqlFormatter(IGraph g)
-            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap))
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
-        }
+            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Namespace Map
         /// </summary>
         /// <param name="nsmap">Namespace Map</param>
         public SparqlFormatter(INamespaceMapper nsmap)
-            : base("SPARQL", new QNameOutputMapper(nsmap)) 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
-        }
+            : base("SPARQL", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
         /// Determines whether a QName is valid

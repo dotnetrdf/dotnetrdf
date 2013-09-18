@@ -48,6 +48,8 @@ namespace VDS.RDF.Storage
         private bool _ready = false;
         private String _filename;
 
+#if !PORTABLE
+
         /// <summary>
         /// Creates a new Dataset File Manager
         /// </summary>
@@ -71,18 +73,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the Source File this manager represents a read-only view of
-        /// </summary>
-        [Description("The Source File from which the dataset originates")]
-        public String SourceFile
-        {
-            get
-            {
-                return this._filename;
-            }
-        }
-
-        /// <summary>
         /// Internal helper method for loading the data
         /// </summary>
         /// <param name="filename">File to load from</param>
@@ -101,6 +91,35 @@ namespace VDS.RDF.Storage
             }
         }
 
+#else
+        private delegate void AsyncLoadCaller(TextReader streamReader, IStoreReader reader);
+
+        private readonly AsyncLoadCaller _loadDelegate;
+        public DatasetFileManager()
+        {
+            _loadDelegate = new AsyncLoadCaller(Initialise);    
+        }
+        
+
+        public IAsyncResult BeginLoad(String sourceFileName, TextReader sourceReader, AsyncCallback callback, object state)
+        {
+            _filename = sourceFileName;
+            IStoreReader reader = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(sourceFileName));
+            return _loadDelegate.BeginInvoke(sourceReader, reader, callback, state);
+        }
+
+        public void EndLoad(IAsyncResult result)
+        {
+            _loadDelegate.EndInvoke(result);
+        }
+
+        private void Initialise(TextReader streamReader, IStoreReader storeReader)
+        {
+            storeReader.Load(_store, streamReader);
+        }
+#endif
+
+        
         /// <summary>
         /// Makes a query against the in-memory copy of the Stores data
         /// </summary>
@@ -318,11 +337,15 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Disposes of the Manager
+        /// Gets the Source File this manager represents a read-only view of
         /// </summary>
-        public override void Dispose()
+        [Description("The Source File from which the dataset originates")]
+        public String SourceFile
         {
-            this._store.Dispose();
+            get
+            {
+                return this._filename;
+            }
         }
 
         /// <summary>
@@ -332,6 +355,15 @@ namespace VDS.RDF.Storage
         public override string ToString()
         {
             return "[Dataset File] " + this._filename;
+        }
+
+
+        /// <summary>
+        /// Disposes of the Manager
+        /// </summary>
+        public override void Dispose()
+        {
+            this._store.Dispose();
         }
 
         /// <summary>

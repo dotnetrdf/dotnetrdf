@@ -111,11 +111,19 @@ namespace VDS.RDF.Nodes
         /// Throws an error as numerics cannot be converted to date times
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
         {
             throw new NodeValueException("Numeric Types cannot be converted into Date Times");
         }
 
+        /// <summary>
+        /// Throws an error as numerics cannot be converted to date times
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
+        }
 
         /// <summary>
         /// Throws an error as numerics cannot be cast to a time span

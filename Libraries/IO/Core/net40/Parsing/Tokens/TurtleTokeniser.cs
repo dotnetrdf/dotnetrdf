@@ -153,6 +153,7 @@ namespace VDS.RDF.Parsing.Tokens
                 bool quotemarksallowed = true;
                 bool altquotemarksallowed = true;
                 bool longliteral = false;
+                bool altlongliteral = false;
 
                 try
                 {
@@ -193,7 +194,7 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                         }
 
-                        if (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next))
+                        if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next) || UnicodeSpecsHelper.IsHighSurrogate(next) || UnicodeSpecsHelper.IsLowSurrogate(next))
                         {
                             //Alphanumeric Character Handling
                             if (anycharallowed || !quotemarksallowed)
@@ -205,6 +206,11 @@ namespace VDS.RDF.Parsing.Tokens
                                 //Have to assume start of a QName
                                 return this.TryGetQNameToken();                                
                             }
+                        }
+                        else if (Char.IsDigit(next) && !anycharallowed)
+                        {
+                            //Must be a plain literal
+                            return this.TryGetNumericLiteralToken();
                         }
                         else
                         {
@@ -295,21 +301,12 @@ namespace VDS.RDF.Parsing.Tokens
                                     {
                                         this.ConsumeCharacter();
 
-                                        //Watch our for plain literals
+                                        //Watch out for plain literals
                                         if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
                                         {
-                                            IToken temp = this.TryGetQNameToken();
-                                            if (temp is PlainLiteralToken)
-                                            {
-                                                this.LastTokenType = Token.PLAINLITERAL;
-                                                return temp;
-                                            }
-                                            else
-                                            {
-                                                throw UnexpectedToken("Plain Literal", temp);
-                                            }
-                                        } 
-                                        else 
+                                            return this.TryGetNumericLiteralToken();
+                                        }
+                                        else
                                         {
                                             //This should be the end of a directive
                                             this.LastTokenType = Token.DOT;
@@ -440,7 +437,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             whitespaceallowed = true;
                                             altquotemarksallowed = false;
                                         }
-                                        else if (altquotemarksallowed && longliteral)
+                                        else if (altquotemarksallowed && altlongliteral)
                                         {
                                             //Could be the end of a Long Literal
 
@@ -496,7 +493,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                     //Turn on Support for Long Literal reading
                                                     newlineallowed = true;
                                                     altquotemarksallowed = true;
-                                                    longliteral = true;
+                                                    altlongliteral = true;
                                                 }
                                                 else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                                 {
@@ -652,31 +649,15 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '-':
                                     if (!anycharallowed)
                                     {
-                                        //Should only occur at Start of a Negative Plain Literal
-                                        IToken temp = this.TryGetQNameToken();
-                                        if (temp is PlainLiteralToken)
-                                        {
-                                            return temp;
-                                        }
-                                        else
-                                        {
-                                            throw UnexpectedToken(" when a Plain Literal of a Negative Number was expected", temp);
-                                        }
+                                        this.ConsumeCharacter();
+                                        return this.TryGetNumericLiteralToken();
                                     }
                                     break;
                                 case '+':
                                     if (!anycharallowed)
                                     {
-                                        //Should only occur at Start of a Positive Plain Literal
-                                        IToken temp = this.TryGetQNameToken();
-                                        if (temp is PlainLiteralToken)
-                                        {
-                                            return temp;
-                                        }
-                                        else
-                                        {
-                                            throw UnexpectedToken(" when a Plain Literal of a Positive Number was expected", temp);
-                                        }
+                                        this.ConsumeCharacter();
+                                        return this.TryGetNumericLiteralToken();
                                     }
                                     break;
 
@@ -695,7 +676,15 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                            switch (this._syntax)
+                                            {
+                                                case TurtleSyntax.Original:
+                                                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                                                    break;
+                                                default:
+                                                    this.HandleEscapes(TokeniserEscapeMode.Uri);
+                                                    break;
+                                            }
                                         }
                                         continue;
                                     }
@@ -750,6 +739,10 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 case ' ':
                                 case '\t':
+                                    if (this._syntax != TurtleSyntax.Original && next == ' ' && !rightangleallowed)
+                                    {
+                                        throw Error("Illegal white space in URI");
+                                    }
                                     if (anycharallowed || whitespaceallowed)
                                     {
                                         //We're allowing anything/whitespace so continue
@@ -815,6 +808,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         this.ConsumeCharacter();
 
                                         //Produce the Token
+                                        if (Options.ValidateIris && this._syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(this.Value.Substring(1, this.Length - 2))) throw Error("Illegal IRI " + this.Value + " encountered");
                                         return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
                                     }
                                     else if (!anycharallowed)
@@ -903,11 +897,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case -1:
                         //Not sure which directive we might see yet
-                        if (next == 'b' || next == 'B')
+                        if (next == 'b')
                         {
                             directiveExpected = 2;
                         }
-                        else if (next == 'p' || next == 'P')
+                        else if (next == 'p')
                         {
                             directiveExpected = 1;
                         }
@@ -930,7 +924,11 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
+#if PORTABLE
+                        if (this.Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+#else
                         if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
+#endif
                         {
                             //Got a Prefix Directive
                             this.LastTokenType = Token.PREFIXDIRECTIVE;
@@ -947,7 +945,11 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
+#if PORTABLE
+                        if (this.Value.Equals("base", StringComparison.OrdinalIgnoreCase))
+#else                        
                         if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+#endif
                         {
                             //Got a Base Directive
                             this.LastTokenType = Token.BASEDIRECTIVE;
@@ -999,7 +1001,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
             }
-            if (!TurtleSpecsHelper.IsValidQName(this.Value))
+            if (!TurtleSpecsHelper.IsValidPrefix(this.Value, this._syntax))
             {
                 throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in Turtle", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
             }
@@ -1018,46 +1020,36 @@ namespace VDS.RDF.Parsing.Tokens
         {
             char next = this.Peek();
             bool colonoccurred = false;
-            bool dotoccurred = false;
             StringComparison comparison = (this._syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
-            if (this.Length == 1 && this.Value[0] == '.')
-            {
-                dotoccurred = true;
-            }
-            else
-            {
-                this.StartNewToken();
-            }
+            this.StartNewToken();
 
             //Grab all the Characters in the QName
-            while (next == ':' || Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == '+' || (next == '.' && !colonoccurred) || (next == '\\' && this._syntax == TurtleSyntax.W3C))
+            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || this._syntax == TurtleSyntax.W3C))
             {
-                //Can't have more than one Colon in a QName
+                //Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)
                 {
                     colonoccurred = true;
                 }
-                else if (next == ':') 
+                else if (next == ':' && this._syntax == TurtleSyntax.Original) 
                 {
                     throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + this.Value + "\nQNames can only contain 1 Colon character");
                 }
 
-                //Can't have more than one Dot in a QName unless we're using W3C Syntax
-                if (next == '.' && (!dotoccurred || this._syntax == TurtleSyntax.W3C))
-                {
-                    if (this.Value.Equals("true", comparison) || this.Value.Equals("false", comparison)) break;
-                    dotoccurred = true;
-                }
-                else if (next == '.')
-                {
-                    throw Error("Unexpected additional Dot Character while trying to parse a Plain Literal from content:\n" + this.Value + "\nPlain Literals can only contain 1 Dot Character, ensure you use White Space after a Plain Literal which contains a dot to avoid ambiguity");
-                }
-
-                //A Backslash allow for unicode escapes in QNames
+                //A Backslash allow for unicode escapes in QNames or reserved name escapes in local names
                 if (next == '\\')
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    if (colonoccurred)
+                    {
+                        //If we are in local name portion complex escapes apply
+                        this.HandleComplexLocalNameEscapes();
+                    }
+                    else
+                    {
+                        //Prior to first colon only standard escapes apply
+                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                    }
                     //If escape is handled characters have already been consumed so must continue to avoid double consumption
                     next = this.Peek();
                     continue;
@@ -1065,12 +1057,13 @@ namespace VDS.RDF.Parsing.Tokens
 
                 this.ConsumeCharacter();
                 next = this.Peek();
+                if (this._in.EndOfStream) break;
             }
 
             //If it ends in a trailing . then we need to backtrack
             if (this.Value.EndsWith(".")) this.Backtrack();
 
-            if (colonoccurred && (!dotoccurred || this._syntax == TurtleSyntax.W3C))
+            if (colonoccurred)
             {
                 //A QName must contain a Colon at some point
                 String qname = this.Value;
@@ -1102,31 +1095,9 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else
                 {
-                    if (qname.Length > 1)
+                    if (!TurtleSpecsHelper.IsValidQName(qname, this._syntax))
                     {
-                        //Check Illegal use of - or a Digit to start a Local Name
-                        String[] localname = qname.Split(':');
-                        if (localname[1].Length >= 1)
-                        {
-                            if (localname[1].StartsWith("-"))
-                            {
-                                throw Error("The - Character cannot be used as the start of a Local Name within a QName");
-                            }
-                            //Check for Illegal use of a Digit to start a Local Name
-                            char[] lnamechar = localname[1].Substring(0, 1).ToCharArray();
-                            if (Char.IsDigit(lnamechar[0]) && this._syntax == TurtleSyntax.Original)
-                            {
-                                throw Error("A Local Name within a QName may not start with a Number");
-                            }
-                        }
-
-                    }
-
-                    //QNames can't start with a Digit
-                    char[] firstchar = qname.Substring(0, 1).ToCharArray();
-                    if (Char.IsDigit(firstchar[0]))
-                    {
-                        throw Error("A QName may not start with a Number");
+                        throw Error("The QName " + qname + " is not valid in Turtle");
                     }
 
                     //Normal QName
@@ -1176,6 +1147,84 @@ namespace VDS.RDF.Parsing.Tokens
                     this.LastTokenType = Token.PLAINLITERAL;
                     return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
                 }
+            }
+        }
+
+        private IToken TryGetNumericLiteralToken()
+        {
+            bool dotoccurred = false;
+            bool signoccurred = false;
+            bool expoccurred = false;
+
+            if (this.Length == 1)
+            {
+                switch (this.Value[0])
+                {
+                    case '.':
+                        dotoccurred = true;
+                        break;
+                    case '+':
+                        signoccurred = true;
+                        break;
+                    case '-':
+                        signoccurred = true;
+                        break;
+                    default:
+                        throw Error("Unexpected state while trying to parse a plain literal");
+                }
+            }
+            else
+            {
+                this.StartNewToken();
+            }
+
+            //Find acceptable characters
+            char next = this.Peek();
+            bool exit = false;
+            while (Char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
+            {
+                switch (next)
+                {
+                    case '.':
+                        //If we've already seen a dot and we see another assume that it is the subsequent triple terminator and not part of the literal
+                        if (dotoccurred) exit = true;
+                        dotoccurred = true;
+                        break;
+                    case '+':
+                    case '-':
+                        //Seeing another sign is illegal if one has already been seen
+                        if (signoccurred) throw Error("Unexpected additional sign (" + next + ") character while trying to parse a signed numeric literal");
+                        if (this.Length != 0 && !expoccurred) throw Error("Unexpected sign (" + next + ") character while trying to parse a numeric literal, sign may only occur at the start of the literal or immediately after an exponent");
+                        if (expoccurred && this.Value[this.Length - 1] != 'e' && this.Value[this.Length - 1] != 'E') throw Error("Unexpected sign (" + next + ") character, sign may only occur at the start of the literal or immediatedly after an exponent");
+                        signoccurred = true;
+                        break;
+                    case 'e':
+                    case 'E':
+                        //Seeing another sign is illegal if one has already been seen
+                        if (expoccurred) throw Error("Unexpected additional exponent character while trying to parse a numeric literal");
+                        expoccurred = true;
+                        signoccurred = false; //We need to allow sign characters after an exponent
+                        break;
+                }
+
+                if (exit) break;
+
+                this.ConsumeCharacter();
+                next = this.Peek();
+                if (this._in.EndOfStream) break;
+            }
+
+            //Backtrack if we get a trailing .
+            if (this.Value.EndsWith(".")) this.Backtrack();
+            
+            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value, this._syntax))
+            {
+                this.LastTokenType = Token.PLAINLITERAL;
+                return new PlainLiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+            }
+            else
+            {
+                throw Error("The numeric literal " + this.Value + " is not valid in Turtle");
             }
         }
 

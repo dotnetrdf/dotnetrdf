@@ -1131,7 +1131,7 @@ namespace VDS.RDF.Storage
             {
                 //Wrap in a SPARQL Update Exception
                 this.Close(true, true);
-                throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso primarily supports SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands are not yet supported by Virtuoso.", ex);
+                throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso if you are not using a recent version.", ex);
             }
         }
 

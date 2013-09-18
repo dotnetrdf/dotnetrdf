@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public static class ParserHelper
     {
-                /// <summary>
+        /// <summary>
         /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
         /// </summary>
         /// <param name="context">Parser Context</param>
@@ -58,14 +58,31 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
         {
+            return TryResolveUri(context, t, allowDefaultPrefixFallback, s => s);
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="t">Token to resolve</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI</param>
+        /// <param name="qnameUnescape">QName unescaping function</param>
+        /// <returns></returns>
+        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<String, String> qnameUnescape)
+        {
             switch (t.TokenType)
             {
                 case Token.QNAME:
                     try
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri, allowDefaultPrefixFallback)));
+                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(qnameUnescape(t.Value), context.Namespaces, context.BaseUri, allowDefaultPrefixFallback)));
                     }
+#if PORTABLE
+                    catch(FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -80,7 +97,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -109,7 +130,11 @@ namespace VDS.RDF.Parsing
                     {
                         return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -124,7 +149,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -160,7 +189,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
                         return handler.CreateUriNode(UriFactory.Create(uri));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -184,7 +217,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -220,7 +257,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
                         return handler.CreateUriNode(UriFactory.Create(uri));
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -249,7 +290,11 @@ namespace VDS.RDF.Parsing
                     {
                         return g.CreateUriNode(t.Value);
                     }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
@@ -264,7 +309,11 @@ namespace VDS.RDF.Parsing
                         String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
                         return g.CreateUriNode(UriFactory.Create(uri));
                      }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
                     catch (UriFormatException formatEx)
+#endif
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }

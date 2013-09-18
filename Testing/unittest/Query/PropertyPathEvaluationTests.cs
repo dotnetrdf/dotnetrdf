@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -35,10 +35,11 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class PropertyPathEvaluationTests
     {
         private NodeFactory _factory = new NodeFactory();
@@ -111,12 +112,13 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLength()
         {
             EnsureTestData();
 
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            FixedCardinality path =
+                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
@@ -126,12 +128,13 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermEnd()
         {
             EnsureTestData();
 
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            FixedCardinality path =
+                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
             INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, null, rdfsClass);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
@@ -144,13 +147,16 @@ namespace VDS.RDF.Query
             Assert.AreEqual(rdfsClass, results[1]["x"], "Expected 1 Result set to rdfs:Class");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithTermStart()
         {
             EnsureTestData();
 
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path, new Graph().CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
+            FixedCardinality path =
+                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            ISparqlAlgebra algebra = this.GetAlgebra(path,
+                                                     new Graph().CreateUriNode(
+                                                         UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
@@ -159,13 +165,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroLengthWithBothTerms()
         {
             EnsureTestData();
 
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path, new Graph().CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
+            FixedCardinality path =
+                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            ISparqlAlgebra algebra = this.GetAlgebra(path,
+                                                     new Graph().CreateUriNode(
+                                                         UriFactory.Create(ConfigurationLoader.ClassHttpHandler)),
+                                                     this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
@@ -175,12 +185,15 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results is NullMultiset, "Results should be Null");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationNegatedPropertySet()
         {
             EnsureTestData();
 
-            NegatedSet path = new NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            NegatedSet path =
+                new NegatedSet(
+                    new Property[] {new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
+                    Enumerable.Empty<Property>());
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
@@ -190,12 +203,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationInverseNegatedPropertySet()
         {
             EnsureTestData();
 
-            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
+            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(),
+                                             new Property[]
+                                                 {
+                                                     new Property(
+                                                 this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
+                                                 });
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
@@ -205,33 +223,35 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationSequencedAlternatives()
         {
             EnsureTestData();
 
             INode a = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode b = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-            SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(b)), new AlternativePath(new Property(a), new Property(a)));
+            SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
+                                                 new AlternativePath(new Property(a), new Property(a)));
             ISparqlAlgebra algebra = this.GetAlgebraUntransformed(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");            
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePath()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            OneOrMore path =
+                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
 
@@ -240,16 +260,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePathForward()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            OneOrMore path =
+                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
@@ -259,16 +280,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationOneOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            OneOrMore path =
+                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
@@ -278,16 +300,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePath()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
-            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            ZeroOrMore path =
+                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
 
@@ -296,16 +319,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePathForward()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
-            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            ZeroOrMore path =
+                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
@@ -315,16 +339,17 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationZeroOrMorePathReverse()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
-            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            ZeroOrMore path =
+                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
             BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
@@ -334,7 +359,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationGraphInteraction()
         {
             String query = @"PREFIX ex: <http://www.example.org/schema#>
@@ -348,7 +373,8 @@ WHERE
   GRAPH ?g { in:a ex:p1 / ex:p2 ?x . }
 }";
 
-            String data = @"<http://www.example.org/instance#a> <http://www.example.org/schema#p1> <http://www.example.org/instance#b> <http://example/1> .
+            String data =
+                @"<http://www.example.org/instance#a> <http://www.example.org/schema#p1> <http://www.example.org/instance#b> <http://example/1> .
 <http://www.example.org/instance#b> <http://www.example.org/schema#p2> <http://www.example.org/instance#c> <http://example/2> .";
 
             TripleStore store = new TripleStore();
@@ -360,15 +386,15 @@ WHERE
             Assert.AreEqual(0, results.Results.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("schema-org.ttl");
+            g.LoadFromFile("resources\\schema-org.ttl");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("schema-org.rq");
-            SparqlQuery qDistinct = parser.ParseFromFile("schema-org.rq");
+            SparqlQuery q = parser.ParseFromFile("resources\\schema-org.rq");
+            SparqlQuery qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
             qDistinct.QueryType = SparqlQueryType.SelectDistinct;
 
             InMemoryDataset dataset = new InMemoryDataset(g);
@@ -382,6 +408,107 @@ WHERE
             Assert.IsFalse(resultsDistinct.IsEmpty);
 
             Assert.AreEqual(resultsDistinct.Count, results.Count);
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore349RigorousEvaluation()
+        {
+            try
+            {
+                Options.RigorousEvaluation = true;
+
+                //Test case from CORE-349
+                Graph g = new Graph();
+                g.LoadFromFile(@"resources\core-349.ttl");
+                InMemoryDataset dataset = new InMemoryDataset(g);
+
+                String query = @"SELECT * WHERE 
+{ 
+  ?subject <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://example.org/unnamed#Level1_1> . 
+?subject a ?type . } ";
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+
+                Console.WriteLine();
+                TestTools.ShowResults(results);
+
+                Assert.AreEqual(2, results.Count);
+            }
+            finally
+            {
+                Options.RigorousEvaluation = false;
+            }
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore349NonRigorousEvaluation()
+        {
+            try
+            {
+                Options.RigorousEvaluation = false;
+
+                //Test case from CORE-349
+                Graph g = new Graph();
+                g.LoadFromFile(@"resources\core-349.ttl");
+                InMemoryDataset dataset = new InMemoryDataset(g);
+
+                String query = @"SELECT * WHERE 
+{ 
+  ?subject <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://example.org/unnamed#Level1_1> . 
+?subject a ?type . } ";
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+
+                Console.WriteLine();
+                TestTools.ShowResults(results);
+
+                Assert.AreEqual(2, results.Count);
+            }
+            finally
+            {
+                Options.RigorousEvaluation = false;
+            }
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationNonRigorous()
+        {
+            try
+            {
+                Graph g = new Graph();
+                g.LoadFromFile(@"resources\InferenceTest.ttl");
+                InMemoryDataset dataset = new InMemoryDataset(g);
+
+                String query = "SELECT * WHERE { ?subClass <http://www.w3.org/2000/01/rdf-schema#subClassOf>* ?class }";
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+                Console.WriteLine(new SparqlFormatter().Format(q));
+                Console.WriteLine(q.ToAlgebra().ToString());
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+
+                Console.WriteLine();
+                TestTools.ShowResults(results);
+
+                Assert.AreEqual(73, results.Count);
+            }
+            finally
+            {
+                Options.RigorousEvaluation = false;
+            }
         }
     }
 }

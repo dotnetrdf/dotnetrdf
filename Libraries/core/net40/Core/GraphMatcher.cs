@@ -468,8 +468,8 @@ namespace VDS.RDF
                     if (possibles.Count == 1)
                     {
                         //Precisely one possible match so map
-                        INode x = t.Subject;
-                        INode y = possibles.First().Subject;
+                        INode x = t.Object;
+                        INode y = possibles.First().Object;
                         this._mapping.Add(x, y);
                         this._bound.Add(y);
                         this._unbound.Remove(y);
@@ -540,7 +540,7 @@ namespace VDS.RDF
                 Debug.WriteLine("[NOT EQUAL] Graphs contain different number of independent blank nodes");
                 return false;
             }
-            Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " indepdent blank nodes, attempting mapping");
+            Debug.WriteLine("Graphs contain " + sourceIndependents.Count + " independent blank nodes, attempting mapping");
 
             //Try to map the independent nodes
             foreach (INode x in sourceIndependents)
@@ -743,8 +743,8 @@ namespace VDS.RDF
         /// <param name="h">2nd Graph</param>
         /// <param name="gNodes">1st Graph Node classification</param>
         /// <param name="hNodes">2nd Graph Node classification</param>
-        /// <param name="gDegrees">1st Graph Degree classification</param>
-        /// <param name="hDegrees">2nd Graph Degree classification</param>
+        /// <param name="sourceDependencies">Dependencies in the 1st Graph</param>
+        /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
         /// <returns></returns>
         private bool TryDivideAndConquerMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
         {
@@ -811,22 +811,30 @@ namespace VDS.RDF
                     List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
                     List<IGraph> partialMappingSources = new List<IGraph>();
                     Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Count + " triples...");
+#if !SILVERLIGHT
                     Debug.Indent();
+#endif
                     int i = 1;
                     foreach (IGraph rhs in possibles)
                     {
                         Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
+#if !SILVERLIGHT
                         Debug.Indent();
+#endif
                         Dictionary<INode, INode> partialMapping;
                         if (lhs.Equals(rhs, out partialMapping))
                         {
                             partialMappings.Add(partialMapping);
                             partialMappingSources.Add(rhs);
                         }
+#if !SILVERLIGHT
                         Debug.Unindent();
+#endif
                         i++;
                     }
+#if !SILVERLIGHT
                     Debug.Unindent();
+#endif
                     Debug.WriteLine("Dividing and conquering done");
 
                     //Did we find a possible mapping for the sub-graph?
@@ -939,6 +947,12 @@ namespace VDS.RDF
                         return false;
                     }
                 }
+            }
+
+            //This should never happen but handle it just in case
+            if (possibleMappings.Count == 0)
+            {
+                throw new RdfException("Unexpected error trying to brute force graph equality");
             }
 
             //Now start testing the possiblities

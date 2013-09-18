@@ -46,6 +46,7 @@ namespace VDS.RDF.Writing
     public class HtmlSchemaWriter
         : BaseHtmlWriter, IRdfWriter
     {
+#if !NO_FILE
         /// <summary>
         /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
         /// </summary>
@@ -56,7 +57,7 @@ namespace VDS.RDF.Writing
             StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(g, output);
         }
-
+#endif
         /// <summary>
         /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa
         /// </summary>

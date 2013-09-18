@@ -52,6 +52,7 @@ namespace VDS.RDF.Writing
             return settings;
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Store in TriX format
         /// </summary>
@@ -62,6 +63,7 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
+#endif
 
         /// <summary>
         /// Saves a Store in TriX format
@@ -93,6 +95,7 @@ namespace VDS.RDF.Writing
 
                 //Save the XML to disk
                 writer.WriteEndDocument();
+                writer.Flush();
                 writer.Close();
                 output.Close();
             }

@@ -27,21 +27,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class GraphDiffTests
     {
-        [TestMethod]
+        [Test]
         public void GraphDiffEqualGraphs()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             h = g;
 
             GraphDiffReport report = g.Difference(h);
@@ -50,13 +50,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffDifferentGraphs()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "Turtle.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\Turtle.ttl");
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
@@ -64,13 +64,13 @@ namespace VDS.RDF
             Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffEqualGraphs2()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\InferenceTest.ttl");
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
@@ -78,13 +78,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffRemovedGroundTriples()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Remove Triples about Ford Fiestas from 2nd Graph
             h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")).ToList());
@@ -96,13 +96,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedTriples.Any(), "Difference should have reported some Removed Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffAddedGroundTriples()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Add additional Triple to 2nd Graph
             IUriNode spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
@@ -117,13 +117,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedTriples.Any(), "Difference should have reported some Added Triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffAddedMSG()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Add additional Triple to 2nd Graph
             INode blank = h.CreateBlankNode();
@@ -138,13 +138,13 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedMSGs.Any(), "Difference should have reported some Added MSGs");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffRemovedMSG()
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            FileLoader.Load(h, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            h.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Remove MSG from 2nd Graph
             INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
@@ -158,7 +158,7 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedMSGs.Any(), "Difference should have reported some Removed MSGs");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceBoth()
         {
             GraphDiff diff = new GraphDiff();
@@ -170,11 +170,11 @@ namespace VDS.RDF
             Assert.IsFalse(report.AreDifferentSizes, "Graphs should have been reported same size for two null references");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceA()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             GraphDiff diff = new GraphDiff();
             GraphDiffReport report = diff.Difference(null, g);
@@ -185,11 +185,11 @@ namespace VDS.RDF
             Assert.IsTrue(report.AddedTriples.Any(), "Report should list added triples");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphDiffNullReferenceB()
         {
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             GraphDiffReport report = g.Difference(null);
             TestTools.ShowDifferences(report);
@@ -199,42 +199,42 @@ namespace VDS.RDF
             Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase1()
         {
             const string testGraphName = "case1";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase2()
         {
             const string testGraphName = "case2";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase3()
         {
             const string testGraphName = "case3";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase4()
         {
             const string testGraphName = "case4";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase5()
         {
             const string testGraphName = "case5";
             TestGraphDiff(testGraphName);
         }
 
-        [TestMethod, Timeout(10000)]
+        [Test, Timeout(10000)]
         public void GraphDiffSlowOnEqualGraphsCase6()
         {
             const string testGraphName = "case6";
@@ -244,9 +244,9 @@ namespace VDS.RDF
         private static void TestGraphDiff(string testGraphName)
         {
             Graph a = new Graph();
-            a.LoadFromFile(string.Format("diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
             Graph b = new Graph();
-            b.LoadFromFile(string.Format("diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             var diff = a.Difference(b);
 

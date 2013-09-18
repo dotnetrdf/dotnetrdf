@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ConsistencyService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
         /// <summary>
         /// Returns whether the Knowledge Base is consistent
         /// </summary>
@@ -55,23 +55,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
                     SparqlResultSet results = new SparqlResultSet();
                     parser.Load(results, new StreamReader(response.GetResponseStream()));
@@ -82,12 +72,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
@@ -98,37 +83,54 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void IsConsistent(PelletConsistencyCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                request.BeginGetResponse(result =>
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                        SparqlResultSet results = new SparqlResultSet();
-                        parser.Load(results, new StreamReader(response.GetResponseStream()));
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                                SparqlResultSet results = new SparqlResultSet();
+                                parser.Load(results, new StreamReader(response.GetResponseStream()));
 
-                        //Expect a boolean result set
-                        callback(results.Result, state);
-                    }
-                }, null);
+                                //Expect a boolean result set
+                                callback(results.Result, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(false, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(false, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(false, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(false, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }

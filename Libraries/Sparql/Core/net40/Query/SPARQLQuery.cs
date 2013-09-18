@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Describe;
@@ -119,9 +120,19 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Class for representing SPARQL Queries
+    /// Represents a SPARQL Query
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Note:</strong> This class is purposefully sealed and most setters are private/protected internal since generally you create a query by using the <see cref="SparqlQueryParser"/> to parse a query string/file.
+    /// </para>
+    /// <para>
+    /// To build a query programmatically you can use the <see cref="QueryBuilder"/> class to generate a new query and then various extension methods to modify that query using a fluent style API.  A query is not immutable
+    /// so if you use that API you are modifying the query, if you want to generate new queries by modifying an existing query consider using the <see cref="SparqlQuery.Copy()"/> method to take a copy of the existing query.
+    /// </para>
+    /// </remarks>
     public sealed class SparqlQuery
+        : NodeFactory
     {
         private Uri _baseUri = null;
         private List<Uri> _defaultGraphs;
@@ -169,6 +180,40 @@ namespace VDS.RDF.Query
             : this()
         {
             this._subquery = subquery;
+        }
+
+        /// <summary>
+        /// Creates a copy of the query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery Copy()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q._baseUri = this._baseUri;
+            q._defaultGraphs = new List<Uri>(this._defaultGraphs);
+            q._namedGraphs = new List<Uri>(this._namedGraphs);
+            q._nsmapper = new NamespaceMapper(this._nsmapper);
+            q._type = this._type;
+            q._specialType = this._specialType;
+            q._vars = new List<SparqlVariable>(this._vars);
+            q._describeVars = new List<IToken>(this._describeVars);
+            if(this._rootGraphPattern != null)
+                q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
+            q._orderBy = this._orderBy;
+            q._groupBy = this._groupBy;
+            q._having = this._having;
+            q._constructTemplate = this._constructTemplate;
+            q._bindings = this._bindings;
+            q._limit = this._limit;
+            q._offset = this._offset;
+            q._timeout = this._timeout;
+            q._partialResultsOnTimeout = this._partialResultsOnTimeout;
+            q._optimised = this._optimised;
+            q._describer = this._describer;
+            q._optimisers = new List<IAlgebraOptimiser>(this._optimisers);
+            q._exprFactories = new List<ISparqlCustomExpressionFactory>(this._exprFactories);
+            q._propFuncFactories = new List<IPropertyFunctionFactory>(this._propFuncFactories);
+            return q;
         }
 
         #region Properties
@@ -1142,13 +1187,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    //Apply Algebra Optimisation if enabled
-                    if (Options.AlgebraOptimisation)
-                    {
-                        algebra = this.ApplyAlgebraOptimisations(algebra);
-                    }
-                    
+                case SparqlQueryType.SelectReduced:                   
                     //GROUP BY is the first thing applied
                     //This applies if there is a GROUP BY or if there are aggregates
                     //With no GROUP BY it produces a single group of all results
@@ -1180,7 +1219,21 @@ namespace VDS.RDF.Query
                     //Select effectively trims the results so only result variables are left
                     //This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     //so we don't want to eliminate anything
-                    if (this._type != SparqlQueryType.Construct) algebra = new Select(algebra, this.Variables);
+                    if (this._type != SparqlQueryType.Construct)
+                    {
+                        switch (this._type)
+                        {
+                            case SparqlQueryType.Describe:
+                            case SparqlQueryType.Select:
+                            case SparqlQueryType.SelectDistinct:
+                            case SparqlQueryType.SelectReduced:
+                                algebra = new Select(algebra, false, this.Variables.Where(v => v.IsResultVariable));
+                                break;
+                            default:
+                                algebra = new Select(algebra, true, this.Variables);
+                                break;
+                        }
+                    }
 
                     //If we have a Distinct/Reduced then we'll apply those after Selection
                     if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
@@ -1196,6 +1249,12 @@ namespace VDS.RDF.Query
                     if (this._limit >= 0 || this._offset > 0)
                     {
                         algebra = new Slice(algebra, this._limit, this._offset);
+                    }
+
+                    //Apply Algebra Optimisation if enabled
+                    if (Options.AlgebraOptimisation)
+                    {
+                        algebra = this.ApplyAlgebraOptimisations(algebra);
                     }
 
                     return algebra;

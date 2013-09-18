@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -34,43 +35,15 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Specifications
+namespace VDS.RDF.Query
 {
-    /// <summary>
-    /// Available Query Syntaxes
-    /// </summary>
-    public enum SparqlQuerySyntax
-    {
-        /// <summary>
-        /// Use SPARQL 1.0
-        /// </summary>
-        Sparql_1_0,
-        /// <summary>
-        /// Use SPARQL 1.1
-        /// </summary>
-        Sparql_1_1,
-        /// <summary>
-        /// Use the latest SPARQL specification supported by the library (currently SPARQL 1.1) with some extensions
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Extensions include the following:
-        /// </para>
-        /// <ul>
-        /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
-        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
-        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
-        /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
-        /// </ul>
-        /// </remarks>
-        Extended
-    }
-
     /// <summary>
     /// Class containing Helper information and methods pertaining to the Sparql Query Language for RDF
     /// </summary>
     public static class SparqlSpecsHelper
     {
+        private static SparqlFormatter _formatter;
+
         #region Keywords and Constants
 
         /// <summary>
@@ -908,7 +881,7 @@ namespace VDS.RDF.Specifications
                     }
 
                     //Should never get here but have to add this to keep compiler happy
-                    throw new RdfException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
+                    throw new RdfParseException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
                 }
                 else
                 {
@@ -955,7 +928,7 @@ namespace VDS.RDF.Specifications
                     }
 
                     //Should never get here but have to add this to keep compiler happy
-                    throw new RdfException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
+                    throw new RdfParseException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
                 }
                 else
                 {
@@ -980,7 +953,7 @@ namespace VDS.RDF.Specifications
             endIndex = startIndex;
             if (cs[startIndex] == '%')
             {
-                if (startIndex > cs.Length - 2)
+                if (startIndex >= cs.Length - 2)
                 {
                     //If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
@@ -1017,7 +990,7 @@ namespace VDS.RDF.Specifications
                         case '~':
                         case '-':
                         case '.':
-                        case '|':
+                        case '!':
                         case '$':
                         case '&':
                         case '\'':
@@ -1081,7 +1054,7 @@ namespace VDS.RDF.Specifications
         }
 
         /// <summary>
-        /// Unescapes SPARQL 1.1 QNames
+        /// Unescapes local name escapes from QNames
         /// </summary>
         /// <param name="value">Value to unescape</param>
         /// <returns></returns>
@@ -1096,7 +1069,7 @@ namespace VDS.RDF.Specifications
                 {
                     if (cs[i] == '\\')
                     {
-                        if (i == cs.Length - 1) throw new RdfException("Invalid backslash to start an escape at the end of the Local Name, expecting a single character after the backslash");
+                        if (i == cs.Length - 1) throw new RdfParseException("Invalid backslash to start an escape at the end of the Local Name, expecting a single character after the backslash");
                         char esc = cs[i + 1];
                         switch (esc)
                         {
@@ -1104,7 +1077,7 @@ namespace VDS.RDF.Specifications
                             case '~':
                             case '-':
                             case '.':
-                            case '|':
+                            case '!':
                             case '$':
                             case '&':
                             case '\'':
@@ -1124,23 +1097,28 @@ namespace VDS.RDF.Specifications
                                 i++;
                                 break;
                             default:
-                                throw new RdfException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_~-.|$&\\()*+,;=/?#@%) of characters in a Local Name");
+                                throw new RdfParseException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_~-.|$&\\()*+,;=/?#@%) of characters in a Local Name");
                         }
                     }
                     else if (cs[i] == '%')
                     {
+                        //Remember that we are supposed to preserve precent encoded characters as-is
+                        //Simply need to validate that they are valid encoding
                         if (i > cs.Length - 2)
                         {
-                            throw new RdfException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
+                            throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
                         }
                         else
                         {
-#if !SILVERLIGHT
-                            output.Append(Uri.HexUnescape(value, ref i));
-#else
-                            output.Append(SilverlightExtensions.HexUnescape(value, ref i));
-#endif
-                            i--;
+                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
+                            {
+                                throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
+                            }
+                            else
+                            {
+                                output.Append(cs, i, 3);
+                                i += 2;
+                            }
                         }
                     }
                     else
@@ -1265,7 +1243,7 @@ namespace VDS.RDF.Specifications
             if (n == null)
             {
                 //Nulls give Type Error
-                throw new NodeValueException("Cannot calculate the Effective Boolean Value of a null value");
+                throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
             }
             else
             {
@@ -1329,7 +1307,7 @@ namespace VDS.RDF.Specifications
                                 case SparqlNumericType.Decimal:
                                     //Should be a decimal
                                     Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, out dec))
+                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                     {
                                         if (dec == Decimal.Zero)
                                         {
@@ -1352,7 +1330,7 @@ namespace VDS.RDF.Specifications
                                 case SparqlNumericType.Double:
                                     //Should be a double
                                     Double dbl;
-                                    if (Double.TryParse(lit.Value, out dbl))
+                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
                                         if (dbl == 0.0d || dbl == Double.NaN)
                                         {
@@ -1395,11 +1373,11 @@ namespace VDS.RDF.Specifications
 
                                 case SparqlNumericType.NaN:
                                     //If not a Numeric Type then Type error
-                                    throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
+                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
 
                                 default:
                                     //Shouldn't hit this case but included to keep compiler happy
-                                    throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
+                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
                             }
                         }
                     }
@@ -1407,8 +1385,29 @@ namespace VDS.RDF.Specifications
                 else
                 {
                     //Non-Literal Nodes give type error
-                    throw new NodeValueException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
+                    throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the Query is a SELECT Query
+        /// </summary>
+        /// <param name="type">Query Type</param>
+        /// <returns></returns>
+        public static bool IsSelectQuery(SparqlQueryType type)
+        {
+            switch (type)
+            {
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -1425,7 +1424,7 @@ namespace VDS.RDF.Specifications
             if (x == null || y == null)
             {
                 //Nulls can't be equal to each other
-                throw new RdfException("Cannot evaluate equality when one/both arguments are null");
+                throw new RdfQueryException("Cannot evaluate equality when one/both arguments are null");
             }
             else if (x.NodeType != y.NodeType)
             {
@@ -1458,7 +1457,7 @@ namespace VDS.RDF.Specifications
                     else
                     {
                         //If RDF Term equality returns false then we error
-                        throw new RdfException("Unable to determine equality since one/both arguments has an Unknown Type");
+                        throw new RdfQueryException("Unable to determine equality since one/both arguments has an Unknown Type");
                     }
                 }
                 else
@@ -1476,7 +1475,7 @@ namespace VDS.RDF.Specifications
                         {
                             return x.Equals(y);
                         }
-                        catch (RdfException)
+                        catch (RdfQueryException)
                         {
                             //If this errors try RDF Term equality since 
                             return x.Equals(y);
@@ -1538,7 +1537,7 @@ namespace VDS.RDF.Specifications
             if (x == null || y == null)
             {
                 //Nulls can't be equal to each other
-                throw new RdfException("Cannot evaluate inequality when one/both arguments are null");
+                throw new RdfQueryException("Cannot evaluate inequality when one/both arguments are null");
             }
             else if (x.NodeType != y.NodeType)
             {
@@ -1571,7 +1570,7 @@ namespace VDS.RDF.Specifications
                     else
                     {
                         //If RDF Term equality returns false then we error
-                        throw new RdfException("Unable to determine inequality since one/both arguments has an Unknown Type");
+                        throw new RdfQueryException("Unable to determine inequality since one/both arguments has an Unknown Type");
                     }
                 }
                 else
@@ -1598,7 +1597,7 @@ namespace VDS.RDF.Specifications
                             if (x.Equals(y)) return false;
                             return false;
                         }
-                        catch (RdfException)
+                        catch (RdfQueryException)
                         {
                             //If this errors try RDF Term equality since 
                             return !x.Equals(y);
@@ -1609,11 +1608,32 @@ namespace VDS.RDF.Specifications
                         switch (xtype)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return !DateEquality(x, y);
+                                try
+                                {
+                                    return !DateEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return !DateTimeEquality(x, y);
+                                try
+                                {
+                                    return !DateTimeEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
-                                return !TimeSpanEquality(x, y);
+                                try
+                                {
+                                    return !TimeSpanEquality(x, y);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    return true;
+                                }
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
                                 return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
@@ -1634,9 +1654,23 @@ namespace VDS.RDF.Specifications
                             switch (commontype)
                             {
                                 case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return !DateEquality(x, y);
+                                    try
+                                    {
+                                        return !DateEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return !DateTimeEquality(x, y);
+                                    try
+                                    {
+                                        return !DateTimeEquality(x, y);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        return true;
+                                    }
                                 default:
                                     return true;
                             }
@@ -1660,8 +1694,8 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         public static bool NumericEquality(INode x, INode y, SparqlNumericType type)
         {
-            if (x == null || y == null) throw new RdfException("Cannot evaluate numeric equality when one or both arguments are Null");
-            if (type == SparqlNumericType.NaN) throw new RdfException("Cannot evaluate numeric equality when the Numeric Type is NaN");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate numeric equality when one or both arguments are Null");
+            if (type == SparqlNumericType.NaN) throw new RdfQueryException("Cannot evaluate numeric equality when the Numeric Type is NaN");
 
             try
             {
@@ -1679,12 +1713,12 @@ namespace VDS.RDF.Specifications
                     case SparqlNumericType.Integer:
                         return ToInteger(a).Equals(ToInteger(b));
                     default:
-                        throw new RdfException("Cannot evaluate numeric equality since of the arguments is not numeric");
+                        throw new RdfQueryException("Cannot evaluate numeric equality since of the arguments is not numeric");
                 }
             }
             catch (FormatException)
             {
-                throw;// new RdfException("Cannot evaluate numeric equality since one of the arguments does not have a valid lexical value for the given type");
+                throw;// new RdfQueryException("Cannot evaluate numeric equality since one of the arguments does not have a valid lexical value for the given type");
             }
         }
 
@@ -1696,17 +1730,44 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         public static bool DateTimeEquality(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfException("Cannot evaluate date time equality when one or both arguments are Null");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                DateTime c = x.AsValuedNode().AsDateTime();
+                DateTime d = y.AsValuedNode().AsDateTime();
 
-                return ToDateTime(a).Equals(ToDateTime(b));
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        if (d.Kind != DateTimeKind.Unspecified)
+                        {
+                            // If non-equal kinds and either is unespecified kind then non-comparable
+                            throw new RdfQueryException("Dates are incomparable, one specifies time zone information while the other does not");
+                        }
+                        // Both unspecified so compare
+                        return c.Equals(d);
+                    case DateTimeKind.Local:
+                        // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
+                        // Adjust to UTC and compare
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Unspecified)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        goto default;
+                    default:
+                        // Covers UTC based comparison
+                        if (d.Kind == DateTimeKind.Unspecified)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+
+                        return c.Equals(d);
+                }
             }
             catch (FormatException)
             {
-                throw new RdfException("Cannot evaluate date time equality since one of the arguments does not have a valid lexical value for a Date Time");
+                throw new RdfQueryException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
             }
         }
 
@@ -1718,21 +1779,48 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         public static bool DateEquality(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfException("Cannot evaluate date equality when one or both arguments are Null");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                IValuedNode a = x.AsValuedNode();
+                IValuedNode b = y.AsValuedNode();
 
-                DateTimeOffset c = ToDateTimeOffset(a);
-                DateTimeOffset d = ToDateTimeOffset(b);
+                bool strictEquals = (a.EffectiveType != b.EffectiveType);
 
-                if (!c.Offset.Equals(d.Offset)) return false;
-                return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                DateTime c = a.AsDateTime();
+                DateTime d = b.AsDateTime();
+
+                switch (c.Kind)
+                {
+                    case DateTimeKind.Unspecified:
+                        if (d.Kind != DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // One/Both unspecified so just compare
+                        return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                    case DateTimeKind.Local:
+                        // This case should be impossible since AsValuedNode() normalizes DateTime to UTC but cover it for programmatic use
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
+                        c = c.ToUniversalTime();
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+                        goto default;
+                    default:
+                        // Covers UTC based comparison
+                        if (d.Kind == DateTimeKind.Unspecified && strictEquals)
+                            throw new RdfQueryException(
+                                "Dates are incomparable, one specifies time zone information while the other does not");
+                        // Adjust to UTC and compare
+                        if (d.Kind == DateTimeKind.Local) d = d.ToUniversalTime();
+
+                        return (c.Year == d.Year && c.Month == d.Month && c.Day == d.Day);
+                }
             }
             catch (FormatException)
             {
-                throw new RdfException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
+                throw new RdfQueryException("Cannot evaluate date equality since one of the arguments does not have a valid lexical value for a Date");
             }
         }
 
@@ -1744,7 +1832,7 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         public static bool TimeSpanEquality(INode x, INode y)
         {
-            if (x == null || y == null) throw new RdfException("Cannot evaluate time span equality when one or both arguments are Null");
+            if (x == null || y == null) throw new RdfQueryException("Cannot evaluate time span equality when one or both arguments are Null");
             try
             {
                 ILiteralNode a = (ILiteralNode)x;
@@ -1757,7 +1845,7 @@ namespace VDS.RDF.Specifications
             }
             catch (FormatException)
             {
-                throw new RdfException("Cannot evaluate time span equality since one of the arguments does not have a valid lexical value for a Time Span");
+                throw new RdfQueryException("Cannot evaluate time span equality since one of the arguments does not have a valid lexical value for a Time Span");
             }
         }
 
@@ -1766,9 +1854,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDecimal() instead")]
         public static Decimal ToDecimal(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Decimal");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
             return Decimal.Parse(n.Value);
         }
 
@@ -1777,9 +1866,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDouble() instead")]
         public static Double ToDouble(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Double");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
             return Double.Parse(n.Value);
         }
 
@@ -1788,9 +1878,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsFloat() instead")]
         public static Single ToFloat(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Float");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
             return Single.Parse(n.Value);
         }
 
@@ -1799,9 +1890,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsInteger() instead")]
         public static Int64 ToInteger(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to an Integer");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
             return Int64.Parse(n.Value);
         }
 
@@ -1810,9 +1902,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDateTime() instead")]
         public static DateTime ToDateTime(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Date Time");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
             return DateTime.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
         }
 
@@ -1821,9 +1914,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead")]
         public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Date Time");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
             return DateTimeOffset.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
         }
 
@@ -1832,10 +1926,27 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
+        [Obsolete("Use AsValuedNode().AsTimeSpan() instead")]
         public static TimeSpan ToTimeSpan(ILiteralNode n)
         {
-            if (n.DataType == null) throw new RdfException("Cannot convert an untyped Literal to a Time Span");
+            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
             return TimeSpan.Parse(n.Value);
+        }
+
+        #endregion
+
+        #region Query Formatting
+
+        /// <summary>
+        /// Gets a SPARQL Formatter to use in formatting Queries as Strings
+        /// </summary>
+        internal static SparqlFormatter Formatter
+        {
+            get
+            {
+                if (_formatter == null) _formatter = new SparqlFormatter();
+                return _formatter;
+            }
         }
 
         #endregion

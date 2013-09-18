@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
@@ -35,10 +35,10 @@ using VDS.RDF.Query.Operators.DateTime;
 
 namespace VDS.RDF.Configuration
 {
-    [TestClass]
+    [TestFixture]
     public class AutoConfigTests
     {
-        [TestMethod]
+        [Test]
         public void ConfigurationStaticOptionUri1()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UsePLinqEvaluation");
@@ -50,7 +50,7 @@ namespace VDS.RDF.Configuration
             Assert.AreEqual("UsePLinqEvaluation", optionUri.Fragment.Substring(1));
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationStaticOptionUri2()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options,SomeAssembly#UsePLinqEvaluation");
@@ -82,35 +82,35 @@ namespace VDS.RDF.Configuration
             ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
 
-        [TestMethod, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
         public void ConfigurationStaticOptionsNoFragment()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph");
             this.ApplyStaticOptionsConfigure(optionUri, "");
         }
 
-        [TestMethod, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
         public void ConfigurationStaticOptionsBadClass()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.NoSuchClass#Property");
             this.ApplyStaticOptionsConfigure(optionUri, "");
         }
 
-        [TestMethod, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
         public void ConfigurationStaticOptionsBadProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#NoSuchProperty");
             this.ApplyStaticOptionsConfigure(optionUri, "");
         }
 
-        [TestMethod, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
         public void ConfigurationStaticOptionsNonStaticProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#BaseUri");
             this.ApplyStaticOptionsConfigure(optionUri, "http://example.org");
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationStaticOptionsEnumProperty()
         {
             LiteralEqualityMode current = Options.LiteralEqualityMode;
@@ -129,7 +129,7 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationStaticOptionsInt32Property()
         {
             int current = Options.UriLoaderTimeout;
@@ -149,7 +149,7 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationStaticOptionsInt64Property()
         {
             long current = Options.QueryExecutionTimeout;
@@ -169,7 +169,8 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [TestMethod]
+#if NET40 && !SILVERLIGHT
+        [Test]
         public void ConfigurationStaticOptionsBooleanProperty()
         {
             bool current = Options.UsePLinqEvaluation;
@@ -188,8 +189,9 @@ namespace VDS.RDF.Configuration
                 Options.UsePLinqEvaluation = current;
             }
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void ConfigurationAutoOperators1()
         {
             try
@@ -215,7 +217,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ConfigurationAutoOperators2()
         {
             try

@@ -285,7 +285,7 @@ namespace VDS.RDF
             }
         }
 
-        public static void GetNodesForProcessing(Triple t, Queue<INode> nodes)
+        private static void GetNodesForProcessing(Triple t, Queue<INode> nodes)
         {
             if (t.Subject.NodeType == NodeType.Blank) nodes.Enqueue(t.Subject);
             if (t.Predicate.NodeType == NodeType.Blank) nodes.Enqueue(t.Predicate);

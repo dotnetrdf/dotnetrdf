@@ -28,12 +28,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage.Async
 {
-    [TestClass]
+    [TestFixture]
     public class DydraAsync
         : BaseAsyncTests
     {

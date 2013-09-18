@@ -12,11 +12,11 @@
 # necessary information required to test that feature
 
 # Remote SPARQL Query
-Sparql.Remote=true
+Sparql.Remote=false
 Sparql.Remote.Query=http://dbpedia.org/sparql
 
 # Local IIS and ASP.Net tests
-Web.IIS=true
+Web.IIS=false
 Web.Query=http://localhost:64132/demos/leviathan/
 Web.SparqlServer=http://localhost:64132/demos/server/
 Web.SparqlServer.Query=http://localhost:64132/demos/server/query

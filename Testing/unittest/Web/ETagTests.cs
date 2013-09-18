@@ -28,23 +28,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Web;
 
 namespace VDS.RDF.Web
 {
-    [TestClass]
+#if !NO_ASP
+    [TestFixture]
     public class ETagTests
     {
-        [TestMethod]
+        [Test]
         public void WebETagComputation()
         {
             try
             {
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
-
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
                 String etag = g.GetETag();
@@ -88,4 +88,5 @@ namespace VDS.RDF.Web
             }
         }
     }
+#endif
 }

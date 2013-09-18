@@ -31,6 +31,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Configuration
 {
@@ -49,6 +50,7 @@ namespace VDS.RDF.Configuration
                              InMemory = "VDS.RDF.Storage.InMemoryManager",
                              ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
                              ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
+                             ReadWriteSparql = "VDS.RDF.Storage.ReadWriteSparqlConnector",
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
                              SesameV5 = "VDS.RDF.Storage.SesameHttpProtocolVersion5Connector",
                              SesameV6 = "VDS.RDF.Storage.SesameHttpProtocolVersion6Connector",
@@ -72,13 +74,14 @@ namespace VDS.RDF.Configuration
 #if !NO_SYNC_HTTP
             IStorageProvider storageProvider = null;
             IStorageServer storageServer = null;
+            SparqlConnectorLoadMethod loadMode;
 #else
             IAsyncStorageProvider storageProvider = null;
             IAsyncStorageServer storageServer = null;
 #endif
             obj = null;
 
-            String server, user, pwd, store, catalog;
+            String server, user, pwd, store, catalog, loadModeRaw;
             bool isAsync;
 
             Object temp;
@@ -130,7 +133,7 @@ namespace VDS.RDF.Configuration
                         storageServer = new AllegroGraphServer(server, catalog);
                     }
                     break;
-
+#if !PORTABLE
                 case DatasetFile:
                     //Get the Filename and whether the loading should be done asynchronously
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
@@ -139,6 +142,7 @@ namespace VDS.RDF.Configuration
                     isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
+#endif
 
                 case Dydra:
                     //Get the Account Name and Store
@@ -293,11 +297,11 @@ namespace VDS.RDF.Configuration
 
                 case Sparql:
                     //Get the Endpoint URI or the Endpoint
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)));
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
 
                     //What's the load mode?
-                    String loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
-                    SparqlConnectorLoadMethod loadMode = SparqlConnectorLoadMethod.Construct;
+                    loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
+                    loadMode = SparqlConnectorLoadMethod.Construct;
                     if (loadModeRaw != null)
                     {
                         try
@@ -316,7 +320,7 @@ namespace VDS.RDF.Configuration
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
@@ -346,6 +350,91 @@ namespace VDS.RDF.Configuration
                             storageProvider = new SparqlConnector(UriFactory.Create(server), loadMode);
                         }                        
                     }
+                    break;
+
+                case ReadWriteSparql:
+                    SparqlRemoteEndpoint queryEndpoint;
+                    SparqlRemoteUpdateEndpoint updateEndpoint;
+
+                    //Get the Query Endpoint URI or the Endpoint
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+
+                    //What's the load mode?
+                    loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
+                    loadMode = SparqlConnectorLoadMethod.Construct;
+                    if (loadModeRaw != null)
+                    {
+                        try
+                        {
+#if SILVERLIGHT
+                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
+#else
+                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw);
+#endif
+                        }
+                        catch
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:loadMode is not valid");
+                        }
+                    }
+
+                    if (server == null)
+                    {
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
+                        if (endpointObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, endpointObj);
+                        if (temp is SparqlRemoteEndpoint)
+                        {
+                            queryEndpoint = (SparqlRemoteEndpoint)temp;
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:queryEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
+                        }
+                    }
+                    else
+                    {
+                        //Are there any Named/Default Graph URIs
+                        IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                                                     where def.NodeType == NodeType.Uri
+                                                     select ((IUriNode)def).Uri;
+                        IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                                                       where named.NodeType == NodeType.Uri
+                                                       select ((IUriNode)named).Uri;
+                        if (defGraphs.Any() || namedGraphs.Any())
+                        {
+                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs); ;
+                        }
+                        else
+                        {
+                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server));
+                        }
+                    }
+
+                    //Find the Update Endpoint or Endpoint URI
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+
+                    if (server == null)
+                    {
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
+                        if (endpointObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, endpointObj);
+                        if (temp is SparqlRemoteUpdateEndpoint)
+                        {
+                            updateEndpoint = (SparqlRemoteUpdateEndpoint)temp;
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:updateEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteUpdateEndpoint");
+                        }
+                    }
+                    else
+                    {
+                        updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(server));
+                    }
+
+                    storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint);
+
                     break;
 
 #endif
@@ -465,6 +554,7 @@ namespace VDS.RDF.Configuration
                 case ReadOnly:
                 case ReadOnlyQueryable:
                 case Sparql:
+                case ReadWriteSparql:
                 case SparqlHttpProtocol:
                 case Stardog:
                 case StardogServer:

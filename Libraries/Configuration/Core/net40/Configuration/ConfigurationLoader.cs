@@ -32,7 +32,9 @@ using System.Reflection;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
+#if !NO_SYSTEMCONFIGURATION
 using SysConfig = System.Configuration;
+#endif
 
 namespace VDS.RDF.Configuration
 {
@@ -42,7 +44,7 @@ namespace VDS.RDF.Configuration
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public class ConfigurationLoader
+    public class ConfigurationLoader : IConfigurationLoader
     {
         #region Constants
 
@@ -108,6 +110,10 @@ namespace VDS.RDF.Configuration
                             //Properties for Endpoints
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
+                            PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
+                            PropertyUpdateEndpointUri = ConfigurationNamespace + "updateEndpointUri",
+                            PropertyQueryEndpoint = ConfigurationNamespace + "queryEndpoint",
+                            PropertyUpdateEndpoint = ConfigurationNamespace + "updateEndpoint",
                             PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
                             PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
                             PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
@@ -170,6 +176,8 @@ namespace VDS.RDF.Configuration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
                             //Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
+                            ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
@@ -291,6 +299,7 @@ namespace VDS.RDF.Configuration
 
 #endif
 
+#if !NO_FILE
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -313,6 +322,22 @@ namespace VDS.RDF.Configuration
             FileLoader.Load(g, file);
             return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
+#else
+        public static IGraph LoadConfiguration(string filename, Uri baseUri, Stream inputStream)
+        {
+            return ConfigurationLoader.LoadConfiguration(filename, baseUri, inputStream, true);
+        }
+
+        public static IGraph LoadConfiguration(string filename, Uri  baseUri, Stream inputStream, bool autoConfigure)
+        {
+            Graph g = new Graph() {BaseUri = baseUri};
+            StreamLoader.Load(g, filename, inputStream);
+            return ConfigurationLoader.LoadCommon(g,
+                                                  new INode[]
+                                                      {g.CreateLiteralNode(filename), g.CreateLiteralNode(baseUri.ToSafeString())},
+                                                  autoConfigure);
+        }
+#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -390,6 +415,7 @@ namespace VDS.RDF.Configuration
                         }
                         break;
 #endif
+#if !NO_FILE
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -397,7 +423,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-
+#endif
                     default:
                         throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }
@@ -1468,6 +1494,7 @@ namespace VDS.RDF.Configuration
             _configGraph = configGraph;
         }
 
+#if !NO_FILE
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph and applies auto-configuration
@@ -1485,9 +1512,10 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
+#endif
 
+#if !NO_SYNC_HTTP
 
-#if !SILVERLIGHT
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph from file and applies auto-configuration
@@ -1515,13 +1543,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(string blankNodeIdentifier)
         {
-            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
-            if (blankNode == null)
-            {
-                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
-            }
-
-            return (T)LoadObject(_configGraph, blankNode);
+            return (T)LoadObject(blankNodeIdentifier);
         }
 
         /// <summary>
@@ -1532,13 +1554,41 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(Uri objectIdentifier)
         {
+            return (T)LoadObject(objectIdentifier);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public object LoadObject(string blankNodeIdentifier)
+        {
+            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+            if (blankNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNodeIdentifier));
+            }
+
+            return LoadObject(_configGraph, blankNode);
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an <see cref="Object"/>
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public object LoadObject(Uri objectIdentifier)
+        {
             IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
             if (uriNode == null)
             {
                 throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
             }
 
-            return (T)LoadObject(_configGraph, uriNode);
+            return LoadObject(_configGraph, uriNode);
         }
 
         #endregion

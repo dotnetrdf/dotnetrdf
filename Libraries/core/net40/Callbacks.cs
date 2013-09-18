@@ -33,17 +33,41 @@ namespace VDS.RDF
     //Callback Delegates for Async operations
 
     /// <summary>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     /// Callback for methods that return a <see cref="IGraph">IGraph</see> asynchronously
     /// </summary>
     /// <param name="g">Graph</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void GraphCallback(IGraph g, Object state);
 
     /// <summary>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     /// Callback for methods that return a Namespace Map
     /// </summary>
     /// <param name="nsmap">Namespace Map</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void NamespaceCallback(INamespaceMapper nsmap, Object state);
 
     /// <summary>
@@ -51,6 +75,36 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="nodes">Node List</param>
     /// <param name="state">State</param>
+    /// <remarks>
+    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
+    /// </remarks>
     public delegate void NodeListCallback(List<INode> nodes, Object state);
+
+    /// <summary>
+    /// Marker that will be passed to your callback in the event that an async error occurs, provides access to the error and any state that you passed in originally
+    /// </summary>
+    public class AsyncError
+    {
+        /// <summary>
+        /// Creates new async error
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        /// <param name="state">State</param>
+        public AsyncError(Exception ex, Object state)
+        {
+            this.Error = ex;
+            this.State = state;
+        }
+
+        /// <summary>
+        /// Gets the error that occurred
+        /// </summary>
+        public Exception Error { get; private set; }
+
+        /// <summary>
+        /// Gets the original state that was passed in to the async call
+        /// </summary>
+        public Object State { get; private set; }
+    }
 
 }

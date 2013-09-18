@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ClassifyService(String name, JObject obj)
             : base(name, obj) { }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
         /// <summary>
         /// Extracts the Graph which comprises the class hierarchy
         /// </summary>
@@ -54,23 +54,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
 
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     Graph g = new Graph();
@@ -82,12 +72,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
@@ -98,38 +83,55 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="callback">Callback for when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Classify(GraphCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                request.BeginGetResponse(result =>
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                                response.Close();
+                                callback(g, state);
+                            }
                         }
-#endif
-
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
-
-                        response.Close();
-                        callback(g, state);
-                    }                  
-                }, null);
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
@@ -37,11 +37,11 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class CollectionCompressionTests
         : CompressionTests
     {
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionEmpty1()
         {
             Graph g = new Graph();
@@ -60,7 +60,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionEmpty2()
         {
             Graph g = new Graph();
@@ -77,7 +77,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionSimple1()
         {
             Graph g = new Graph();
@@ -97,7 +97,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionSimple2()
         {
             Graph g = new Graph();
@@ -117,7 +117,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionSimple3()
         {
             Graph g = new Graph();
@@ -140,7 +140,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionSimple4()
         {
             Graph g = new Graph();
@@ -162,7 +162,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionSimple5()
         {
             Graph g = new Graph();
@@ -186,7 +186,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        //[TestMethod]
+        //[Test]
         //public void WritingCollectionCompressionSimple6()
         //{
         //    Graph g = new Graph();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing
         //    this.CheckCompressionRoundTrip(g);
         //}
 
-        //[TestMethod]
+        //[Test]
         //public void WritingCollectionCompressionSimple7()
         //{
         //    Graph g = new Graph();
@@ -225,8 +225,8 @@ namespace VDS.RDF.Writing
         //    this.CheckCompressionRoundTrip(g);
         //}
 
-
-        [TestMethod]
+#if !NO_SYNC_HTTP // No SparqlConnector
+        [Test]
         public void WritingCollectionCompressionComplex1()
         {
             SparqlConnector connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));
@@ -247,12 +247,13 @@ namespace VDS.RDF.Writing
 
             this.CheckCompressionRoundTrip(g);
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionComplex2()
         {
             Graph g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
@@ -272,7 +273,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionNamedListNodes()
         {
             Graph g = new Graph();
@@ -295,7 +296,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionNamedListNodes2()
         {
             Graph g = new Graph();
@@ -321,7 +322,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionNamedListNodes3()
         {
             Graph g = new Graph();
@@ -378,7 +379,7 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionCyclic()
         {
             Graph g = new Graph();
@@ -405,7 +406,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionCyclic2()
         {
             Graph g = new Graph();
@@ -435,7 +436,7 @@ namespace VDS.RDF.Writing
             this.CheckCompressionRoundTrip(g);
         }
 
-        [TestMethod]
+        [Test]
         public void WritingCollectionCompressionCyclic3()
         {
             Graph g = new Graph();

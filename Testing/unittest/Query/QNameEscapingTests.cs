@@ -27,13 +27,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class QNameEscapingTests
     {
         List<char> _cs = new List<char>()
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query
                  '~',
                  '-',
                  '.',
-                 '|',
+                 '!',
                  '$',
                  '&',
                  '\'',
@@ -72,22 +72,22 @@ namespace VDS.RDF.Query
             Assert.AreEqual(expected, SparqlSpecsHelper.UnescapeQName(input));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingPercentEncodingSimple()
         {
-            this.TestQNameUnescaping("ex:a%20space", "ex:a space");
+            this.TestQNameUnescaping("ex:a%20space", "ex:a%20space");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingPercentEncodingComplex()
         {
             for (int i = 0; i <= 255; i++)
             {
-                this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + (char)i);
+                this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingSpecialCharactersSimple()
         {
             foreach (char c in this._cs)
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingSpecialCharactersComplex()
         {
             foreach (char c in this._cs)
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingSpecialCharactersMultiple()
         {
             StringBuilder input = new StringBuilder();
@@ -121,19 +121,19 @@ namespace VDS.RDF.Query
             this.TestQNameUnescaping(input.ToString(), output.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingDawg1()
         {
             this.TestQNameUnescaping("og:audio:title", "og:audio:title");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQNameUnescapingDawg2()
         {
             this.TestQNameUnescaping(@":c\~z\.", ":c~z.");
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlBNodeValidation1()
         {
             Assert.IsTrue(SparqlSpecsHelper.IsValidBNode("_:a"));

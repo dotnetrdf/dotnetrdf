@@ -827,7 +827,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Might be an escape for a >
 
-                        this.HandleEscapes(TokeniserEscapeMode.Uri);
+                        this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
                     }
                     else
                     {

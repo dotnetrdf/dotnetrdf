@@ -27,19 +27,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SetTests
     {
         private NodeFactory _factory = new NodeFactory();
 
-        [TestMethod]
+        [Test]
         public void SparqlSetHashCodes1()
         {
             INode a = this._factory.CreateLiteralNode("a");
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(x.GetHashCode(), y.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetHashCodes2()
         {
             INode a = this._factory.CreateLiteralNode("a");
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(z1.GetHashCode(), z2.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinct1()
         {
             INode a = this._factory.CreateBlankNode();
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(results.ContainsVariable("_:b"));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinct2()
         {
             INode a = this._factory.CreateBlankNode();
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(results.ContainsVariable("_:b"));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinctnessComparer1()
         {
             ISet x = new Set();
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(comparer.Equals(x, y));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinctnessComparer2()
         {
             ISet x = new Set();
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query
             Assert.IsTrue(comparer.Equals(x, y));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinctnessComparer3()
         {
             ISet x = new Set();
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
             Assert.IsFalse(comparer.Equals(x, y));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlSetDistinctnessComparer4()
         {
             ISet x = new Set();

@@ -33,16 +33,14 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as Notation 3 without any compression
     /// </summary>
-    public class UncompressedNotation3Formatter : UncompressedTurtleFormatter
+    public class UncompressedNotation3Formatter
+        : UncompressedTurtleFormatter
     {
         /// <summary>
         /// Creates a new Uncompressed Notation 3 Formatter
         /// </summary>
         public UncompressedNotation3Formatter()
-            : base("Notation 3 (Uncompressed)") 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
-        }
+            : base("Notation 3 (Uncompressed)") { }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3
@@ -79,36 +77,28 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as Notation 3
     /// </summary>
-    public class Notation3Formatter : TurtleFormatter
+    public class Notation3Formatter 
+        : TurtleFormatter
     {
         /// <summary>
         /// Creates a new Notation 3 Formatter
         /// </summary>
         public Notation3Formatter()
-            : base("Notation 3", new QNameOutputMapper()) 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
-        }
+            : base("Notation 3", new QNameOutputMapper()) { }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
         public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.Namespaces)) 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
-        }
+            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Namespace Map
         /// </summary>
         /// <param name="nsmap">Namespace Map</param>
         public Notation3Formatter(INamespaceMapper nsmap)
-            : base("Notation 3", new QNameOutputMapper(nsmap)) 
-        {
-            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
-        }
+            : base("Notation 3", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3

@@ -164,7 +164,11 @@ namespace VDS.RDF
                 {
                     return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
                 }
+#if PORTABLE
+                catch(FormatException)
+#else
                 catch (UriFormatException)
+#endif
                 {
                     throw new RdfException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
                 }
@@ -346,8 +350,6 @@ namespace VDS.RDF
             return hash;
         }
 
-#if DEBUG
-
         /// <summary>
         /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request
         /// </summary>
@@ -355,7 +357,8 @@ namespace VDS.RDF
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugRequest(HttpWebRequest httpRequest)
         {
-            if (!Options.HttpDebugging) return;
+            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
+                return;
 
             //Output the Request Headers
             Console.Error.WriteLine("# HTTP DEBUGGING #");
@@ -376,7 +379,8 @@ namespace VDS.RDF
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugResponse(HttpWebResponse httpResponse)
         {
-            if (!Options.HttpDebugging) return;
+            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
+                return;
 
             //Output the Response Uri and Headers
             Console.Error.WriteLine();
@@ -411,7 +415,5 @@ namespace VDS.RDF
 
             Console.Error.WriteLine("# END HTTP DEBUGGING #");
         }
-
-#endif
     }
 }

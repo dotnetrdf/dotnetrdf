@@ -67,6 +67,10 @@ namespace VDS.RDF.Query.Patterns
 
         }
 
+        /// <summary>
+        /// Creates a new Graph Pattern copied from an existing Graph Pattern
+        /// </summary>
+        /// <param name="gp">Graph Pattern</param>
         internal GraphPattern(GraphPattern gp)
         {
             this._break = gp._break;
@@ -79,14 +83,19 @@ namespace VDS.RDF.Query.Patterns
             this._isGraph = gp._isGraph;
             this._isMinus = gp._isMinus;
             this._isNotExists = gp._isExists;
-            this._isOptimised = gp._isOptimised;
             this._isOptional = gp._isOptional;
             this._isService = gp._isService;
             this._isSilent = gp._isSilent;
             this._isUnion = gp._isUnion;
-            this._triplePatterns.AddRange(gp._triplePatterns);
+
+            //Copy Triple Patterns across
+            //Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
+            //reoptimising a pattern with already placed filters and assignments can lead to strange results
+            this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
             this._unplacedAssignments.AddRange(gp._unplacedAssignments);
+            this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
             this._unplacedFilters.AddRange(gp._unplacedFilters);
+            this._unplacedFilters.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.Filter).OfType<IFilterPattern>().Select(fp => fp.Filter));
         }
 
         /// <summary>

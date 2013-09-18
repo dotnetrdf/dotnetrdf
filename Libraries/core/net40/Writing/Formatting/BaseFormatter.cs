@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
@@ -178,9 +179,36 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="c">Character</param>
         /// <returns></returns>
+        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public virtual String FormatChar(char c)
         {
             return c.ToString();
+        }
+
+        /// <summary>
+        /// Formats a sequence of characters as a String
+        /// </summary>
+        /// <param name="cs">Characters</param>
+        /// <returns>String</returns>
+        public virtual String FormatChar(char[] cs)
+        {
+            return new String(cs);
+        }
+
+        /// <summary>
+        /// Applies escapes to the given value
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="escapes">Escapes</param>
+        /// <returns>Escaped string</returns>
+        protected String Escape(String value, List<String[]> escapes)
+        {
+            foreach (String[] escape in escapes)
+            {
+                if (escape.Length != 2) continue;
+                value = value.Replace(escape[0], escape[1]);
+            }
+            return value;
         }
 
         /// <summary>

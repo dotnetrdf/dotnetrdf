@@ -55,6 +55,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Creates a new Variable Pattern
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation</param>
+        public VariablePattern(String name, bool rigorousEvaluation)
+            : this(name)
+        {
+            this.RigorousEvaluation = rigorousEvaluation;
+        }
+
+        /// <summary>
         /// Checks whether the given Node is a valid value for the Variable in the current Binding Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
@@ -62,7 +73,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation)
+            if (Options.RigorousEvaluation || this.RigorousEvaluation)
             {
                 if (context.InputMultiset.ContainsVariable(this._varname))
                 {

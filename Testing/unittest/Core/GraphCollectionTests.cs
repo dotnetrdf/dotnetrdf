@@ -28,14 +28,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class GraphCollectionTests
     {
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic1()
         {
             TripleStore store = new TripleStore();
@@ -46,7 +46,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic2()
         {
             TripleStore store = new TripleStore();
@@ -58,7 +58,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic3()
         {
             GraphCollection collection = new GraphCollection();
@@ -68,7 +68,7 @@ namespace VDS.RDF.Core
             Assert.IsTrue(collection.Contains(g.BaseUri));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionBasic4()
         {
             GraphCollection collection = new GraphCollection();
@@ -79,27 +79,28 @@ namespace VDS.RDF.Core
             Assert.IsTrue(collection.GraphUris.Contains(null));
         }
 
-        [TestMethod]
+#if !NO_FILE
+        [Test]
         public void GraphCollectionDiskDemand1()
         {
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
-            g.BaseUri = new Uri("file:///" + Path.GetFullPath("InferenceTest.ttl"));
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionDiskDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());
 
             Graph g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
-            g.BaseUri = new Uri("file:///" + Path.GetFullPath("InferenceTest.ttl"));
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
             Graph empty = new Graph();
             empty.BaseUri = g.BaseUri;
@@ -108,8 +109,10 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
+#endif
 
-        [TestMethod]
+#if !SILVERLIGHT
+        [Test]
         public void GraphCollectionWebDemand1()
         {
             TripleStore store = new TripleStore(new WebDemandGraphCollection());
@@ -122,7 +125,7 @@ namespace VDS.RDF.Core
             Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
-        [TestMethod]
+        [Test]
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
@@ -140,5 +143,6 @@ namespace VDS.RDF.Core
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
+#endif
     }
 }

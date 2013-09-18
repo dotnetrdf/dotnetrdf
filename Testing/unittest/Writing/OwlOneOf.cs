@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -36,10 +36,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class OwlOneOf
     {
-        [TestMethod]
+        [Test]
         public void WritingSerializeOwnOneOf()
         {
             //Create the Graph for the Test and Generate a List of URIs
@@ -73,20 +73,22 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
+#if !NO_XMLENTITIES
             //Now check that the Graphs are all equivalent
             Graph h = new Graph();
-            FileLoader.Load(h, "owl-one-of.rdf");
+            h.LoadFromFile("owl-one-of.rdf");
             Assert.AreEqual(g, h, "Graphs should be equal (RdfXmlWriter)");
             Console.WriteLine("RdfXmlWriter serialization was OK");
             Console.WriteLine();
 
             Graph j = new Graph();
-            FileLoader.Load(j, "owl-one-of-pretty.rdf");
+            j.LoadFromFile("owl-one-of-pretty.rdf");
             Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
             Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
+#endif
         }
 
-        [TestMethod]
+        [Test]
         public void WritingSerializeOwnOneOfVeryLarge()
         {
                 //Create the Graph for the Test and Generate a List of URIs
@@ -124,13 +126,13 @@ namespace VDS.RDF.Writing
 
                 //Now check that the Graphs are all equivalent
                 Graph h = new Graph();
-                FileLoader.Load(h, "owl-one-of.rdf");
+                h.LoadFromFile("owl-one-of.rdf");
                 Assert.AreEqual(g, h, "Graphs should be equal (RdfXmlWriter)");
                 Console.WriteLine("RdfXmlWriter serialization was OK");
                 Console.WriteLine();
 
                 Graph j = new Graph();
-                FileLoader.Load(j, "owl-one-of-pretty.rdf");
+                j.LoadFromFile("owl-one-of-pretty.rdf");
                 Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
                 Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
         }

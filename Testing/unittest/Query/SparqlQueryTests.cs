@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -36,12 +36,12 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF
+namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class SparqlQueryTests
     {
-        [TestMethod]
+        [Test]
         public void SparqlFilterShouldGetPlaced()
         {
             // given
@@ -68,12 +68,12 @@ namespace VDS.RDF
             Assert.IsTrue(((Select)algebra.InnerAlgebra).InnerAlgebra is Filter);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlJoinExplosion()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("LearningStyles.rdf");
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile("learning-problem.rq");
+            g.LoadFromFile("resources\\LearningStyles.rdf");
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile("resources\\learning-problem.rq");
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;

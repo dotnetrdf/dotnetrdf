@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF
 {
@@ -100,9 +100,9 @@ namespace VDS.RDF
             if (_init) return;
             if (_failed) Fail();
 
-            if (File.Exists("UnitTestConfig.properties"))
+            if (File.Exists(@"resources\UnitTestConfig.properties"))
             {
-                using (StreamReader reader = new StreamReader("UnitTestConfig.properties"))
+                using (StreamReader reader = new StreamReader(@"resources\UnitTestConfig.properties"))
                 {
                     do
                     {
@@ -138,7 +138,7 @@ namespace VDS.RDF
 
         private static void Fail()
         {
-            Assert.Fail("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
+            Assert.Inconclusive("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>

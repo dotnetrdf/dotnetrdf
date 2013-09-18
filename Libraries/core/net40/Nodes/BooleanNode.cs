@@ -120,11 +120,19 @@ namespace VDS.RDF.Nodes
         /// Throws an error as booleans cannot be cast to date times
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
         {
             throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to date times
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            throw new RdfQueryException("Cannot cast Boolean to other types");
+        }
 
         /// <summary>
         /// Throws an error as booleans cannot be cast to a time span

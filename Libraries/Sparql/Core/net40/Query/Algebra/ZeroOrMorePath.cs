@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Algebra
             bool bothTerms = (subjVar == null && objVar == null);
             bool reverse = false;
 
-            if (subjVar == null || (subjVar != null && context.InputMultiset.ContainsVariable(subjVar)) || (objVar != null && !context.InputMultiset.ContainsVariable(objVar)))
+            if (subjVar == null || (/*subjVar != null &&*/ context.InputMultiset.ContainsVariable(subjVar)) /*|| (objVar != null && !context.InputMultiset.ContainsVariable(objVar))*/)
             {
                 //Work Forwards from the Starting Term or Bound Variable
                 //OR if there is no Ending Term or Bound Variable work forwards regardless
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Algebra
                                     select s[subjVar]).Distinct().Select(n => n.AsEnumerable().ToList()));
                 }
             }
-            else if (objVar == null || (objVar != null && context.InputMultiset.ContainsVariable(objVar)))
+            else if (objVar == null || (/*objVar != null &&*/ context.InputMultiset.ContainsVariable(objVar)))
             {
                 //Work Backwards from Ending Term or Bound Variable
                 if (objVar == null)

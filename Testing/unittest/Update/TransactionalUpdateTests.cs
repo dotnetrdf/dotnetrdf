@@ -27,7 +27,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
@@ -40,7 +40,7 @@ namespace VDS.RDF.Update
     /// <remarks>
     /// To run the same tests against an alternative <see cref="ISparqlDataset">ISparqlDataset</see> implementation extend this class, override the <see cref="TransactionalUpdateTests.GetEmptyDataset">GetEmptyDataset()</see> and <see cref="TransactionalUpdateTests.GetNonEmptyDataset()">GetNonEmptyDataset()</see> methods.  The latter should contain a single empty graph with the URI set to the constant <see cref="TransactionalUpdateTests.TestGraphUri">TestGraphUri</see>
     /// </remarks>
-    [TestClass]
+    [TestFixture]
     public class TransactionalUpdateTests
     {
         protected readonly Uri TestGraphUri = new Uri("http://example.org/graph");
@@ -464,19 +464,19 @@ namespace VDS.RDF.Update
 
         #region CREATE GRAPH Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateGraphCommit()
         {
             TestCreateGraphCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateGraphRollback()
         {
             TestCreateGraphRollback();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateGraphRollbackWithoutAutoCommit()
         {
             TestCreateGraphRollbackWithoutAutoCommit();
@@ -486,13 +486,13 @@ namespace VDS.RDF.Update
 
         #region DROP GRAPH Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsDropGraphCommit()
         {
             TestDropGraphCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsDropGraphRollback()
         {
             TestDropGraphRollback();
@@ -502,41 +502,43 @@ namespace VDS.RDF.Update
 
         #region LOAD Tests
 
-        [TestMethod]
+#if !SILVERLIGHT // LOAD not supported under SILVERLIGHT
+        [Test]
         public void SparqlUpdateTransactionsLoadCommit()
         {
             TestLoadCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsLoadRollback()
         {
             TestLoadRollback();
         }
+#endif
 
         #endregion
 
         #region CREATE and DROP GRAPH Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateDropSequenceCommit()
         {
             TestCreateDropSequenceCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateDropSequenceCommit2()
         {
             TestCreateDropSequenceCommit2();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateDropSequenceRollback()
         {
             TestCreateDropSequenceRollback();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateDropSequenceRollback2()
         {
             TestCreateDropSequenceRollback2();
@@ -546,13 +548,13 @@ namespace VDS.RDF.Update
 
         #region INSERT DATA and DROP GRAPH Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsInsertDataThenDropCommit()
         {
             this.TestInsertDataThenDropCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsInsertDataThenDropRollback()
         {
             this.TestInsertDataThenDropRollback();
@@ -562,7 +564,7 @@ namespace VDS.RDF.Update
 
         #region CREATE GRAPH and INSERT DATA Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsCreateThenInsertRollback()
         {
             this.TestCreateThenInsertDataRollback();
@@ -572,7 +574,7 @@ namespace VDS.RDF.Update
 
         #region DROP GRAPH and INSERT DATA Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsDropThenInsertRollback()
         {
             this.TestDropThenInsertDataRollback();
@@ -587,7 +589,7 @@ namespace VDS.RDF.Update
             this.TestInsertDataThenDeleteDataCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsInsertDataThenDeleteDataRollback()
         {
             this.TestInsertDataThenDeleteDataRollback();
@@ -597,13 +599,13 @@ namespace VDS.RDF.Update
 
         #region DELETE DATA and INSERT DATA Tests
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataCommit()
         {
             this.TestDeleteDataThenInsertDataCommit();
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataRollback()
         {
             this.TestDeleteDataThenInsertDataRollback();
@@ -613,7 +615,7 @@ namespace VDS.RDF.Update
 
         #region INSERT DATA and INSERT DATA
 
-        [TestMethod]
+        [Test]
         public void SparqlUpdateTransactionsInsertDataSequenceCommit()
         {
             this.TestInsertDataSequenceCommit();

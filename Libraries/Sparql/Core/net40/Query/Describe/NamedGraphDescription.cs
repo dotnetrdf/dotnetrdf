@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Describe
@@ -51,7 +52,7 @@ namespace VDS.RDF.Query.Describe
                 if (n.NodeType == NodeType.Uri)
                 {
                     IGraph g = context.Data[((IUriNode)n).Uri];
-                    foreach (Triple t in g.Triples)
+                    foreach (Triple t in g.Triples.ToList())
                     {
                         if (!handler.HandleTriple(t)) ParserHelper.Stop();
                     }

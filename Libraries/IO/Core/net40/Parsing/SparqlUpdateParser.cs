@@ -197,6 +197,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Parses a SPARQL Update Command Set from the given file
         /// </summary>
@@ -207,6 +208,7 @@ namespace VDS.RDF.Parsing
             if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
             return this.Parse(new StreamReader(file, Encoding.UTF8));
         }
+#endif
 
         /// <summary>
         /// Parses a SPARQL Update Command Set from the given String
@@ -549,6 +551,7 @@ namespace VDS.RDF.Parsing
                     subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
                     subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
                     subContext.ExpressionFactories = context.ExpressionFactories;
+                    subContext.ExpressionParser.QueryParser = context.QueryParser;
                     GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
                     //And finally return the command
@@ -582,6 +585,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
@@ -712,6 +716,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //And finally return the command
@@ -731,6 +736,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
@@ -893,6 +899,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //Validate that the Graph Pattern is simple

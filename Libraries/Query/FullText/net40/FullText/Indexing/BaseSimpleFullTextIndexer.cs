@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple</param>
         protected override void Index(String graphUri, Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(Triple t) method");
+            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(String graphUri, Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple</param>
         protected override void Unindex(String graphUri, Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(Triple t) method");
+            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(String graphUri, Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {

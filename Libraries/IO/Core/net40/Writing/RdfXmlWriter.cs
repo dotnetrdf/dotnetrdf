@@ -160,6 +160,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Graph in RDF/XML syntax to the given File
         /// </summary>
@@ -170,6 +171,7 @@ namespace VDS.RDF.Writing
             StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(g, output);
         }
+#endif
 
         /// <summary>
         /// Saves a Graph to an arbitrary output stream
@@ -466,6 +468,7 @@ namespace VDS.RDF.Writing
             context.Writer.WriteEndDocument();
 
             //Save to the Output Stream
+            context.Writer.Flush();
             context.Writer.Close();
         }
 
@@ -522,7 +525,14 @@ namespace VDS.RDF.Writing
                     {
                         //Terminate list with an rdf:nil
                         context.Writer.WriteStartAttribute("rdf", "resource", NamespaceMapper.RDF);
-                        context.Writer.WriteRaw("&rdf;nil");
+                        if (context.UseDtd)
+                        {
+                            context.Writer.WriteRaw("&rdf;nil");
+                        }
+                        else
+                        {
+                            context.Writer.WriteRaw(NamespaceMapper.RDF + "nil");
+                        }
                         context.Writer.WriteEndAttribute();
                     }
                 }

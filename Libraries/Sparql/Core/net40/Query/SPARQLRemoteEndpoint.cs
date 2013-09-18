@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Net;
 using System.IO;
@@ -269,7 +270,7 @@ namespace VDS.RDF.Query
 
         #region Query Methods
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
@@ -310,12 +311,8 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query, see inner exception for details", webEx);
             }
@@ -361,12 +358,7 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query, see inner exception for details", webEx);
             }
@@ -392,12 +384,7 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
@@ -418,12 +405,8 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
@@ -620,23 +603,11 @@ namespace VDS.RDF.Query
             }
 #endif
 
-#if DEBUG
-            //HTTP Debugging
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(httpRequest);
-            }
-#endif
+            Tools.HttpDebugRequest(httpRequest);
 
             httpResponse = (HttpWebResponse)httpRequest.GetResponse();
 
-#if DEBUG
-            //HTTP Debugging
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugResponse(httpResponse);
-            }
-#endif
+            Tools.HttpDebugResponse(httpResponse);
 
             return httpResponse;
         }
@@ -656,55 +627,84 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetRequestStream(result =>
-            {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-
-                    writer.Close();
-                }
-
-                request.BeginGetResponse(innerResult =>
-                    {
-                        using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                        try
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
                             {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
-                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                            SparqlResultSet rset = new SparqlResultSet();
-                            parser.Load(rset, new StreamReader(response.GetResponseStream()));
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
 
-                            response.Close();
-                            callback(rset, state);
+                                foreach (String u in this.DefaultGraphs)
+                                {
+                                    writer.Write("&default-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+                                foreach (String u in this.NamedGraphs)
+                                {
+                                    writer.Write("&named-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+
+                                writer.Close();
+                            }
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+
+                                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                            SparqlResultSet rset = new SparqlResultSet();
+                                            parser.Load(rset, new StreamReader(response.GetResponseStream()));
+
+                                            response.Close();
+                                            callback(rset, state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (SecurityException secEx)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
                         }
                     }, null);
-            }, null);
-
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>
@@ -721,53 +721,78 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetRequestStream(result =>
-            {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-
-                    writer.Close();
-                }
-
-                request.BeginGetResponse(innerResult =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
-                    {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
 
-                        response.Close();
-                        callback(null, handler, state);
-                    }
-                }, null);
-            }, null);
+                                foreach (String u in this.DefaultGraphs)
+                                {
+                                    writer.Write("&default-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+                                foreach (String u in this.NamedGraphs)
+                                {
+                                    writer.Write("&named-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+
+                                writer.Close();
+                            }
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                                            response.Close();
+                                            callback(null, handler, state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(null, handler, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, handler, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (Exception ex)
+            {
+                callback(null, handler, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>
@@ -783,51 +808,81 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
+                request.BeginGetRequestStream(result =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
+
+                                foreach (String u in this.DefaultGraphs)
+                                {
+                                    writer.Write("&default-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+                                foreach (String u in this.NamedGraphs)
+                                {
+                                    writer.Write("&named-graph-uri=");
+                                    writer.Write(HttpUtility.UrlEncode(u));
+                                }
+
+                                writer.Close();
+                            }
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+
+                                        HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult);
+                                        Tools.HttpDebugResponse(response);
+                                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                        Graph g = new Graph();
+                                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                                        callback(g, state);
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (SecurityException secEx)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                        }
+                    }, null);
             }
-#endif
-
-            request.BeginGetRequestStream(result =>
+            catch (Exception ex)
             {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
-                    {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-
-                    writer.Close();
-                }
-
-                request.BeginGetResponse(innerResult =>
-                {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    Graph g = new Graph();
-                    parser.Load(g, new StreamReader(response.GetResponseStream()));
-
-                    callback(g, state);
-                }, null);
-            }, null);
+                callback(null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>
@@ -844,49 +899,71 @@ namespace VDS.RDF.Query
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
             {
-                Stream stream = request.EndGetRequestStream(result);
-                using (StreamWriter writer = new StreamWriter(stream))
+                try
                 {
-                    writer.Write("query=");
-                    writer.Write(HttpUtility.UrlEncode(query));
-
-                    foreach (String u in this.DefaultGraphs)
+                    Stream stream = request.EndGetRequestStream(result);
+                    using (StreamWriter writer = new StreamWriter(stream))
                     {
-                        writer.Write("&default-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
-                    }
-                    foreach (String u in this.NamedGraphs)
-                    {
-                        writer.Write("&named-graph-uri=");
-                        writer.Write(HttpUtility.UrlEncode(u));
+                        writer.Write("query=");
+                        writer.Write(HttpUtility.UrlEncode(query));
+
+                        foreach (String u in this.DefaultGraphs)
+                        {
+                            writer.Write("&default-graph-uri=");
+                            writer.Write(HttpUtility.UrlEncode(u));
+                        }
+                        foreach (String u in this.NamedGraphs)
+                        {
+                            writer.Write("&named-graph-uri=");
+                            writer.Write(HttpUtility.UrlEncode(u));
+                        }
+
+                        writer.Close();
                     }
 
-                    writer.Close();
+                    request.BeginGetResponse(innerResult =>
+                        {
+                            try
+                            {
+                                HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult);
+                                Tools.HttpDebugResponse(response);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                                callback(handler, null, state);
+                            }
+                            catch (SecurityException secEx)
+                            {
+                                callback(handler, null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                            }
+                            catch (WebException webEx)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(handler, null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                            }
+                        }, null);
                 }
-
-                request.BeginGetResponse(innerResult =>
+                catch (SecurityException secEx)
                 {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
-
-                    callback(handler, null, state);
-                }, null);
+                    callback(handler, null, new AsyncError(new RdfQueryException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                }
+                catch (WebException webEx)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    callback(handler, null, new AsyncError(new RdfQueryException("A HTTP error occurred while making an asynchronous query, see inner exception for details", webEx), state));
+                }
+                catch (Exception ex)
+                {
+                    callback(handler, null, new AsyncError(new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex), state));
+                }
             }, null);
         }
 
@@ -899,10 +976,10 @@ namespace VDS.RDF.Query
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpoint = context.NextSubject;
-            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlEndpoint));
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri));
+            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
             INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
             INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 

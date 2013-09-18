@@ -28,175 +28,199 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class ParsingTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
-        private void TestQuery(String query)
+        private SparqlQuery TestQuery(String query)
         {
             SparqlQuery q = this._parser.ParseFromString(query);
 
             Console.WriteLine(q.ToString());
             Console.WriteLine();
             Console.WriteLine(q.ToAlgebra().ToString());
+
+            return q;
         }
 
-        [TestMethod]
+        private SparqlUpdateCommandSet TestUpdate(String update)
+        {
+            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
+
+            Console.WriteLine(cmds.ToString());
+
+            return cmds;
+        }
+
+        [Test]
         public void SparqlParsingComplexGraphAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} GRAPH ?g {?x ?y ?z}}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingComplexFilterAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} FILTER(true)}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingComplexOptionalAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} OPTIONAL {?x a ?u}}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingComplexMinusAfterUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} MINUS {?s ?p ?o}}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingComplexOptionalServiceUnion()
         {
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} SERVICE ?g {?x ?y ?z}}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSingleSubQuery()
         {
             String query = "SELECT * WHERE {{SELECT * WHERE {?s ?p ?o}}}";
             this.TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSetExpression()
         {
             String query = "SELECT * WHERE { ?s ?p ?o . FILTER(?o IN (1, 2, 3)) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSetExpression2()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) IN (1, 2, 3)) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) IN (1, 2, 3)) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSetExpression3()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) NOT IN (1, 2, 3)) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) NOT IN (1, 2, 3)) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingSetExpression4()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + 3 IN (1, 2, 3)) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + 3 IN (1, 2, 3)) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNumericExpression1()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:long) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:long) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNumericExpression2()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:short) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:short) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNumericExpression3()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:byte) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:byte) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNumericExpression4()
         {
-            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:nonPositiveInteger) }";
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA +
+                           "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:nonPositiveInteger) }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSetSimple()
         {
             String query = "SELECT * WHERE { ?s !a ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence1()
         {
             String query = "SELECT * WHERE { ?s a / !a ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence2()
         {
             String query = "SELECT * WHERE { ?s !a / a ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSet()
         {
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment) ?o }";
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
+                           "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment) ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSetModified()
         {
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment)+ ?o }";
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
+                           "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment)+ ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsNegatedSetSimpleInAlternative()
         {
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s (rdfs:label|!rdfs:comment) ?o }";
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
+                           "> SELECT * WHERE { ?s (rdfs:label|!rdfs:comment) ?o }";
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingNoGapPrefixes()
         {
             String query;
-            using (StreamReader reader = new StreamReader("no-gap-prefixes.rq"))
+            using (StreamReader reader = new StreamReader("resources\\no-gap-prefixes.rq"))
             {
                 query = reader.ReadToEnd();
                 reader.Close();
@@ -204,7 +228,7 @@ namespace VDS.RDF.Query
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlParsingPropertyPathsUnbracketedAlternatives()
         {
             String query = @"PREFIX : <http://www.example.org/>
@@ -216,15 +240,29 @@ SELECT ?X WHERE
             TestQuery(query);
         }
 
-        [TestMethod]
+        [Test]
+        public void SparqlParsingExistsWithinSubQuery1()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { ?s a <http://restricted> } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinSubQuery2()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { { ?s a <http://restricted> } UNION { ?s a <http://other> } } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
         public void SparqlVarNames()
         {
             List<String> names = new List<String>
-            {
-                "?var",
-                "$var",
-                "var"
-            };
+                {
+                    "?var",
+                    "$var",
+                    "var"
+                };
 
             foreach (String name in names)
             {
@@ -239,18 +277,121 @@ SELECT ?X WHERE
             }
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof (RdfParseException))]
         public void SparqlParsingInsertDataWithGraphVar()
         {
             String update = "INSERT DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof (RdfParseException))]
         public void SparqlParsingDeleteDataWithGraphVar()
         {
             String update = "DELETE DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause1()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause2()
+        {
+            String update = @"WITH <http://source>
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause3()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause4()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause5()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause6()
+        {
+            String update = @"PREFIX myschema: <http://www.example.com/schema#>
+    INSERT {
+        GRAPH <data:public> {
+            ?s ?p ?o
+        }
+    } WHERE {
+        GRAPH <input:source> {
+            ?s ?p ?o .
+        } .
+        FILTER( NOT EXISTS {
+            {?p a myschema:PrivateProperty}
+            UNION { ?s a myschema:PrivateResource }
+            UNION { ?o a myschema:PrivateResource }
+        })
+    }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause7()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause8()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingLiteralsInExpressions()
+        {
+            Queue<IToken> tokens = new Queue<IToken>();
+            tokens.Enqueue(new LiteralToken("value", 0, 0, 0));
+            tokens.Enqueue(new HatHatToken(0, 0));
+            tokens.Enqueue(new DataTypeToken("<http://example/type>", 0, 0, 0));
+
+            SparqlExpressionParser parser = new SparqlExpressionParser();
+            ISparqlExpression expr = parser.Parse(tokens);
+
+            Assert.IsInstanceOf(typeof (ConstantTerm), expr);
+            ConstantTerm constant = expr as ConstantTerm;
+            Assert.IsNotNull(constant);
+
+            IValuedNode n = constant.Node;
+            Assert.IsInstanceOf(typeof(ILiteralNode), n);
+            ILiteralNode lit = (ILiteralNode) n;
+            Assert.AreEqual(String.Empty, lit.Language);
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
         }
     }
 }

@@ -28,17 +28,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text;
 #if !NO_WEB
 using System.Web;
 #endif
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Update
 {
     /// <summary>
     /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it
     /// </summary>
-    public class SparqlRemoteUpdateEndpoint : BaseEndpoint
+    public class SparqlRemoteUpdateEndpoint 
+        : BaseEndpoint
     {
         const int LongUpdateLength = 2048;
 
@@ -84,7 +88,7 @@ namespace VDS.RDF.Update
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes an update request to the remote endpoint
@@ -152,12 +156,7 @@ namespace VDS.RDF.Update
                 }
 #endif
 
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
+                Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
                     request.Method = "POST";
@@ -175,12 +174,7 @@ namespace VDS.RDF.Update
                 request.Accept = MimeTypesHelper.Any;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     //If we don't get an error then we should be fine
                     response.Close();
                 }
@@ -188,12 +182,7 @@ namespace VDS.RDF.Update
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 //Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
@@ -250,40 +239,89 @@ namespace VDS.RDF.Update
             }
 #endif
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetRequestStream(result =>
-                {
-                    Stream stream = request.EndGetRequestStream(result);
-                    using (StreamWriter writer = new StreamWriter(stream))
+                request.BeginGetRequestStream(result =>
                     {
-                        writer.Write("update=");
-                        writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
-
-                        writer.Close();
-                    }
-
-                    request.BeginGetResponse(innerResult =>
+                        try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                            Stream stream = request.EndGetRequestStream(result);
+                            using (StreamWriter writer = new StreamWriter(stream))
                             {
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse(response);
-                                }
-#endif
+                                writer.Write("update=");
+                                writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
 
-                                response.Close();
-                                callback(state);
+                                writer.Close();
                             }
-                        }, null);
-                }, null);
+
+                            request.BeginGetResponse(innerResult =>
+                                {
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+
+                                            response.Close();
+                                            callback(state);
+                                        }
+                                    }
+                                    catch (SecurityException secEx)
+                                    {
+                                        callback(new AsyncError(new SparqlUpdateException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+                                    }
+                                }, null);
+                        }
+                        catch (SecurityException secEx)
+                        {
+                            callback(new AsyncError(new SparqlUpdateException("Calling code does not have permission to access the specified remote endpoint, see inner exception for details", secEx), state));
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (Exception ex)
+            {
+                callback(new AsyncError(new SparqlUpdateException("Unexpected error while making an asynchronous update, see inner exception for details", ex), state));
+            }
+        }
+
+        /// <summary>
+        /// Serializes configuration for the endpoint
+        /// </summary>
+        /// <param name="context">Serialization Context</param>
+        public override void SerializeConfiguration(Configuration.ConfigurationSerializationContext context)
+        {
+            INode endpoint = context.NextSubject;
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlUpdateEndpoint));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+
+            context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(this.Uri)));
+
+            context.NextSubject = endpoint;
+            base.SerializeConfiguration(context);
         }
     }
 }

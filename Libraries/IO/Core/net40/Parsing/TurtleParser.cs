@@ -147,6 +147,7 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads a Graph by reading Turtle syntax from the given file
         /// </summary>
@@ -158,6 +159,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(g, new StreamReader(filename, Encoding.UTF8));
         }
+#endif
 
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
@@ -215,6 +217,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
         /// </summary>
@@ -226,6 +229,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
+#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input
@@ -465,12 +469,23 @@ namespace VDS.RDF.Parsing
                         //Start of a Blank Node Collection
                         subj = context.Handler.CreateBlankNode();
                         this.TryParsePredicateObjectList(context, subj, true);
+
+                        //In W3C Turtle we are allowed to have a dot to terminate a top level blank node predicate list
+                        if (this._syntax == TurtleSyntax.W3C)
+                        {
+                            next = context.Tokens.Peek();
+                            if (next.TokenType == Token.DOT)
+                            {
+                                context.Tokens.Dequeue();
+                                return;
+                            }
+                        }
                     }
                     break;
 
                 case Token.QNAME:
                 case Token.URI:
-                    subj = ParserHelper.TryResolveUri(context, subjToken);
+                    subj = ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction);
                     break;
 
                 default:
@@ -540,11 +555,30 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        pred = ParserHelper.TryResolveUri(context, predToken);
+                        pred = ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected end of file while trying to parse a Predicate Object list", predToken);
+
+                    case Token.SEMICOLON:
+                        if (this._syntax == TurtleSyntax.Original) goto default;
+
+                        //May get a sequence of semicolons
+                        IToken next = context.Tokens.Peek();
+                        while (next.TokenType == Token.SEMICOLON)
+                        {
+                            context.Tokens.Dequeue();
+                            next = context.Tokens.Peek();
+                        }
+                        //Bail out of these are followed by a DOT
+                        if (next.TokenType == Token.DOT && !bnodeList)
+                        {
+                            context.Tokens.Dequeue();
+                            return;
+                        }
+                        this.TryParsePredicateObjectList(context, subj, bnodeList);
+                        return;
 
                     default:
                         throw ParserHelper.Error("Unexpected Token '" + predToken.GetType().ToString() + "' encountered while trying to parse a Predicate Object list", predToken);
@@ -693,7 +727,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, objToken);
+                        obj = ParserHelper.TryResolveUri(context, objToken, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.EOF:
@@ -800,7 +834,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        obj = ParserHelper.TryResolveUri(context, next);
+                        obj = ParserHelper.TryResolveUri(context, next, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.RIGHTBRACKET:

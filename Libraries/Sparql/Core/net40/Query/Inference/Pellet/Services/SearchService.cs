@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._searchUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the list of Search Results which match the given search term
@@ -71,23 +71,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             String jsonText;
             JArray json;
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugResponse(response);
-                }
-#endif
+                Tools.HttpDebugResponse(response);
                 jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 json = JArray.Parse(jsonText);
 
@@ -106,11 +96,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     INode node;
                     if (type.ToLower().Equals("uri"))
                     {
-                        node = new UriNode(UriFactory.Create((String)hit.SelectToken("value")));
+                        node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
                     }
                     else
                     {
-                        node = this._nodeFactory.CreateBlankNode((String)hit.SelectToken("value"));
+                        node = new BlankNode(null, (String)hit.SelectToken("value"));
                     }
                     double score = (double)result.SelectToken("score");
 
@@ -121,12 +111,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 throw new RdfReasoningException("A HTTP error occurred while communicating with Pellet Server", webEx);
             }
             catch (Exception ex)
@@ -143,6 +128,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="text">Search Term</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
             String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
@@ -151,55 +139,69 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            String jsonText;
-            JArray json;
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                String jsonText;
+                JArray json;
+                request.BeginGetResponse(result =>
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                json = JArray.Parse(jsonText);
+
+                                response.Close();
+
+                                //Parse the Response into Search Results
+
+                                List<SearchServiceResult> results = new List<SearchServiceResult>();
+
+                                foreach (JToken res in json.Children())
+                                {
+                                    JToken hit = res.SelectToken("hit");
+                                    String type = (String) hit.SelectToken("type");
+                                    INode node;
+                                    if (type.ToLower().Equals("uri"))
+                                    {
+                                        node = new UriNode(null, UriFactory.Create((String) hit.SelectToken("value")));
+                                    }
+                                    else
+                                    {
+                                        node = new BlankNode(null, (String) hit.SelectToken("value"));
+                                    }
+                                    double score = (double) res.SelectToken("score");
+
+                                    results.Add(new SearchServiceResult(node, score));
+                                }
+
+                                callback(results, state);
+                            }
                         }
-#endif
-                        jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                        json = JArray.Parse(jsonText);
-
-                        response.Close();
-
-                        //Parse the Response into Search Results
-
-                        List<SearchServiceResult> results = new List<SearchServiceResult>();
-
-                        foreach (JToken res in json.Children())
+                        catch (WebException webEx)
                         {
-                            JToken hit = res.SelectToken("hit");
-                            String type = (String)hit.SelectToken("type");
-                            INode node;
-                            if (type.ToLower().Equals("uri"))
-                            {
-                                node = new UriNode(UriFactory.Create((String)hit.SelectToken("value")));
-                            }
-                            else
-                            {
-                                node = this._nodeFactory.CreateBlankNode((String)hit.SelectToken("value"));
-                            }
-                            double score = (double)res.SelectToken("score");
-
-                            results.Add(new SearchServiceResult(node, score));
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
                         }
-
-                        callback(results, state);
-                    }
-                }, null);
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 

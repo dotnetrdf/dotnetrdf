@@ -28,17 +28,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
-    [TestClass]
+    [TestFixture]
     public class FormattingTests
     {
-        [TestMethod]
+        [Test]
         public void WritingFormattingTriples()
         {
             try
@@ -145,7 +145,7 @@ namespace VDS.RDF.Writing
             }       
         }
 
-        [TestMethod]
+        [Test]
         public void WritingFormattingGraphs()
         {
             List<IGraph> graphs = new List<IGraph>();
@@ -153,13 +153,13 @@ namespace VDS.RDF.Writing
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("cyrillic.rdf");
+            g.LoadFromFile("resources\\cyrillic.rdf");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
             graphs.Add(g);
 
             List<IGraphFormatter> formatters = new List<IGraphFormatter>()
@@ -207,7 +207,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void WritingFormattingResultSets()
         {
             Graph g = new Graph();

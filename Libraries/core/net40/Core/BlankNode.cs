@@ -462,7 +462,16 @@ namespace VDS.RDF
         /// Throws an error as a Blank Node cannot be cast to a date time
         /// </summary>
         /// <returns></returns>
-        public DateTimeOffset AsDateTime()
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a date time offset
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset AsDateTimeOffset()
         {
             throw new NodeValueException("Unable to cast a Blank Node to a type");
         }

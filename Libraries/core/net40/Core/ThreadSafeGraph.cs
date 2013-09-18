@@ -130,7 +130,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterWriteLock();
-                return this.Retract(ts);
+                return base.Retract(ts);
             }
             finally
             {

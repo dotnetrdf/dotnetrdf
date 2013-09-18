@@ -28,26 +28,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
-    [TestClass]
+    [TestFixture]
     public class TurtleMemberSubmission
         : BaseRdfParserSuite
     {
         public TurtleMemberSubmission()
             : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle\\") { }
 
-        [TestMethod]
+        [Test]
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
-            this.RunManifest("turtle/manifest.ttl", true);
-            this.RunManifest("turtle/manifest-bad.ttl", false);
+            this.RunManifest("resources/turtle/manifest.ttl", true);
+            this.RunManifest("resources/turtle/manifest-bad.ttl", false);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -58,92 +58,104 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleOriginalBaseTurtleStyle1()
         {
             //Dot required
             String graph = "@base <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseTurtleStyle2()
         {
             //Missing dot
             String graph = "@base <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseSparqlStyle1()
         {
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseSparqlStyle2()
         {
             //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod]
+        [Test]
         public void ParsingTurtleOriginalPrefixTurtleStyle1()
         {
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixTurtleStyle2()
         {
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixSparqlStyle1()
         {
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixSparqlStyle2()
         {
             //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
-            this._parser.Load(g, new StringReader(graph));
+            this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [Test]
+        public void ParsingTurtleOriginalPrefixedNames1()
+        {
+            Assert.IsTrue(TurtleSpecsHelper.IsValidQName(":a1", TurtleSyntax.Original));
+        }
+
+        [Test]
+        public void ParsingTurtleOriginalPrefixedNames2()
+        {
+            this.Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");
         }
     }
 }

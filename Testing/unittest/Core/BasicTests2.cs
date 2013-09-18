@@ -29,20 +29,26 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    [TestClass]
+    [TestFixture]
     public class BasicTests2 : BaseTest
     {
-        [TestMethod]
+
+#if !PORTABLE
+
+        [Test]
         public void GraphEquality() {
             try
             {
+#if !NO_URICACHE
+                Options.UriLoaderCaching = false;
+#endif
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
@@ -104,13 +110,19 @@ namespace VDS.RDF
             {
                 throw;
             }
+            finally
+            {
+#if !NO_URICACHE
+                Options.UriLoaderCaching = true;
+#endif
+            }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "InferenceTest.ttl");
+            FileLoader.Load(parent, "resources\\InferenceTest.ttl");
             Graph subgraph = new Graph();
             subgraph.NamespaceMap.Import(parent.NamespaceMap);
             subgraph.Assert(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
@@ -155,11 +167,11 @@ namespace VDS.RDF
             Console.WriteLine();
         }
 
-        [TestMethod]
+        [Test]
         public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "Turtle.ttl");
+            FileLoader.Load(parent, "resources\\Turtle.ttl");
             Graph subgraph = new Graph();
             subgraph.Assert(parent.Triples.Where(t => !t.IsGroundTriple));
 
@@ -190,7 +202,9 @@ namespace VDS.RDF
 
         }
 
-        [TestMethod]
+#endif
+
+        [Test]
         public void GraphWithBNodeEquality()
         {
             try
@@ -200,8 +214,8 @@ namespace VDS.RDF
                 Graph h = new Graph();
 
                 TurtleParser ttlparser = new TurtleParser();
-                ttlparser.Load(g, "MergePart1.ttl");
-                ttlparser.Load(h, "MergePart1.ttl");
+                ttlparser.Load(g, "resources\\MergePart1.ttl");
+                ttlparser.Load(h, "resources\\MergePart1.ttl");
 
                 Assert.AreEqual(g.BaseUri, h.BaseUri, "The Base URIs of the Graphs should not be affected by the Load and so should be both null");
                 //TestTools.CompareGraphs(g, h, true);
@@ -227,20 +241,27 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+#if !PORTABLE
+
+        [Test]
         public void ParsingUriLoader()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
+#if !NO_HTMLAGILITYPACK // Resource returns RDFa
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
+#endif
                     new Uri("http://dbpedia.org/resource/Southampton"),
-                    new Uri("file:///MergePart1.ttl"),
-                    /*new Uri("file:///D:/PhD Work/dotNetRDF/unittest/resources/MergePart1.ttl"),*/
+#if !NO_FILE // file: urls not supported
+                    new Uri("file:///resources\\MergePart1.ttl"),
+#endif
                     new Uri("http://www.dotnetrdf.org/configuration#")
                 };
 
@@ -273,12 +294,16 @@ namespace VDS.RDF
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
 
-        [TestMethod]
+#endif
+
+        [Test]
         public void NodesEqualityOperator()
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
@@ -334,11 +359,12 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+#if !NO_DATA
+        [Test]
         public void GraphToDataTable()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             DataTable table = (DataTable)g;
 
@@ -355,7 +381,7 @@ namespace VDS.RDF
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphToDataTable2()
         {
             Graph g = new Graph();
@@ -374,8 +400,9 @@ namespace VDS.RDF
                 Console.WriteLine();
             }
         }
+#endif
 
-        [TestMethod]
+        [Test]
         public void GraphPersistenceWrapperNodeCreation()
         {
             Graph g = new Graph();

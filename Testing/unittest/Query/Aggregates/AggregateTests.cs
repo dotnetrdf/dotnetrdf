@@ -1,33 +1,58 @@
-﻿using System;
+/*
+dotNetRDF is free and open source software licensed under the MIT License
+
+-----------------------------------------------------------------------------
+
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System;
 using System.Globalization;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace VDS.RDF.Query.Aggregates
 {
-    [TestClass]
+    [TestFixture]
     public class AggregateTests
     {
         private CultureInfo _previousCulture;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             _previousCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Teardown()
         {
             Thread.CurrentThread.CurrentCulture = _previousCulture;
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug1()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromFile(@"..\..\..\resources\LearningStyles.rdf");
+            store.LoadFromFile(@"resources\LearningStyles.rdf");
 
             IGraph graph = store.ExecuteQuery(@"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
@@ -68,11 +93,11 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug2()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromFile(@"..\..\..\resources\LearningStyles.rdf");
+            store.LoadFromFile("resources\\LearningStyles.rdf");
 
             IGraph graph = store.ExecuteQuery(@"prefix sage:
 <http://www.semanticsage.home.lc/LearningStyles.owl#>
@@ -113,7 +138,7 @@ WHERE
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlAggregatesMaxBug3()
         {
             try
@@ -122,7 +147,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromFile("LearningStyles.rdf");
+                g.LoadFromFile("resources\\LearningStyles.rdf");
                 Assert.IsFalse(g.IsEmpty);
                 g.BaseUri = null;
                 store.Add(g);

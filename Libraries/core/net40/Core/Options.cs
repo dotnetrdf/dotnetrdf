@@ -31,6 +31,8 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 using VDS.RDF.Query;
+using System.Globalization;
+using System.Threading;
 
 namespace VDS.RDF
 {
@@ -73,18 +75,23 @@ namespace VDS.RDF
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
         private static bool _litNormalization = false;
         private static bool _fullIndexing = true;
+#if PORTABLE
+        private static bool _useDTDs = false; // Default to false because the PCL XML parser cannot handle entity declarations
+#else
+#endif
         private static bool _internUris = true;
         private static bool _forceHttpBasicAuth = false;
+        private static bool _validateIris = false;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
 #endif
 
-#if DEBUG
-        //Debug Build Only
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
-#endif
+
+        private static CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
+        private static CompareOptions _defaultComparisonOptions = CompareOptions.Ordinal;
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
@@ -139,6 +146,24 @@ namespace VDS.RDF
             }
         }
 
+        /// Gets/Sets whether IRIs are validated by parsers which support this functionality
+        /// </summary>
+        /// <remarks>
+        /// When enabled certain parsers will validate all IRIs they see to ensure that they are valid and throw a parser error if they are not.  Since there is a performance penalty associated with this and many older RDF standards were written pre-IRIs (thus enforcing IRI validity would reject data considered valid by those specifications) this feature is disabled by default.
+        /// </remarks>
+        public static bool ValidateIris
+        {
+            get
+            {
+                return _validateIris;
+            }
+            set
+            {
+                _validateIris = value;
+            }
+        }
+
+        /// <summary>
         /// <summary>
         /// Gets/Sets whether Basic HTTP authentication should be forced
         /// </summary>
@@ -177,18 +202,24 @@ namespace VDS.RDF
             }
         }
 
-        #region Debug Build Only Options
-
-        #if DEBUG
-
+        /// <summary>
+        /// Gets/Sets the default token queue mode used for tokeniser based parsers
+        /// </summary>
+        public static TokenQueueMode DefaultTokenQueueMode
+        {
+            get
+            {
+                return _defaultTokenQueueMode;
+            }
+            set
+            {
+                _defaultTokenQueueMode = value;
+            }
+        }
+        
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// This does not guarentee that this information is output to the Console Standard Out, most code that makes HTTP requests should do this but it may vary depending on the Library build and the exact classes used.
-        /// </remarks>
         public static bool HttpDebugging {
             get
             {
@@ -203,11 +234,6 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes
         /// </summary>
-        /// <remarks>
-        /// <strong>Only available in Debug builds</strong>
-        /// <br /><br />
-        /// Only applies if <see cref="HttpDebugging">HttpDebugging</see> is enabled
-        /// </remarks>
         public static bool HttpFullDebugging
         {
             get
@@ -220,8 +246,42 @@ namespace VDS.RDF
             }
         }
 
-        #endif
 
-        #endregion
+        /// <summary>
+        /// Gets/Sets the default culture literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
+        /// </summary>
+        /// <remarks>
+        /// The default is set to the invariant culture to preserve behavioural backwards compatibility with past versions of dotNetRDF
+        /// </remarks>
+        public static CultureInfo DefaultCulture
+        {
+            get
+            {
+                return _defaultCulture;
+            }
+            set
+            {
+                _defaultCulture = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the default collation for literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
+        /// </summary>
+        /// <remarks>
+        /// The default is set to <see cref="CompareOptions.Ordinal"/> to preserve behavioural backwards compatibility with past versions of dotNetRDF
+        /// </remarks>
+        public static CompareOptions DefaultComparisonOptions
+        {
+            get
+            {
+                return _defaultComparisonOptions;
+            }
+            set
+            {
+                _defaultComparisonOptions = value;
+            }
+        }
+
     }
 }

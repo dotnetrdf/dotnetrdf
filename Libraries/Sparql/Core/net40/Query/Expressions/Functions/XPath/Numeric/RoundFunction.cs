@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
@@ -63,18 +64,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
                 case SparqlNumericType.Decimal:
 #if !SILVERLIGHT
-                    return new DecimalNode(Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
+                    return new DecimalNode(null, Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
 #else
-                    return new DecimalNode(Math.Round(a.AsDecimal()));
+                    return new DecimalNode(null, Math.Round(a.AsDecimal()));
 #endif
 
                 case SparqlNumericType.Float:
                     try
                     {
 #if !SILVERLIGHT
-                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero)));
+                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
 #else
-                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble())));
+                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble()), CultureInfo.InvariantCulture));
 #endif
                     }
                     catch (RdfQueryException)
@@ -88,9 +89,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
                 case SparqlNumericType.Double:
 #if !SILVERLIGHT
-                    return new DoubleNode(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
+                    return new DoubleNode(null, Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
 #else
-                    return new DoubleNode(Math.Round(a.AsDouble()));
+                    return new DoubleNode(null, Math.Round(a.AsDouble()));
 #endif
 
                 default:

@@ -111,12 +111,14 @@ namespace VDS.RDF.Parsing
                     format = "RDF/XML";
                     Parse(g, data, new RdfXmlParser());
                 }
+#if !NO_HTMLAGILITYPACK
                 else if (data.Contains("<html"))
                 {
                     //HTML (possibly containing RDFa)
                     format = "HTML+RDFa";
                     Parse(g, data, new RdfAParser());
                 }
+#endif
                 else if (data.Contains("@prefix") || data.Contains("@base"))
                 {
                     //Turtle/Notation 3
@@ -330,11 +332,13 @@ namespace VDS.RDF.Parsing
                 //Probably RDF/XML
                 return new RdfXmlParser();
             }
+#if !NO_HTMLAGILITYPACK
             else if (data.Contains("<html"))
             {
                 //HTML (possibly containing RDFa)
                 return new RdfAParser();
             }
+#endif
             else if (data.Contains("@prefix") || data.Contains("@base"))
             {
                 //Turtle/Notation 3

@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                         {
                             float f;
-                            if (Single.TryParse(lit.Value, out f))
+                            if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 //Parsed OK
                                 return new FloatNode(f);
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         float f;
-                        if (Single.TryParse(lit.Value, out f))
+                        if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                         {
                             //Parsed OK
                             return new FloatNode(f);

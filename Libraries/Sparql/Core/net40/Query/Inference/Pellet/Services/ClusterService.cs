@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a list of lists expressing clusters within the Knowledge Base
@@ -118,21 +118,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugResponse(response);
-                }
-#endif
+                Tools.HttpDebugResponse(response);
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                 Graph g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
@@ -158,23 +148,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
+            Tools.HttpDebugRequest(request);
 
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
+                    Tools.HttpDebugResponse(response);
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     Graph g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
@@ -185,12 +165,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
@@ -203,24 +178,34 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Clusters</param>
         /// <param name="callback">Callback to be invoked when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
         {
             this.ClusterRaw(number, (g, s) =>
                 {
-                    //Build the List of Lists
-                    List<List<INode>> clusters = new List<List<INode>>();
-                    foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                    if (s is AsyncError)
                     {
-                        List<INode> cluster = new List<INode>();
-                        foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
-                        {
-                            cluster.Add(t.Object);
-                        }
-                        cluster = cluster.Distinct().ToList();
-                        clusters.Add(cluster);
+                        callback(null, s);
                     }
+                    else
+                    {
+                        //Build the List of Lists
+                        List<List<INode>> clusters = new List<List<INode>>();
+                        foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                        {
+                            List<INode> cluster = new List<INode>();
+                            foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
+                            {
+                                cluster.Add(t.Object);
+                            }
+                            cluster = cluster.Distinct().ToList();
+                            clusters.Add(cluster);
+                        }
 
-                    callback(clusters, s);
+                        callback(clusters, s);
+                    }
                 }, state);
         }
 
@@ -231,24 +216,34 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="type">QName of a Type to cluster around</param>
         /// <param name="callback">Callback to be invoked when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
         {
             this.ClusterRaw(number, type, (g, s) =>
                 {
-                    //Build the List of Lists
-                    List<List<INode>> clusters = new List<List<INode>>();
-                    foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                    if (s is AsyncError)
                     {
-                        List<INode> cluster = new List<INode>();
-                        foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
-                        {
-                            cluster.Add(t.Object);
-                        }
-                        cluster = cluster.Distinct().ToList();
-                        clusters.Add(cluster);
+                        callback(null, s);
                     }
+                    else
+                    {
+                        //Build the List of Lists
+                        List<List<INode>> clusters = new List<List<INode>>();
+                        foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                        {
+                            List<INode> cluster = new List<INode>();
+                            foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
+                            {
+                                cluster.Add(t.Object);
+                            }
+                            cluster = cluster.Distinct().ToList();
+                            clusters.Add(cluster);
+                        }
 
-                    callback(clusters, s);
+                        callback(clusters, s);
+                    }
                 }, state);
         }
 
@@ -258,6 +253,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Clusters</param>
         /// <param name="callback">Callback to be invoked when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ClusterRaw(int number, GraphCallback callback, Object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
@@ -268,31 +266,45 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                request.BeginGetResponse(result =>
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                        response.Close();
-                        callback(g, state);
-                    }
-                }, null);
+                                response.Close();
+                                callback(g, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
 
         /// <summary>
@@ -302,6 +314,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="type">QName of a Type to Cluster around</param>
         /// <param name="callback">Callback to be invoked when the operation completes</param>
         /// <param name="state">State to be passed to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void ClusterRaw(int number, String type, GraphCallback callback, Object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
@@ -312,31 +327,45 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-#if DEBUG
-            if (Options.HttpDebugging)
+            Tools.HttpDebugRequest(request);
+
+            try
             {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                request.BeginGetResponse(result =>
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        try
                         {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                        response.Close();
-                        callback(g, state);
-                    }
-                }, null);
+                                response.Close();
+                                callback(g, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }

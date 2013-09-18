@@ -8,7 +8,8 @@ Uses code (3rd Party Libraries) from the following sources:
 - JSON.Net by James Newton-King -> http://json.codeplex.com
 - HtmlAgilityPack by Simon Mourier -> http://htmlagilitypack.codeplex.com
 - OpenLink.Data.Virtuoso -> http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main/VirtAdoNet35Provider
-- Lucene.Net -> http://incubator.apache.org/lucene.net/
+- Portable.Runtime -> http://pclcontrib.codeplex.com
+- Lucene.Net -> http://lucenenet.apache.org/
 - FileAssociation by Brendan Grant -> http://www.codeproject.com/KB/dotnet/System_File_Association.aspx
 - ICSharpCode.AvalonEdit by Daniel Grunwald -> http://wiki.sharpdevelop.net/AvalonEdit.ashx
 - VDS.Common by Rob Vesse -> http://bitbucket.org/rvesse/vds-common
@@ -96,3 +97,5 @@ improvements in the code:
  - Andrew Matthews
  - Nicolas Gauthier
  - Dimitri Kourkoulis
+ - George Abraham
+ - Dennis Ludl

@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Parsing;
@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    [TestClass]
+    [TestFixture]
     public class QueryThreadSafety
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(expectThreadSafe, q.UsesDefaultDataset);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafetyBasic()
         {
             String query = "SELECT * WHERE { }";
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafetyFromClauses()
         {
             String query = "SELECT * FROM <test:test> WHERE { }";
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafetySubqueries()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { } } }";
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafetySubqueries2()
         {
             String query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { } } }";
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
             this.CheckThreadSafety(query, false);
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafetyExpressions()
         {
             String query = "SELECT * WHERE { FILTER (EXISTS { GRAPH ?g { ?s ?p ?o } }) }";
@@ -113,13 +113,13 @@ namespace VDS.RDF.Query
 
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryThreadSafeEvaluation()
         {
             TestTools.TestInMTAThread(new ThreadStart(this.SparqlQueryThreadSafeEvaluationActual));
         }
 
-        [TestMethod]
+        [Test]
         public void SparqlQueryAndUpdateThreadSafeEvaluation()
         {
             for (int i = 1; i <= 10; i++)
