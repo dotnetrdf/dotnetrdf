@@ -158,11 +158,35 @@ namespace VDS.RDF.Storage
                 if (results is SparqlResultSet)
                 {
                     TestTools.ShowResults(results);
+                    Assert.IsTrue(((SparqlResultSet)results).Result);
                 }
                 else
                 {
                     Assert.Fail("Failed to get a Result Set as expected");
                 }
+        }
+
+        [Test]
+        public void StorageSesameChinese()
+        {
+            SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/sesame/chinese");
+            FileLoader.Load(g, @"resources\chinese.ttl");
+            sesame.SaveGraph(g);
+
+            String ask = "ASK WHERE {?s ?p '例子'}";
+
+            Object results = sesame.Query(ask);
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+                Assert.IsTrue(((SparqlResultSet)results).Result);
+            }
+            else
+            {
+                Assert.Fail("Failed to get a Result Set as expected");
+            }
         }
 
         [Test]

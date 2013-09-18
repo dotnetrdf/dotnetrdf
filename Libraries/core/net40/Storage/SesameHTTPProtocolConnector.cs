@@ -418,21 +418,19 @@ namespace VDS.RDF.Storage
         protected virtual String EscapeQuery(String query)
         {
             StringBuilder output = new StringBuilder();
-            foreach (char c in query.ToCharArray())
+            char[] cs = query.ToCharArray();
+            for(int i = 0; i < cs.Length; i++)
             {
+                char c = cs[i];
                 if (c <= 255)
                 {
                     output.Append(c);
                 }
-                else if (c <= 65535)
-                {
-                    output.Append("\\u");
-                    output.Append(((int)c).ToString("x4"));
-                }
                 else
                 {
-                    output.Append("\\U");
-                    output.Append(((int)c).ToString("x8"));
+                    //if (UnicodeSpecsHelper.IsHighSurrogate(c))
+                    output.Append("\\u");
+                    output.Append(((int)c).ToString("x4"));
                 }
             }
             return output.ToString();
