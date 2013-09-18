@@ -262,4 +262,7 @@
   <ItemGroup>
     <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
+  </ItemGroup>
 </Project>

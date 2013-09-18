@@ -36,14 +36,13 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Specifications
 {
     /// <summary>
     /// Class containing Helper information and methods pertaining to the Sparql Query Language for RDF
     /// </summary>
     public static class SparqlSpecsHelper
     {
-        private static SparqlFormatter _formatter;
 
         #region Keywords and Constants
 
@@ -1932,22 +1931,6 @@ namespace VDS.RDF.Query
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
             return TimeSpan.Parse(n.Value);
-        }
-
-        #endregion
-
-        #region Query Formatting
-
-        /// <summary>
-        /// Gets a SPARQL Formatter to use in formatting Queries as Strings
-        /// </summary>
-        internal static SparqlFormatter Formatter
-        {
-            get
-            {
-                if (_formatter == null) _formatter = new SparqlFormatter();
-                return _formatter;
-            }
         }
 
         #endregion
