@@ -40,6 +40,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
+    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
     <Compile Include="Writing\Serialization\ResultSerializationHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -115,22 +115,21 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            return SparqlSpecsHelper.EffectiveBooleanValue(this);
-            //if (this.DataType == null)
-            //{
-            //    // EBV is True if a non-empty untyped literal
-            //    return !String.IsNullOrEmpty(this.Value);
-            //}
-            //else if (XmlSpecsHelper.XmlSchemaDataTypeString.Equals(this.DataType.AbsoluteUri))
-            //{
-            //    // Typed as sting so EBV is true if non-empty
-            //    return !String.IsNullOrEmpty(this.Value);
-            //}
-            //else
-            //{
-            //    // Must have been an invalid value for the declared type so always EBV of false
-            //    return false;
-            //}
+            if (this.DataType == null)
+            {
+                // EBV is True if a non-empty untyped literal
+                return !String.IsNullOrEmpty(this.Value);
+            }
+            else if (XmlSpecsHelper.XmlSchemaDataTypeString.Equals(this.DataType.AbsoluteUri))
+            {
+                // Typed as sting so EBV is true if non-empty
+                return !String.IsNullOrEmpty(this.Value);
+            }
+            else
+            {
+                // Must have been an invalid value for the declared type so always EBV of false
+                return false;
+            }
         }
 
         /// <summary>

@@ -163,6 +163,25 @@ namespace VDS.RDF.Specifications
             XmlSchemaDataTypeXmlLiteral*/
         };
 
+        /// <summary>
+        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL
+        /// </summary>
+        public static String[] IntegerDataTypes = {   
+                                                      XmlSpecsHelper.XmlSchemaDataTypeByte, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeInt,
+                                                      XmlSpecsHelper.XmlSchemaDataTypeInteger, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeLong, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypePositiveInteger, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeShort, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong, 
+                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort 
+                                                  };
+
         #region Name Validation
 
         /// <summary>

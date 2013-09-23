@@ -460,7 +460,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTime AsDateTime()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>

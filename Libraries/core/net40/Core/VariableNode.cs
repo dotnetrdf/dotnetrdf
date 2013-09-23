@@ -460,7 +460,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>

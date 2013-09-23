@@ -158,21 +158,10 @@
     <Compile Include="Nodes\NumericNode.cs" />
     <Compile Include="Nodes\StringNode.cs" />
     <Compile Include="Writing\Formatting\IGraphFormatter.cs" />
-    <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
-    <Compile Include="Writing\Formatting\BaseFormatter.cs" />
-    <Compile Include="Writing\Formatting\CsvFormatter.cs" />
-    <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
-    <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
     <Compile Include="Writing\Formatting\ICharFormatter.cs" />
     <Compile Include="Writing\Formatting\INamespaceFormatter.cs" />
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
     <Compile Include="Writing\Formatting\IUriFormatter.cs" />
-    <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
-    <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
-    <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
-    <Compile Include="Writing\Formatting\QNameFormatter.cs" />
-    <Compile Include="Writing\Formatting\TsvFormatter.cs" />
-    <Compile Include="Writing\Formatting\TurtleFormatter.cs" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -244,9 +233,6 @@
     <Compile Include="Specifications\RdfXmlSpecsHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Specifications\TurtleSpecsHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Writing\WriterUtilities.cs" />
@@ -259,10 +245,4 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
-  <ItemGroup>
-    <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
-  </ItemGroup>
 </Project>

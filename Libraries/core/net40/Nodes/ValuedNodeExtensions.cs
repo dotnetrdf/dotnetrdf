@@ -210,7 +210,7 @@ namespace VDS.RDF.Nodes
                                     return new StringNode(lit.Value, lit.DataType);
                                 }
                             default:
-                                if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
+                                if (XmlSpecsHelper.IntegerDataTypes.Contains(dt))
                                 {
                                     long l;
                                     if (Int64.TryParse(lit.Value, out l))
