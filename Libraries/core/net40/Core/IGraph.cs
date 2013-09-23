@@ -49,15 +49,6 @@ namespace VDS.RDF
         #region Properties
 
         /// <summary>
-        /// Gets/Sets the Base Uri for the Graph
-        /// </summary>
-        Uri BaseUri 
-        { 
-            get; 
-            set; 
-        }
-
-        /// <summary>
         /// Gets the number of triples in the graph
         /// </summary>
         long Count
@@ -82,15 +73,20 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nodes of the Graph
+        /// Gets the nodes that are used as vertices in the graph i.e. those which occur in the subject or object position of a triple
         /// </summary>
-        IEnumerable<INode> Nodes 
+        IEnumerable<INode> Vertices 
         {
             get;
         }
 
         /// <summary>
-        /// Gets the Triple Collection for the Graph
+        /// Gets the nodes that are used as edges in the graph i.e. those which occur in the predicate position of a triple
+        /// </summary>
+        IEnumerable<INode> Edges { get; }
+
+        /// <summary>
+        /// Gets the triples present in the graph
         /// </summary>
         IEnumerable<Triple> Triples 
         { 
@@ -98,8 +94,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the quads for the graph
+        /// Gets the quads present in the graph
         /// </summary>
+        /// <remarks>Since a graph does not itself have a time quads retrieved in this way have the <see cref="Quad.Graph"/> field set to null</remarks>
         IEnumerable<Quad> Quads
         {
             get;
@@ -148,12 +145,6 @@ namespace VDS.RDF
         #region Node Creation
 
         /// <summary>
-        /// Creates a URI Node that corresponds to the Base URI of the Graph
-        /// </summary>
-        /// <returns></returns>
-        IUriNode CreateUriNode();
-
-        /// <summary>
         /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName
         /// </summary>
         /// <param name="qname">QName</param>
@@ -165,134 +156,13 @@ namespace VDS.RDF
         #region Selection
 
         /// <summary>
-        /// Selects the Blank Node with the given ID if it exists in the Graph, returns null otherwise
+        /// Finds triples matching the given search criteria i.e. those where the given nodes occur in the appropriate position(s).  Null values are considered wildcards for a position.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        IBlankNode GetBlankNode(string nodeId);
-
-        /// <summary>
-        /// Selects the Literal Node with the given Value and Language if it exists in the Graph, returns null otherwise
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="langspec">Language Specifier of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        ILiteralNode GetLiteralNode(string literal, string langspec);
-
-        /// <summary>
-        /// Selects the Literal Node with the given Value if it exists in the Graph, returns null otherwise
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        ILiteralNode GetLiteralNode(string literal);
-
-        /// <summary>
-        /// Selects the Literal Node with the given Value and DataType if it exists in the Graph, returns otherwise
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="datatype">Data Type of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        ILiteralNode GetLiteralNode(string literal, Uri datatype);
-
-        /// <summary>
-        /// Selects all Triples which have a Uri Node with the given Uri
-        /// </summary>
-        /// <param name="uri">Uri</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriples(Uri uri);
-
-        /// <summary>
-        /// Selects all Triples which contain the given Node
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriples(INode n);
-
-        /// <summary>
-        /// Selects all Triples where the Object is a Uri Node with the given Uri
-        /// </summary>
-        /// <param name="u">Uri</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithObject(Uri u);
-
-        /// <summary>
-        /// Selects all Triples where the Object is a given Node
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithObject(INode n);
-
-        /// <summary>
-        /// Selects all Triples where the Predicate is a given Node
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithPredicate(INode n);
-
-        /// <summary>
-        /// Selects all Triples where the Predicate is a Uri Node with the given Uri
-        /// </summary>
-        /// <param name="u">Uri</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
-
-        /// <summary>
-        /// Selects all Triples where the Subject is a given Node
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithSubject(INode n);
-
-        /// <summary>
-        /// Selects all Triples where the Subject is a Uri Node with the given Uri
-        /// </summary>
-        /// <param name="u">Uri</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithSubject(Uri u);
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Predicate
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Object
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
-
-        /// <summary>
-        /// Selects all Triples with the given Predicate and Object
-        /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
-
-        /// <summary>
-        /// Selects the Uri Node with the given QName if it exists in the Graph, returns null otherwise
-        /// </summary>
-        /// <param name="qname">QName</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        IUriNode GetUriNode(string qname);
-
-        /// <summary>
-        /// Selects the Uri Node with the given Uri if it exists in the Graph, returns null otherwise
-        /// </summary>
-        /// <param name="uri">Uri</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        IUriNode GetUriNode(Uri uri);
+        /// <param name="s">Subject</param>
+        /// <param name="p">Predicate</param>
+        /// <param name="o">Object</param>
+        /// <returns>Triples</returns>
+        IEnumerable<Triple> Find(INode s, INode p, INode o); 
 
         /// <summary>
         /// Gets whether a given Triple is in this Graph
@@ -439,19 +309,24 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired
+    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be performed in a transaction and committed or rolled back as desired
     /// </summary>
     public interface ITransactionalGraph
         : IGraph
     {
         /// <summary>
-        /// Flushes any changes to the Graph
+        /// Begins a transaction
         /// </summary>
-        void Flush();
+        void Begin();
 
         /// <summary>
-        /// Discards any changes to the Graph
+        /// Commits a transaction
         /// </summary>
-        void Discard();
+        void Commit();
+
+        /// <summary>
+        /// Aborts and rollbacks a transaction
+        /// </summary>
+        void Rollback();
     }
 }

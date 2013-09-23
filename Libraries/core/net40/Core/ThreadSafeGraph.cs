@@ -172,242 +172,56 @@ namespace VDS.RDF
             this._lockManager.Dispose();
         }
 
-        #region Node Selection
-
-        /// <summary>
-        /// Returns the Blank Node with the given Identifier
-        /// </summary>
-        /// <param name="nodeId">The Identifier of the Blank Node to select</param>
-        /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override IBlankNode GetBlankNode(string nodeId)
+        public override IEnumerable<Triple> Find(INode s, INode p, INode o)
         {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
-        /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override ILiteralNode GetLiteralNode(string literal)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value in the given Language if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <param name="langspec">The Language Specifier for the Node to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override ILiteralNode GetLiteralNode(string literal, string langspec)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value and given Data Type if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override ILiteralNode GetLiteralNode(string literal, Uri datatype)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the UriNode with the given QName if it exists
-        /// </summary>
-        /// <param name="qname">The QName of the Node to select</param>
-        /// <returns></returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override IUriNode GetUriNode(string qname)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the UriNode with the given Uri if it exists
-        /// </summary>
-        /// <param name="uri">The Uri of the Node to select</param>
-        /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public override IUriNode GetUriNode(Uri uri)
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region Triple Selection
-
-        /// <summary>
-        /// Gets all the Triples involving the given Node
-        /// </summary>
-        /// <param name="n">The Node to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriples(INode n)
-        {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this._lockManager.EnterReadLock();
-                triples = base.GetTriples(n).ToList();
+                return base.Find(s, p, o).ToList();
             }
             finally
             {
                 this._lockManager.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
-        /// Gets all the Triples involving the given Uri
+        /// Gets the nodes that are used as vertices in the graph i.e. those which occur in the subject or object position of a triple
         /// </summary>
-        /// <param name="uri">The Uri to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriples(Uri uri)
+        public virtual IEnumerable<INode> Vertices
         {
-            List<Triple> triples = new List<Triple>();
-            try
+            get
             {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriples(uri).ToList();
+                try
+                {
+                    this._lockManager.EnterReadLock();
+                    return base.Vertices.ToList();
+                }
+                finally
+                {
+                    this._lockManager.ExitReadLock();                    
+                }
             }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Node as the Object
+        /// Gets the nodes that are used as edges in the graph i.e. those which occur in the predicate position of a triple
         /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Object</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithObject(INode n)
+        public virtual IEnumerable<INode> Edges
         {
-            List<Triple> triples = new List<Triple>();
-            try
+            get
             {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithObject(n).ToList();
+                try
+                {
+                    this._lockManager.EnterReadLock();
+                    return base.Edges.ToList();
+                }
+                finally
+                {
+                    this._lockManager.ExitReadLock();
+                }
             }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
         }
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Object
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Object</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriplesWithObject(Uri u)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithObject(u).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Predicate
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Predicate</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithPredicate(INode n)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithPredicate(n).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Predicate
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Predicate</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithPredicate(u).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Subject
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriplesWithSubject(INode n)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithSubject(n).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Subject
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public override IEnumerable<Triple> GetTriplesWithSubject(Uri u)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithSubject(u).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        #endregion
     }
 
     /// <summary>

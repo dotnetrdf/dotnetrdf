@@ -74,7 +74,7 @@ namespace VDS.RDF
         bool HasGraph(Uri u);
 
         /// <summary>
-        /// Adds the contents of a Graph to the store using the Graphs stated <see cref="IGraph.BaseUri"/> as the Graph URI for the added Quads
+        /// Adds the contents of a Graph to the stores default unnamed graph
         /// </summary>
         /// <param name="g">Graph</param>
         /// <returns>True if any quads are added, false otherwise</returns>
@@ -129,7 +129,7 @@ namespace VDS.RDF
         bool Clear(Uri graphUri);
 
         /// <summary>
-        /// Removes the contents of the given graph from the store using the graphs stated <see cref="IGraph.BaseUri"/> as the Graph URI for the removed Quads
+        /// Removes the contents of the given graph from the stores default unnamed graph
         /// </summary>
         /// <param name="g">Graph</param>
         /// <returns>True if any quads are removed, false otherwise</returns>

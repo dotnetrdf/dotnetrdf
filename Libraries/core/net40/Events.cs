@@ -94,11 +94,10 @@ namespace VDS.RDF
     /// <summary>
     /// Event Arguments for Events regarding the assertion and retraction of Triples
     /// </summary>
-    public class TripleEventArgs : EventArgs
+    public class TripleEventArgs 
+        : EventArgs
     {
-        private Triple _t;
-        private IGraph _g;
-        private bool _added = true;
+        private readonly bool _added = true;
 
         /// <summary>
         /// Creates a new set of Triple Event Arguments for the given Triple
@@ -108,8 +107,8 @@ namespace VDS.RDF
         public TripleEventArgs(Triple t, IGraph g)
             : base()
         {
-            this._t = t;
-            this._g = g;
+            this.Triple = t;
+            this.Graph = g;
         }
 
         /// <summary>
@@ -127,39 +126,17 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Triple
         /// </summary>
-        public Triple Triple
-        {
-            get
-            {
-                return this._t;
-            }
-        }
+        public Triple Triple { get; private set; }
 
         /// <summary>
         /// Gets the Graph the Triple belongs to (may be null)
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return this._g;
-            }
-            internal set
-            {
-                this._g = value;
-            }
-        }
+        public IGraph Graph { get; internal set; }
 
         /// <summary>
-        /// Gets the URI of the Graph the Triple belongs to (may be null)
+        /// Gets the URI of the graph the triple belongs to (assuming the graph had a URI associated with it)
         /// </summary>
-        public Uri GraphUri
-        {
-            get
-            {
-                return (this._g == null) ? null : this._g.BaseUri;
-            }
-        }
+        public Uri GraphUri { get; private set; }
 
         /// <summary>
         /// Gets whether the Triple was asserted

@@ -110,21 +110,6 @@ namespace VDS.RDF
         #region Wrappers around all the standard IGraph stuff
 
         /// <summary>
-        /// Gets/Sets the Base URI of the Graph
-        /// </summary>
-        public virtual Uri BaseUri
-        {
-            get
-            {
-                return this._g.BaseUri;
-            }
-            set
-            {
-                this._g.BaseUri = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the number of triples in the graph
         /// </summary>
         public virtual long Count
@@ -158,14 +143,22 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nodes of the Graph
+        /// Gets the nodes that are used as vertices in the graph i.e. those which occur in the subject or object position of a triple
         /// </summary>
-        public virtual IEnumerable<INode> Nodes
+        public virtual IEnumerable<INode> Vertices
         {
             get 
             { 
-                return this._g.Nodes; 
+                return this._g.Vertices; 
             }
+        }
+
+        /// <summary>
+        /// Gets the nodes that are used as edges in the graph i.e. those which occur in the predicate position of a triple
+        /// </summary>
+        public virtual IEnumerable<INode> Edges
+        {
+            get { return this._g.Edges; }
         }
 
         /// <summary>
@@ -315,15 +308,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new URI Node that references the Graphs Base URI
-        /// </summary>
-        /// <returns></returns>
-        public virtual IUriNode CreateUriNode()
-        {
-            return this._g.CreateUriNode();
-        }
-
-        /// <summary>
         /// Creates a new URI Node from a QName
         /// </summary>
         /// <param name="qname">QName</param>
@@ -353,186 +337,10 @@ namespace VDS.RDF
             return this._g.CreateVariableNode(varname);
         }
 
-        /// <summary>
-        /// Attempts to get the Blank Node with the given ID
-        /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns>The Node if it exists or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual IBlankNode GetBlankNode(string nodeId)
+        public virtual IEnumerable<Triple> Find(INode s, INode p, INode o)
         {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Attempts to get the Literal Node with the given Value and Language
-        /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="langspec">Language</param>
-        /// <returns>The Node if it exists or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual ILiteralNode GetLiteralNode(string literal, string langspec)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Attempts to get the Literal Node with the given Value
-        /// </summary>
-        /// <param name="literal">Value</param>
-        /// <returns>The Node if it exists or null</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual ILiteralNode GetLiteralNode(string literal)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Attempts to get the Literal Node with the given Value and Datatype
-        /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="datatype">Datatype URI</param>
-        /// <returns>The Node if it exists or null otherwise</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual ILiteralNode GetLiteralNode(string literal, Uri datatype)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Gets all the Triples involving the given URI
-        /// </summary>
-        /// <param name="uri">The URI to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriples(Uri uri)
-        {
-            return this._g.GetTriples(uri);
-        }
-
-        /// <summary>
-        /// Gets all the Triples involving the given Node
-        /// </summary>
-        /// <param name="n">The Node to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriples(INode n)
-        {
-            return this._g.GetTriples(n);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given URI as the Object
-        /// </summary>
-        /// <param name="u">The URI to find Triples with it as the Object</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriplesWithObject(Uri u)
-        {
-            return this._g.GetTriplesWithObject(u);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Object
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Object</param>
-        /// <returns></returns>
-        public virtual IEnumerable<Triple> GetTriplesWithObject(INode n)
-        {
-            return this._g.GetTriplesWithObject(n);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Predicate
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Predicate</param>
-        /// <returns></returns>
-        public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode n)
-        {
-            return this._g.GetTriplesWithPredicate(n);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Predicate
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Predicate</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
-        {
-            return this._g.GetTriplesWithPredicate(u);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Subject
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriplesWithSubject(INode n)
-        {
-            return this._g.GetTriplesWithSubject(n);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Subject
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public virtual IEnumerable<Triple> GetTriplesWithSubject(Uri u)
-        {
-            return this._g.GetTriplesWithSubject(u);
-        }
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Predicate
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
-        /// <returns></returns>
-        public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
-        {
-            return this._g.GetTriplesWithSubjectPredicate(subj, pred);
-        }
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Object
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
-        {
-            return this._g.GetTriplesWithSubjectObject(subj, obj);
-        }
-
-        /// <summary>
-        /// Selects all Triples with the given Predicate and Object
-        /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
-        {
-            return this._g.GetTriplesWithPredicateObject(pred, obj);
-        }
-
-        /// <summary>
-        /// Returns the UriNode with the given QName if it exists
-        /// </summary>
-        /// <param name="qname">The QName of the Node to select</param>
-        /// <returns></returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual IUriNode GetUriNode(string qname)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Returns the UriNode with the given Uri if it exists
-        /// </summary>
-        /// <param name="uri">The Uri of the Node to select</param>
-        /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public virtual IUriNode GetUriNode(Uri uri)
-        {
-            throw new NotSupportedException();
-        }
+            return this._g.Find(s, p, o);
+        } 
 
         /// <summary>
         /// Gets whether a given Triple exists in this Graph

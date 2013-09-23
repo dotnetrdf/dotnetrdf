@@ -150,15 +150,27 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the set of Nodes which make up this Graph
+        /// Gets the nodes that are used as vertices in the graph i.e. those which occur in the subject or object position of a triple
         /// </summary>
-        public virtual IEnumerable<INode> Nodes
+        public virtual IEnumerable<INode> Vertices
         {
             get
             {
                 return (from t in this._triples
                         select t.Subject).Concat(from t in this._triples
                                                  select t.Object).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the nodes that are used as edges in the graph i.e. those which occur in the predicate position of a triple
+        /// </summary>
+        public virtual IEnumerable<INode> Edges
+        {
+            get
+            {
+                return (from t in this._triples
+                        select t.Predicate).Distinct();
             }
         }
 
@@ -390,142 +402,76 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Node Selection
-
-        /// <summary>
-        /// Returns the Blank Node with the given Identifier
-        /// </summary>
-        /// <param name="nodeId">The Identifier of the Blank Node to select</param>
-        /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract IBlankNode GetBlankNode(string nodeId);
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value in the given Language if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <param name="langspec">The Language Specifier for the Node to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract ILiteralNode GetLiteralNode(string literal, string langspec);
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
-        /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract ILiteralNode GetLiteralNode(string literal);
-
-        /// <summary>
-        /// Returns the LiteralNode with the given Value and given Data Type if it exists
-        /// </summary>
-        /// <param name="literal">The literal value of the Node to select</param>
-        /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
-        /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract ILiteralNode GetLiteralNode(string literal, Uri datatype);
-
-        /// <summary>
-        /// Returns the UriNode with the given QName if it exists
-        /// </summary>
-        /// <param name="qname">The QName of the Node to select</param>
-        /// <returns></returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract IUriNode GetUriNode(string qname);
-
-        /// <summary>
-        /// Returns the UriNode with the given Uri if it exists
-        /// </summary>
-        /// <param name="uri">The Uri of the Node to select</param>
-        /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
-        public abstract IUriNode GetUriNode(Uri uri);
-
-        #endregion
-
         #region Triple Selection
 
-        /// <summary>
-        /// Gets all the Triples involving the given Uri
-        /// </summary>
-        /// <param name="uri">The Uri to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriples(Uri uri);
-
-        /// <summary>
-        /// Gets all the Triples involving the given Node
-        /// </summary>
-        /// <param name="n">The Node to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriples(INode n);
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Object
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Object</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriplesWithObject(Uri u);
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Object
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Object</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithObject(INode n);
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Predicate
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Predicate</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithPredicate(INode n);
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Predicate
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Predicate</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
-
-        /// <summary>
-        /// Gets all the Triples with the given Node as the Subject
-        /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubject(INode n);
-
-        /// <summary>
-        /// Gets all the Triples with the given Uri as the Subject
-        /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubject(Uri u);
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Predicate
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
-
-        /// <summary>
-        /// Selects all Triples with the given Subject and Object
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
-
-        /// <summary>
-        /// Selects all Triples with the given Predicate and Object
-        /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
+        public virtual IEnumerable<Triple> Find(INode s, INode p, INode o)
+        {
+            if (ReferenceEquals(s, null))
+            {
+                // Wildcard Subject
+                if (ReferenceEquals(p, null))
+                {
+                    // Wildcard Subject and Predicate
+                    if (ReferenceEquals(o, null))
+                    {
+                        // Wildcard Subject, Predicate and Object
+                        return this.Triples;
+                    }
+                    else
+                    {
+                        // Wildcard Subject and Predicate with Fixed Object
+                        return this._triples.WithObject(o);
+                    }
+                }
+                else
+                {
+                    // Fixed Predicate with Wildcard Subject
+                    if (ReferenceEquals(o, null))
+                    {
+                        // Fixed Predicate with Wildcard Subject and Object
+                        return this._triples.WithPredicate(p);
+                    }
+                    else
+                    {
+                        // Fixed Predicate and Object with Wildcard Subject
+                        return this._triples.WithPredicateObject(p, o);
+                    }
+                }
+            }
+            else
+            {
+                // Fixed Subject
+                if (ReferenceEquals(p, null))
+                {
+                    // Wildcard Predicate with Fixed Subject
+                    if (ReferenceEquals(o, null))
+                    {
+                        // Wildcard Predicate and Object with Fixed Subject
+                        return this._triples.WithSubject(s);
+                    }
+                    else
+                    {
+                        // Wildcard Predicate with Fixed Subject and Object
+                        return this._triples.WithSubjectObject(s, o);
+                    }
+                }
+                else
+                {
+                    // Fixed Subject and Predicate
+                    if (ReferenceEquals(o, null))
+                    {
+                        // Fixed Subject and Predicate with Wildcard Object
+                        return this._triples.WithSubjectPredicate(s, p);
+                    }
+                    else
+                    {
+                        // Fixed Subject, Predicate and Object
+                        Triple t = new Triple(s, p, o);
+                        return this._triples.Contains(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets whether a given Triple exists in this Graph

@@ -73,10 +73,6 @@ namespace VDS.RDF
             return x.All(item => !y.Contains(item));
         }
 
-        #endregion
-
-        #region Triple Selection Extensions
-
         /// <summary>
         /// Gets the Subset of Triples from an existing Enumerable that have a given Subject
         /// </summary>
@@ -114,6 +110,123 @@ namespace VDS.RDF
             return (from t in ts
                     where t.Object.Equals(obj)
                     select t);
+        }
+
+        #endregion
+
+        #region Selection Extensions
+
+        /// <summary>
+        /// Selects all Triples which contain the given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriples(this IGraph g, INode n)
+        {
+            return g.Triples.Where(t => t.Involves(n));
+        }
+
+        /// <summary>
+        /// Selects all Triples which have a URI Node with the given URI
+        /// </summary>
+        /// <param name="uri">URI</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriples(this IGraph g, Uri uri)
+        {
+            return ReferenceEquals(uri, null) ? Enumerable.Empty<Triple>() : g.GetTriples(g.CreateUriNode(uri));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Object is a URI Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithObject(this IGraph g, Uri u)
+        {
+            return ReferenceEquals(u, null) ? Enumerable.Empty<Triple>() : g.GetTriplesWithObject(g.CreateUriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Object is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithObject(this IGraph g, INode n)
+        {
+            return ReferenceEquals(n, null) ? g.Triples : g.Find(null, null, n);
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithPredicate(this IGraph g, INode n)
+        {
+            return ReferenceEquals(n, null) ? g.Triples : g.Find(null, n, null);
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithPredicate(this IGraph g, Uri u)
+        {
+            return ReferenceEquals(u, null) ? Enumerable.Empty<Triple>() : g.GetTriplesWithPredicate(g.CreateUriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Subject is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithSubject(this IGraph g, INode n)
+        {
+            return ReferenceEquals(n, null) ? g.Triples : g.Find(n, null, null);
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithSubject(this IGraph g, Uri u)
+        {
+            return ReferenceEquals(u, null) ? Enumerable.Empty<Triple>() : g.GetTriplesWithSubject(g.CreateUriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples with the given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithSubjectPredicate(this IGraph g, INode subj, INode pred)
+        {
+            return g.Find(subj, pred, null);
+        }
+
+        /// <summary>
+        /// Selects all Triples with the given Subject and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithSubjectObject(this IGraph g, INode subj, INode obj)
+        {
+            return g.Find(subj, null, obj);
+        }
+
+        /// <summary>
+        /// Selects all Triples with the given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        public static IEnumerable<Triple> GetTriplesWithPredicateObject(this IGraph g, INode pred, INode obj)
+        {
+            return g.Find(null, pred, obj);
         }
 
         #endregion

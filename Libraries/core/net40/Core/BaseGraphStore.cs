@@ -64,7 +64,7 @@ namespace VDS.RDF.Core
 
         public bool Add(IGraph g)
         {
-            return this.Add(g.BaseUri, g);
+            return this.Add(null, g);
         }
 
         public bool Add(Uri graphUri, IGraph g)
@@ -88,9 +88,8 @@ namespace VDS.RDF.Core
             else
             {
                 IGraph g = new Graph();
-                g.BaseUri = q.Graph;
                 g.Assert(q.AsTriple());
-                this.Add(g);
+                this.Add(q.Graph, g);
                 return true;
             }
         }
@@ -119,8 +118,7 @@ namespace VDS.RDF.Core
             else
             {
                 dest = new Graph();
-                dest.BaseUri = destUri;
-                this.Add(dest);
+                this.Add(destUri, dest);
             }
             
             //Copy triples
@@ -152,8 +150,7 @@ namespace VDS.RDF.Core
             else
             {
                 dest = new Graph();
-                dest.BaseUri = destUri;
-                this.Add(dest);
+                this.Add(destUri, dest);
             }
 
             //Copy triples
@@ -180,7 +177,7 @@ namespace VDS.RDF.Core
 
         public bool Remove(IGraph g)
         {
-            return this.Remove(g.BaseUri, g);
+            return this.Remove(null, g);
         }
 
         public bool Remove(Uri graphUri, IGraph g)
