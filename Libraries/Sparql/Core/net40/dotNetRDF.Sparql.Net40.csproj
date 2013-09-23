@@ -522,6 +522,6 @@
     <Compile Include="Query\Optimisation\OrderByDistinctOptimiser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

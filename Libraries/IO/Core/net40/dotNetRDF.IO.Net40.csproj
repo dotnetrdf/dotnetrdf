@@ -156,7 +156,6 @@
     <Compile Include="Parsing\TriGParser.cs" />
     <Compile Include="Parsing\TriXParser.cs" />
     <Compile Include="Parsing\TurtleParser.cs" />
-    <Compile Include="Parsing\UnicodeSpecsHelper.cs" />
     <Compile Include="Parsing\URILoader.cs" />
     <Compile Include="Parsing\UriLoaderAsync.cs" />
     <Compile Include="Parsing\UriLoaderCache.cs" />
@@ -245,6 +244,7 @@
   <ItemGroup>
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
 </Project>

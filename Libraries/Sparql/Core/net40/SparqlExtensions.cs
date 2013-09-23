@@ -11,6 +11,27 @@ namespace VDS.RDF
     public static class SparqlExtensions
     {
         /// <summary>
+        /// Checks whether the Query is a SELECT Query
+        /// </summary>
+        /// <param name="query">SPARQL Query</param>
+        /// <returns></returns>
+        public static bool IsSelectQuery(this SparqlQuery query)
+        {
+            switch (query.QueryType)
+            {
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         /// Executes a SPARQL Query on a Graph
         /// </summary>
         /// <param name="g">Graph to query</param>

@@ -1389,28 +1389,6 @@ namespace VDS.RDF.Specifications
                 }
             }
         }
-
-        /// <summary>
-        /// Checks whether the Query is a SELECT Query
-        /// </summary>
-        /// <param name="type">Query Type</param>
-        /// <returns></returns>
-        public static bool IsSelectQuery(SparqlQueryType type)
-        {
-            switch (type)
-            {
-                case SparqlQueryType.Select:
-                case SparqlQueryType.SelectAll:
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         #region Equality/Inequality
 
         /// <summary>
