@@ -350,6 +350,14 @@ namespace VDS.RDF
             return hash;
         }
 
+        public static int CombineHashCodes(Object x, Uri y)
+        {
+            int hash = 17;
+            hash = hash*31 + x.GetHashCode();
+            hash = hash*31 + y.GetEnhancedHashCode();
+            return hash;
+        }
+
         /// <summary>
         /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request
         /// </summary>

@@ -42,18 +42,12 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="literal")]
 #endif
     public abstract class BaseLiteralNode 
-        : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
+        : BaseNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
     {
-        private String _value;
-        private String _language = String.Empty;
-        private Uri _datatype;
-
         /// <summary>
         /// Constants used to add salt to the hashes of different Literal Nodes
         /// </summary>
-        private const String LangSpecLiteralHashCodeSalt = "languageSpecified",
-                             DataTypedLiteralHashCodeSalt = "typed",
-                             PlainLiteralHashCodeSalt = "plain";
+        private const String PlainLiteralHashCodeSalt = "plain";
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -75,19 +69,18 @@ namespace VDS.RDF
             if (normalize)
             {
 #if !NO_NORM
-            this._value = literal.Normalize();
+            this.Value = literal.Normalize();
 #else
-            this._value = literal;
+            this.Value = literal;
 #endif
             } 
             else 
             {
-                this._value = literal;
+                this.Value = literal;
             }
-            this._datatype = null;
 
             //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
+            this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
         }
 
         /// <summary>
@@ -112,27 +105,28 @@ namespace VDS.RDF
             if (normalize)
             {
 #if !NO_NORM
-                this._value = literal.Normalize();
+                this.Value = literal.Normalize();
 #else
-            this._value = literal;
+            this.Value = literal;
 #endif
             }
             else
             {
-                this._value = literal;
+                this.Value = literal;
             }
-            this._language = langspec;
-            this._datatype = null;
+            this.Language = String.IsNullOrEmpty(langspec) ? null : langspec;
+            // TODO: This should be set to rdf:langString for RDF 1.1 compliance
+            this.DataType = null;
 
             //Compute Hash Code
-            if (langspec.Equals(String.Empty))
+            if (ReferenceEquals(this.Language, null))
             {
                 //Empty Language Specifier equivalent to a Plain Literal
-                this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
+                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
             }
             else
             {
-                this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
+                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.Language));
             }
         }
 
@@ -158,19 +152,26 @@ namespace VDS.RDF
             if (normalize)
             {
 #if !NO_NORM
-                this._value = literal.Normalize();
+                this.Value = literal.Normalize();
 #else
-            this._value = literal;
+            this.Value = literal;
 #endif
             }
             else
             {
-                this._value = literal;
+                this.Value = literal;
             }
-            this._datatype = datatype;
+            this.DataType = datatype;
 
             //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
+            if (ReferenceEquals(this.DataType, null))
+            {
+                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
+            }
+            else
+            {
+                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.DataType));
+            }
         }
 
 #if !SILVERLIGHT
@@ -188,23 +189,24 @@ namespace VDS.RDF
         protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
             : base(NodeType.Literal)
         {
-            this._value = info.GetString("value");
+            this.Value = info.GetString("value");
             byte mode = info.GetByte("mode");
             switch (mode)
             {
                 case 0:
                     //Nothing more to do - plain literal
-                    this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
+                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
                     break;
                 case 1:
                     //Get the Language
-                    this._language = info.GetString("lang");
-                    this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
+                    this.Language = info.GetString("lang");
+                    if (this.Language.Equals(String.Empty)) this.Language = null;
+                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, String.IsNullOrEmpty(this.Language) ? PlainLiteralHashCodeSalt : this.Language));
                     break;
                 case 2:
                     //Get the Datatype
-                    this._datatype = UriFactory.Create(info.GetString("datatype"));
-                    this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
+                    this.DataType = UriFactory.Create(info.GetString("datatype"));
+                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.DataType));
                     break;
                 default:
                     throw new RdfException("Unable to deserialize a Literal Node");
@@ -214,37 +216,19 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gives the String Value of the Literal
+        /// Gives the lexical value of the literal
         /// </summary>
-        public String Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public override String Value { get; protected set; }
 
         /// <summary>
-        /// Gives the Language Specifier for the Literal (if it exists) or the Empty String
+        /// Gives the alnguage specifier for the literal (if it exists) or null
         /// </summary>
-        public String Language
-        {
-            get
-            {
-                return _language;
-            }
-        }
+        public override String Language { get; protected set; }
 
         /// <summary>
-        /// Gives the Data Type Uri for the Literal (if it exists) or a null
+        /// Gives the data type URI for the literal (if it exists) or null
         /// </summary>
-        public Uri DataType
-        {
-            get
-            {
-                return _datatype;
-            }
-        }
+        public override Uri DataType { get; protected set; }
 
         /// <summary>
         /// Implementation of the Equals method for Literal Nodes
@@ -306,63 +290,6 @@ namespace VDS.RDF
                 //Can only be equal to a LiteralNode
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
-        /// </summary>
-        /// <param name="other">Blank Node</param>
-        /// <returns></returns>
-        public override bool Equals(IBlankNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
-        /// </summary>
-        /// <param name="other">Graph Literal Node</param>
-        /// <returns></returns>
-        public override bool Equals(IGraphLiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Literal Node
-        /// </summary>
-        /// <param name="other">Literal Node</param>
-        /// <returns></returns>
-        public override bool Equals(ILiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-
-            return EqualityHelper.AreLiteralsEqual(this, other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
-        /// </summary>
-        /// <param name="other">URI Node</param>
-        /// <returns></returns>
-        public override bool Equals(IUriNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node (should always be false)
-        /// </summary>
-        /// <param name="other">Variable Node</param>
-        /// <returns></returns>
-        public override bool Equals(IVariableNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
         }
 
         /// <summary>
@@ -434,73 +361,6 @@ namespace VDS.RDF
                 //Return -1 to indicate this
                 return -1;
             }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IBlankNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/Blank Nodes
-            return 1;
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(ILiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            return ComparisonHelper.CompareLiterals(this, other);
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IGraphLiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (other == null)
-            {
-                //We are always greater than nulls
-                return 1;
-            }
-            else
-            {
-                //Graph Literals are always greater than us
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IUriNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/URI Nodes
-            return 1;
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IVariableNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            //We are always greater than nulls/Variable Nodes
-            return 1;
         }
 
         /// <summary>
@@ -620,13 +480,6 @@ namespace VDS.RDF
     public class LiteralNode
         : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
-        /// <summary>
-        /// Constants used to add salt to the hashes of different Literal Nodes
-        /// </summary>
-        private const String LangSpecLiteralHashCodeSalt = "languageSpecified",
-                             DataTypedLiteralHashCodeSalt = "typed",
-                             PlainLiteralHashCodeSalt = "plain";
-
         /// <summary>
         /// Constructor for Literal Nodes
         /// </summary>

@@ -140,29 +140,6 @@ namespace VDS.RDF
 
         #endregion
 
-        public override IBlankNode CreateBlankNode(string nodeId)
-        {
-            try
-            {
-                this._lockManager.EnterWriteLock();
-                return base.CreateBlankNode(nodeId);
-            }
-            finally
-            {
-                this._lockManager.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Blank Node ID and returns it
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Obsolete, no longer used", true)]
-        public override string GetNextBlankNodeID()
-        {
-            throw new NotSupportedException();
-        }
-
         /// <summary>
         /// Disposes of a Graph
         /// </summary>
@@ -188,7 +165,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the nodes that are used as vertices in the graph i.e. those which occur in the subject or object position of a triple
         /// </summary>
-        public virtual IEnumerable<INode> Vertices
+        public override IEnumerable<INode> Vertices
         {
             get
             {
@@ -207,7 +184,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the nodes that are used as edges in the graph i.e. those which occur in the predicate position of a triple
         /// </summary>
-        public virtual IEnumerable<INode> Edges
+        public override IEnumerable<INode> Edges
         {
             get
             {

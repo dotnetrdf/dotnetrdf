@@ -31,6 +31,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Nodes;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -67,10 +68,7 @@ namespace VDS.RDF
     /// Interface for Nodes
     /// </summary>
     public interface INode 
-        : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
-          IComparable<IUriNode>, IComparable<IVariableNode>,
-          IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>
+        : IComparable<INode>, IEquatable<INode>
 #if !SILVERLIGHT
           ,ISerializable, IXmlSerializable
 #endif
@@ -82,25 +80,6 @@ namespace VDS.RDF
         NodeType NodeType
         {
             get;
-        }
-
-        /// <summary>
-        /// Gets the Graph the Node belongs to
-        /// </summary>
-        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
-        IGraph Graph
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Graph URI associated with a Node
-        /// </summary>
-        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
-        Uri GraphUri
-        {
-            get;
-            set;
         }
 
         /// <summary>
@@ -123,102 +102,65 @@ namespace VDS.RDF
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
         String ToString(INodeFormatter formatter, TripleSegment segment);
-    }
 
-    /// <summary>
-    /// Interface for URI Nodes
-    /// </summary>
-    public interface IUriNode
-        : INode
-    {
         /// <summary>
-        /// Gets the URI the Node represents
+        /// Gets the URI the Node represents if it is a URI node, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a URI node</exception>
         Uri Uri
         {
             get;
         }
-    }
-
-    /// <summary>
-    /// Interface for Blank Nodes
-    /// </summary>
-    public interface IBlankNode 
-        : INode
-    {
-        /// <summary>
-        /// Gets the Internal ID of the Blank Node
-        /// </summary>
-        [Obsolete("Obsolete, use AnonID property instead",true)]
-        String InternalID
-        {
-            get;
-        }
 
         /// <summary>
-        /// Gets the ID of the Blank Node
+        /// Gets the ID if it is a blank node, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a blank node</exception>
         Guid AnonID
         {
             get;
         }
-    }
 
-    /// <summary>
-    /// Interface for Literal Nodes
-    /// </summary>
-    public interface ILiteralNode
-        : INode
-    {
         /// <summary>
-        /// Gets the Lexical Value of the Literal
+        /// Gets the Lexical Value if this is a literal node, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
         String Value
         {
             get;
         }
 
         /// <summary>
-        /// Gets the Language specifier (if any) of the Literal or the Empty String
+        /// Gets the Language specifier (if any) or null (if none) if this is a literal node, otherwise produces an error 
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
         String Language
         {
             get;
         }
 
         /// <summary>
-        /// Gets the DataType URI (if any) of the Literal or null
+        /// Gets the DataType URI (if any) or null (if none) if this is a literal node, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
         Uri DataType
         {
             get;
         }
-    }
 
-    /// <summary>
-    /// Interface for Graph Literal Nodes
-    /// </summary>
-    public interface IGraphLiteralNode
-        : INode
-    {
         /// <summary>
-        /// Gets the Sub-graph the Graph Literal represents
+        /// Gets the Sub-graph the node represents if this is a graph literal, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a graph literal node</exception>
         IGraph SubGraph
         {
             get;
         }
-    }
 
-    /// <summary>
-    /// Interface for Variable Nodes
-    /// </summary>
-    public interface IVariableNode
-        : INode
-    {
         /// <summary>
-        /// Gets the Variable Name
+        /// Gets the Variable Name the node represents if this is a variable node, otherwise produces an error
         /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a variable node</exception>
         String VariableName
         {
             get;

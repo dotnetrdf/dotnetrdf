@@ -34,18 +34,14 @@ namespace VDS.RDF
     public class NodeFactory
         : INodeFactory
     {
-        protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
-
         /// <summary>
         /// Creates a new Node Factory
         /// </summary>
         public NodeFactory()
         { }
 
-
         #region INodeFactory Members
-
-
+        
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID
         /// </summary>
@@ -53,39 +49,16 @@ namespace VDS.RDF
         /// <remarks>
         /// A factory should always return a fresh blank node when this method is invoked
         /// </remarks>
-        public virtual IBlankNode CreateBlankNode()
+        public virtual INode CreateBlankNode()
         {
             return new BlankNode(Guid.NewGuid());
-        }
-
-        /// <summary>
-        /// Creates a Blank Node with the given Node ID
-        /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// A Factory must consistently return the same blank node for the same ID
-        /// </remarks>
-        public IBlankNode CreateBlankNode(string nodeId)
-        {
-            Guid id;
-            if (this._bnodes.TryGetValue(nodeId, out id))
-            {
-                return new BlankNode(id);
-            }
-            else
-            {
-                id = Guid.NewGuid();
-                this._bnodes.Add(nodeId, id);
-                return new BlankNode(id);
-            }
         }
 
         /// <summary>
         /// Creates a Graph Literal Node which represents the empty Subgraph
         /// </summary>
         /// <returns></returns>
-        public IGraphLiteralNode CreateGraphLiteralNode()
+        public INode CreateGraphLiteralNode()
         {
             return new GraphLiteralNode(null);
         }
@@ -95,7 +68,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="subgraph">Subgraph</param>
         /// <returns></returns>
-        public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return new GraphLiteralNode(subgraph);
         }
@@ -106,7 +79,7 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="datatype">Data Type URI of the Literal</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        public INode CreateLiteralNode(string literal, Uri datatype)
         {
             return new LiteralNode(literal, datatype);
         }
@@ -116,7 +89,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal)
+        public INode CreateLiteralNode(string literal)
         {
             return new LiteralNode(literal);
         }
@@ -127,7 +100,7 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="langspec">Language Specifier for the Literal</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public INode CreateLiteralNode(string literal, string langspec)
         {
             return new LiteralNode(literal, langspec);
         }
@@ -137,7 +110,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">URI</param>
         /// <returns></returns>
-        public IUriNode CreateUriNode(Uri uri)
+        public INode CreateUriNode(Uri uri)
         {
             return new UriNode(uri);
         }
@@ -147,19 +120,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname"></param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(string varname)
+        public INode CreateVariableNode(string varname)
         {
             return new VariableNode(varname);
-        }
-
-        /// <summary>
-        /// Creates a new unused Blank Node ID and returns it
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Obsolete, use GetNextAnonID() instead", true)]
-        public string GetNextBlankNodeID()
-        {
-            throw new NotSupportedException();
         }
 
         #endregion
@@ -176,60 +139,55 @@ namespace VDS.RDF
     class MockNodeFactory
         : INodeFactory
     {
-        private readonly IBlankNode _bnode = new BlankNode(Guid.NewGuid());
-        private readonly IGraphLiteralNode _glit = new GraphLiteralNode(new Graph());
-        private readonly ILiteralNode _lit = new LiteralNode("mock");
+        private readonly INode _bnode = new BlankNode(Guid.NewGuid());
+        private readonly INode _glit = new GraphLiteralNode(new Graph());
+        private readonly INode _lit = new LiteralNode("mock");
         private readonly UriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
-        private readonly IVariableNode _var = new VariableNode("mock");
+        private readonly INode _var = new VariableNode("mock");
 
-        public IBlankNode CreateBlankNode()
+        public INode CreateBlankNode()
         {
             return this._bnode;
         }
 
-        public IBlankNode CreateBlankNode(string nodeId)
+        public INode CreateBlankNode(string nodeId)
         {
             return this._bnode;
         }
 
-        public IGraphLiteralNode CreateGraphLiteralNode()
+        public INode CreateGraphLiteralNode()
         {
             return this._glit;
         }
 
-        public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return this._glit;
         }
 
-        public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        public INode CreateLiteralNode(string literal, Uri datatype)
         {
             return this._lit;
         }
 
-        public ILiteralNode CreateLiteralNode(string literal)
+        public INode CreateLiteralNode(string literal)
         {
             return this._lit;
         }
 
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public INode CreateLiteralNode(string literal, string langspec)
         {
             return this._lit;
         }
 
-        public IUriNode CreateUriNode(Uri uri)
+        public INode CreateUriNode(Uri uri)
         {
             return this._uri;
         }
 
-        public IVariableNode CreateVariableNode(string varname)
+        public INode CreateVariableNode(string varname)
         {
             return this._var;
-        }
-
-        public string GetNextBlankNodeID()
-        {
-            throw new NotImplementedException("Not needed by the MockNodeFactory");
         }
     }
 }

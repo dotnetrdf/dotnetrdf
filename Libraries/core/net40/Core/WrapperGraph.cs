@@ -228,32 +228,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Blank Node with the given Node ID
-        /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode(string nodeId)
-        {
-            return this._g.CreateBlankNode(nodeId);
-        }
-
-        /// <summary>
         /// Creates a new Blank Node
         /// </summary>
         /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode()
+        public virtual INode CreateBlankNode()
         {
             return this._g.CreateBlankNode();
-        }
-
-        /// <summary>
-        /// Gets the next available Blank Node ID
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Obsolete, no longer used", true)]
-        public string GetNextBlankNodeID()
-        {
-            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -261,7 +241,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="subgraph">Sub-graph</param>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return this._g.CreateGraphLiteralNode(subgraph);
         }
@@ -270,7 +250,7 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node
         /// </summary>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode()
+        public virtual INode CreateGraphLiteralNode()
         {
             return this._g.CreateGraphLiteralNode();
         }
@@ -280,7 +260,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">Value</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal)
+        public virtual INode CreateLiteralNode(string literal)
         {
             return this._g.CreateLiteralNode(literal);
         }
@@ -291,7 +271,7 @@ namespace VDS.RDF
         /// <param name="literal">Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        public virtual INode CreateLiteralNode(string literal, Uri datatype)
         {
             return this._g.CreateLiteralNode(literal, datatype);
         }
@@ -302,7 +282,7 @@ namespace VDS.RDF
         /// <param name="literal">Value</param>
         /// <param name="langspec">Language</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public virtual INode CreateLiteralNode(string literal, string langspec)
         {
             return this._g.CreateLiteralNode(literal, langspec);
         }
@@ -312,7 +292,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName</param>
         /// <returns></returns>
-        public virtual IUriNode CreateUriNode(string qname)
+        public virtual INode CreateUriNode(string qname)
         {
             return this._g.CreateUriNode(qname);
         }
@@ -322,7 +302,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">URI</param>
         /// <returns></returns>
-        public virtual IUriNode CreateUriNode(Uri uri)
+        public virtual INode CreateUriNode(Uri uri)
         {
             return this._g.CreateUriNode(uri);
         }
@@ -332,7 +312,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(String varname)
+        public virtual INode CreateVariableNode(String varname)
         {
             return this._g.CreateVariableNode(varname);
         }

@@ -40,10 +40,8 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="variable")]
 #endif
     public abstract class BaseVariableNode
-        : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>, IValuedNode
+        : BaseNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>, IValuedNode
     {
-        private String _var;
-
         /// <summary>
         /// Creates a new Variable Node
         /// </summary>
@@ -54,13 +52,13 @@ namespace VDS.RDF
         {
             if (varname.StartsWith("?") || varname.StartsWith("$"))
             {
-                this._var = varname.Substring(1);
+                this.VariableName = varname.Substring(1);
             }
             else
             {
-                this._var = varname;
+                this.VariableName = varname;
             }
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this._hashcode = Tools.CombineHashCodes(NodeType.Variable, this.VariableName);
         }
 
 #if !SILVERLIGHT
@@ -79,8 +77,8 @@ namespace VDS.RDF
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
             : base(NodeType.Variable)
         {
-            this._var = info.GetString("name");
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this.VariableName = info.GetString("name");
+            this._hashcode = Tools.CombineHashCodes(NodeType.Variable, this.VariableName);
         }
 
 #endif
@@ -88,13 +86,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Variable Name
         /// </summary>
-        public String VariableName
-        {
-            get
-            {
-                return this._var;
-            }
-        }
+        public override String VariableName { get; protected set; }
 
         /// <summary>
         /// Gets whether this Node is equal to some other Node
@@ -116,64 +108,6 @@ namespace VDS.RDF
                 //Can only be equal to other Variables
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
-        /// </summary>
-        /// <param name="other">Blank Node</param>
-        /// <returns></returns>
-        public override bool Equals(IBlankNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
-        /// </summary>
-        /// <param name="other">Graph Literal Node</param>
-        /// <returns></returns>
-        public override bool Equals(IGraphLiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Literal Node (should always be false)
-        /// </summary>
-        /// <param name="other">Literal Node</param>
-        /// <returns></returns>
-        public override bool Equals(ILiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
-        /// </summary>
-        /// <param name="other">URI Node</param>
-        /// <returns></returns>
-        public override bool Equals(IUriNode other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node
-        /// </summary>
-        /// <param name="other">Variable Node</param>
-        /// <returns></returns>
-        public override bool Equals(IVariableNode other)
-        {
-            if ((Object)other == null) return false;
-
-            if (ReferenceEquals(this, other)) return true;
-
-            return EqualityHelper.AreVariablesEqual(this, other);
         }
 
         /// <summary>
@@ -239,110 +173,6 @@ namespace VDS.RDF
             {
                 //Variable Nodes are less than everything else
                 return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IBlankNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
-            {
-                //Variables are considered greater than null
-                return 1;
-            }
-            else
-            {
-                //Variable Nodes are less than everything else
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IGraphLiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
-            {
-                //Variables are considered greater than null
-                return 1;
-            }
-            else
-            {
-                //Variable Nodes are less than everything else
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(ILiteralNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
-            {
-                //Variables are considered greater than null
-                return 1;
-            }
-            else
-            {
-                //Variable Nodes are less than everything else
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IUriNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
-            {
-                //Variables are considered greater than null
-                return 1;
-            }
-            else
-            {
-                //Variable Nodes are less than everything else
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
-        /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <returns></returns>
-        public override int CompareTo(IVariableNode other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
-            {
-                //Variables are considered greater than null
-                return 1;
-            }
-            else
-            {
-                return ComparisonHelper.CompareVariables(this, other);
             }
         }
 

@@ -98,12 +98,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two URIs are equal
+        /// Determines whether two URI nodes are equal
         /// </summary>
         /// <param name="a">First URI Node</param>
         /// <param name="b">Second URI Node</param>
         /// <returns></returns>
-        public static bool AreUrisEqual(IUriNode a, IUriNode b)
+        public static bool AreUrisEqual(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null)
@@ -125,7 +125,7 @@ namespace VDS.RDF
         /// <param name="a">First Literal</param>
         /// <param name="b">Second Literal</param>
         /// <returns></returns>
-        public static bool AreLiteralsEqual(ILiteralNode a, ILiteralNode b)
+        public static bool AreLiteralsEqual(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null)
@@ -193,7 +193,7 @@ namespace VDS.RDF
         /// <param name="a">First Blank Node</param>
         /// <param name="b">Second Blank Node</param>
         /// <returns></returns>
-        public static bool AreBlankNodesEqual(IBlankNode a, IBlankNode b)
+        public static bool AreBlankNodesEqual(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null)
@@ -215,7 +215,7 @@ namespace VDS.RDF
         /// <param name="a">First Blank Node</param>
         /// <param name="b">Second Blank Node</param>
         /// <returns></returns>
-        public static bool AreGraphLiteralsEqual(IGraphLiteralNode a, IGraphLiteralNode b)
+        public static bool AreGraphLiteralsEqual(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null)
@@ -237,7 +237,7 @@ namespace VDS.RDF
         /// <param name="a">First Variable Node</param>
         /// <param name="b">Second Variable Node</param>
         /// <returns></returns>
-        public static bool AreVariablesEqual(IVariableNode a, IVariableNode b)
+        public static bool AreVariablesEqual(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null)
@@ -316,7 +316,7 @@ namespace VDS.RDF
         /// <param name="a">First URI Node</param>
         /// <param name="b">Second URI Node</param>
         /// <returns></returns>
-        public static int CompareUris(IUriNode a, IUriNode b)
+        public static int CompareUris(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -338,7 +338,7 @@ namespace VDS.RDF
         /// <param name="a">First Literal Node</param>
         /// <param name="b">Second Literal Node</param>
         /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b)
+        public static int CompareLiterals(INode a, INode b)
         {
             return CompareLiterals(a, b, Options.DefaultCulture, Options.DefaultComparisonOptions);
         }
@@ -351,7 +351,7 @@ namespace VDS.RDF
         /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable</param>
         /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable</param>
         /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture, CompareOptions comparisonOptions)
+        public static int CompareLiterals(INode a, INode b, CultureInfo culture, CompareOptions comparisonOptions)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -864,7 +864,7 @@ namespace VDS.RDF
         /// <param name="a">First Blank Node</param>
         /// <param name="b">Second Blank Node</param>
         /// <returns></returns>
-        public static int CompareBlankNodes(IBlankNode a, IBlankNode b)
+        public static int CompareBlankNodes(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -886,7 +886,7 @@ namespace VDS.RDF
         /// <param name="a">First Graph Literal</param>
         /// <param name="b">Second Graph Literal</param>
         /// <returns></returns>
-        public static int CompareGraphLiterals(IGraphLiteralNode a, IGraphLiteralNode b)
+        public static int CompareGraphLiterals(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -908,7 +908,7 @@ namespace VDS.RDF
         /// <param name="a">First Variable Node</param>
         /// <param name="b">Second Variable Node</param>
         /// <returns></returns>
-        public static int CompareVariables(IVariableNode a, IVariableNode b)
+        public static int CompareVariables(INode a, INode b)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)

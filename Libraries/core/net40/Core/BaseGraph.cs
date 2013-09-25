@@ -64,10 +64,6 @@ namespace VDS.RDF
         /// Namespace Mapper
         /// </summary>
         protected readonly NamespaceMapper _nsmapper;
-        /// <summary>
-        /// Base Uri of the Graph
-        /// </summary>
-        protected Uri _baseuri = null;
 
         /// <summary>
         /// Mapping from String IDs to GUIDs for Blank Nodes
@@ -190,24 +186,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the current Base Uri for the Graph
-        /// </summary>
-        /// <remarks>
-        /// This value may be changed during Graph population depending on whether the Concrete syntax allows the Base Uri to be changed and how the Parser handles this
-        /// </remarks>
-        public virtual Uri BaseUri
-        {
-            get
-            {
-                return this._baseuri;
-            }
-            set
-            {
-                this._baseuri = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the number of triples in the graph
         /// </summary>
         public virtual long Count
@@ -280,73 +258,44 @@ namespace VDS.RDF
         #region Node Creation
 
         /// <summary>
-        /// Creates a New Blank Node with an auto-generated Blank Node ID
+        /// Creates a new blank node with an auto-generated ID
         /// </summary>
         /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode()
+        public virtual INode CreateBlankNode()
         {
             return new BlankNode(Guid.NewGuid());
         }
 
         /// <summary>
-        /// Creates a New Blank Node with a user-defined Blank Node ID
-        /// </summary>
-        /// <param name="nodeId">Node ID to use</param>
-        /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode(String nodeId)
-        {
-            Guid id;
-            if (this._bnodes.TryGetValue(nodeId, out id))
-            {
-                return new BlankNode(id);
-            }
-            else
-            {
-                id = Guid.NewGuid();
-                this._bnodes.Add(nodeId, id);
-                return new BlankNode(id);
-            }
-        }
-
-        /// <summary>
-        /// Creates a New Literal Node with the given Value
+        /// Creates a new literal node with the given Value
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal)
+        public virtual INode CreateLiteralNode(String literal)
         {
             return new LiteralNode(literal);
         }
 
         /// <summary>
-        /// Creates a New Literal Node with the given Value and Language Specifier
+        /// Creates a new literal node with the given value and language specifier
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal, String langspec)
+        public virtual INode CreateLiteralNode(String literal, String langspec)
         {
             return new LiteralNode(literal, langspec);
         }
 
         /// <summary>
-        /// Creates a new Literal Node with the given Value and Data Type
+        /// Creates a new literal node with the given value and data type
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">URI of the Data Type</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal, Uri datatype)
+        public virtual INode CreateLiteralNode(String literal, Uri datatype)
         {
             return new LiteralNode(literal, datatype);
-        }
-
-        /// <summary>
-        /// Creates a new URI Node that refers to the Base Uri of the Graph
-        /// </summary>
-        /// <returns></returns>
-        public virtual IUriNode CreateUriNode()
-        {
-            return new UriNode(UriFactory.Create(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -355,11 +304,10 @@ namespace VDS.RDF
         /// <param name="uri">URI for the Node</param>
         /// <returns></returns>
         /// <remarks>
-        /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined.  If there is a Base URI defined for the Graph then relative URIs will be automatically resolved against that Base, if the Base URI is not defined then relative URIs will be left as is.  In this case issues may occur when trying to serialize the data or when accurate round tripping is required.
+        /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined. In the case of relative URIs issues may occur when trying to serialize the data or when accurate round tripping is required.
         /// </remarks>
-        public virtual IUriNode CreateUriNode(Uri uri)
+        public virtual INode CreateUriNode(Uri uri)
         {
-            if (!uri.IsAbsoluteUri && this._baseuri != null) uri = Tools.ResolveUri(uri, this._baseuri);
             return new UriNode(uri);
         }
 
@@ -368,8 +316,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName for the Node</param>
         /// <returns></returns>
-        /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible</remarks>
-        public virtual IUriNode CreateUriNode(String qname)
+        /// <remarks>Internally the Graph will resolve the QName to a full URI, this throws an exception when this is not possible</remarks>
+        public virtual INode CreateUriNode(String qname)
         {
             return new UriNode(UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, null)));
         }
@@ -379,7 +327,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(String varname)
+        public virtual INode CreateVariableNode(String varname)
         {
             return new VariableNode(varname);
         }
@@ -388,7 +336,7 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node with its value being an Empty Subgraph
         /// </summary>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode()
+        public virtual INode CreateGraphLiteralNode()
         {
             return new GraphLiteralNode(new Graph());
         }
@@ -398,7 +346,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="subgraph">Subgraph this Node represents</param>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return new GraphLiteralNode(subgraph);
         }
@@ -670,7 +618,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Uri ResolveQName(String qname)
         {
-            return UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, this._baseuri));
+            return UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, null));
         }
 
         /// <summary>
@@ -989,7 +937,6 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("base", this.BaseUri.ToSafeString());
             info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
             IEnumerable<KeyValuePair<String,String>> ns = from p in this.Namespaces.Prefixes
                                                           select new KeyValuePair<String,String>(p, this.Namespaces.GetNamespaceUri(p).AbsoluteUri);
@@ -1079,12 +1026,6 @@ namespace VDS.RDF
         public void WriteXml(XmlWriter writer)
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
-
-            //Serialize Base Uri
-            if (this.BaseUri != null)
-            {
-                writer.WriteAttributeString("base", this.BaseUri.AbsoluteUri);
-            }
 
             //Serialize Namespace Map
             writer.WriteStartElement("namespaces");
