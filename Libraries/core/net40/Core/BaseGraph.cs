@@ -141,11 +141,14 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the set of Quads in the graph
         /// </summary>
+        /// <remarks>
+        /// Since a graph has no name directly associated with it the resulting quads will have the null name assigned to them and so will appears as if in the default unnamed graph
+        /// </remarks>
         public virtual IEnumerable<Quad> Quads
         {
             get
             {
-                return this._triples.Select(t => t.AsQuad(this._baseuri));
+                return this._triples.Select(t => t.AsQuad(null));
             }
         }
 

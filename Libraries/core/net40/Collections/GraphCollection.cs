@@ -44,47 +44,45 @@ namespace VDS.RDF.Collections
         protected const int DefaultGraphID = 0;
 
         /// <summary>
-        /// Dictionary of Graph URI Enhanced Hash Codes to Graphs
+        /// Dictionary of Graph names to Graphs
         /// </summary>
-        /// <remarks>See <see cref="Extensions.GetEnhancedHashCode">GetEnhancedHashCode()</see></remarks>
-        protected MultiDictionary<Uri, IGraph> _graphs;
+        protected MultiDictionary<INode, IGraph> _graphs;
 
         /// <summary>
         /// Creates a new Graph Collection
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), true, new UriComparer(), MultiDictionaryMode.AVL);
+            this._graphs = new MultiDictionary<INode, IGraph>(n => (n != null ? n.GetHashCode() : DefaultGraphID), true, Comparer<INode>.Default, MultiDictionaryMode.AVL);
         }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
         /// </summary>
-        /// <param name="graphUri">Graph Uri to test</param>
+        /// <param name="graphName">Graph name to test</param>
         /// <returns></returns>
-        public override bool ContainsKey(Uri graphUri)
+        public override bool ContainsKey(INode graphName)
         {
-            return this._graphs.ContainsKey(graphUri);
+            return this._graphs.ContainsKey(graphName);
         }
 
         /// <summary>
         /// Adds a Graph to the Collection
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override void Add(Uri graphUri, IGraph g)
+        public override void Add(INode graphName, IGraph g)
         {
-            //TODO: If Graph URI does not match Base URI of graph instance rename graph
-            if (this._graphs.ContainsKey(graphUri))
+            if (this._graphs.ContainsKey(graphName))
             {
                 //Merge into the existing Graph
-                this._graphs[graphUri].Merge(g);
-                this.RaiseGraphAdded(this._graphs[graphUri]);
+                this._graphs[graphName].Merge(g);
+                this.RaiseGraphAdded(this._graphs[graphName], graphName);
             }
             else
             {
                 //Safe to add a new Graph
-                this._graphs.Add(graphUri, g);
-                this.RaiseGraphAdded(g);
+                this._graphs.Add(graphName, g);
+                this.RaiseGraphAdded(g, graphName);
             }
         }
 
@@ -92,14 +90,14 @@ namespace VDS.RDF.Collections
         /// Removes a Graph from the Collection
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove</param>
-        public override bool Remove(Uri graphUri)
+        public override bool Remove(INode graphName)
         {
             IGraph g;
-            if (this._graphs.TryGetValue(graphUri, out g))
+            if (this._graphs.TryGetValue(graphName, out g))
             {
-                if (this._graphs.Remove(graphUri))
+                if (this._graphs.Remove(graphName))
                 {
-                    this.RaiseGraphRemoved(g);
+                    this.RaiseGraphRemoved(g, graphName);
                     return true;
                 }
                 return false;
@@ -112,11 +110,11 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override void Clear()
         {
-            List<IGraph> gs = this._graphs.Values.ToList();
+            List<KeyValuePair<INode, IGraph>> gs = ((IEnumerable<KeyValuePair<INode, IGraph>>)this._graphs).ToList();
             this._graphs.Clear();
-            foreach (IGraph g in gs)
+            foreach (KeyValuePair<INode, IGraph> kvp in gs)
             {
-                this.RaiseGraphRemoved(g);
+                this.RaiseGraphRemoved(kvp.Value, kvp.Key);
             }
         } 
 
@@ -132,9 +130,9 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
-        /// Provides access to the URIs of the Graphs in the Collection
+        /// Provides access to the names of the Graphs in the Collection
         /// </summary>
-        public override ICollection<Uri> Keys
+        public override ICollection<INode> Keys
         {
             get
             {
@@ -156,25 +154,25 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets a Graph from the Collection
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphName">Graph name</param>
         /// <returns></returns>
-        public override IGraph this[Uri graphUri]
+        public override IGraph this[INode graphName]
         {
             get 
             {
                 IGraph g;
-                if (this._graphs.TryGetValue(graphUri, out g))
+                if (this._graphs.TryGetValue(graphName, out g))
                 {
                     return g;
                 }
                 else
                 {
-                    throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
+                    throw new RdfException("The Graph with the given name does not exist in this Graph Collection");
                 }
             }
             set
             {
-                this.Add(graphUri, value);
+                this.Add(graphName, value);
             }
         }
 
@@ -182,7 +180,7 @@ namespace VDS.RDF.Collections
         /// Gets the Enumerator for the Collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<INode, IGraph>> GetEnumerator()
         {
             return this._graphs.GetEnumerator();
         }

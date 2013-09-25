@@ -136,7 +136,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the URI of the graph the triple belongs to (assuming the graph had a URI associated with it)
         /// </summary>
-        public Uri GraphUri { get; private set; }
+        public INode GraphName { get; private set; }
 
         /// <summary>
         /// Gets whether the Triple was asserted
@@ -167,7 +167,8 @@ namespace VDS.RDF
     public class GraphEventArgs : EventArgs
     {
         private IGraph _g;
-        private TripleEventArgs _args;
+        private readonly INode _graphName;
+        private readonly TripleEventArgs _args;
 
         /// <summary>
         /// Creates a new set of Graph Event Arguments
@@ -190,6 +191,18 @@ namespace VDS.RDF
             this._args = args;
         }
 
+        public GraphEventArgs(IGraph g, INode graphName)
+            : this(g)
+        {
+            this._graphName = graphName;
+        }
+
+        public GraphEventArgs(IGraph g, TripleEventArgs args, INode graphName)
+            : this(g, args)
+        {
+            this._graphName = graphName;
+        }
+
         /// <summary>
         /// Gets the Graph
         /// </summary>
@@ -199,6 +212,11 @@ namespace VDS.RDF
             {
                 return this._g;
             }
+        }
+
+        public INode GraphName
+        {
+            get { return this._graphName; }
         }
 
         /// <summary>
@@ -234,6 +252,21 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments</param>
         public CancellableGraphEventArgs(IGraph g, TripleEventArgs args)
             : base(g, args) { }
+
+        /// <summary>
+        /// Creates a new set of Cancellable Graph Event Arguments
+        /// </summary>
+        /// <param name="g">Graph</param>
+        public CancellableGraphEventArgs(IGraph g, INode graphName)
+            : base(g, graphName) { }
+
+        /// <summary>
+        /// Creates a new set of Cancellable Graph Event Arguments
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="args">Triple Event Arguments</param>
+        public CancellableGraphEventArgs(IGraph g, TripleEventArgs args, INode graphName)
+            : base(g, args, graphName) { }
 
         /// <summary>
         /// Gets/Sets whether the Event should be cancelled

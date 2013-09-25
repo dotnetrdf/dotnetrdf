@@ -61,26 +61,26 @@ namespace VDS.RDF.Collections
 
         private void HandleGraphAdded(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphAdded(args.Graph);
+            this.RaiseGraphAdded(args.Graph, args.GraphName);
         }
 
         private void HandleGraphRemoved(Object sender, GraphEventArgs args)
         {
-            this.RaiseGraphRemoved(args.Graph);
+            this.RaiseGraphRemoved(args.Graph, args.GraphName);
         }
 
         /// <summary>
         /// Adds a Graph to the collection
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph name</param>
         /// <param name="g">Graph</param>
         /// <returns></returns>
-        public override void Add(Uri graphUri, IGraph g)
+        public override void Add(INode graphName, IGraph g)
         {
-            this._graphs.Add(graphUri, g);
+            this._graphs.Add(graphName, g);
         }
 
-        public override void Add(KeyValuePair<Uri, IGraph> kvp)
+        public override void Add(KeyValuePair<INode, IGraph> kvp)
         {
             this._graphs.Add(kvp);
         }
@@ -88,14 +88,14 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets whether the collection contains the given Graph
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph URI</param>
         /// <returns></returns>
-        public override bool ContainsKey(Uri graphUri)
+        public override bool ContainsKey(INode graphName)
         {
-            return this._graphs.ContainsKey(graphUri);
+            return this._graphs.ContainsKey(graphName);
         }
 
-        public override bool Contains(KeyValuePair<Uri, IGraph> kvp)
+        public override bool Contains(KeyValuePair<INode, IGraph> kvp)
         {
             return this._graphs.Contains(kvp);
         }
@@ -103,14 +103,14 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Removes a Graph from the collection
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph URI</param>
         /// <returns></returns>
-        public override bool Remove(Uri graphUri)
+        public override bool Remove(INode graphName)
         {
-            return this._graphs.Remove(graphUri);
+            return this._graphs.Remove(graphName);
         }
 
-        public override bool Remove(KeyValuePair<Uri, IGraph> kvp)
+        public override bool Remove(KeyValuePair<INode, IGraph> kvp)
         {
             return this._graphs.Remove(kvp);
         }
@@ -123,17 +123,17 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets a Graph from the collection
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph URI</param>
         /// <returns></returns>
-        public override IGraph this[Uri graphUri]
+        public override IGraph this[INode graphName]
         {
             get
             {
-                return this._graphs[graphUri];
+                return this._graphs[graphName];
             }
             set
             {
-                this._graphs[graphUri] = value;
+                this._graphs[graphName] = value;
             }
         }
 
@@ -160,15 +160,15 @@ namespace VDS.RDF.Collections
         /// Gets the enumerator for the collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<INode, IGraph>> GetEnumerator()
         {
             return this._graphs.GetEnumerator();
         }
 
         /// <summary>
-        /// Gets the URIs of the Graphs in the collection
+        /// Gets the names of the Graphs in the collection
         /// </summary>
-        public override ICollection<Uri> Keys
+        public override ICollection<INode> Keys
         {
             get 
             {

@@ -33,7 +33,7 @@ namespace VDS.RDF.Core
             this._graphs = collection;
         }
 
-        public IEnumerable<Uri> GraphUris
+        public IEnumerable<INode> GraphNames
         {
             get
             {
@@ -49,17 +49,17 @@ namespace VDS.RDF.Core
             }
         }
 
-        public IGraph this[Uri u]
+        public IGraph this[INode graphName]
         {
             get 
             {
-                return this._graphs[u];
+                return this._graphs[graphName];
             }
         }
 
-        public bool HasGraph(Uri u)
+        public bool HasGraph(INode graphName)
         {
-            return this._graphs.ContainsKey(u);
+            return this._graphs.ContainsKey(graphName);
         }
 
         public bool Add(IGraph g)
@@ -67,15 +67,15 @@ namespace VDS.RDF.Core
             return this.Add(null, g);
         }
 
-        public bool Add(Uri graphUri, IGraph g)
+        public bool Add(INode graphName, IGraph g)
         {
-            this._graphs.Add(graphUri, g);
+            this._graphs.Add(graphName, g);
             return true;
         }
 
-        public bool Add(Uri graphUri, Triple t)
+        public bool Add(INode graphName, Triple t)
         {
-            return this.Add(t.AsQuad(graphUri));
+            return this.Add(t.AsQuad(graphName));
         }
 
         public bool Add(Quad q)
@@ -94,15 +94,15 @@ namespace VDS.RDF.Core
             }
         }
 
-        public bool Copy(Uri srcUri, Uri destUri, bool overwrite)
+        public bool Copy(INode srcName, INode destName, bool overwrite)
         {
-            if (EqualityHelper.AreUrisEqual(srcUri, destUri)) return false;
+            if (EqualityHelper.AreNodesEqual(srcName, destName)) return false;
 
             //Get the source graph if available
             IGraph src;
-            if (this.HasGraph(srcUri))
+            if (this.HasGraph(srcName))
             {
-                src = this[srcUri];
+                src = this[srcName];
             }
             else
             {
@@ -110,15 +110,15 @@ namespace VDS.RDF.Core
             }
             //Get the destination graph
             IGraph dest;
-            if (this.HasGraph(destUri))
+            if (this.HasGraph(destName))
             {
-                dest = this[destUri];
+                dest = this[destName];
                 if (overwrite) dest.Clear();
             }
             else
             {
                 dest = new Graph();
-                this.Add(destUri, dest);
+                this.Add(destName, dest);
             }
             
             //Copy triples
@@ -126,15 +126,15 @@ namespace VDS.RDF.Core
             return true;
         }
 
-        public bool Move(Uri srcUri, Uri destUri, bool overwrite)
+        public bool Move(INode srcName, INode destName, bool overwrite)
         {
-            if (EqualityHelper.AreUrisEqual(srcUri, destUri)) return false;
+            if (EqualityHelper.AreNodesEqual(srcName, destName)) return false;
 
             //Get the source graph if available
             IGraph src;
-            if (this.HasGraph(srcUri))
+            if (this.HasGraph(srcName))
             {
-                src = this[srcUri];
+                src = this[srcName];
             }
             else
             {
@@ -142,15 +142,15 @@ namespace VDS.RDF.Core
             }
             //Get the destination graph
             IGraph dest;
-            if (this.HasGraph(destUri))
+            if (this.HasGraph(destName))
             {
-                dest = this[destUri];
+                dest = this[destName];
                 if (overwrite) dest.Clear();
             }
             else
             {
                 dest = new Graph();
-                this.Add(destUri, dest);
+                this.Add(destName, dest);
             }
 
             //Copy triples
@@ -161,11 +161,11 @@ namespace VDS.RDF.Core
             return true;
         }
 
-        public bool Clear(Uri graphUri)
+        public bool Clear(INode graphName)
         {
-            if (this.HasGraph(graphUri))
+            if (this.HasGraph(graphName))
             {
-                IGraph g = this[graphUri];
+                IGraph g = this[graphName];
                 g.Clear();
                 return true;
             }
@@ -180,11 +180,11 @@ namespace VDS.RDF.Core
             return this.Remove(null, g);
         }
 
-        public bool Remove(Uri graphUri, IGraph g)
+        public bool Remove(INode graphName, IGraph g)
         {
-            if (this.HasGraph(graphUri))
+            if (this.HasGraph(graphName))
             {
-                IGraph dest = this[graphUri];
+                IGraph dest = this[graphName];
                 return dest.Retract(g.Triples);
             }
             else
@@ -193,16 +193,16 @@ namespace VDS.RDF.Core
             }
         }
 
-        public bool Remove(Uri graphUri)
+        public bool Remove(INode graphName)
         {
-            return this._graphs.Remove(graphUri);
+            return this._graphs.Remove(graphName);
         }
 
-        public bool Remove(Uri graphUri, Triple t)
+        public bool Remove(INode graphName, Triple t)
         {
-            if (this.HasGraph(graphUri))
+            if (this.HasGraph(graphName))
             {
-                IGraph g = this[graphUri];
+                IGraph g = this[graphName];
                 return g.Retract(t);
             }
             else
@@ -226,48 +226,6 @@ namespace VDS.RDF.Core
             }
         }
 
-        public IEnumerable<Triple> GetTriplesWithSubject(IEnumerable<Uri> graphUris, INode subj)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithSubject(subj)
-                    select t);
-        }
-
-        public IEnumerable<Triple> GetTriplesWithSubjectPredicate(IEnumerable<Uri> graphUris, INode subj, INode pred)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithSubjectPredicate(subj, pred)
-                    select t);
-        }
-
-        public IEnumerable<Triple> GetTriplesWithSubjectObject(IEnumerable<Uri> graphUris, INode subj, INode obj)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithSubjectObject(subj, obj)
-                    select t);
-        }
-
-        public IEnumerable<Triple> GetTriplesWithPredicate(IEnumerable<Uri> graphUris, INode pred)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithPredicate(pred)
-                    select t);
-        }
-
-        public IEnumerable<Triple> GetTriplesWithPredicateObject(IEnumerable<Uri> graphUris, INode pred, INode obj)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithPredicateObject(pred, obj)
-                    select t);
-        }
-
-        public IEnumerable<Triple> GetTriplesWithObject(IEnumerable<Uri> graphUris, INode obj)
-        {
-            return (from g in graphUris.Select(u => this[u])
-                    from t in g.GetTriplesWithObject(obj)
-                    select t);
-        }
-
         public IEnumerable<Quad> Quads
         {
             get 
@@ -279,46 +237,34 @@ namespace VDS.RDF.Core
             }
         }
 
-        public IEnumerable<Quad> GetQuadsWithSubject(INode subj)
+        public virtual IEnumerable<Triple> FindTriples(INode s, INode p, INode o)
         {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithSubject(subj)
+            return (from IGraph g in this._graphs.Values
+                    from t in g.Find(s, p, o)
+                    select t);
+        }
+
+        public virtual IEnumerable<Quad> FindQuads(INode s, INode p, INode o)
+        {
+            return (from KeyValuePair<INode, IGraph> kvp in this._graphs
+                    from t in kvp.Value.Find(s, p, o)
                     select t.AsQuad(kvp.Key));
         }
 
-        public IEnumerable<Quad> GetQuadsWithSubjectPredicate(INode subj, INode pred)
+        public virtual IEnumerable<Quad> FindQuads(INode g, INode s, INode p, INode o)
         {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithSubjectPredicate(subj, pred)
-                    select t.AsQuad(kvp.Key));
-        }
-
-        public IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj, INode obj)
-        {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithSubjectObject(subj, obj)
-                    select t.AsQuad(kvp.Key));
-        }
-
-        public IEnumerable<Quad> GetQuadsWithPredicate(INode pred)
-        {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithPredicate(pred)
-                    select t.AsQuad(kvp.Key));
-        }
-
-        public IEnumerable<Quad> GetQuadsWithPredicateObject(INode pred, INode obj)
-        {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithPredicateObject(pred, obj)
-                    select t.AsQuad(kvp.Key));
-        }
-
-        public IEnumerable<Quad> GetQuadsWithObject(INode obj)
-        {
-            return (from kvp in this._graphs
-                    from t in kvp.Value.GetTriplesWithObject(obj)
-                    select t.AsQuad(kvp.Key));
+            if (ReferenceEquals(g, null))
+            {
+                return this.FindQuads(s, p, o);
+            }
+            else if (this.HasGraph(g))
+            {
+                return this[g].Find(s, p, o).AsQuads(g);
+            }
+            else
+            {
+                return Enumerable.Empty<Quad>();
+            }
         }
 
         public bool Contains(Triple t)
@@ -326,9 +272,9 @@ namespace VDS.RDF.Core
             return this._graphs.Values.Any(g => g.ContainsTriple(t));
         }
 
-        public bool Contains(IEnumerable<Uri> graphUris, Triple t)
+        public bool Contains(IEnumerable<INode> graphNames, Triple t)
         {
-            return (from u in graphUris
+            return (from u in graphNames
                     select this[u].ContainsTriple(t)).Any();
         }
 

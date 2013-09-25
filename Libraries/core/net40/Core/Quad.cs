@@ -27,27 +27,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
     public class Quad
     {
         private readonly Triple _t;
-        private readonly Uri _graphUri;
+        private readonly INode _graph;
         private readonly int _hashCode;
 
-        public Quad(Triple t, Uri graphUri)
+        /// <summary>
+        /// Creates a new quad
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <param name="g">Graph name</param>
+        public Quad(Triple t, INode g)
         {
             if (t == null) throw new ArgumentNullException("t");
             this._t = t;
-            this._graphUri = graphUri;
+            this._graph = g;
 
             this._hashCode = this.ToString().GetHashCode();
         }
 
-        public Quad(INode subj, INode pred, INode obj, Uri graphUri)
-            : this(new Triple(subj, pred, obj), graphUri) { }
+        /// <summary>
+        /// Creates a new quad
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <param name="graph">graph name</param>
+        public Quad(INode subj, INode pred, INode obj, INode graph)
+            : this(new Triple(subj, pred, obj), graph) { }
 
+        /// <summary>
+        /// Gets the subject of the quad
+        /// </summary>
         public INode Subject
         {
             get
@@ -56,6 +72,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the predicate of the quad
+        /// </summary>
         public INode Predicate
         {
             get
@@ -64,6 +83,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the object of the quad
+        /// </summary>
         public INode Object
         {
             get
@@ -72,14 +94,20 @@ namespace VDS.RDF
             }
         }
 
-        public Uri Graph
+        /// <summary>
+        /// Gets the graph name for the quad
+        /// </summary>
+        public INode Graph
         {
             get
             {
-                return this._graphUri;
+                return this._graph;
             }
         }
 
+        /// <summary>
+        /// Returns whether the quad is grounded i.e. does not contain any blank/variable nodes
+        /// </summary>
         public bool IsGroundQuad
         {
             get
@@ -101,27 +129,33 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Makes a copy of the Quad which is the Quad with a different Graph field
+        /// Makes a copy of the Quad which is the Quad with a different Graph name
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graph">Graph name</param>
         /// <returns></returns>
         /// <remarks>
-        /// Returns this quad if the Graph URI matches that already set for this Quad, otherwise a new Quad is returned
+        /// Returns this quad if the Graph name matches that already set for this Quad, otherwise a new Quad is returned
         /// </remarks>
-        public Quad CopyTo(Uri graphUri)
+        public Quad CopyTo(INode graph)
         {
-            if (EqualityHelper.AreUrisEqual(this._graphUri, graphUri)) return this;
-            return new Quad(this._t, graphUri);
+            if (this._graph.Equals(graph)) return this;
+            return new Quad(this._t, graph);
         }
 
+        /// <summary>
+        /// Determines whether this quad is equal to some other object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if this quad is equal to the other object, false otherwise</returns>
         public override bool Equals(object obj)
         {
+            if (ReferenceEquals(this, obj)) return true;
             if (obj is Quad)
             {
                 Quad other = (Quad)obj;
 
-                //Graph URI and subject, predicate and object must all be equal
-                return (EqualityHelper.AreUrisEqual(this._graphUri, other.Graph) && this._t.Subject.Equals(other.Subject) && this._t.Predicate.Equals(other.Predicate) && this._t.Object.Equals(other.Object));
+                //Graph, subject, predicate and object must all be equal
+                return (this._graph.Equals(other.Graph) && this._t.Subject.Equals(other.Subject) && this._t.Predicate.Equals(other.Predicate) && this._t.Object.Equals(other.Object));
             }
             else
             {
@@ -130,22 +164,40 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets a human readable representation of the quad, this representation is intended for debugging purposes and does not represent a round trippable serialization of a quad.  For that use the <see cref="ToString(IQuadFormatter)"/> overload
+        /// </summary>
+        /// <returns>String representation of the quad</returns>
         public override string ToString()
         {
             StringBuilder outString = new StringBuilder();
             outString.Append(this._t.ToString());
-            if (this._graphUri == null)
+            if (this._graph == null)
             {
                 outString.Append(" in Default Graph");
             }
             else
             {
-                outString.Append(" in Graph " + this._graphUri.AbsoluteUri);
+                outString.Append(" in Graph " + this._graph.ToString());
             }
 
             return outString.ToString();
         }
 
+        /// <summary>
+        /// Gets the string representation of the quad as formatted by the given formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <returns>String representation of the quad</returns>
+        public string ToString(IQuadFormatter formatter)
+        {
+            return formatter.Format(this);
+        }
+
+        /// <summary>
+        /// Gets the hash code of the quad
+        /// </summary>
+        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
             return this._hashCode;

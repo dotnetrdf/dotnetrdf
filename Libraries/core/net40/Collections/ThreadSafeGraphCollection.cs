@@ -109,16 +109,16 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
         /// </summary>
-        /// <param name="graphUri">Graph Uri to test</param>
+        /// <param name="graphName">Graph name to test</param>
         /// <returns></returns>
-        public override bool ContainsKey(Uri graphUri)
+        public override bool ContainsKey(INode graphName)
         {
             bool contains = false;
 
             try
             {
                 this.EnterReadLock();
-                contains = this._graphs.ContainsKey(graphUri);
+                contains = this._graphs.ContainsKey(graphName);
             }
             finally
             {
@@ -131,12 +131,12 @@ namespace VDS.RDF.Collections
         /// Adds a Graph to the Collection
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override void Add(Uri graphUri, IGraph g)
+        public override void Add(INode graphName, IGraph g)
         {
             try
             {
                 this.EnterWriteLock();
-                this._graphs.Add(graphUri, g);
+                this._graphs.Add(graphName, g);
             }
             finally
             {
@@ -147,13 +147,13 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Removes a Graph from the Collection
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to remove</param>
-        public override bool Remove(Uri graphUri)
+        /// <param name="graphName">Name of the Graph to remove</param>
+        public override bool Remove(INode graphName)
         {
             try
             {
                 this.EnterWriteLock();
-                return this._graphs.Remove(graphUri);
+                return this._graphs.Remove(graphName);
             }
             finally
             {
@@ -186,9 +186,9 @@ namespace VDS.RDF.Collections
         /// Gets the Enumerator for the Collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<INode, IGraph>> GetEnumerator()
         {
-            List<KeyValuePair<Uri, IGraph>> graphs = new List<KeyValuePair<Uri, IGraph>>();
+            List<KeyValuePair<INode, IGraph>> graphs = new List<KeyValuePair<INode, IGraph>>();
             try
             {
                 this.EnterReadLock();
@@ -204,11 +204,11 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Provides access to the Graph URIs of Graphs in the Collection
         /// </summary>
-        public override ICollection<Uri> Keys
+        public override ICollection<INode> Keys
         {
             get
             {
-                List<Uri> uris = new List<Uri>();
+                List<INode> uris = new List<INode>();
                 try
                 {
                     this.EnterReadLock();
@@ -225,9 +225,9 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets a Graph from the Collection
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphName">Graph name</param>
         /// <returns></returns>
-        public override IGraph this[Uri graphUri]
+        public override IGraph this[INode graphName]
         {
             get
             {
@@ -235,13 +235,25 @@ namespace VDS.RDF.Collections
                 try
                 {
                     this.EnterReadLock();
-                    g = this._graphs[graphUri];
+                    g = this._graphs[graphName];
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
                 return g;
+            }
+            set
+            {
+                try
+                {
+                    this.EnterWriteLock();
+                    this.Add(graphName, value);
+                }
+                finally
+                {
+                    this.ExitWriteLock();
+                }
             }
         }
 

@@ -217,11 +217,11 @@ namespace VDS.RDF
         /// <summary>
         /// Converts the Triple into a Quad
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graph">Graph name</param>
         /// <returns></returns>
-        public Quad AsQuad(Uri graphUri)
+        public Quad AsQuad(INode graph)
         {
-            return new Quad(this, graphUri);
+            return new Quad(this, graph);
         }
 
         /// <summary>

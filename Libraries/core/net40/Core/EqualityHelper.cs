@@ -75,6 +75,29 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether two nodes are equal
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool AreNodesEqual(INode a, INode b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null))
+            {
+                return ReferenceEquals(b, null);
+            }
+            else if (ReferenceEquals(b, null))
+            {
+                return false;
+            }
+            else
+            {
+                return a.Equals(b);
+            }
+        }
+
+        /// <summary>
         /// Determines whether two URIs are equal
         /// </summary>
         /// <param name="a">First URI Node</param>

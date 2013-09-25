@@ -62,6 +62,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Converts an enumerable of triples into an enumerable of quads with the given graph name
+        /// </summary>
+        /// <param name="ts">Triples</param>
+        /// <param name="graphName">Graph name</param>
+        /// <returns></returns>
+        public static IEnumerable<Quad> AsQuads(this IEnumerable<Triple> ts, INode graphName)
+        {
+            return ReferenceEquals(ts, null) ? Enumerable.Empty<Quad>() : ts.Select(t => t.AsQuad(graphName));
+        }
+
+        /// <summary>
         /// Determines whether the contents of two enumerables are disjoint
         /// </summary>
         /// <typeparam name="T">Type Parameter</typeparam>
