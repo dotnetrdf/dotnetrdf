@@ -58,6 +58,11 @@ namespace VDS.RDF
         public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
         /// <summary>
+        /// MIME Type for URL Enoded WWW Form Content used when POSTing over HTTP in UTF-8 encoding
+        /// </summary>
+        public const String Utf8WWWFormURLEncoded = WWWFormURLEncoded + ";charset=utf-8";
+
+        /// <summary>
         /// MIME Type for Multipart Form Data
         /// </summary>
         public const String FormMultipart = "multipart/form-data";

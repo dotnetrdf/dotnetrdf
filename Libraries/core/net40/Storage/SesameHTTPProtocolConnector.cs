@@ -100,6 +100,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Whether queries should always be posted
         /// </summary>
+        [Obsolete("This parameter is no longer used internally and will be removed in the future, all queries are now POSTed regardless of this setting")]
         protected bool _postAllQueries = false;
 
         /// <summary>
@@ -328,24 +329,18 @@ namespace VDS.RDF.Storage
 
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
+                // For Sesame we always POST queries because using GET doesn't always work (CORE-374)
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
-                {
-                    queryParams.Add("query", EscapeQuery(sparqlQuery));
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
-                }
-                else
+                // Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("query=");
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
-
-                    //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                    StringBuilder postData = new StringBuilder();
-                    postData.Append("query=");
-                    postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
                 }
@@ -416,21 +411,18 @@ namespace VDS.RDF.Storage
         protected virtual String EscapeQuery(String query)
         {
             StringBuilder output = new StringBuilder();
-            foreach (char c in query.ToCharArray())
+            char[] cs = query.ToCharArray();
+            for (int i = 0; i < cs.Length; i++)
             {
-                if (c <= 255)
+                char c = cs[i];
+                if (c <= 127)
                 {
                     output.Append(c);
                 }
-                else if (c <= 65535)
+                else
                 {
                     output.Append("\\u");
                     output.Append(((int)c).ToString("x4"));
-                }
-                else
-                {
-                    output.Append("\\U");
-                    output.Append(((int)c).ToString("x8"));
                 }
             }
             return output.ToString();
@@ -1039,7 +1031,7 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
 
                 Tools.HttpDebugRequest(request);
                 //POST the response which in async requires extra pain
@@ -1052,9 +1044,11 @@ namespace VDS.RDF.Storage
                             StringBuilder postData = new StringBuilder();
                             postData.Append("query=");
                             postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                            StreamWriter writer = new StreamWriter(stream);
-                            writer.Write(postData);
-                            writer.Close();
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            {
+                                writer.Write(postData);
+                                writer.Close();
+                            }
 
                             request.BeginGetResponse(r2 =>
                                 {
@@ -1417,11 +1411,11 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -1461,7 +1455,7 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
@@ -1471,7 +1465,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write(postData);
                                 writer.Close();
