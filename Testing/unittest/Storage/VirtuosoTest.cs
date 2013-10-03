@@ -65,11 +65,11 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, "MergePart1.ttl");
+                FileLoader.Load(testData, @"resources\MergePart1.ttl");
                 testData.BaseUri = new Uri("http://localhost/VirtuosoTest");
                 manager.SaveGraph(testData);
                 testData = new Graph();
-                FileLoader.Load(testData, "resources\\Turtle.ttl");
+                FileLoader.Load(testData, @"resources\Turtle.ttl");
                 testData.BaseUri = new Uri("http://localhost/TurtleImportTest");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -780,6 +780,43 @@ namespace VDS.RDF.Storage
             finally
             {
                 if (manager != null) manager.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoRelativeUris()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                //Load in our Test Graph
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("/storage/virtuoso/relative", UriKind.Relative);
+
+                virtuoso.SaveGraph(g);
+
+                // Load it back out again
+                Graph h = new Graph();
+                virtuoso.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.IsEmpty, "Graph loaded via relative URI should not be empty");
+                Assert.AreEqual(g, h);
+
+                Console.WriteLine("Loading with relative URI works OK");
+                Console.WriteLine();
+
+                // Load it back out using marshalled URI
+                Uri u = new Uri("virtuoso:relative:/storage/virtuoso/relative");
+                h = new Graph();
+                virtuoso.LoadGraph(h, u);
+                Assert.IsFalse(h.IsEmpty, "Graph loaded via marshalled URI should not be empty");
+                Assert.AreEqual(g, h);
+
+                Console.WriteLine("Loading with marshalled URI works OK");
+            }
+            finally
+            {
+                virtuoso.Dispose();
             }
         }
 

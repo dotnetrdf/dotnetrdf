@@ -73,6 +73,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         public const String DefaultDB = "DB";
 
+        private const String VirtuosoRelativeBaseString = "virtuoso:relative:";
+        private readonly Uri VirtuosoRelativeBase = new Uri(VirtuosoRelativeBaseString);
+
         #region Variables & Constructors
 
         private VirtuosoConnection _db;
@@ -299,7 +302,7 @@ namespace VDS.RDF.Storage
             String getTriples;
             if (graphUri != null)
             {
-                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + graphUri.AbsoluteUri + "> WHERE {?s ?p ?o}";
+                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + this.UnmarshalUri(graphUri) + "> WHERE {?s ?p ?o}";
             }
             else
             {
@@ -343,7 +346,6 @@ namespace VDS.RDF.Storage
                 {
                     //Blank Node
                     temp = factory.CreateBlankNode(n.ToString().Substring(9));
-
                 }
                 else if (iri.IriType != iri.StrType)
                 {
@@ -353,11 +355,7 @@ namespace VDS.RDF.Storage
                 else if (iri.IriType == SqlExtendedStringType.IRI)
                 {
                     //Uri
-                    Uri u = new Uri(n.ToString(), UriKind.RelativeOrAbsolute);
-                    if (!u.IsAbsoluteUri)
-                    {
-                        throw new RdfParseException("Virtuoso returned a URI Node which has a relative URI, unable to resolve the URI for this node");
-                    }
+                    Uri u = this.MarshalUri(n.ToString());
                     temp = factory.CreateUriNode(u);
                 }
                 else
@@ -377,7 +375,7 @@ namespace VDS.RDF.Storage
                 else if (lit.StrType != null)
                 {
                     //Data Typed Literal
-                    temp = factory.CreateLiteralNode(n.ToString(), UriFactory.Create(lit.StrType));
+                    temp = factory.CreateLiteralNode(n.ToString(), this.MarshalUri(lit.StrType));
                 }
                 else
                 {
@@ -443,6 +441,37 @@ namespace VDS.RDF.Storage
             return temp;
         }
 
+        private Uri MarshalUri(String uriData)
+        {
+            Uri u = new Uri(uriData, UriKind.RelativeOrAbsolute);
+            if (!u.IsAbsoluteUri)
+            {
+                // As of VIRT-375 we marshal this to a form we can round trip later rather than erroring as we did previously
+                u = new Uri(VirtuosoRelativeBase, u);
+            }
+            return u;
+        }
+
+        private String UnmarshalUri(Uri u)
+        {
+            if (u.IsAbsoluteUri)
+            {
+                if (u.AbsoluteUri.StartsWith(VirtuosoRelativeBaseString))
+                {
+                    u = new Uri(u.AbsoluteUri.Substring(VirtuosoRelativeBase.AbsoluteUri.Length), UriKind.Relative);
+                    return u.OriginalString;
+                }
+                else
+                {
+                    return u.AbsoluteUri;
+                }
+            }
+            else
+            {
+                return u.OriginalString;
+            }
+        }
+
         /// <summary>
         /// Saves a Graph into the Quad Store (Warning: Completely replaces any existing Graph with the same URI)
         /// </summary>
@@ -459,7 +488,7 @@ namespace VDS.RDF.Storage
                 this.Open(false);
 
                 //Delete the existing Graph (if it exists)
-                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + g.BaseUri.AbsoluteUri + "')");
+                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + this.UnmarshalUri(g.BaseUri) + "')");
 
                 //Make a call to the TTLP() Virtuoso function
                 VirtuosoCommand cmd = new VirtuosoCommand();
@@ -467,7 +496,7 @@ namespace VDS.RDF.Storage
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                String baseUri = g.BaseUri.ToSafeString();
+                String baseUri = this.UnmarshalUri(g.BaseUri);
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
                 cmd.Parameters["base"].Value = baseUri;
@@ -544,7 +573,7 @@ namespace VDS.RDF.Storage
                         }
                         if (graphUri != null)
                         {
-                            delete.AppendLine(" FROM <" + graphUri.AbsoluteUri + ">");
+                            delete.AppendLine(" FROM <" + this.UnmarshalUri(graphUri) + ">");
                         }
                         else
                         {
@@ -587,7 +616,7 @@ namespace VDS.RDF.Storage
                             insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
                             if (graphUri != null)
                             {
-                                insert.AppendLine(" INTO <" + graphUri.AbsoluteUri + ">");
+                                insert.AppendLine(" INTO <" + this.UnmarshalUri(graphUri) + ">");
                             }
                             else
                             {
@@ -617,7 +646,7 @@ namespace VDS.RDF.Storage
                             cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                             cmd.Parameters.Add("data", VirtDbType.VarChar);
                             cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                            String baseUri = graphUri.ToSafeString();
+                            String baseUri = this.UnmarshalUri(graphUri);
                             if (String.IsNullOrEmpty(baseUri)) throw new RdfStorageException("Cannot updated an unnamed Graph in Virtuoso using this method - you must specify the URI of a Graph to Update");
                             cmd.Parameters.Add("base", VirtDbType.VarChar);
                             cmd.Parameters.Add("graph", VirtDbType.VarChar);
@@ -1143,7 +1172,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public override void DeleteGraph(Uri graphUri)
         {
-            this.DeleteGraph(graphUri.ToSafeString());
+            this.DeleteGraph(this.UnmarshalUri(graphUri));
         }
 
         /// <summary>
