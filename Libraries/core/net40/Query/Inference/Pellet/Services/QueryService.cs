@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// </summary>
     public class QueryService : PelletService
     {
-        private String _sparqlUri;
+        private readonly String _sparqlUri;
 
         /// <summary>
         /// Creates a new SPARQL Query Service
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._sparqlUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a SPARQL Query against the Knowledge Base
@@ -123,21 +123,31 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="graphCallback">Callback to invoke for queries that return a Graph</param>
         /// <param name="resultsCallback">Callback to invoke for queries that return a Result Set</param>
         /// <param name="state">State to pass to whichever callback function is invoked</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Query(String sparqlQuery, GraphCallback graphCallback, SparqlResultsCallback resultsCallback, Object state)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
 
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, _) =>
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, s) =>
                 {
-                    if (results.ResultsType != SparqlResultsType.Unknown)
+                    if (s is AsyncError)
                     {
-                        resultsCallback(results, state);
+                        if (graphCallback != null) graphCallback(null, s);
+                        if (resultsCallback != null) resultsCallback(null, s);
                     }
                     else
                     {
-                        graphCallback(g, state);
+                        if (results.ResultsType != SparqlResultsType.Unknown)
+                        {
+                            resultsCallback(results, state);
+                        }
+                        else
+                        {
+                            graphCallback(g, state);
+                        }
                     }
                 }, state);
         }
@@ -150,6 +160,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="callback">Callback to invoke once handling of results has completed</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, QueryCallback callback, Object state)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -165,19 +178,19 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    endpoint.QueryWithResultSet(sparqlQuery, (rs, _) =>
+                    endpoint.QueryWithResultSet(sparqlQuery, (rs, s) =>
                         {
                             resultsHandler.Apply(rs);
-                            callback(rdfHandler, resultsHandler, state);
+                            callback(rdfHandler, resultsHandler, s);
                         }, state);
                     break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    endpoint.QueryWithResultGraph(sparqlQuery, (g, _) =>
+                    endpoint.QueryWithResultGraph(sparqlQuery, (g, s) =>
                         {
                             rdfHandler.Apply(g);
-                            callback(rdfHandler, resultsHandler, state);
+                            callback(rdfHandler, resultsHandler, s);
                         }, state);
                     break;
 

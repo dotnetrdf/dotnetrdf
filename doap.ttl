@@ -1,0 +1,97 @@
+@base <http://www.dotnetrdf.org/project#> .
+
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+
+<http://www.dotnetrdf.org/project#>
+    a           doap:Project ;
+    <http://projects.apache.org/ns/asfext#implements>
+                [ a           <http://projects.apache.org/ns/asfext#Standard> ;
+                  <http://projects.apache.org/ns/asfext#body>
+                              "W3C" ;
+                  <http://projects.apache.org/ns/asfext#id>
+                              "" ;
+                  <http://projects.apache.org/ns/asfext#title>
+                              "SPARQL" ;
+                  <http://projects.apache.org/ns/asfext#url>
+                              <http://www.w3.org/TR/rdf-sparql-query/>
+                ] ;
+    <http://projects.apache.org/ns/asfext#implements>
+                [ a           <http://projects.apache.org/ns/asfext#Standard> ;
+                  <http://projects.apache.org/ns/asfext#body>
+                              "W3C" ;
+                  <http://projects.apache.org/ns/asfext#id>
+                              "" ;
+                  <http://projects.apache.org/ns/asfext#title>
+                              "Resource Description Framework" ;
+                  <http://projects.apache.org/ns/asfext#url>
+                              <http://www.w3.org/RDF/>
+                ] ;
+    <http://projects.apache.org/ns/asfext#implements>
+                [ a           <http://projects.apache.org/ns/asfext#Standard> ;
+                  <http://projects.apache.org/ns/asfext#body>
+                              "W3C" ;
+                  <http://projects.apache.org/ns/asfext#id>
+                              "" ;
+                  <http://projects.apache.org/ns/asfext#title>
+                              "Turtle" ;
+                  <http://projects.apache.org/ns/asfext#url>
+                              <http://www.w3.org/TR/turtle/>
+                ] ;
+    doap:bug-database
+                <https://www.dotnetrdf.org/tracker/> ;
+    doap:category
+                <http://projects.apache.org/category/library> ;
+    doap:created
+                "2009-01-01" ;
+    doap:description
+                "dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments.  It supports most common RDF formats and provides a fully compliant SPARQL 1.1 engine." ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:rvesse@dotnetrdf.org> ;
+                  foaf:name   "Rob Vesse"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:name   "Tomasz Pluskiewicz"
+                ] ;
+    doap:developer
+			    [ a           foaf:Person ;
+			      foaf:name   "Graham Moore"
+			    ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:name   "Khalil Ahmed"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:name   "Ron Michael Zettlemoyer"
+                ] ;
+    doap:download-page
+                <http://www.dotnetrdf.org/content.asp?pageID=Downloads> ;
+    doap:homepage
+                <http://www.dotnetrdf.org> ;
+    doap:license
+                <http://usefulinc.com/doap/licenses/mit> ;
+    doap:mailing-list
+                <http://www.dotnetrdf.org/content.asp?pageID=Support> ;
+    doap:name   "dotNetRDF"@en ;
+    doap:programming-language
+                "C# .Net"@en ;
+    doap:release
+                [ a           doap:Version ;
+                  doap:created
+                              "2013-05-07"@en ;
+                  doap:name   "dotNetRDF 1.0.0"@en ;
+                  doap:revision
+                              "1.0.0"@en
+                ] ;
+    doap:repository
+                [ a           doap:HGRepository ;
+                  doap:browse
+                              <https://bitbucket.org/dotnetrdf/dotnetrdf/src> ;
+                  doap:location
+                              <https://bitbucket.org/dotnetrdf/dotnetrdf>
+                ] ;
+    doap:shortdesc
+                "A framework for developing Semantic Web and Linked Data applications in .Net environments"@en .

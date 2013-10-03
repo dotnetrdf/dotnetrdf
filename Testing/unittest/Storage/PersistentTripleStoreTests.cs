@@ -33,6 +33,8 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
+using VDS.RDF.Writing;
+using StringWriter = System.IO.StringWriter;
 
 namespace VDS.RDF.Storage
 {
@@ -1212,6 +1214,82 @@ namespace VDS.RDF.Storage
             this.TestUpdate(virtuoso);
         }
 #endif
+
+        #endregion
+
+        #region Dump persistent store tests
+        
+        private void TestDumpStoreEmpty(IStorageProvider manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                // Try and dump
+                StringWriter strWriter = new StringWriter();
+                TriGWriter writer = new TriGWriter();
+                writer.UseMultiThreadedWriting = false;
+
+                writer.Save(store, strWriter);
+                Console.WriteLine("TriG output:");
+                Console.WriteLine(strWriter.ToString());
+                Assert.IsTrue(String.IsNullOrEmpty(strWriter.ToString()));
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        private void TestDumpStorePrimed(IStorageProvider manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                // First prime the persistent store by loading a bunch of stuff
+                Assert.IsTrue(store.HasGraph(new Uri(TestGraphUri1)), "URI 1 should return true for HasGraph()");
+                Assert.IsTrue(store.Graphs.Contains(new Uri(TestGraphUri1)), "URI 1 should return true for Graphs.Contains()");
+                Assert.IsTrue(store.HasGraph(new Uri(TestGraphUri2)), "URI 2 should return true for HasGraph()");
+                Assert.IsTrue(store.Graphs.Contains(new Uri(TestGraphUri2)), "URI 2 should return true for Graphs.Contains()");
+                Assert.IsTrue(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
+                Assert.IsTrue(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
+
+                Uri noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
+                Assert.IsFalse(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
+                Assert.IsFalse(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
+
+                // Then try and dump
+                StringWriter strWriter = new StringWriter();
+                TriGWriter writer = new TriGWriter();
+                writer.UseMultiThreadedWriting = false;
+
+                writer.Save(store, strWriter);
+                Console.WriteLine("TriG output:");
+                Console.WriteLine(strWriter.ToString());
+                Assert.IsFalse(String.IsNullOrEmpty(strWriter.ToString()));
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [Test]
+        public void StoragePersistentTripleStoreMemDump1()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestDumpStoreEmpty(manager);
+        }
+
+        [Test]
+        public void StoragePersistentTripleStoreMemDump2()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestDumpStorePrimed(manager);
+        }
 
         #endregion
     }

@@ -1,2 +1,2 @@
 # No prefix
-:s <http://example/p> "x" .
+:s <http://www.w3.org/2013/TurtleTests/p> "x" .

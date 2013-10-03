@@ -38,6 +38,8 @@ namespace VDS.RDF.Parsing.Handlers
     public class UriLoaderHandlerTests
     {
 
+#if !PORTABLE
+
         [Test]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
@@ -58,6 +60,8 @@ namespace VDS.RDF.Parsing.Handlers
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
+
+#endif
 
         [Test]
         public void ParsingUriLoaderCountHandler()

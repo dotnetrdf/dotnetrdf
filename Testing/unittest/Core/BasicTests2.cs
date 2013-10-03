@@ -39,6 +39,9 @@ namespace VDS.RDF
     [TestFixture]
     public class BasicTests2 : BaseTest
     {
+
+#if !PORTABLE
+
         [Test]
         public void GraphEquality() {
             try
@@ -199,6 +202,8 @@ namespace VDS.RDF
 
         }
 
+#endif
+
         [Test]
         public void GraphWithBNodeEquality()
         {
@@ -235,6 +240,8 @@ namespace VDS.RDF
                 throw;
             }
         }
+
+#if !PORTABLE
 
         [Test]
         public void ParsingUriLoader()
@@ -293,6 +300,8 @@ namespace VDS.RDF
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
+
+#endif
 
         [Test]
         public void NodesEqualityOperator()

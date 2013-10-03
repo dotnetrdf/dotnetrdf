@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
-#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
@@ -147,34 +147,44 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
         {
-            this.SimilarityRaw(number, individual, (g, _) =>
+            this.SimilarityRaw(number, individual, (g, s) =>
                 {
-                    List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
-
-                    SparqlParameterizedString query = new SparqlParameterizedString();
-                    query.Namespaces = g.NamespaceMap;
-                    query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
-
-                    Object results = g.ExecuteQuery(query);
-                    if (results is SparqlResultSet)
+                    if (s is AsyncError)
                     {
-                        foreach (SparqlResult r in (SparqlResultSet)results)
-                        {
-                            if (r["similarity"].NodeType == NodeType.Literal)
-                            {
-                                similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value, CultureInfo.InvariantCulture)));
-                            }
-                        }
-
-                        callback(similarities, state);
+                        callback(null, s);
                     }
                     else
                     {
-                        throw new RdfReasoningException("Unable to extract the Similarity Information from the Similarity Graph returned by Pellet Server");
+                        List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
+
+                        SparqlParameterizedString query = new SparqlParameterizedString();
+                        query.Namespaces = g.NamespaceMap;
+                        query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
+
+                        Object results = g.ExecuteQuery(query);
+                        if (results is SparqlResultSet)
+                        {
+                            foreach (SparqlResult r in (SparqlResultSet) results)
+                            {
+                                if (r["similarity"].NodeType == NodeType.Literal)
+                                {
+                                    similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode) r["similarity"]).Value, CultureInfo.InvariantCulture)));
+                                }
+                            }
+
+                            callback(similarities, state);
+                        }
+                        else
+                        {
+                            throw new RdfReasoningException("Unable to extract the Similarity Information from the Similarity Graph returned by Pellet Server");
+                        }
                     }
-            }, null);
+                }, null);
         }
 
         /// <summary>
@@ -184,6 +194,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
         /// <param name="callback">Callback to invoke when the operation completes</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
+        /// </remarks>
         public void SimilarityRaw(int number, String individual, GraphCallback callback, Object state)
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
@@ -196,19 +209,43 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             Tools.HttpDebugRequest(request);
 
-            request.BeginGetResponse(result =>
-                {
-                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+            try
+            {
+                request.BeginGetResponse(result =>
                     {
-                        Tools.HttpDebugResponse(response);
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                        try
+                        {
+                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            {
+                                Tools.HttpDebugResponse(response);
+                                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                        response.Close();
-                        callback(g, state);
-                    }
-                }, null);
+                                response.Close();
+                                callback(g, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+                        }
+                    }, null);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
+            }
+            catch (Exception ex)
+            {
+                callback(null, new AsyncError(new RdfReasoningException("An unexpected error occurred while communicating with the Pellet Server, see inner exception for details", ex), state));
+            }
         }
     }
 }
