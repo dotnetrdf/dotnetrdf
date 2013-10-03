@@ -73,7 +73,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public const String DefaultDB = "DB";
 
-        private const String VirtuosoRelativeBaseString = "virtuoso:relative:";
+        private const String VirtuosoRelativeBaseString = "virtuoso-relative:";
         private readonly Uri VirtuosoRelativeBase = new Uri(VirtuosoRelativeBaseString);
 
         #region Variables & Constructors

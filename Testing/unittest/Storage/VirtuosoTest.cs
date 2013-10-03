@@ -806,7 +806,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine();
 
                 // Load it back out using marshalled URI
-                Uri u = new Uri("virtuoso:relative:/storage/virtuoso/relative");
+                Uri u = new Uri("virtuoso-relative:/storage/virtuoso/relative");
                 h = new Graph();
                 virtuoso.LoadGraph(h, u);
                 Assert.IsFalse(h.IsEmpty, "Graph loaded via marshalled URI should not be empty");
