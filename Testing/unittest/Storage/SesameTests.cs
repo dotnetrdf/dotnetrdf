@@ -25,12 +25,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Update;
 
 
 namespace VDS.RDF.Storage
@@ -152,7 +154,7 @@ namespace VDS.RDF.Storage
                 FileLoader.Load(g, @"resources\cyrillic.rdf");
                 sesame.SaveGraph(g);
 
-                String ask = "ASK WHERE {?s ?p 'литерал'}";
+                String ask = "ASK WHERE { GRAPH <http://example.org/sesame/cyrillic> { ?s ?p 'литерал' } }";
 
                 Object results = sesame.Query(ask);
                 if (results is SparqlResultSet)
@@ -175,7 +177,7 @@ namespace VDS.RDF.Storage
             FileLoader.Load(g, @"resources\chinese.ttl");
             sesame.SaveGraph(g);
 
-            String ask = "ASK WHERE {?s ?p '例子'}";
+            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
             Object results = sesame.Query(ask);
             if (results is SparqlResultSet)
@@ -296,7 +298,7 @@ namespace VDS.RDF.Storage
                 FileLoader.Load(g, @"resources\chinese.ttl");
                 sesame.SaveGraph(g);
 
-                String ask = "ASK WHERE {?s ?p '例子'}";
+                String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
                 // Issue query to validate data was added
                 Object results = sesame.Query(ask);
@@ -320,6 +322,45 @@ namespace VDS.RDF.Storage
                 {
                     TestTools.ShowResults(results);
                     Assert.IsFalse(((SparqlResultSet)results).Result);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Result Set as expected");
+                }
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [Test]
+        public void StorageSesameSparqlUpdate4()
+        {
+            // Test case adapted from CORE-374 sample update
+            try
+            {
+                Options.HttpDebugging = true;
+
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
+
+                // Insert the Data
+                StringBuilder updates = new StringBuilder();
+                using (StreamReader reader = new StreamReader(@"resources\core-374.ru"))
+                {
+                    updates.Append(reader.ReadToEnd());
+                    reader.Close();
+                }
+                sesame.Update(updates.ToString());
+
+                String ask = "ASK WHERE { GRAPH <http://example.org/sesame/core-374> { ?s ?p 'République du Niger'@fr } }";
+
+                // Issue query to validate data was added
+                Object results = sesame.Query(ask);
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                    Assert.IsTrue(((SparqlResultSet)results).Result);
                 }
                 else
                 {

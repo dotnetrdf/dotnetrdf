@@ -328,28 +328,20 @@ namespace VDS.RDF.Storage
 
                 HttpWebRequest request;
 
-                //Create the Request
+                // Create the Request
+                // For Sesame we always POST queries because using GET doesn't always work (CORE-374)
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
-                {
-                    queryParams.Add("query", EscapeQuery(sparqlQuery));
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
-                }
-                else
+                // Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("query=");
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
-
-                    //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    StringBuilder postData = new StringBuilder();
-                    postData.Append("query=");
-                    postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
-                    {
-                        writer.Write(postData);
-                        writer.Close();
-                    }
+                    writer.Write(postData);
+                    writer.Close();
                 }
 
                 Tools.HttpDebugRequest(request);
@@ -419,16 +411,15 @@ namespace VDS.RDF.Storage
         {
             StringBuilder output = new StringBuilder();
             char[] cs = query.ToCharArray();
-            for(int i = 0; i < cs.Length; i++)
+            for (int i = 0; i < cs.Length; i++)
             {
                 char c = cs[i];
-                if (c <= 255)
+                if (c <= 127)
                 {
                     output.Append(c);
                 }
                 else
                 {
-                    //if (UnicodeSpecsHelper.IsHighSurrogate(c))
                     output.Append("\\u");
                     output.Append(((int)c).ToString("x4"));
                 }
