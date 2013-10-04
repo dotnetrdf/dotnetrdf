@@ -25,6 +25,8 @@ Changed
  - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
  - Fixes to asynchronous error propagation for some async APIs (CORE-370)
  - Fixes to parsing of EXISTS/NOT EXISTS within the WHERE clause of a SPARQL Update (CORE-373)
+ - Fixed an encoding bug when communicating with Sesame servers (CORE-374)
+ - Fixed a bug with handling relative URIs as graph names with Virtuoso (VIRT-375)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
 - Query
@@ -36,6 +38,7 @@ Changed
 
 Removed
 - Marked as obsolete usable the old ICharFormatter.FormatChar() method (CORE-357)
+- Marked DydraConnector obsolete unusable per deprecation policy
 
 
 1.0.0.2533

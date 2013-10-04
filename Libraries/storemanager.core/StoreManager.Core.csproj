@@ -48,7 +48,6 @@
     <Compile Include="Connections\BuiltIn\AllegroGraphConnection.cs" />
     <Compile Include="Connections\BuiltIn\ReadWriteSparqlConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\DatasetFileConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\DydraConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\FourStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\FusekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\InMemoryConnectionDefinition.cs" />
