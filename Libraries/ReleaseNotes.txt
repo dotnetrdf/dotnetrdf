@@ -105,13 +105,11 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- The W3C First Public Working Draft of TriG (9th April 2013) are not yet supported
-- The W3C Note on NTriples and NQuads (9th April 2013) are not yet supported
+- The W3C Last Call Working Draft of TriG (19th September 2013) is not yet supported
+- The W3C Last Call Working Drafts on NTriples and NQuads (5th September 2013) are not yet supported
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- The zero or more property path operator * may produce incorrect results, using the one or more + operator
-  should give correct results and generally returns more useful results
  
 Change History
 --------------
@@ -181,7 +179,7 @@ Release History
 
 14/6/2013 - Pre-release of Version 1.0.1-portableRC1 (Build 1.0.1.2648)
 
-?/?/2013 - Release of Version 1.0.1 (Build 1.0.1.?)
+9/10/2013 - Release of Version 1.0.1 (Build 1.0.1.?)
 
 Acknowledgements
 ----------------

@@ -19,6 +19,8 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
+- Updated Turtle support to match W3C recommendation
+- Improved performance when writing characters outside the ASCII range as NTriples/NQuads (CORE-357)
 
 rdfEditor (Not available under Mono)
 - Upgrade AvalonEdit to 4.3.1.9430
@@ -26,6 +28,7 @@ rdfEditor (Not available under Mono)
 rdfOptStats
    
 rdfQuery
+- Various SPARQL fixes (CORE-349, CORE-365, CORE-373)
 
 rdfServer
 
@@ -36,6 +39,8 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
+- Various SPARQL fixes (CORE-349, CORE-365, CORE-373)
 
 StoreManager
+- Fix for accessing graphs with relative URI names from Virtuoso (VIRT-375)
 

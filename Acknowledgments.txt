@@ -99,3 +99,4 @@ improvements in the code:
  - Dimitri Kourkoulis
  - George Abraham
  - Dennis Ludl
+ - Maximillien Bronnimann
