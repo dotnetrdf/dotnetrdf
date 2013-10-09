@@ -96,7 +96,6 @@ namespace VDS.RDF.Nodes
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
                                 DateTime dateTime;
-                                DateTimeOffset offset;
                                 if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
                                 {
                                     return new DateTimeNode(n.Graph, dateTime, lit.Value);

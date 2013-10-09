@@ -998,7 +998,7 @@ namespace VDS.RDF.Storage.Management
 #endif
 
 
-#region !NO_SYNC_HTTP
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets a provider for the Store with the given ID
@@ -1014,7 +1014,7 @@ namespace VDS.RDF.Storage.Management
 #endif
         }
 
-#endregion
+#endif
 
         /// <summary>
         /// Gets a database from the server

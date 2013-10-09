@@ -549,7 +549,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this._manager.IsReady)
             {
-                this.stsCurrent.Text = "Store is ready";
+                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
                 this.ListGraphs();
                 if (this._manager.ParentServer != null)
                 {

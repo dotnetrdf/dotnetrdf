@@ -34,6 +34,21 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     /// <summary>
+    /// Supported Stardog versions
+    /// </summary>
+    public enum StardogVersion
+    {
+        /// <summary>
+        /// Version 1.x
+        /// </summary>
+        Version1,
+        /// <summary>
+        /// Version 2.x
+        /// </summary>
+        Version2
+    }
+
+    /// <summary>
     /// Definition for connections to Stardog
     /// </summary>
     public class StardogConnectionDefinition
@@ -43,13 +58,23 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Creates a new definition
         /// </summary>
         public StardogConnectionDefinition()
-            : base("Stardog", "Connect to a Stardog database exposed via the Stardog HTTP server", typeof(StardogConnector)) { }
+            : base("Stardog", "Connect to a Stardog database exposed via the Stardog HTTP server", typeof (StardogConnector))
+        {
+            this.Version = StardogVersion.Version2;
+        }
+
+        /// <summary>
+        /// Gets/Sets the Stardog version to use
+        /// </summary>
+        [Connection(DisplayName="Stardog Version", IsRequired=true, DisplayOrder=-2, Type=ConnectionSettingType.Enum),
+         DefaultValue(StardogVersion.Version2)]
+        public StardogVersion Version { get; set; }
 
         /// <summary>
         /// Gets/Sets the Server URI
         /// </summary>
         [Connection(DisplayName="Server URI", IsRequired=true, AllowEmptyString=false, DisplayOrder=-1, PopulateFrom=ConfigurationLoader.PropertyServer),
-         DefaultValue("http://localhost:5822/")]
+         DefaultValue("http://localhost:5820/")]
         public override String Server
         {
             get
@@ -124,22 +149,46 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 if (this.UseProxy)
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser, this.GetProxy());
+                    switch (this.Version)
+                    {
+                        case StardogVersion.Version1:
+                            return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
+                        default:
+                            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
+                    }
                 }
                 else
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser);
+                    switch (this.Version)
+                    {
+                        case StardogVersion.Version1:
+                            return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
+                        default:
+                            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
+                    }
                 }
             }
             else
             {
                 if (this.UseProxy)
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
+                    switch (this.Version)
+                    {
+                        case StardogVersion.Version1:
+                            return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
+                        default:
+                            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
+                    }
                 }
                 else
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                    switch (this.Version)
+                    {
+                        case StardogVersion.Version1:
+                            return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                        default:
+                            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                    }
                 }
             }
         }

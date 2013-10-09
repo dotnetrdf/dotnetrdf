@@ -594,7 +594,11 @@ namespace VDS.RDF.Configuration
                 case ReadWriteSparql:
                 case SparqlHttpProtocol:
                 case Stardog:
+                case StardogV1:
+                case StardogV2:
                 case StardogServer:
+                case StardogServerV1:
+                case StardogServerV2:
                     return true;
                 default:
                     return false;
