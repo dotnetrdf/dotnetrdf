@@ -56,6 +56,7 @@
      - Improved performance of NTriples serializer for non-ASCII data
      - Upgraded Json.Net dependency to 5.0.6
      - Split source and PDBs into separate symbols package
+     - Improved internationalization support
     </releaseNotes>
   </metadata>
 </package>
