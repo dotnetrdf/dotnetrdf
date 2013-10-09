@@ -71,33 +71,47 @@ namespace VDS.RDF.Storage
 
         public void StorageStardogLoadDefaultGraph()
         {
-            StardogConnector stardog = StardogTests.GetConnection();;
+            StardogConnector stardog = StardogTests.GetConnection();
             Graph g = new Graph();
-            stardog.LoadGraph(g, (Uri)null);
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = null;
+            stardog.SaveGraph(g);
+
+            Graph h = new Graph();
+            stardog.LoadGraph(h, (Uri)null);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
+            foreach (Triple t in h.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(g.IsEmpty);
+            Assert.IsFalse(h.IsEmpty);
         }
 
         [Test]
         public void StorageStardogLoadNamedGraph()
         {
-            StardogConnector stardog = StardogTests.GetConnection();;
+            StardogConnector stardog = StardogTests.GetConnection();
+
+            // Ensure graph exists
             Graph g = new Graph();
-            stardog.LoadGraph(g, new Uri("http://example.org/graph"));
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = new Uri("http://example.org/graph");
+            stardog.SaveGraph(g);
+
+            // Load it back from the store
+            Graph h = new Graph();
+            stardog.LoadGraph(h, new Uri("http://example.org/graph"));
 
             NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in g.Triples)
+            foreach (Triple t in h.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
             }
 
-            Assert.IsFalse(g.IsEmpty);
+            Assert.IsFalse(h.IsEmpty);
+            Assert.AreEqual(g, h);
         }
 
         [Test]
@@ -107,7 +121,7 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
                 Options.HttpDebugging = true;
-                Options.HttpFullDebugging = true;
+                //Options.HttpFullDebugging = true;
 
                 StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
@@ -132,7 +146,7 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = true;
                 Options.HttpDebugging = false;
-                Options.HttpFullDebugging = false;
+                //Options.HttpFullDebugging = false;
             }
         }
 

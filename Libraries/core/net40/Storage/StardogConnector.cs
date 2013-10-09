@@ -72,7 +72,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// RDFS Reasoning
         /// </summary>
-        RDFS
+        RDFS,
+        /// <summary>
+        /// RDFS, QL, RL, and EL axioms, plus SWRL rules
+        /// </summary>
+        SL
     }
 
     /// <summary>
@@ -1740,6 +1744,8 @@ namespace VDS.RDF.Storage
                     return ";reasoning=DL";
                 case StardogReasoningMode.RDFS:
                     return ";reasoning=RDFS";
+                case StardogReasoningMode.SL:
+                    throw new RdfStorageException("Stardog 1.* does not support the SL reasoning level, please ensure you are using a Stardog 2.* connector if you wish to use this reasoning level");
                 case StardogReasoningMode.None:
                 default:
                     return String.Empty;
@@ -2363,6 +2369,28 @@ namespace VDS.RDF.Storage
 #else
             request.Headers["SD-Connection-String"] = reasoning;
 #endif
+        }
+
+        protected override String GetReasoningParameter()
+        {
+            switch (this._reasoning)
+            {
+                case StardogReasoningMode.QL:
+                    return ";reasoning=QL";
+                case StardogReasoningMode.EL:
+                    return ";reasoning=EL";
+                case StardogReasoningMode.RL:
+                    return ";reasoning=RL";
+                case StardogReasoningMode.DL:
+                    return ";reasoning=DL";
+                case StardogReasoningMode.RDFS:
+                    return ";reasoning=RDFS";
+                case StardogReasoningMode.SL:
+                    return ";reasoning=SL";
+                case StardogReasoningMode.None:
+                default:
+                    return String.Empty;
+            }
         }
     }
 
