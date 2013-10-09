@@ -41,6 +41,6 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         /// <param name="id">Store ID</param>
         public StardogMemTemplate(String id)
-            : base(id, "Stardog Memory", "A Stardog in-memory store", StardogServer.DatabaseOptions.DatabaseTypeMemory) { }
+            : base(id, "Stardog Memory", "A Stardog in-memory store", BaseStardogServer.DatabaseOptions.DatabaseTypeMemory) { }
     }
 }

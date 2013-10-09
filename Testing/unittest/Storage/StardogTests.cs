@@ -106,6 +106,8 @@ namespace VDS.RDF.Storage
             try
             {
                 //Options.UseBomForUtf8 = false;
+                Options.HttpDebugging = true;
+                Options.HttpFullDebugging = true;
 
                 StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
@@ -129,6 +131,8 @@ namespace VDS.RDF.Storage
             finally
             {
                 //Options.UseBomForUtf8 = true;
+                Options.HttpDebugging = false;
+                Options.HttpFullDebugging = false;
             }
         }
 
