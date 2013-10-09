@@ -55,7 +55,7 @@ Storage.Sesame.Repository=unit-test
 
 # A Stardog install to use for testing
 Storage.Stardog=false
-Storage.Stardog.Server=http://localhost:5822
+Storage.Stardog.Server=http://localhost:5820
 Storage.Stardog.DB=test
 Storage.Stardog.User=admin
 Storage.Stardog.Password=admin
