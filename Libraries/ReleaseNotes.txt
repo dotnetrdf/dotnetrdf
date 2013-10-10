@@ -179,7 +179,7 @@ Release History
 
 14/6/2013 - Pre-release of Version 1.0.1-portableRC1 (Build 1.0.1.2648)
 
-9/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
+10/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
 
 Acknowledgements
 ----------------

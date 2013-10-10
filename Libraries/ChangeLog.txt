@@ -33,6 +33,7 @@ Changed
  - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
 - Storage
  - Add partial support for connections to Stardog 2.0 servers
+  - Native SPARQL update support for Stardog 2.0 is not yet available
 - Configuration API
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing
