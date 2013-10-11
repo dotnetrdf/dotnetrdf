@@ -1,6 +1,17 @@
 ﻿Change Log
 ==========
 
+1.1.0
+-----
+
+Added
+
+Changed
+- Bug Fixes
+
+Removed
+- Marked the as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
+
 1.0.1
 -----
 

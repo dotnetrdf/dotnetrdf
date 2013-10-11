@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 1.0.1
+Version 1.1.0
 
 dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
@@ -180,6 +180,8 @@ Release History
 14/6/2013 - Pre-release of Version 1.0.1-portableRC1 (Build 1.0.1.2648)
 
 10/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
+
+?/?/2013 - Release of Version 1.1.0 (Build 1.1.0.?)
 
 Acknowledgements
 ----------------
