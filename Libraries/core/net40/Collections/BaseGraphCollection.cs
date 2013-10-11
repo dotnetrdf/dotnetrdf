@@ -254,6 +254,7 @@ namespace VDS.RDF.Collections
         /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <param name="graphName">Graph name</param>
         protected virtual void RaiseGraphAdded(IGraph g, INode graphName)
         {
             GraphEventHandler d = this.GraphAdded;
@@ -267,6 +268,7 @@ namespace VDS.RDF.Collections
         /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <param name="graphName">Graph name</param>
         protected virtual void RaiseGraphRemoved(IGraph g, INode graphName)
         {
             GraphEventHandler d = this.GraphRemoved;

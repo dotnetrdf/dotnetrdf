@@ -96,7 +96,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the quads present in the graph
         /// </summary>
-        /// <remarks>Since a graph does not itself have a time quads retrieved in this way have the <see cref="Quad.Graph"/> field set to null</remarks>
+        /// <remarks>Since a graph does not itself have a time quads retrieved in this way have the <see cref="Quad.Graph"/> field set to <see cref="Quad.DefaultGraphNode" /></remarks>
         IEnumerable<Quad> Quads
         {
             get;
@@ -148,7 +148,7 @@ namespace VDS.RDF
         /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName
         /// </summary>
         /// <param name="qname">QName</param>
-        /// <returns></returns>
+        /// <returns>URI Node</returns>
         INode CreateUriNode(string qname);
 
         #endregion

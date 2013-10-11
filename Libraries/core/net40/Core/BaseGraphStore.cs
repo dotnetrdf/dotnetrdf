@@ -20,14 +20,14 @@ namespace VDS.RDF.Core
         /// <summary>
         /// Creates a new graph store using the default graph collection implementation
         /// </summary>
-        public BaseGraphStore()
+        protected BaseGraphStore()
             : this(new GraphCollection()) { }
 
         /// <summary>
         /// Creates a new graph store using the given graph collection
         /// </summary>
         /// <param name="collection">Graph Collection</param>
-        public BaseGraphStore(IGraphCollection collection)
+        protected BaseGraphStore(IGraphCollection collection)
         {
             if (collection == null) throw new ArgumentNullException("collection", "Graph Collection cannot be null");
             this._graphs = collection;
@@ -51,30 +51,34 @@ namespace VDS.RDF.Core
 
         public IGraph this[INode graphName]
         {
-            get 
+            get
             {
+                if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
                 return this._graphs[graphName];
             }
         }
 
         public bool HasGraph(INode graphName)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             return this._graphs.ContainsKey(graphName);
         }
 
         public bool Add(IGraph g)
         {
-            return this.Add(null, g);
+            return this.Add(Quad.DefaultGraphNode, g);
         }
 
         public bool Add(INode graphName, IGraph g)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             this._graphs.Add(graphName, g);
             return true;
         }
 
         public bool Add(INode graphName, Triple t)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             return this.Add(t.AsQuad(graphName));
         }
 
@@ -100,6 +104,7 @@ namespace VDS.RDF.Core
 
             //Get the source graph if available
             IGraph src;
+            if (ReferenceEquals(srcName, null)) srcName = Quad.DefaultGraphNode;
             if (this.HasGraph(srcName))
             {
                 src = this[srcName];
@@ -110,6 +115,7 @@ namespace VDS.RDF.Core
             }
             //Get the destination graph
             IGraph dest;
+            if (ReferenceEquals(destName, null)) destName = Quad.DefaultGraphNode;
             if (this.HasGraph(destName))
             {
                 dest = this[destName];
@@ -132,6 +138,7 @@ namespace VDS.RDF.Core
 
             //Get the source graph if available
             IGraph src;
+            if (ReferenceEquals(srcName, null)) srcName = Quad.DefaultGraphNode;
             if (this.HasGraph(srcName))
             {
                 src = this[srcName];
@@ -142,6 +149,7 @@ namespace VDS.RDF.Core
             }
             //Get the destination graph
             IGraph dest;
+            if (ReferenceEquals(destName, null)) destName = Quad.DefaultGraphNode;
             if (this.HasGraph(destName))
             {
                 dest = this[destName];
@@ -163,52 +171,47 @@ namespace VDS.RDF.Core
 
         public bool Clear(INode graphName)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph g = this[graphName];
                 g.Clear();
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public bool Remove(IGraph g)
         {
-            return this.Remove(null, g);
+            return this.Remove(Quad.DefaultGraphNode, g);
         }
 
         public bool Remove(INode graphName, IGraph g)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph dest = this[graphName];
                 return dest.Retract(g.Triples);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public bool Remove(INode graphName)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             return this._graphs.Remove(graphName);
         }
 
         public bool Remove(INode graphName, Triple t)
         {
+            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph g = this[graphName];
                 return g.Retract(t);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public bool Remove(Quad q)
@@ -230,9 +233,9 @@ namespace VDS.RDF.Core
         {
             get 
             {
-                return (from g in this._graphs.Values
-                        from q in g.Quads
-                        select q);
+                return (from kvp in this._graphs
+                        from t in kvp.Value.Triples
+                        select t.AsQuad(kvp.Key));
 
             }
         }
@@ -255,10 +258,12 @@ namespace VDS.RDF.Core
         {
             if (ReferenceEquals(g, null))
             {
+                // Null acts as a wildcard
                 return this.FindQuads(s, p, o);
             }
             else if (this.HasGraph(g))
             {
+                // Otherwise search in a specific named graph
                 return this[g].Find(s, p, o).AsQuads(g);
             }
             else
@@ -272,22 +277,13 @@ namespace VDS.RDF.Core
             return this._graphs.Values.Any(g => g.ContainsTriple(t));
         }
 
-        public bool Contains(IEnumerable<INode> graphNames, Triple t)
-        {
-            return (from u in graphNames
-                    select this[u].ContainsTriple(t)).Any();
-        }
-
         public bool Contains(Quad q)
         {
             if (this.HasGraph(q.Graph))
             {
                 return this[q.Graph].ContainsTriple(q.AsTriple());
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }

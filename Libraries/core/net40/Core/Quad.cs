@@ -119,6 +119,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets whether this quad belongs to the unnamed default graph
+        /// </summary>
+        /// <remarks>
+        /// This is indicated by the Graph property having the value <see cref="Quad.DefaultGraphNode"/>
+        /// </remarks>
+        public bool InDefaultGraph
+        {
+            get { return DefaultGraphNode.Equals(this.Graph); }
+        }
+
+        /// <summary>
         /// Converts a Quad into a Triple
         /// </summary>
         /// <returns>Triple form of the Quad</returns>

@@ -61,6 +61,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <returns>A Graph if it exists in the Store, an error otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         IGraph this[INode graphName]
         { 
             get; 
@@ -71,6 +74,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <returns>True if the Graph exists in the store, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool HasGraph(INode graphName);
 
         /// <summary>
@@ -86,6 +92,9 @@ namespace VDS.RDF
         /// <param name="graphName">URI of the Graph to add to</param>
         /// <param name="g">Graph</param>
         /// <returns>True if any quads are added, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Add(INode graphName, IGraph g);
 
         /// <summary>
@@ -94,6 +103,9 @@ namespace VDS.RDF
         /// <param name="graphName">Graph name</param>
         /// <param name="t">Triple</param>
         /// <returns>True if a quad is added, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Add(INode graphName, Triple t);
 
         /// <summary>
@@ -110,6 +122,9 @@ namespace VDS.RDF
         /// <param name="destName">Target Graph name</param>
         /// <param name="overwrite">If true the contents of the target graph are overwritten, if false the copied data is added to the existing data in the target graph</param>
         /// <returns>True if any quads are copied, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Copy(INode srcName, INode destName, bool overwrite);
 
         /// <summary>
@@ -119,6 +134,9 @@ namespace VDS.RDF
         /// <param name="destName">Destination Graph name</param>
         /// <param name="overwrite">If true the contents of the target graph are overwritten, if false the moved data is added to the existing data in the target graph</param>
         /// <returns>True if any quads are moved, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Move(INode srcName, INode destName, bool overwrite);
 
         /// <summary>
@@ -126,6 +144,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <returns>True if a graph is cleared, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Clear(INode graphName);
 
         /// <summary>
@@ -141,6 +162,9 @@ namespace VDS.RDF
         /// <param name="graphName">Graph name</param>
         /// <param name="g">Graph</param>
         /// <returns>True if any quads are removed, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Remove(INode graphName, IGraph g);
 
         /// <summary>
@@ -148,6 +172,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <returns>True if any quads are removed, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Remove(INode graphName);
 
         /// <summary>
@@ -155,7 +182,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <param name="t">Triple</param>
-        /// <returns>True if a quad is removed, false otherwise</returns>
+        /// <returns>True if a triple is removed, false otherwise</returns>
+        /// <remarks>
+        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
+        /// </remarks>
         bool Remove(INode graphName, Triple t);
 
         /// <summary>
@@ -189,14 +219,6 @@ namespace VDS.RDF
         bool Contains(Triple t);
 
         /// <summary>
-        /// Is the given Triple contained in the given graphs?
-        /// </summary>
-        /// <param name="graphNames">Graph names</param>
-        /// <param name="t">Triple</param>
-        /// <returns></returns>
-        bool Contains(IEnumerable<INode> graphNames, Triple t);
-
-        /// <summary>
         /// Is the given Quad contained in the store?
         /// </summary>
         /// <param name="q">Quad</param>
@@ -204,7 +226,7 @@ namespace VDS.RDF
         bool Contains(Quad q);
 
         /// <summary>
-        /// Find any triples matching the given search criteria, null is treated as a wildcard.
+        /// Find any triples matching the given search criteria, null is treated as a wildcard.  Implementations should retain duplicates since the same triple may occur in multiple graphs.
         /// </summary>
         /// <param name="s">Subject</param>
         /// <param name="p">Predicate</param>
@@ -213,7 +235,7 @@ namespace VDS.RDF
         IEnumerable<Triple> FindTriples(INode s, INode p, INode o);
 
         /// <summary>
-        /// Find any quads matching the given search criteria, null is treated as a wildcard.
+        /// Find any quads matching the given search criteria in any graph, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
         /// </summary>
         /// <param name="s">Subject</param>
         /// <param name="p">Predicate</param>
@@ -222,13 +244,16 @@ namespace VDS.RDF
         IEnumerable<Quad> FindQuads(INode s, INode p, INode o);
 
         /// <summary>
-        /// Finds any quads matching the given search criteria, null is treated as a wildcard
+        /// Finds any quads matching the given search criteria, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
         /// </summary>
         /// <param name="g">Graph name</param>
         /// <param name="s">Subject</param>
         /// <param name="p">Predicate</param>
         /// <param name="o">Object</param>
         /// <returns>Enumerable of quads</returns>
+        /// <remarks>
+        ///  <see cref="Quad.DefaultGraphNode"/> must be used to access the default unnamed graph since <em>null</em> is treated as a wildcard for this method
+        /// </remarks>
         IEnumerable<Quad> FindQuads(INode g, INode s, INode p, INode o);
     }
 }

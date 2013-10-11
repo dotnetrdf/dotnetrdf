@@ -36,13 +36,18 @@ namespace VDS.RDF.Collections
     /// Thread Safe decorator around a Graph collection
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Dependings on your platform this either provides MRSW concurrency via a <see cref="ReaderWriterLockSlim" /> or exclusive access concurrency via a <see cref="Monitor"/>
+    /// </para>
+    /// <para>
+    /// Thread safety is only guaranteed for graph collection level operations, it is still possible for other code to modify the stored graphs in a non-thread safe way.  This can be avoided if all graphs in the collection are <see cref="ThreadSafeGraph"/> instances.
+    /// </para>
     /// </remarks>
     public class ThreadSafeGraphCollection
         : WrapperGraphCollection
     {
 #if !NO_RWLOCK
-        private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 #endif
 
         /// <summary>
@@ -130,6 +135,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Adds a Graph to the Collection
         /// </summary>
+        /// <param name="graphName">Name of the graph to add to</param>
         /// <param name="g">Graph to add</param>
         public override void Add(INode graphName, IGraph g)
         {
@@ -168,17 +174,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                int c = 0;
                 try
                 {
                     this.EnterReadLock();
-                    c = this._graphs.Count;
+                    return this._graphs.Count;
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return c;
             }
         }
 
@@ -188,17 +192,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerator<KeyValuePair<INode, IGraph>> GetEnumerator()
         {
-            List<KeyValuePair<INode, IGraph>> graphs = new List<KeyValuePair<INode, IGraph>>();
             try
             {
                 this.EnterReadLock();
-                graphs = this._graphs.ToList();
+                return this._graphs.ToList().GetEnumerator();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return graphs.GetEnumerator();
         }
 
         /// <summary>
@@ -208,17 +210,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                List<INode> uris = new List<INode>();
                 try
                 {
                     this.EnterReadLock();
-                    uris = this._graphs.Keys.ToList();
+                    return this._graphs.Keys.ToList();
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return uris;
             }
         }
 
@@ -231,17 +231,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                IGraph g = null;
                 try
                 {
                     this.EnterReadLock();
-                    g = this._graphs[graphName];
+                    return this._graphs[graphName];
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return g;
             }
             set
             {
@@ -260,7 +258,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <see cref="IGraph.Dispose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
         public override void Dispose()
         {
             try

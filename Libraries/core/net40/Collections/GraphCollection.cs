@@ -39,11 +39,6 @@ namespace VDS.RDF.Collections
         : BaseGraphCollection
     {
         /// <summary>
-        /// Internal Constant used as the Hash Code for the default graph
-        /// </summary>
-        protected const int DefaultGraphID = 0;
-
-        /// <summary>
         /// Dictionary of Graph names to Graphs
         /// </summary>
         protected MultiDictionary<INode, IGraph> _graphs;
@@ -53,7 +48,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<INode, IGraph>(n => (n != null ? n.GetHashCode() : DefaultGraphID), true, Comparer<INode>.Default, MultiDictionaryMode.AVL);
+            this._graphs = new MultiDictionary<INode, IGraph>(n => n.GetHashCode(), false, Comparer<INode>.Default, MultiDictionaryMode.AVL);
         }
 
         /// <summary>
@@ -69,6 +64,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Adds a Graph to the Collection
         /// </summary>
+        /// <param name="graphName">Graph to add to</param>
         /// <param name="g">Graph to add</param>
         public override void Add(INode graphName, IGraph g)
         {
@@ -89,7 +85,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Removes a Graph from the Collection
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to remove</param>
+        /// <param name="graphName">Name of the Graph to remove</param>
         public override bool Remove(INode graphName)
         {
             IGraph g;
