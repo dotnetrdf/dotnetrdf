@@ -80,22 +80,6 @@ namespace VDS.RDF
             Assert.IsTrue(g.Namespaces.HasNamespace("ex"));
             Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
-
-        [TestMethod]
-        public void GraphContractBaseUri1()
-        {
-            IGraph g = this.GetInstance();
-            Assert.IsNull(g.BaseUri);
-        }
-
-        [TestMethod]
-        public void GraphContractBaseUri2()
-        {
-            IGraph g = this.GetInstance();
-            Assert.IsNull(g.BaseUri);
-            g.BaseUri = new Uri("http://graph");
-            Assert.AreEqual(new Uri("http://graph"), g.BaseUri);
-        }
     }
 
     [TestClass]

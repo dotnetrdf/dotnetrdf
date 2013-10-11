@@ -178,19 +178,18 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
             {
-                //Uri Nodes are greater than Blank and Variable Nodes
+                //URI Nodes are greater than Blank and Variable Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
             else if (other.NodeType == NodeType.Uri)
             {
-                //Return the result of CompareTo using the INode comparison method
-
-                return this.CompareTo((INode)other);
+                //Return the result of CompareTo using the URI comparison helper
+                return ComparisonHelper.CompareUris(this.Uri, other.Uri);
             }
             else
             {
-                //Anything else is considered greater than a Uri Node
+                //Anything else is considered greater than a URI Node
                 //Return -1 to indicate this
                 return -1;
             }
