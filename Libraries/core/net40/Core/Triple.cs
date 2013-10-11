@@ -202,7 +202,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple has a UriNode with the given Uri</returns>
         public bool Involves(Uri uri)
         {
-            IUriNode temp = new UriNode(uri);
+            INode temp = new UriNode(uri);
 
             //Does the Subject involve this Uri?
             if (this._subject.Equals(temp)) return true;

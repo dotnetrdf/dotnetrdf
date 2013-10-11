@@ -53,7 +53,7 @@ namespace VDS.RDF
         {
             this.AnonID = id;
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.Blank, id);
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #if !SILVERLIGHT
@@ -211,9 +211,9 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._id = new Guid(reader.ReadElementContentAsString());
+            this.AnonID = new Guid(reader.ReadElementContentAsString());
             //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._id.ToString());
+            writer.WriteString(this.AnonID.ToString());
         }
 
         #endregion
@@ -380,7 +380,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(BlankNode other)
         {
-            return this.CompareTo((IBlankNode)other);
+            return this.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BlankNode other)
         {
-            return base.Equals((IBlankNode)other);
+            return base.Equals((INode)other);
         }
     }
 }

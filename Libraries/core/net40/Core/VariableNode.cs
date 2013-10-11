@@ -58,7 +58,7 @@ namespace VDS.RDF
             {
                 this.VariableName = varname;
             }
-            this._hashcode = Tools.CombineHashCodes(NodeType.Variable, this.VariableName);
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #if !SILVERLIGHT
@@ -78,7 +78,7 @@ namespace VDS.RDF
             : base(NodeType.Variable)
         {
             this.VariableName = info.GetString("name");
-            this._hashcode = Tools.CombineHashCodes(NodeType.Variable, this.VariableName);
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #endif
@@ -101,7 +101,7 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Variable)
             {
-                return EqualityHelper.AreVariablesEqual(this, (IVariableNode)other);
+                return EqualityHelper.AreVariablesEqual(this, (INode)other);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseVariableNode other)
         {
-            return this.Equals((IVariableNode)other);
+            return this.Equals((INode)other);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + this._var;
+            return "?" + this.VariableName;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Variable)
             {
-                return this.CompareTo((IVariableNode)other);
+                return this.CompareTo((INode)other);
             }
             else
             {
@@ -183,7 +183,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseVariableNode other)
         {
-            return this.CompareTo((IVariableNode)other);
+            return this.CompareTo((INode)other);
         }
 
 #if !SILVERLIGHT
@@ -195,7 +195,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("name", this._var);
+            info.AddValue("name", this.VariableName);
         }
 
         /// <summary>
@@ -204,8 +204,8 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._var = reader.ReadElementContentAsString();
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this.VariableName = reader.ReadElementContentAsString();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteValue(this._var);
+            writer.WriteValue(this.VariableName);
         }
 
 #endif
@@ -367,7 +367,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(VariableNode other)
         {
-            return base.CompareTo((IVariableNode)other);
+            return base.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -377,7 +377,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(VariableNode other)
         {
-            return base.Equals((IVariableNode)other);
+            return base.Equals((INode)other);
         }
     }
 }

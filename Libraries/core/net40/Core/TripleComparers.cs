@@ -70,39 +70,16 @@ namespace VDS.RDF
                 //Sort order for literals is as follows
                 //plain literals < language spec'd literals < typed literals
                 //Within a category ordering is lexical on modifier, then lexical on lexical value
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
-
-                if (a.DataType != null)
+                if (x.HasLanguage)
                 {
-                    if (b.DataType != null)
-                    {
-                        //Compare datatypes
-                        int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
-                        if (c == 0)
-                        {
-                            //Same datatype so compare lexical values
-                            return a.Value.CompareTo(b.Value);
-                        }
-                        //Different datatypes
-                        return c;
-                    }
-                    else
-                    {
-                        //y is untyped literal so x is greater than y
-                        return 1;
-                    }
-                }
-                else if (!a.Language.Equals(String.Empty))
-                {
-                    if (!b.Language.Equals(String.Empty))
+                    if (y.HasLanguage)
                     {
                         //Compare language specifiers
-                        int c = a.Language.CompareTo(b.Language);
+                        int c = x.Language.CompareTo(y.Language);
                         if (c == 0)
                         {
                             //Same language so compare lexical values
-                            return a.Value.CompareTo(b.Value);
+                            return x.Value.CompareTo(y.Value);
                         }
                         //Different language specifiers
                         return c;
@@ -113,10 +90,31 @@ namespace VDS.RDF
                         return 1;
                     }
                 }
+                else if (x.HasDataType)
+                {
+                    if (y.HasDataType)
+                    {
+                        //Compare datatypes
+                        int c = ComparisonHelper.CompareUris(x.DataType, y.DataType);
+                        if (c == 0)
+                        {
+                            //Same datatype so compare lexical values
+                            return x.Value.CompareTo(y.Value);
+                        }
+                        //Different datatypes
+                        return c;
+                    }
+                    else
+                    {
+                        //y is untyped literal so x is greater than y
+                        return 1;
+                    }
+                }
+
                 else
                 {
                     //Plain literals so just compare lexical value
-                    return a.Value.CompareTo(b.Value);
+                    return x.Value.CompareTo(y.Value);
                 }
             }
             else

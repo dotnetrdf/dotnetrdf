@@ -70,6 +70,16 @@ namespace VDS.RDF
             protected set { throw new NodeValueException("Not a literal node"); }
         }
 
+        public virtual bool HasLanguage
+        {
+            get { throw new NodeValueException("Not a literal node"); }
+        }
+
+        public virtual bool HasDataType
+        {
+            get { throw new NodeValueException("Not a literal node"); }
+        }
+
         public virtual String Language
         {
             get { throw new NodeValueException("Not a literal node"); }

@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 
@@ -41,6 +42,11 @@ namespace VDS.RDF
     /// </summary>
     public static class Tools
     {
+        /// <summary>
+        /// Constants used to add salt to the hashes of different Literal Nodes
+        /// </summary>
+        private const String PlainLiteralHashCodeSalt = "plain";
+
         /// <summary>
         /// Checks whether a Uri is valid as a Base Uri for resolving Relative URIs against
         /// </summary>
@@ -334,6 +340,47 @@ namespace VDS.RDF
         public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
         {
             throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Helper method which ensures that nodes return a consistent hash code based on their value
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns>Hash code for the node</returns>
+        /// <remarks>
+        /// This method is provided so that implementors of custom node implementations can ensure that they always return a consistent hash code and thus correctly respect the contract for <em>GetHashCode()</em>
+        /// </remarks>
+        /// <exception cref="NullReferenceException">Thrown if a null node is passed</exception>
+        /// <exception cref="NodeValueException">Thrown if an unknown node type is passed</exception>
+        public static int CreateHashCode(INode n)
+        {
+            if (ReferenceEquals(n, null)) throw new NullReferenceException("Cannot create a hash code for a null node");
+            switch (n.NodeType)
+            {
+                case NodeType.Blank:
+                    return Tools.CombineHashCodes(NodeType.Blank, n.AnonID);
+                case NodeType.GraphLiteral:
+                    return Tools.CombineHashCodes(NodeType.GraphLiteral, n.SubGraph);
+                    case NodeType.Literal:
+                    if (n.HasLanguage)
+                    {
+                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, n.Language));
+                    } 
+                    else if (n.HasDataType)
+                    {
+                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, n.DataType));
+                    }
+                    else
+                    {
+                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, PlainLiteralHashCodeSalt));
+                    }
+                case NodeType.Uri:
+                    return Tools.CombineHashCodes(NodeType.Uri, n.Uri);
+                case NodeType.Variable:
+                    return Tools.CombineHashCodes(NodeType.Variable, n.VariableName);
+                default:
+                    throw new NodeValueException("Cannot create a hash code for an unknown node type");
+            }
         }
 
         /// <summary>

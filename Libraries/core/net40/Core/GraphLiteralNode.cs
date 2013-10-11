@@ -57,7 +57,7 @@ namespace VDS.RDF
             this.SubGraph = subgraph;
 
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.GraphLiteral, this.SubGraph.GetHashCode());
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF
         {
             this.SubGraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.GraphLiteral, this.SubGraph.GetHashCode());
+            this._hashcode = Tools.CreateHashCode(this);
         }
 #endif
 
@@ -139,7 +139,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseGraphLiteralNode other)
         {
-            return this.Equals((IGraphLiteralNode)other);
+            return this.Equals((INode)other);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace VDS.RDF
             output.Append("{");
 
             //Add all the Triples in the Subgraph
-            foreach (Triple t in this._subgraph.Triples)
+            foreach (Triple t in this.SubGraph.Triples)
             {
                 output.Append(t.ToString());
             }
@@ -189,7 +189,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.GraphLiteral)
             {
-                return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
+                return ComparisonHelper.CompareGraphLiterals(this, (INode)other);
             }
             else
             {
@@ -205,7 +205,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseGraphLiteralNode other)
         {
-            return this.CompareTo((IGraphLiteralNode)other);
+            return this.CompareTo((INode)other);
         }
 
 #if !SILVERLIGHT
@@ -218,7 +218,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("subgraph", this._subgraph);
+            info.AddValue("subgraph", this.SubGraph);
         }
 
         /// <summary>
@@ -228,9 +228,9 @@ namespace VDS.RDF
         public sealed override void ReadXml(XmlReader reader)
         {
             reader.Read();
-            this._subgraph = reader.DeserializeGraph();
+            this.SubGraph = reader.DeserializeGraph();
             //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            this._subgraph.SerializeGraph(writer);
+            this.SubGraph.SerializeGraph(writer);
         }
 
         #endregion
@@ -397,7 +397,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(GraphLiteralNode other)
         {
-            return this.CompareTo((IGraphLiteralNode)other);
+            return this.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(GraphLiteralNode other)
         {
-            return base.Equals((IGraphLiteralNode)other);
+            return base.Equals((INode)other);
         }
 
     }

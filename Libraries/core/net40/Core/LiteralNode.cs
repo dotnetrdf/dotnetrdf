@@ -45,11 +45,6 @@ namespace VDS.RDF
         : BaseNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
     {
         /// <summary>
-        /// Constants used to add salt to the hashes of different Literal Nodes
-        /// </summary>
-        private const String PlainLiteralHashCodeSalt = "plain";
-
-        /// <summary>
         /// Internal Only Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
@@ -80,7 +75,7 @@ namespace VDS.RDF
             }
 
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -119,15 +114,7 @@ namespace VDS.RDF
             this.DataType = null;
 
             //Compute Hash Code
-            if (ReferenceEquals(this.Language, null))
-            {
-                //Empty Language Specifier equivalent to a Plain Literal
-                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
-            }
-            else
-            {
-                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.Language));
-            }
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -164,14 +151,7 @@ namespace VDS.RDF
             this.DataType = datatype;
 
             //Compute Hash Code
-            if (ReferenceEquals(this.DataType, null))
-            {
-                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
-            }
-            else
-            {
-                this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.DataType));
-            }
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #if !SILVERLIGHT
@@ -195,22 +175,20 @@ namespace VDS.RDF
             {
                 case 0:
                     //Nothing more to do - plain literal
-                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, PlainLiteralHashCodeSalt));
                     break;
                 case 1:
                     //Get the Language
                     this.Language = info.GetString("lang");
                     if (this.Language.Equals(String.Empty)) this.Language = null;
-                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, String.IsNullOrEmpty(this.Language) ? PlainLiteralHashCodeSalt : this.Language));
                     break;
                 case 2:
                     //Get the Datatype
                     this.DataType = UriFactory.Create(info.GetString("datatype"));
-                    this._hashcode = Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(this.Value, this.DataType));
                     break;
                 default:
                     throw new RdfException("Unable to deserialize a Literal Node");
             }
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #endif
@@ -221,9 +199,25 @@ namespace VDS.RDF
         public override String Value { get; protected set; }
 
         /// <summary>
+        /// Gets whether the literal has a language specifier
+        /// </summary>
+        public override bool HasLanguage
+        {
+            get { return !String.IsNullOrEmpty(this.Language); }
+        }
+
+        /// <summary>
         /// Gives the alnguage specifier for the literal (if it exists) or null
         /// </summary>
         public override String Language { get; protected set; }
+
+        /// <summary>
+        /// Gets whether the literal has a data type URI
+        /// </summary>
+        public override bool HasDataType
+        {
+            get { return !ReferenceEquals(this.DataType, null); }
+        }
 
         /// <summary>
         /// Gives the data type URI for the literal (if it exists) or null
@@ -283,7 +277,7 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Literal)
             {
-                return this.Equals((ILiteralNode)other);
+                return this.Equals((INode)other);
             }
             else
             {
@@ -299,7 +293,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseLiteralNode other)
         {
-            return this.Equals((ILiteralNode)other);
+            return this.Equals((INode)other);
         }
 
         /// <summary>
@@ -310,16 +304,16 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder stringOut = new StringBuilder();
-            stringOut.Append(this._value);
-            if (!this._language.Equals(String.Empty))
+            stringOut.Append(this.Value);
+            if (!this.HasLanguage)
             {
                 stringOut.Append("@");
-                stringOut.Append(this._language);
+                stringOut.Append(this.Language);
             }
-            else if (!(this._datatype == null))
+            else if (this.HasDataType)
             {
                 stringOut.Append("^^");
-                stringOut.Append(this._datatype.AbsoluteUri);
+                stringOut.Append(this.DataType.AbsoluteUri);
             }
 
             return stringOut.ToString();
@@ -353,7 +347,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Literal)
             {
-                return this.CompareTo((ILiteralNode)other);
+                return this.CompareTo((INode)other);
             }
             else
             {
@@ -370,7 +364,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseLiteralNode other)
         {
-            return this.CompareTo((ILiteralNode)other);
+            return this.CompareTo((INode)other);
         }
 
 #if !SILVERLIGHT
@@ -384,16 +378,16 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("value", this._value);
-            if (this._datatype != null)
-            {
-                info.AddValue("mode", (byte)2);
-                info.AddValue("datatype", this._datatype.AbsoluteUri);
-            }
-            else if (!this._language.Equals(String.Empty))
+            info.AddValue("value", this.Value);
+            if (this.HasLanguage)
             {
                 info.AddValue("mode", (byte)1);
-                info.AddValue("lang", this._language);
+                info.AddValue("lang", this.Language);
+            }
+            else if (this.HasDataType)
+            {
+                info.AddValue("mode", (byte)2);
+                info.AddValue("datatype", this.DataType.AbsoluteUri);
             }
             else
             {
@@ -419,34 +413,19 @@ namespace VDS.RDF
                     switch (reader.Name)
                     {
                         case "lang":
-                            this._language = reader.Value;
+                            this.Language = reader.Value;
                             exit = true;
                             break;
                         case "datatype":
-                            this._datatype = UriFactory.Create(reader.Value);
+                            this.DataType = UriFactory.Create(reader.Value);
                             exit = true;
                             break;
                     }
                 }
             }
             reader.MoveToContent();
-            this._value = reader.ReadElementContentAsString();
-
-            if (this._datatype != null)
-            {            
-                //Compute Hash Code
-                this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
-            }
-            else if (!this._language.Equals(String.Empty))
-            {
-                //Compute Hash Code
-                this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
-            }
-            else
-            {
-                //Compute Hash Code
-                this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
-            }
+            this.Value = reader.ReadElementContentAsString();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -455,15 +434,15 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            if (this._datatype != null)
+            if (this.HasLanguage)
             {
-                writer.WriteAttributeString("datatype", this._datatype.AbsoluteUri);
+                writer.WriteAttributeString("lang", this.Language);
             }
-            else if (!this._language.Equals(String.Empty))
+            else if (this.HasDataType)
             {
-                writer.WriteAttributeString("lang", this._language);
+                writer.WriteAttributeString("datatype", this.DataType.AbsoluteUri);
             }
-            writer.WriteString(this._value);
+            writer.WriteString(this.Value);
         }
 
         #endregion
@@ -561,7 +540,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(LiteralNode other)
         {
-            return this.CompareTo((ILiteralNode)other);
+            return this.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -571,7 +550,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(LiteralNode other)
         {
-            return base.Equals((ILiteralNode)other);
+            return base.Equals((INode)other);
         }
     }
 
@@ -633,7 +612,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(NonNormalizedLiteralNode other)
         {
-            return this.CompareTo((ILiteralNode)other);
+            return this.CompareTo((INode)other);
         }
     }
 }

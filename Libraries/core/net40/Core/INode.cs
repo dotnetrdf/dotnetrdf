@@ -131,6 +131,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets whether the node has a language specifier if this is a literal node, otherwise produces an error
+        /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
+        bool HasLanguage { get; }
+
+        /// <summary>
+        /// Gets whether the ode has a data type URI if this is a literal node, otherwise produces an error
+        /// </summary>
+        /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
+        bool HasDataType { get; }
+
+        /// <summary>
         /// Gets the Language specifier (if any) or null (if none) if this is a literal node, otherwise produces an error 
         /// </summary>
         /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
@@ -140,7 +152,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the DataType URI (if any) or null (if none) if this is a literal node, otherwise produces an error
+        /// Gets the Data Type URI (if any) or null (if none) if this is a literal node, otherwise produces an error
         /// </summary>
         /// <exception cref="NodeValueException">Thrown if this is not a literal node</exception>
         Uri DataType

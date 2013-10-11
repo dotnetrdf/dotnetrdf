@@ -354,7 +354,7 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Only <see cref="ILiteralNode">ILiteralNode</see>'s can have a Data Type
+        /// Onlyliteral nodes can have a Data Type
         /// </para>
         /// <para>
         /// The function only returns the Data Type Uri (as a String) if the Data Type of the Literal is one of the supported Data Types
@@ -371,10 +371,9 @@ namespace VDS.RDF.Specifications
                 case NodeType.Uri:
                     throw new RdfException("Data Type cannot be determined for non-Literal Nodes");
                 case NodeType.Literal:
-                    ILiteralNode l = (ILiteralNode)n;
-                    if (l.DataType == null)
+                    if (!n.HasDataType)
                     {
-                        if (!l.Language.Equals(String.Empty))
+                        if (n.HasDataType)
                         {
                             throw new RdfException("Literals with Language Specifiers do not have a Data Type");
                         }
@@ -385,7 +384,7 @@ namespace VDS.RDF.Specifications
                     }
                     else
                     {
-                        String type = l.DataType.AbsoluteUri;
+                        String type = n.DataType.AbsoluteUri;
                         if (XmlSpecsHelper.IsSupportedType(type))
                         {
                             return type;

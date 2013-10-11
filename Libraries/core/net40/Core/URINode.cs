@@ -55,7 +55,7 @@ namespace VDS.RDF
             this.Uri = uri;
 
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.Uri, this.Uri);
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #if !SILVERLIGHT
@@ -77,7 +77,7 @@ namespace VDS.RDF
             this.Uri = UriFactory.Create(info.GetString("uri"));
 
             //Compute Hash Code
-            this._hashcode = Tools.CombineHashCodes(NodeType.Uri, this.Uri);
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
 #endif
@@ -144,7 +144,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(BaseUriNode other)
         {
-            return this.Equals((IUriNode)other);
+            return this.Equals((INode)other);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return this._uri.AbsoluteUri;
+            return this.Uri.AbsoluteUri;
         }
 
         /// <summary>
@@ -184,9 +184,9 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Uri)
             {
-                //Return the result of CompareTo using the IUriNode comparison method
+                //Return the result of CompareTo using the INode comparison method
 
-                return this.CompareTo((IUriNode)other);
+                return this.CompareTo((INode)other);
             }
             else
             {
@@ -203,7 +203,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(BaseUriNode other)
         {
-            return this.CompareTo((IUriNode)other);
+            return this.CompareTo((INode)other);
         }
 
 #if !SILVERLIGHT
@@ -217,7 +217,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("uri", this._uri.AbsoluteUri);
+            info.AddValue("uri", this.Uri.AbsoluteUri);
         }
 
         #endregion
@@ -230,9 +230,9 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._uri = UriFactory.Create(reader.ReadElementContentAsString());
+            this.Uri = UriFactory.Create(reader.ReadElementContentAsString());
             //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._uri.AbsoluteUri);
+            writer.WriteString(this.Uri.AbsoluteUri);
         }
 
         #endregion
@@ -256,7 +256,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string AsString()
         {
-            return this._uri.AbsoluteUri;
+            return this.Uri.AbsoluteUri;
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(UriNode other)
         {
-            return base.CompareTo((IUriNode)other);
+            return base.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Equals(UriNode other)
         {
-            return base.Equals((IUriNode)other);
+            return base.Equals((INode)other);
         }
     }
 }
