@@ -80,6 +80,79 @@ namespace VDS.RDF
             Assert.IsTrue(g.Namespaces.HasNamespace("ex"));
             Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
+
+        [TestMethod]
+        public void GraphContractAssert1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Assert the triple
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            Assert.IsTrue(g.Assert(t));
+            Assert.AreEqual(1, g.Count);
+            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.IsTrue(g.Triples.Any());
+
+            // Asserting same triple again should have no effect
+            Assert.IsFalse(g.Assert(t));
+            Assert.AreEqual(1, g.Count);
+            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.IsTrue(g.Triples.Any());
+        }
+
+        [TestMethod]
+        public void GraphContractRetract1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Assert the triple
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            Assert.IsTrue(g.Assert(t));
+            Assert.AreEqual(1, g.Count);
+            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.IsTrue(g.Triples.Any());
+
+            // Retract the triple
+            Assert.IsTrue(g.Retract(t));
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.ContainsTriple(t));
+            Assert.IsFalse(g.Triples.Any());
+        }
+
+        [TestMethod]
+        public void GraphContractTriples1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Assert the triple
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            Assert.IsTrue(g.Assert(t));
+            Assert.AreEqual(1, g.Count);
+            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.IsTrue(g.Triples.Any());
+
+            IEnumerable<Triple> ts = g.Triples;
+            Assert.IsTrue(ts.Any());
+            Assert.AreEqual(1, ts.Count());
+            Assert.IsTrue(ts.Contains(t));
+
+            // Retract the triple
+            Assert.IsTrue(g.Retract(t));
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.ContainsTriple(t));
+            Assert.IsFalse(g.Triples.Any());
+
+            // Enumerable should reflect current state of graph
+            Assert.IsFalse(ts.Any());
+            Assert.AreEqual(0, ts.Count());
+            Assert.IsFalse(ts.Contains(t));
+        }
     }
 
     [TestClass]
@@ -90,5 +163,15 @@ namespace VDS.RDF
         {
             return new Graph();
         }
+    }
+
+    [TestClass]
+    public class ThreadSafeGraphContractTests
+        : AbstractGraphContractTests
+    {
+        protected override IGraph  GetInstance()
+{
+ 	return new ThreadSafeGraph();
+}
     }
 }

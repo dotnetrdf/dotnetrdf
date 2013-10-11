@@ -167,7 +167,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Variable)
             {
-                return this.CompareTo((INode)other);
+                return ComparisonHelper.CompareVariables(this, other);
             }
             else
             {

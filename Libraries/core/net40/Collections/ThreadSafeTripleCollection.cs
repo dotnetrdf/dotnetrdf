@@ -188,17 +188,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.ToList();
+                return this._triples.ToList().GetEnumerator();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples.GetEnumerator();
         }
 
         /// <summary>
@@ -208,17 +206,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                List<INode> nodes = new List<INode>();
                 try
                 {
                     this.EnterReadLock();
-                    nodes = this._triples.ObjectNodes.ToList();
+                    return this._triples.ObjectNodes.ToList();
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return nodes;
             }
         }
 
@@ -229,17 +225,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                List<INode> nodes = new List<INode>();
                 try
                 {
                     this.EnterReadLock();
-                    nodes = this._triples.PredicateNodes.ToList();
+                    return this._triples.PredicateNodes.ToList();
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return nodes;
             }
         }
 
@@ -250,17 +244,15 @@ namespace VDS.RDF.Collections
         {
             get
             {
-                List<INode> nodes = new List<INode>();
                 try
                 {
                     this.EnterReadLock();
-                    nodes = this._triples.SubjectNodes.ToList();
+                    return this._triples.SubjectNodes.ToList();
                 }
                 finally
                 {
                     this.ExitReadLock();
                 }
-                return nodes;
             }
         }
 
@@ -271,17 +263,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithObject(obj).ToList();
+                return this._triples.WithObject(obj).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
@@ -291,17 +281,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithPredicate(pred).ToList();
+                return this._triples.WithPredicate(pred).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
@@ -312,17 +300,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithPredicateObject(pred, obj).ToList();
+                return this._triples.WithPredicateObject(pred, obj).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
@@ -332,17 +318,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithSubject(subj).ToList();
+                return this._triples.WithSubject(subj).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
@@ -353,17 +337,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithSubjectObject(subj, obj).ToList();
+                return this._triples.WithSubjectObject(subj, obj).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
@@ -374,17 +356,15 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            List<Triple> triples = new List<Triple>();
             try
             {
                 this.EnterReadLock();
-                triples = this._triples.WithSubjectPredicate(subj, pred).ToList();
+                return this._triples.WithSubjectPredicate(subj, pred).ToList();
             }
             finally
             {
                 this.ExitReadLock();
             }
-            return triples;
         }
 
         /// <summary>
