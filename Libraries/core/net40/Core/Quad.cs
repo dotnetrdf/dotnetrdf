@@ -31,10 +31,16 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    public class Quad
+    /// <summary>
+    /// Represents a RDF quad which is a RDF triple with an additional graph name field
+    /// </summary>
+    public sealed class Quad
     {
-        private readonly Triple _t;
-        private readonly INode _graph;
+        /// <summary>
+        /// Special node instance which represents the default graph
+        /// </summary>
+        public static readonly INode DefaultGraphNode = new UriNode(new Uri("dotnetrdf:default-graph"));
+
         private readonly int _hashCode;
 
         /// <summary>
@@ -45,10 +51,10 @@ namespace VDS.RDF
         public Quad(Triple t, INode g)
         {
             if (t == null) throw new ArgumentNullException("t");
-            this._t = t;
-            this._graph = g;
+            this.Triple = t;
+            this.Graph = ReferenceEquals(g, null) ? DefaultGraphNode : g;
 
-            this._hashCode = this.ToString().GetHashCode();
+            this._hashCode = Tools.CombineHashCodes(this.Triple, this.Graph);
         }
 
         /// <summary>
@@ -61,6 +67,8 @@ namespace VDS.RDF
         public Quad(INode subj, INode pred, INode obj, INode graph)
             : this(new Triple(subj, pred, obj), graph) { }
 
+        private Triple Triple { get; set; }
+
         /// <summary>
         /// Gets the subject of the quad
         /// </summary>
@@ -68,7 +76,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t.Subject;
+                return this.Triple.Subject;
             }
         }
 
@@ -79,7 +87,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t.Predicate;
+                return this.Triple.Predicate;
             }
         }
 
@@ -90,20 +98,14 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t.Object;
+                return this.Triple.Object;
             }
         }
 
         /// <summary>
         /// Gets the graph name for the quad
         /// </summary>
-        public INode Graph
-        {
-            get
-            {
-                return this._graph;
-            }
-        }
+        public INode Graph { get; private set; }
 
         /// <summary>
         /// Returns whether the quad is grounded i.e. does not contain any blank/variable nodes
@@ -112,7 +114,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._t.IsGroundTriple;
+                return this.Triple.IsGroundTriple;
             }
         }
 
@@ -125,7 +127,7 @@ namespace VDS.RDF
         /// </remarks>
         public Triple AsTriple()
         {
-            return this._t;
+            return this.Triple;
         }
 
         /// <summary>
@@ -138,8 +140,8 @@ namespace VDS.RDF
         /// </remarks>
         public Quad CopyTo(INode graph)
         {
-            if (this._graph.Equals(graph)) return this;
-            return new Quad(this._t, graph);
+            if (this.Graph.Equals(graph)) return this;
+            return new Quad(this.Triple, graph);
         }
 
         /// <summary>
@@ -155,7 +157,7 @@ namespace VDS.RDF
                 Quad other = (Quad)obj;
 
                 //Graph, subject, predicate and object must all be equal
-                return (this._graph.Equals(other.Graph) && this._t.Subject.Equals(other.Subject) && this._t.Predicate.Equals(other.Predicate) && this._t.Object.Equals(other.Object));
+                return (this.Graph.Equals(other.Graph) && this.Triple.Subject.Equals(other.Subject) && this.Triple.Predicate.Equals(other.Predicate) && this.Triple.Object.Equals(other.Object));
             }
             else
             {
@@ -171,14 +173,14 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder outString = new StringBuilder();
-            outString.Append(this._t.ToString());
-            if (this._graph == null)
+            outString.Append(this.Triple.ToString());
+            if (this.Graph == null)
             {
                 outString.Append(" in Default Graph");
             }
             else
             {
-                outString.Append(" in Graph " + this._graph.ToString());
+                outString.Append(" in Graph " + this.Graph.ToString());
             }
 
             return outString.ToString();

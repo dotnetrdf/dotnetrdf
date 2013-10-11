@@ -51,7 +51,6 @@ namespace VDS.RDF
         , ISerializable, IXmlSerializable
 #endif
     {
-        private INode _subject, _predicate, _object;
         private int _hashcode;
 
         /// <summary>
@@ -69,13 +68,13 @@ namespace VDS.RDF
             if (obj == null) throw new ArgumentNullException("obj");
 
             //Store the Three Nodes of the Triple
-            this._subject = subj;
-            this._predicate = pred;
-            this._object = obj;
+            this.Subject = subj;
+            this.Predicate = pred;
+            this.Object = obj;
 
             //Compute Hash Code
-            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
-         }
+            this._hashcode = Tools.CreateHashCode(this);
+        }
 
 #if !SILVERLIGHT
 
@@ -87,47 +86,29 @@ namespace VDS.RDF
 
         private Triple(SerializationInfo info, StreamingContext context)
         {
-            this._subject = (INode)info.GetValue("s", typeof(INode));
-            this._predicate = (INode)info.GetValue("p", typeof(INode));
-            this._object = (INode)info.GetValue("o", typeof(INode));
+            this.Subject = (INode)info.GetValue("s", typeof(INode));
+            this.Predicate = (INode)info.GetValue("p", typeof(INode));
+            this.Object = (INode)info.GetValue("o", typeof(INode));
 
             //Compute Hash Code
-            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 #endif
 
         /// <summary>
         /// Gets the Subject of the Triple
         /// </summary>
-        public INode Subject
-        {
-            get
-            {
-                return _subject;
-            }
-        }
+        public INode Subject { get; private set; }
 
         /// <summary>
         /// Gets the Predicate of the Triple
         /// </summary>
-        public INode Predicate
-        {
-            get
-            {
-                return _predicate;
-            }
-        }
+        public INode Predicate { get; private set; }
 
         /// <summary>
         /// Gets the Object of the Triple
         /// </summary>
-        public INode Object
-        {
-            get
-            {
-                return _object;
-            }
-        }
+        public INode Object { get; private set; }
 
         /// <summary>
         /// Gets the Graph this Triple was created for
@@ -165,7 +146,7 @@ namespace VDS.RDF
         {
             get
             {
-                return new INode[] { this._subject, this._predicate, this._object };
+                return new INode[] { this.Subject, this.Predicate, this.Object };
             }
         }
 
@@ -181,7 +162,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._subject.NodeType != NodeType.Blank && this._predicate.NodeType != NodeType.Blank && this._object.NodeType != NodeType.Blank);
+                return (this.Subject.NodeType != NodeType.Blank && this.Predicate.NodeType != NodeType.Blank && this.Object.NodeType != NodeType.Blank);
             }
         }
 
@@ -192,7 +173,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple contains the given Node</returns>
         public bool Involves(INode n)
         {
-            return (this._subject.Equals(n) || this._predicate.Equals(n) || this._object.Equals(n));
+            return (this.Subject.Equals(n) || this.Predicate.Equals(n) || this.Object.Equals(n));
         }
 
         /// <summary>
@@ -203,15 +184,7 @@ namespace VDS.RDF
         public bool Involves(Uri uri)
         {
             INode temp = new UriNode(uri);
-
-            //Does the Subject involve this Uri?
-            if (this._subject.Equals(temp)) return true;
-            //Does the Predicate involve this Uri?
-            if (this._predicate.Equals(temp)) return true;
-            //Does the Object involve this Uri?
-            if (this._object.Equals(temp)) return true;
-            //Not Involved!
-            return false;
+            return this.Involves(temp);
         }
 
         /// <summary>
@@ -243,14 +216,10 @@ namespace VDS.RDF
                 Triple temp = (Triple)obj;
 
                 //Subject, Predicate and Object must all be equal
-                return this._subject.Equals(temp.Subject) && this._predicate.Equals(temp.Predicate) && this._object.Equals(temp.Object);
-
-             }
-            else
-            {
-                //Can only be equal to other Triples
-                return false;
+                return this.Subject.Equals(temp.Subject) && this.Predicate.Equals(temp.Predicate) && this.Object.Equals(temp.Object);
             }
+            //Can only be equal to other Triples
+            return false;
         }
 
         /// <summary>
@@ -277,11 +246,11 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder outString = new StringBuilder();
-            outString.Append(this._subject.ToString());
+            outString.Append(this.Subject.ToString());
             outString.Append(" , ");
-            outString.Append(this._predicate.ToString());
+            outString.Append(this.Predicate.ToString());
             outString.Append(" , ");
-            outString.Append(this._object.ToString());
+            outString.Append(this.Object.ToString());
 
             return outString.ToString();
         }
@@ -359,9 +328,9 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("s", this._subject);
-            info.AddValue("p", this._predicate);
-            info.AddValue("o", this._object);
+            info.AddValue("s", this.Subject);
+            info.AddValue("p", this.Predicate);
+            info.AddValue("o", this.Object);
         }
 
         #endregion
@@ -384,12 +353,12 @@ namespace VDS.RDF
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
-            this._subject = reader.DeserializeNode();
-            this._predicate = reader.DeserializeNode();
-            this._object = reader.DeserializeNode();
+            this.Subject = reader.DeserializeNode();
+            this.Predicate = reader.DeserializeNode();
+            this.Object = reader.DeserializeNode();
 
             //Compute Hash Code
-            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+            this._hashcode = Tools.CreateHashCode(this);
         }
 
         /// <summary>
@@ -398,9 +367,9 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
-            this._subject.SerializeNode(writer);
-            this._predicate.SerializeNode(writer);
-            this._object.SerializeNode(writer);
+            this.Subject.SerializeNode(writer);
+            this.Predicate.SerializeNode(writer);
+            this.Object.SerializeNode(writer);
         }
 
         #endregion

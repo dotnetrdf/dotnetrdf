@@ -383,6 +383,11 @@ namespace VDS.RDF
             }
         }
 
+        internal static int CreateHashCode(Triple t)
+        {
+            return Tools.CombineHashCodes(t.Subject, Tools.CombineHashCodes(t.Predicate, t.Object));
+        }
+
         /// <summary>
         /// Does a quick and simple combination of the Hash Codes of two Objects
         /// </summary>
