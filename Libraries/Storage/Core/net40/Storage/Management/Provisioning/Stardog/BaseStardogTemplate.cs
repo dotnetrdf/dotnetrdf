@@ -53,30 +53,30 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         {
             //Index Options
             this.DatabaseType = dbtype;
-            this.MinDifferentialIndexLimit = StardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit;
-            this.MaxDifferentialIndexLimit = StardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit;
-            this.CanoncialiseLiterals = StardogServer.DatabaseOptions.DefaultCanonicaliseLiterals;
-            this.IndexNamedGraphs = StardogServer.DatabaseOptions.DefaultNamedGraphIndexing;
-            this.PersistIndexes = StardogServer.DatabaseOptions.DefaultPersistIndex;
-            this.PersistIndexesSynchronously = StardogServer.DatabaseOptions.DefaultPersistIndexSync;
-            this.AutoUpdateStatistics = StardogServer.DatabaseOptions.DefaultAutoUpdateStats;
+            this.MinDifferentialIndexLimit = BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit;
+            this.MaxDifferentialIndexLimit = BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit;
+            this.CanoncialiseLiterals = BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals;
+            this.IndexNamedGraphs = BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing;
+            this.PersistIndexes = BaseStardogServer.DatabaseOptions.DefaultPersistIndex;
+            this.PersistIndexesSynchronously = BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync;
+            this.AutoUpdateStatistics = BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats;
 
             //Integrity Constraint Validation
             this.IcvActiveGraphs = new List<string>();
-            this.IcvEnabled = StardogServer.DatabaseOptions.DefaultIcvEnabled;
-            this.IcvReasoningMode = StardogServer.DatabaseOptions.DefaultIcvReasoningMode;
+            this.IcvEnabled = BaseStardogServer.DatabaseOptions.DefaultIcvEnabled;
+            this.IcvReasoningMode = BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode;
 
             //Reasoning
-            this.ConsistencyChecking = StardogServer.DatabaseOptions.DefaultConsistencyChecking;
-            this.EnablePunning = StardogServer.DatabaseOptions.DefaultPunning;
+            this.ConsistencyChecking = BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking;
+            this.EnablePunning = BaseStardogServer.DatabaseOptions.DefaultPunning;
             this.SchemaGraphs = new List<string>();
 
             //Search
-            this.FullTextSearch = StardogServer.DatabaseOptions.DefaultFullTextSearch;
-            this.SearchReindexMode = StardogServer.DatabaseOptions.SearchReIndexModeAsync;
+            this.FullTextSearch = BaseStardogServer.DatabaseOptions.DefaultFullTextSearch;
+            this.SearchReindexMode = BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync;
 
             //Transactions
-            this.DurableTransactions = StardogServer.DatabaseOptions.DefaultDurableTransactions;
+            this.DurableTransactions = BaseStardogServer.DatabaseOptions.DefaultDurableTransactions;
         }
 
         #region Index Options
@@ -119,7 +119,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets the minimum differential index limit
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit), 
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit), 
          Category("Index Options"), 
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -138,7 +138,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets the maximum differential merge limit
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit), 
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit), 
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -157,7 +157,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether the database should canonicalise literals
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultCanonicaliseLiterals),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals),
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -176,7 +176,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to optimize indexes for named graph queries
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultNamedGraphIndexing),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing),
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -195,7 +195,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to persist indexes
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultPersistIndex),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndex),
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to persist indexes synchronously
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultPersistIndexSync),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync),
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to automatically update statistics
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultAutoUpdateStats),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats),
          Category("Index Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -281,7 +281,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Enables/Disables ICV
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultIcvEnabled),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvEnabled),
          Category("Integrity Constraint Validation"), 
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -300,7 +300,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets the reasoning mode for ICV
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultIcvReasoningMode),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode),
          Category("Integrity Constraint Validation"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -330,7 +330,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to perform automatic consistency checking on transactions
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultConsistencyChecking),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking),
          Category("Reasoning Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -349,7 +349,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Enables/Disables punning
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultPunning),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPunning),
          Category("Reasoning Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -396,7 +396,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Enables/Disables Full Text search
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultFullTextSearch),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultFullTextSearch),
          Category("Search Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -415,7 +415,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets the Search re-indexing mode
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.SearchReIndexModeAsync),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync),
          Category("Search Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -440,7 +440,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <summary>
         /// Gets/Sets whether to use durable transactions
         /// </summary>
-        [DefaultValue(StardogServer.DatabaseOptions.DefaultDurableTransactions),
+        [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultDurableTransactions),
          Category("Transaction Options"),
 #if !WINDOWS_PHONE
 #if !SILVERLIGHT
@@ -465,28 +465,28 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         public override IEnumerable<string> Validate()
         {
             List<String> errors = new List<string>();
-            if (!StardogServer.DatabaseOptions.IsValidDatabaseName(this.ID))
+            if (!BaseStardogServer.DatabaseOptions.IsValidDatabaseName(this.ID))
             {
-                errors.Add("Database Name " + this.ID + " is invalid, Stardog database names must match the regular expression " + StardogServer.DatabaseOptions.ValidDatabaseNamePattern);
+                errors.Add("Database Name " + this.ID + " is invalid, Stardog database names must match the regular expression " + BaseStardogServer.DatabaseOptions.ValidDatabaseNamePattern);
             }
-            if (!StardogServer.DatabaseOptions.IsValidDatabaseType(this.DatabaseType))
+            if (!BaseStardogServer.DatabaseOptions.IsValidDatabaseType(this.DatabaseType))
             {
                 errors.Add("Database Type " + this.DatabaseType + " is invalid");
             }
-            if (!StardogServer.DatabaseOptions.IsValidSearchReIndexMode(this.SearchReindexMode))
+            if (!BaseStardogServer.DatabaseOptions.IsValidSearchReIndexMode(this.SearchReindexMode))
             {
                 errors.Add("Search Re-index Mode " + this.SearchReindexMode + " is invalid, only sync or async are currently permitted");
             }
             foreach (String uri in this.SchemaGraphs)
             {
-                if (!StardogServer.DatabaseOptions.IsValidNamedGraph(uri))
+                if (!BaseStardogServer.DatabaseOptions.IsValidNamedGraph(uri))
                 {
                     errors.Add("Schema Graphs contains invalid Graph URI '" + uri + "' - must use a valid URI, default or *");
                 }
             }
             foreach (String uri in this.IcvActiveGraphs)
             {
-                if (!StardogServer.DatabaseOptions.IsValidNamedGraph(uri))
+                if (!BaseStardogServer.DatabaseOptions.IsValidNamedGraph(uri))
                 {
                     errors.Add("ICV Active Graphs contains invalid Graph URI '" + uri + "' - must use a valid URI, default or *");
                 }
@@ -516,31 +516,31 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             JObject options = new JObject();
 
             //Index Options
-            options.Add(StardogServer.DatabaseOptions.IndexType, new JValue(this.DatabaseType.ToLower()));
-            if (this.MinDifferentialIndexLimit != StardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit) options.Add(StardogServer.DatabaseOptions.IndexDifferentialEnableLimit, new JValue(this.MinDifferentialIndexLimit));
-            if (this.MaxDifferentialIndexLimit != StardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit) options.Add(StardogServer.DatabaseOptions.IndexDifferentialMergeLimit, new JValue(this.MaxDifferentialIndexLimit));
-            if (this.CanoncialiseLiterals != StardogServer.DatabaseOptions.DefaultCanonicaliseLiterals) options.Add(StardogServer.DatabaseOptions.IndexLiteralsCanonical, new JValue(this.CanoncialiseLiterals));
-            if (this.IndexNamedGraphs != StardogServer.DatabaseOptions.DefaultNamedGraphIndexing) options.Add(StardogServer.DatabaseOptions.IndexNamedGraphs, new JValue(this.IndexNamedGraphs));
-            if (this.PersistIndexes != StardogServer.DatabaseOptions.DefaultPersistIndex) options.Add(StardogServer.DatabaseOptions.IndexPersistTrue, new JValue(this.PersistIndexes));
-            if (this.PersistIndexesSynchronously != StardogServer.DatabaseOptions.DefaultPersistIndexSync) options.Add(StardogServer.DatabaseOptions.IndexPersistSync, new JValue(this.PersistIndexesSynchronously));
-            if (this.AutoUpdateStatistics != StardogServer.DatabaseOptions.DefaultAutoUpdateStats) options.Add(StardogServer.DatabaseOptions.IndexStatisticsAutoUpdate, new JValue(this.AutoUpdateStatistics));
+            options.Add(BaseStardogServer.DatabaseOptions.IndexType, new JValue(this.DatabaseType.ToLower()));
+            if (this.MinDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialEnableLimit, new JValue(this.MinDifferentialIndexLimit));
+            if (this.MaxDifferentialIndexLimit != BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit) options.Add(BaseStardogServer.DatabaseOptions.IndexDifferentialMergeLimit, new JValue(this.MaxDifferentialIndexLimit));
+            if (this.CanoncialiseLiterals != BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals) options.Add(BaseStardogServer.DatabaseOptions.IndexLiteralsCanonical, new JValue(this.CanoncialiseLiterals));
+            if (this.IndexNamedGraphs != BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing) options.Add(BaseStardogServer.DatabaseOptions.IndexNamedGraphs, new JValue(this.IndexNamedGraphs));
+            if (this.PersistIndexes != BaseStardogServer.DatabaseOptions.DefaultPersistIndex) options.Add(BaseStardogServer.DatabaseOptions.IndexPersistTrue, new JValue(this.PersistIndexes));
+            if (this.PersistIndexesSynchronously != BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync) options.Add(BaseStardogServer.DatabaseOptions.IndexPersistSync, new JValue(this.PersistIndexesSynchronously));
+            if (this.AutoUpdateStatistics != BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats) options.Add(BaseStardogServer.DatabaseOptions.IndexStatisticsAutoUpdate, new JValue(this.AutoUpdateStatistics));
 
             //ICV Options
-            if (this.IcvActiveGraphs.Count > 0) options.Add(StardogServer.DatabaseOptions.IcvActiveGraphs, new JValue(String.Join(",", this.IcvActiveGraphs.ToArray())));
-            if (this.IcvEnabled != StardogServer.DatabaseOptions.DefaultIcvEnabled) options.Add(StardogServer.DatabaseOptions.IcvEnabled, new JValue(this.IcvEnabled));
-            if (this.IcvReasoningMode != StardogServer.DatabaseOptions.DefaultIcvReasoningMode) options.Add(StardogServer.DatabaseOptions.IcvReasoningType, new JValue(this.IcvReasoningMode.ToString()));
+            if (this.IcvActiveGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.IcvActiveGraphs, new JValue(String.Join(",", this.IcvActiveGraphs.ToArray())));
+            if (this.IcvEnabled != BaseStardogServer.DatabaseOptions.DefaultIcvEnabled) options.Add(BaseStardogServer.DatabaseOptions.IcvEnabled, new JValue(this.IcvEnabled));
+            if (this.IcvReasoningMode != BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode) options.Add(BaseStardogServer.DatabaseOptions.IcvReasoningType, new JValue(this.IcvReasoningMode.ToString()));
             
             //Reasoning
-            if (this.ConsistencyChecking != StardogServer.DatabaseOptions.DefaultConsistencyChecking) options.Add(StardogServer.DatabaseOptions.ReasoningAutoConsistency, new JValue(this.ConsistencyChecking));
-            if (this.EnablePunning != StardogServer.DatabaseOptions.DefaultPunning) options.Add(StardogServer.DatabaseOptions.ReasoningPunning, new JValue(this.EnablePunning));
-            if (this.SchemaGraphs.Count > 0) options.Add(StardogServer.DatabaseOptions.ReasoningSchemaGraphs, new JValue(String.Join(",", this.SchemaGraphs.ToArray())));
+            if (this.ConsistencyChecking != BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking) options.Add(BaseStardogServer.DatabaseOptions.ReasoningAutoConsistency, new JValue(this.ConsistencyChecking));
+            if (this.EnablePunning != BaseStardogServer.DatabaseOptions.DefaultPunning) options.Add(BaseStardogServer.DatabaseOptions.ReasoningPunning, new JValue(this.EnablePunning));
+            if (this.SchemaGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.ReasoningSchemaGraphs, new JValue(String.Join(",", this.SchemaGraphs.ToArray())));
 
             //Search
-            if (this.FullTextSearch != StardogServer.DatabaseOptions.DefaultFullTextSearch) options.Add(StardogServer.DatabaseOptions.SearchEnabled, new JValue(this.FullTextSearch));
-            if (this.SearchReindexMode.ToLower() != StardogServer.DatabaseOptions.SearchReIndexModeAsync) options.Add(StardogServer.DatabaseOptions.SearchReIndexMode, new JValue(this.SearchReindexMode.ToLower()));
+            if (this.FullTextSearch != BaseStardogServer.DatabaseOptions.DefaultFullTextSearch) options.Add(BaseStardogServer.DatabaseOptions.SearchEnabled, new JValue(this.FullTextSearch));
+            if (this.SearchReindexMode.ToLower() != BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync) options.Add(BaseStardogServer.DatabaseOptions.SearchReIndexMode, new JValue(this.SearchReindexMode.ToLower()));
 
             //Transactions
-            if (this.DurableTransactions != StardogServer.DatabaseOptions.DefaultDurableTransactions) options.Add(StardogServer.DatabaseOptions.TransactionsDurable, new JValue(this.DurableTransactions));
+            if (this.DurableTransactions != BaseStardogServer.DatabaseOptions.DefaultDurableTransactions) options.Add(BaseStardogServer.DatabaseOptions.TransactionsDurable, new JValue(this.DurableTransactions));
 
             //Add options to the Template
             template.Add("options", options);

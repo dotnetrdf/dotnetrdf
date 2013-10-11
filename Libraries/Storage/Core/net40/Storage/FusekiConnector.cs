@@ -320,13 +320,15 @@ namespace VDS.RDF.Storage
                     request = base.GetProxiedRequest(request);
 
                     //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
-                    writer.Write(postData);
-                    writer.Close();
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                    {
+                        writer.Write(postData);
+                        writer.Close();
+                    }
                 }
 
                 Tools.HttpDebugRequest(request);
@@ -444,7 +446,7 @@ namespace VDS.RDF.Storage
                 request = base.GetProxiedRequest(request);
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(sparqlQuery));
@@ -454,9 +456,11 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            StreamWriter writer = new StreamWriter(stream);
-                            writer.Write(postData);
-                            writer.Close();
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            {
+                                writer.Write(postData);
+                                writer.Close();
+                            }
 
                             Tools.HttpDebugRequest(request);
 

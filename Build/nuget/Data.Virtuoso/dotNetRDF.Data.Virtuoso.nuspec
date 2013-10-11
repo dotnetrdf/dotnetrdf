@@ -17,6 +17,7 @@
     </dependencies>
     <releaseNotes>
       - Split source and PDBs into separate symbols package
+      - Fix a bug with accessing graphs named with relative URIs
     </releaseNotes>
   </metadata>
 </package>

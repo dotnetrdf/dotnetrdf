@@ -6,7 +6,7 @@
     </assemblies>
     <documenters>
         <documenter name="MSDN">
-            <property name="OutputDirectory" value="docs/\" />
+            <property name="OutputDirectory" value="C:\Users\rvesse\Downloads\ndoc-temp\" />
             <property name="HtmlHelpName" value="dotNetRDF API Documentation" />
             <property name="Title" value="dotNetRDF API Documentation" />
             <property name="OutputTarget" value="Web" />

@@ -72,11 +72,15 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// RDFS Reasoning
         /// </summary>
-        RDFS
+        RDFS,
+        /// <summary>
+        /// RDFS, QL, RL, and EL axioms, plus SWRL rules
+        /// </summary>
+        SL
     }
 
     /// <summary>
-    /// Class for connecting to a Stardog store via HTTP
+    /// Abstract implementation of a connector for Stardog that connects using the HTTP protocol
     /// </summary>
     /// <remarks>
     /// <para>
@@ -86,7 +90,7 @@ namespace VDS.RDF.Storage
     /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  
     /// </para>
     /// </remarks>
-    public class StardogConnector 
+    public abstract class BaseStardogConnector 
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IQueryableStorage, ITransactionalStorage
@@ -97,13 +101,13 @@ namespace VDS.RDF.Storage
         /// </summary>
         public const String AnonymousUser = "anonymous";
 
-        private String _baseUri, _kb, _username, _pwd;
-        private bool _hasCredentials = false;
-        private StardogReasoningMode _reasoning = StardogReasoningMode.None;
+        protected String _baseUri, _kb, _username, _pwd;
+        protected bool _hasCredentials = false;
+        protected StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
-        private String _activeTrans = null;
-        private TriGWriter _writer = new TriGWriter();
-        private StardogServer _server;
+        protected String _activeTrans = null;
+        protected TriGWriter _writer = new TriGWriter();
+        protected BaseStardogServer _server;
 
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -111,7 +115,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
+        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null) { }
 
         /// <summary>
@@ -119,7 +123,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogConnector(String baseUri, String kbID)
+        public BaseStardogConnector(String baseUri, String kbID)
             : this(baseUri, kbID, StardogReasoningMode.None) { }
 
         /// <summary>
@@ -129,7 +133,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogConnector(String baseUri, String kbID, String username, String password)
+        public BaseStardogConnector(String baseUri, String kbID, String username, String password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
 
         /// <summary>
@@ -140,7 +144,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
             : base()
         {
             this._baseUri = baseUri;
@@ -158,7 +162,7 @@ namespace VDS.RDF.Storage
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
 
             //Server reference
-            this._server = new StardogServer(this._baseUri, this._username, this._pwd);
+            this._server = new StardogV1Server(this._baseUri, this._username, this._pwd);
         }
 
 #if !NO_PROXY
@@ -170,7 +174,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy) { }
 
         /// <summary>
@@ -182,7 +186,7 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
+        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, reasoning, username, password)
         {
             this.Proxy = proxy;
@@ -194,7 +198,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, WebProxy proxy)
+        public BaseStardogConnector(String baseUri, String kbID, WebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
 
         /// <summary>
@@ -205,7 +209,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public StardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        public BaseStardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy) { }
 
 #endif
@@ -321,7 +325,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <returns></returns>
-        public object Query(String sparqlQuery)
+        public virtual object Query(String sparqlQuery)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
@@ -344,7 +348,7 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
             {
@@ -368,13 +372,15 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
-                    writer.Write(postData);
-                    writer.Close();
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
+                    {
+                        writer.Write(postData);
+                        writer.Close();
+                    }
                 }
 
                 Tools.HttpDebugRequest(request);
@@ -418,7 +424,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
@@ -431,7 +437,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
         }
@@ -444,7 +450,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
@@ -461,7 +467,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
         /// </remarks>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
             {
@@ -510,7 +516,7 @@ namespace VDS.RDF.Storage
         /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
         /// </para>
         /// </remarks>
-        public void SaveGraph(IGraph g)
+        public virtual void SaveGraph(IGraph g)
         {
             String tID = null;
             try
@@ -594,7 +600,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Removals happen before additions
         /// </remarks>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             //If there are no adds or deletes, just return and avoid creating empty transaction
             bool anyData = false;
@@ -697,7 +703,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -713,7 +719,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Stardog store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(Uri graphUri)
+        public virtual void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
@@ -722,7 +728,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Stardog store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(String graphUri)
         {
             String tID = null;
             try
@@ -791,7 +797,7 @@ namespace VDS.RDF.Storage
         /// Gets the list of Graphs in the Stardog store
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Uri> ListGraphs()
+        public virtual IEnumerable<Uri> ListGraphs()
         {
             try
             {
@@ -846,7 +852,7 @@ namespace VDS.RDF.Storage
             this.SaveGraphAsync(g, callback, state);
         }
 
-        private void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, Object state)
+        protected virtual void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, Object state)
         {
             //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
             if (this._activeTrans != null)
@@ -887,7 +893,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void SaveGraphAsync(String tID, bool autoCommit, IGraph g, AsyncStorageCallback callback, Object state)
+        protected virtual void SaveGraphAsync(String tID, bool autoCommit, IGraph g, AsyncStorageCallback callback, Object state)
         {
             try
             {
@@ -1084,7 +1090,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        protected virtual void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
             //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
             if (this._activeTrans != null)
@@ -1107,7 +1113,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void UpdateGraphAsync(String tID, bool autoCommit, String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        protected virtual void UpdateGraphAsync(String tID, bool autoCommit, String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
             try
             {
@@ -1441,7 +1447,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void DeleteGraphAsync(String tID, bool autoCommit, String graphUri, AsyncStorageCallback callback, Object state)
+        protected virtual void DeleteGraphAsync(String tID, bool autoCommit, String graphUri, AsyncStorageCallback callback, Object state)
         {
             try
             {
@@ -1533,7 +1539,7 @@ namespace VDS.RDF.Storage
         /// <param name="query">SPARQL Query</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public void Query(String query, AsyncStorageCallback callback, Object state)
+        public virtual void Query(String query, AsyncStorageCallback callback, Object state)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
@@ -1558,7 +1564,7 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
         {
             try
             {
@@ -1574,14 +1580,14 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
 
                 request.BeginGetRequestStream(r =>
                     {
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -1658,7 +1664,7 @@ namespace VDS.RDF.Storage
         /// <param name="method">HTTP Method</param>
         /// <param name="requestParams">Querystring Parameters</param>
         /// <returns></returns>
-        private HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
+        protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
         {
             //Build the Request Uri
             String requestUri = this._baseUri + servicePath;
@@ -1674,19 +1680,12 @@ namespace VDS.RDF.Storage
 
             //Create our Request
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            //if (accept.EndsWith("*/*;q=0.5")) accept = accept.Substring(0, accept.LastIndexOf(","));
             request.Accept = accept;
             request.Method = method;
             request = base.GetProxiedRequest(request);
 
             //Add the special Stardog Headers
-#if !SILVERLIGHT
-            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
-            request.Headers.Add("SD-Protocol", "1.0");
-#else
-            request.Headers["SD-Connection-String"] = "kb=" + this._kb + this.GetReasoningParameter();
-            request.Headers["SD-Protocol"] = "1.0";
-#endif
+            this.AddStardogHeaders(request);
 
             //Add Credentials if needed
             if (this._hasCredentials)
@@ -1716,7 +1715,22 @@ namespace VDS.RDF.Storage
             return request;
         }
 
-        private String GetReasoningParameter()
+        /// <summary>
+        /// Adds Stardog specific request headers
+        /// </summary>
+        /// <param name="request"></param>
+        protected virtual void AddStardogHeaders(HttpWebRequest request)
+        {
+#if !SILVERLIGHT
+            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
+            request.Headers.Add("SD-Protocol", "1.0");
+#else
+            request.Headers["SD-Connection-String"] = "kb=" + this._kb + this.GetReasoningParameter();
+            request.Headers["SD-Protocol"] = "1.0";
+#endif
+        }
+
+        protected virtual String GetReasoningParameter()
         {
             switch (this._reasoning)
             {
@@ -1730,6 +1744,8 @@ namespace VDS.RDF.Storage
                     return ";reasoning=DL";
                 case StardogReasoningMode.RDFS:
                     return ";reasoning=RDFS";
+                case StardogReasoningMode.SL:
+                    throw new RdfStorageException("Stardog 1.* does not support the SL reasoning level, please ensure you are using a Stardog 2.* connector if you wish to use this reasoning level");
                 case StardogReasoningMode.None:
                 default:
                     return String.Empty;
@@ -1742,7 +1758,7 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
-        private String BeginTransaction()
+        protected virtual String BeginTransaction()
         {
             String tID = null;
 
@@ -1776,7 +1792,7 @@ namespace VDS.RDF.Storage
             return tID;
         }
 
-        private void CommitTransaction(String tID)
+        protected virtual void CommitTransaction(String tID)
         {
             HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + tID, "text/plain"/* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -1796,7 +1812,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void RollbackTransaction(String tID)
+        protected virtual void RollbackTransaction(String tID)
         {
             HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -1818,7 +1834,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// A single transaction
         /// </remarks>
-        public void Begin()
+        public virtual void Begin()
         {
             try
             {
@@ -1842,7 +1858,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Transactions are scoped to Managed Threads
         /// </remarks>
-        public void Commit()
+        public virtual void Commit()
         {
             try
             {
@@ -1866,7 +1882,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Transactions are scoped to Managed Threads
         /// </remarks>
-        public void Rollback()
+        public virtual void Rollback()
         {
             try
             {
@@ -1889,7 +1905,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public void Begin(AsyncStorageCallback callback, object state)
+        public virtual void Begin(AsyncStorageCallback callback, object state)
         {
             try
             {
@@ -1963,7 +1979,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public void Commit(AsyncStorageCallback callback, object state)
+        public virtual void Commit(AsyncStorageCallback callback, object state)
         {
             try
             {
@@ -2024,7 +2040,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        public void Rollback(AsyncStorageCallback callback, object state)
+        public virtual void Rollback(AsyncStorageCallback callback, object state)
         {
             try
             {
@@ -2119,7 +2135,7 @@ namespace VDS.RDF.Storage
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -2151,5 +2167,321 @@ namespace VDS.RDF.Storage
 
             base.SerializeProxyConfig(manager, context);
         }
+    }
+
+    /// <summary>
+    /// A Stardog Connector for connecting to Stardog version 1.* servers
+    /// </summary>
+    public class StardogV1Connector
+        : BaseStardogConnector
+    {
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning)
+            : this(baseUri, kbID, reasoning, null, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        public StardogV1Connector(String baseUri, String kbID)
+            : this(baseUri, kbID, StardogReasoningMode.None) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogV1Connector(String baseUri, String kbID, String username, String password)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+            : base(baseUri, kbID, reasoning, username, password) { }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+            : this(baseUri, kbID, reasoning, null, null, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV1Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
+            : base(baseUri, kbID, reasoning, username, password, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV1Connector(String baseUri, String kbID, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV1Connector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy) { }
+
+#endif
+    }
+
+    /// <summary>
+    /// A Stardog Connector for connecting to Stardog version 2.* servers
+    /// </summary>
+    public class StardogV2Connector
+        : StardogV1Connector
+    {
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning)
+            : this(baseUri, kbID, reasoning, null, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        public StardogV2Connector(String baseUri, String kbID)
+            : this(baseUri, kbID, StardogReasoningMode.None) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogV2Connector(String baseUri, String kbID, String username, String password)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+            : base(baseUri, kbID, reasoning, username, password)
+        {
+            this._server = new StardogV2Server(baseUri, username, password);
+        }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+            : this(baseUri, kbID, reasoning, null, null, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV2Connector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
+            : base(baseUri, kbID, reasoning, username, password, proxy)
+        {
+            this._server = new StardogV2Server(baseUri, username, password, proxy);
+        }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV2Connector(String baseUri, String kbID, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV2Connector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy) { }
+
+#endif
+
+        /// <summary>
+        /// Adds Stardog specific request headers
+        /// </summary>
+        /// <param name="request"></param>
+        protected override void AddStardogHeaders(HttpWebRequest request)
+        {
+            String reasoning = this.GetReasoningParameter();
+            if (reasoning.Length > 1) reasoning = reasoning.Substring(1);
+#if !SILVERLIGHT
+            request.Headers.Add("SD-Connection-String", reasoning); // Only reasoning parameter needed in Stardog 2.0
+#else
+            request.Headers["SD-Connection-String"] = reasoning;
+#endif
+        }
+
+        protected override String GetReasoningParameter()
+        {
+            switch (this._reasoning)
+            {
+                case StardogReasoningMode.QL:
+                    return ";reasoning=QL";
+                case StardogReasoningMode.EL:
+                    return ";reasoning=EL";
+                case StardogReasoningMode.RL:
+                    return ";reasoning=RL";
+                case StardogReasoningMode.DL:
+                    return ";reasoning=DL";
+                case StardogReasoningMode.RDFS:
+                    return ";reasoning=RDFS";
+                case StardogReasoningMode.SL:
+                    return ";reasoning=SL";
+                case StardogReasoningMode.None:
+                default:
+                    return String.Empty;
+            }
+        }
+    }
+
+    /// <summary>
+    /// A Stardog connector for connecting to Stardog servers running the latest version, currently this is version 2.*
+    /// </summary>
+    public class StardogConnector
+        : StardogV2Connector
+    {
+                /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
+            : this(baseUri, kbID, reasoning, null, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        public StardogConnector(String baseUri, String kbID)
+            : this(baseUri, kbID, StardogReasoningMode.None) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogConnector(String baseUri, String kbID, String username, String password)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+            : base(baseUri, kbID, reasoning, username, password) { }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+            : this(baseUri, kbID, reasoning, null, null, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
+            : base(baseUri, kbID, reasoning, username, password, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogConnector(String baseUri, String kbID, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy) { }
+
+#endif
     }
 }

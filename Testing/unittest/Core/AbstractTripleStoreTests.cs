@@ -90,7 +90,7 @@ namespace VDS.RDF
         {
             ITripleStore store = this.GetInstance();
 
-            Assert.IsFalse(store.HasGraph(new Uri("http://thereisnosuchdomain.com/graph")));
+            Assert.IsFalse(store.HasGraph(new Uri("http://thereisnosuchdomain.com:1234/graph")));
         }
 
         [Test]

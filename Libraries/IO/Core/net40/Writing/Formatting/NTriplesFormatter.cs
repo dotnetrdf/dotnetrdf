@@ -161,6 +161,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else
             {
+                if (length > 0) builder.Append(cs, start, length);
                 return builder.ToString();
             }
         }

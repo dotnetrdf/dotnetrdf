@@ -8,16 +8,37 @@ Changed
 - Core API
  - Nodes are no longer scoped to graphs
  - Simplified data models - INode, Triple, Quad, IGraph and IGraphStore
+ - INode changes
+  - Consoldiated into single INode interface
+  - Add HasLanguage and HasDataType methods
+  - Faster hash code computation
+ - Triple changes
+  - Removed Context and Graph properties
+ - New Quad class
+  - Allows for INode based graph names i.e. non-URI graph names
  - IGraph changes
   - New Count property to return triple count
   - Triples property now returns IEnumerable<Triple>
   - New Quads property returns IEnumerable<Quad>
   - NamespaceMap property renamed to Namespaces
+  - Removed BaseUri property
+  - Find() method replaces various GetTriplesWithX() methods
 - Core library split out into multiple modules
 
  Removed
  - ITripleStore was removed, use IGraphStore instead
  - ITripleContext was removed
+
+1.1.0
+-----
+
+Added
+
+Changed
+- Bug Fixes
+
+Removed
+- Marked as obsolete unusable the deprecated ICharFormatter.FormatChar() method
 
 1.0.1
 -----

@@ -38,6 +38,7 @@ namespace VDS.RDF.Storage.Async
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
+            this.WaitDelay = 30000;
             return AllegroGraphTests.GetConnection();
         }
     }

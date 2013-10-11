@@ -63,7 +63,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     this._type = System.Type.GetType(typeName);
 
                     //Force oureslves into the catch block where we try assembly qualifiying the name
-                    if (this._type == null) throw new Exception();
+                    if (this._type == null) throw new TypeLoadException();
                 }
                 catch
                 {
