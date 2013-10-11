@@ -51,9 +51,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{99E6AA95
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4}"
-	ProjectSection(SolutionItems) = preProject
-		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SPARQL Libraries", "SPARQL Libraries", "{A0F95852-74DF-46F9-9848-F934F62C0D70}"
 EndProject
