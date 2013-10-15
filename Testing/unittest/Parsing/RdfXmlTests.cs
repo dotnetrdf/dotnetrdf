@@ -247,6 +247,8 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(9, g.Triples.Count);
         }
 
+#if !NO_COMPRESSION
+
         [Test]
         public void ParsingRdfXmlStreamingDoesNotExhaustMemory()
         {
@@ -264,5 +266,7 @@ namespace VDS.RDF.Parsing
             // Note that the source produces some duplicate triples so triples in the graph will be at most 1000
             Assert.IsTrue(g.Triples.Count <= 1000);
         }
+
+#endif
 	}
 }
