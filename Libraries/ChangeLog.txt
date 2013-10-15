@@ -8,6 +8,7 @@ Added
 
 Changed
 - Bug Fixes
+ - Possible OOM when stream parsing large RDF/XML files (CORE-378)
 
 Removed
 - Marked the as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
