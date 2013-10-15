@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -244,6 +245,24 @@ namespace VDS.RDF.Parsing
             g.LoadFromFile(@"resources\missing-namespace-declarations.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(9, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingRdfXmlStreamingDoesNotExhaustMemory()
+        {
+            IGraph g = new Graph();
+            GraphHandler graphHandler = new GraphHandler(g);
+            PagingHandler paging = new PagingHandler(graphHandler, 1000);
+            CountHandler counter = new CountHandler();
+            ChainedHandler handler = new ChainedHandler(new IRdfHandler[] { paging, counter });
+
+            GZippedRdfXmlParser parser = new GZippedRdfXmlParser(RdfXmlParserMode.Streaming);
+            parser.Load(handler, @"resources\oom.rdf.gz");
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1000, counter.Count);
+            // Note that the source produces some duplicate triples so triples in the graph will be at most 1000
+            Assert.IsTrue(g.Triples.Count <= 1000);
         }
 	}
 }
