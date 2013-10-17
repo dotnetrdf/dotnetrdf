@@ -189,36 +189,36 @@ namespace VDS.RDF.Graphs
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public virtual bool Assert(Triple t)
+        public virtual void Assert(Triple t)
         {
-            return this._g.Assert(t);
+            this._g.Assert(t);
         }
 
         /// <summary>
         /// Asserts Triples in the Graph
         /// </summary>
         /// <param name="ts">Triples</param>
-        public virtual bool Assert(IEnumerable<Triple> ts)
+        public virtual void Assert(IEnumerable<Triple> ts)
         {
-            return this._g.Assert(ts);
+            this._g.Assert(ts);
         }
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public virtual bool Retract(Triple t)
+        public virtual void Retract(Triple t)
         {
-            return this._g.Retract(t);
+            this._g.Retract(t);
         }
 
         /// <summary>
         /// Retracts Triples from the Graph
         /// </summary>
         /// <param name="ts">Triples</param>
-        public virtual bool Retract(IEnumerable<Triple> ts)
+        public virtual void Retract(IEnumerable<Triple> ts)
         {
-            return this._g.Retract(ts);
+            this._g.Retract(ts);
         }
 
         /// <summary>
@@ -476,16 +476,6 @@ namespace VDS.RDF.Graphs
         public virtual GraphDiffReport Difference(IGraph g)
         {
             return this._g.Difference(g);
-        }
-
-        /// <summary>
-        /// Helper function for Resolving QNames to URIs
-        /// </summary>
-        /// <param name="qname">QName to resolve to a Uri</param>
-        /// <returns></returns>
-        public virtual Uri ResolveQName(string qname)
-        {
-            return this._g.ResolveQName(qname);
         }
 
 #if !NO_DATA

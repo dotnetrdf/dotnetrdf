@@ -90,13 +90,13 @@ namespace VDS.RDF.Graphs
 
             // Assert the triple
             Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
-            Assert.IsTrue(g.Assert(t));
+            g.Assert(t);
             Assert.AreEqual(1, g.Count);
             Assert.IsTrue(g.ContainsTriple(t));
             Assert.IsTrue(g.Triples.Any());
 
             // Asserting same triple again should have no effect
-            Assert.IsFalse(g.Assert(t));
+            g.Assert(t);
             Assert.AreEqual(1, g.Count);
             Assert.IsTrue(g.ContainsTriple(t));
             Assert.IsTrue(g.Triples.Any());
@@ -111,13 +111,13 @@ namespace VDS.RDF.Graphs
 
             // Assert the triple
             Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
-            Assert.IsTrue(g.Assert(t));
+            g.Assert(t);
             Assert.AreEqual(1, g.Count);
             Assert.IsTrue(g.ContainsTriple(t));
             Assert.IsTrue(g.Triples.Any());
 
             // Retract the triple
-            Assert.IsTrue(g.Retract(t));
+            g.Retract(t);
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.ContainsTriple(t));
             Assert.IsFalse(g.Triples.Any());
@@ -132,7 +132,7 @@ namespace VDS.RDF.Graphs
 
             // Assert the triple
             Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
-            Assert.IsTrue(g.Assert(t));
+            g.Assert(t);
             Assert.AreEqual(1, g.Count);
             Assert.IsTrue(g.ContainsTriple(t));
             Assert.IsTrue(g.Triples.Any());
@@ -143,7 +143,7 @@ namespace VDS.RDF.Graphs
             Assert.IsTrue(ts.Contains(t));
 
             // Retract the triple
-            Assert.IsTrue(g.Retract(t));
+            g.Retract(t);
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.ContainsTriple(t));
             Assert.IsFalse(g.Triples.Any());

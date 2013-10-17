@@ -74,12 +74,12 @@ namespace VDS.RDF.Graphs
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public override bool Assert(Triple t)
+        public override void Assert(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Assert(t);
+                base.Assert(t);
             }
             finally
             {
@@ -91,12 +91,12 @@ namespace VDS.RDF.Graphs
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public override bool Assert(IEnumerable<Triple> ts)
+        public override void Assert(IEnumerable<Triple> ts)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Assert(ts);
+                base.Assert(ts);
             }
             finally
             {
@@ -109,12 +109,12 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public override bool Retract(Triple t)
+        public override void Retract(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Retract(t);
+                base.Retract(t);
             }
             finally
             {
@@ -126,12 +126,12 @@ namespace VDS.RDF.Graphs
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public override bool Retract(IEnumerable<Triple> ts)
+        public override void Retract(IEnumerable<Triple> ts)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Retract(ts);
+                base.Retract(ts);
             }
             finally
             {

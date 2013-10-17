@@ -81,37 +81,33 @@ namespace VDS.RDF.Graphs
         /// Adds the contents of a Graph to the stores default unnamed graph
         /// </summary>
         /// <param name="g">Graph</param>
-        /// <returns>True if any quads are added, false otherwise</returns>
-        bool Add(IGraph g);
+        void Add(IGraph g);
 
         /// <summary>
         /// Adds the contents of a Graph to the store using the given URI for the added Quads
         /// </summary>
         /// <param name="graphName">URI of the Graph to add to</param>
         /// <param name="g">Graph</param>
-        /// <returns>True if any quads are added, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Add(INode graphName, IGraph g);
+        void Add(INode graphName, IGraph g);
 
         /// <summary>
         /// Adds a Triple to the Store as a Quad using the given URI
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <param name="t">Triple</param>
-        /// <returns>True if a quad is added, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Add(INode graphName, Triple t);
+        void Add(INode graphName, Triple t);
 
         /// <summary>
         /// Adds a Quad to the Store
         /// </summary>
         /// <param name="q">Quad</param>
-        /// <returns>True if a quad is added, false otherwise</returns>
-        bool Add(Quad q);
+        void Add(Quad q);
 
         /// <summary>
         /// Copies the contents of one graph to another
@@ -119,11 +115,10 @@ namespace VDS.RDF.Graphs
         /// <param name="srcName">Source Graph name</param>
         /// <param name="destName">Target Graph name</param>
         /// <param name="overwrite">If true the contents of the target graph are overwritten, if false the copied data is added to the existing data in the target graph</param>
-        /// <returns>True if any quads are copied, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Copy(INode srcName, INode destName, bool overwrite);
+        void Copy(INode srcName, INode destName, bool overwrite);
 
         /// <summary>
         /// Moves the contents of one graph to another
@@ -131,67 +126,60 @@ namespace VDS.RDF.Graphs
         /// <param name="srcName">Source Graph name</param>
         /// <param name="destName">Destination Graph name</param>
         /// <param name="overwrite">If true the contents of the target graph are overwritten, if false the moved data is added to the existing data in the target graph</param>
-        /// <returns>True if any quads are moved, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Move(INode srcName, INode destName, bool overwrite);
+        void Move(INode srcName, INode destName, bool overwrite);
 
         /// <summary>
         /// Clears the contents of the given graph
         /// </summary>
         /// <param name="graphName">Graph name</param>
-        /// <returns>True if a graph is cleared, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Clear(INode graphName);
+        void Clear(INode graphName);
 
         /// <summary>
         /// Removes the contents of the given graph from the stores default unnamed graph
         /// </summary>
         /// <param name="g">Graph</param>
-        /// <returns>True if any quads are removed, false otherwise</returns>
-        bool Remove(IGraph g);
+        void Remove(IGraph g);
 
         /// <summary>
         /// Removes the contents of the given graph from a specific graph in the store
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <param name="g">Graph</param>
-        /// <returns>True if any quads are removed, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Remove(INode graphName, IGraph g);
+        void Remove(INode graphName, IGraph g);
 
         /// <summary>
         /// Removes the contents of the graph with the given URI
         /// </summary>
         /// <param name="graphName">Graph name</param>
-        /// <returns>True if any quads are removed, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Remove(INode graphName);
+        void Remove(INode graphName);
 
         /// <summary>
         /// Removes a Triple from the store using the given Graph name
         /// </summary>
         /// <param name="graphName">Graph name</param>
         /// <param name="t">Triple</param>
-        /// <returns>True if a triple is removed, false otherwise</returns>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
-        bool Remove(INode graphName, Triple t);
+        void Remove(INode graphName, Triple t);
 
         /// <summary>
         /// Removes a Quad from the store
         /// </summary>
         /// <param name="q">Quad</param>
-        /// <returns>True if a quad is removed, false otherwise</returns>
-        bool Remove(Quad q);
+        void Remove(Quad q);
 
         /// <summary>
         /// Get all Triples in the Store

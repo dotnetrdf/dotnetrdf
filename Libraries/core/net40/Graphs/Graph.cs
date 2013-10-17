@@ -99,29 +99,25 @@ namespace VDS.RDF.Graphs
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public override bool Assert(Triple t)
+        public override void Assert(Triple t)
         {
             //Add to Triples Collection
             if (this._triples.Add(t))
             {
                 this.RaiseTripleAsserted(t);
-                return true;
             }
-            return false;
         }
 
         /// <summary>
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public override bool Assert(IEnumerable<Triple> ts)
+        public override void Assert(IEnumerable<Triple> ts)
         {
-            bool asserted = false;
             foreach (Triple t in ts)
             {
-                asserted = this.Assert(t) || asserted;
+                this.Assert(t);
             }
-            return asserted;
         }
 
         /// <summary>
@@ -129,28 +125,24 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public override bool Retract(Triple t)
+        public override void Retract(Triple t)
         {
             if (this._triples.Remove(t))
             {
                 this.RaiseTripleRetracted(t);
-                return true;
             }
-            return false;
         }
 
         /// <summary>
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public override bool Retract(IEnumerable<Triple> ts)
+        public override void Retract(IEnumerable<Triple> ts)
         {
-            bool retracted = false;
             foreach (Triple t in ts)
             {
-                retracted = this.Retract(t) || retracted;
+                this.Retract(t);
             }
-            return retracted;
         }
 
         #endregion

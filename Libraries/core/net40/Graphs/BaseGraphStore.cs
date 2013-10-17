@@ -65,43 +65,41 @@ namespace VDS.RDF.Graphs
             return this._graphs.ContainsKey(graphName);
         }
 
-        public bool Add(IGraph g)
+        public void Add(IGraph g)
         {
-            return this.Add(Quad.DefaultGraphNode, g);
+            this.Add(Quad.DefaultGraphNode, g);
         }
 
-        public bool Add(INode graphName, IGraph g)
+        public void Add(INode graphName, IGraph g)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             this._graphs.Add(graphName, g);
-            return true;
         }
 
-        public bool Add(INode graphName, Triple t)
+        public void Add(INode graphName, Triple t)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
-            return this.Add(t.AsQuad(graphName));
+            this.Add(t.AsQuad(graphName));
         }
 
-        public bool Add(Quad q)
+        public void Add(Quad q)
         {
             if (this._graphs.ContainsKey(q.Graph))
             {
                 IGraph g = this[q.Graph];
-                return g.Assert(q.AsTriple());
+                g.Assert(q.AsTriple());
             }
             else
             {
                 IGraph g = new Graph();
                 g.Assert(q.AsTriple());
                 this.Add(q.Graph, g);
-                return true;
             }
         }
 
-        public bool Copy(INode srcName, INode destName, bool overwrite)
+        public void Copy(INode srcName, INode destName, bool overwrite)
         {
-            if (EqualityHelper.AreNodesEqual(srcName, destName)) return false;
+            if (EqualityHelper.AreNodesEqual(srcName, destName)) return;
 
             //Get the source graph if available
             IGraph src;
@@ -112,7 +110,7 @@ namespace VDS.RDF.Graphs
             }
             else
             {
-                return false;
+                return;
             }
             //Get the destination graph
             IGraph dest;
@@ -130,12 +128,11 @@ namespace VDS.RDF.Graphs
             
             //Copy triples
             dest.Assert(src.Triples);
-            return true;
         }
 
-        public bool Move(INode srcName, INode destName, bool overwrite)
+        public void Move(INode srcName, INode destName, bool overwrite)
         {
-            if (EqualityHelper.AreNodesEqual(srcName, destName)) return false;
+            if (EqualityHelper.AreNodesEqual(srcName, destName)) return;
 
             //Get the source graph if available
             IGraph src;
@@ -146,7 +143,7 @@ namespace VDS.RDF.Graphs
             }
             else
             {
-                return false;
+                return;
             }
             //Get the destination graph
             IGraph dest;
@@ -167,57 +164,52 @@ namespace VDS.RDF.Graphs
 
             //Remove from source
             src.Clear();
-            return true;
         }
 
-        public bool Clear(INode graphName)
+        public void Clear(INode graphName)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph g = this[graphName];
                 g.Clear();
-                return true;
             }
-            return false;
         }
 
-        public bool Remove(IGraph g)
+        public void Remove(IGraph g)
         {
-            return this.Remove(Quad.DefaultGraphNode, g);
+            this.Remove(Quad.DefaultGraphNode, g);
         }
 
-        public bool Remove(INode graphName, IGraph g)
+        public void Remove(INode graphName, IGraph g)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph dest = this[graphName];
-                return dest.Retract(g.Triples);
+                dest.Retract(g.Triples);
             }
-            return false;
         }
 
-        public bool Remove(INode graphName)
+        public void Remove(INode graphName)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
-            return this._graphs.Remove(graphName);
+            this._graphs.Remove(graphName);
         }
 
-        public bool Remove(INode graphName, Triple t)
+        public void Remove(INode graphName, Triple t)
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             if (this.HasGraph(graphName))
             {
                 IGraph g = this[graphName];
-                return g.Retract(t);
+                g.Retract(t);
             }
-            return false;
         }
 
-        public bool Remove(Quad q)
+        public void Remove(Quad q)
         {
-            return this.Remove(q.Graph, q.AsTriple());
+            this.Remove(q.Graph, q.AsTriple());
         }
 
         public IEnumerable<Triple> Triples

@@ -217,26 +217,26 @@ namespace VDS.RDF.Graphs
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public abstract bool Assert(Triple t);
+        public abstract void Assert(Triple t);
 
         /// <summary>
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public abstract bool Assert(IEnumerable<Triple> ts);
+        public abstract void Assert(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public abstract bool Retract(Triple t);
+        public abstract void Retract(Triple t);
 
         /// <summary>
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public abstract bool Retract(IEnumerable<Triple> ts);
+        public abstract void Retract(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Clears all Triples from the Graph
@@ -612,16 +612,6 @@ namespace VDS.RDF.Graphs
         #endregion
 
         #region Helper Functions
-
-        /// <summary>
-        /// Helper function for Resolving QNames to URIs
-        /// </summary>
-        /// <param name="qname">QName to resolve to a Uri</param>
-        /// <returns></returns>
-        public virtual Uri ResolveQName(String qname)
-        {
-            return UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, null));
-        }
 
         /// <summary>
         /// Creates a new unused Blank Node ID and returns it

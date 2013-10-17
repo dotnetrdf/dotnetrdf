@@ -112,25 +112,25 @@ namespace VDS.RDF.Graphs
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">A Triple</param>
-        bool Assert(Triple t);
+        void Assert(Triple t);
 
         /// <summary>
         /// Asserts an Enumerable of Triples in the Graph
         /// </summary>
         /// <param name="ts">An Enumerable of Triples</param>
-        bool Assert(IEnumerable<Triple> ts);
+        void Assert(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">A Triple</param>
-        bool Retract(Triple t);
+        void Retract(Triple t);
 
         /// <summary>
         /// Retracts an Enumerable of Triples from the Graph
         /// </summary>
         /// <param name="ts">Enumerable of Triples</param>
-        bool Retract(IEnumerable<Triple> ts);
+        void Retract(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts all Triples from the Graph
@@ -254,13 +254,6 @@ namespace VDS.RDF.Graphs
         #endregion
 
         #region Helper Functions
-
-        /// <summary>
-        /// Resolves a QName into a URI using the Namespace Map and Base URI of this Graph
-        /// </summary>
-        /// <param name="qname">QName</param>
-        /// <returns></returns>
-        Uri ResolveQName(String qname);
 
         #endregion
 
