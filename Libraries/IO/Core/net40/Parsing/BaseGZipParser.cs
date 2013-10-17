@@ -28,7 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO.Compression;
 using System.IO;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing
 {

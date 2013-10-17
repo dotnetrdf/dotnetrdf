@@ -140,7 +140,7 @@ namespace VDS.RDF.Writing
                                 //Blank Node
                                 writer.WriteValue("bnode");
                                 writer.WritePropertyName("value");
-                                String id = bnodeMapper.GetOutputID(((IBlankNode)value).AnonID);
+                                String id = bnodeMapper.GetOutputID((value).AnonID);
                                 id = id.Substring(id.IndexOf(':') + 1);
                                 writer.WriteValue(id);
                                 break;

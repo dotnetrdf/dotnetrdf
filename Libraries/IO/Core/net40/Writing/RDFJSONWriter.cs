@@ -173,7 +173,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Remap Blank Node IDs as appropriate
-                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((IBlankNode)t.Subject).AnonID));
+                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID((t.Subject).AnonID));
                     }
 
                     //Start an Object for the Subject
@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
                 {
                     case NodeType.Blank:
                         //Remap Blank Node IDs as appropriate
-                        writer.WriteValue("_:" + bnodeMapper.GetOutputID(((IBlankNode)obj).AnonID));
+                        writer.WriteValue("_:" + bnodeMapper.GetOutputID((obj).AnonID));
                         writer.WritePropertyName("type");
                         writer.WriteValue("bnode");
                         break;

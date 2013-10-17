@@ -45,10 +45,7 @@
     <Compile Include="IRdfWriter.cs" />
     <Compile Include="ISparqlResultsReader.cs" />
     <Compile Include="ISparqlResultsWriter.cs" />
-    <Compile Include="IStoreReader.cs" />
-    <Compile Include="IStoreWriter.cs" />
     <Compile Include="MimeTypeDefinition.cs" />
-    <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\BaseGZipResultsParser.cs" />
     <Compile Include="Parsing\BlockingStreamReader.cs" />

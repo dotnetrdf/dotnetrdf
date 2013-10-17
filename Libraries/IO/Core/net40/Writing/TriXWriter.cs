@@ -158,7 +158,7 @@ namespace VDS.RDF.Writing
             {
                 case NodeType.Blank:
                     writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(bnodeMapper.GetOutputID(((IBlankNode)n).AnonID)));
+                    writer.WriteRaw(WriterHelper.EncodeForXml(bnodeMapper.GetOutputID((n).AnonID)));
                     writer.WriteEndElement();
                     break;
                 case NodeType.GraphLiteral:

@@ -149,7 +149,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Blank:
                                     //<bnode> element
                                     XmlElement bnode = xmlDoc.CreateElement("bnode");
-                                    bnode.InnerText = ((IBlankNode)n).InternalID;
+                                    bnode.InnerText = (n).InternalID;
                                     binding.AppendChild(bnode);
                                     break;
 
@@ -303,7 +303,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Blank:
                                     //<bnode> element
                                     writer.WriteStartElement("bnode");
-                                    writer.WriteRaw(bnodeMapper.GetOutputID(((IBlankNode)n).AnonID));
+                                    writer.WriteRaw(bnodeMapper.GetOutputID((n).AnonID));
                                     writer.WriteEndElement();
                                     break;
 

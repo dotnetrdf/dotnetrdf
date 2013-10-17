@@ -342,7 +342,7 @@ namespace VDS.RDF.Writing
                             }
                             else
                             {
-                                context.Writer.WriteAttributeString("rdf", "nodeID", null, context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Subject).AnonID));
+                                context.Writer.WriteAttributeString("rdf", "nodeID", null, context.BlankNodeMapper.GetOutputID((t.Subject).AnonID));
                             }
                             break;
                         case NodeType.Uri:
@@ -398,7 +398,7 @@ namespace VDS.RDF.Writing
                         else
                         {
                             //Terminate the Blank Node triple by adding a rdf:nodeID attribute
-                            context.Writer.WriteAttributeString("rdf", "nodeID", null, context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Object).AnonID));
+                            context.Writer.WriteAttributeString("rdf", "nodeID", null, context.BlankNodeMapper.GetOutputID((t.Object).AnonID));
                         }
 
                         break;
@@ -456,7 +456,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         context.Writer.WriteStartElement("rdf", "Description", NamespaceMapper.RDF);
-                        context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)pair.Key).AnonID));
+                        context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID((pair.Key).AnonID));
                         this.GenerateCollectionOutput(context, pair.Key);
                         context.Writer.WriteEndElement();
                         //throw new RdfOutputException("Failed to output a Collection due to an unknown error");
@@ -496,7 +496,7 @@ namespace VDS.RDF.Writing
                     switch (next.NodeType)
                     {
                         case NodeType.Blank:
-                            context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)next).AnonID));
+                            context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID((next).AnonID));
                             break;
                         case NodeType.GraphLiteral:
                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
@@ -547,7 +547,7 @@ namespace VDS.RDF.Writing
                 if (c.Triples.Count == 0)
                 {
                     //Terminate the Blank Node triple by adding a rdf:nodeID attribute
-                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)key).AnonID));
+                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID((key).AnonID));
                 }
                 else
                 {
@@ -580,7 +580,7 @@ namespace VDS.RDF.Writing
                                 }
                                 else
                                 {
-                                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)key).AnonID));
+                                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID((key).AnonID));
                                 }
                                 break;
                             case NodeType.GraphLiteral:

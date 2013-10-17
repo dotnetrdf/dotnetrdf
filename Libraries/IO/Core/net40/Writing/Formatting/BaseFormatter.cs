@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
@@ -68,7 +70,7 @@ namespace VDS.RDF.Writing.Formatting
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    return this.FormatBlankNode((IBlankNode)n, segment);
+                    return this.FormatBlankNode(n, segment);
                 case NodeType.GraphLiteral:
                     return this.FormatGraphLiteralNode((IGraphLiteralNode)n, segment);
                 case NodeType.Literal:

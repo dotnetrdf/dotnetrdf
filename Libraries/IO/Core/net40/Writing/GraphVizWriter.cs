@@ -135,7 +135,7 @@ namespace VDS.RDF.Writing
             }
             else if (n.NodeType == NodeType.Blank)
             {
-                return this.BlankNodeToDot((IBlankNode)n);
+                return this.BlankNodeToDot(n);
             }
             else if (n.NodeType == NodeType.GraphLiteral)
             {
