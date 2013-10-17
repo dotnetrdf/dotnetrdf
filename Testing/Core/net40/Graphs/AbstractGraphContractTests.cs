@@ -155,6 +155,37 @@ namespace VDS.RDF.Graphs
         }
 
         [Test]
+        public void GraphContractQuads1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Quads.Any());
+
+            // Assert the triple
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            g.Assert(t);
+            Assert.AreEqual(1, g.Count);
+            Assert.IsTrue(g.ContainsTriple(t));
+            Assert.IsTrue(g.Triples.Any());
+
+            IEnumerable<Quad> qs = g.Quads;
+            Assert.IsTrue(qs.Any());
+            Assert.AreEqual(1, qs.Count());
+            Assert.IsTrue(qs.Contains(t.AsQuad(Quad.DefaultGraphNode)));
+
+            // Retract the triple
+            g.Retract(t);
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.ContainsTriple(t));
+            Assert.IsFalse(g.Triples.Any());
+
+            // Enumerable should reflect current state of graph
+            Assert.IsFalse(qs.Any());
+            Assert.AreEqual(0, qs.Count());
+            Assert.IsFalse(qs.Contains(t.AsQuad(Quad.DefaultGraphNode)));
+        }
+
+        [Test]
         public void GraphContractFind1()
         {
             IGraph g = this.GetInstance();
@@ -242,6 +273,70 @@ namespace VDS.RDF.Graphs
             // Find nothing
             ts = g.Find(g.CreateBlankNode(), null, null).ToList();
             Assert.AreEqual(0, ts.Count);
+        }
+
+        [Test]
+        public void GraphContractStructure1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsTrue(g.IsEmpty);
+
+            INode s1 = g.CreateUriNode(new Uri("http://s1"));
+            INode s2 = g.CreateUriNode(new Uri("http://s2"));
+            INode p = g.CreateUriNode(new Uri("http://p"));
+            INode o1 = g.CreateLiteralNode("value");
+            INode o2 = g.CreateUriNode(new Uri("http://o"));
+
+            INode[] vs = new INode[] { s1, s2, o1, o2 };
+            INode[] es = new INode[] { p };
+
+            g.Assert(new Triple(s1, p, o1));
+            g.Assert(new Triple(s1, p, o2));
+            g.Assert(new Triple(s2, p, o2));
+            Assert.AreEqual(3, g.Count);
+
+            // Vertices
+            List<INode> actual = g.Vertices.ToList();
+            Assert.AreEqual(vs.Length, actual.Count);
+            Assert.IsTrue(vs.All(v => actual.Remove(v)));
+
+            // Edges
+            actual = g.Edges.ToList();
+            Assert.AreEqual(es.Length, actual.Count);
+            Assert.IsTrue(es.All(e => actual.Remove(e)));
+        }
+
+        [Test]
+        public void GraphContractStructure2()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsTrue(g.IsEmpty);
+
+            INode s1 = g.CreateBlankNode();
+            INode s2 = g.CreateGraphLiteralNode();
+            INode p = g.CreateUriNode(new Uri("http://p"));
+            INode o1 = g.CreateVariableNode("var");
+            INode o2 = g.CreateUriNode(new Uri("http://o"));
+
+            INode[] vs = new INode[] { s1, s2, o1, o2 };
+            INode[] es = new INode[] { p };
+
+            g.Assert(new Triple(s1, p, o1));
+            g.Assert(new Triple(s1, p, o2));
+            g.Assert(new Triple(s2, p, o2));
+            Assert.AreEqual(3, g.Count);
+
+            // Vertices
+            List<INode> actual = g.Vertices.ToList();
+            Assert.AreEqual(vs.Length, actual.Count);
+            Assert.IsTrue(vs.All(v => actual.Remove(v)));
+
+            // Edges
+            actual = g.Edges.ToList();
+            Assert.AreEqual(es.Length, actual.Count);
+            Assert.IsTrue(es.All(e => actual.Remove(e)));
         }
     }
 
