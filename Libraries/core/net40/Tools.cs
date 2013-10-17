@@ -55,6 +55,7 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to test</param>
         /// <returns>True if the Base Uri can be used to resolve Relative URIs against</returns>
         /// <remarks>A Base Uri is valid if it is an absolute Uri and not using the mailto: scheme</remarks>
+        [Obsolete("No longer used", true)]
         public static bool IsValidBaseUri(Uri baseUri)
         {
             if (baseUri.Scheme.Equals("mailto"))
@@ -72,6 +73,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uriref">URI Reference</param>
         /// <returns></returns>
+        [Obsolete("No longer used", true)]
         static String FixMalformedUriStrings(String uriref)
         {
             if (uriref.StartsWith("file:/"))
@@ -99,18 +101,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns></returns>
+        [Obsolete("Replaced by the UriFactory.StripUriFragment() method", true)]
         public static Uri StripUriFragment(Uri u)
         {
-            if (u.Fragment.Equals(String.Empty))
-            {
-                return u;
-            }
-            else
-            {
-                String temp = u.AbsoluteUri;
-                temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                return UriFactory.Create(temp);
-            }
+            return UriFactory.StripUriFragment(u);
         }
 
         /// <summary>
@@ -119,8 +113,8 @@ namespace VDS.RDF
         /// <param name="uriref">Uri Reference to resolve</param>
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns>Resolved Uri as a String</returns>
-        /// <exception cref="RdfParseException">RDF Parse Exception if the Uri cannot be resolved for a know reason</exception>
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed</exception>
+        [Obsolete("Replaced by the UriFactory.ResolveUri() method", true)]
         public static String ResolveUri(String uriref, String baseUri)
         {
             if (!baseUri.Equals(String.Empty))
@@ -190,22 +184,24 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns>Resolved Uri as a String</returns>
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed</exception>
+        [Obsolete("Replaced by the UriFactory.ResolveUri() method", true)]
         public static Uri ResolveUri(Uri uriref, Uri baseUri)
         {
             Uri result = new Uri(baseUri, uriref);
             return result;
         }
 
-                /// <summary>
+        /// <summary>
         /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided
         /// </summary>
         /// <param name="qname">QName to resolve</param>
         /// <param name="nsmap">Namespace Map to resolve against</param>
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns></returns>
+        [Obsolete("Replaced by the UriFactory.ResolvePrefixedName() method", true)]
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
         {
-            return Tools.ResolveQName(qname, nsmap, baseUri, false);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -216,60 +212,10 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI</param>
         /// <returns></returns>
+        [Obsolete("Replaced by the UriFactory.ResolvePrefixedName() method", true)]
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
         {
-            String output;
-
-            if (qname.StartsWith(":"))
-            {
-                //QName in Default Namespace
-                if (nsmap.HasNamespace(String.Empty))
-                {
-                    //Default Namespace Defined
-                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + qname.Substring(1);
-                }
-                else if (allowDefaultPrefixFallback)
-                {
-                    //No Default Namespace so use Base Uri
-                    //These type of QNames are scoped to the local Uri regardless of the type of the Base Uri
-                    //i.e. these always result in Hash URIs
-                    if (baseUri != null)
-                    {
-                        output = baseUri.AbsoluteUri;
-                        if (output.EndsWith("#"))
-                        {
-                            output += qname.Substring(1);
-                        }
-                        else
-                        {
-                            output += "#" + qname.Substring(1);
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
-                    }
-                }
-                else
-                {
-                    throw new RdfException("Cannot resolve the QName '" + qname + "' in the Default Namespace since the namespace is not defined.  Did you to forget to define a namespace for the : prefix?");
-                }
-            }
-            else
-            {
-                //QName in some other Namespace
-                String[] parts = qname.Split(new char[] { ':' }, 2);
-                if (parts.Length == 1)
-                {
-                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + parts[0];
-                }
-                else
-                {
-                    output = nsmap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
-                }
-            }
-
-            return output;
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -385,6 +331,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper method which ensures that triples return a consistent hash code based on their value
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns>Hash code for the triple</returns>
         internal static int CreateHashCode(Triple t)
         {
             return Tools.CombineHashCodes(t.Subject, Tools.CombineHashCodes(t.Predicate, t.Object));
@@ -404,6 +355,13 @@ namespace VDS.RDF
             return hash;
         }
 
+        /// <summary>
+        /// Does a quick and simple combination of Hash Codes for an object and a URI
+        /// </summary>
+        /// <param name="x">First Object</param>
+        /// <param name="y">URI</param>
+        /// <returns></returns>
+        /// <remarks>This overload is needed because the .Net hash code implementation for URIs is deficient for use for RDF since it treats URIs with the same fragment as being equivalent</remarks>
         public static int CombineHashCodes(Object x, Uri y)
         {
             int hash = 17;

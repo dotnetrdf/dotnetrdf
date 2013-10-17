@@ -262,7 +262,7 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Creates a new blank node with an auto-generated ID
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Blank node</returns>
         public virtual INode CreateBlankNode()
         {
             return new BlankNode(Guid.NewGuid());
@@ -272,7 +272,7 @@ namespace VDS.RDF.Graphs
         /// Creates a new literal node with the given Value
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
-        /// <returns></returns>
+        /// <returns>Literal node</returns>
         public virtual INode CreateLiteralNode(String literal)
         {
             return new LiteralNode(literal);
@@ -283,7 +283,7 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
-        /// <returns></returns>
+        /// <returns>Language specified literal node</returns>
         public virtual INode CreateLiteralNode(String literal, String langspec)
         {
             return new LiteralNode(literal, langspec);
@@ -294,7 +294,7 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">URI of the Data Type</param>
-        /// <returns></returns>
+        /// <returns>Typed literal node</returns>
         public virtual INode CreateLiteralNode(String literal, Uri datatype)
         {
             return new LiteralNode(literal, datatype);
@@ -304,7 +304,7 @@ namespace VDS.RDF.Graphs
         /// Creates a new URI Node with the given URI
         /// </summary>
         /// <param name="uri">URI for the Node</param>
-        /// <returns></returns>
+        /// <returns>URI Node</returns>
         /// <remarks>
         /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined. In the case of relative URIs issues may occur when trying to serialize the data or when accurate round tripping is required.
         /// </remarks>
@@ -314,21 +314,21 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
-        /// Creates a new URI Node with the given QName
+        /// Creates a new URI Node with the given prefixed name
         /// </summary>
-        /// <param name="qname">QName for the Node</param>
-        /// <returns></returns>
-        /// <remarks>Internally the Graph will resolve the QName to a full URI, this throws an exception when this is not possible</remarks>
-        public virtual INode CreateUriNode(String qname)
+        /// <param name="prefixedName">Prefixed name for the Node</param>
+        /// <returns>URI Node</returns>
+        /// <remarks>Internally the Graph will resolve the prefixed name to a full URI, this throws an exception when this is not possible</remarks>
+        public virtual INode CreateUriNode(String prefixedName)
         {
-            return new UriNode(UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, null)));
+            return new UriNode(UriFactory.ResolvePrefixedName(prefixedName, this._nsmapper, null));
         }
 
         /// <summary>
         /// Creates a new Variable Node
         /// </summary>
         /// <param name="varname">Variable Name</param>
-        /// <returns></returns>
+        /// <returns>Variable Node</returns>
         public virtual INode CreateVariableNode(String varname)
         {
             return new VariableNode(varname);
@@ -337,7 +337,7 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Creates a new Graph Literal Node with its value being an Empty Subgraph
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Graph Literal Node</returns>
         public virtual INode CreateGraphLiteralNode()
         {
             return new GraphLiteralNode(new Graph());

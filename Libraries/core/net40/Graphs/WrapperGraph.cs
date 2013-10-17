@@ -292,11 +292,11 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Creates a new URI Node from a QName
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="prefixedName">QName</param>
         /// <returns></returns>
-        public virtual INode CreateUriNode(string qname)
+        public virtual INode CreateUriNode(string prefixedName)
         {
-            return this._g.CreateUriNode(qname);
+            return this._g.CreateUriNode(prefixedName);
         }
 
         /// <summary>

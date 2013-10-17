@@ -147,11 +147,11 @@ namespace VDS.RDF.Graphs
         #region Node Creation
 
         /// <summary>
-        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName
+        /// Creates a URI Node for the given prefixed name using the graphs associated namespace map to resolve the prefixed name
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="prefixedName">Prefixed name</param>
         /// <returns>URI Node</returns>
-        INode CreateUriNode(string qname);
+        INode CreateUriNode(string prefixedName);
 
         #endregion
 
