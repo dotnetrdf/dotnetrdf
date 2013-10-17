@@ -161,7 +161,87 @@ namespace VDS.RDF.Graphs
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
+            INode s1 = g.CreateUriNode(new Uri("http://s1"));
+            INode s2 = g.CreateUriNode(new Uri("http://s2"));
+            INode p = g.CreateUriNode(new Uri("http://p"));
+            INode o1 = g.CreateLiteralNode("value");
+            INode o2 = g.CreateUriNode(new Uri("http://o"));
 
+            Triple t1 = new Triple(s1, p, o1);
+            g.Assert(t1);
+            Triple t2 = new Triple(s1, p, o2);
+            g.Assert(t2);
+            Triple t3 = new Triple(s2, p, o2);
+            g.Assert(t3);
+            Assert.AreEqual(3, g.Count);
+
+            // Find by subject
+            List<Triple> ts = g.Find(s1, null, null).ToList();
+            Assert.AreEqual(2, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+            Assert.IsTrue(ts.Contains(t2));
+
+            // Find by predicate
+            ts = g.Find(null, p, null).ToList();
+            Assert.AreEqual(3, ts.Count);
+
+            // Find by subject and object
+            ts = g.Find(s2, null, o2).ToList();
+            Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t3));
+
+            // Find everything
+            ts = g.Find(null, null, null).ToList();
+            Assert.AreEqual(3, ts.Count);
+
+            // Find nothing
+            ts = g.Find(g.CreateUriNode(new Uri("http://s3")), null, null).ToList();
+            Assert.AreEqual(0, ts.Count);
+        }
+
+        [Test]
+        public void GraphContractFind2()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsTrue(g.IsEmpty);
+
+            INode s1 = g.CreateBlankNode();
+            INode s2 = g.CreateBlankNode();
+            INode p = g.CreateUriNode(new Uri("http://p"));
+            INode o1 = g.CreateLiteralNode("value");
+            INode o2 = g.CreateUriNode(new Uri("http://o"));
+
+            Triple t1 = new Triple(s1, p, o1);
+            g.Assert(t1);
+            Triple t2 = new Triple(s1, p, o2);
+            g.Assert(t2);
+            Triple t3 = new Triple(s2, p, o2);
+            g.Assert(t3);
+            Assert.AreEqual(3, g.Count);
+
+            // Find by subject
+            List<Triple> ts = g.Find(s1, null, null).ToList();
+            Assert.AreEqual(2, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+            Assert.IsTrue(ts.Contains(t2));
+
+            // Find by predicate
+            ts = g.Find(null, p, null).ToList();
+            Assert.AreEqual(3, ts.Count);
+
+            // Find by subject and object
+            ts = g.Find(s2, null, o2).ToList();
+            Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t3));
+
+            // Find everything
+            ts = g.Find(null, null, null).ToList();
+            Assert.AreEqual(3, ts.Count);
+
+            // Find nothing
+            ts = g.Find(g.CreateBlankNode(), null, null).ToList();
+            Assert.AreEqual(0, ts.Count);
         }
     }
 
@@ -183,5 +263,22 @@ namespace VDS.RDF.Graphs
 {
  	return new ThreadSafeGraph();
 }
+    }
+
+    [TestFixture]
+    public class WrapperGraphContractTests
+        : AbstractGraphContractTests
+    {
+
+        protected override IGraph GetInstance()
+        {
+            return new TestWrapperGraph();
+        }
+
+        private class TestWrapperGraph
+            : WrapperGraph
+        {
+            
+        }
     }
 }
