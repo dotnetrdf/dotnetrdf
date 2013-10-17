@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.CloseOutput = true;
             settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
+            settings.Encoding = new UTF8Encoding(IOOptions.UseBomForUtf8);
             settings.Indent = true;
 #if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8)));
         }
 #endif
 

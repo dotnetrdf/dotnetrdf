@@ -28,8 +28,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -48,7 +52,7 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
-        private int _compressionLevel = Options.DefaultCompressionLevel;
+        private int _compressionLevel = IOOptions.DefaultCompressionLevel;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
         private TurtleSyntax _syntax = TurtleSyntax.Original;
 
@@ -180,7 +184,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(IGraph g, string filename)
         {
-            this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+            this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(IOIOOptions.UseBomForUtf8)));
         }
 #endif
 
