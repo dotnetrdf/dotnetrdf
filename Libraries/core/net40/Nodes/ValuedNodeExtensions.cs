@@ -27,8 +27,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Nodes

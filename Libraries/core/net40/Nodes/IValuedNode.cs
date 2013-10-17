@@ -121,7 +121,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the Numeric Type of the Node
         /// </summary>
-        SparqlNumericType NumericType
+        EffectiveNumericType NumericType
         {
             get;
         }

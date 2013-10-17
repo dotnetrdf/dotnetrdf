@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 
 namespace VDS.RDF.Writing.Formatting
 {

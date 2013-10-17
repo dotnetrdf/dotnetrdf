@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Collections
 {

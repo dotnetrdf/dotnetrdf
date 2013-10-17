@@ -45,7 +45,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Double value</param>
         /// <param name="lexicalValue">Lexical value</param>
         public DoubleNode(double value, String lexicalValue)
-            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), EffectiveNumericType.Double)
         {
             this._value = value;
         }

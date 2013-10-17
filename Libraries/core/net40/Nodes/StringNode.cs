@@ -173,11 +173,11 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>
-        public SparqlNumericType NumericType
+        public EffectiveNumericType NumericType
         {
             get 
             {
-                return SparqlNumericType.NaN;
+                return EffectiveNumericType.NaN;
             }
         }
 

@@ -95,55 +95,32 @@
     <Compile Include="Compatability\HttpUtility.cs" />
     <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
-    <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
-    <Compile Include="Core\BaseGraphStore.cs" />
-    <Compile Include="Core\IGraphStore.cs" />
-    <Compile Include="Core\Quad.cs" />
     <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
-    <Compile Include="Core\WrapperGraph.cs" />
-    <Compile Include="Core\Extensions.cs" />
     <Compile Include="Collections\BaseTripleCollection.cs" />
-    <Compile Include="Core\Options.cs" />
-    <Compile Include="Core\ThreadSafeGraph.cs" />
     <Compile Include="Collections\TreeIndexedTripleCollection.cs" />
     <Compile Include="Collections\WrapperGraphCollection.cs" />
     <Compile Include="Collections\WrapperTripleCollection.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="Nodes\SparqlNumericType.cs" />
+    <Compile Include="Nodes\DateNode.cs" />
+    <Compile Include="Nodes\FastNodeComparer.cs" />
+    <Compile Include="Nodes\MockNodeFactory.cs" />
+    <Compile Include="Nodes\NodeType.cs" />
+    <Compile Include="Nodes\EffectiveNumericType.cs" />
+    <Compile Include="Nodes\SignedByteNode.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
-    <Compile Include="Core\BlankNode.cs" />
-    <Compile Include="Core\Graph.cs" />
     <Compile Include="Collections\GraphCollection.cs" />
-    <Compile Include="Core\GraphLiteralNode.cs" />
+    <Compile Include="Nodes\UnsignedLongNode.cs" />
     <Compile Include="Writing\Formatting\IQuadFormatter.cs" />
-    <Compile Include="Core\IGraph.cs" />
-    <Compile Include="Core\INode.cs" />
-    <Compile Include="Core\LiteralNode.cs" />
     <Compile Include="NamespaceDocs.cs" />
-    <Compile Include="Core\NamespaceMapper.cs" />
-    <Compile Include="Core\Tools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Triple.cs" />
     <Compile Include="Collections\TripleCollection.cs" />
     <Compile Include="Writing\TripleSegment.cs" />
     <Compile Include="Writing\WriterErrorMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
-    <Compile Include="Core\BaseNode.cs" />
-    <Compile Include="Core\EqualityHelper.cs" />
-    <Compile Include="Core\GraphDiff.cs" />
-    <Compile Include="Core\INamespaceMapper.cs" />
-    <Compile Include="Core\INodeFactory.cs" />
-    <Compile Include="Core\NestedNamespaceMapper.cs" />
-    <Compile Include="Core\NodeFactory.cs" />
-    <Compile Include="Core\SubGraphMatcher.cs" />
-    <Compile Include="Core\GraphMatcher.cs" />
-    <Compile Include="Core\TripleComparers.cs" />
     <Compile Include="Collections\UnionCollections.cs" />
-    <Compile Include="Core\UriFactory.cs" />
-    <Compile Include="Core\VariableNode.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Indexing.cs" />
     <Compile Include="Nodes\BooleanNode.cs" />
@@ -207,7 +184,6 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\URINode.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -245,4 +221,44 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Nodes\BaseNode.cs" />
+    <Compile Include="Nodes\BlankNode.cs" />
+    <Compile Include="Nodes\GraphLiteralNode.cs" />
+    <Compile Include="Nodes\INodeFactory.cs" />
+    <Compile Include="Nodes\NodeFactory.cs" />
+    <Compile Include="Nodes\URINode.cs" />
+    <Compile Include="Nodes\VariableNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Graphs\BaseGraph.cs" />
+    <Compile Include="Graphs\BaseGraphStore.cs" />
+    <Compile Include="Graphs\Graph.cs" />
+    <Compile Include="Graphs\GraphDiff.cs" />
+    <Compile Include="Graphs\GraphMatcher.cs" />
+    <Compile Include="Graphs\IGraph.cs" />
+    <Compile Include="Graphs\IGraphStore.cs" />
+    <Compile Include="Graphs\SubGraphMatcher.cs" />
+    <Compile Include="Graphs\ThreadSafeGraph.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Graphs\Quad.cs" />
+    <Compile Include="Graphs\Triple.cs" />
+    <Compile Include="Graphs\TripleComparers.cs" />
+    <Compile Include="Graphs\WrapperGraph.cs" />
+    <Compile Include="Nodes\LiteralNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Namespaces\INamespaceMapper.cs" />
+    <Compile Include="Namespaces\NamespaceMapper.cs" />
+    <Compile Include="Namespaces\NestedNamespaceMapper.cs" />
+    <Compile Include="Nodes\EqualityHelper.cs" />
+    <Compile Include="Nodes\INode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="Tools.cs" />
+    <Compile Include="UriFactory.cs" />
+  </ItemGroup>
 </Project>

@@ -157,11 +157,11 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
-        public SparqlNumericType NumericType
+        public EffectiveNumericType NumericType
         {
             get 
             { 
-                return SparqlNumericType.NaN; 
+                return EffectiveNumericType.NaN; 
             }
         }
     }

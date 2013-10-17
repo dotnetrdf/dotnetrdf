@@ -39,7 +39,7 @@ namespace VDS.RDF.Nodes
     public abstract class NumericNode
         : LiteralNode, IValuedNode
     {
-        private SparqlNumericType _numType = SparqlNumericType.NaN;
+        private EffectiveNumericType _numType = EffectiveNumericType.NaN;
 
         /// <summary>
         /// Creates a new numeric valued node
@@ -47,7 +47,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Lexical Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <param name="numType">SPARQL Numeric Type</param>
-        public NumericNode(String value, Uri datatype, SparqlNumericType numType)
+        public NumericNode(String value, Uri datatype, EffectiveNumericType numType)
             : base(value, datatype) 
         {
             this._numType = numType;
@@ -94,13 +94,13 @@ namespace VDS.RDF.Nodes
         {
             switch (this._numType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return this.AsInteger() != 0;
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return this.AsDecimal() != Decimal.Zero;
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     return this.AsFloat() != 0.0f && this.AsFloat() != Single.NaN;
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return this.AsDouble() != 0.0d && this.AsDouble() != Double.NaN;
                 default:
                     return false;
@@ -148,7 +148,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
-        public SparqlNumericType NumericType
+        public EffectiveNumericType NumericType
         {
             get
             {
