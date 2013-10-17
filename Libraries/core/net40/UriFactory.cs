@@ -103,9 +103,10 @@ namespace VDS.RDF
         /// <param name="uri">Relative or Absolute URI</param>
         /// <param name="baseUri">Base URI</param>
         /// <returns>Absolute URI if possible to resolve, relative URI otherwise</returns>
-        /// <exception cref="RdfException">Thrown if the string given is an invalid URI</exception>
+        /// <exception cref="RdfException">Thrown if the string given is null or an invalid URI</exception>
         public static Uri ResolveUri(String uri, Uri baseUri)
         {
+            if (ReferenceEquals(uri, null)) throw new RdfException("Cannot resolve a null URI");
             try
             {
                 Uri u = new Uri(uri, UriKind.RelativeOrAbsolute);
@@ -179,7 +180,7 @@ namespace VDS.RDF
                     //No Default Namespace so use Base Uri
                     //These type of prefixed names are scoped to the local Uri regardless of the type of the Base Uri
                     //i.e. these always result in Hash URIs
-                    if (baseUri != null)
+                    if (!ReferenceEquals(baseUri, null) && baseUri.IsAbsoluteUri)
                     {
                         output = baseUri.AbsoluteUri;
                         if (output.EndsWith("#"))

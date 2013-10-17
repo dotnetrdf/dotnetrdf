@@ -58,14 +58,7 @@ namespace VDS.RDF
         [Obsolete("No longer used", true)]
         public static bool IsValidBaseUri(Uri baseUri)
         {
-            if (baseUri.Scheme.Equals("mailto"))
-            {
-                return false;
-            }
-            else
-            {
-                return baseUri.IsAbsoluteUri;
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -76,24 +69,7 @@ namespace VDS.RDF
         [Obsolete("No longer used", true)]
         static String FixMalformedUriStrings(String uriref)
         {
-            if (uriref.StartsWith("file:/"))
-            {
-                //HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which have technically malformed file:// scheme URIs in it
-                //This is because *nix style filesystems use paths of the form /path/to/somewhere and some serializers will serialize such
-                //a file path by just prepending file: when they should be prepending file://
-                if (uriref.Length > 6)
-                {
-                    if (uriref[6] != '/')
-                    {
-                        return "file://" + uriref.Substring(5);
-                    }
-                }
-                return uriref;
-            }
-            else
-            {
-                return uriref;
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -104,7 +80,7 @@ namespace VDS.RDF
         [Obsolete("Replaced by the UriFactory.StripUriFragment() method", true)]
         public static Uri StripUriFragment(Uri u)
         {
-            return UriFactory.StripUriFragment(u);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -117,64 +93,7 @@ namespace VDS.RDF
         [Obsolete("Replaced by the UriFactory.ResolveUri() method", true)]
         public static String ResolveUri(String uriref, String baseUri)
         {
-            if (!baseUri.Equals(String.Empty))
-            {
-                if (uriref.Equals(String.Empty))
-                {
-                    //Empty Uri reference refers to the Base Uri
-                    return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).AbsoluteUri;
-                }
-                else
-                {
-                    //Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    Uri u = new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
-                    if (u.IsAbsoluteUri) 
-                    {
-                        //Uri Reference is an Absolute Uri so no need to resolve against Base Uri
-                        return u.AbsoluteUri;
-                    } 
-                    else 
-                    {
-                        Uri b = UriFactory.Create(Tools.FixMalformedUriStrings(baseUri));
-
-                        //Check that the Base Uri is valid for resolving Relative URIs
-                        //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
-                        //We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
-                        if (u.ToString().StartsWith("#"))
-                        {
-                            return Tools.ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else if (Tools.IsValidBaseUri(b))
-                        {
-                            return Tools.ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else
-                        {
-                            throw new RdfException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (uriref.Equals(String.Empty))
-                {
-                    throw new RdfException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
-                }
-
-                try
-                {
-                    return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
-                }
-#if PORTABLE
-                catch(FormatException)
-#else
-                catch (UriFormatException)
-#endif
-                {
-                    throw new RdfException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
-                }
-            }
+           throw new NotSupportedException();
         }
 
         /// <summary>
@@ -187,8 +106,7 @@ namespace VDS.RDF
         [Obsolete("Replaced by the UriFactory.ResolveUri() method", true)]
         public static Uri ResolveUri(Uri uriref, Uri baseUri)
         {
-            Uri result = new Uri(baseUri, uriref);
-            return result;
+            throw new NotSupportedException();
         }
 
         /// <summary>
