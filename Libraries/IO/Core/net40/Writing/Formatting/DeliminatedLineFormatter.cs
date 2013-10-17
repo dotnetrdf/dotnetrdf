@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Specifications;
 
@@ -108,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(INode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (this._uriStartChar != null) output.Append(this._uriStartChar);
@@ -130,7 +132,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="lit">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
+        protected override string FormatLiteralNode(INode lit, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType, TurtleSyntax.Original))

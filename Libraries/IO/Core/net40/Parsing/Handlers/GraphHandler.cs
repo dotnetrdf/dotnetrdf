@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -45,24 +46,6 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (g == null) throw new ArgumentNullException("graph");
             this._g = g;
-        }
-
-        /// <summary>
-        /// Gets the Base URI of the Graph currently being parsed into
-        /// </summary>
-        public Uri BaseUri
-        {
-            get
-            {
-                if (this._target != null)
-                {
-                    return this._target.BaseUri;
-                }
-                else
-                {
-                    return this._g.BaseUri;
-                }
-            }
         }
 
         /// <summary>
@@ -88,8 +71,7 @@ namespace VDS.RDF.Parsing.Handlers
             else
             {
                 this._target = new Graph(true);
-                this._target.NamespaceMap.Import(this._g.NamespaceMap);
-                this._target.BaseUri = this._g.BaseUri;
+                this._target.Namespaces.Import(this._g.Namespaces);
             }
             this.NodeFactory = this._target;
         }
@@ -106,8 +88,7 @@ namespace VDS.RDF.Parsing.Handlers
                 if (!ReferenceEquals(this._g, this._target))
                 {
                     this._g.Merge(this._target);
-                    this._g.NamespaceMap.Import(this._target.NamespaceMap);
-                    if (this._g.BaseUri == null) this._g.BaseUri = this._target.BaseUri;
+                    this._g.Namespaces.Import(this._target.Namespaces);
                 }
                 else
                 {
@@ -142,7 +123,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            this._target.NamespaceMap.AddNamespace(prefix, namespaceUri);
+            this._target.Namespaces.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
@@ -153,7 +134,6 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            this._target.BaseUri = baseUri;
             return true;
         }
 
@@ -168,9 +148,14 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Handles quads that are in the default graph by asserting them in the graph, all other quads are discarded
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns></returns>
         protected override bool HandleQuadInternal(Quad q)
         {
-            this._target.Assert(q.AsTriple());
+            if (q.InDefaultGraph) this._target.Assert(q.AsTriple());
             return true;
         }
 

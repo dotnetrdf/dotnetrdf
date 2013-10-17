@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract String FormatUriNode(IUriNode u, TripleSegment? segment);
+        protected abstract string FormatUriNode(INode u, TripleSegment? segment);
 
         /// <summary>
         /// Formats a URI as a String for full Output
@@ -140,7 +140,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract String FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
+        protected abstract string FormatLiteralNode(INode l, TripleSegment? segment);
 
         /// <summary>
         /// Formats a Blank Node as a String for the given Format
@@ -148,7 +148,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual String FormatBlankNode(IBlankNode b, TripleSegment? segment)
+        protected virtual string FormatBlankNode(INode b, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
             return b.ToString();
@@ -160,7 +160,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable Name</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual String FormatVariableNode(IVariableNode v, TripleSegment? segment)
+        protected virtual string FormatVariableNode(INode v, TripleSegment? segment)
         {
             throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(this._format));
         }
@@ -171,20 +171,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual String FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
+        protected virtual string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
         {
             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable(this._format));
-        }
-
-        /// <summary>
-        /// Formats a Character for the given Format
-        /// </summary>
-        /// <param name="c">Character</param>
-        /// <returns></returns>
-        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
-        public virtual String FormatChar(char c)
-        {
-            return c.ToString();
         }
 
         /// <summary>

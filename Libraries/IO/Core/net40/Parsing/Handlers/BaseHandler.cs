@@ -79,26 +79,16 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a Blank Node
         /// </summary>
         /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode()
+        public virtual INode CreateBlankNode()
         {
             return this._factory.CreateBlankNode();
-        }
-
-        /// <summary>
-        /// Creates a Blank Node with the given ID
-        /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode(string nodeId)
-        {
-            return this._factory.CreateBlankNode(nodeId);
         }
 
         /// <summary>
         /// Creates a Graph Literal Node
         /// </summary>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode()
+        public virtual INode CreateGraphLiteralNode()
         {
             return this._factory.CreateGraphLiteralNode();
         }
@@ -108,7 +98,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="subgraph">Sub-graph</param>
         /// <returns></returns>
-        public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return this._factory.CreateGraphLiteralNode(subgraph);
         }
@@ -119,7 +109,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="literal">Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        public virtual INode CreateLiteralNode(string literal, Uri datatype)
         {
             return this._factory.CreateLiteralNode(literal, datatype);
         }
@@ -129,7 +119,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="literal">Value</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal)
+        public virtual INode CreateLiteralNode(string literal)
         {
             return this._factory.CreateLiteralNode(literal);
         }
@@ -140,7 +130,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="literal">Value</param>
         /// <param name="langspec">Language</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public virtual INode CreateLiteralNode(string literal, string langspec)
         {
             return this._factory.CreateLiteralNode(literal, langspec);
         }
@@ -150,7 +140,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="uri">URI</param>
         /// <returns></returns>
-        public virtual IUriNode CreateUriNode(Uri uri)
+        public virtual INode CreateUriNode(Uri uri)
         {
             return this._factory.CreateUriNode(uri);
         }
@@ -160,7 +150,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="varname">Variable Name</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(string varname)
+        public virtual INode CreateVariableNode(string varname)
         {
             return this._factory.CreateVariableNode(varname);
         }
@@ -283,6 +273,11 @@ namespace VDS.RDF.Parsing.Handlers
             return this.HandleTripleInternal(t);
         }
 
+        /// <summary>
+        /// Handles Quads
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns></returns>
         public bool HandleQuad(Quad q)
         {
             if (!this._inUse) throw new RdfParseException("Cannot Handle Quad as this RDF Handler is not currently in-use, please ensure you call the StartRdf() method prior to calling this method");
@@ -300,7 +295,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Must be overridden by derived handlers to take appropriate Quad handling action
         /// </summary>
-        /// <param name="q"></param>
+        /// <param name="q">Quad</param>
         /// <returns></returns>
         protected abstract bool HandleQuadInternal(Quad q);
 

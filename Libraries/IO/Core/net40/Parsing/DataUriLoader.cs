@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing

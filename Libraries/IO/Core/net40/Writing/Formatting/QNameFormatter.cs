@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Specifications;
 
@@ -90,7 +91,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(INode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String qname;
@@ -127,7 +128,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
+        protected abstract override string FormatLiteralNode(INode l, TripleSegment? segment);
 
         /// <summary>
         /// Formats a Namespace as a String

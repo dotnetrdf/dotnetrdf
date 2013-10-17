@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -48,7 +49,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
+        protected override string FormatVariableNode(INode v, TripleSegment? segment)
         {
             return v.ToString();
         }
@@ -59,7 +60,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 
@@ -106,7 +107,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
+        protected override string FormatVariableNode(INode v, TripleSegment? segment)
         {
             return v.ToString();
         }
@@ -117,7 +118,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 

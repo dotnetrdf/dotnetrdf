@@ -82,7 +82,6 @@
     <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
     <Compile Include="Parsing\Handlers\ChainedHandler.cs" />
     <Compile Include="Parsing\Handlers\CountHandler.cs" />
-    <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />

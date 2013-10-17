@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -69,7 +70,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(INode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             output.Append('<');
@@ -84,7 +85,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
+        protected override string FormatLiteralNode(INode l, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String value;
@@ -172,7 +173,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
+        protected override string FormatBlankNode(INode b, TripleSegment? segment)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
         }
