@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using VDS.Common.Tries;
@@ -37,36 +38,95 @@ namespace VDS.RDF
     /// </summary>
     public static class UriFactory
     {
-        private static ITrie<String, char, Uri> _uris = new StringTrie<Uri>();
+        private static readonly ITrie<Uri, String, Uri> _uris = new Trie<Uri, string, Uri>(UriFactory.UriToSegments);
 
         /// <summary>
-        /// Creates a URI interning it if interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see>
+        /// Decomposes a URI into a series of segments for use with the interning
         /// </summary>
-        /// <param name="uri">String URI</param>
+        /// <param name="u">URI</param>
+        /// <returns>URI segments</returns>
+        private static IEnumerable<String> UriToSegments(Uri u)
+        {
+            if (ReferenceEquals(u, null) || !u.IsAbsoluteUri) throw new RdfException("Cannot split a relative URI into segments");
+
+            // Scheme, Host, Port, UserInfo, Path Segment(s), Querystring, Fragment
+            List<String> segments = new List<String>
+                {
+                    u.Scheme,
+                    u.Host,
+                    u.Port.ToString(CultureInfo.InvariantCulture),
+                    ReferenceEquals(u.UserInfo, null) ? String.Empty : u.UserInfo
+                };
+#if !SILVERLIGHT
+            segments.AddRange(u.Segments);
+#else
+            segments.AddRange(u.Segments());
+#endif
+            if (!String.IsNullOrEmpty(u.Query)) segments.Add(u.Query);
+            if (!String.IsNullOrEmpty(u.Fragment)) segments.Add(u.Fragment);
+
+            return segments;
+        }
+
+        /// <summary>
+        /// Creates a URI interning it if it is an absolute URI and interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see> option
+        /// </summary>
+        /// <param name="uri">URI string</param>
         /// <returns></returns>
         /// <remarks>
-        /// When URI interning is disabled this is equivalent to just invoking the constructor of the <see cref="Uri">Uri</see> class
+        /// When URI interning is disabled this is equivalent to just invoking the constructor of the <see cref="Uri">Uri</see> class with <see cref="UriKind.RelativeOrAbsolute"/> as the second argument
         /// </remarks>
+        /// <exception cref="RdfException">Thrown if the given string is null or invalid</exception>
         public static Uri Create(String uri)
         {
+            if (ReferenceEquals(uri, null)) throw new RdfException("Cannot create a URI from a null string");
             if (!Options.InternUris)
             {
                 return new Uri(uri);
             }
             else
             {
-                ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
-                if (node.HasValue)
+                try
                 {
-                    return node.Value;
+                    Uri u = new Uri(uri, UriKind.RelativeOrAbsolute);
+                    return u.IsAbsoluteUri ? Intern(u) : u;
                 }
-                else
+#if PORTABLE
+                catch (FormatException fEx)
+#else
+                catch (UriFormatException fEx)
+#endif
                 {
-                    Uri u = new Uri(uri);
-                    node.Value = u;
-                    return node.Value;
+                    throw new RdfException("Given URI string was invalid, see inner exception for details", fEx);
                 }
             }
+        }
+
+        /// <summary>
+        /// Interns a URI provided it is an absolute URI and interning has been enabled via the <see cref="Options.InternUris"/> option
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns>Interned URI</returns>
+        /// <exception cref="RdfException">Thrown if the given URI is null</exception>
+        public static Uri Intern(Uri u)
+        {
+            if (ReferenceEquals(u, null)) throw new RdfException("Cannot intern a null URI");
+            if (!Options.InternUris || !u.IsAbsoluteUri) return u;
+            ITrieNode<String, Uri> node = _uris.MoveToNode(u);
+            if (!node.HasValue) node.Value = u;
+            return node.Value;
+        }
+
+        /// <summary>
+        /// Gets whether a given URI is currently interned
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns>True if the URI is interned, false otherwise</returns>
+        public static bool IsInterned(Uri u)
+        {
+            if (ReferenceEquals(u, null) || !u.IsAbsoluteUri) return false;
+            ITrieNode<String, Uri> node = _uris.Find(u);
+            return !ReferenceEquals(node, null) && node.HasValue;
         }
 
         /// <summary>

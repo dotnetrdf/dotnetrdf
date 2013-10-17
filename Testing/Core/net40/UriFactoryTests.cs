@@ -147,5 +147,68 @@ namespace VDS.RDF
             // Namespace not in scope and default namespace fallback not possible due to null base URI
             this.TestPrefixedNameResolution(":test", nsmap, null, true, null);
         }
+
+        [Test]
+        public void InternUri1()
+        {
+            try
+            {
+                Uri u1 = new Uri("http://example.org");
+                Uri u2 = new Uri("http://example.org/test");
+
+                UriFactory.Intern(u2);
+                Assert.IsTrue(UriFactory.IsInterned(u2));
+                Assert.IsFalse(UriFactory.IsInterned(u1));
+
+                UriFactory.Intern(u1);
+                Assert.IsTrue(UriFactory.IsInterned(u1));
+            }
+            finally
+            {
+                UriFactory.Clear();
+            }
+        }
+
+        [Test]
+        public void InternUri2()
+        {
+            try
+            {
+                Uri u1 = new Uri("http://example.org");
+                Uri u2 = new Uri("http://example.org:8080");
+
+                UriFactory.Intern(u2);
+                Assert.IsTrue(UriFactory.IsInterned(u2));
+                Assert.IsFalse(UriFactory.IsInterned(u1));
+
+                UriFactory.Intern(u1);
+                Assert.IsTrue(UriFactory.IsInterned(u1));
+            }
+            finally
+            {
+                UriFactory.Clear();
+            }
+        }
+
+        [Test]
+        public void InternUri3()
+        {
+            try
+            {
+                Uri u1 = new Uri("http://example.org/#test");
+                Uri u2 = new Uri("http://example.org/?test");
+
+                UriFactory.Intern(u2);
+                Assert.IsTrue(UriFactory.IsInterned(u2));
+                Assert.IsFalse(UriFactory.IsInterned(u1));
+
+                UriFactory.Intern(u1);
+                Assert.IsTrue(UriFactory.IsInterned(u1));
+            }
+            finally
+            {
+                UriFactory.Clear();
+            }
+        }
     }
 }
