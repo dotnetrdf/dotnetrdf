@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Graphs;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -35,35 +36,6 @@ namespace VDS.RDF.Parsing.Handlers
     /// </summary>
     public static class HandlerExtensions
     {
-        /// <summary>
-        /// Gets the Base URI from the RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <returns></returns>
-        internal static Uri GetBaseUri(this IRdfHandler handler)
-        {
-            if (handler is GraphHandler)
-            {
-                return ((GraphHandler)handler).BaseUri;
-            }
-            else if (handler is IWrappingRdfHandler)
-            {
-                IRdfHandler temp = ((IWrappingRdfHandler)handler).InnerHandlers.FirstOrDefault(h => h.GetBaseUri() != null);
-                if (temp == null)
-                {
-                    return null;
-                }
-                else 
-                {
-                   return temp.GetBaseUri();
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         /// <summary>
         /// Applies the triples of a Graph to an RDF Handler
         /// </summary>
@@ -76,15 +48,10 @@ namespace VDS.RDF.Parsing.Handlers
                 handler.StartRdf();
                 if (g != null)
                 {
-                    //Handle the Base URI if present
-                    if (g.BaseUri != null)
-                    {
-                        if (!handler.HandleBaseUri(g.BaseUri)) ParserHelper.Stop();
-                    }
                     //Handle any namespaces
-                    foreach (String prefix in g.NamespaceMap.Prefixes)
+                    foreach (String prefix in g.Namespaces.Prefixes)
                     {
-                        if (!handler.HandleNamespace(prefix, g.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
+                        if (!handler.HandleNamespace(prefix, g.Namespaces.GetNamespaceUri(prefix))) ParserHelper.Stop();
                     }
                     //Finally handle triples
                     foreach (Triple t in g.Triples)

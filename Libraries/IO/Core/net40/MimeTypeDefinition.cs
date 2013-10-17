@@ -185,7 +185,7 @@ namespace VDS.RDF
         public String CheckValidMimeType(String type)
         {
             type = type.Trim().ToLowerInvariant();
-            if (!MimeTypesHelper.IsValidMimeType(type))
+            if (!IOManager.IsValidMimeType(type))
             {
                 throw new RdfException(type + " is not a valid MIME Type");
             }
@@ -251,7 +251,7 @@ namespace VDS.RDF
         {
             String type = mimeType.ToLowerInvariant();
             type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
-            return this._mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
+            return this._mimeTypes.Contains(type) || mimeType.Equals(IOManager.Any);
         }
 
         /// <summary>
@@ -899,7 +899,7 @@ namespace VDS.RDF
             if (selectors.Count == 0)
             {
                 //If no MIME types treat as if a single any selector
-                selectors.Add(new MimeTypeSelector(MimeTypesHelper.Any, null, 1.0d, 1));
+                selectors.Add(new MimeTypeSelector(IOManager.Any, null, 1.0d, 1));
             }
             else
             {
@@ -930,12 +930,12 @@ namespace VDS.RDF
             if (this._order < 1) this._order = 1;
 
             //Check what type of selector this is
-            if (!MimeTypesHelper.IsValidMimeType(this._type))
+            if (!IOManager.IsValidMimeType(this._type))
             {
                 //Invalid
                 this._isInvalid = true;
             }
-            else if (this._type.Equals(MimeTypesHelper.Any))
+            else if (this._type.Equals(IOManager.Any))
             {
                 //Is a */* any
                 this._isAny = true;

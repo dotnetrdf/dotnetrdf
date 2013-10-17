@@ -331,11 +331,11 @@ namespace VDS.RDF.Parsing
                 if (parser != null)
                 {
                     //If a non-null parser set up a HTTP Header that is just for the given parser
-                    httpRequest.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
+                    httpRequest.Accept = IOManager.CustomHttpAcceptHeader(parser);
                 }
                 else
                 {
-                    httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
+                    httpRequest.Accept = IOManager.HttpAcceptHeader;
                 }
 
 #if !NO_URICACHE
@@ -408,7 +408,7 @@ namespace VDS.RDF.Parsing
                     if (parser == null)
                     {
                         //Only need to auto-detect the parser if a specific one wasn't specified
-                        parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+                        parser = IOManager.GetParser(httpResponse.ContentType);
                     }
                     parser.Warning += RaiseWarning;
 #if !NO_URICACHE
@@ -584,11 +584,11 @@ namespace VDS.RDF.Parsing
                 if (parser != null)
                 {
                     //If a non-null parser set up a HTTP Header that is just for the given parser
-                    httpRequest.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
+                    httpRequest.Accept = IOManager.CustomHttpAcceptHeader(parser);
                 }
                 else
                 {
-                    httpRequest.Accept = MimeTypesHelper.HttpRdfDatasetAcceptHeader;
+                    httpRequest.Accept = IOManager.HttpRdfDatasetAcceptHeader;
                 }
 
                 //Use HTTP GET
@@ -613,7 +613,7 @@ namespace VDS.RDF.Parsing
                     {
                         try
                         {
-                            parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
+                            parser = IOManager.GetStoreParser(httpResponse.ContentType);
                             parser.Warning += RaiseStoreWarning;
                             parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                         }
@@ -624,7 +624,7 @@ namespace VDS.RDF.Parsing
                             try
                             {
                                 //If not a RDF Dataset format see if it is a Graph
-                                IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+                                IRdfReader rdfParser = IOManager.GetParser(httpResponse.ContentType);
                                 rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                             }
                             catch (RdfParserSelectionException)

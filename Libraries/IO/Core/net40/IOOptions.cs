@@ -19,7 +19,7 @@ namespace VDS.RDF
         private static bool _forceBlockingIO = false;
 
         /// <summary>
-        /// Gets/Sets the Default Compression Level used for Writers returned by the <see cref="MimeTypesHelper">MimeTypesHelper</see> class when the writers implement <see cref="ICompressingWriter">ICompressingWriter</see>
+        /// Gets/Sets the Default Compression Level used for Writers returned by the <see cref="IOManager">IOManager</see> class when the writers implement <see cref="ICompressingWriter">ICompressingWriter</see>
         /// </summary>
         public static int DefaultCompressionLevel
         {

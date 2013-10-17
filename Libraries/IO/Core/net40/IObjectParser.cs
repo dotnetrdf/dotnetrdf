@@ -35,16 +35,17 @@ namespace VDS.RDF
     /// <typeparam name="T">Generated Object Type</typeparam>
     /// <remarks>
     /// <para>
-    /// Primarily used as a marker interface in relation to <see cref="MimeTypesHelper">MimeTypesHelper</see> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions
+    /// Primarily used as a marker interface in relation to <see cref="IOManager" /> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions
     /// </para>
     /// </remarks>
-    public interface IObjectParser<T>
+    public interface IObjectParser<out T>
     {
         /// <summary>
         /// Parses an Object from an Input Stream
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <returns></returns>
+        /// <remarks>While this could be omitted in favour of the <see cref="TextReader"/> based overload it is useful to have this since streams allow parsers to verify encoding whereas text readers do not</remarks>
         T Parse(StreamReader input);
 
         /// <summary>
@@ -69,12 +70,5 @@ namespace VDS.RDF
         /// <param name="data">String</param>
         /// <returns></returns>
         T ParseFromString(String data);
-
-        /// <summary>
-        /// Parses an Object from a Parameterized String
-        /// </summary>
-        /// <param name="cmdString">Parameterized String</param>
-        /// <returns></returns>
-        T ParseFromString(SparqlParameterizedString cmdString);
     }
 }

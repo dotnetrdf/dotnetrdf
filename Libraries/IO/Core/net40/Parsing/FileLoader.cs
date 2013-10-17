@@ -153,8 +153,8 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    String ext = MimeTypesHelper.GetTrueFileExtension(filename);
-                    parser = MimeTypesHelper.GetParserByFileExtension(ext);
+                    String ext = IOManager.GetTrueFileExtension(filename);
+                    parser = IOManager.GetParserByFileExtension(ext);
                 }
                 catch (RdfParserSelectionException)
                 {
@@ -243,10 +243,10 @@ namespace VDS.RDF.Parsing
 
             if (parser == null)
             {
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                String ext = IOManager.GetTrueFileExtension(filename);
                 try
                 {
-                    parser = MimeTypesHelper.GetStoreParserByFileExtension(ext);
+                    parser = IOManager.GetStoreParserByFileExtension(ext);
                 }
                 catch (RdfParserSelectionException)
                 {
@@ -256,7 +256,7 @@ namespace VDS.RDF.Parsing
                     //Try selecting a RDF parser instead
                     try
                     {
-                        IRdfReader rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
+                        IRdfReader rdfParser = IOManager.GetParserByFileExtension(ext);
                         Graph g = new Graph();
                         rdfParser.Load(handler, filename);
                         return;

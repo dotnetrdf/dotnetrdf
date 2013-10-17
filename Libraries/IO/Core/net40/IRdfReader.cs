@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
@@ -37,38 +38,6 @@ namespace VDS.RDF
     /// </summary>
     public interface IRdfReader
     {
-        /// <summary>
-        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
-        /// </summary>
-        /// <param name="g">Graph to load RDF into</param>
-        /// <param name="input">The reader to read input from</param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        void Load(IGraph g, StreamReader input);
-
-        /// <summary>
-        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Input
-        /// </summary>
-        /// <param name="g">Graph to load RDF into</param>
-        /// <param name="input">The reader to read input from</param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        void Load(IGraph g, TextReader input);
-
-#if !NO_FILE
-        /// <summary>
-        /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
-        /// </summary>
-        /// <param name="g">Graph to load RDF into</param>
-        /// <param name="filename">The Filename of the File to read from</param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File</exception>
-        void Load(IGraph g, String filename);
-#endif
-
         /// <summary>
         /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
         /// </summary>

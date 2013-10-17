@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing
                 if (mimeSet)
                 {
                     //If the MIME Type was explicitly set then we'll try and get a parser and use it
-                    IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
+                    IRdfReader reader = IOManager.GetParser(mimetype);
                     reader.Load(handler, new StringReader(data));
                 }
                 else

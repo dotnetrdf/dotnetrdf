@@ -29,6 +29,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Text;
 using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 

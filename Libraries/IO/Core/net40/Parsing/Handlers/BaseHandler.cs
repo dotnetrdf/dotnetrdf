@@ -165,16 +165,6 @@ namespace VDS.RDF.Parsing.Handlers
             return this._factory.CreateVariableNode(varname);
         }
 
-        /// <summary>
-        /// Gets the next available Blank Node ID
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Obsolete, no longer used", true)]
-        public virtual string GetNextBlankNodeID()
-        {
-            throw new NotSupportedException();
-        }
-
         #endregion
     }
 

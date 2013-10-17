@@ -43,31 +43,19 @@
     <Compile Include="IOOptions.cs" />
     <Compile Include="IRdfReader.cs" />
     <Compile Include="IRdfWriter.cs" />
-    <Compile Include="ISparqlResultsReader.cs" />
-    <Compile Include="ISparqlResultsWriter.cs" />
     <Compile Include="MimeTypeDefinition.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
-    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
     <Compile Include="Parsing\BlockingStreamReader.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
-    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
-    <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
     <Compile Include="Parsing\Contexts\IParserContext.cs" />
-    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
-    <Compile Include="Parsing\Contexts\IStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\JSONParserContext.cs" />
     <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfACoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
     <Compile Include="Parsing\DataUriLoader.cs" />
@@ -103,10 +91,6 @@
     <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
     <Compile Include="Parsing\Handlers\NullHandler.cs" />
     <Compile Include="Parsing\Handlers\PagingHandler.cs" />
-    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
-    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
-    <Compile Include="Parsing\Handlers\StoreCountHandler.cs" />
-    <Compile Include="Parsing\Handlers\StoreHandler.cs" />
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
@@ -124,13 +108,6 @@
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RDFJSONParser.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
-    <Compile Include="Parsing\SPARQLBooleanParser.cs" />
-    <Compile Include="Parsing\SparqlCsvParser.cs" />
-    <Compile Include="Parsing\SPARQLJSONParser.cs" />
-    <Compile Include="Parsing\SparqlRdfParser.cs" />
-    <Compile Include="Parsing\SparqlTsvParser.cs" />
-    <Compile Include="Parsing\SparqlUpdateParser.cs" />
-    <Compile Include="Parsing\SPARQLXMLParser.cs" />
     <Compile Include="Parsing\StringParser.cs" />
     <Compile Include="Parsing\Tokens\BaseToken.cs" />
     <Compile Include="Parsing\Tokens\BaseTokeniser.cs" />
@@ -142,9 +119,6 @@
     <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
     <Compile Include="Parsing\Tokens\PathToken.cs" />
-    <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
-    <Compile Include="Parsing\Tokens\SparqlTokens.cs" />
-    <Compile Include="Parsing\Tokens\SparqlUpdateTokens.cs" />
     <Compile Include="Parsing\Tokens\Token.cs" />
     <Compile Include="Parsing\Tokens\Tokens.cs" />
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
@@ -157,28 +131,20 @@
     <Compile Include="Parsing\UriLoaderAsync.cs" />
     <Compile Include="Parsing\UriLoaderCache.cs" />
     <Compile Include="Parsing\Validation\ISyntaxValidator.cs" />
-    <Compile Include="Parsing\Validation\RdfDatasetSyntaxValidator.cs" />
     <Compile Include="Parsing\Validation\RdfSyntaxValidator.cs" />
-    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
-    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
-    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
     <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
     <Compile Include="Parsing\XmlPlusRdfAParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\TurtleSpecsHelper.cs" />
     <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
-    <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
-    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\BaseHtmlWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\CompressionHelper.cs" />
-    <Compile Include="Writing\Contexts\BaseStoreWriterContexts.cs" />
     <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
-    <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
     <Compile Include="Writing\CsvWriter.cs" />
@@ -203,13 +169,6 @@
     <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
     <Compile Include="Writing\RDFJSONWriter.cs" />
     <Compile Include="Writing\RdfXmlWriter.cs" />
-    <Compile Include="Writing\SparqlCsvWriter.cs" />
-    <Compile Include="Writing\SPARQLHTMLWriter.cs" />
-    <Compile Include="Writing\SPARQLJSONWriter.cs" />
-    <Compile Include="Writing\SparqlRdfWriter.cs" />
-    <Compile Include="Writing\SparqlTsvWriter.cs" />
-    <Compile Include="Writing\SPARQLXMLWriter.cs" />
-    <Compile Include="Writing\SparqlXsltWriter.cs" />
     <Compile Include="Writing\StringWriter.cs" />
     <Compile Include="Writing\TriGWriter.cs" />
     <Compile Include="Writing\TriXWriter.cs" />
@@ -225,9 +184,6 @@
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Parsing\trix-1.0.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -248,12 +204,20 @@
   <ItemGroup>
     <Compile Include="IObjectParser.cs" />
     <Compile Include="IRdfHandler.cs" />
-    <Compile Include="ISparqlResultsHandler.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />

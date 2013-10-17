@@ -1,13 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF
 {
     public static class IOExtensions
     {
+        /// <summary>
+        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
+        /// </summary>
+        /// <param name="g">Graph to load RDF into</param>
+        /// <param name="input">The reader to read input from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
+        public static void Load(this IRdfReader parser, IGraph g, StreamReader input)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            parser.Load(new GraphHandler(g), input);
+        }
+
+        /// <summary>
+        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Input
+        /// </summary>
+        /// <param name="g">Graph to load RDF into</param>
+        /// <param name="input">The reader to read input from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
+        public static void Load(this IRdfReader parser, IGraph g, TextReader input)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            parser.Load(new GraphHandler(g), input);
+        }
+
+#if !NO_FILE
+        /// <summary>
+        /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
+        /// </summary>
+        /// <param name="g">Graph to load RDF into</param>
+        /// <param name="filename">The Filename of the File to read from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File</exception>
+        public static void Load(this IRdfReader parser, IGraph g, String filename)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            parser.Load(new GraphHandler(g), filename);
+        }
+#endif
+
+
         /// <summary>
         /// Loads RDF data from a file into a Graph
         /// </summary>
@@ -92,7 +140,7 @@ namespace VDS.RDF
 
 #endif
 
-        //REQ: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
+        // TODO: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
 
         /// <summary>
         /// Loads RDF data from a String into a Graph
@@ -173,7 +221,7 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this IGraph g, String file)
         {
-            IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
+            IRdfWriter writer = IOManager.GetWriterByFileExtension(IOManager.GetTrueFileExtension(file));
             writer.Save(g, file);
         }
 
@@ -314,7 +362,7 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this ITripleStore store, String file)
         {
-            IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
+            IStoreWriter writer = IOManager.GetStoreWriterByFileExtension(IOManager.GetTrueFileExtension(file));
             writer.Save(store, file);
         }
     }
