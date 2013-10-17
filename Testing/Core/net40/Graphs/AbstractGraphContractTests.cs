@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Graphs
@@ -10,7 +9,7 @@ namespace VDS.RDF.Graphs
     /// <summary>
     /// Abstract tests for <see cref="IGraph"/> implementations
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public abstract class AbstractGraphContractTests
     {
         /// <summary>
@@ -27,14 +26,14 @@ namespace VDS.RDF.Graphs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractCount1()
         {
             IGraph g = this.GetInstance();
             Assert.AreEqual(0, g.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractCount2()
         {
             IGraph g = this.GetInstance();
@@ -42,7 +41,7 @@ namespace VDS.RDF.Graphs
             Assert.AreEqual(1, g.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractCount3()
         {
             IGraph g = this.GetInstance();
@@ -50,14 +49,14 @@ namespace VDS.RDF.Graphs
             Assert.AreEqual(100, g.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractIsEmpty1()
         {
             IGraph g = this.GetInstance();
             Assert.IsTrue(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractIsEmpty2()
         {
             IGraph g = this.GetInstance();
@@ -65,14 +64,14 @@ namespace VDS.RDF.Graphs
             Assert.IsFalse(g.IsEmpty);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractNamespaces1()
         {
             IGraph g = this.GetInstance();
             Assert.IsNotNull(g.Namespaces);
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractNamespaces2()
         {
             IGraph g = this.GetInstance();
@@ -82,7 +81,7 @@ namespace VDS.RDF.Graphs
             Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractAssert1()
         {
             IGraph g = this.GetInstance();
@@ -103,7 +102,7 @@ namespace VDS.RDF.Graphs
             Assert.IsTrue(g.Triples.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractRetract1()
         {
             IGraph g = this.GetInstance();
@@ -124,7 +123,7 @@ namespace VDS.RDF.Graphs
             Assert.IsFalse(g.Triples.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void GraphContractTriples1()
         {
             IGraph g = this.GetInstance();
@@ -154,9 +153,19 @@ namespace VDS.RDF.Graphs
             Assert.AreEqual(0, ts.Count());
             Assert.IsFalse(ts.Contains(t));
         }
+
+        [Test]
+        public void GraphContractFind1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsTrue(g.IsEmpty);
+
+
+        }
     }
 
-    [TestClass]
+    [TestFixture]
     public class GraphContractTests
         : AbstractGraphContractTests
     {
@@ -166,7 +175,7 @@ namespace VDS.RDF.Graphs
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class ThreadSafeGraphContractTests
         : AbstractGraphContractTests
     {
