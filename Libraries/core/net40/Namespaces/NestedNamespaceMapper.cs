@@ -50,7 +50,7 @@ namespace VDS.RDF.Namespaces
         /// Constructs a new Namespace Map which is optionally empty
         /// </summary>
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
-        protected internal NestedNamespaceMapper(bool empty)
+        public NestedNamespaceMapper(bool empty)
         {
             if (!empty)
             {
@@ -68,7 +68,8 @@ namespace VDS.RDF.Namespaces
         /// <param name="uri">Namespace URI</param>
         public void AddNamespace(string prefix, Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (ReferenceEquals(uri, null)) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (!uri.IsAbsoluteUri) throw new RdfException("Namespace URIs cannot be relative URIs");
             NestedMapping mapping = new NestedMapping(prefix, uri, this._level);
             if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
 
@@ -136,6 +137,7 @@ namespace VDS.RDF.Namespaces
         /// <returns></returns>
         public string GetPrefix(Uri uri)
         {
+            if (ReferenceEquals(uri, null) || !uri.IsAbsoluteUri) throw new RdfException("Prefixes for null/relative URIs cannot be retrieved");
             int hash = uri.GetEnhancedHashCode();
             if (this._prefixes.ContainsKey(hash))
             {
@@ -327,9 +329,9 @@ namespace VDS.RDF.Namespaces
         /// Tries to reduce a URI to a QName using this Namespace Map
         /// </summary>
         /// <param name="uri">URI</param>
-        /// <param name="qname">Resulting QName</param>
+        /// <param name="prefixedName">Resulting QName</param>
         /// <returns></returns>
-        public bool ReduceToQName(string uri, out string qname)
+        public bool ReduceToPrefixedName(string uri, out string prefixedName)
         {
             foreach (Uri u in this._uris.Values.Select(l => l.Last().Uri))
             {
@@ -339,17 +341,17 @@ namespace VDS.RDF.Namespaces
                 if (uri.StartsWith(baseuri))
                 {
                     //Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseuri.Length);
+                    prefixedName = uri.Substring(baseuri.Length);
                     //Add the Prefix back onto the front plus the colon to give a QName
-                    qname = this.GetPrefix(u) + ":" + qname;
-                    if (qname.Equals(":")) continue;
-                    if (qname.Contains("/") || qname.Contains("#")) continue;
+                    prefixedName = this.GetPrefix(u) + ":" + prefixedName;
+                    if (prefixedName.Equals(":")) continue;
+                    if (prefixedName.Contains("/") || prefixedName.Contains("#")) continue;
                     return true;
                 }
             }
 
             //Failed to find a Reduction
-            qname = String.Empty;
+            prefixedName = String.Empty;
             return false;
         }
 

@@ -65,6 +65,7 @@ namespace VDS.RDF.Namespaces
         /// Mapping of Prefixes to URIs
         /// </summary>
         protected Dictionary<String, Uri> _uris;
+        // TODO: Refactor to use <Uri, String> directly with appropriate comparator
         /// <summary>
         /// Mapping of URIs to Prefixes
         /// </summary>
@@ -112,6 +113,7 @@ namespace VDS.RDF.Namespaces
         /// <returns>String prefix for the Namespace</returns>
         public virtual String GetPrefix(Uri uri)
         {
+            if (ReferenceEquals(uri, null) || !uri.IsAbsoluteUri) throw new RdfException("Prefixes for null/relative URIs cannot be retrieved");
             int hash = uri.GetEnhancedHashCode();
             if (this._prefixes.ContainsKey(hash))
             {
@@ -147,7 +149,8 @@ namespace VDS.RDF.Namespaces
         /// <param name="uri">Namespace Uri</param>
         public virtual void AddNamespace(String prefix, Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (ReferenceEquals(uri, null)) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (!uri.IsAbsoluteUri) throw new RdfException("Namespace URIs cannot be relative URIs");
             int hash = uri.GetEnhancedHashCode();
             if (!this._uris.ContainsKey(prefix))
             {
@@ -247,10 +250,10 @@ namespace VDS.RDF.Namespaces
         /// A Function which attempts to reduce a Uri to a QName
         /// </summary>
         /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="prefixedName">The value to output the QName to if possible</param>
         /// <returns></returns>
-        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
-        public virtual bool ReduceToQName(String uri, out String qname)
+        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter prefixedName will contain the reduction, otherwise it will be the empty string.</remarks>
+        public virtual bool ReduceToPrefixedName(String uri, out String prefixedName)
         {
             foreach (Uri u in this._uris.Values)
             {
@@ -260,17 +263,17 @@ namespace VDS.RDF.Namespaces
                 if (uri.StartsWith(baseuri))
                 {
                     //Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseuri.Length);
+                    prefixedName = uri.Substring(baseuri.Length);
                     //Add the Prefix back onto the front plus the colon to give a QName
-                    qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
-                    if (qname.Equals(":")) continue;
-                    if (qname.Contains("/") || qname.Contains("#")) continue;
+                    prefixedName = this._prefixes[u.GetEnhancedHashCode()] + ":" + prefixedName;
+                    if (prefixedName.Equals(":")) continue;
+                    if (prefixedName.Contains("/") || prefixedName.Contains("#")) continue;
                     return true;
                 }
             }
 
             //Failed to find a Reduction
-            qname = String.Empty;
+            prefixedName = String.Empty;
             return false;
         }
 
@@ -415,16 +418,16 @@ namespace VDS.RDF.Namespaces
         /// A Function which attempts to reduce a Uri to a QName
         /// </summary>
         /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="prefixedName">The value to output the QName to if possible</param>
         /// <returns></returns>
-        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
-        public override bool ReduceToQName(string uri, out string qname)
+        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter prefixedName will contain the reduction, otherwise it will be the empty string.</remarks>
+        public override bool ReduceToPrefixedName(string uri, out string prefixedName)
         {
             //See if we've cached this mapping
             QNameMapping mapping;
             if (this._mapping.TryGetValue(uri, out mapping))
             {
-                qname = mapping.QName;
+                prefixedName = mapping.QName;
                 return true;
             }
             mapping = new QNameMapping(uri);
@@ -437,15 +440,15 @@ namespace VDS.RDF.Namespaces
                 if (uri.StartsWith(baseuri))
                 {
                     //Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseuri.Length);
+                    prefixedName = uri.Substring(baseuri.Length);
                     //Add the Prefix back onto the front plus the colon to give a QName
                     if (this._prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = this._prefixes[u.GetEnhancedHashCode()] + ":" + qname;
-                        if (qname.Equals(":")) continue;
-                        if (qname.Contains("/") || qname.Contains("#")) continue;
+                        prefixedName = this._prefixes[u.GetEnhancedHashCode()] + ":" + prefixedName;
+                        if (prefixedName.Equals(":")) continue;
+                        if (prefixedName.Contains("/") || prefixedName.Contains("#")) continue;
                         //Cache the Mapping
-                        mapping.QName = qname;
+                        mapping.QName = prefixedName;
                         this.AddToCache(uri, mapping);
                         return true;
                     }
@@ -453,7 +456,7 @@ namespace VDS.RDF.Namespaces
             }
 
             //Failed to find a Reduction
-            qname = String.Empty;
+            prefixedName = String.Empty;
             return false;
         }
 

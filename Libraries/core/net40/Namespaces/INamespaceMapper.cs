@@ -38,6 +38,7 @@ namespace VDS.RDF.Namespaces
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
+        /// <remarks>Namespace prefix cannot be empty and namespace URI must be absolute</remarks>
         void AddNamespace(string prefix, Uri uri);
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace VDS.RDF.Namespaces
         /// Method which checks whether a given Namespace Prefix is defined
         /// </summary>
         /// <param name="prefix">Prefix to test</param>
-        /// <returns></returns>
+        /// <returns>True if the namespace is defined in this map</returns>
         bool HasNamespace(string prefix);
 
         /// <summary>
@@ -99,15 +100,15 @@ namespace VDS.RDF.Namespaces
         }
 
         /// <summary>
-        /// A Function which attempts to reduce a Uri to a QName
+        /// A Function which attempts to reduce a URI to a prefixed name
         /// </summary>
-        /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="uri">The URI to attempt to reduce</param>
+        /// <param name="prefixedName">The value to output the prefixed name to if possible</param>
         /// <returns></returns>
         /// <remarks>
-        /// This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.
+        /// This function will return a Boolean indicated whether it succeeded in reducing the URI to a prefixed name.  If it did then the out parameter prefixedName will contain the reduction, otherwise it will be the empty string.
         /// </remarks>
-        bool ReduceToQName(string uri, out string qname);
+        bool ReduceToPrefixedName(string uri, out string prefixedName);
 
         /// <summary>
         /// Removes a Namespace from the Namespace Map
