@@ -473,24 +473,17 @@ namespace VDS.RDF.Parsing
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
 
-            //Build a Sublist of all Nodes up to the matching EndElement
-            IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
-            IRdfXmlEvent next;
-
             //Make sure we discard the current ElementEvent which will be at the front of the queue
             context.Events.Dequeue();
 
-            //Gather the Sublist
-            while (context.Events.Count > 1)
-            {
-                subevents.Enqueue(context.Events.Dequeue());
-            }
+            // Build a virtual Sublist of all Nodes up to the matching EndElement to avoid copying the events around too much
+            IEventQueue<IRdfXmlEvent> subevents = new SublistEventQueue<IRdfXmlEvent>(context.Events, 1);
 
             //Call the NodeElementList Grammer Production
             this.GrammarProductionNodeElementList(context, subevents);
 
             //Next Event in queue should be an EndElementEvent or we Error
-            next = context.Events.Dequeue();
+            IRdfXmlEvent next = context.Events.Dequeue();
             if (!(next is EndElementEvent))
             {
                 throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);

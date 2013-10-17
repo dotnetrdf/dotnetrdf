@@ -188,6 +188,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public GZippedTurtleParser()
             : base(new TurtleParser()) { }
+
+        /// <summary>
+        /// Creates a new GZipped Turtle parser
+        /// </summary>
+        /// <param name="syntax">Turtle Syntax</param>
+        public GZippedTurtleParser(TurtleSyntax syntax)
+            : base(new TurtleParser(syntax)) { }
     }
 
     /// <summary>
@@ -214,6 +221,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public GZippedRdfXmlParser()
             : base(new RdfXmlParser()) { }
+
+        /// <summary>
+        /// Creates a new GZipped RDF/XML parser
+        /// </summary>
+        /// <param name="mode">RDF/XML parser mode</param>
+        public GZippedRdfXmlParser(RdfXmlParserMode mode)
+            : base(new RdfXmlParser(mode)) { }
     }
 
     /// <summary>

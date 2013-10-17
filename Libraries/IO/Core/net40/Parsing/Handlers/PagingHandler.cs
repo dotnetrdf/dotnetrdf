@@ -29,13 +29,20 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which wraps another Handler passing only the Triples falling within a given Limit and Offset to the underlying Handler
+    /// A RDF Handler which wraps another handler passing only the chunk of triples falling within a given limit and offset to the underlying Handler
     /// </summary>
+    /// <remarks>
+    /// This handler does not guarantee that you will receive exactly the chunk specified by the limit and offset for two reasons:
+    /// <ol>
+    /// <li>It does not perform any sort of data de-duplication so it is possible that if this handler receives duplicate triples and the underlying handler performs de-duplication then you may see less triples than you expect in your final output since although the underlying handler will receive at most the specified chunk size of triples it may not retain them all</li>
+    /// <li>If there are fewer triples than the chunk size or if the chunk exceeds the bounds of the data then you will only receive the triples that fall within the chunk (if any)</li>
+    /// </ol>
+    /// </remarks>
     public class PagingHandler 
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private long _limit = 0, _offset = 0;
+        private readonly IRdfHandler _handler;
+private readonly long _limit = 0, _offset = 0;
         private long _counter = 0;
 
         /// <summary>
