@@ -234,7 +234,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromFile(this ITripleStore store, String file, IStoreReader parser)
+        public static void LoadFromFile(this IGraphStore store, String file, IRdfReader parser)
         {
             FileLoader.Load(store, file, parser);
         }
@@ -247,7 +247,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromFile(this ITripleStore store, String file)
+        public static void LoadFromFile(this IGraphStore store, String file)
         {
             FileLoader.Load(store, file);
         }
@@ -263,7 +263,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser)
+        public static void LoadFromUri(this IGraphStore store, Uri u, IRdfReader parser)
         {
             UriLoader.Load(store, u, parser);
         }
@@ -276,7 +276,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromUri(this ITripleStore store, Uri u)
+        public static void LoadFromUri(this IGraphStore store, Uri u)
         {
             UriLoader.Load(store, u);
         }
@@ -292,7 +292,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromString(this ITripleStore store, String data, IStoreReader parser)
+        public static void LoadFromString(this IGraphStore store, String data, IRdfReader parser)
         {
             StringParser.ParseDataset(store, data, parser);
         }
@@ -305,7 +305,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromString(this ITripleStore store, String data)
+        public static void LoadFromString(this IGraphStore store, String data)
         {
             StringParser.ParseDataset(store, data);
         }
@@ -319,7 +319,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource, IStoreReader parser)
+        public static void LoadFromEmbeddedResource(this IGraphStore store, String resource, IRdfReader parser)
         {
             EmbeddedResourceLoader.Load(store, resource, parser);
         }
@@ -332,7 +332,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource)
+        public static void LoadFromEmbeddedResource(this IGraphStore store, String resource)
         {
             EmbeddedResourceLoader.Load(store, resource);
         }
@@ -343,7 +343,7 @@ namespace VDS.RDF
         /// <param name="store">Triple Store to save</param>
         /// <param name="file">File to save to</param>
         /// <param name="writer">Writer to use</param>
-        public static void SaveToFile(this ITripleStore store, String file, IStoreWriter writer)
+        public static void SaveToFile(this IGraphStore store, String file, IRdfWriter writer)
         {
             if (writer == null)
             {
@@ -360,9 +360,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="store">Triple Store to save</param>
         /// <param name="file">File to save to</param>
-        public static void SaveToFile(this ITripleStore store, String file)
+        public static void SaveToFile(this IGraphStore store, String file)
         {
-            IStoreWriter writer = IOManager.GetStoreWriterByFileExtension(IOManager.GetTrueFileExtension(file));
+            IRdfWriter writer = IOManager.GetStoreWriterByFileExtension(IOManager.GetTrueFileExtension(file));
             writer.Save(store, file);
         }
     }

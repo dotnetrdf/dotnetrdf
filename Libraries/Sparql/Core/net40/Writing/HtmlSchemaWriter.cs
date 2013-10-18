@@ -31,6 +31,8 @@ using System.Text;
 #if !NO_WEB
 using System.Web.UI;
 #endif
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;

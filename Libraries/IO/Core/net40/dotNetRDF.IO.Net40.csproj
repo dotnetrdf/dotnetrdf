@@ -141,7 +141,6 @@
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\CompressionHelper.cs" />
     <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
-    <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
@@ -160,8 +159,6 @@
     <Compile Include="Writing\Formatting\TurtleFormatter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
     <Compile Include="Writing\GraphVizWriter.cs" />
-    <Compile Include="Writing\HtmlSchemaWriter.cs" />
-    <Compile Include="Writing\HtmlWriter.cs" />
     <Compile Include="Writing\Notation3Writer.cs" />
     <Compile Include="Writing\NQuadsWriter.cs" />
     <Compile Include="Writing\NTriplesWriter.cs" />
@@ -208,6 +205,9 @@
   <ItemGroup>
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />

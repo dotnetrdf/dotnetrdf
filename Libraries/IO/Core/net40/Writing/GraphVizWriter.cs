@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing
@@ -153,14 +155,14 @@ namespace VDS.RDF.Writing
         /// <param name="u">Uri Node to convert</param>
         /// <param name="context">Writer Context</param>
         /// <returns></returns>
-        private String UriNodeToDot(IUriNode u, BaseWriterContext context)
+        private String UriNodeToDot(INode u, BaseWriterContext context)
         {
             StringBuilder output = new StringBuilder();
             output.Append("\"");
 
             //Try QName reduction
             String qname;
-            if (context.QNameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
+            if (context.QNameMapper.ReduceToPrefixedName(u.Uri.AbsoluteUri, out qname))
             {
                 //Use the QName
                 output.Append(qname);
@@ -181,7 +183,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="b">Blank Node to Convert</param>
         /// <returns></returns>
-        private String BlankNodeToDot(IBlankNode b)
+        private String BlankNodeToDot(INode b)
         {
             //Generate a _: QName
             StringBuilder output = new StringBuilder();
@@ -197,7 +199,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="l">Literal Node to convert</param>
         /// <returns></returns>
-        private String LiteralNodeToDot(ILiteralNode l)
+        private String LiteralNodeToDot(INode l)
         {
             StringBuilder output = new StringBuilder();
             output.Append("\"");
@@ -208,17 +210,16 @@ namespace VDS.RDF.Writing
 
             output.Append(value);
 
-            if (!l.Language.Equals(String.Empty))
+            if (l.HasLanguage)
             {
                 output.Append("@");
                 output.Append(l.Language);
             }
-            else if (!(l.DataType == null))
+            else if (l.HasDataType)
             {
                 output.Append("^^");
                 output.Append(l.DataType.AbsoluteUri);
             }
-
 
             output.Append("\"");
 

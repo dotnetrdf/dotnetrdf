@@ -38,15 +38,14 @@ namespace VDS.RDF
     /// <summary>
     /// Represents the definition of a MIME Type including mappings to relevant readers and writers
     /// </summary>
-    public sealed class MimeTypeDefinition
+    public class MimeTypeDefinition
     {
-        private String _name, _canonicalType, _canonicalExt, _formatUri;
-        private Encoding _encoding = Encoding.UTF8;
-        private List<String> _mimeTypes = new List<string>();
-        private List<String> _fileExtensions = new List<string>();
-        private Type _rdfParserType, _rdfDatasetParserType, _sparqlResultsParserType;
-        private Type _rdfWriterType, _rdfDatasetWriterType, _sparqlResultsWriterType;
-        private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
+        protected String _name, _canonicalType, _canonicalExt, _formatUri;
+        protected Encoding _encoding = Encoding.UTF8;
+        protected Type _rdfParserType, _rdfWriterType;
+        protected List<String> _mimeTypes = new List<string>();
+        protected List<String> _fileExtensions = new List<string>();
+        protected Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -91,34 +90,11 @@ namespace VDS.RDF
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
         /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
         /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
-        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
+        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
             this.RdfParserType = rdfParserType;
-            this.RdfDatasetParserType = rdfDatasetParserType;
-            this.SparqlResultsParserType = sparqlResultsParserType;
             this.RdfWriterType = rdfWriterType;
-            this.RdfDatasetWriterType = rdfDatasetWriterType;
-            this.SparqlResultsWriterType = sparqlResultsWriterType;
-        }
-
-        /// <summary>
-        /// Creates a new MIME Type Definition
-        /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
-        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
-        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
-            : this(syntaxName, mimeTypes, fileExtensions, rdfParserType, rdfDatasetParserType, sparqlResultsParserType, rdfWriterType, rdfDatasetWriterType, sparqlResultsWriterType)
-        {
-            this._formatUri = formatUri;
         }
 
         /// <summary>
@@ -239,19 +215,6 @@ namespace VDS.RDF
                     throw new RdfException("Cannot set the Canonical MIME Type for " + this._name + " to " + value + " as this is no such MIME Type listed in this definition.  Use AddMimeType to add a MIME Type prior to setting the CanonicalType.");
                 }
             }
-        }
-
-        /// <summary>
-        /// Determines whether the Definition supports a particular MIME type
-        /// </summary>
-        /// <param name="mimeType">MIME Type</param>
-        /// <returns></returns>
-        [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", false)]
-        public bool SupportsMimeType(String mimeType)
-        {
-            String type = mimeType.ToLowerInvariant();
-            type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
-            return this._mimeTypes.Contains(type) || mimeType.Equals(IOManager.Any);
         }
 
         /// <summary>
@@ -436,56 +399,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to parse RDF Datasets (or null if not applicable)
-        /// </summary>
-        public Type RdfDatasetParserType
-        {
-            get
-            {
-                return this._rdfDatasetParserType;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    this._rdfDatasetParserType = value;
-                }
-                else
-                {
-                    if (EnsureInterface("RDF Dataset Parser", value, typeof(IStoreReader)))
-                    {
-                        this._rdfDatasetParserType = value;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Type to use to parse SPARQL Results (or null if not applicable)
-        /// </summary>
-        public Type SparqlResultsParserType
-        {
-            get
-            {
-                return this._sparqlResultsParserType;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    this._sparqlResultsParserType = value;
-                }
-                else
-                {
-                    if (EnsureInterface("SPARQL Results Parser", value, typeof(ISparqlResultsReader)))
-                    {
-                        this._sparqlResultsParserType = value;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets/Sets the Type to use to writer RDF (or null if not applicable)
         /// </summary>
         public Type RdfWriterType
@@ -511,56 +424,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to writer RDF Dataets (or null if not applicable)
-        /// </summary>
-        public Type RdfDatasetWriterType
-        {
-            get
-            {
-                return this._rdfDatasetWriterType;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    this._rdfDatasetWriterType = value;
-                }
-                else
-                {
-                    if (EnsureInterface("RDF Dataset Writer", value, typeof(IStoreWriter)))
-                    {
-                        this._rdfDatasetWriterType = value;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Type to use to write SPARQL Results (or null if not applicable)
-        /// </summary>
-        public Type SparqlResultsWriterType
-        {
-            get
-            {
-                return this._sparqlResultsWriterType;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    this._sparqlResultsWriterType = value;
-                }
-                else
-                {
-                    if (EnsureInterface("SPARQL Results Writer", value, typeof(ISparqlResultsWriter)))
-                    {
-                        this._sparqlResultsWriterType = value;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets whether this definition can instantiate a Parser that can parse RDF
         /// </summary>
         public bool CanParseRdf
@@ -572,28 +435,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this definition can instantiate a Parser that can parse RDF Datasets
-        /// </summary>
-        public bool CanParseRdfDatasets
-        {
-            get
-            {
-                return (this._rdfDatasetParserType != null);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether this definition can instantiate a Parser that can parse SPARQL Results
-        /// </summary>
-        public bool CanParseSparqlResults
-        {
-            get
-            {
-                return (this._sparqlResultsParserType != null);
-            }
-        }
-
-        /// <summary>
         /// Gets whether the definition provides a RDF Writer
         /// </summary>
         public bool CanWriteRdf
@@ -601,28 +442,6 @@ namespace VDS.RDF
             get
             {
                 return (this._rdfWriterType != null);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the Definition provides a RDF Dataset Writer
-        /// </summary>
-        public bool CanWriteRdfDatasets
-        {
-            get
-            {
-                return (this._rdfDatasetWriterType != null);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the Definition provides a SPARQL Results Writer
-        /// </summary>
-        public bool CanWriteSparqlResults
-        {
-            get
-            {
-                return (this._sparqlResultsWriterType != null);
             }
         }
 
@@ -655,78 +474,6 @@ namespace VDS.RDF
             else
             {
                 throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this._name);
-            }
-        }
-
-        /// <summary>
-        /// Gets an instance of a RDF Dataset parser
-        /// </summary>
-        /// <returns></returns>
-        public IStoreReader GetRdfDatasetParser()
-        {
-            if (this._rdfDatasetParserType != null)
-            {
-                return (IStoreReader)Activator.CreateInstance(this._rdfDatasetParserType);
-            }
-            else
-            {
-                throw new RdfParserSelectionException("There is no RDF Dataset Parser available for the Syntax " + this._name);
-            }
-        }
-
-        /// <summary>
-        /// Gets an instance of a RDF Dataset writer
-        /// </summary>
-        /// <returns></returns>
-        public IStoreWriter GetRdfDatasetWriter()
-        {
-            if (this._rdfDatasetWriterType != null)
-            {
-                return (IStoreWriter)Activator.CreateInstance(this._rdfDatasetWriterType);
-            }
-            else
-            {
-                throw new RdfWriterSelectionException("There is no RDF Dataset Writer available for the Syntax " + this._name);
-            }
-        }
-
-        /// <summary>
-        /// Gets an instance of a SPARQL Results parser
-        /// </summary>
-        /// <returns></returns>
-        public ISparqlResultsReader GetSparqlResultsParser()
-        {
-            if (this._sparqlResultsParserType != null)
-            {
-                return (ISparqlResultsReader)Activator.CreateInstance(this._sparqlResultsParserType);
-            }
-            else if (this._rdfParserType != null)
-            {
-                return new SparqlRdfParser((IRdfReader)Activator.CreateInstance(this._rdfParserType));
-            }
-            else
-            {
-                throw new RdfParserSelectionException("There is no SPARQL Results Parser available for the Syntax " + this._name);
-            }
-        }
-
-        /// <summary>
-        /// Gets an instance of a SPARQL Results writer
-        /// </summary>
-        /// <returns></returns>
-        public ISparqlResultsWriter GetSparqlResultsWriter()
-        {
-            if (this._sparqlResultsWriterType != null)
-            {
-                return (ISparqlResultsWriter)Activator.CreateInstance(this._sparqlResultsWriterType);
-            }
-            else if (this._rdfWriterType != null)
-            {
-                return new SparqlRdfWriter((IRdfWriter)Activator.CreateInstance(this._rdfWriterType));
-            }
-            else
-            {
-                throw new RdfWriterSelectionException("There is no SPARQL Results Writer available for the Syntax " + this._name);
             }
         }
 

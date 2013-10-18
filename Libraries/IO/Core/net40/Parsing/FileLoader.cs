@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing
         /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, String filename, IStoreReader parser)
+        public static void Load(IGraphStore store, String filename, IRdfReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
             FileLoader.Load(new StoreHandler(store), filename, parser);
@@ -212,94 +212,9 @@ namespace VDS.RDF.Parsing
         /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, String filename)
+        public static void Load(IGraphStore store, String filename)
         {
             FileLoader.Load(store, filename, null);
-        }
-
-        /// <summary>
-        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        /// <param name="parser">Parser to use to parse the given file</param>
-        /// <remarks>
-        /// <para>
-        /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
-        /// </para>
-        /// </remarks>
-        public static void Load(IRdfHandler handler, String filename, IStoreReader parser)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read a RDF Dataset from a null File");
-
-            if (!File.Exists(filename))
-            {
-#if SILVERLIGHT
-                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
-#else
-                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist", filename);
-#endif
-            }
-
-            if (parser == null)
-            {
-                String ext = IOManager.GetTrueFileExtension(filename);
-                try
-                {
-                    parser = IOManager.GetStoreParserByFileExtension(ext);
-                }
-                catch (RdfParserSelectionException)
-                {
-                    //If error then we couldn't determine MIME Type from the File Extension
-                    RaiseWarning("Unable to select a dataset parser by determining MIME Type from the File Extension");
-
-                    //Try selecting a RDF parser instead
-                    try
-                    {
-                        IRdfReader rdfParser = IOManager.GetParserByFileExtension(ext);
-                        Graph g = new Graph();
-                        rdfParser.Load(handler, filename);
-                        return;
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        //Ignore this, will try and use format guessing and assume is a dataset format
-                    }
-                }
-            }
-            if (parser == null)
-            {
-                //Unable to determine format from File Extension
-                //Read file in locally and use the StringParser to select a parser
-                StreamReader reader = new StreamReader(filename);
-                String data = reader.ReadToEnd();
-                reader.Close();
-                parser = StringParser.GetDatasetParser(data);
-                RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
-                parser.Warning += RaiseStoreWarning;
-                parser.Load(handler, new StringReader(data));
-            }
-            else
-            {
-                parser.Warning += RaiseStoreWarning;
-                parser.Load(handler, filename);
-            }
-        }
-
-        /// <summary>
-        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        /// <remarks>
-        /// <para>
-        /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
-        /// </para>
-        /// </remarks>
-        public static void LoadDataset(IRdfHandler handler, String filename)
-        {
-            FileLoader.Load(handler, filename, (IStoreReader)null);
         }
 
         /// <summary>

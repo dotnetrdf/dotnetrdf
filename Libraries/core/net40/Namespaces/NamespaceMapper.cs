@@ -475,7 +475,7 @@ namespace VDS.RDF.Namespaces
         /// Where necessary a Temporary Namespace will be issued and the <paramref name="tempNamespace">tempNamespace</paramref> parameter will be set to the prefix of the new temporary namespace
         /// </para>
         /// </remarks>
-        public bool ReduceToQName(String uri, out String qname, out String tempNamespace)
+        public bool ReduceToPrefixedName(String uri, out String qname, out String tempNamespace)
         {
             tempNamespace = String.Empty;
 

@@ -37,7 +37,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parsing\Handlers\SparqlHandlerExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SparqlIOManager.cs" />
+    <Compile Include="SparqlMimeTypeDefinition.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
@@ -528,5 +531,42 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Specifications\SparqlSyntax.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ISparqlResultsHandler.cs" />
+    <Compile Include="ISparqlResultsReader.cs" />
+    <Compile Include="ISparqlResultsWriter.cs" />
+    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
+    <Compile Include="Parsing\SPARQLBooleanParser.cs" />
+    <Compile Include="Parsing\SparqlCsvParser.cs" />
+    <Compile Include="Parsing\SPARQLJSONParser.cs" />
+    <Compile Include="Parsing\SparqlRdfParser.cs" />
+    <Compile Include="Parsing\SparqlTsvParser.cs" />
+    <Compile Include="Parsing\SparqlUpdateParser.cs" />
+    <Compile Include="Parsing\SPARQLXMLParser.cs" />
+    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
+    <Compile Include="Parsing\Handlers\BaseResultsHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokens.cs" />
+    <Compile Include="Parsing\Tokens\SparqlUpdateTokens.cs" />
+    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
+    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
+    <Compile Include="Writing\SparqlCsvWriter.cs" />
+    <Compile Include="Writing\SPARQLHTMLWriter.cs" />
+    <Compile Include="Writing\SPARQLJSONWriter.cs" />
+    <Compile Include="Writing\SparqlRdfWriter.cs" />
+    <Compile Include="Writing\SparqlTsvWriter.cs" />
+    <Compile Include="Writing\SPARQLXMLWriter.cs" />
+    <Compile Include="Writing\SparqlXsltWriter.cs" />
   </ItemGroup>
 </Project>

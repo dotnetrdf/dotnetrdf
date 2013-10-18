@@ -31,6 +31,8 @@ using System.IO;
 #if !NO_WEB
 using System.Web.UI;
 #endif
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 
@@ -89,7 +91,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                g.NamespaceMap.Import(this._defaultNamespaces);
+                g.Namespaces.Import(this._defaultNamespaces);
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
                 this.GenerateOutput(context);
                 output.Close();
@@ -345,7 +347,7 @@ namespace VDS.RDF.Writing
                         //Get the CURIE for the Predicate
                         String curie;
                         String tempNamespace;
-                        if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
+                        if (context.QNameMapper.ReduceToPrefixedName(t.Predicate.ToString(), out curie, out tempNamespace))
                         {
                             //Extract the Namespace and make sure it's registered on this Attribute
                             String ns = curie.Substring(0, curie.IndexOf(':'));
@@ -409,7 +411,7 @@ namespace VDS.RDF.Writing
                         {
                             //Need to embed the datatype in the @datatype attribute
                             String dtcurie, dtnamespace;
-                            if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
+                            if (context.QNameMapper.ReduceToPrefixedName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
                                 //Extract the Namespace and make sure it's registered on this Attribute
                                 String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
