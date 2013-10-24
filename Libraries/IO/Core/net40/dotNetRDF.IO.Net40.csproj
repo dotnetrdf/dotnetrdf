@@ -47,11 +47,9 @@
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\BlockingStreamReader.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
-    <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
     <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
     <Compile Include="Parsing\Contexts\IParserContext.cs" />
-    <Compile Include="Parsing\Contexts\JSONParserContext.cs" />
     <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfACoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
@@ -105,7 +103,6 @@
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RdfACoreParser.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
-    <Compile Include="Parsing\RDFJSONParser.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
     <Compile Include="Parsing\StringParser.cs" />
     <Compile Include="Parsing\Tokens\BaseToken.cs" />
@@ -163,7 +160,6 @@
     <Compile Include="Writing\NQuadsWriter.cs" />
     <Compile Include="Writing\NTriplesWriter.cs" />
     <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
-    <Compile Include="Writing\RDFJSONWriter.cs" />
     <Compile Include="Writing\RdfXmlWriter.cs" />
     <Compile Include="Writing\StringWriter.cs" />
     <Compile Include="Writing\TriGWriter.cs" />
@@ -205,6 +201,7 @@
   <ItemGroup>
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
