@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -44,7 +45,7 @@ namespace VDS.RDF.Writing.Formatting
 
         public string Format(Quad q)
         {
-            if (q.Graph == null)
+            if (q.InDefaultGraph)
             {
                 return this.Format(q.AsTriple());
             }

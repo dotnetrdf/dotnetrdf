@@ -104,7 +104,6 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\DateNode.cs" />
     <Compile Include="Nodes\FastNodeComparer.cs" />
-    <Compile Include="Nodes\MockNodeFactory.cs" />
     <Compile Include="Nodes\NodeType.cs" />
     <Compile Include="Nodes\EffectiveNumericType.cs" />
     <Compile Include="Nodes\SignedByteNode.cs" />
@@ -264,4 +263,5 @@
     <Compile Include="Tools.cs" />
     <Compile Include="UriFactory.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

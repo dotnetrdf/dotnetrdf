@@ -29,6 +29,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;

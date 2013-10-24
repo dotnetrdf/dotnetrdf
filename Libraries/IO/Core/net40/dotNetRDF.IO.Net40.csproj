@@ -75,9 +75,7 @@
     <Compile Include="Parsing\Handlers\GraphHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
-    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
     <Compile Include="Parsing\Handlers\MultiHandler.cs" />
-    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
     <Compile Include="Parsing\Handlers\NullHandler.cs" />
     <Compile Include="Parsing\Handlers\PagingHandler.cs" />
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
@@ -102,7 +100,6 @@
     <Compile Include="Parsing\Tokens\ITokenQueue.cs" />
     <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
-    <Compile Include="Parsing\Tokens\PathToken.cs" />
     <Compile Include="Parsing\Tokens\Token.cs" />
     <Compile Include="Parsing\Tokens\Tokens.cs" />
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
@@ -121,7 +118,6 @@
     <Compile Include="Specifications\TurtleSpecsHelper.cs" />
     <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
-    <Compile Include="Writing\BaseHtmlWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\CompressionHelper.cs" />
     <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
@@ -157,7 +153,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
+      <Name>dotNetRDF.Net40</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -208,4 +204,10 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Nodes\MockNodeFactory.cs" />
+  </ItemGroup>
 </Project>

@@ -28,6 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
@@ -167,7 +170,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                g.NamespaceMap.Import(this._defaultNamespaces);
+                g.Namespaces.Import(this._defaultNamespaces);
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
                 context.NodeFormatter = new Notation3Formatter(g);
                 this.GenerateOutput(context);
@@ -361,10 +364,9 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable("Notation 3"));
 
                     output.Append("{");
-                    IGraphLiteralNode glit = (IGraphLiteralNode)n;
 
                     StringBuilder temp = new StringBuilder();
-                    CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, new System.IO.StringWriter(temp));
+                    CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(n.SubGraph, new System.IO.StringWriter(temp));
                     subcontext.NodeFormatter = context.NodeFormatter;
 
                     //Write Triples 1 at a Time on a single line
