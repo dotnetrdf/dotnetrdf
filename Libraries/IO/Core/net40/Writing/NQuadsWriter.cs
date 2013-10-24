@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Saves a Store in NQuads format
         /// </summary>
-        /// <param name="store">Store to save</param>
+        /// <param name="store">Store to save</param40  
         /// <param name="writer">Writer to save to</param>
         public void Save(IGraphStore store, TextWriter writer)
         {
