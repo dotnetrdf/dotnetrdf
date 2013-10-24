@@ -37,6 +37,7 @@ Added
 Changed
 - Bug Fixes
  - Possible OOM when stream parsing large RDF/XML files (CORE-378)
+ - Fix a bug with transactions being left open in some cases when using VirtuosoManager (VIRT-382)
 
 Removed
 - Marked as obsolete unusable the deprecated ICharFormatter.FormatChar() method
