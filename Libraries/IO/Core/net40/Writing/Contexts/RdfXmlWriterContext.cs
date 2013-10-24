@@ -30,6 +30,9 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -61,10 +64,10 @@ namespace VDS.RDF.Writing.Contexts
         /// Nested Namespace Mapper
         /// </summary>
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
-        private bool _useDTD = Options.UseDtd;
+        private bool _useDtd = IOOptions.UseDtd;
         private bool _useAttributes = true;
         private int _compressionLevel = WriterCompressionLevel.Default;
-        private int _nextNamespaceID = 0;
+        private int _nextNamespaceId = 0;
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
         private ITripleCollection _triplesDone = new TripleCollection();
@@ -251,11 +254,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._nextNamespaceID;
+                return this._nextNamespaceId;
             }
             set
             {
-                this._nextNamespaceID = value;
+                this._nextNamespaceId = value;
             }
         }
 
@@ -266,11 +269,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return this._useDTD;
+                return this._useDtd;
             }
             set
             {
-                this._useDTD = value;
+                this._useDtd = value;
             }
         }
 

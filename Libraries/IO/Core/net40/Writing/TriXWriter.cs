@@ -27,7 +27,10 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Writing
 {
@@ -164,16 +167,15 @@ namespace VDS.RDF.Writing
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriX"));
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
+                    if (n.HasDataType)
                     {
                         writer.WriteStartElement("typedLiteral");
                         writer.WriteStartAttribute("datatype");
                         writer.WriteRaw(WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri));
                         writer.WriteEndAttribute();
-                        if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
+                        if (n.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
-                            writer.WriteCData(lit.Value);
+                            writer.WriteCData(n.Value);
                         }
                         else
                         {
@@ -184,17 +186,17 @@ namespace VDS.RDF.Writing
                     else
                     {
                         writer.WriteStartElement("plainLiteral");
-                        if (!lit.Language.Equals(String.Empty))
+                        if (n.HasLanguage)
                         {
-                            writer.WriteAttributeString("xml", "lang", null, lit.Language);
+                            writer.WriteAttributeString("xml", "lang", null, n.Language);
                         }
-                        writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                        writer.WriteRaw(WriterHelper.EncodeForXml(n.Value));
                         writer.WriteEndElement();
                     }
                     break;
                 case NodeType.Uri:
                     writer.WriteStartElement("uri");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.AbsoluteUri));
+                    writer.WriteRaw(WriterHelper.EncodeForXml(((INode)n).Uri.AbsoluteUri));
                     writer.WriteEndElement();
                     break;
                 default:

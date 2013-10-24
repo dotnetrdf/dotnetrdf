@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -44,7 +46,7 @@ namespace VDS.RDF.Parsing.Handlers
     public class UniqueBlankNodesHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
+        private readonly IRdfHandler _handler;
 
         /// <summary>
         /// Creates a new Unique Blank Nodes handler
@@ -72,7 +74,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="nodeId">Node ID which will be ignored by this Handler</param>
         /// <returns></returns>
-        public override IBlankNode CreateBlankNode(string nodeId)
+        public override INode CreateBlankNode(string nodeId)
         {
             return base.CreateBlankNode();
         }

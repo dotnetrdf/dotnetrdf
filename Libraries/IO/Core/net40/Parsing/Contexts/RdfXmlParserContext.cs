@@ -29,6 +29,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;

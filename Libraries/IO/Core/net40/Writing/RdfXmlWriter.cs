@@ -29,8 +29,12 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -52,7 +56,7 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
-        private bool _useDTD = Options.UseDtd;
+        private bool _useDTD = IOOptions.UseDtd;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
@@ -646,14 +650,14 @@ namespace VDS.RDF.Writing
             //Write the Predicate
         }
 
-        private void GenerateLiteralOutput(RdfXmlWriterContext context, ILiteralNode lit)
+        private void GenerateLiteralOutput(RdfXmlWriterContext context, INode lit)
         {
-            if (!lit.Language.Equals(String.Empty))
+            if (lit.HasLanguage)
             {
                 context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
                 context.Writer.WriteString(lit.Value);
             }
-            else if (lit.DataType != null)
+            else if (lit.HasDataType)
             {
                 if (RdfSpecsHelper.RdfXmlLiteral.Equals(lit.DataType.AbsoluteUri))
                 {
@@ -684,7 +688,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void GenerateUriOutput(RdfXmlWriterContext context, IUriNode u, String attribute)
+        private void GenerateUriOutput(RdfXmlWriterContext context, INode u, String attribute)
         {
             //Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;

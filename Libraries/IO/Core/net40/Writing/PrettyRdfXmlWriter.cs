@@ -29,6 +29,9 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
@@ -53,7 +56,7 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
-        private bool _useDTD = Options.UseDtd;
+        private bool _useDTD = IOOptions.UseDtd;
         private bool _useAttributes = true;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
@@ -493,8 +496,8 @@ namespace VDS.RDF.Writing
                 {
                     if (t.Object.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)t.Object;
-                        if (lit.DataType == null && lit.Language.Equals(String.Empty))
+                        // TODO When RDF 1.1 is supported this will never be true thus will need a IsSimpleLiteral property
+                        if (!t.Object.HasDataType && !t.Object.HasLanguage)
                         {
                             if (!simpleLiteralPredicates.Contains(t.Predicate))
                             {

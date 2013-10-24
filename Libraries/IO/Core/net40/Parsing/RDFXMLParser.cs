@@ -31,6 +31,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;
@@ -1779,12 +1781,12 @@ namespace VDS.RDF.Parsing
         /// <param name="uriref">Uri Reference to Resolve</param>
         /// <param name="baseUri">Base Uri to Resolve against</param>
         /// <returns></returns>
-        private IUriNode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
+        private INode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
         {
             try
             {
                 if (baseUri.Equals(String.Empty)) baseUri = context.BaseUri.ToSafeString();
-                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
+                INode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
                 return u;
             }
             catch (Exception ex)
@@ -1795,11 +1797,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private IUriNode Resolve(RdfXmlParserContext context, ElementEvent el)
+        private INode Resolve(RdfXmlParserContext context, ElementEvent el)
         {
             try
             {
-                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
+                INode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
                 return u;
             }
             catch (Exception ex)

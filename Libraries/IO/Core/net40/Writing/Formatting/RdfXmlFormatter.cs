@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Parsing;
 using VDS.RDF.Specifications;
 

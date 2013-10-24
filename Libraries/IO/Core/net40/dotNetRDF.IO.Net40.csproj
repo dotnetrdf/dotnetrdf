@@ -78,6 +78,7 @@
     <Compile Include="Parsing\Handlers\MultiHandler.cs" />
     <Compile Include="Parsing\Handlers\NullHandler.cs" />
     <Compile Include="Parsing\Handlers\PagingHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultWriteThroughHandler.cs" />
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Parsing\NQuadsParser.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
-    <Compile Include="Parsing\ParserTools.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
     <Compile Include="Parsing\StringParser.cs" />
@@ -210,4 +210,5 @@
   <ItemGroup>
     <Compile Include="Nodes\MockNodeFactory.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

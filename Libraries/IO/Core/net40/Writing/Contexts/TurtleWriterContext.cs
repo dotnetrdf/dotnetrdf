@@ -29,7 +29,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
@@ -47,7 +50,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter to write to</param>
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings
@@ -66,7 +69,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="hiSpeed">High Speed Mode</param>
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, syntax) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, prettyPrint, hiSpeed, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings
@@ -76,7 +79,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode</param>
         /// <param name="hiSpeed">High Speed Mode</param>
         public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings
@@ -119,7 +122,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter to write to</param>
         /// <param name="syntax">Turtle Syntax</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings
@@ -129,7 +132,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode</param>
         /// <param name="hiSpeed">High Speed Mode</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
         
         /// <summary>
@@ -141,7 +144,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="hiSpeed">High Speed Mode</param>
         /// <param name="syntax">Turtle Syntax</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, IOOptions.DefaultCompressionLevel, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings

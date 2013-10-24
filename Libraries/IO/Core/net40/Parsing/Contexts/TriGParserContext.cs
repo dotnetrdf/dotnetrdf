@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Contexts
 {

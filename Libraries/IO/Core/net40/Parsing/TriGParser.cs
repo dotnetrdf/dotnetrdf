@@ -26,9 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.IO;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing
 {
@@ -43,7 +46,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _tracetokeniser = false;
         private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
 
         /// <summary>
         /// Creates a TriG Parser than uses the default syntax
