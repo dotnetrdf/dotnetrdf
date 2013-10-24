@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using OpenLink.Data.Virtuoso;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -813,6 +814,48 @@ namespace VDS.RDF.Storage
                 Assert.AreEqual(g, h);
 
                 Console.WriteLine("Loading with marshalled URI works OK");
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoBadUpdate()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                virtuoso.Update("Bad update");
+                Assert.Fail("Expected an error");
+            }
+            catch
+            {
+                //Expected so can be ignored
+                Assert.IsFalse(virtuoso.HasOpenConnection, "Connection should be closed");
+                Assert.IsFalse(virtuoso.HasActiveTransaction, "Should be no active transaction");
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoBadQuery()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                virtuoso.Query("Bad query");
+                Assert.Fail("Expected an error");
+            }
+            catch
+            {
+                //Expected so can be ignored
+                Assert.IsFalse(virtuoso.HasOpenConnection, "Connection should be closed");
+                Assert.IsFalse(virtuoso.HasActiveTransaction, "Should be no active transaction");
             }
             finally
             {
