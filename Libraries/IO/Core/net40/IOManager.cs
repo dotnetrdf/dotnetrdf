@@ -45,7 +45,7 @@ namespace VDS.RDF
         /// <summary>
         /// Constant for W3C File Formats Namespace
         /// </summary>
-        private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
+        public const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
 
         /// <summary>
         /// MIME Type for accept any content Type
@@ -108,26 +108,6 @@ namespace VDS.RDF
         internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
-        /// MIME Types for SPARQL Result Sets
-        /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results XML
-        /// </summary>
-        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results JSON
-        /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Boolean Result
-        /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
-
-        /// <summary>
         /// MIME Types for CSV
         /// </summary>
         internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
@@ -177,14 +157,6 @@ namespace VDS.RDF
         /// </summary>
         public const String DefaultRdfJsonExtension = "rj";
         /// <summary>
-        /// Default File Extension for SPARQL XML Results Format
-        /// </summary>
-        public const String DefaultSparqlXmlExtension = "srx";
-        /// <summary>
-        /// Default File Extension for SPARQL JSON Results Format
-        /// </summary>
-        public const String DefaultSparqlJsonExtension = "srj";
-        /// <summary>
         /// Default File Extension for TriG
         /// </summary>
         public const String DefaultTriGExtension = "trig";
@@ -212,14 +184,7 @@ namespace VDS.RDF
         /// Default File Extension for XHTML
         /// </summary>
         public const String DefaultXHtmlExtension = "xhtml";
-        /// <summary>
-        /// Default File Extension for SPARQL Queries
-        /// </summary>
-        public const String DefaultSparqlQueryExtension = "rq";
-        /// <summary>
-        /// Default File Extension for SPARQL Updates
-        /// </summary>
-        public const String DefaultSparqlUpdateExtension = "ru";
+
         /// <summary>
         /// Default File Extension for GZip
         /// </summary>
@@ -249,7 +214,7 @@ namespace VDS.RDF
         /// Whether MIME Type Definitions have been initialised
         /// </summary>
         private static bool _init = false;
-        private static Object _initLock = new Graph();
+        private static readonly Object _initLock = new Object();
 
         /// <summary>
         /// Checks whether something is a valid MIME Type
@@ -503,43 +468,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a parser as the default SPARQL Rsults Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
-        /// </summary>
-        /// <param name="parser">SPARQL Results Parser</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        public static void RegisterParser(ISparqlResultsReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-        {
-            if (!_init) Init();
-
-            if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
-
-            //Get any existing defintions that are to be altered
-            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-            foreach (MimeTypeDefinition def in existing)
-            {
-                foreach (String type in mimeTypes)
-                {
-                    def.AddMimeType(type);
-                }
-                foreach (String ext in fileExtensions)
-                {
-                    def.AddFileExtension(ext);
-                }
-                def.SparqlResultsParserType = parser.GetType();
-            }
-
-            //Create any new defintions
-            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            if (newTypes.Any())
-            {
-                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
-                newDef.SparqlResultsParserType = parser.GetType();
-                AddDefinition(newDef);
-            }
-        }
-
-        /// <summary>
         /// Registers a writer as the default RDF Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
         /// </summary>
         /// <param name="writer">RDF Writer</param>
@@ -572,43 +500,6 @@ namespace VDS.RDF
             {
                 MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
                 newDef.RdfWriterType = writer.GetType();
-                AddDefinition(newDef);
-            }
-        }
-
-        /// <summary>
-        /// Registers a writer as the default SPARQL Results Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
-        /// </summary>
-        /// <param name="writer">SPARQL Results Writer</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        public static void RegisterWriter(ISparqlResultsWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-        {
-            if (!_init) Init();
-
-            if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
-
-            //Get any existing defintions that are to be altered
-            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
-            foreach (MimeTypeDefinition def in existing)
-            {
-                foreach (String type in mimeTypes)
-                {
-                    def.AddMimeType(type);
-                }
-                foreach (String ext in fileExtensions)
-                {
-                    def.AddFileExtension(ext);
-                }
-                def.SparqlResultsWriterType = writer.GetType();
-            }
-
-            //Create any new defintions
-            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            if (newTypes.Any())
-            {
-                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
-                newDef.SparqlResultsWriterType = writer.GetType();
                 AddDefinition(newDef);
             }
         }
