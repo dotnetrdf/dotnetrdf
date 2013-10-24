@@ -79,11 +79,11 @@ namespace VDS.RDF.Writing
             {
                 foreach (Triple t in g.Triples)
                 {
-                    this.GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
+                    this.GenerateNodeOutput(output, t.Subject, QuadSegment.Subject);
                     output.Write('\t');
-                    this.GenerateNodeOutput(output, t.Predicate, TripleSegment.Predicate);
+                    this.GenerateNodeOutput(output, t.Predicate, QuadSegment.Predicate);
                     output.Write('\t');
-                    this.GenerateNodeOutput(output, t.Object, TripleSegment.Object);
+                    this.GenerateNodeOutput(output, t.Object, QuadSegment.Object);
                     output.Write('\n');
                 }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void GenerateNodeOutput(TextWriter output, INode n, TripleSegment segment)
+        private void GenerateNodeOutput(TextWriter output, INode n, QuadSegment segment)
         {
             switch (n.NodeType)
             {
@@ -287,11 +287,11 @@ namespace VDS.RDF.Writing
                 //Named Graphs have a fourth context field added
                 foreach (Triple t in context.Graph.Triples)
                 {
-                    this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    this.GenerateNodeOutput(context, t.Subject, QuadSegment.Subject);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    this.GenerateNodeOutput(context, t.Predicate, QuadSegment.Predicate);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    this.GenerateNodeOutput(context, t.Object, QuadSegment.Object);
                     context.Output.Write('\t');
                     context.Output.Write('<');
                     context.Output.Write(this._formatter.FormatUri(context.Graph.BaseUri));
@@ -304,11 +304,11 @@ namespace VDS.RDF.Writing
                 //Default Graph has an empty field added
                 foreach (Triple t in context.Graph.Triples)
                 {
-                    this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    this.GenerateNodeOutput(context, t.Subject, QuadSegment.Subject);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    this.GenerateNodeOutput(context, t.Predicate, QuadSegment.Predicate);
                     context.Output.Write('\t');
-                    this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    this.GenerateNodeOutput(context, t.Object, QuadSegment.Object);
                     context.Output.Write('\t');
                     context.Output.Write('\n');
                 }
@@ -323,7 +323,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="n">Node</param>
         /// <param name="segment">Triple Context</param>
-        private void GenerateNodeOutput(BaseWriterContext context, INode n, TripleSegment segment)
+        private void GenerateNodeOutput(BaseWriterContext context, INode n, QuadSegment segment)
         {
             switch (n.NodeType)
             {

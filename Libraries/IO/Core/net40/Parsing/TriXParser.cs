@@ -667,9 +667,9 @@ namespace VDS.RDF.Parsing
 
             //Parse XML Nodes into RDF Nodes
             INode subj, pred, obj;
-            subj = this.TryParseNode(reader, handler, TripleSegment.Subject);
-            pred = this.TryParseNode(reader, handler, TripleSegment.Predicate);
-            obj = this.TryParseNode(reader, handler, TripleSegment.Object);
+            subj = this.TryParseNode(reader, handler, QuadSegment.Subject);
+            pred = this.TryParseNode(reader, handler, QuadSegment.Predicate);
+            obj = this.TryParseNode(reader, handler, QuadSegment.Object);
 
             if (reader.NodeType != XmlNodeType.EndElement) throw Error("Unexpected element type " + reader.NodeType.ToString() + " encountered, expected the </triple> element", reader);
             if (!reader.Name.Equals("triple")) throw Error("Unexpected </" + reader.Name + "> encountered, expected a </triple> element", reader);
@@ -678,11 +678,11 @@ namespace VDS.RDF.Parsing
             if (!handler.HandleQuad(new Quad(subj, pred, obj, graphUri))) ParserHelper.Stop();
         }
 
-        private INode TryParseNode(XmlReader reader, IRdfHandler handler, TripleSegment segment)
+        private INode TryParseNode(XmlReader reader, IRdfHandler handler, QuadSegment segment)
         {
             //Only need to Read() if getting the Subject
             //The previous calls will have resulted in us already reading to the start element for this node
-            if (segment == TripleSegment.Subject) reader.Read();
+            if (segment == QuadSegment.Subject) reader.Read();
 
             if (reader.NodeType != XmlNodeType.Element)
             {
@@ -695,13 +695,13 @@ namespace VDS.RDF.Parsing
             }
             else if (reader.Name.Equals("id"))
             {
-                if (segment == TripleSegment.Predicate) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <uri> element as the Predicate of a Triple", reader);
+                if (segment == QuadSegment.Predicate) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <uri> element as the Predicate of a Triple", reader);
 
                 return handler.CreateBlankNode(reader.ReadInnerXml());
             }
             else if (reader.Name.Equals("plainLiteral"))
             {
-                if (segment == TripleSegment.Subject) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri> element as the Subject of a Triple", reader);
+                if (segment == QuadSegment.Subject) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri> element as the Subject of a Triple", reader);
 
                 if (reader.AttributeCount > 0)
                 {

@@ -331,11 +331,11 @@ namespace VDS.RDF.Writing
                 foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(indentation);
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
+                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Subject, QuadSegment.Subject));
                     context.Output.Write(' ');
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate));
+                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Predicate, QuadSegment.Predicate));
                     context.Output.Write(' ');
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, QuadSegment.Object));
                     context.Output.WriteLine(".");
                 }
             }
@@ -363,14 +363,14 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', baseIndent));
 
                         //Start a new set of Triples
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
+                        temp = this.GenerateNodeOutput(globalContext, context, t.Subject, QuadSegment.Subject);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         subjIndent = baseIndent + temp.Length + 1;
                         lastSubj = t.Subject;
 
                         //Write the first Predicate
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, QuadSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -384,7 +384,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
                         //Write the next Predicate
-                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = this.GenerateNodeOutput(globalContext, context, t.Predicate, QuadSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -399,7 +399,7 @@ namespace VDS.RDF.Writing
                     }
 
                     //Write the Object
-                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    context.Output.Write(this.GenerateNodeOutput(globalContext, context, t.Object, QuadSegment.Object));
                 }
 
                 //Terminate Triples
@@ -415,20 +415,20 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to generate output for</param>
         /// <param name="segment">Segment of the Triple being written</param>
         /// <returns></returns>
-        private String GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, TripleSegment segment)
+        private String GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, QuadSegment segment)
         {
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("TriG"));
+                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("TriG"));
                     break;
 
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriG"));
 
                 case NodeType.Literal:
-                    if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("TriG"));
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("TriG"));
+                    if (segment == QuadSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("TriG"));
+                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("TriG"));
                     break;
 
                 case NodeType.Uri:

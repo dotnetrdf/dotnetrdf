@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="n">Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        public virtual String Format(INode n, TripleSegment? segment)
+        public virtual String Format(INode n, QuadSegment? segment)
         {
             switch (n.NodeType)
             {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String Format(Triple t)
         {
-            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " .";
+            return this.Format(t.Subject, QuadSegment.Subject) + " " + this.Format(t.Predicate, QuadSegment.Predicate) + " " + this.Format(t.Object, QuadSegment.Object) + " .";
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract string FormatUriNode(INode u, TripleSegment? segment);
+        protected abstract string FormatUriNode(INode u, QuadSegment? segment);
 
         /// <summary>
         /// Formats a URI as a String for full Output
@@ -140,7 +140,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract string FormatLiteralNode(INode l, TripleSegment? segment);
+        protected abstract string FormatLiteralNode(INode l, QuadSegment? segment);
 
         /// <summary>
         /// Formats a Blank Node as a String for the given Format
@@ -148,9 +148,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual string FormatBlankNode(INode b, TripleSegment? segment)
+        protected virtual string FormatBlankNode(INode b, QuadSegment? segment)
         {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
+            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
             return b.ToString();
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable Name</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual string FormatVariableNode(INode v, TripleSegment? segment)
+        protected virtual string FormatVariableNode(INode v, QuadSegment? segment)
         {
             throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(this._format));
         }
@@ -171,7 +171,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
+        protected virtual string FormatGraphLiteralNode(INode glit, QuadSegment? segment)
         {
             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable(this._format));
         }

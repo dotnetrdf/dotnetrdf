@@ -132,11 +132,11 @@ namespace VDS.RDF.Writing
         private String TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
+            output.Append(this.NodeToNTriples(context, t.Subject, QuadSegment.Subject));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
+            output.Append(this.NodeToNTriples(context, t.Predicate, QuadSegment.Predicate));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
+            output.Append(this.NodeToNTriples(context, t.Object, QuadSegment.Object));
             output.Append(" .");
 
             return output.ToString();
@@ -149,17 +149,17 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to convert</param>
         /// <param name="segment">Segment of the Triple being written</param>
         /// <returns></returns>
-        private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
+        private String NodeToNTriples(NTriplesWriterContext context, INode n, QuadSegment segment)
         {
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("NTriples"));
+                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("NTriples"));
                     break;
 
                 case NodeType.Literal:
-                    if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("NTriples"));
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("NTriples"));
+                    if (segment == QuadSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("NTriples"));
+                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("NTriples"));
                     break;
 
                 case NodeType.Uri:

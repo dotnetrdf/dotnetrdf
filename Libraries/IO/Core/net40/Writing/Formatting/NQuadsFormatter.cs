@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else
             {
-                return this.Format(q.Subject, TripleSegment.Subject) + " " + this.Format(q.Predicate, TripleSegment.Predicate) + " " + this.Format(q.Object, TripleSegment.Object) + " <" + this.FormatUri(q.Graph) + "> .";
+                return this.Format(q.Subject, QuadSegment.Subject) + " " + this.Format(q.Predicate, QuadSegment.Predicate) + " " + this.Format(q.Object, QuadSegment.Object) + " <" + this.FormatUri(q.Graph) + "> .";
             }
         }
     }

@@ -69,7 +69,7 @@ namespace VDS.RDF.Nodes
         /// <param name="formatter">Formatter</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        String ToString(INodeFormatter formatter, TripleSegment segment);
+        String ToString(INodeFormatter formatter, QuadSegment segment);
 
         /// <summary>
         /// Gets the URI the Node represents if it is a URI node, otherwise produces an error

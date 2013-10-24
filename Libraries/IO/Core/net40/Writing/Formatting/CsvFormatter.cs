@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Writing.Formatting
@@ -35,7 +36,7 @@ namespace VDS.RDF.Writing.Formatting
     /// Formatter for generating CSV
     /// </summary>
     public class CsvFormatter 
-        : BaseFormatter
+        : BaseFormatter, IQuadFormatter
     {
         /// <summary>
         /// Creates a new CSV Formatter
@@ -49,7 +50,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(INode u, TripleSegment? segment)
+        protected override string FormatUriNode(INode u, QuadSegment? segment)
         {
             return this.FormatUri(u.Uri);
         }
@@ -60,7 +61,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(INode l, TripleSegment? segment)
+        protected override string FormatLiteralNode(INode l, QuadSegment? segment)
         {
             String value = l.Value;
             if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
@@ -75,6 +76,11 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return value;
             }
+        }
+
+        public string Format(Quad q)
+        {
+            return this.Format(q.AsTriple()) + "," + this.Format(q.Graph);
         }
     }
 }

@@ -114,7 +114,7 @@
     <Compile Include="NamespaceDocs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\TripleCollection.cs" />
-    <Compile Include="Writing\TripleSegment.cs" />
+    <Compile Include="Writing\QuadSegment.cs" />
     <Compile Include="Writing\WriterErrorMessages.cs" />
   </ItemGroup>
   <ItemGroup>

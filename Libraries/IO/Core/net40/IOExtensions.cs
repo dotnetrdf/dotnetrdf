@@ -14,6 +14,7 @@ namespace VDS.RDF
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
         /// </summary>
+        /// <param name="parser">RDF parser to use</param>
         /// <param name="g">Graph to load RDF into</param>
         /// <param name="input">The reader to read input from</param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
@@ -28,6 +29,7 @@ namespace VDS.RDF
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Input
         /// </summary>
+        /// <param name="parser">RDF parser to use</param>
         /// <param name="g">Graph to load RDF into</param>
         /// <param name="input">The reader to read input from</param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
@@ -43,6 +45,7 @@ namespace VDS.RDF
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
         /// </summary>
+        /// <param name="parser">RDF parser to use</param>
         /// <param name="g">Graph to load RDF into</param>
         /// <param name="filename">The Filename of the File to read from</param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
@@ -51,7 +54,23 @@ namespace VDS.RDF
         public static void Load(this IRdfReader parser, IGraph g, String filename)
         {
             if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
-            parser.Load(new GraphHandler(g), filename);
+            // TODO This should look up the appropriate encoding
+            parser.Load(new GraphHandler(g), new StreamReader(filename));
+        }
+
+        /// <summary>
+        /// Method for Saving a Graph to a Concrete RDF Syntax in a file based format
+        /// </summary>
+        /// <param name="writer">RDF writer to use</param>
+        /// <param name="g">The Graph to Save</param>
+        /// <param name="filename">The filename to save the Graph in</param>
+        /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer</exception>
+        /// <exception cref="IOException">Thrown if the Writer is unable to write to the File</exception>
+        public static void Save(this IRdfWriter writer, IGraph g, String filename)
+        {
+            if (ReferenceEquals(writer, null)) throw new ArgumentNullException("writer");
+            // TODO This should lookup the appropriate encoding
+            writer.Save(g, new StreamWriter(filename));
         }
 #endif
 

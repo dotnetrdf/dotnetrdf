@@ -52,9 +52,9 @@ namespace VDS.RDF.Parsing
     /// </para>
     /// </remarks>
     public class NQuadsParser 
-        : IStoreReader, ITraceableTokeniser, ITokenisingParser
+        : IRdfReader, ITraceableTokeniser, ITokenisingParser
     {
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
         private bool _tracetokeniser = false;
 
         /// <summary>
@@ -99,35 +99,6 @@ namespace VDS.RDF.Parsing
             {
                 this._queueMode = value;
             }
-        }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-#if !SILVERLIGHT
-            this.Load(store, new StreamReader(filename, Encoding.ASCII));
-#else
-            this.Load(store, new StreamReader(filename));
-#endif
-        }
-#endif
-
-        /// <summary>
-        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
-        public void Load(ITripleStore store, TextReader input)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
         }
 
 #if !NO_FILE
@@ -435,7 +406,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>
-        public event StoreReaderWarning Warning;
+        public event RdfReaderWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the Parser which is a description of the syntax it parses

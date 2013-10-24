@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(INode v, TripleSegment? segment)
+        protected override string FormatVariableNode(INode v, QuadSegment? segment)
         {
             return v.ToString();
         }
@@ -62,9 +62,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(INode glit, QuadSegment? segment)
         {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 
             StringBuilder output = new StringBuilder();
             output.Append("{");
@@ -109,7 +109,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(INode v, TripleSegment? segment)
+        protected override string FormatVariableNode(INode v, QuadSegment? segment)
         {
             return v.ToString();
         }
@@ -120,9 +120,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(INode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(INode glit, QuadSegment? segment)
         {
-            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 
             StringBuilder output = new StringBuilder();
             output.Append("{");

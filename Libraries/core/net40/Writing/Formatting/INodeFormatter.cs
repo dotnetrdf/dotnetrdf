@@ -46,6 +46,6 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="n">Node</param>
         /// <param name="segment">Segment</param>
         /// <returns></returns>
-        String Format(INode n, TripleSegment? segment);
+        String Format(INode n, QuadSegment? segment);
     }
 }

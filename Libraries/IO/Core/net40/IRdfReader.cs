@@ -58,18 +58,6 @@ namespace VDS.RDF
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, TextReader input);
 
-#if !NO_FILE
-        /// <summary>
-        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">The Filename of the File to read from</param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        void Load(IRdfHandler handler, String filename);
-#endif
-
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>

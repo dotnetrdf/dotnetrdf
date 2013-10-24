@@ -92,12 +92,12 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(INode u, TripleSegment? segment)
+        protected override string FormatUriNode(INode u, QuadSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String qname;
 
-            if (this._allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
+            if (this._allowAKeyword && segment == QuadSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
             {
                 output.Append('a');
             }
@@ -129,7 +129,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract override string FormatLiteralNode(INode l, TripleSegment? segment);
+        protected abstract override string FormatLiteralNode(INode l, QuadSegment? segment);
 
         /// <summary>
         /// Formats a Namespace as a String

@@ -34,27 +34,38 @@ namespace VDS.RDF
     /// <summary>
     /// Interface to be implemented by RDF Writers which generate RDF Concrete Syntax
     /// </summary>
+    /// <remarks>
+    /// This interface provides methods for writing a single graph or a graph store, when the target syntax and the input type do not align the following behaviour is expected to be honoured:
+    /// <ul>
+    /// <li>If the target syntax is a graph format and a <see cref="IGraphStore"/> is given then only the unnamed default graph should be serialized, all other graphs are ignored</li>
+    /// <li>If the target syntax is a dataset format and a <see cref="IGraph"/> is given then treat the given graph as the unnamed default graph</li>
+    /// </ul>
+    /// </remarks>
     public interface IRdfWriter
     {
-#if !NO_FILE
         /// <summary>
-        /// Method for Saving a Graph to a Concrete RDF Syntax in a file based format
+        /// Method for saving a graph to a concrete RDF syntax via some arbitrary <see cref="TextWriter" />
         /// </summary>
-        /// <param name="g">The Graph to Save</param>
-        /// <param name="filename">The filename to save the Graph in</param>
-        /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer</exception>
-        /// <exception cref="IOException">Thrown if the Writer is unable to write to the File</exception>
-        void Save(IGraph g, String filename);
-#endif
+        /// <param name="g">Graph</param>
+        /// <param name="output">The text writer to write to</param>
+        /// <exception cref="RdfException">Thrown if the RDF in the graph is not representable by the writer</exception>
+        /// <exception cref="IOException">Thrown if the writer is unable to write to the underlying storage of the <see cref="TextWriter">TextWriter</see> specified in the <paramref name="output"/> parameter</exception>
+        /// <remarks>
+        /// If this writer is for a dataset syntax then treat the graph as if it were the unnamed default graph of the dataset and serialize as such
+        /// </remarks>
+        void Save(IGraph g, TextWriter output);
 
         /// <summary>
-        /// Method for Saving a Graph to a Concrete RDF Syntax via some arbitrary <see cref="TextWriter">TextWriter</see>
+        /// Method for saving a graph store to a concrete RDF syntax via some arbitrary <see cref="TextWriter"/>
         /// </summary>
-        /// <param name="g">The Graph to Save</param>
-        /// <param name="output">The <see cref="TextWriter">TextWriter</see> to save the Graph to</param>
-        /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer</exception>
-        /// <exception cref="IOException">Thrown if the Writer is unable to write to the underlying storage of the <see cref="TextWriter">TextWriter</see> specified in the <paramref name="output"/></exception>
-        void Save(IGraph g, TextWriter output);
+        /// <param name="graphStore">Graph Store</param>
+        /// <param name="output">Text writer to write to</param>
+        /// <exception cref="RdfException">Thrown if the RDF in the graph store is not representable by the writer</exception>
+        /// <exception cref="IOException">Thrown if the writer is unable to write to the underlying storage of the <see cref="TextWriter">TextWriter</see> specified in the <paramref name="output"/> parameter</exception>
+        /// <remarks>
+        /// If this writer is for a graph syntax then only serialize the unnamed default graph of the store and ignore any other graphs
+        /// </remarks>
+        void Save(IGraphStore graphStore, TextWriter output);
 
         /// <summary>
         /// Event which writers can raise to indicate possible ambiguities or issues in the syntax they are producing
@@ -159,6 +170,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Interface for Writers that support multi-threaded writing
     /// </summary>
+    [Obsolete("Multi-threaded writing is unstable and is being removed from the library", true)]
     public interface IMultiThreadedWriter
     {
         /// <summary>
@@ -264,6 +276,8 @@ namespace VDS.RDF.Writing
         {
             get;
         }
+
+        // TODO Add a QuadFormatterType property
     }
 
 

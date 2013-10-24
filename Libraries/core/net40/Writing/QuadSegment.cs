@@ -31,24 +31,28 @@ using System.Text;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Indicates which Segment of a Triple Node Output is being generated for
+    /// Indicates which segment of a Quad that node output is being generated for
     /// </summary>
     /// <remarks>
     /// Used by Writers and Formatters to ensure restrictions on which Nodes can appear where in the syntax are enforced
     /// </remarks>
-    public enum TripleSegment
+    public enum QuadSegment
     {
         /// <summary>
-        /// Subject of the Triple
+        /// Subject
         /// </summary>
         Subject,
         /// <summary>
-        /// Predicate of the Triple
+        /// Predicate
         /// </summary>
         Predicate,
         /// <summary>
-        /// Object of the Triple
+        /// Object
         /// </summary>
-        Object
+        Object,
+        /// <summary>
+        /// Graph name
+        /// </summary>
+        Graph
     }
 }

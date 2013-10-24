@@ -148,7 +148,7 @@ namespace VDS.RDF.Nodes
         /// <param name="formatter">Formatter</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        public virtual String ToString(INodeFormatter formatter, TripleSegment segment)
+        public virtual String ToString(INodeFormatter formatter, QuadSegment segment)
         {
             return formatter.Format(this, segment);
         }
