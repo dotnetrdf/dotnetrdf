@@ -33,6 +33,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Static Helper class for the writing of RDF Graphs and SPARQL Result Sets to Strings rather than Streams/Files
     /// </summary>
+    [Obsolete("This helper is no longer considered necessary, simply pass a StringWriter to the desired Save() method of an IRdfWriter instead", true)]
     public static class StringWriter
     {
         /// <summary>
@@ -44,6 +45,7 @@ namespace VDS.RDF.Writing
         /// <remarks>
         /// Since the API allows for any <see cref="TextWriter">TextWriter</see> to be passed to the <see cref="IRdfWriter.Save(IGraph, TextWriter)">Save()</see> method of a <see cref="IRdfWriter">IRdfWriter</see> you can just pass in a <see cref="StringWriter">StringWriter</see> to the Save() method to get the output as a String.  This method simply provides a wrapper to doing just that.
         /// </remarks>
+        [Obsolete("This helper is no longer considered necessary, simply pass a StringWriter to the desired Save() method of an IRdfWriter instead", true)]
         public static String Write(IGraph g, IRdfWriter writer)
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();
@@ -58,24 +60,11 @@ namespace VDS.RDF.Writing
         /// <param name="store">Triple Store</param>
         /// <param name="writer">Writer to use to generate conrete RDF Syntax</param>
         /// <returns></returns>
-        public static String Write(ITripleStore store, IStoreWriter writer)
+        [Obsolete("This helper is no longer considered necessary, simply pass a StringWriter to the desired Save() method of an IRdfWriter instead", true)]
+        public static String Write(IGraphStore store, IRdfWriter writer)
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();
             writer.Save(store, sw);
-
-            return sw.ToString();
-        }
-
-        /// <summary>
-        /// Writes the SPARQL Result Set to a String and returns the Output in your chosen format
-        /// </summary>
-        /// <param name="results">SPARQL Result Set</param>
-        /// <param name="writer">Writer to use to generate the SPARQL Results output</param>
-        /// <returns></returns>
-        public static String Write(SparqlResultSet results, ISparqlResultsWriter writer)
-        {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
-            writer.Save(results, sw);
 
             return sw.ToString();
         }
