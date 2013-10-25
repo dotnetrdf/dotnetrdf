@@ -100,7 +100,7 @@ namespace VDS.RDF.Namespaces
         /// Constructs a new Namespace Map which is based on an existing map
         /// </summary>
         /// <param name="nsmapper"></param>
-        protected internal NamespaceMapper(INamespaceMapper nsmapper)
+        public NamespaceMapper(INamespaceMapper nsmapper)
             : this(true)
         {
             this.Import(nsmapper);

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.IO;
+using VDS.RDF.Graphs;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
@@ -38,11 +39,10 @@ namespace VDS.RDF.Parsing
 
 
     /// <summary>
-    /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax into a Triple Store
+    /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax
     /// </summary>
-    /// <remarks>The Default Graph (if any) will be given the special Uri <strong>trig:default-graph</strong></remarks>
     public class TriGParser
-        : IStoreReader, ITraceableTokeniser, ITokenisingParser
+        : IRdfReader, ITraceableTokeniser, ITokenisingParser
     {
         private bool _tracetokeniser = false;
         private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
@@ -107,44 +107,6 @@ namespace VDS.RDF.Parsing
                 this._queueMode = value;
             }
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads the named Graphs from the TriG input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
-        /// <summary>
-        /// Loads the named Graphs from the TriG input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
-        public void Load(ITripleStore store, TextReader input)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
-        }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads the named Graphs from the TriG input using the given RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
 
         /// <summary>
         /// Loads the named Graphs from the TriG input using the given RDF Handler
@@ -293,7 +255,7 @@ namespace VDS.RDF.Parsing
                 {
                     try
                     {
-                        Uri newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
+                        Uri newBase = UriFactory.ResolveUri(baseUri.Value, context.BaseUri);
                         context.BaseUri = newBase;
                         this.RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                         if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
@@ -324,7 +286,7 @@ namespace VDS.RDF.Parsing
                         //Ensure the Uri is absolute
                         try
                         {
-                            Uri u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
+                            Uri u = UriFactory.ResolveUri(uri.Value, context.BaseUri);
                             String pre = (prefix.Value.Equals(":")) ? String.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
                             context.Namespaces.AddNamespace(pre, u);
                             if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
@@ -369,26 +331,16 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.QNAME)
             {
                 //Try to resolve the QName
-                graphUri = UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null));
+                graphUri = UriFactory.ResolvePrefixedName(next.Value, context.Namespaces, null);
 
                 //Get the Next Token
                 next = context.Tokens.Dequeue();
             }
             else if (next.TokenType == Token.URI)
             {
-                try
-                {
-                    //Ensure an absolute Uri
-                    graphUri = new Uri(next.Value, UriKind.Absolute);
-                }
-#if PORTABLE
-                catch(FormatException)
-#else
-                catch (UriFormatException)
-#endif
-                {
-                    throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
-                }
+                //Ensure an absolute Uri
+                graphUri = UriFactory.ResolveUri(next.Value, context.BaseUri);
+                if (!graphUri.IsAbsoluteUri) throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
 
                 //Get the Next Token
                 next = context.Tokens.Dequeue();
@@ -396,6 +348,7 @@ namespace VDS.RDF.Parsing
             else
             {
                 //No Name so is a Default Graph
+                // TODO Is this restriction still valid?  May not be with W3C TriG specification
                 if (!context.DefaultGraphExists)
                 {
                     graphUri = null;
