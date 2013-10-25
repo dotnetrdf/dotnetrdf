@@ -55,6 +55,16 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
+        /// Creates a new blank node with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>Blank node</returns>
+        public virtual INode CreateBlankNode(Guid id)
+        {
+            return new BlankNode(id);
+        }
+
+        /// <summary>
         /// Creates a Graph Literal Node which represents the empty Subgraph
         /// </summary>
         /// <returns></returns>

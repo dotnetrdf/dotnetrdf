@@ -40,6 +40,13 @@ namespace VDS.RDF.Nodes
         INode CreateBlankNode();
 
         /// <summary>
+        /// Creates a Blank Node with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns></returns>
+        INode CreateBlankNode(Guid id);
+
+        /// <summary>
         /// Creates a Graph Literal Node which represents the empty Subgraph
         /// </summary>
         /// <returns></returns>

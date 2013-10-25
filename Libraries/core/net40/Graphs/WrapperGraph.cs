@@ -239,6 +239,16 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
+        /// Creates a new blank node with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>Blank node</returns>
+        public virtual INode CreateBlankNode(Guid id)
+        {
+            return this._g.CreateBlankNode(id);
+        }
+
+        /// <summary>
         /// Creates a new Graph Literal Node with the given sub-graph
         /// </summary>
         /// <param name="subgraph">Sub-graph</param>

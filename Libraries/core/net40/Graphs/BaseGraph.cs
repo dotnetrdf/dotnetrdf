@@ -269,6 +269,16 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
+        /// Creates a new blank node with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>Blank node</returns>
+        public virtual INode CreateBlankNode(Guid id)
+        {
+            return new BlankNode(id);
+        }
+
+        /// <summary>
         /// Creates a new literal node with the given Value
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
