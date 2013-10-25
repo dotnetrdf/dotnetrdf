@@ -25,10 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using System.Text;
 using VDS.RDF.Graphs;
-using VDS.RDF.Nodes;
-using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
@@ -37,17 +34,8 @@ namespace VDS.RDF.Writing
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
     /// </summary>
     public class NQuadsWriter 
-        : IRdfWriter, IPrettyPrintingWriter, IFormatterBasedWriter
+        : IRdfWriter, IFormatterBasedWriter
     {
-
-        /// <summary>
-        /// Controls whether Pretty Printing is used
-        /// </summary>
-        /// <remarks>
-        /// For NQuads this simply means that Graphs in the output are separated with Whitespace and comments used before each Graph
-        /// </remarks>
-        public bool PrettyPrintMode { get; set; }
-
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer
         /// </summary>
@@ -60,26 +48,23 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in NQuads format
+        /// Saves a graph in NQuads format
         /// </summary>
-        /// <param name="store">Store to save</param40  
-        /// <param name="writer">Writer to save to</param>
-        public void Save(IGraphStore store, TextWriter writer)
+        /// <param name="g">Graph to save</param>
+        /// <param name="writer">Writer to write to</param>
+        public void Save(IGraph g, TextWriter writer)
         {
-            if (store == null) throw new RdfOutputException("Cannot output a null Graph Store");
+            if (g == null) throw new RdfOutputException("Cannot output a null Graph");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
             try
             {
-                    foreach (Quad q in store.Quads)
-                    {
-                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output);
-                        foreach (Triple t in g.Triples)
-                        {
-                            writer.WriteLine(this.TripleToNQuads(graphContext, t, g.BaseUri));
-                        }
-                    }
-                    writer.Close();
+                NQuadsFormatter formatter = new NQuadsFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    writer.WriteLine(formatter.Format(t));
+                }
+                writer.Close();
             }
             catch
             {
@@ -96,57 +81,36 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Converts a Triple into relevant NQuads Syntax
+        /// Saves a graph store in NQuads format
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="t">Triple to convert</param>
-        /// <returns></returns>
-        private String TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
+        /// <param name="store">Graph store to save</param>
+        /// <param name="writer">Writer to write to</param>
+        public void Save(IGraphStore store, TextWriter writer)
         {
-            StringBuilder output = new StringBuilder();
-            output.Append(this.NodeToNTriples(context, t.Subject, QuadSegment.Subject));
-            output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Predicate, QuadSegment.Predicate));
-            output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Object, QuadSegment.Object));
-            if (graphUri != null)
+            if (store == null) throw new RdfOutputException("Cannot output a null Graph Store");
+            if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
+
+            try
             {
-                output.Append(" <");
-                output.Append(context.UriFormatter.FormatUri(graphUri));
-                output.Append(">");
+                NQuadsFormatter formatter = new NQuadsFormatter();
+                foreach (Quad q in store.Quads)
+                {
+                    writer.WriteLine(formatter.Format(q));
+                }
+                writer.Close();
             }
-            output.Append(" .");
-
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Converts a Node into relevant NTriples Syntax
-        /// </summary>
-        /// <param name="n">Node to convert</param>
-        /// <param name="context">Writer Context</param>
-        /// <param name="segment">Triple Segment being written</param>
-        /// <returns></returns>
-        private String NodeToNTriples(NTriplesWriterContext context, INode n, QuadSegment segment)
-        {
-            switch (n.NodeType)
+            catch
             {
-                case NodeType.Blank:
-                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("NQuads"));
-                    break;
-                case NodeType.Literal:
-                    if (segment == QuadSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("NQuads"));
-                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("NQuads"));
-                    break;
-                case NodeType.Uri:
-                    break;
-                case NodeType.GraphLiteral:
-                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("NQuads"));
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("NQuads"));
+                try
+                {
+                    writer.Close();
+                }
+                catch
+                {
+                    //Just cleaning up
+                }
+                throw;
             }
-
-            return context.NodeFormatter.Format(n);
         }
 
         /// <summary>
@@ -160,7 +124,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            StoreWriterWarning d = this.Warning;
+            RdfWriterWarning d = this.Warning;
             if (d != null)
             {
                 d(message);

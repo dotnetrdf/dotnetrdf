@@ -52,6 +52,10 @@ namespace VDS.RDF.Writing
         /// </summary>
         private const String LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
         /// <summary>
+        /// Error message produces when a User attempts to serialize a Quad which has a Literal Graph name
+        /// </summary>
+        private const String LiteralGraphNamesUnserializableError = "Quads with a Literal Graph name are not serializable in {0}";
+        /// <summary>
         /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates
         /// </summary>
         private const String GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
@@ -62,7 +66,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing URIs which cannot be reduced to a URIRef or QName as required by the serialization
         /// </summary>
-        public const String UnreducablePropertyURIUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
+        public const String UnreducablePropertyUriUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing collections where a collection item has more than one rdf:first triple
         /// </summary>
@@ -104,6 +108,16 @@ namespace VDS.RDF.Writing
         public static String VariableNodesUnserializable(String format)
         {
             return String.Format(VariableNodesUnserializableError, format);
+        }
+
+        /// <summary>
+        /// Gets an error message indicating that literal graph names are not serializable with the appropriate RDF format name inserted in the error
+        /// </summary>
+        /// <param name="format">RDF format (syntax)</param>
+        /// <returns></returns>
+        public static String LiteralGraphNamesUnserializable(String format)
+        {
+            return String.Format(LiteralGraphNamesUnserializableError, format);
         }
 
         /// <summary>

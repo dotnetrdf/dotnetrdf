@@ -72,13 +72,13 @@ namespace VDS.RDF.Writing.Formatting
                 case NodeType.Blank:
                     return this.FormatBlankNode(n, segment);
                 case NodeType.GraphLiteral:
-                    return this.FormatGraphLiteralNode((IGraphLiteralNode)n, segment);
+                    return this.FormatGraphLiteralNode(n, segment);
                 case NodeType.Literal:
-                    return this.FormatLiteralNode((ILiteralNode)n, segment);
+                    return this.FormatLiteralNode(n, segment);
                 case NodeType.Uri:
-                    return this.FormatUriNode((IUriNode)n, segment);
+                    return this.FormatUriNode(n, segment);
                 case NodeType.Variable:
-                    return this.FormatVariableNode((IVariableNode)n, segment);
+                    return this.FormatVariableNode(n, segment);
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(this._format));
             }

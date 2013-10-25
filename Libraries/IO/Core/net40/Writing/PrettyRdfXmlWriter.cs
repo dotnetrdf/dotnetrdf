@@ -416,7 +416,7 @@ namespace VDS.RDF.Writing
                         }
                         else
                         {
-                            throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                            throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyUriUnserializable);
                         }
                     }
                     else
@@ -467,7 +467,7 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                    throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyUriUnserializable);
                 }
             }
 
@@ -554,7 +554,7 @@ namespace VDS.RDF.Writing
                     this.GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
                     context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
                     uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
-                    if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                    if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyUriUnserializable);
                 }
                 
                 //Output Literal Attribute using the resulting QName
@@ -599,7 +599,7 @@ namespace VDS.RDF.Writing
                 //Need to generate a temporary namespace
                 this.GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
                 uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
-                if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + p.Uri + "'");
+                if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyUriUnserializable + " - '" + p.Uri + "'");
             }
             //Use the QName for the Node
             if (uriref.Contains(':'))

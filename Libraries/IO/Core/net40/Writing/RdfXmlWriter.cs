@@ -628,7 +628,7 @@ namespace VDS.RDF.Writing
                         predRef = this.GenerateUriRef(context, ((IUriNode)p).Uri, UriRefType.QName, out rtype);
                         if (rtype != UriRefType.QName)
                         {
-                            throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + p.ToString() + "'");
+                            throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyUriUnserializable + " - '" + p.ToString() + "'");
                         }
                     }
 

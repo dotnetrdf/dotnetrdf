@@ -37,7 +37,7 @@ namespace VDS.RDF.Writing.Formatting
     public class NTriplesFormatter
         : BaseFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
+        private readonly BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
 
         /// <summary>
         /// Set of characters which must be escaped in Literals
@@ -87,21 +87,30 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatLiteralNode(INode l, QuadSegment? segment)
         {
+            switch (segment)
+            {
+                case QuadSegment.Subject:
+                    throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable(this.FormatName));
+                case QuadSegment.Predicate:
+                    throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable(this.FormatName));
+                case QuadSegment.Graph:
+                    throw new RdfOutputException(WriterErrorMessages.LiteralGraphNamesUnserializable(this.FormatName));
+            }
+
             StringBuilder output = new StringBuilder();
-            String value;
 
             output.Append('"');
-            value = l.Value;
+            String value = l.Value;
             value = this.Escape(value, this._litEscapes);
             output.Append(this.FormatChar(value.ToCharArray()));
             output.Append('"');
 
-            if (!l.Language.Equals(String.Empty))
+            if (l.HasLanguage)
             {
                 output.Append('@');
                 output.Append(l.Language.ToLower());
             }
-            else if (l.DataType != null)
+            else if (l.HasDataType)
             {
                 output.Append("^^<");
                 output.Append(this.FormatUri(l.DataType));
@@ -109,26 +118,6 @@ namespace VDS.RDF.Writing.Formatting
             }
 
             return output.ToString();
-        }
-
-        /// <summary>
-        /// Formats a Character
-        /// </summary>
-        /// <param name="c">Character</param>
-        /// <returns></returns>
-        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
-        public override string FormatChar(char c)
-        {
-            if (c <= 127)
-            {
-                //ASCII
-                return c.ToString();
-            }
-            else
-            {
-                //Small Unicode Escape required
-                return "\\u" + ((int)c).ToString("X4");
-            }
         }
 
         /// <summary>
@@ -175,6 +164,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(INode b, QuadSegment? segment)
         {
+            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
             return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
         }
 

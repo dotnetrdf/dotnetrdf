@@ -43,6 +43,11 @@ namespace VDS.RDF.Writing.Formatting
         public NQuadsFormatter()
             : base("NQuads") { }
 
+        /// <summary>
+        /// Formats a quad
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns></returns>
         public string Format(Quad q)
         {
             if (q.InDefaultGraph)
