@@ -23,7 +23,15 @@ Changed
   - NamespaceMap property renamed to Namespaces
   - Removed BaseUri property
   - Find() method replaces various GetTriplesWithX() methods
+- IO APIs
+ - IStoreReader removed and folded into IRdfReader
+ - IStoreWriter removed and folded into IRdfWriter
+ - IRdfReader and IRdfWriter now handle RDF graphs and graph stores
 - Core library split out into multiple modules
+ - New IO Core module contains basic RDF IO implementations
+ - New IO Json module contains JSON based RDF IO implementations
+ - New IO Html module contains HTML based RDF IO implementations
+ - New SPARQL Core module contains SPARQL implementation
 
  Removed
  - ITripleStore was removed, use IGraphStore instead
