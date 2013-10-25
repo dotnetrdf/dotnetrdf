@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Net;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -691,27 +692,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Raises store warning messages
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        static void RaiseStoreWarning(String message)
-        {
-            StoreReaderWarning d = StoreWarning;
-            if (d != null)
-            {
-                d(message);
-            }
-        }
-
-        /// <summary>
         /// Event which is raised when a parser that is invoked by the UriLoader notices a non-fatal issue with the RDF syntax
         /// </summary>
         public static event RdfReaderWarning Warning;
-
-        /// <summary>
-        /// Event which is raised when a store parser that is invoked by the UriLoader notices a non-fatal issue with the RDF dataset syntax
-        /// </summary>
-        public static event StoreReaderWarning StoreWarning;
 
         #endregion
     }

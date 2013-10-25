@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Writing.Contexts
 {
@@ -48,25 +49,11 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="hiSpeedAllowed">Whether high speed mode is permitted</param>
         /// <param name="compressionLevel">Compression Level to use</param>
         /// <param name="n3compatability">Whether to enable N3 compatability mode</param>
-        public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
+        public TriGWriterContext(IGraphStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
             : base(store, output, prettyPrint, hiSpeedAllowed)
         {
             this._compressionLevel = compressionLevel;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Compression Level
-        /// </summary>
-        public int CompressionLevel
-        {
-            get
-            {
-                return this._compressionLevel;
-            }
-            set
-            {
-                this._compressionLevel = value;
-            }
+            this._n3compatability = n3compatability;
         }
 
         /// <summary>

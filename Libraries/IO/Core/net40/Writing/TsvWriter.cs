@@ -342,7 +342,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error with the RDF being output
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

@@ -13,7 +13,6 @@ namespace VDS.RDF
         private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
         private static bool _utf8Bom = false;
         private static bool _useDTDs = true;
-        private static bool _multiThreadedWriting = false;
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _forceBlockingIO = false;
@@ -123,15 +122,16 @@ namespace VDS.RDF
         /// <remarks>
         /// In some contexts multi-threaded writing may not even work due to restrictions on thread types since we use the <see cref="System.Threading.WaitAll">WaitAll()</see> method which is only valid in <strong>MTA</strong> contexts.
         /// </remarks>
+        [Obsolete("Multi threaded writing has been shown to be unstable and is no longer supported", true)]
         public static bool AllowMultiThreadedWriting
         {
             get
             {
-                return _multiThreadedWriting;
+                throw new NotSupportedException();
             }
             set
             {
-                _multiThreadedWriting = value;
+                throw new NotSupportedException();
             }
         }
 

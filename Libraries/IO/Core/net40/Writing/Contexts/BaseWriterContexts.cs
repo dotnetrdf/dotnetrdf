@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             this._g = g;
             this._output = output;
-            this._qnameMapper = new QNameOutputMapper(this._g.NamespaceMap);
+            this._qnameMapper = new QNameOutputMapper(this._g.Namespaces);
         }
 
         /// <summary>

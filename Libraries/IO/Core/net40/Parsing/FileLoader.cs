@@ -231,27 +231,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Raises Store Warning messages
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        static void RaiseStoreWarning(String message)
-        {
-            StoreReaderWarning d = StoreWarning;
-            if (d != null)
-            {
-                d(message);
-            }
-        }
-
-        /// <summary>
         /// Event which is raised when the parser invoked by the FileLoader detects a non-fatal issue with the RDF syntax
         /// </summary>
         public static event RdfReaderWarning Warning;
-
-        /// <summary>
-        /// Event which is raised when the Store parser invoked by the FileLoader detects a non-fatal issue with the RDF syntax
-        /// </summary>
-        public static event StoreReaderWarning StoreWarning;
     }
 #endif
 

@@ -29,33 +29,25 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for writing a Triple Store in named Graph TriG syntax to a file/stream
+    /// Class for writing a graph store or graph to TriG syntax (Turtle with named graphs)
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For efficiency the TriG Writer splits it's writing over several threads (currently 4), these threads share a reference to a Context object which gives Global writing context eg. the target <see cref="TextWriter">TextWriter</see> being written to.  Each thread generates temporary local writing contexts as it goes along, each of these is scoped to writing a specific Graph.  Graphs are written to a <see cref="StringWriter">StringWriter</see> so the output for each Graph is built completely and then written in one go to the <see cref="TextWriter">TextWriter</see> specified as the target of the writing in the global context.
-    /// </para>
-    /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call <see cref="TriGWriter.Save(ITripleStore,TextWriter)">Save()</see> from several threads with no issue.  See Remarks for potential performance impact of this.</threadsafety>
     public class TriGWriter 
-        : IStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
+        : IRdfWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter
     {
-        private int _threads = 4;
-        private const int PollInterval = 50;
         private bool _allowHiSpeed = true;
         private bool _prettyprint = true;
-        private bool _n3compat = false;
+        private bool _n3Compat = false;
         private int _compressionLevel = WriterCompressionLevel.Default;
-        private bool _useMultiThreading = Options.AllowMultiThreadedWriting;
 
         /// <summary>
         /// Gets/Sets whether High Speed Write Mode is permitted
@@ -112,53 +104,25 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._n3compat;
+                return this._n3Compat;
             }
             set
             {
-                this._n3compat = value;
+                this._n3Compat = value;
             }
         }
 
         /// <summary>
-        /// Gets/Sets whether multi-threaded writing will be used to generate output faster
-        /// </summary>
-        public bool UseMultiThreadedWriting
-        {
-            get
-            {
-                return this._useMultiThreading;
-            }
-            set
-            {
-                this._useMultiThreading = value;
-            }
-        }
-
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
-        /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8)));
-        }
-#endif
-
-        /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// Saves a graph store in TriG (Turtle with Named Graphs) format
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="writer">Writer to save to</param>
-        public void Save(ITripleStore store, TextWriter writer)
+        public void Save(IGraphStore store, TextWriter writer)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
+            TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3Compat);
 
             //Check there's something to do
             if (context.Store.Graphs.Count == 0)
@@ -189,80 +153,38 @@ namespace VDS.RDF.Writing
             {
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(new NamespaceMapper(true));
             }
-
-            if (this._useMultiThreading)
+            try
             {
-                //Standard Multi-Threaded Writing
-
-                //Queue the Graphs to be written
-                foreach (IGraph g in context.Store.Graphs)
+                //Optional Single Threaded Writing
+                foreach (IGraph g in store.Graphs)
                 {
-                    context.Add(g.BaseUri);
-                }
-
-                //Start making the async calls
-                List<IAsyncResult> results = new List<IAsyncResult>();
-                SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
-                for (int i = 0; i < this._threads; i++)
-                {
-                    results.Add(d.BeginInvoke(context, null, null));
-                }
-
-                //Wait for all the async calls to complete
-                WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
-                foreach (IAsyncResult result in results)
-                {
-                    try
+                    TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
+                    if (context.CompressionLevel > WriterCompressionLevel.None)
                     {
-                        d.EndInvoke(result);
+                        graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        outputEx.AddException(ex);
+                        graphContext.NodeFormatter = new UncompressedTurtleFormatter();
                     }
+                    context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
                 }
+
                 //Make sure to close the output
                 context.Output.Close();
-
-                //If there were any errors we'll throw an RdfThreadedOutputException now
-                if (outputEx.InnerExceptions.Any()) throw outputEx;
             }
-            else
+            catch
             {
                 try
                 {
-                    //Optional Single Threaded Writing
-                    foreach (IGraph g in store.Graphs)
-                    {
-                        TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
-                        if (context.CompressionLevel > WriterCompressionLevel.None)
-                        {
-                            graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
-                        }
-                        else
-                        {
-                            graphContext.NodeFormatter = new UncompressedTurtleFormatter();
-                        }
-                        context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
-                    }
-
-                    //Make sure to close the output
+                    //Close the output
                     context.Output.Close();
                 }
                 catch
                 {
-                    try
-                    {
-                        //Close the output
-                        context.Output.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions, just cleaning up the output stream
-                    }
-                    throw;
+                    //No catch actions, just cleaning up the output stream
                 }
+                throw;
             }
         }
 
@@ -506,7 +428,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
@@ -514,7 +436,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message) 
         {
-            StoreWriterWarning d = this.Warning;
+            RdfWriterWarning d = this.Warning;
             if (d != null)
             {
                 d(message);

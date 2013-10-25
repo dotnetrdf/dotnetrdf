@@ -34,6 +34,8 @@ using System.Xml;
 #if !NO_XSL
 using System.Xml.Xsl;
 #endif
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
@@ -52,52 +54,12 @@ namespace VDS.RDF.Parsing
     /// </para>
     /// </remarks>
     public class TriXParser
-        : IStoreReader
+        : IRdfReader
     {
         /// <summary>
         /// Current W3C Namespace Uri for TriX
         /// </summary>
         public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
-
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads the RDF Dataset from the TriX input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
-        /// <summary>
-        /// Loads the RDF Dataset from the TriX input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
-        public void Load(ITripleStore store, TextReader input)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
-        }
-
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads the RDF Dataset from the TriX input using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
 
 #if !NO_XMLDOM
 
@@ -156,7 +118,8 @@ namespace VDS.RDF.Parsing
                         }
                     }
                 }
-
+#else
+                this.RaiseWarning("XSLT is not supported on your platform, if your TriX data uses the XSLT based extension mechanism it may not be parsed correctly");
 #endif
 
                 //Start parsing
@@ -235,7 +198,6 @@ namespace VDS.RDF.Parsing
                     //Ignore non-Element nodes
                     if (graph.NodeType == XmlNodeType.Element)
                     {
-                        //OPT: Do this multi-threaded?
                         this.TryParseGraph(graph, handler);
                     }
                 }
@@ -296,16 +258,21 @@ namespace VDS.RDF.Parsing
             }
 
             //Process the name into a Graph Uri and create the Graph and add it to the Store
-            Uri graphUri;
+            INode graphName;
             if (nameEl.Name.Equals("uri"))
             {
                 //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                graphUri = UriFactory.Create(Tools.ResolveUri(nameEl.InnerText, String.Empty));
+                graphName = handler.CreateUriNode(UriFactory.ResolveUri(nameEl.InnerText, null));
+            }
+            else if (nameEl.Name.Equals("id"))
+            {
+                // TODO Generate a Blank Node name for the graph
+                throw new NotSupportedException("Blank node names for TriX graphs are not yet supported");
             }
             else
             {
                 skipFirst = false;
-                graphUri = null;
+                graphName = Quad.DefaultGraphNode;
             }
 
             //Process the Child Nodes of the <graph> element to yield Triples
@@ -319,12 +286,12 @@ namespace VDS.RDF.Parsing
                         skipFirst = false;
                         continue;
                     }
-                    this.TryParseTriple(triple, handler, graphUri);
+                    this.TryParseTriple(triple, handler, graphName);
                 }
             }
         }
 
-        private void TryParseTriple(XmlNode tripleEl, IRdfHandler handler, Uri graphUri)
+        private void TryParseTriple(XmlNode tripleEl, IRdfHandler handler, INode graphName)
         {
             //Verify Node Name
             if (!tripleEl.Name.Equals("triple"))
@@ -337,10 +304,9 @@ namespace VDS.RDF.Parsing
             if (tripleEl.ChildNodes.Count > 3) throw new RdfParseException("<triple> element has too many child nodes (" + tripleEl.ChildNodes.Count + ") - 3 child nodes are expected");
 
             //Get the 3 Child Nodes
-            XmlNode subjEl, predEl, objEl;
-            subjEl = tripleEl.ChildNodes[0];
-            predEl = tripleEl.ChildNodes[1];
-            objEl = tripleEl.ChildNodes[2];
+            XmlNode subjEl = tripleEl.ChildNodes[0];
+            XmlNode predEl = tripleEl.ChildNodes[1];
+            XmlNode objEl = tripleEl.ChildNodes[2];
 
             //Parse XML Nodes into RDF Nodes
             INode subj, pred, obj;
@@ -350,6 +316,7 @@ namespace VDS.RDF.Parsing
             }
             else if (subjEl.Name.Equals("id"))
             {
+                // TODO Need a blank node generator for TriX parsing
                 subj = handler.CreateBlankNode(subjEl.InnerText);
             }
             else
@@ -372,6 +339,7 @@ namespace VDS.RDF.Parsing
             }
             else if (objEl.Name.Equals("id"))
             {
+                // TODO Need a blank node generator for TriX parsing
                 obj = handler.CreateBlankNode(objEl.InnerText);
             }
             else if (objEl.Name.Equals("plainLiteral"))
@@ -414,7 +382,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Assert the resulting Triple
-            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphUri))) ParserHelper.Stop(); ;
+            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop(); ;
         }
 
         /// <summary>
@@ -618,14 +586,14 @@ namespace VDS.RDF.Parsing
             //See if we get an <id>/<uri> node to name the Graph
             reader.Read();
             IGraph g = null;
-            Uri graphUri = null;
+            Uri graphName = null;
             if (reader.NodeType == XmlNodeType.Element)
             {
                 //Process the name into a Graph Uri and create the Graph and add it to the Store
                 if (reader.Name.Equals("uri"))
                 {
                     //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                    graphUri = new Uri(Tools.ResolveUri(reader.ReadInnerXml(), String.Empty));
+                    graphName = new Uri(Tools.ResolveUri(reader.ReadInnerXml(), String.Empty));
                 }
             }
 
@@ -648,7 +616,7 @@ namespace VDS.RDF.Parsing
                 //Remember to ignore anything that isn't an element i.e. comments and processing instructions
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    this.TryParseTriple(reader, handler, graphUri);
+                    this.TryParseTriple(reader, handler, graphName);
                 }
 
                 reader.Read();
@@ -657,7 +625,7 @@ namespace VDS.RDF.Parsing
             if (!reader.Name.Equals("graph")) throw Error("Expected a </graph> but a </" + reader.Name + "> was encountered", reader);
         }
 
-        private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphUri)
+        private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphName)
         {
             //Verify Node Name
             if (!reader.Name.Equals("triple"))
@@ -675,7 +643,7 @@ namespace VDS.RDF.Parsing
             if (!reader.Name.Equals("triple")) throw Error("Unexpected </" + reader.Name + "> encountered, expected a </triple> element", reader);
 
             //Assert the resulting Triple
-            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphUri))) ParserHelper.Stop();
+            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop();
         }
 
         private INode TryParseNode(XmlReader reader, IRdfHandler handler, QuadSegment segment)
@@ -776,7 +744,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            RdfReaderWarning d = this.Warning;
             if (d != null)
             {
                 d(message);
@@ -786,7 +754,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>
-        public event StoreReaderWarning Warning;
+        public event RdfReaderWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the Parser which is a description of the syntax it parses

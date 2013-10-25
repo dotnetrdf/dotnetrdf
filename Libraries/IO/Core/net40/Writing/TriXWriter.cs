@@ -38,7 +38,7 @@ namespace VDS.RDF.Writing
     /// Class for serialzing Triple Stores in the TriX format
     /// </summary>
     public class TriXWriter
-        : IStoreWriter
+        : IRdfWriter
     {
         private XmlWriterSettings GetSettings()
         {
@@ -55,25 +55,12 @@ namespace VDS.RDF.Writing
             return settings;
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Store in TriX format
-        /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8)));
-        }
-#endif
-
         /// <summary>
         /// Saves a Store in TriX format
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="output">Writer to save to</param>
-        public void Save(ITripleStore store, TextWriter output)
+        public void Save(IGraphStore store, TextWriter output)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (output == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -207,7 +194,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
@@ -215,14 +202,8 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning == null)
-            {
-                //Do Nothing
-            }
-            else
-            {
-                this.Warning(message);
-            }
+            RdfWriterWarning d = this.Warning;
+            if (!ReferenceEquals(d, null)) d(message);
         }
 
         /// <summary>
