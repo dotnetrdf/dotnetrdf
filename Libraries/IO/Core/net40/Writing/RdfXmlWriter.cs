@@ -726,7 +726,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.NamespaceMap.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -778,7 +778,7 @@ namespace VDS.RDF.Writing
             return uriref;
         }
 
-        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out String tempPrefix, out String tempUri)
+        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, INode u, out String tempPrefix, out String tempUri)
         {
             String uri = u.Uri.AbsoluteUri;
             String nsUri;

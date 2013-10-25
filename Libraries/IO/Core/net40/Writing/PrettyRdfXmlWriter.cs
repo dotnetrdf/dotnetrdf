@@ -34,6 +34,7 @@ using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -768,7 +769,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.NamespaceMap.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -820,19 +821,19 @@ namespace VDS.RDF.Writing
             return uriref;
         }
 
-        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out String tempPrefix, out String tempUri)
+        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, INode u, out String tempPrefix, out String tempUri)
         {
             String uri = u.Uri.AbsoluteUri;
             String nsUri;
             if (uri.Contains("#"))
             {
                 //Create a Hash Namespace Uri
-                nsUri = uri.Substring(0, uri.LastIndexOf("#") + 1);
+                nsUri = uri.Substring(0, uri.LastIndexOf("#", StringComparison.InvariantCulture) + 1);
             }
             else
             {
                 //Create a Slash Namespace Uri
-                nsUri = uri.Substring(0, uri.LastIndexOf("/") + 1);
+                nsUri = uri.Substring(0, uri.LastIndexOf("/", StringComparison.InvariantCulture) + 1);
             }
 
             //Create a Temporary Namespace ID

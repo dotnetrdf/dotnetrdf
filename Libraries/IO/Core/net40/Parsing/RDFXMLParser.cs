@@ -1818,7 +1818,7 @@ namespace VDS.RDF.Parsing
         /// <param name="subj">Subject of the Triple</param>
         /// <param name="pred">Predicate of the Triple</param>
         /// <param name="obj">Object of the Triple</param>
-        private void Reify(RdfXmlParserContext context, IUriNode uriref, INode subj, INode pred, INode obj)
+        private void Reify(RdfXmlParserContext context, INode uriref, INode subj, INode pred, INode obj)
         {
             if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfSubject)), subj))) ParserHelper.Stop();
             if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfPredicate)), pred))) ParserHelper.Stop();
