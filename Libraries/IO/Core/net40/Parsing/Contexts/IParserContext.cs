@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing.Contexts
@@ -44,6 +45,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Blank Node generator which is used to map string IDs to blank nodes consistently
+        /// </summary>
+        IBlankNodeGenerator BlankNodeGenerator { get; }
 
         /// <summary>
         /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it)

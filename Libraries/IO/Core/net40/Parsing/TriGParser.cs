@@ -378,7 +378,8 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Parse Graph Contents
-                    this.TryParseTriples(context, graphUri);
+                    INode graphName = ReferenceEquals(graphUri, null) ? Quad.DefaultGraphNode : context.Handler.CreateUriNode(graphUri);
+                    this.TryParseTriples(context, graphName);
                 }
             }
             else
@@ -395,7 +396,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriples(TriGParserContext context, Uri graphUri)
+        private void TryParseTriples(TriGParserContext context, INode graphName)
         {
             do
             {
@@ -417,7 +418,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.BLANKNODEWITHID:
                         //Blank Node with ID
-                        subjNode = context.Handler.CreateBlankNode(subj.Value.Substring(2));
+                        subjNode = context.BlankNodeGenerator.CreateBlankNode(subj.Value.Substring(2));
                         break;
 
                     case Token.LEFTSQBRACKET:
@@ -435,7 +436,7 @@ namespace VDS.RDF.Parsing
                             subjNode = context.Handler.CreateBlankNode();
 
                             //Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, subjNode);
+                            this.TryParsePredicateObjectList(context, graphName, subjNode);
                         }
                         break;
 
@@ -454,7 +455,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Collection
                             subjNode = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, subjNode);
+                            this.TryParseCollection(context, graphName, subjNode);
                         }
                         break;
 
@@ -475,7 +476,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Parse the Predicate Object List
-                this.TryParsePredicateObjectList(context, graphUri, subjNode);
+                this.TryParsePredicateObjectList(context, graphName, subjNode);
 
                 //Expect a Dot to Terminate
                 if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
@@ -497,7 +498,7 @@ namespace VDS.RDF.Parsing
             context.Tokens.Dequeue();
         }
 
-        private void TryParsePredicateObjectList(TriGParserContext context, Uri graphUri, INode subj)
+        private void TryParsePredicateObjectList(TriGParserContext context, INode graphName, INode subj)
         {
             bool ok = false;
             do
@@ -563,7 +564,7 @@ namespace VDS.RDF.Parsing
                 ok = true;
 
                 //Parse the Object List
-                this.TryParseObjectList(context, graphUri, subj, predNode);
+                this.TryParseObjectList(context, graphName, subj, predNode);
 
                 //Return if we hit the Dot Token/Right Curly Bracket/Right Square Bracket
                 if (context.Tokens.LastTokenType == Token.DOT ||
@@ -583,7 +584,7 @@ namespace VDS.RDF.Parsing
             } while (context.Tokens.Peek().TokenType == Token.SEMICOLON); //Expect a semicolon if we are to continue
         }
 
-        private void TryParseObjectList(TriGParserContext context, Uri graphUri, INode subj, INode pred)
+        private void TryParseObjectList(TriGParserContext context, INode graphName, INode subj, INode pred)
         {
             bool ok = false;
 
@@ -630,9 +631,14 @@ namespace VDS.RDF.Parsing
                             context.Tokens.Dequeue();
                             //Now expect a QName/Uri Token
                             next = context.Tokens.Dequeue();
-                            if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
+                            if (next.TokenType == Token.QNAME)
                             {
-                                Uri dt = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                                Uri dt = UriFactory.ResolvePrefixedName(next.Value, context.Namespaces, context.BaseUri);
+                                objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
+                            }
+                            else if (next.TokenType == Token.URI)
+                            {
+                                Uri dt = UriFactory.ResolveUri(next.Value, context.BaseUri);
                                 objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
                             }
                             else
@@ -655,7 +661,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.BLANKNODEWITHID:
                         //Blank Node with ID
-                        objNode = context.Handler.CreateBlankNode(obj.Value.Substring(2));
+                        objNode = context.BlankNodeGenerator.CreateBlankNode(obj.Value.Substring(2));
                         break;
 
                     case Token.LEFTSQBRACKET:
@@ -673,7 +679,7 @@ namespace VDS.RDF.Parsing
                             objNode = context.Handler.CreateBlankNode();
 
                             //Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, objNode);
+                            this.TryParsePredicateObjectList(context, graphName, objNode);
                         }
                         break;
 
@@ -700,7 +706,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Collection
                             objNode = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, objNode);
+                            this.TryParseCollection(context, graphName, objNode);
                         }
                         break;
 
@@ -723,25 +729,22 @@ namespace VDS.RDF.Parsing
 
                 ok = true;
 
-                if (!context.Handler.HandleQuad(new Quad(subj, pred, objNode, graphUri))) ParserHelper.Stop();
+                if (!context.Handler.HandleQuad(new Quad(subj, pred, objNode, graphName))) ParserHelper.Stop();
 
             } while (context.Tokens.Peek().TokenType == Token.COMMA); //Expect a comma if we are to continue
         }
 
-        private void TryParseCollection(TriGParserContext context, Uri graphUri, INode subj)
+        private void TryParseCollection(TriGParserContext context, INode graphName, INode subj)
         {
             //Create the Nodes we need
-            IUriNode rdfFirst, rdfRest, rdfNil;
-            rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            rdfNil = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
-            IToken next;
-            INode item, temp;
-            item = null;
+            INode item = null;
             do
             {
-                next = context.Tokens.Dequeue();
+                IToken next = context.Tokens.Dequeue();
 
                 //Create a Node for this Token
                 switch (next.TokenType)
@@ -777,7 +780,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             //Blank Node Collection
-                            this.TryParsePredicateObjectList(context, graphUri, item);
+                            this.TryParsePredicateObjectList(context, graphName, item);
                         }
                         break;
 
@@ -794,7 +797,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Collection
                             item = context.Handler.CreateBlankNode();
-                            this.TryParseCollection(context, graphUri, item);
+                            this.TryParseCollection(context, graphName, item);
                         }
                         break;
 
@@ -807,21 +810,21 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Create the subj rdf:first item Triple
-                if (!context.Handler.HandleQuad(new Quad(subj, rdfFirst, item, graphUri))) ParserHelper.Stop();
+                if (!context.Handler.HandleQuad(new Quad(subj, rdfFirst, item, graphName))) ParserHelper.Stop();
 
                 //Create the rdf:rest Triple
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleQuad(new Quad(subj, rdfRest, rdfNil, graphUri))) ParserHelper.Stop();
+                    if (!context.Handler.HandleQuad(new Quad(subj, rdfRest, rdfNil, graphName))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     //Continuing Collection
-                    temp = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleQuad(new Quad(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
+                    INode temp = context.Handler.CreateBlankNode();
+                    if (!context.Handler.HandleQuad(new Quad(subj, rdfRest, temp, graphName))) ParserHelper.Stop();
                     subj = temp;
                 }
             } while (true);
@@ -834,7 +837,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            RdfReaderWarning d = this.Warning;
             if (d != null)
             {
                 d(message);
@@ -844,7 +847,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>
-        public event StoreReaderWarning Warning;
+        public event RdfReaderWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the Parser which is a description of the syntax it parses

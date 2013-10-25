@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 
@@ -66,7 +67,6 @@ namespace VDS.RDF.Specifications
     /// <summary>
     /// Helper function relating to the Turtle Specifications
     /// </summary>
-    /// <remarks>Not currently used in the actual <see cref="TurtleTokeniser">TurtleTokeniser</see> or <see cref="TurtleParser">TurtleParser</see> but is used for the new <see cref="TriGTokeniser">TriGTokeniser</see></remarks>
     public class TurtleSpecsHelper
     {
         /// <summary>
@@ -93,10 +93,10 @@ namespace VDS.RDF.Specifications
         /// </summary>
         public const String LongLiteralsPattern = "[\n\r\t\"]";
 
-        private static Regex _validInteger = new Regex(ValidIntegerPattern);
-        private static Regex _validDecimal = new Regex(ValidDecimalPattern);
-        private static Regex _validDouble = new Regex(ValidDoublePattern);
-        private static Regex _isLongLiteral = new Regex(LongLiteralsPattern);
+        private readonly static Regex _validInteger = new Regex(ValidIntegerPattern);
+        private readonly static Regex _validDecimal = new Regex(ValidDecimalPattern);
+        private readonly static Regex _validDouble = new Regex(ValidDoublePattern);
+        private readonly static Regex _isLongLiteral = new Regex(LongLiteralsPattern);
 
         /// <summary>
         /// Determines whether a given String is a valid Plain Literal
@@ -184,6 +184,43 @@ namespace VDS.RDF.Specifications
             //double    ::= ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
             //exponent  ::= [eE] ('-' | '+')? [0-9]+
             return _validDouble.IsMatch(value);
+        }
+
+        /// <summary>
+        /// Infers the Type of a Plain Literal
+        /// </summary>
+        /// <param name="p">Plain Literal to infer the Type of</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal</returns>
+        public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
+        {
+            String value = p.Value;
+            StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+
+            if (value.Equals("true", comparison) || value.Equals("false", comparison))
+            {
+                //Is a Boolean
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
+            }
+            else if (_validInteger.IsMatch(value))
+            {
+                //Is an Integer
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
+            }
+            else if (_validDecimal.IsMatch(value))
+            {
+                //Is a Decimal
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
+            }
+            else if (_validDouble.IsMatch(value))
+            {
+                //Is a Double
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);
+            }
+            else
+            {
+                throw new RdfParseException("Unable to automatically Infer a Type for this PlainLiteralToken.  Plain Literals may only be Booleans, Integers, Decimals or Doubles");
+            }
         }
 
         /// <summary>
