@@ -150,10 +150,18 @@ namespace VDS.RDF
             }
             else
             {
-                // TODO: Rewrite to just use Uri constructor to copy relevant portions
-                String temp = u.AbsoluteUri;
-                temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                return UriFactory.Create(temp);
+                if (u.IsAbsoluteUri)
+                {
+                    // TODO: Rewrite to just use Uri constructor to copy relevant portions
+                    String temp = u.AbsoluteUri;
+                    temp = temp.Substring(0, temp.Length - u.Fragment.Length);
+                    return UriFactory.Create(temp);
+                }
+                else
+                {
+                    // TODO: Support stripping fragments from relative URIs
+                    throw new RdfException("Stripping Fragments from relative URIs is not currently supported");
+                }
             }
         }
 
@@ -170,8 +178,7 @@ namespace VDS.RDF
             try
             {
                 Uri u = new Uri(uri, UriKind.RelativeOrAbsolute);
-                // TODO Intern URI
-                return u.IsAbsoluteUri ? u : ResolveUri(u, baseUri);
+                return Intern(u.IsAbsoluteUri ? u : ResolveUri(u, baseUri));
             }
 #if PORTABLE
             catch (FormatException fEx)
@@ -194,12 +201,9 @@ namespace VDS.RDF
             if (ReferenceEquals(uri, null)) throw new RdfException("Cannot resolve a null URI");
             // Can't resolve against a non-absolute Base
             // Plus no need to resolve if already an absolute URI
-            // TODO Intern URI
-            if (ReferenceEquals(baseUri, null) || uri.IsAbsoluteUri || !baseUri.IsAbsoluteUri) return uri;
+            if (ReferenceEquals(baseUri, null) || uri.IsAbsoluteUri || !baseUri.IsAbsoluteUri) return uri.IsAbsoluteUri ? Intern(uri) : uri;
 
-            Uri u = new Uri(baseUri, uri);
-            // TODO Intern URI
-            return u;
+            return Intern(new Uri(baseUri, uri));
         }
 
         /// <summary>
@@ -278,9 +282,7 @@ namespace VDS.RDF
 
             try
             {
-                Uri u = new Uri(output);
-                // TODO Intern URI
-                return u;
+                return Intern(new Uri(output));
             }
 #if PORTABLE
             catch (FormatException fEx)
