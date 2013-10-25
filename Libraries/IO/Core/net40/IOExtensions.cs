@@ -41,6 +41,18 @@ namespace VDS.RDF
             parser.Load(new GraphHandler(g), input);
         }
 
+        public static void Load(this IRdfReader parser, IGraphStore graphStore, StreamReader input)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            parser.Load(new GraphStoreHandler(graphStore), input);
+        }
+
+        public static void Load(this IRdfReader parser, IGraphStore graphStore, TextReader input)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            parser.Load(new GraphStoreHandler(graphStore), input);
+        }
+
 #if !NO_FILE
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
@@ -56,6 +68,13 @@ namespace VDS.RDF
             if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
             // TODO This should look up the appropriate encoding
             parser.Load(new GraphHandler(g), new StreamReader(filename));
+        }
+
+        public static void Load(this IRdfReader parser, IGraphStore graphStore, String filename)
+        {
+            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
+            // TODO This should look up appropriate encoding
+            parser.Load(new GraphStoreHandler(graphStore), new StreamReader(filename));
         }
 
         /// <summary>

@@ -73,6 +73,7 @@
     <Compile Include="Parsing\Handlers\ChainedHandler.cs" />
     <Compile Include="Parsing\Handlers\CountHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphStoreHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
     <Compile Include="Parsing\Handlers\MultiHandler.cs" />

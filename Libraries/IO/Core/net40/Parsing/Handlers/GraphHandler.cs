@@ -34,7 +34,6 @@ namespace VDS.RDF.Parsing.Handlers
     public class GraphHandler 
         : BaseRdfHandler
     {
-        private IGraph _target;
         private IGraph _g;
 
         /// <summary>
@@ -60,62 +59,6 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts Handling RDF ensuring that if the target Graph is non-empty RDF is handling into a temporary Graph until parsing completes successfully
-        /// </summary>
-        protected override void StartRdfInternal()
-        {
-            if (this._g.IsEmpty)
-            {
-                this._target = this._g;
-            }
-            else
-            {
-                this._target = new Graph(true);
-                this._target.Namespaces.Import(this._g.Namespaces);
-            }
-            this.NodeFactory = this._target;
-        }
-
-        /// <summary>
-        /// Ends Handling RDF discarding the handled Triples if parsing failed (indicated by false for the <paramref name="ok">ok</paramref> parameter) and otherwise merging the handled triples from the temporary graph into the target graph if necessary
-        /// </summary>
-        /// <param name="ok">Indicates whether parsing completed OK</param>
-        protected override void EndRdfInternal(bool ok)
-        {
-            if (ok)
-            {
-                //If the Target Graph was different from the Destination Graph then do a Merge
-                if (!ReferenceEquals(this._g, this._target))
-                {
-                    this._g.Merge(this._target);
-                    this._g.Namespaces.Import(this._target.Namespaces);
-                }
-                else
-                {
-                    //The Target was the Graph so we want to set our reference to it to be null so we don't
-                    //clear it in the remainder of our clean up step
-                    this._target = null;
-                }
-            }
-            else
-            {
-                //Discard the Parsed Triples if parsing failed
-                if (ReferenceEquals(this._g, this._target))
-                {
-                    this._g.Clear();
-                    this._target = null;
-                }
-            }
-
-            //Always throw away the target afterwards if not already done so
-            if (this._target != null)
-            {
-                this._target.Clear();
-                this._target = null;
-            }
-        }
-
-        /// <summary>
         /// Handles Namespace Declarations by adding them to the Graphs Namespace Map
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
@@ -123,7 +66,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            this._target.Namespaces.AddNamespace(prefix, namespaceUri);
+            this._g.Namespaces.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
@@ -144,7 +87,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._target.Assert(t);
+            this._g.Assert(t);
             return true;
         }
 
@@ -155,7 +98,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleQuadInternal(Quad q)
         {
-            if (q.InDefaultGraph) this._target.Assert(q.AsTriple());
+            if (q.InDefaultGraph) this._g.Assert(q.AsTriple());
             return true;
         }
 
