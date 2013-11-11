@@ -16,8 +16,7 @@
       <dependency id="OpenLink.Data.Virtuoso" version="6.2.3128.1" />
     </dependencies>
     <releaseNotes>
-      - Split source and PDBs into separate symbols package
-      - Fix a bug with accessing graphs named with relative URIs
+      - Fix a bug with transactions left in open state in some circumstances
     </releaseNotes>
   </metadata>
 </package>
