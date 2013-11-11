@@ -863,6 +863,27 @@ namespace VDS.RDF.Storage
             }
         }
 
+        [Test]
+        public void StorageVirtuosoTightSaveLoop()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    IGraph g = new Graph();
+                    g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/Type")));
+                    g.BaseUri = new Uri("http://example.org/graphs/" + i);
+
+                    virtuoso.SaveGraph(g);
+                }
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
