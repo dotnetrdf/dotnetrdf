@@ -1,7 +1,7 @@
 ﻿Change Log
 ==========
 
-1.1.0
+1.0.2
 -----
 
 Added
@@ -10,9 +10,11 @@ Changed
 - Bug Fixes
  - Possible OOM when stream parsing large RDF/XML files (CORE-378)
  - Fix a bug with transactions being left open in some cases when using VirtuosoManager (VIRT-382)
+- NuGet
+ - Fixed packaging to ensure the Portable Class Library builds are included
 
 Removed
-- Marked the as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
+- Marked as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
 
 1.0.1
 -----
