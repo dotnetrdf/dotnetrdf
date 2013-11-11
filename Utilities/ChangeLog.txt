@@ -30,6 +30,7 @@ rdfQuery
 rdfServer
 
 rdfServerGUI
+- Fix possible server configuration errors when whitespace is entered in some configuration fields
  
 rdfWebDeploy
 
