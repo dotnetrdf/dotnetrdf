@@ -626,7 +626,7 @@
 
   <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <property name="msBuild.exe" value="${string::replace(framework::get-framework-directory(framework::get-target-framework()), 'Framework64', 'Framework')}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
