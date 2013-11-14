@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" 
+           Name="$(var.ProductName)" 
+           Language="1033" 
+           Version="$(var.BuildNumber)" 
+           Manufacturer="dotNetRDF Project" 
+           UpgradeCode="31bb847a-80a5-40e0-b5b1-ce8260127175">
+    
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
+    
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+		<Feature Id="ProductFeature" Title="DotNetRDF Toolkit" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+    
+    <WixVariable Id='WixUILicenseRtf' Value='EULA.rtf'/>
+    <Property Id='WIXUI_INSTALLDIR' Value='INSTALLFOLDER' />
+    <UIRef Id="WixUI_InstallDir" />
+    
+  </Product>
+
+  
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="DotNetRdfProjectFolder" Name="dotNetRDF Project">
+          <Directory Id="INSTALLFOLDER" Name="dotNetRDF Toolkit"/>
+        </Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <ComponentGroupRef Id="coreFilesComponentGroup"/>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

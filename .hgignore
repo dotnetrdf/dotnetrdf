@@ -26,6 +26,7 @@ found*.txt
 _ReSharper*/
 *.lnk
 *.PublicKey
+Build\ToolkitInstaller\CoreFiles.wxs
 
 # NuGet Package Management Stuff
 .nuget/*.exe

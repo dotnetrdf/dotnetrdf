@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 1.1.0
+Version 1.0.2
 
 dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
@@ -105,8 +105,7 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- The W3C Last Call Working Draft of TriG (19th September 2013) is not yet supported
-- The W3C Last Call Working Drafts on NTriples and NQuads (5th September 2013) are not yet supported
+- The W3C Candidate Recommendations on NTriples, NQuads and TriG (5th November 2013) are not yet supported
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
@@ -118,6 +117,8 @@ Please see ChangeLog.txt included in this release
 
 Release History
 ---------------
+
+NB - Dates are given UK style as dd/mm/yyyy
 
 31/07/2009 - First public Alpha release (Version 0.1.0 Alpha)
 
@@ -181,7 +182,7 @@ Release History
 
 10/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
 
-?/?/2013 - Release of Version 1.1.0 (Build 1.1.0.?)
+14/11/2013 - Release of Version 1.1.0 (Build 1.0.2.2880)
 
 Acknowledgements
 ----------------

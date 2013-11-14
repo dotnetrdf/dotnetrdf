@@ -100,3 +100,4 @@ improvements in the code:
  - George Abraham
  - Dennis Ludl
  - Maximillien Bronnimann
+ - Tony Lootens

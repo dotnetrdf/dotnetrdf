@@ -231,38 +231,38 @@ namespace VDS.RDF.Utilities.Server.GUI
 
             bool external = this.chkRunExternal.Checked;
 
-            if (!this.txtHost.Equals(String.Empty))
+            if (!this.txtHost.Text.Trim().Equals(String.Empty))
             {
                 args.Add("-host");
-                args.Add(this.txtHost.Text);
+                args.Add(this.txtHost.Text.Trim());
             }
-            if (!this.txtPort.Equals(String.Empty))
+            if (!this.txtPort.Text.Equals(String.Empty))
             {
                 args.Add("-port");
                 args.Add(this.txtPort.Text);
             }
-            if (!this.txtConfigFile.Text.Equals(String.Empty))
+            if (!this.txtConfigFile.Text.Trim().Equals(String.Empty))
             {
                 args.Add("-config");
-                args.Add(this.Escape(this.txtConfigFile.Text, external));
+                args.Add(this.Escape(this.txtConfigFile.Text.Trim(), external));
             }
             if (this.chkUseLogFile.Checked)
             {
-                if (!this.txtLogFile.Text.Equals(String.Empty))
+                if (!this.txtLogFile.Text.Trim().Equals(String.Empty))
                 {
                     args.Add("-log");
-                    args.Add(this.Escape(this.txtLogFile.Text, external));
+                    args.Add(this.Escape(this.txtLogFile.Text.Trim(), external));
                 }
             }
-            if (!this.cboLogFormat.Text.Equals(String.Empty))
+            if (!this.cboLogFormat.Text.Trim().Equals(String.Empty))
             {
                 args.Add("-format");
-                args.Add(this.Escape(this.cboLogFormat.Text, external));
+                args.Add(this.Escape(this.cboLogFormat.Text.Trim(), external));
             }
-            if (!this.txtBaseDirectory.Text.Equals(String.Empty))
+            if (!this.txtBaseDirectory.Text.Trim().Equals(String.Empty))
             {
                 args.Add("-base");
-                args.Add(this.Escape(this.txtBaseDirectory.Text, external));
+                args.Add(this.Escape(this.txtBaseDirectory.Text.Trim(), external));
             }
             if (this.chkVerboseMode.Checked)
             {

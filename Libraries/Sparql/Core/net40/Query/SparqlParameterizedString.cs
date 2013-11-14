@@ -45,7 +45,8 @@ namespace VDS.RDF.Query
     /// It works broadly in the same way as a SqlCommand would in that you specify a string with paramters specified in the form <strong>@name</strong> and then use various set methods to set the actual values that should be used.  The values are only substituted for parameters when you actually call the <see cref="SparqlParameterizedString.ToString">ToString()</see> method to get the final string representation of the command. E.g.
     /// </para>
     /// <code>
-    /// SparqlParameterizedString queryString = @"SELECT * WHERE
+    /// SparqlParameterizedString queryString = new SparqlParameterizedString();
+    /// queryString.CommandText = @"SELECT * WHERE
     /// {
     ///     ?s a @type .
     /// }";

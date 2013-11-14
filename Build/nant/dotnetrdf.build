@@ -30,11 +30,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="110" />
+  <property name="dotnetrdf.version" value="102" />
   <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="110" />
+  <property name="dotnetrdf.toolsversion" value="102" />
   <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.1.0-prerelease" />
+  <property name="dotnetrdf.nuspecversion" value="1.0.2.2880" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -626,7 +626,7 @@
 
   <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <property name="msBuild.exe" value="${string::replace(framework::get-framework-directory(framework::get-target-framework()), 'Framework64', 'Framework')}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
@@ -952,6 +952,7 @@
                    build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-windowsphone,
+                   build-core-portable,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
 
