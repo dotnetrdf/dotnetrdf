@@ -170,4 +170,17 @@ namespace VDS.RDF.Writing
 
         #endregion
     }
+
+    /// <summary>
+    /// Writer for GZipped RDFa
+    /// </summary>
+    public class GZippedRdfAWriter
+        : BaseGZipWriter
+    {
+        /// <summary>
+        /// Creates a new GZipped RDFa writer
+        /// </summary>
+        public GZippedRdfAWriter()
+            : base(new HtmlWriter()) { }
+    }
 }

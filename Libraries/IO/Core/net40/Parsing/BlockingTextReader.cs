@@ -60,9 +60,9 @@ namespace VDS.RDF.Parsing
             {
                 Stream s = ((StreamReader)input).BaseStream;
 #if PORTABLE
-                if (!Options.ForceBlockingIO && (s is MemoryStream))
+                if (!IOOptions.ForceBlockingIO && (s is MemoryStream))
 #else
-                if (!Options.ForceBlockingIO && (s is FileStream || s is MemoryStream))
+                if (!IOOptions.ForceBlockingIO && (s is FileStream || s is MemoryStream))
 #endif
                 {
                     return new NonBlockingTextReader(input, bufferSize);
@@ -98,9 +98,9 @@ namespace VDS.RDF.Parsing
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
 #if PORTABLE
-            if (!Options.ForceBlockingIO && (input is MemoryStream))
+            if (!IOOptions.ForceBlockingIO && (input is MemoryStream))
 #else
-            if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
+            if (!IOOptions.ForceBlockingIO && (input is FileStream || input is MemoryStream))
 #endif
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);

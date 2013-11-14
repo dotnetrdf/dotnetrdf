@@ -1487,5 +1487,19 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event RdfReaderWarning Warning;
     }
+
+
+    /// <summary>
+    /// Parser for loading GZipped RDFa
+    /// </summary>
+    public class GZippedRdfAParser
+        : BaseGZipParser
+    {
+        /// <summary>
+        /// Creates a new GZipped RDFa parser
+        /// </summary>
+        public GZippedRdfAParser()
+            : base(new RdfAParser()) { }
+    }
 }
 #endif

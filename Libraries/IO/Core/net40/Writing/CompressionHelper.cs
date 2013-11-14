@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 
@@ -193,8 +194,8 @@ namespace VDS.RDF.Writing
             //using Blank Node syntax [p1 o1; p2 o2; p3 o3]
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
             {
-                List<IBlankNode> bnodes = context.Graph.Nodes.BlankNodes().ToList();
-                foreach (IBlankNode b in bnodes)
+                List<INode> bnodes = context.Graph.Vertices.BlankNodes().ToList();
+                foreach (INode b in bnodes)
                 {
                     if (context.Collections.ContainsKey(b)) continue;
 

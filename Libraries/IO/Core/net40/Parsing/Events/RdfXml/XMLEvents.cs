@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                          UriReference = 30,
                          QName = 31,
 
-                         BlankNodeID = 35,
+                         BlankNodeId = 35,
 
                          Literal = 40,
                          TypedLiteral = 41;
@@ -69,9 +69,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// </summary>
     public class RootEvent : BaseRdfXmlEvent
     {
-        private ElementEvent _docelement;
-        private List<ElementEvent> _children = new List<ElementEvent>();
-        private String _baseuri = String.Empty;
         private String _language = String.Empty;
 
         /// <summary>
@@ -83,7 +80,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         public RootEvent(String baseUri, String sourceXml, PositionInfo pos) 
             : base(RdfXmlEvent.Root, sourceXml, pos)
         {
-            this._baseuri = baseUri;
+            Children = new List<ElementEvent>();
+            this.BaseUri = baseUri;
         }
 
         /// <summary>
@@ -97,43 +95,17 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <summary>
         /// Gets/Sets the ElementEvent that represents the actual DocumentElement
         /// </summary>
-        public ElementEvent DocumentElement
-        {
-            get
-            {
-                return this._docelement;
-            }
-            set
-            {
-                this._docelement = value;
-            }
-        }
+        public ElementEvent DocumentElement { get; set; }
 
         /// <summary>
         /// Gets all the Child ElementEvents of the Document Root
         /// </summary>
-        public List<ElementEvent> Children
-        {
-            get
-            {
-                return this._children;
-            }
-        }
+        public List<ElementEvent> Children { get; private set; }
 
         /// <summary>
         /// Gets the Base Uri of the Node
         /// </summary>
-        public String BaseUri
-        {
-            get
-            {
-                return this._baseuri;
-            }
-            set
-            {
-                this._baseuri = value;
-            }
-        }
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets the Language of the Node
@@ -157,17 +129,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// </summary>
     public class ElementEvent : BaseRdfXmlEvent 
     {
-        private List<IRdfXmlEvent> _children = new List<IRdfXmlEvent>();
-        private String _baseuri = String.Empty;
-        private String _localname, _namespace;
-        private List<AttributeEvent> _attributes = new List<AttributeEvent>();
-        private List<NamespaceAttributeEvent> _namespaces = new List<NamespaceAttributeEvent>();
-        private String _language = String.Empty;
-        private int _listcounter = 1;
-        private IRdfXmlEvent _subject = null;
-        private RdfXmlParseType _parsetype = RdfXmlParseType.None;
-        private INode _subjectNode = null;
-
         /// <summary>
         /// Creates a new Element Event
         /// </summary>
@@ -175,23 +136,31 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="baseUri">Base Uri of the XML Node</param>
         /// <param name="sourceXml">Source XML of the XML Node</param>
         /// <param name="pos">Position Info</param>
-        public ElementEvent(String qname, String baseUri, String sourceXml, PositionInfo pos)
+        public ElementEvent(string qname, Uri baseUri, string sourceXml, PositionInfo pos)
             : base(RdfXmlEvent.Element, sourceXml, pos) {
-            this._baseuri = baseUri;
+            ParseType = RdfXmlParseType.None;
+            SubjectNode = null;
+            Subject = null;
+            Language = String.Empty;
+            ListCounter = 1;
+            NamespaceAttributes = new List<NamespaceAttributeEvent>();
+            Attributes = new List<AttributeEvent>();
+            Children = new List<IRdfXmlEvent>();
+            this.BaseUri = baseUri;
 
             if (qname.Contains(':'))
             {
                 //Has a Namespace
                 //Split the QName into Namespace and Local Name
                 String[] parts = qname.Split(':');
-                this._namespace = parts[0];
-                this._localname = parts[1];
+                this.Namespace = parts[0];
+                this.LocalName = parts[1];
             }
             else
             {
                 //Is in the Default Namespace
-                this._namespace = String.Empty;
-                this._localname = qname;
+                this.Namespace = String.Empty;
+                this.LocalName = qname;
             }
         }
 
@@ -201,7 +170,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="qname">QName of the XML Node</param>
         /// <param name="baseUri">Base Uri of the XML Node</param>
         /// <param name="sourceXml">Source XML of the XML Node</param>
-        public ElementEvent(String qname, String baseUri, String sourceXml)
+        public ElementEvent(string qname, Uri baseUri, string sourceXml)
             : this(qname, baseUri, sourceXml, (PositionInfo)null) { }
 
         /// <summary>
@@ -212,12 +181,20 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="baseUri">Base Uri of the XML Node</param>
         /// <param name="sourceXml">Source XML of the XML Node</param>
         /// <param name="pos">Position Info</param>
-        public ElementEvent(String localname, String ns, String baseUri, String sourceXml, PositionInfo pos)
+        public ElementEvent(string localname, string ns, Uri baseUri, string sourceXml, PositionInfo pos)
             : base(RdfXmlEvent.Element, sourceXml, pos)
         {
-            this._baseuri = baseUri;
-            this._localname = localname;
-            this._namespace = ns;
+            ParseType = RdfXmlParseType.None;
+            SubjectNode = null;
+            Subject = null;
+            Language = String.Empty;
+            ListCounter = 1;
+            NamespaceAttributes = new List<NamespaceAttributeEvent>();
+            Attributes = new List<AttributeEvent>();
+            Children = new List<IRdfXmlEvent>();
+            this.BaseUri = baseUri;
+            this.LocalName = localname;
+            this.Namespace = ns;
         }
 
         /// <summary>
@@ -227,30 +204,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="ns">Namespace Prefix of the XML Node</param>
         /// <param name="baseUri">Base Uri of the XML Node</param>
         /// <param name="sourceXml">Source XML of the XML Node</param>
-        public ElementEvent(String localname, String ns, String baseUri, String sourceXml)
+        public ElementEvent(string localname, string ns, Uri baseUri, string sourceXml)
             : this(localname, ns, baseUri, sourceXml, null) { }
 
         /// <summary>
         /// Gets the Local Name of this Element Event
         /// </summary>
-        public String LocalName
-        {
-            get
-            {
-                return this._localname;
-            }
-        }
+        public string LocalName { get; private set; }
 
         /// <summary>
         /// Gets the Namespace of this Element Event
         /// </summary>
-        public String Namespace
-        {
-            get
-            {
-                return this._namespace;
-            }
-        }
+        public string Namespace { get; private set; }
 
         /// <summary>
         /// Gets the QName of this Element Event
@@ -259,7 +224,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         {
             get
             {
-                return this._namespace + ":" + this._localname;
+                return this.Namespace + ":" + this.LocalName;
             }
         }
 
@@ -267,40 +232,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// Gets the Child Element Events 
         /// </summary>
         /// <remarks>These correspond to the Child Nodes of the XML Node</remarks>
-        public List<IRdfXmlEvent> Children
-        {
-            get
-            {
-                return this._children;
-            }
-        }
+        public List<IRdfXmlEvent> Children { get; private set; }
 
         /// <summary>
         /// Gets/Sets the Base Uri of the XML Node
         /// </summary>
-        public String BaseUri
-        {
-            get
-            {
-                return this._baseuri;
-            }
-            set
-            {
-                this._baseuri = value;
-            }
-        }
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets the Attribute Events
         /// </summary>
         /// <remarks>These correspond to the Attributes of the XML Node (with some exceptions as defined in the RDF/XML specification)</remarks>
-        public List<AttributeEvent> Attributes
-        {
-            get
-            {
-                return this._attributes;
-            }
-        }
+        public List<AttributeEvent> Attributes { get; private set; }
 
         /// <summary>
         /// Gets the Namespace Attribute Events
@@ -308,90 +251,34 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <remarks>
         /// These correspond to all the Namespace Attributes of the XML Node
         /// </remarks>
-        public List<NamespaceAttributeEvent> NamespaceAttributes
-        {
-            get
-            {
-                return this._namespaces;
-            }
-        }
+        public List<NamespaceAttributeEvent> NamespaceAttributes { get; private set; }
 
         /// <summary>
         /// Gets/Sets the List Counter
         /// </summary>
-        public int ListCounter
-        {
-            get
-            {
-                return this._listcounter;
-            }
-            set
-            {
-                this._listcounter = value;
-            }
-        }
+        public int ListCounter { get; set; }
 
         /// <summary>
         /// Gets/Sets the Language of this Event
         /// </summary>
-        public String Language
-        {
-            get
-            {
-                return this._language;
-            }
-            set
-            {
-                this._language = value;
-            }
-        }
+        public string Language { get; set; }
 
         /// <summary>
         /// Gets/Sets the Subject Event of this Event
         /// </summary>
         /// <remarks>Will be assigned according to the Parsing rules during the Parsing process and later used to generate a Subject Node</remarks>
-        public IRdfXmlEvent Subject
-        {
-            get
-            {
-                return this._subject;
-            }
-            set
-            {
-                this._subject = value;
-            }
-        }
+        public IRdfXmlEvent Subject { get; set; }
 
         /// <summary>
         /// Gets/Sets the Subject Node of this Event
         /// </summary>
         /// <remarks>Will be created from the Subject at some point during the Parsing process</remarks>
-        public INode SubjectNode
-        {
-            get
-            {
-                return this._subjectNode;
-            }
-            set
-            {
-                this._subjectNode = value;
-            }
-        }
+        public INode SubjectNode { get; set; }
 
         /// <summary>
         /// Gets/Sets the Parse Type for this Event
         /// </summary>
-        public RdfXmlParseType ParseType
-        {
-            get
-            {
-                return this._parsetype;
-            }
-            set
-            {
-                this._parsetype = value;
-            }
-        }
+        public RdfXmlParseType ParseType { get; set; }
 
         /// <summary>
         /// Method which sets the Uri for this Element Event
@@ -405,8 +292,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 //Split the QName into Namespace and Local Name
                 String qname = u.Identifier;
                 String[] parts = qname.Split(':');
-                this._namespace = parts[0];
-                this._localname = parts[1];
+                this.Namespace = parts[0];
+                this.LocalName = parts[1];
             }
             else
             {
@@ -420,7 +307,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Element] " + this._namespace + ":" + this._localname;
+            return "[Element] " + this.Namespace + ":" + this.LocalName;
         }
 
     }
@@ -869,7 +756,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="sourceXml">Source XML</param>
         /// <param name="pos">Position Info</param>
         public BlankNodeIDEvent(String identifier, String sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
+            : base(RdfXmlEvent.BlankNodeId, sourceXml, pos)
         {
             this._id = identifier;
         }
@@ -888,7 +775,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="sourceXml">Source XML</param>
         /// <param name="pos">Position Info</param>
         public BlankNodeIDEvent(String sourceXml, PositionInfo pos)
-            : base(RdfXmlEvent.BlankNodeID, sourceXml, pos)
+            : base(RdfXmlEvent.BlankNodeId, sourceXml, pos)
         {
             this._id = String.Empty;
         }

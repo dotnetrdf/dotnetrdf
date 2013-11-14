@@ -199,8 +199,8 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             //Always force RDF Namespace to be correctly defined
-            g.NamespaceMap.Import(this._defaultNamespaces);
-            g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            g.Namespaces.Import(this._defaultNamespaces);
+            g.Namespaces.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
@@ -214,10 +214,10 @@ namespace VDS.RDF.Writing
                 StringBuilder entities = new StringBuilder();
                 String uri;
                 entities.Append('\n');
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                foreach (String prefix in context.Namespaces.Prefixes)
                 {
-                    uri = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
-                    if (!uri.Equals(context.NamespaceMap.GetNamespaceUri(prefix).ToString()))
+                    uri = context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri;
+                    if (!uri.Equals(context.Namespaces.GetNamespaceUri(prefix).ToString()))
                     {
                         context.UseDtd = false;
                         break;
@@ -236,8 +236,8 @@ namespace VDS.RDF.Writing
             {
                 context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.AbsoluteUri);//Uri.EscapeUriString(context.Graph.BaseUri.ToString()));
             }
-            context.NamespaceMap.IncrementNesting();
-            foreach (String prefix in context.NamespaceMap.Prefixes)
+            context.Namespaces.IncrementNesting();
+            foreach (String prefix in context.Namespaces.Prefixes)
             {
                 if (prefix.Equals("rdf")) continue;
 
@@ -247,13 +247,13 @@ namespace VDS.RDF.Writing
                     //String nsRef = "&" + prefix + ";";
                     //context.Writer.WriteRaw(nsRef);
                     //context.Writer.WriteEntityRef(prefix);
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));//Uri.EscapeUriString(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri)));
+                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri));//Uri.EscapeUriString(WriterHelper.EncodeForXml(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri)));
                     context.Writer.WriteEndAttribute();
                 }
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));//Uri.EscapeUriString(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri)));
+                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri));//Uri.EscapeUriString(WriterHelper.EncodeForXml(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri)));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -261,8 +261,8 @@ namespace VDS.RDF.Writing
             //Find the Collections and Type References
             if (context.CompressionLevel >= WriterCompressionLevel.More)
             {
-                WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
-                //WriterHelper.FindCollections(context, CollectionSearchMode.All);
+                CompressionHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
+                //CompressionHelper.FindCollections(context, CollectionSearchMode.All);
             }
             Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
 
@@ -284,19 +284,19 @@ namespace VDS.RDF.Writing
                     //Start a new set of Triples
                     if (lastSubj != null)
                     {
-                        context.NamespaceMap.DecrementNesting();
+                        context.Namespaces.DecrementNesting();
                         context.Writer.WriteEndElement();
                     }
                     if (lastPred != null)
                     {
-                        context.NamespaceMap.DecrementNesting();
+                        context.Namespaces.DecrementNesting();
                         context.Writer.WriteEndElement();
                     }
 
                     //Write out the Subject
                     //Validate Subject
                     //Use a Type Reference if applicable
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     if (typerefs.ContainsKey(t.Subject))
                     {
                         String tref = typerefs[t.Subject];
@@ -344,7 +344,7 @@ namespace VDS.RDF.Writing
                     }
 
                     //Write the Predicate
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
                     lastObj = null;
@@ -353,12 +353,12 @@ namespace VDS.RDF.Writing
                 {
                     if (lastPred != null)
                     {
-                        context.NamespaceMap.DecrementNesting();
+                        context.Namespaces.DecrementNesting();
                         context.Writer.WriteEndElement();
                     }
 
                     //Write the Predicate
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                     lastPred = t.Predicate;
                     lastObj = null;
@@ -368,13 +368,13 @@ namespace VDS.RDF.Writing
                 if (lastObj != null)
                 {
                     //Terminate the previous Predicate Node
-                    context.NamespaceMap.DecrementNesting();
+                    context.Namespaces.DecrementNesting();
                     context.Writer.WriteEndElement();
 
                     //Start a new Predicate Node
-                    context.NamespaceMap.DecrementNesting();
+                    context.Namespaces.DecrementNesting();
                     context.Writer.WriteEndElement();
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     this.GeneratePredicateNode(context, t.Predicate);
                 }
                 //Create an Object for the Object
@@ -411,7 +411,7 @@ namespace VDS.RDF.Writing
                 lastObj = t.Object;
 
                 //Force a new Predicate Node
-                context.NamespaceMap.DecrementNesting();
+                context.Namespaces.DecrementNesting();
                 context.Writer.WriteEndElement();
                 lastPred = null;
 
@@ -426,7 +426,7 @@ namespace VDS.RDF.Writing
                     if (typerefs.ContainsKey(pair.Key))
                     {
                         String tref = typerefs[pair.Key];
-                        context.NamespaceMap.IncrementNesting();
+                        context.Namespaces.IncrementNesting();
                         if (tref.StartsWith(":"))
                         {
                             context.Writer.WriteStartElement(tref.Substring(1));
@@ -455,7 +455,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            context.NamespaceMap.DecrementNesting();
+            context.Namespaces.DecrementNesting();
             context.Writer.WriteEndDocument();
 
             //Save to the Output Stream
@@ -468,7 +468,7 @@ namespace VDS.RDF.Writing
             OutputRdfCollection c = context.Collections[key];
             if (!c.IsExplicit)
             {
-                if (context.NamespaceMap.NestingLevel > 2)
+                if (context.Namespaces.NestingLevel > 2)
                 {
                     //Need to set the Predicate to have a rdf:parseType of Resource
                     context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
@@ -480,7 +480,7 @@ namespace VDS.RDF.Writing
                     //Get the Next Item and generate the rdf:first element
                     INode next = c.Triples.First().Object;
                     c.Triples.RemoveAt(0);
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
 
                     //Set the value of the rdf:first Item
@@ -502,9 +502,9 @@ namespace VDS.RDF.Writing
                     }
 
                     //Now generate the rdf:rest element
-                    context.NamespaceMap.DecrementNesting();
+                    context.Namespaces.DecrementNesting();
                     context.Writer.WriteEndElement();
-                    context.NamespaceMap.IncrementNesting();
+                    context.Namespaces.IncrementNesting();
                     context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
 
                     if (c.Triples.Count >= 1)
@@ -529,7 +529,7 @@ namespace VDS.RDF.Writing
                 }
                 for (int i = 0; i < length; i++)
                 {
-                    context.NamespaceMap.DecrementNesting();
+                    context.Namespaces.DecrementNesting();
                     context.Writer.WriteEndElement();
                 }
             }
@@ -543,7 +543,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     //Need to set the Predicate to have a rdf:parseType of Resource
-                    if (context.NamespaceMap.NestingLevel > 2)
+                    if (context.Namespaces.NestingLevel > 2)
                     {
                         //Need to set the Predicate to have a rdf:parseType of Resource
                         context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
@@ -713,7 +713,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.Namespaces.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -732,7 +732,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
                     String prefix = uriref.Substring(0, uriref.IndexOf(':'));
-                    if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
+                    if (context.UseDtd && context.Namespaces.GetNestingLevel(prefix) == 0)
                     {
                         //Must have Use DTD enabled
                         //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
@@ -741,15 +741,15 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
+                        uriref = context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
                         outType = UriRefType.Uri;
                     }
                 }
                 else
                 {
-                    if (context.NamespaceMap.HasNamespace(String.Empty))
+                    if (context.Namespaces.HasNamespace(String.Empty))
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
+                        uriref = context.Namespaces.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
                     else
@@ -782,13 +782,13 @@ namespace VDS.RDF.Writing
 
             //Create a Temporary Namespace ID
             //Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
-            while (context.NamespaceMap.HasNamespace("ns" + context.NextNamespaceID) && (context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == context.NamespaceMap.NestingLevel))
+            while (context.Namespaces.HasNamespace("ns" + context.NextNamespaceID) && (context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == context.Namespaces.NestingLevel))
             {
                 context.NextNamespaceID++;
             }
             String prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
-            context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
+            context.Namespaces.AddNamespace(prefix, UriFactory.Create(nsUri));
 
             tempPrefix = prefix;
             tempUri = nsUri;
@@ -807,7 +807,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     String prefix = qname.Substring(0, qname.IndexOf(':'));
-                    String ns = (context.NamespaceMap.GetNestingLevel(prefix) > 1) ? context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri : null;
+                    String ns = (context.Namespaces.GetNestingLevel(prefix) > 1) ? context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri : null;
                     context.Writer.WriteStartElement(prefix, qname.Substring(prefix.Length + 1), ns);
                 }
             }

@@ -8,7 +8,7 @@ namespace VDS.RDF.Writing.Contexts
     /// Interface for Writer Contexts which store collection compression data
     /// </summary>
     public interface ICollectionCompressingWriterContext 
-        : IWriterContext
+        : IGraphWriterContext
     {
         /// <summary>
         /// Gets the mapping from Blank Nodes to Collections

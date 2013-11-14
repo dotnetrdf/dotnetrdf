@@ -134,17 +134,17 @@ namespace VDS.RDF.Writing
             //Write the Header of the File
             foreach (IGraph g in context.Store.Graphs)
             {
-                context.NamespaceMap.Import(g.NamespaceMap);
+                context.Namespaces.Import(g.Namespaces);
             }
             if (context.CompressionLevel > WriterCompressionLevel.None)
             {
                 //Only add @prefix declarations if compression is enabled
-                context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                context.QNameMapper = new ThreadSafeQNameOutputMapper(context.Namespaces);
+                foreach (String prefix in context.Namespaces.Prefixes)
                 {
                     if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                     {
-                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.Namespaces.GetNamespaceUri(prefix)) + ">.");
                     }
                 }
                 context.Output.WriteLine();

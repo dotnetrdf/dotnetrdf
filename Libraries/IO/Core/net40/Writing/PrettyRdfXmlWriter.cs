@@ -228,8 +228,8 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             //Always force RDF Namespace to be correctly defined
-            g.NamespaceMap.Import(this._defaultNamespaces);
-            g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            g.Namespaces.Import(this._defaultNamespaces);
+            g.Namespaces.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
@@ -244,10 +244,10 @@ namespace VDS.RDF.Writing
                 StringBuilder entities = new StringBuilder();
                 String uri;
                 entities.Append('\n');
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                foreach (String prefix in context.Namespaces.Prefixes)
                 {
-                    uri = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
-                    if (!uri.Equals(context.NamespaceMap.GetNamespaceUri(prefix).ToString()))
+                    uri = context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri;
+                    if (!uri.Equals(context.Namespaces.GetNamespaceUri(prefix).ToString()))
                     {
                         context.UseDtd = false;
                         break;
@@ -268,21 +268,21 @@ namespace VDS.RDF.Writing
             }
 
             //Add all the existing Namespace Definitions here
-            context.NamespaceMap.IncrementNesting();
-            foreach (String prefix in context.NamespaceMap.Prefixes)
+            context.Namespaces.IncrementNesting();
+            foreach (String prefix in context.Namespaces.Prefixes)
             {
                 if (prefix.Equals("rdf")) continue;
 
                 if (!prefix.Equals(String.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
+                    context.Writer.WriteString(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri));
                     context.Writer.WriteEndAttribute();
                 }
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
+                    context.Writer.WriteString(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -290,7 +290,7 @@ namespace VDS.RDF.Writing
             //Find the Collections and Type References
             if (context.CompressionLevel >= WriterCompressionLevel.More)
             {
-                WriterHelper.FindCollections(context, CollectionSearchMode.All);
+                CompressionHelper.FindCollections(context, CollectionSearchMode.All);
             }
 
             //Get the Triples as a Sorted List
@@ -356,7 +356,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            context.NamespaceMap.DecrementNesting();
+            context.Namespaces.DecrementNesting();
             context.Writer.WriteEndDocument();
 
             //Save to the Output Stream
@@ -369,7 +369,7 @@ namespace VDS.RDF.Writing
             //If nothing to do return
             if (ts.Count == 0) return;
 
-            context.NamespaceMap.IncrementNesting();
+            context.Namespaces.IncrementNesting();
 
             //First off determine what the XML Element should be
             //If there is a rdf:type triple then create a typed node
@@ -432,7 +432,7 @@ namespace VDS.RDF.Writing
                     if (uriref.Contains(':'))
                     {
                         //Create an element with appropriate namespace
-                        String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                        String ns = context.Namespaces.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                         context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
                     }
                     else
@@ -467,7 +467,7 @@ namespace VDS.RDF.Writing
             else
             {
                 //Can omit the rdf:nodeID if nesting level is > 2 i.e. not a top level subject node
-                if (context.NamespaceMap.NestingLevel <= 2)
+                if (context.Namespaces.NestingLevel <= 2)
                 {
                     context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID((subj).AnonID));
                 }
@@ -521,7 +521,7 @@ namespace VDS.RDF.Writing
             }
 
             context.Writer.WriteEndElement();
-            context.NamespaceMap.DecrementNesting();
+            context.Namespaces.DecrementNesting();
         }
 
         private void GenerateSimpleLiteralAttributes(RdfXmlWriterContext context, List<Triple> ts)
@@ -549,7 +549,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':'))
                 {
                     //Create an attribute in appropriate namespace
-                    String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                    String ns = context.Namespaces.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                     context.Writer.WriteAttributeString(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns, t.Object.ToString());
                 }
                 else
@@ -562,7 +562,7 @@ namespace VDS.RDF.Writing
 
         private void GeneratePredicateOutput(RdfXmlWriterContext context, Triple t)
         {
-            context.NamespaceMap.IncrementNesting();
+            context.Namespaces.IncrementNesting();
 
             //Must ensure a URI predicate
             switch (t.Predicate.NodeType)
@@ -593,7 +593,7 @@ namespace VDS.RDF.Writing
             if (uriref.Contains(':'))
             {
                 //Create an element in the appropriate namespace
-                String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                String ns = context.Namespaces.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                 context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
             }
             else
@@ -610,7 +610,7 @@ namespace VDS.RDF.Writing
             this.GenerateObjectOutput(context, t);
 
             context.Writer.WriteEndElement();
-            context.NamespaceMap.DecrementNesting();
+            context.Namespaces.DecrementNesting();
         }
 
         private void GenerateObjectOutput(RdfXmlWriterContext context, Triple t)
@@ -756,7 +756,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.Namespaces.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -775,7 +775,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
                     String prefix = uriref.Substring(0, uriref.IndexOf(':'));
-                    if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
+                    if (context.UseDtd && context.Namespaces.GetNestingLevel(prefix) == 0)
                     {
                         //Muse have used a DTD to generate this style of URI Reference
                         //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
@@ -784,15 +784,15 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
+                        uriref = context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
                         outType = UriRefType.Uri;
                     }
                 }
                 else
                 {
-                    if (context.NamespaceMap.HasNamespace(String.Empty))
+                    if (context.Namespaces.HasNamespace(String.Empty))
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
+                        uriref = context.Namespaces.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
                     else
@@ -825,13 +825,13 @@ namespace VDS.RDF.Writing
 
             //Create a Temporary Namespace ID
             //Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
-            while (context.NamespaceMap.HasNamespace("ns" + context.NextNamespaceID) && (context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == context.NamespaceMap.NestingLevel))
+            while (context.Namespaces.HasNamespace("ns" + context.NextNamespaceID) && (context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == context.Namespaces.NestingLevel))
             {
                 context.NextNamespaceID++;
             }
             String prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
-            context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
+            context.Namespaces.AddNamespace(prefix, UriFactory.Create(nsUri));
 
             tempPrefix = prefix;
             tempUri = nsUri;

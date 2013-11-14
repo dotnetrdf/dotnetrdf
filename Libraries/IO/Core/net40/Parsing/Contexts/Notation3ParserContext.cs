@@ -159,7 +159,7 @@ namespace VDS.RDF.Parsing.Contexts
         public void PushGraph()
         {
             Graph h = new Graph();
-            h.NamespaceMap.Import(this.Namespaces);
+            h.Namespaces.Import(this.Namespaces);
             h.BaseUri = this.BaseUri;
 
             this._handlers.Push(this._handler);

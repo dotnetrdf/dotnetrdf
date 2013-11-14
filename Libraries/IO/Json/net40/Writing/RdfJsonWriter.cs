@@ -312,4 +312,17 @@ namespace VDS.RDF.Writing
             return "RDF/JSON (Talis Specification)";
         }
     }
+
+    /// <summary>
+    /// Writer for GZipped RDF/JSON
+    /// </summary>
+    public class GZippedRdfJsonWriter
+        : BaseGZipWriter
+    {
+        /// <summary>
+        /// Creates a new GZipped RDF/JSON writer
+        /// </summary>
+        public GZippedRdfJsonWriter()
+            : base(new RdfJsonWriter()) { }
+    }
 }

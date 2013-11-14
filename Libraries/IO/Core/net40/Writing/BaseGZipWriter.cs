@@ -190,32 +190,6 @@ namespace VDS.RDF.Writing
         public GZippedRdfXmlWriter()
             : base(new RdfXmlWriter()) { }
     }
-
-    /// <summary>
-    /// Writer for GZipped RDF/JSON
-    /// </summary>
-    public class GZippedRdfJsonWriter
-        : BaseGZipWriter
-    {
-        /// <summary>
-        /// Creates a new GZipped RDF/JSON writer
-        /// </summary>
-        public GZippedRdfJsonWriter()
-            : base(new RdfJsonWriter()) { }
-    }
-
-    /// <summary>
-    /// Writer for GZipped RDFa
-    /// </summary>
-    public class GZippedRdfAWriter
-        : BaseGZipWriter
-    {
-        /// <summary>
-        /// Creates a new GZipped RDFa writer
-        /// </summary>
-        public GZippedRdfAWriter()
-            : base(new HtmlWriter()) { }
-    }
 }
 
 #endif

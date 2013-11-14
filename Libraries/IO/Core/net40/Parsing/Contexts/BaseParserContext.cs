@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(handler, tokeniser)
         {
-            this._traceParsing = traceParsing;
+            this.TraceParsing = traceParsing;
             this._traceTokeniser = traceTokeniser;
             this._queue.Tracing = this._traceTokeniser;
         }

@@ -505,4 +505,17 @@ namespace VDS.RDF.Parsing
             return "RDF/JSON (Talis Specification)";
         }
     }
+
+    /// <summary>
+    /// Parser for loading GZipped RDF/JSON
+    /// </summary>
+    public class GZippedRdfJsonParser
+        : BaseGZipParser
+    {
+        /// <summary>
+        /// Creates a new GZipped RDF/JSON parser
+        /// </summary>
+        public GZippedRdfJsonParser()
+            : base(new RdfJsonParser()) { }
+    }
 }

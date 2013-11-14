@@ -231,32 +231,6 @@ namespace VDS.RDF.Parsing
         public GZippedRdfXmlParser(RdfXmlParserMode mode)
             : base(new RdfXmlParser(mode)) { }
     }
-
-    /// <summary>
-    /// Parser for loading GZipped RDF/JSON
-    /// </summary>
-    public class GZippedRdfJsonParser
-        : BaseGZipParser
-    {
-        /// <summary>
-        /// Creates a new GZipped RDF/JSON parser
-        /// </summary>
-        public GZippedRdfJsonParser()
-            : base(new RdfJsonParser()) { }
-    }
-
-    /// <summary>
-    /// Parser for loading GZipped RDFa
-    /// </summary>
-    public class GZippedRdfAParser
-        : BaseGZipParser
-    {
-        /// <summary>
-        /// Creates a new GZipped RDFa parser
-        /// </summary>
-        public GZippedRdfAParser()
-            : base(new RdfAParser()) { }
-    }
 }
 
 #endif

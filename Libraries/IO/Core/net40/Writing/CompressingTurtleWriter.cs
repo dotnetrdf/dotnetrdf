@@ -210,23 +210,24 @@ namespace VDS.RDF.Writing
         {
             //Create the Header
             //Base Directive
-            if (context.Graph.BaseUri != null)
-            {
-                context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
-                context.Output.WriteLine();
-            }
+            // TODO Provide a way to pass in Base URI for writing
+            //if (context.Graph.BaseUri != null)
+            //{
+            //    context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
+            //    context.Output.WriteLine();
+            //}
             //Prefix Directives
-            foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
+            foreach (String prefix in context.Graph.Namespaces.Prefixes)
             {
                 if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                 {
                     if (!prefix.Equals(String.Empty))
                     {
-                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.Namespaces.GetNamespaceUri(prefix)) + ">.");
                     }
                     else
                     {
-                        context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty)) + ">.");
+                        context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.Namespaces.GetNamespaceUri(String.Empty)) + ">.");
                     }
                 }
             }
@@ -234,8 +235,8 @@ namespace VDS.RDF.Writing
 
             //Decide on the Write Mode to use
             bool hiSpeed = false;
-            double subjNodes = context.Graph.Triples.SubjectNodes.Count();
-            double triples = context.Graph.Triples.Count;
+            double subjNodes = context.Graph.Triples.Select(t => t.Subject).Distinct().Count();
+            double triples = context.Graph.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
 
             if (context.CompressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))
@@ -253,7 +254,7 @@ namespace VDS.RDF.Writing
             {
                 if (context.CompressionLevel >= WriterCompressionLevel.More)
                 {
-                    WriterHelper.FindCollections(context);
+                    CompressionHelper.FindCollections(context);
                 }
 
                 //Get the Triples as a Sorted List

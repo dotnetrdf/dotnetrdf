@@ -31,6 +31,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
 {
@@ -115,7 +116,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             {
                 if (context.BaseUri != null)
                 {
-                    root.BaseUri = context.BaseUri.AbsoluteUri;
+                    root.BaseUri = context.BaseUri;
                 }
             }
             ElementEvent element = new ElementEvent(docEl.LocalName, docEl.Prefix, root.BaseUri, docEl.OuterXml);
@@ -138,24 +139,23 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     //Define a Namespace
                     String prefix = attr.LocalName;
                     if (prefix.Equals("xmlns")) prefix = String.Empty;
-                    String uri;
+                    Uri uri;
                     if (attr.Value.StartsWith("http://"))
                     {
                         //Absolute Uri
-                        uri = attr.Value;
+                        uri = UriFactory.Create(attr.Value);
                     }
-                    else if (!root.BaseUri.Equals(String.Empty))
+                    else if (!ReferenceEquals(context.BaseUri, null))
                     {
                         //Relative Uri with a Base Uri to resolve against
-                        //uri = root.BaseUri + attr.Value;
-                        uri = Tools.ResolveUri(attr.Value, root.BaseUri);
+                        uri = UriFactory.ResolveUri(attr.Value, root.BaseUri);
                     }
                     else
                     {
                         //Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    context.Namespaces.AddNamespace(prefix, UriFactory.Create(uri));
+                    context.Namespaces.AddNamespace(prefix, uri);
                 }
                 else if (attr.Name == "xml:base")
                 {
@@ -165,13 +165,17 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     if (RdfXmlSpecsHelper.IsAbsoluteURI(baseUri))
                     {
                         //Absolute Uri
-                        root.BaseUri = baseUri;
+                        root.BaseUri = UriFactory.Create(baseUri);
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!ReferenceEquals(element.BaseUri, null))
                     {
                         //Relative Uri with a Base Uri to resolve against
-                        //root.BaseUri += baseUri;
-                        root.BaseUri = Tools.ResolveUri(baseUri, root.BaseUri);
+                        root.BaseUri = UriFactory.ResolveUri(baseUri, element.BaseUri);
+                    }
+                    else if (!ReferenceEquals(root.BaseUri, null))
+                    {
+                        //Relative Uri with a Base Uri to resolve against
+                        root.BaseUri = UriFactory.ResolveUri(baseUri, root.BaseUri);
                     }
                     else
                     {
@@ -212,7 +216,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private ElementEvent GenerateEvents(RdfXmlParserContext context, XmlNode node, IRdfXmlEvent parent)
         {
             //Get the Base Uri
-            String baseUri = String.Empty;
+            Uri baseUri = null;
             if (parent is ElementEvent)
             {
                 baseUri = ((ElementEvent)parent).BaseUri;

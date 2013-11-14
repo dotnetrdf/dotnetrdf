@@ -82,7 +82,7 @@ namespace VDS.RDF.Writing.Contexts
             this._g = g;
             this._output = output;
             this._writer = XmlWriter.Create(this._output, this.GetSettings());
-            this._nsmapper.Import(this._g.NamespaceMap);
+            this._nsmapper.Import(this._g.Namespaces);
         }
 
         /// <summary>

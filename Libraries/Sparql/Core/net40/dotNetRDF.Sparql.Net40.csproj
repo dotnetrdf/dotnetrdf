@@ -570,4 +570,13 @@
     <Compile Include="Writing\SPARQLXMLWriter.cs" />
     <Compile Include="Writing\SparqlXsltWriter.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
+    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultWriteThroughHandler.cs" />
+    <Compile Include="Parsing\Tokens\PathToken.cs" />
+    <Compile Include="Writing\HtmlSchemaWriter.cs" />
+    <Compile Include="Writing\HtmlWriter.cs" />
+    <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
+  </ItemGroup>
 </Project>
