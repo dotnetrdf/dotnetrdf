@@ -101,22 +101,21 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Loads a RDF Dataset from the NQuads input using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, StreamReader input)
         {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
 #if !SILVERLIGHT
-            this.Load(handler, new StreamReader(filename, Encoding.ASCII));
-#else
-            this.Load(handler, new StreamReader(filename));
+            //Issue a Warning if the Encoding of the Stream is not ASCII
+            if (!input.CurrentEncoding.Equals(Encoding.ASCII))
+            {
+                this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+            }
 #endif
+
+            this.Load(handler, (TextReader)input);
         }
-#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler

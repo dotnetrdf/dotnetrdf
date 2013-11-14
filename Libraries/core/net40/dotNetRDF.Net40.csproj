@@ -234,7 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graphs\BaseGraph.cs" />
-    <Compile Include="Graphs\BaseGraphStore.cs" />
+    <Compile Include="Graphs\GraphStore.cs" />
     <Compile Include="Graphs\Graph.cs" />
     <Compile Include="Graphs\GraphDiff.cs" />
     <Compile Include="Graphs\GraphMatcher.cs" />

@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
@@ -150,20 +150,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given file
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(g, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
         /// <summary>
         /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
         /// </summary>
@@ -219,20 +205,6 @@ namespace VDS.RDF.Parsing
                 }
             }
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handle to use</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input

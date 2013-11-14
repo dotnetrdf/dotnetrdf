@@ -8,9 +8,9 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Graphs
 {
     /// <summary>
-    /// Abstract base implementation of a Graph store that uses a <see cref="IGraphCollection"/> behind the scenes
+    /// In-memory implementation of a Graph store that uses a <see cref="IGraphCollection"/> behind the scenes
     /// </summary>
-    public abstract class BaseGraphStore
+    public class GraphStore
         : IGraphStore
     {
         /// <summary>
@@ -21,14 +21,14 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Creates a new graph store using the default graph collection implementation
         /// </summary>
-        protected BaseGraphStore()
+        public GraphStore()
             : this(new GraphCollection()) { }
 
         /// <summary>
         /// Creates a new graph store using the given graph collection
         /// </summary>
         /// <param name="collection">Graph Collection</param>
-        protected BaseGraphStore(IGraphCollection collection)
+        public GraphStore(IGraphCollection collection)
         {
             if (collection == null) throw new ArgumentNullException("collection", "Graph Collection cannot be null");
             this._graphs = collection;

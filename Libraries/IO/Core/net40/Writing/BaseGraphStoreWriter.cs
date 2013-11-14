@@ -1,23 +1,23 @@
-using System;
+﻿using System;
 using System.IO;
 using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Writing
 {
-    public abstract class BaseGraphWriter
+    public abstract class BaseGraphStoreWriter
         : IRdfWriter
     {
-        public abstract void Save(IGraph g, TextWriter output);
-
-        public virtual void Save(IGraphStore graphStore, TextWriter output)
+        public void Save(IGraph g, TextWriter output)
         {
-            if (graphStore == null) throw new ArgumentNullException("graphStore", "Cannot write RDF from a null graph store");
+            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
             if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
 
-            // Grab the default graph (if any) and write it out
-            IGraph g = graphStore.HasGraph(Quad.DefaultGraphNode) ? graphStore[Quad.DefaultGraphNode] : new Graph();
-            this.Save(g, output);
+            IGraphStore graphStore = new GraphStore();
+            graphStore.Add(g);
+            this.Save(graphStore, output);
         }
+
+        public abstract void Save(IGraphStore graphStore, TextWriter output);
 
         /// <summary>
         /// Helper method for generating Parser Warning Events

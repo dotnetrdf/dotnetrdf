@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
     /// Class for writing a graph store or graph to TriG syntax (Turtle with named graphs)
     /// </summary>
     public class TriGWriter 
-        : IRdfWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter
+        : BaseGraphStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private bool _allowHiSpeed = true;
         private bool _prettyprint = true;
@@ -117,7 +117,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="writer">Writer to save to</param>
-        public void Save(IGraphStore store, TextWriter writer)
+        public override void Save(IGraphStore store, TextWriter writer)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -422,24 +422,6 @@ namespace VDS.RDF.Writing
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);
-            }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
-        /// </summary>
-        public event RdfWriterWarning Warning;
-
-        /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message) 
-        {
-            RdfWriterWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
             }
         }
 

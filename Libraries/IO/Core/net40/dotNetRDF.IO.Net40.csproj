@@ -120,6 +120,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\TurtleSpecsHelper.cs" />
     <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
+    <Compile Include="Writing\BaseGraphStoreWriter.cs" />
     <Compile Include="Writing\BaseGraphWriter.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
@@ -156,7 +157,6 @@
     <Compile Include="Writing\TriGWriter.cs" />
     <Compile Include="Writing\TriXWriter.cs" />
     <Compile Include="Writing\TsvWriter.cs" />
-    <Compile Include="Writing\TurtleWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">

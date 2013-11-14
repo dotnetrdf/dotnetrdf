@@ -38,7 +38,7 @@ namespace VDS.RDF.Writing
     /// Class for serialzing Triple Stores in the TriX format
     /// </summary>
     public class TriXWriter
-        : IRdfWriter
+        : BaseGraphStoreWriter
     {
         private XmlWriterSettings GetSettings()
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="output">Writer to save to</param>
-        public void Save(IGraphStore store, TextWriter output)
+        public override void Save(IGraphStore store, TextWriter output)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (output == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -189,21 +189,6 @@ namespace VDS.RDF.Writing
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriX"));
             }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
-        /// </summary>
-        public event RdfWriterWarning Warning;
-
-        /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
-        {
-            RdfWriterWarning d = this.Warning;
-            if (!ReferenceEquals(d, null)) d(message);
         }
 
         /// <summary>

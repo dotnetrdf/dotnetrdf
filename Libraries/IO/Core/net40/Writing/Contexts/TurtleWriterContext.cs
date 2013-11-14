@@ -41,7 +41,7 @@ namespace VDS.RDF.Writing.Contexts
     /// Writer Context for Turtle Writers
     /// </summary>
     public class TurtleWriterContext 
-        : BaseWriterContext
+        : BaseGraphWriterContext
     {
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings
@@ -104,8 +104,8 @@ namespace VDS.RDF.Writing.Contexts
     public class CompressingTurtleWriterContext 
         : TurtleWriterContext, ICollectionCompressingWriterContext
     {
-        private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private ITripleCollection _triplesDone = new TripleCollection();
+        private readonly Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
+        private readonly ITripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings

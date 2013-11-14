@@ -72,9 +72,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Creates a Blank Node
         /// </summary>
-        /// <param name="nodeId">Node ID which will be ignored by this Handler</param>
+        /// <param name="id">Node ID which will be ignored by this Handler</param>
         /// <returns></returns>
-        public override INode CreateBlankNode(string nodeId)
+        public override INode CreateBlankNode(Guid id)
         {
             return base.CreateBlankNode();
         }

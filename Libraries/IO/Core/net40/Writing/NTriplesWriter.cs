@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class NTriplesWriter 
-        : IRdfWriter, IFormatterBasedWriter
+        : BaseGraphWriter, IFormatterBasedWriter
     {
         private bool _sort = false;
 
@@ -70,30 +70,12 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves the Graph in NTriples Syntax to the given stream
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-#if SILVERLIGHT
-            StreamWriter output = new StreamWriter(filename);
-#else
-            StreamWriter output = new StreamWriter(filename, false, Encoding.ASCII);
-#endif
-
-            this.Save(g, output);
-        }
-#endif
-
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        public override void Save(IGraph g, TextWriter output)
         {
             try
             {
@@ -132,65 +114,14 @@ namespace VDS.RDF.Writing
         private String TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this.NodeToNTriples(context, t.Subject, QuadSegment.Subject));
+            output.Append(context.NodeFormatter.Format(t.Subject, QuadSegment.Subject));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Predicate, QuadSegment.Predicate));
+            output.Append(context.NodeFormatter.Format(t.Predicate, QuadSegment.Predicate));
             output.Append(" ");
-            output.Append(this.NodeToNTriples(context, t.Object, QuadSegment.Object));
+            output.Append(context.NodeFormatter.Format(t.Object, QuadSegment.Object));
             output.Append(" .");
 
             return output.ToString();
-        }
-
-        /// <summary>
-        /// Converts a Node into relevant NTriples Syntax
-        /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node to convert</param>
-        /// <param name="segment">Segment of the Triple being written</param>
-        /// <returns></returns>
-        private String NodeToNTriples(NTriplesWriterContext context, INode n, QuadSegment segment)
-        {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("NTriples"));
-                    break;
-
-                case NodeType.Literal:
-                    if (segment == QuadSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("NTriples"));
-                    if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("NTriples"));
-                    break;
-
-                case NodeType.Uri:
-                    break;
-
-                case NodeType.GraphLiteral:
-                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("NTriples"));
-
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("NTriples"));
-            }
-
-            return context.NodeFormatter.Format(n);
-        }
-
-        /// <summary>
-        /// Event which is raised when there is an issue with the Graph being serialized that doesn't prevent serialization but the user should be aware of
-        /// </summary>
-        public event RdfWriterWarning Warning;
-
-        /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
-        {
-            RdfWriterWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
-            }
         }
 
         /// <summary>

@@ -137,29 +137,6 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Parses NTriples Syntax from the given File into Triples in the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="filename">Name of the file containing Turtle Syntax</param>
-        /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function</remarks>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-
-            //Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
-#if !SILVERLIGHT
-            StreamReader input = new StreamReader(filename, Encoding.ASCII);
-#else
-            StreamReader input = new StreamReader(filename);
-            this.RaiseWarning("NTriples files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
-#endif
-            this.Load(g, input);
-        }
-#endif
-
         /// <summary>
         /// Parses NTriples Syntax from the given Input Stream using a RDF Handler
         /// </summary>
@@ -213,20 +190,6 @@ namespace VDS.RDF.Parsing
                 }
             }
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Parses NTriples Syntax from the given file using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
 
         private void Parse(TokenisingParserContext context)
         {

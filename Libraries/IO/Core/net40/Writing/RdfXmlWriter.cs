@@ -52,11 +52,11 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     public class RdfXmlWriter 
-        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
+        : BaseGraphWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
-        private bool _useDTD = IOOptions.UseDtd;
+        private bool _useDtd = IOOptions.UseDtd;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Writing
         public RdfXmlWriter(int compressionLevel, bool useDtd)
             : this(compressionLevel)
         {
-            this._useDTD = useDtd;
+            this._useDtd = useDtd;
         }
 
         /// <summary>
@@ -130,11 +130,11 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return this._useDTD;
+                return this._useDtd;
             }
             set
             {
-                this._useDTD = value;
+                this._useDtd = value;
             }
         }
 
@@ -164,25 +164,12 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Graph in RDF/XML syntax to the given File
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">Filename to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8));
-            this.Save(g, output);
-        }
-#endif
-
         /// <summary>
         /// Saves a Graph to an arbitrary output stream
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        public override void Save(IGraph g, TextWriter output)
         {
             try
             {
@@ -218,7 +205,7 @@ namespace VDS.RDF.Writing
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
             context.CompressionLevel = this._compressionLevel;
-            context.UseDtd = this._useDTD;
+            context.UseDtd = this._useDtd;
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
@@ -884,23 +871,6 @@ namespace VDS.RDF.Writing
 
             return typerefs;
         }
-
-        /// <summary>
-        /// Internal Helper method for raising the Warning event
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
-        {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being output
-        /// </summary>
-        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

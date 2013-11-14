@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing.Contexts
     /// Writer Context for RDF/XML Writers
     /// </summary>
     public class RdfXmlWriterContext 
-        : IWriterContext, ICollectionCompressingWriterContext
+        : IGraphWriterContext, ICollectionCompressingWriterContext
     {
         /// <summary>
         /// Pretty Printing Mode setting

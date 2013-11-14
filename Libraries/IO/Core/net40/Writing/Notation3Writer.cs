@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class Notation3Writer 
-        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
+        : BaseGraphWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
@@ -149,24 +149,12 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Graph to a file using Notation 3 Syntax
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-            this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8)));
-        }
-#endif
-
         /// <summary>
         /// Saves a Graph to the given Stream using Notation 3 Syntax
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        public override void Save(IGraph g, TextWriter output)
         {
             try
             {
@@ -473,24 +461,6 @@ namespace VDS.RDF.Writing
             }
             return output.ToString();
         }
-
-        /// <summary>
-        /// Helper method for generating Parser Warning Events
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
-        {
-            RdfWriterWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
-            }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the Graph being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces
