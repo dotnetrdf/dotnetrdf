@@ -52,24 +52,12 @@ namespace VDS.RDF.Writing
         /// Creates a new GZipped writer
         /// </summary>
         /// <param name="writer">Underlying writer</param>
-        public BaseGZipWriter(IRdfWriter writer)
+        protected BaseGZipWriter(IRdfWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
             this._writer = writer;
             this._writer.Warning += this.RaiseWarning;
         }
-
-        /// <summary>
-        /// Saves a Graph as GZipped output
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
-            this.Save(g, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
-        }
-
 
         /// <summary>
         /// Saves a Graph as GZipped output
@@ -96,6 +84,32 @@ namespace VDS.RDF.Writing
             }
             else
             {
+                // TODO Provide an adaptor to write GZipped content to any TextWriter
+                throw new RdfOutputException("GZipped Output can only be written to StreamWriter instances");
+            }
+        }
+
+        public void Save(IGraphStore graphStore, TextWriter output)
+        {
+            if (graphStore == null) throw new RdfOutputException("Cannot write RDF from a null Graph Store");
+
+            if (output is StreamWriter)
+            {
+                //Check for inner GZipStream and re-wrap if required
+                StreamWriter streamOutput = (StreamWriter)output;
+                if (streamOutput.BaseStream is GZipStream)
+                {
+                    this._writer.Save(graphStore, streamOutput);
+                }
+                else
+                {
+                    streamOutput = new StreamWriter(new GZipStream(streamOutput.BaseStream, CompressionMode.Compress));
+                    this._writer.Save(graphStore, streamOutput);
+                }
+            }
+            else
+            {
+                // TODO Provide an adaptor to write GZipped content to any TextWriter
                 throw new RdfOutputException("GZipped Output can only be written to StreamWriter instances");
             }
         }

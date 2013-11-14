@@ -349,8 +349,8 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
-        protected internal BlankNode(Guid id)
+        /// <param name="id">ID</param>
+        public BlankNode(Guid id)
             : base(id) { }
 
         /// <summary>

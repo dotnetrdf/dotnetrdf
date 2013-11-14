@@ -365,7 +365,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="g">Graph this node is in</param>
         /// <param name="subgraph">Sub-graph this node represents</param>
-        protected internal GraphLiteralNode(IGraph subgraph)
+        public GraphLiteralNode(IGraph subgraph)
             : base(subgraph) { }
 
 #if !SILVERLIGHT

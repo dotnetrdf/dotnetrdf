@@ -34,9 +34,6 @@ namespace VDS.RDF
     //Callback Delegates for Async operations
 
     /// <summary>
-    /// <remarks>
-    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
-    /// </remarks>
     /// Callback for methods that return a <see cref="IGraph">IGraph</see> asynchronously
     /// </summary>
     /// <param name="g">Graph</param>
@@ -47,21 +44,16 @@ namespace VDS.RDF
     public delegate void GraphCallback(IGraph g, Object state);
 
     /// <summary>
+    /// Callback for methods that return a <see cref="IGraphStore"> asynchronously
+    /// </summary>
+    /// <param name="graphStore">Graph store</param>
+    /// <param name="state">State</param>
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
     /// </remarks>
-    /// <remarks>
-    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
-    /// </remarks>
-    /// <remarks>
-    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
-    /// </remarks>
-    /// <remarks>
-    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
-    /// </remarks>
-    /// <remarks>
-    /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback
-    /// </remarks>
+    public delegate void GraphStoreCallback(IGraphStore graphStore, Object state);
+
+    /// <summary>
     /// Callback for methods that return a Namespace Map
     /// </summary>
     /// <param name="nsmap">Namespace Map</param>

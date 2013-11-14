@@ -25,7 +25,7 @@ namespace VDS.RDF.Nodes
             return this._bnode;
         }
 
-        public INode CreateBlankNode(string nodeId)
+        public INode CreateBlankNode(Guid id)
         {
             return this._bnode;
         }

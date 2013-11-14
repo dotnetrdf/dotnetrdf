@@ -29,46 +29,35 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
     /// Writer Context for TriG
     /// </summary>
-    public class TriGWriterContext : ThreadedStoreWriterContext
+    public class TriGWriterContext 
+        : BaseGraphStoreWriterContext
     {
-        private int _compressionLevel = WriterCompressionLevel.Default;
-        private bool _n3compatability = false;
-
         /// <summary>
         /// Creates a new TriG Writer context
         /// </summary>
         /// <param name="store">Triple Store to save</param>
+        /// <param name="namespaces">Namespaces to use</param>
         /// <param name="output">TextWriter to output to</param>
         /// <param name="prettyPrint">Whether to use pretty printing</param>
         /// <param name="hiSpeedAllowed">Whether high speed mode is permitted</param>
         /// <param name="compressionLevel">Compression Level to use</param>
-        /// <param name="n3compatability">Whether to enable N3 compatability mode</param>
-        public TriGWriterContext(IGraphStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
-            : base(store, output, prettyPrint, hiSpeedAllowed)
+        /// <param name="n3Compatability">Whether to enable N3 compatability mode</param>
+        public TriGWriterContext(IGraphStore store, INamespaceMapper namespaces, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3Compatability)
+            : base(store, namespaces, output, compressionLevel, prettyPrint, hiSpeedAllowed)
         {
-            this._compressionLevel = compressionLevel;
-            this._n3compatability = n3compatability;
+            this.N3CompatabilityMode = n3Compatability;
         }
 
         /// <summary>
         /// Gets/Sets N3 Compatability Mode
         /// </summary>
-        public bool N3CompatabilityMode
-        {
-            get
-            {
-                return this._n3compatability;
-            }
-            set
-            {
-                this._n3compatability = value;
-            }
-        }
+        public bool N3CompatabilityMode { get; set; }
     }
 }

@@ -44,14 +44,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Creates a new Handler
         /// </summary>
-        public BaseHandler()
+        protected BaseHandler()
             : this(new NodeFactory()) { }
 
         /// <summary>
         /// Creates a new Handler using the given Node Factory
         /// </summary>
         /// <param name="factory">Node Factory</param>
-        public BaseHandler(INodeFactory factory)
+        protected BaseHandler(INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
             this._factory = factory;
@@ -82,6 +82,16 @@ namespace VDS.RDF.Parsing.Handlers
         public virtual INode CreateBlankNode()
         {
             return this._factory.CreateBlankNode();
+        }
+
+        /// <summary>
+        /// Creates a blank node
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns></returns>
+        public virtual INode CreateBlankNode(Guid id)
+        {
+            return this._factory.CreateBlankNode(id);
         }
 
         /// <summary>

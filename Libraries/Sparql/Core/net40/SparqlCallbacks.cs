@@ -14,13 +14,6 @@ namespace VDS.RDF
     public delegate void SparqlResultsCallback(SparqlResultSet results, Object state);
 
     /// <summary>
-    /// Callbacks for methods that process the resulting triples with an RDF Handler asynchronously
-    /// </summary>
-    /// <param name="handler">RDF Handler</param>
-    /// <param name="state">State</param>
-    public delegate void RdfHandlerCallback(IRdfHandler handler, Object state);
-
-    /// <summary>
     /// Callbacks for methods that process the results with an SPARQL Results Handler asynchronously
     /// </summary>
     /// <param name="handler">SPARQL Results Handler</param>

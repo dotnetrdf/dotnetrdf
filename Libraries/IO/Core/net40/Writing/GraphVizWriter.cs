@@ -39,31 +39,14 @@ namespace VDS.RDF.Writing
     /// A Writer which generates GraphViz DOT Format files from an RDF Graph
     /// </summary>
     public class GraphVizWriter 
-        : IRdfWriter
+        : BaseGraphWriter
     {
-
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Graph into GraphViz DOT Format
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-            //Open the Stream for the File
-            StreamWriter output = new StreamWriter(filename);
-
-            //Call the other version of Save to do the actual work
-            this.Save(g, output);
-        }
-#endif
-
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        public override void Save(IGraph g, TextWriter output)
         {
             //Start the Graph
             output.WriteLine("digraph G {");
@@ -225,25 +208,6 @@ namespace VDS.RDF.Writing
 
             return output.ToString();
         }
-
-        /// <summary>
-        /// Internal Helper method which handles raising the Warning event if an Event Handler is registered to it
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
-        {
-            RdfWriterWarning d = this.Warning;
-            if (d != null)
-            {
-                d(message);
-            }
-        }
-
-        /// <summary>
-        /// Event that is raised if there is a potential problem with the RDF being output
-        /// </summary>
-        /// <remarks>Not used by this Writer</remarks>
-        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

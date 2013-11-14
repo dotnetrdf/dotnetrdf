@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Collections
@@ -41,38 +42,38 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Creates a new decorator
         /// </summary>
-        public BaseDemandGraphCollection()
+        protected BaseDemandGraphCollection()
             : base() { }
 
         /// <summary>
         /// Creates a new decorator over the given graph collection
         /// </summary>
         /// <param name="collection">Graph Collection</param>
-        public BaseDemandGraphCollection(BaseGraphCollection collection)
+        protected BaseDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
         /// <summary>
         /// Checks whether the collection contains a Graph invoking an on-demand load if not present in the underlying collection
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph name</param>
         /// <returns></returns>
-        public override bool ContainsKey(Uri graphUri)
+        public override bool ContainsKey(INode graphName)
         {
+            if (ReferenceEquals(graphName, null)) return base.ContainsKey(graphName);
             try
             {
-                if (base.Contains(graphUri))
+                if (base.ContainsKey(graphName))
                 {
                     return true;
                 }
                 else
                 {
                     //Try to do on-demand loading
-                    IGraph g = this.LoadOnDemand(graphUri);
+                    IGraph g = this.LoadOnDemand(graphName);
 
                     //Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
                     //in case the loading process sets it otherwise
-                    g.BaseUri = graphUri;
-                    base.Add(g);
+                    base.Add(graphName, g);
                     return true;
                 }
             }
@@ -86,9 +87,9 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Loads a Graph on demand
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="graphName">Name of the graph to load</param>
         /// <returns>A Graph if it could be loaded and throws an error otherwise</returns>
-        protected abstract IGraph LoadOnDemand(Uri graphUri);
+        protected abstract IGraph LoadOnDemand(INode graphName);
     }
 
 #if !SILVERLIGHT
@@ -114,27 +115,24 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Tries to load a Graph on demand from a URI
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphName">Graph name</param>
         /// <returns></returns>
-        protected override IGraph LoadOnDemand(Uri graphUri)
+        protected override IGraph LoadOnDemand(INode graphName)
         {
-            if (graphUri != null)
+            if (graphName.NodeType == NodeType.Uri)
             {
                 try
                 {
                     Graph g = new Graph();
-                    UriLoader.Load(g, graphUri);
+                    UriLoader.Load(g, graphName.Uri);
                     return g;
                 }
                 catch
                 {
-                    throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
+                    throw new RdfException("The Graph with the URI " + graphName.Uri.AbsoluteUri + " does not exist in this collection");
                 }
             }
-            else
-            {
-                throw new RdfException("The Graph with the URI does not exist in this collection");
-            }
+            throw new RdfException("The Graph with the URI does not exist in this collection");
         }
     }
 
@@ -163,33 +161,34 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Tries to load a Graph on demand
         /// </summary>
-        /// <param name="graphUri"></param>
+        /// <param name="graphName">Graph name</param>
         /// <returns></returns>
-        protected override IGraph LoadOnDemand(Uri graphUri)
+        protected override IGraph LoadOnDemand(INode graphName)
         {
-            if (graphUri == null) throw new RdfException("The Graph with the given URI does not exist in this collection");
+            if (graphName.NodeType == NodeType.Uri)
+            {
+                Uri graphUri = graphName.Uri;
 #if SILVERLIGHT
             if (graphUri.IsFile())
 #else
-            if (graphUri.IsFile)
+                if (graphUri.IsFile)
 #endif
-            {
-                try
                 {
-                    Graph g = new Graph();
-                    FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
+                    try
+                    {
+                        Graph g = new Graph();
+                        FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
 
-                    return g;
+                        return g;
+                    }
+                    catch
+                    {
+                        throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
+                    }
                 }
-                catch
-                {
-                    throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
-                }
-            }
-            else
-            {
                 throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
             }
+            throw new RdfException("The Graph with the URI does not exist in this collection");
         }
     }
 #endif

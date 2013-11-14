@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IOCallbacks.cs" />
     <Compile Include="IOExceptions.cs" />
     <Compile Include="IOExtensions.cs" />
     <Compile Include="IOManager.cs" />
@@ -119,10 +120,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specifications\TurtleSpecsHelper.cs" />
     <Compile Include="Specifications\UnicodeSpecsHelper.cs" />
+    <Compile Include="Writing\BaseGraphWriter.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\CompressionHelper.cs" />
     <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
+    <Compile Include="Writing\Contexts\ICollectionCompressingWriterContext.cs" />
+    <Compile Include="Writing\Contexts\IGraphWriterContext.cs" />
+    <Compile Include="Writing\Contexts\IGraphStoreWriterContext.cs" />
+    <Compile Include="Writing\Contexts\IWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
