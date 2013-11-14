@@ -511,11 +511,11 @@ namespace VDS.RDF.Parsing
         /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, Uri u, IStoreReader parser)
+        public static void Load(IGraphStore store, Uri u, IRdfReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-            UriLoader.Load(new StoreHandler(store), u, parser);
+            UriLoader.Load(new GraphStoreHandler(store), u, parser);
         }
 
         /// <summary>
@@ -528,152 +528,10 @@ namespace VDS.RDF.Parsing
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, Uri u)
+        public static void Load(IGraphStore store, Uri u)
         {
             UriLoader.Load(store, u, null);
         }
-
-        /// <summary>
-        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="parser">Parser to use to parse the RDF dataset</param>
-        /// <remarks>
-        /// <para>
-        /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
-        /// </para>
-        /// <para>
-        /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
-        /// </para>
-        /// </remarks>
-        public static void Load(IRdfHandler handler, Uri u, IStoreReader parser)
-        {
-            if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-            if (handler == null) throw new RdfParseException("Cannot read a RDF dataset using a null RDF handler");
-
-            try
-            {
-#if SILVERLIGHT
-                if (u.IsFile())
-#else
-                if (u.IsFile)
-#endif
-
-                {
-                    //Invoke FileLoader instead
-                    RaiseWarning("This is a file: URI so invoking the FileLoader instead");
-                    if (Path.DirectorySeparatorChar == '/')
-                    {
-                        FileLoader.Load(handler, u.AbsoluteUri.Substring(7), parser);
-                    }
-                    else
-                    {
-                        FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
-                    }
-                    return;
-                }
-
-                //Sanitise the URI to remove any Fragment ID
-                u = Tools.StripUriFragment(u);
-
-                //Set-up the Request
-                HttpWebRequest httpRequest;
-                httpRequest = (HttpWebRequest)WebRequest.Create(u);
-
-                //Want to ask for TriG, NQuads or TriX
-                if (parser != null)
-                {
-                    //If a non-null parser set up a HTTP Header that is just for the given parser
-                    httpRequest.Accept = IOManager.CustomHttpAcceptHeader(parser);
-                }
-                else
-                {
-                    httpRequest.Accept = IOManager.HttpRdfDatasetAcceptHeader;
-                }
-
-                //Use HTTP GET
-                httpRequest.Method = "GET";
-#if !SILVERLIGHT
-                httpRequest.Timeout = Options.UriLoaderTimeout;
-#endif
-                if (_userAgent != null && !_userAgent.Equals(String.Empty))
-                {
-                    httpRequest.UserAgent = _userAgent;
-                }
-
-                //HTTP Debugging
-                Tools.HttpDebugRequest(httpRequest);
-
-                using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
-                {
-                    Tools.HttpDebugResponse(httpResponse);
-
-                    //Get a Parser and Load the RDF
-                    if (parser == null)
-                    {
-                        try
-                        {
-                            parser = IOManager.GetStoreParser(httpResponse.ContentType);
-                            parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                        }
-                        catch (RdfParserSelectionException)
-                        {
-                            RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + httpResponse.ContentType + " - seeing if the content is an RDF Graph instead");
-
-                            try
-                            {
-                                //If not a RDF Dataset format see if it is a Graph
-                                IRdfReader rdfParser = IOManager.GetParser(httpResponse.ContentType);
-                                rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                            }
-                            catch (RdfParserSelectionException)
-                            {
-                                //Finally fall back to assuming a dataset and trying format guessing
-                                String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
-                                parser = StringParser.GetDatasetParser(data);
-                                parser.Warning += RaiseStoreWarning;
-                                parser.Load(handler, new StringReader(data));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        parser.Warning += RaiseStoreWarning;
-                        parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                    }
-                }
-            }
-            catch (UriFormatException uriEx)
-            {
-                //Uri Format Invalid
-                throw new RdfException("Unable to load from the given URI '" + u.AbsoluteUri + "' since it's format was invalid, see inner exception for details", uriEx);
-            }
-            catch (WebException webEx)
-            {
-                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-
-                //Some sort of HTTP Error occurred
-                throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);
-            }
-        }
-
-        /// <summary>
-        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <remarks>
-        /// <para>
-        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
-        /// </para>
-        /// </remarks>
-        public static void LoadDataset(IRdfHandler handler, Uri u)
-        {
-            UriLoader.Load(handler, u, (IStoreReader)null);
-        }
-
 #endif
 
         #region Warning Events
