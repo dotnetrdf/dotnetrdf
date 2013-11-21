@@ -182,7 +182,9 @@ NB - Dates are given UK style as dd/mm/yyyy
 
 10/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
 
-14/11/2013 - Release of Version 1.1.0 (Build 1.0.2.2880)
+14/11/2013 - Release of Version 1.0.2 (Build 1.0.2.2880)
+
+?/12/2013 - Release of Version 1.0.3 (Build 1.0.3.?)
 
 Acknowledgements
 ----------------

@@ -1,6 +1,15 @@
 ﻿Change Log
 ==========
 
+1.0.3
+-----
+
+Added
+
+Changed
+
+Removed
+
 1.0.2
 -----
 
