@@ -199,7 +199,7 @@ namespace VDS.RDF.Parsing
 #if !PORTABLE
 
         [Test]
-        public void ParsingUriLoaderDBPedia()
+        public void ParsingUriLoaderDBPedia1()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
@@ -222,6 +222,21 @@ namespace VDS.RDF.Parsing
                 Options.HttpDebugging = false;
                 SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia2()
+        {
+            IGraph g = new Graph();
+            UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
+
+            INodeFormatter formatter = new TurtleW3CFormatter();
+            foreach (INode p in g.Triples.Select(t => t.Predicate).Distinct())
+            {
+                Console.WriteLine("ToString() = " + p.ToString());
+                Console.WriteLine("Formatted = " + p.ToString(formatter));
+                Console.WriteLine("URI ToString() = " + ((IUriNode)p).Uri.ToString());
             }
         }
 
