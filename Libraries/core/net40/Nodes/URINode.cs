@@ -36,7 +36,7 @@ namespace VDS.RDF.Nodes
 #if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="uri")]
 #endif
-    public abstract class BaseUriNode 
+    public abstract class BaseUriNode
         : BaseNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>, IValuedNode
     {
         /// <summary>
@@ -55,9 +55,9 @@ namespace VDS.RDF.Nodes
 
 #if !SILVERLIGHT
 
-        /// <summary>
-        /// Deserialization Only Constructor
-        /// </summary>
+    /// <summary>
+    /// Deserialization Only Constructor
+    /// </summary>
         protected BaseUriNode()
             : base(NodeType.Uri) { }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Nodes
 
             if (obj is INode)
             {
-                return this.Equals((INode)obj);
+                return this.Equals((INode) obj);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if ((Object) other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool Equals(BaseUriNode other)
         {
-            return this.Equals((INode)other);
+            return this.Equals((INode) other);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public int CompareTo(BaseUriNode other)
         {
-            return this.CompareTo((INode)other);
+            return this.CompareTo((INode) other);
         }
 
 #if !SILVERLIGHT
@@ -330,21 +330,15 @@ namespace VDS.RDF.Nodes
         /// </summary>
         public String EffectiveType
         {
-            get
-            {
-                return String.Empty;
-            }
+            get { return String.Empty; }
         }
-        
+
         /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>
         public EffectiveNumericType NumericType
         {
-            get 
-            {
-                return EffectiveNumericType.NaN;
-            }
+            get { return EffectiveNumericType.NaN; }
         }
 
         #endregion
@@ -365,15 +359,16 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">URI for the Node</param>
         public UriNode(Uri uri)
-            : base(uri) { }
+            : base(uri)
+        {
+        }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Deserilization Only Constructor
         /// </summary>
         protected UriNode()
             : base() { }
-
-#if !SILVERLIGHT
 
         /// <summary>
         /// Deserialization Constructor
@@ -395,7 +390,7 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public int CompareTo(UriNode other)
         {
-            return base.CompareTo((INode)other);
+            return base.CompareTo((INode) other);
         }
 
         /// <summary>
@@ -405,7 +400,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool Equals(UriNode other)
         {
-            return base.Equals((INode)other);
+            return base.Equals((INode) other);
         }
     }
 }

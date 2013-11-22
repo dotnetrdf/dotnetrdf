@@ -58,9 +58,9 @@ namespace VDS.RDF.Nodes
 
 #if !SILVERLIGHT
 
-        /// <summary>
-        /// Constructor for deserialization usage only
-        /// </summary>
+    /// <summary>
+    /// Constructor for deserialization usage only
+    /// </summary>
         protected BaseBlankNode()
             : base(NodeType.Blank) { }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Nodes
 
             if (obj is INode)
             {
-                return this.Equals((INode)obj);
+                return this.Equals((INode) obj);
             }
             else
             {
@@ -317,10 +317,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         public String EffectiveType
         {
-            get
-            {
-                return String.Empty;
-            }
+            get { return String.Empty; }
         }
 
         /// <summary>
@@ -328,10 +325,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         public EffectiveNumericType NumericType
         {
-            get 
-            {
-                return EffectiveNumericType.NaN; 
-            }
+            get { return EffectiveNumericType.NaN; }
         }
 
         #endregion
@@ -343,7 +337,7 @@ namespace VDS.RDF.Nodes
 #if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName = "bnode")]
 #endif
-    public class BlankNode 
+    public class BlankNode
         : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
@@ -351,16 +345,18 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="id">ID</param>
         public BlankNode(Guid id)
-            : base(id) { }
+            : base(id)
+        {
+        }
 
-        /// <summary>
-        /// Constructor for deserialization usage only
-        /// </summary>
+#if !SILVERLIGHT
+
+    /// <summary>
+    /// Constructor for deserialization usage only
+    /// </summary>
         protected BlankNode()
             : base()
         { }
-
-#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
@@ -380,7 +376,7 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public int CompareTo(BlankNode other)
         {
-            return this.CompareTo((INode)other);
+            return this.CompareTo((INode) other);
         }
 
         /// <summary>
@@ -390,7 +386,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool Equals(BlankNode other)
         {
-            return base.Equals((INode)other);
+            return base.Equals((INode) other);
         }
     }
 }

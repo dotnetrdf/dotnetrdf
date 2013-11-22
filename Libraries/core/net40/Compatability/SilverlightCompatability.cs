@@ -142,8 +142,8 @@ namespace VDS.RDF
 
         public static char HexUnescape(String value, ref int index)
         {
-            if (index + 2 >= value.Length) throw new RdfParseException("Malformed Percent Encoded Escape");
-            if (value[index] != '%') throw new RdfParseException("Malformed Percent Encoded Escape");
+            if (index + 2 >= value.Length) throw new ArgumentException("Malformed Percent Encoded Escape");
+            if (value[index] != '%') throw new ArgumentException("Malformed Percent Encoded Escape");
             index = index + 3;
             return UnicodeSpecsHelper.ConvertToChar(value.Substring(index + 1, 2));
         }

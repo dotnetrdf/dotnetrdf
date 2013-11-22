@@ -36,8 +36,6 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
-
-
     /// <summary>
     /// An implementation of HttpUtility for use with Silverlight builds which require it
     /// </summary>
