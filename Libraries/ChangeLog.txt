@@ -7,6 +7,8 @@
 Added
 
 Changed
+- Bug Fixes
+ - Fix a bug in how Sesame connections load the default graph
 - Query
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
 

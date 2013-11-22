@@ -483,14 +483,11 @@ namespace VDS.RDF.Storage
                 String requestUri = this._repositoriesPrefix + this._store + "/statements";
                 if (!graphUri.Equals(String.Empty))
                 {
-                    //if (this._fullContextEncoding)
-                    //{
                     serviceParams.Add("context", "<" + graphUri + ">");
-                    //}
-                    //else
-                    //{
-                    //    serviceParams.Add("context", graphUri);
-                    //}
+                }
+                else
+                {
+                    serviceParams.Add("context", "null");
                 }
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
@@ -675,7 +672,6 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
                 HttpWebResponse response;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
                 NTriplesWriter ntwriter = new NTriplesWriter();
@@ -689,7 +685,7 @@ namespace VDS.RDF.Storage
                     serviceParams.Add("context", "null");
                 }
 
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
                 
                 Tools.HttpDebugRequest(request);
                 using (response = (HttpWebResponse)request.GetResponse())
