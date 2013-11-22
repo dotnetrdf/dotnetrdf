@@ -825,12 +825,12 @@ namespace VDS.RDF.Writing
 
             //Create a Temporary Namespace ID
             //Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
-            while (context.Namespaces.HasNamespace("ns" + context.NextNamespaceID) && (context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceID) == context.Namespaces.NestingLevel))
+            while (context.Namespaces.HasNamespace("ns" + context.NextNamespaceId) && (context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceId) == 0 || context.Namespaces.GetNestingLevel("ns" + context.NextNamespaceId) == context.Namespaces.NestingLevel))
             {
-                context.NextNamespaceID++;
+                context.NextNamespaceId++;
             }
-            String prefix = "ns" + context.NextNamespaceID;
-            context.NextNamespaceID++;
+            String prefix = "ns" + context.NextNamespaceId;
+            context.NextNamespaceId++;
             context.Namespaces.AddNamespace(prefix, UriFactory.Create(nsUri));
 
             tempPrefix = prefix;

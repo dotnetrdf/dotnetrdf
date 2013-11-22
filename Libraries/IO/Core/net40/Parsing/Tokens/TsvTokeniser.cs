@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Tokens
 {

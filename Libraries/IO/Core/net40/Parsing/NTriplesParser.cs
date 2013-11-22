@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing
 
         private bool _tracetokeniser = false;
         private bool _traceparsing = false;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
 
         /// <summary>
         /// Creates a new Instance of the Parser

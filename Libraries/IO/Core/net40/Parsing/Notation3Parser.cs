@@ -27,10 +27,12 @@ using System;
 using System.Text;
 using System.IO;
 using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing
 {
@@ -43,10 +45,6 @@ namespace VDS.RDF.Parsing
     public class Notation3Parser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
-        private bool _traceParsing = false;
-        private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
-
         /// <summary>
         /// The Uri for log:implies
         /// </summary>
@@ -59,7 +57,12 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a new Notation 3 Parser
         /// </summary>
-        public Notation3Parser() { }
+        public Notation3Parser()
+        {
+            TokenQueueMode = IOOptions.DefaultTokenQueueMode;
+            TraceTokeniser = false;
+            TraceParsing = false;
+        }
 
         /// <summary>
         /// Creates a new Notation 3 Parser which uses the given Token Queue Mode
@@ -68,53 +71,23 @@ namespace VDS.RDF.Parsing
         public Notation3Parser(TokenQueueMode queueMode)
             : this()
         {
-            this._queueMode = queueMode;
+            this.TokenQueueMode = queueMode;
         }
 
         /// <summary>
         /// Gets/Sets whether Parsing Trace is written to the Console
         /// </summary>
-        public bool TraceParsing
-        {
-            get
-            {
-                return this._traceParsing;
-            }
-            set
-            {
-                this._traceParsing = value;
-            }
-        }
+        public bool TraceParsing { get; set; }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Trace is written to the Console
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return this._traceTokeniser;
-            }
-            set
-            {
-                this._traceTokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return this._queueMode;
-            }
-            set
-            {
-                this._queueMode = value;
-            }
-        }
+        public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
         /// Loads a Graph by reading Notation 3 syntax from the given input
@@ -187,7 +160,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
+                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
 
                 input.Close();
@@ -326,7 +299,7 @@ namespace VDS.RDF.Parsing
                 if (u.TokenType == Token.URI)
                 {
                     //Set the Base Uri resolving against the current Base if any
-                    Uri baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u, true)).Uri;
+                    Uri baseUri = ParserHelper.TryResolveUri(context, u, true).Uri;
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -345,7 +318,7 @@ namespace VDS.RDF.Parsing
                     if (ns.TokenType == Token.URI)
                     {
                         //Register a Namespace resolving the Namespace Uri against the Base Uri
-                        Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns, true)).Uri;
+                        Uri nsUri = ParserHelper.TryResolveUri(context, ns, true).Uri;
                         String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : String.Empty;
                         context.Namespaces.AddNamespace(nsPrefix, nsUri);
                         if (!context.Handler.HandleNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsUri)) ParserHelper.Stop();

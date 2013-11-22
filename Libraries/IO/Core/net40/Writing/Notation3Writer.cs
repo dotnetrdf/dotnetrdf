@@ -33,6 +33,7 @@ using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -183,11 +184,12 @@ namespace VDS.RDF.Writing
         {
             //Create the Header
             //Base Directive
-            if (context.Graph.BaseUri != null)
-            {
-                context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
-                context.Output.WriteLine();
-            }
+            // TODO Provide a way to set Base Uri for writers
+            //if (context.Graph.BaseUri != null)
+            //{
+            //    context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
+            //    context.Output.WriteLine();
+            //}
             //Prefix Directives
             foreach (String prefix in context.Graph.Namespaces.Prefixes)
             {
@@ -207,8 +209,8 @@ namespace VDS.RDF.Writing
 
             //Decide on the Write Mode to use
             bool hiSpeed = false;
-            double subjNodes = context.Graph.Triples.SubjectNodes.Count();
-            double triples = context.Graph.Triples.Count;
+            double subjNodes = context.Graph.Triples.Select(t => t.Subject).Distinct().Count();
+            double triples = context.Graph.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
 
             if (context.CompressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))

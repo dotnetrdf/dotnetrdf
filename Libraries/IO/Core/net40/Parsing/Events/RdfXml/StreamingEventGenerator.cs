@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
 {

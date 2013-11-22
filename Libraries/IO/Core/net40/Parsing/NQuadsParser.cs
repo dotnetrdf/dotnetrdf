@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.IO;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
@@ -289,7 +290,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.BLANKNODEWITHID:
-                        context = new UriNode(UriFactory.Create("nquads:bnode:" + next.Value.Substring(2).GetHashCode()));
+                        context = new BlankNode(next.Value.Substring(2));
                         break;
                     case Token.URI:
                         context = new UriNode(UriFactory.Create(next.Value));

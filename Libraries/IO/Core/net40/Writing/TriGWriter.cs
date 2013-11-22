@@ -124,15 +124,8 @@ namespace VDS.RDF.Writing
 
             TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3Compat);
 
-            //Check there's something to do
-            if (context.Store.Graphs.Count == 0)
-            {
-                context.Output.Close();
-                return;
-            }
-
             //Write the Header of the File
-            foreach (IGraph g in context.Store.Graphs)
+            foreach (IGraph g in context.GraphStore.Graphs)
             {
                 context.Namespaces.Import(g.Namespaces);
             }

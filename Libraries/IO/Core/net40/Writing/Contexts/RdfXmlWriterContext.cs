@@ -51,26 +51,25 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Graph being written
         /// </summary>
-        private IGraph _g;
+        private readonly IGraph _g;
         /// <summary>
         /// TextWriter being written to
         /// </summary>
-        private TextWriter _output;
+        private readonly TextWriter _output;
         /// <summary>
         /// XmlWriter being written to
         /// </summary>
-        private XmlWriter _writer;
+        private readonly XmlWriter _writer;
         /// <summary>
         /// Nested Namespace Mapper
         /// </summary>
-        private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
+        private readonly NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
         private bool _useDtd = IOOptions.UseDtd;
         private bool _useAttributes = true;
         private int _compressionLevel = WriterCompressionLevel.Default;
-        private int _nextNamespaceId = 0;
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private ITripleCollection _triplesDone = new TripleCollection();
+        private readonly ITripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new RDF/XML Writer Context
@@ -79,6 +78,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">Output destination</param>
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
+            NextNamespaceId = 0;
             this._g = g;
             this._output = output;
             this._writer = XmlWriter.Create(this._output, this.GetSettings());
@@ -192,7 +192,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets the Namespace Map in use
         /// </summary>
-        public NestedNamespaceMapper NamespaceMap
+        public NestedNamespaceMapper Namespaces
         {
             get
             {
@@ -250,17 +250,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets/Sets the next ID to use for issuing Temporary Namespaces
         /// </summary>
-        public int NextNamespaceID
-        {
-            get
-            {
-                return this._nextNamespaceId;
-            }
-            set
-            {
-                this._nextNamespaceId = value;
-            }
-        }
+        public int NextNamespaceId { get; set; }
 
         /// <summary>
         /// Gets/Sets whether a DTD is used

@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 request.Method = "GET";
 #if !SILVERLIGHT
-                request.Timeout = Options.UriLoaderTimeout;
+                request.Timeout = IOOptions.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {

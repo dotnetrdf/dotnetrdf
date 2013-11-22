@@ -340,7 +340,7 @@ namespace VDS.RDF.Parsing
                 }
 
 #if !NO_URICACHE
-                if (Options.UriLoaderCaching)
+                if (IOOptions.UriLoaderCaching)
                 {
                     if (!etag.Equals(String.Empty))
                     {
@@ -352,7 +352,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 httpRequest.Method = "GET";
 #if !SILVERLIGHT
-                httpRequest.Timeout = Options.UriLoaderTimeout;
+                httpRequest.Timeout = IOOptions.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
@@ -366,7 +366,7 @@ namespace VDS.RDF.Parsing
                     Tools.HttpDebugResponse(httpResponse);
 
 #if !NO_URICACHE
-                    if (Options.UriLoaderCaching)
+                    if (IOOptions.UriLoaderCaching)
                     {
                         //Are we using ETag based caching?
                         if (!etag.Equals(String.Empty))
