@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF
@@ -14,35 +16,38 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for SPARQL Result Sets
         /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+        internal static string[] SparqlResults = {"application/sparql-results+xml", "application/sparql-results+json"};
 
         /// <summary>
         /// MIME Types for SPARQL Results XML
         /// </summary>
-        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
+        internal static string[] SparqlResultsXml = {"application/sparql-results+xml"};
 
         /// <summary>
         /// MIME Types for SPARQL Results JSON
         /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
+        internal static string[] SparqlResultsJson = {"application/sparql-results+json"};
 
         /// <summary>
         /// MIME Types for SPARQL Boolean Result
         /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
+        internal static string[] SparqlResultsBoolean = {"text/boolean"};
 
         /// <summary>
         /// Default File Extension for SPARQL Queries
         /// </summary>
         public const String DefaultSparqlQueryExtension = "rq";
+
         /// <summary>
         /// Default File Extension for SPARQL Updates
         /// </summary>
         public const String DefaultSparqlUpdateExtension = "ru";
+
         /// <summary>
         /// Default File Extension for SPARQL XML Results Format
         /// </summary>
         public const String DefaultSparqlXmlExtension = "srx";
+
         /// <summary>
         /// Default File Extension for SPARQL JSON Results Format
         /// </summary>
@@ -53,11 +58,13 @@ namespace VDS.RDF
         /// <summary>
         /// List of MIME Type Definition
         /// </summary>
-        private static List<SparqlSparqlMimeTypeDefinition> _mimeTypes;
+        private static List<SparqlMimeTypeDefinition> _mimeTypes;
+
         /// <summary>
         /// Whether MIME Type Definitions have been initialised
         /// </summary>
         private static bool _init = false;
+
         private static readonly Object _initLock = new Object();
 
         /// <summary>
@@ -69,58 +76,68 @@ namespace VDS.RDF
             {
                 if (!_init)
                 {
-                    _mimeTypes = new List<SparqlSparqlMimeTypeDefinition>();
+                    _mimeTypes = new List<SparqlMimeTypeDefinition>();
 
                     //Define SPARQL Results XML
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Results XML", IOManager.W3CFormatsNamespace + "SPARQL_Results_XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Results XML", IOManager.W3CFormatsNamespace + "SPARQL_Results_XML", SparqlResultsXml, new String[] {DefaultSparqlXmlExtension}, null, null, typeof (SparqlXmlParser), null, null, typeof (SparqlXmlWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL Results XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlXmlParser), null, null, typeof(GZippedSparqlXmlWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL Results XML", SparqlResultsXml, new String[] {DefaultSparqlXmlExtension + "." + DefaultGZipExtension}, null, null, typeof (GZippedSparqlXmlParser), null, null, typeof (GZippedSparqlXmlWriter)));
 #endif
 
                     //Define SPARQL Results JSON
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Results JSON", IOManager.W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlResultsJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Results JSON", IOManager.W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlResultsJson, new String[] {DefaultSparqlJsonExtension, DefaultJsonExtension}, null, null, typeof (SparqlJsonParser), null, null, typeof (SparqlJsonWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL Results JSON", SparqlResultsJson, new String[] { DefaultSparqlJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlJsonParser), null, null, typeof(GZippedSparqlJsonWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL Results JSON", SparqlResultsJson, new String[] {DefaultSparqlJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension}, null, null, typeof (GZippedSparqlJsonParser), null, null, typeof (GZippedSparqlJsonWriter)));
 #endif
 
                     //Define SPARQL Boolean
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, Enumerable.Empty<String>(), null, null, typeof(SparqlBooleanParser), null, null, null));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, Enumerable.Empty<String>(), null, null, typeof (SparqlBooleanParser), null, null, null));
 
                     //Define CSV
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("CSV", Csv, new String[] {DefaultCsvExtension}, null, null, typeof (SparqlCsvParser), typeof (CsvWriter), typeof (CsvStoreWriter), typeof (SparqlCsvWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlCsvParser), null, null, typeof(GZippedSparqlCsvWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped SPARQL CSV", Csv, new String[] {DefaultCsvExtension + "." + DefaultGZipExtension}, null, null, typeof (GZippedSparqlCsvParser), null, null, typeof (GZippedSparqlCsvWriter)));
 #endif
 
                     //Define TSV
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("TSV", Tsv, new String[] {DefaultTsvExtension}, null, null, typeof (SparqlTsvParser), typeof (TsvWriter), typeof (TsvStoreWriter), typeof (SparqlTsvWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlTsvParser), null, null, typeof(GZippedSparqlTsvWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped TSV", Tsv, new String[] {DefaultTsvExtension + "." + DefaultGZipExtension}, null, null, typeof (GZippedSparqlTsvParser), null, null, typeof (GZippedSparqlTsvWriter)));
 #endif
 
                     //Define HTML
 #if !NO_HTMLAGILITYPACK
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("HTML", IOManager.W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("HTML", IOManager.W3CFormatsNamespace + "RDFa", Html, new String[] {DefaultHtmlExtension, DefaultXHtmlExtension, ".htm"}, typeof (RdfAParser), null, null, typeof (HtmlWriter), null, typeof (SparqlHtmlWriter)));
 #endif
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped HTML", Html, new String[] { DefaultHtmlExtension + "." + DefaultGZipExtension, DefaultXHtmlExtension + "." + DefaultGZipExtension, ".htm." + DefaultGZipExtension }, typeof(GZippedRdfAParser), null, null, typeof(GZippedRdfAWriter), null, null));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GZipped HTML", Html, new String[] {DefaultHtmlExtension + "." + DefaultGZipExtension, DefaultXHtmlExtension + "." + DefaultGZipExtension, ".htm." + DefaultGZipExtension}, typeof (GZippedRdfAParser), null, null, typeof (GZippedRdfAWriter), null, null));
 #endif
 
                     //Define GraphViz DOT
-                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
+                    _mimeTypes.Add(new SparqlMimeTypeDefinition("GraphViz DOT", new String[] {"text/vnd.graphviz"}, new String[] {".gv", ".dot"}, null, null, null, typeof (GraphVizWriter), null, null));
 
                     //Define SPARQL Query
-                    SparqlMimeTypeDefinition qDef = new SparqlMimeTypeDefinition("SPARQL Query", new String[] { SparqlQuery }, new String[] { DefaultSparqlQueryExtension });
-                    qDef.SetObjectParserType<SparqlQuery>(typeof(SparqlQueryParser));
+                    SparqlMimeTypeDefinition qDef = new SparqlMimeTypeDefinition("SPARQL Query", new String[] {SparqlQuery}, new String[] {DefaultSparqlQueryExtension});
+                    qDef.SetObjectParserType<SparqlQuery>(typeof (SparqlQueryParser));
                     _mimeTypes.Add(qDef);
 
                     //Define SPARQL Update
-                    SparqlMimeTypeDefinition uDef = new SparqlMimeTypeDefinition("SPARQL Update", new String[] { SparqlUpdate }, new String[] { DefaultSparqlUpdateExtension });
-                    uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof(SparqlUpdateParser));
+                    SparqlMimeTypeDefinition uDef = new SparqlMimeTypeDefinition("SPARQL Update", new String[] {SparqlUpdate}, new String[] {DefaultSparqlUpdateExtension});
+                    uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof (SparqlUpdateParser));
                     _mimeTypes.Add(uDef);
 
                     _init = true;
                 }
+            }
+        }
+
+        public IEnumerable<SparqlMimeTypeDefinition> Definitions
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return _mimeTypes;
             }
         }
 
@@ -351,7 +368,7 @@ namespace VDS.RDF
             }
             else
             {
-                ctypes = new String[] { acceptHeader };
+                ctypes = new String[] {acceptHeader};
             }
 
             return GetSparqlWriter(ctypes, out contentType);
@@ -409,6 +426,137 @@ namespace VDS.RDF
             }
 
             throw new RdfWriterSelectionException("Unable to select a SPARQL Results Writer, no writers are associated with the file extension '" + fileExt + "'");
+        }
+
+        /// <summary>
+        /// Builds the String for the HTTP Accept Header that should be used for querying Sparql Endpoints where the response will be a SPARQL Result Set format
+        /// </summary>
+        /// <returns></returns>
+        public static String HttpSparqlAcceptHeader
+        {
+            get
+            {
+                if (!_init) Init();
+
+                StringBuilder output = new StringBuilder();
+
+                foreach (SparqlMimeTypeDefinition definition in SparqlIOManager.Definitions)
+                {
+                    if (definition.CanParseSparqlResults)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
+
+                return output.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or a SPARQL Result Set
+        /// </summary>
+        /// <returns></returns>
+        public static String HttpRdfOrSparqlAcceptHeader
+        {
+            get
+            {
+                if (!_init) Init();
+
+                StringBuilder output = new StringBuilder();
+
+                foreach (MimeTypeDefinition definition in IOManager.Definitions)
+                {
+                    if (definition.CanParseRdf || definition.CanParseSparqlResults)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                foreach (SparqlMimeTypeDefinition definition in SparqlIOManager.Definitions)
+                {
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
+                output.Append(",*/*;q=0.5");
+
+                return output.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Enumeration of supported MIME Types for SPARQL Results
+        /// </summary>
+        public static IEnumerable<String> SupportedSparqlMimeTypes
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return (from definition in IOManager.Definitions
+                        where definition.CanParseSparqlResults
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Enumeration of supported MIME Types for RDF Graphs or SPARQL Results
+        /// </summary>
+        public static IEnumerable<String> SupportedRdfOrSparqlMimeTypes
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return (from definition in IOManager.Definitions
+                        where definition.CanParseRdf || definition.CanParseSparqlResults
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
+            }
+        }
+
+        /// <summary>
+        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of
+        /// </summary>
+        /// <param name="rdf">Allow RDF formats (e.g. Turtle)</param>
+        /// <param name="sparqlResults">Allow SPARQL Results formats (e.g. SPARQL Results XML)</param>
+        /// <param name="sparqlQuery">Allow SPARQL Query (i.e. .rq files)</param>
+        /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files)</param>
+        /// <param name="allFiles">Allow All Files (i.e. */*)</param>
+        /// <returns></returns>
+        public static String GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
+        {
+            if (!_init) Init();
+
+            String filter = String.Empty;
+            List<String> exts = new List<string>();
+
+            foreach (MimeTypeDefinition def in IOManager.Definitions)
+            {
+                if ((rdf && (def.CanParseRdf || def.CanWriteRdf))
+                    || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets))
+                    || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults))
+                    || (sparqlQuery && def.CanParseObject<SparqlQuery>())
+                    || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
+                {
+                    exts.AddRange(def.FileExtensions);
+                    filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
+                }
+            }
+            //Add an All Supported Formats option as first option
+            filter = "All Supported Files|*." + String.Join(";*.", exts.ToArray()) + "|" + filter;
+
+            if (allFiles)
+            {
+                filter += "All Files|*.*";
+            }
+            else
+            {
+                filter = filter.Substring(0, filter.Length - 1);
+            }
+
+            return filter;
         }
     }
 }

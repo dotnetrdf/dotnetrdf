@@ -450,8 +450,6 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// </summary>
     public class NamespaceAttributeEvent : BaseRdfXmlEvent
     {
-        private String _prefix, _uri;
-
         /// <summary>
         /// Creates a new Namespace Attribute Event
         /// </summary>
@@ -459,11 +457,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="uri">Namespace Uri</param>
         /// <param name="sourceXml">Source XML</param>
         /// <param name="pos">Position Info</param>
-        public NamespaceAttributeEvent(String prefix, String uri, String sourceXml, PositionInfo pos)
+        public NamespaceAttributeEvent(string prefix, Uri uri, string sourceXml, PositionInfo pos)
             : base(RdfXmlEvent.NamespaceAttribute, sourceXml, pos)
         {
-            this._prefix = prefix;
-            this._uri = uri;
+            this.Prefix = prefix;
+            this.Uri = uri;
         }
 
         /// <summary>
@@ -472,30 +470,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
         /// <param name="sourceXml">Source XML</param>
-        public NamespaceAttributeEvent(String prefix, String uri, String sourceXml)
+        public NamespaceAttributeEvent(string prefix, Uri uri, string sourceXml)
             : this(prefix, uri, sourceXml, null) { }
 
         /// <summary>
         /// Gets the Namespace Prefix
         /// </summary>
-        public String Prefix
-        {
-            get
-            {
-                return this._prefix;
-            }
-        }
+        public String Prefix { get; private set; }
 
         /// <summary>
         /// Gets the Namespace Uri
         /// </summary>
-        public String Uri
-        {
-            get
-            {
-                return this._uri;
-            }
-        }
+        public Uri Uri { get; private set; }
     }
 
     /// <summary>

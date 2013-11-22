@@ -45,13 +45,13 @@ namespace VDS.RDF.Parsing
     public abstract class BaseGZipParser
         : IRdfReader
     {
-        private IRdfReader _parser;
+        private readonly IRdfReader _parser;
 
         /// <summary>
         /// Creates a new GZipped input parser
         /// </summary>
         /// <param name="parser">Underlying parser</param>
-        public BaseGZipParser(IRdfReader parser)
+        protected BaseGZipParser(IRdfReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
             this._parser = parser;
@@ -230,6 +230,27 @@ namespace VDS.RDF.Parsing
         /// <param name="mode">RDF/XML parser mode</param>
         public GZippedRdfXmlParser(RdfXmlParserMode mode)
             : base(new RdfXmlParser(mode)) { }
+    }
+
+    public class GZippedNQuadsParser
+        : BaseGZipParser
+    {
+        public GZippedNQuadsParser()
+            : base(new NQuadsParser()) { }
+    }
+
+    public class GZippedTriGParser
+        : BaseGZipParser
+    {
+        public GZippedTriGParser()
+            : base(new TriGParser()) { }
+    }
+
+    public class GZippedTriXParser
+        : BaseGZipParser
+    {
+        public GZippedTriXParser()
+            : base(new TriXParser()) { }
     }
 }
 

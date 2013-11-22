@@ -1,0 +1,7 @@
+MIME type registration
+
+                    //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
+                    _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), typeof(RdfJsonWriter)));
+#if !NO_COMPRESSION
+                    _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/JSON", null, Json, new String[] { DefaultRdfJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfJsonParser), typeof(GZippedRdfJsonWriter)));
+#endif

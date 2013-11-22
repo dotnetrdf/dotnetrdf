@@ -375,6 +375,8 @@ namespace VDS.RDF
             EmbeddedResourceLoader.Load(store, resource);
         }
 
+#if !NO_FILE
+
         /// <summary>
         /// Saves a Triple Store to a file
         /// </summary>
@@ -389,7 +391,8 @@ namespace VDS.RDF
             }
             else
             {
-                writer.Save(store, file);
+                // TODO Should create stream with appropriate encoding
+                writer.Save(store, new StreamWriter(file));
             }
         }
 
@@ -400,8 +403,11 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this IGraphStore store, String file)
         {
-            IRdfWriter writer = IOManager.GetStoreWriterByFileExtension(IOManager.GetTrueFileExtension(file));
-            writer.Save(store, file);
+            IRdfWriter writer = IOManager.GetWriterByFileExtension(IOManager.GetTrueFileExtension(file));
+            // TODO Should create stream with appropriate encoding
+            writer.Save(store, new StreamWriter(file));
         }
+
+#endif
     }
 }

@@ -338,7 +338,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="varname">Variable Name</param>
-        protected internal VariableNode(String varname)
+        public VariableNode(String varname)
             : base(varname) { }
 
 #if !SILVERLIGHT

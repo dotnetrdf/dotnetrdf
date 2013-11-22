@@ -47,7 +47,7 @@ namespace VDS.RDF.Graphs
     [Serializable,XmlRoot(ElementName="triple")]
 #endif
     public sealed class Triple
-        : IComparable<Triple>
+        : IEquatable<Triple>, IComparable<Triple>
 #if !SILVERLIGHT
         , ISerializable, IXmlSerializable
 #endif
@@ -199,28 +199,27 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
-        /// Implementation of Equality for Triples
+        /// Determines whether this triple is equal to some other object
         /// </summary>
-        /// <param name="obj">Object to compare with</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Triples are considered equal on the basis of two things:
-        /// <ol>
-        /// <li>The Hash Codes of the Triples are identical</li>
-        /// <li>The logical conjunction (AND) of the equality of the Subject, Predicate and Object is true.  Each pair of Nodes must either be Equal using Node Equality or are both Blank Nodes and have identical Node IDs (i.e. are indistinguishable for equality purposes on a single Triple level)</li>
-        /// </ol>
-        /// </remarks>
+        /// <param name="obj">Object</param>
+        /// <returns>True if this triple is equal to the other object, false otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (obj is Triple)
-            {
-                Triple temp = (Triple)obj;
+            return obj is Triple && this.Equals((Triple) obj);
+        }
 
-                //Subject, Predicate and Object must all be equal
-                return this.Subject.Equals(temp.Subject) && this.Predicate.Equals(temp.Predicate) && this.Object.Equals(temp.Object);
-            }
-            //Can only be equal to other Triples
-            return false;
+        /// <summary>
+        /// Determines whether this triple is equal to some other object
+        /// </summary>
+        /// <param name="other">Object</param>
+        /// <returns>True if this triple is equal to the other triple, false otherwise</returns>
+        public bool Equals(Triple other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(other, null)) return false;
+
+            //Subject, Predicate and Object must all be equal
+            return this.Subject.Equals(other.Subject) && this.Predicate.Equals(other.Predicate) && this.Object.Equals(other.Object);
         }
 
         /// <summary>
@@ -291,31 +290,15 @@ namespace VDS.RDF.Graphs
                 //Return a 1 to indicate this
                 return 1;
             }
-            else
+            //Compare Subjects
+            int s = this.Subject.CompareTo(other.Subject);
+            if (s == 0)
             {
-                int s, p;
-
-                //Compare Subjects
-                s = this.Subject.CompareTo(other.Subject);
-                if (s == 0)
-                {
-                    //Compare Predicates
-                    p = this.Predicate.CompareTo(other.Predicate);
-                    if (p == 0)
-                    {
-                        //Compare Objects
-                        return this.Object.CompareTo(other.Object);
-                    }
-                    else
-                    {
-                        return p;
-                    }
-                }
-                else
-                {
-                    return s;
-                }
+                //Compare Predicates
+                int p = this.Predicate.CompareTo(other.Predicate);
+                return p == 0 ? this.Object.CompareTo(other.Object) : p;
             }
+            return s;
         }
 
 #if !SILVERLIGHT

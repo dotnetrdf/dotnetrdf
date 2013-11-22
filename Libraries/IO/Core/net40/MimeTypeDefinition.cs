@@ -40,7 +40,7 @@ namespace VDS.RDF
     /// </summary>
     public class MimeTypeDefinition
     {
-        protected String _name, _canonicalType, _canonicalExt, _formatUri;
+        protected String _canonicalType, _canonicalExt, _formatUri;
         protected Encoding _encoding = Encoding.UTF8;
         protected Type _rdfParserType, _rdfWriterType;
         protected List<String> _mimeTypes = new List<string>();
@@ -54,16 +54,7 @@ namespace VDS.RDF
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-        {
-            if (mimeTypes == null) throw new ArgumentNullException("MIME Types enumeration cannot be null");
-            this._name = syntaxName;
-            this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
-
-            foreach (String ext in fileExtensions)
-            {
-                this._fileExtensions.Add(this.CheckFileExtension(ext));
-            }
-        }
+            : this(syntaxName, null, mimeTypes, fileExtensions) { }
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -73,10 +64,7 @@ namespace VDS.RDF
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-            : this(syntaxName, mimeTypes, fileExtensions)
-        {
-            this._formatUri = formatUri;
-        }
+            : this(syntaxName, formatUri, mimeTypes, fileExtensions, null, null) { }
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -85,14 +73,30 @@ namespace VDS.RDF
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
-            : this(syntaxName, mimeTypes, fileExtensions)
+            : this(syntaxName, null, mimeTypes, fileExtensions, rdfParserType, rdfWriterType) { }
+
+        /// <summary>
+        /// Creates a new MIME Type Definition
+        /// </summary>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
+        /// <param name="formatUri">Format URI</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
+        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
+        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
         {
+            if (mimeTypes == null) throw new ArgumentNullException("mimeTypes", "MIME Types enumeration cannot be null");
+            this._formatUri = formatUri;
+            this.SyntaxName = syntaxName;
+            this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
+
+            foreach (String ext in fileExtensions)
+            {
+                this._fileExtensions.Add(this.CheckFileExtension(ext));
+            }
             this.RdfParserType = rdfParserType;
             this.RdfWriterType = rdfWriterType;
         }
@@ -100,13 +104,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the name of the Syntax to which this MIME Type Definition relates
         /// </summary>
-        public String SyntaxName
-        {
-            get
-            {
-                return this._name;
-            }
-        }
+        public string SyntaxName { get; protected set; }
 
         /// <summary>
         /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable)
@@ -197,7 +195,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    throw new RdfException("No MIME Types are defined for " + this._name);
+                    throw new RdfException("No MIME Types are defined for " + this.SyntaxName);
                 }
             }
             set
@@ -212,7 +210,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    throw new RdfException("Cannot set the Canonical MIME Type for " + this._name + " to " + value + " as this is no such MIME Type listed in this definition.  Use AddMimeType to add a MIME Type prior to setting the CanonicalType.");
+                    throw new RdfException("Cannot set the Canonical MIME Type for " + this.SyntaxName + " to " + value + " as this is no such MIME Type listed in this definition.  Use AddMimeType to add a MIME Type prior to setting the CanonicalType.");
                 }
             }
         }
@@ -298,7 +296,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    throw new RdfException("No File Extensions are defined for " + this._name);
+                    throw new RdfException("No File Extensions are defined for " + this.SyntaxName);
                 }
             }
             set
@@ -313,7 +311,7 @@ namespace VDS.RDF
                 } 
                 else 
                 {
-                    throw new RdfException("Cannot set the Canonical File Extension for " + this._name + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
+                    throw new RdfException("Cannot set the Canonical File Extension for " + this.SyntaxName + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
                 }
             }
         }
@@ -457,7 +455,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + this._name);
+                throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + this.SyntaxName);
             }
         }
 
@@ -473,7 +471,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this._name);
+                throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this.SyntaxName);
             }
         }
 
@@ -576,10 +574,10 @@ namespace VDS.RDF
     public sealed class MimeTypeSelector
         : IComparable<MimeTypeSelector>
     {
-        private String _type, _rangeType, _charset;
-        private double _quality = 1.0d;
-        private int _order;
-        private bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
+        private readonly String _type, _rangeType, _charset;
+        private readonly double _quality = 1.0d;
+        private readonly int _order;
+        private readonly bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
 
         /// <summary>
         /// Creates a MIME Type selector

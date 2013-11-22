@@ -92,23 +92,6 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
-            //Assign a File Uri to the Graph if the Graph is Empty
-            //It's possible that when we parse in the RDF this may be changed but it ensures the Graph 
-            //has a Base Uri even if the RDF doesn't specify one
-            //Ensure that the Uri is an absolute file Uri
-            if (g.IsEmpty && g.BaseUri == null)
-            {
-                RaiseWarning("Assigned a file: URI as the Base URI for the input Graph");
-                if (Path.IsPathRooted(filename))
-                {
-                    g.BaseUri = UriFactory.Create("file:///" + filename);
-                }
-                else
-                {
-                    g.BaseUri = UriFactory.Create("file:///" + Path.GetFullPath(filename));
-                }
-            }
-
             FileLoader.Load(new GraphHandler(g), filename, parser);
         }
 
@@ -181,7 +164,7 @@ namespace VDS.RDF.Parsing
             {
                 //Parser was selected based on File Extension or one was explicitly specified
                 parser.Warning += RaiseWarning;
-                parser.Load(handler, filename);
+                parser.Load(handler, new StreamReader(filename));
             }
         }
 
@@ -199,7 +182,7 @@ namespace VDS.RDF.Parsing
         public static void Load(IGraphStore store, String filename, IRdfReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
-            FileLoader.Load(new StoreHandler(store), filename, parser);
+            FileLoader.Load(new GraphStoreHandler(store), filename, parser);
         }
 
         /// <summary>

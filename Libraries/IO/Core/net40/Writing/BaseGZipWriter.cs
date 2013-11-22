@@ -190,6 +190,41 @@ namespace VDS.RDF.Writing
         public GZippedRdfXmlWriter()
             : base(new RdfXmlWriter()) { }
     }
+
+    public class GZippedNQuadsWriter
+        : BaseGZipWriter
+    {
+        public GZippedNQuadsWriter()
+            : base(new NQuadsWriter()) { }
+    }
+
+    public class GZippedTriGWriter
+        : BaseGZipWriter
+    {
+        public GZippedTriGWriter()
+            : base(new TriGWriter()) { }
+    }
+
+    public class GZippedTriXWriter
+        : BaseGZipWriter
+    {
+        public GZippedTriXWriter()
+            : base(new TriXWriter()) { }
+    }
+
+    public class GZippedCsvWriter
+        : BaseGZipWriter
+    {
+        public GZippedCsvWriter()
+            : base(new CsvWriter()) { }
+    }
+
+    public class GZippedTsvWriter
+        : BaseGZipWriter
+    {
+        public GZippedTsvWriter()
+            : base(new TsvWriter()) { }
+    }
 }
 
 #endif

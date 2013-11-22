@@ -35,9 +35,9 @@ namespace VDS.RDF.Writing.Contexts
     /// Base class for writer contextx
     /// </summary>
     /// <remarks>
-    /// This is not an abstract class since some writers will require only this information or possibly less
+    /// This is intentionally not an abstract class since some writers will require only this information or possibly less
     /// </remarks>
-    public abstract class BaseWriterContext
+    public class BaseWriterContext
         : IWriterContext
     {
         /// <summary>

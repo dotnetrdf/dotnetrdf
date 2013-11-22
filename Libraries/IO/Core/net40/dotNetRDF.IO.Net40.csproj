@@ -139,7 +139,6 @@
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
-    <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
     <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
@@ -219,6 +218,7 @@
   <ItemGroup>
     <Compile Include="Nodes\MockNodeFactory.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />

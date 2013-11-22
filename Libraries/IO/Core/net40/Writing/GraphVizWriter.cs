@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
             //Start the Graph
             output.WriteLine("digraph G {");
 
-            BaseWriterContext context = new BaseWriterContext(g, output);
+            BaseWriterContext context = new BaseWriterContext(g.Namespaces, output);
 
             //Write all the Triples to the Graph
             foreach (Triple t in g.Triples)
@@ -112,11 +112,11 @@ namespace VDS.RDF.Writing
         {
             if (n.NodeType == NodeType.Uri)
             {
-                return this.UriNodeToDot((IUriNode)n, context);
+                return this.UriNodeToDot(n, context);
             }
             else if (n.NodeType == NodeType.Literal)
             {
-                return this.LiteralNodeToDot((ILiteralNode)n);
+                return this.LiteralNodeToDot(n);
             }
             else if (n.NodeType == NodeType.Blank)
             {

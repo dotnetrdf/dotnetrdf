@@ -36,6 +36,7 @@ namespace VDS.RDF.Graphs
     /// Represents a RDF quad which is a RDF triple with an additional graph name field
     /// </summary>
     public sealed class Quad
+        : IEquatable<Quad>
     {
         /// <summary>
         /// Special node instance which represents the default graph
@@ -152,8 +153,7 @@ namespace VDS.RDF.Graphs
         /// </remarks>
         public Quad CopyTo(INode graph)
         {
-            if (this.Graph.Equals(graph)) return this;
-            return new Quad(this.Triple, graph);
+            return this.Graph.Equals(graph) ? this : new Quad(this.Triple, graph);
         }
 
         /// <summary>
@@ -163,19 +163,21 @@ namespace VDS.RDF.Graphs
         /// <returns>True if this quad is equal to the other object, false otherwise</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj is Quad)
-            {
-                Quad other = (Quad)obj;
+            return obj is Quad && this.Equals((Quad) obj);
+        }
 
-                //Graph, subject, predicate and object must all be equal
-                return (this.Graph.Equals(other.Graph) && this.Triple.Subject.Equals(other.Subject) && this.Triple.Predicate.Equals(other.Predicate) && this.Triple.Object.Equals(other.Object));
-            }
-            else
-            {
-                //Can only be equal to another Quad
-                return false;
-            }
+        /// <summary>
+        /// Determines whether this quad is equal to another quad
+        /// </summary>
+        /// <param name="other">Other quad</param>
+        /// <returns>True if this quad is equal to the other, false otherwise</returns>
+        public bool Equals(Quad other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(other, null)) return false;
+
+            //Graph, subject, predicate and object must all be equal
+            return (this.Graph.Equals(other.Graph) && this.Triple.Subject.Equals(other.Subject) && this.Triple.Predicate.Equals(other.Predicate) && this.Triple.Object.Equals(other.Object));
         }
 
         /// <summary>

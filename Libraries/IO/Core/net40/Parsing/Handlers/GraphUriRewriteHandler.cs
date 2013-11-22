@@ -28,17 +28,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler that rewrites the Graph URIs of Triples before passing them to an inner handler
+    /// A RDF Handler that rewrites the Graph URIs of Triples and/or Quads before passing them to an inner handler
     /// </summary>
     public class GraphUriRewriteHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private Uri _graphUri;
+        private readonly IRdfHandler _handler;
+        private readonly INode _graphName;
 
         /// <summary>
         /// Creates a new Graph URI rewriting handler
@@ -49,7 +50,7 @@ namespace VDS.RDF.Parsing.Handlers
             : base()
         {
             this._handler = handler;
-            this._graphUri = graphUri;
+            this._graphName = this.CreateUriNode(graphUri);
         }
 
         /// <summary>
@@ -110,12 +111,17 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            return this._handler.HandleQuad(t.AsQuad(this._graphUri));
+            return this._handler.HandleQuad(t.AsQuad(this._graphName));
         }
 
+        /// <summary>
+        /// Handles a Quad by rewriting
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
         protected override bool HandleQuadInternal(Quad q)
         {
-            return this._handler.HandleQuad(q.CopyTo(this._graphUri));
+            return this._handler.HandleQuad(q.CopyTo(this._graphName));
         }
 
         /// <summary>

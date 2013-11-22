@@ -247,13 +247,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
                     {
                         //Absolute Uri
-                        element.BaseUri = attr.Value;
+                        element.BaseUri = UriFactory.Create(attr.Value);
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!ReferenceEquals(element.BaseUri, null))
                     {
                         //Relative Uri with a Base Uri to resolve against
-                        //element.BaseUri += attr.Value;
-                        element.BaseUri = Tools.ResolveUri(attr.Value, element.BaseUri);
+                        element.BaseUri = UriFactory.ResolveUri(attr.Value, element.BaseUri);
                     }
                     else
                     {
@@ -264,17 +263,16 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 else if (attr.Prefix == "xmlns")
                 {
                     //Register a Namespace
-                    String uri;
-                    if (attr.Value.StartsWith("http://"))
+                    Uri uri;
+                    if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
                     {
                         //Absolute Uri
-                        uri = attr.Value;
+                        uri = UriFactory.Create(attr.Value);
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!ReferenceEquals(element.BaseUri, null))
                     {
                         //Relative Uri with a Base Uri to resolve against
-                        //uri = element.BaseUri + attr.Value;
-                        uri = Tools.ResolveUri(attr.Value, element.BaseUri);
+                        uri = UriFactory.ResolveUri(attr.Value, element.BaseUri);
                     }
                     else
                     {
@@ -287,18 +285,17 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 else if (attr.Prefix == String.Empty && attr.Name == "xmlns")
                 {
                     //Register a Default Namespace (Empty Prefix)
-                    String uri;
+                    Uri uri;
 
-                    if (attr.Value.StartsWith("http://"))
+                    if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
                     {
                         //Absolute Uri
-                        uri = attr.Value;
+                        uri = UriFactory.Create(attr.Value);
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!ReferenceEquals(attr.BaseURI, null))
                     {
                         //Relative Uri with a Base Uri to resolve against
-                        //uri = element.BaseUri + attr.Value;
-                        uri = Tools.ResolveUri(attr.Value, element.BaseUri);
+                        uri = UriFactory.ResolveUri(attr.Value, element.BaseUri);
                     }
                     else
                     {

@@ -189,7 +189,7 @@ namespace VDS.RDF.Parsing
         public static void Load(IGraphStore store, String resource, IRdfReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
-            EmbeddedResourceLoader.Load(new StoreHandler(store), resource, parser);
+            EmbeddedResourceLoader.Load(new GraphStoreHandler(store), resource, parser);
         }
 
         /// <summary>
