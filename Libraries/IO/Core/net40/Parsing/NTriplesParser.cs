@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODE:
                     return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
+                    return context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
                     return context.Handler.CreateUriNode(UriFactory.Create(subjToken.Value));
                 case Token.LITERAL:
@@ -323,7 +323,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODE:
                     return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.Handler.CreateBlankNode(objToken.Value.Substring(2));
+                    return context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
                 case Token.URI:
                     return context.Handler.CreateUriNode(UriFactory.Create(objToken.Value));
                 case Token.LITERALWITHDT:
@@ -343,7 +343,7 @@ namespace VDS.RDF.Parsing
                     else if (next.TokenType == Token.URI)
                     {
                         context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri)));
+                        return context.Handler.CreateLiteralNode(objToken.Value, ParserHelper.TryResolveUri(context, next).Uri);
                     }
                     else
                     {

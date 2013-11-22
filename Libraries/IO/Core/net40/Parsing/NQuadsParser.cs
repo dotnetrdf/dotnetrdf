@@ -26,7 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.IO;
+using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
@@ -55,13 +57,14 @@ namespace VDS.RDF.Parsing
     public class NQuadsParser 
         : IRdfReader, ITraceableTokeniser, ITokenisingParser
     {
-        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
-        private bool _tracetokeniser = false;
-
         /// <summary>
         /// Creates a new NQuads parser
         /// </summary>
-        public NQuadsParser() { }
+        public NQuadsParser()
+        {
+            TokenQueueMode = IOOptions.DefaultTokenQueueMode;
+            TraceTokeniser = false;
+        }
 
         /// <summary>
         /// Creates a new NQuads parser
@@ -69,38 +72,19 @@ namespace VDS.RDF.Parsing
         /// <param name="queueMode">Token Queue Mode</param>
         public NQuadsParser(TokenQueueMode queueMode)
         {
-            this._queueMode = queueMode;
+            TraceTokeniser = false;
+            this.TokenQueueMode = queueMode;
         }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return this._tracetokeniser;
-            }
-            set
-            {
-                this._tracetokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return this._queueMode;
-            }
-            set
-            {
-                this._queueMode = value;
-            }
-        }
+        public TokenQueueMode TokenQueueMode { get; set; }
 
         public void Load(IRdfHandler handler, StreamReader input)
         {
@@ -130,28 +114,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                //Setup Token Queue and Tokeniser
-                NTriplesTokeniser tokeniser = new NTriplesTokeniser(input);
-                tokeniser.NQuadsMode = true;
-                ITokenQueue tokens;
-                switch (this._queueMode)
-                {
-                    case TokenQueueMode.AsynchronousBufferDuringParsing:
-                        tokens = new AsynchronousBufferedTokenQueue(tokeniser);
-                        break;
-                    case TokenQueueMode.QueueAllBeforeParsing:
-                        tokens = new TokenQueue(tokeniser);
-                        break;
-                    case TokenQueueMode.SynchronousBufferDuringParsing:
-                    default:
-                        tokens = new BufferedTokenQueue(tokeniser);
-                        break;
-                }
-                tokens.Tracing = this._tracetokeniser;
-                tokens.InitialiseBuffer();
-
-                //Invoke the Parser
-                this.Parse(handler, tokens);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this.TokenQueueMode, false, this.TraceTokeniser); 
+                this.Parse(context);
             }
             catch
             {
@@ -170,17 +134,14 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void Parse(IRdfHandler handler, ITokenQueue tokens)
+        private void Parse(TokenisingParserContext context)
         {
-            IToken next;
-            IToken s, p, o;
-
             try
             {
-                handler.StartRdf();
+                context.Handler.StartRdf();
 
                 //Expect a BOF token at start
-                next = tokens.Dequeue();
+                IToken next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF token at the start of the input", next);
@@ -188,36 +149,37 @@ namespace VDS.RDF.Parsing
 
                 do
                 {
-                    next = tokens.Peek();
+                    next = context.Tokens.Peek();
                     if (next.TokenType == Token.EOF) return;
 
-                    s = this.TryParseSubject(tokens);
-                    p = this.TryParsePredicate(tokens);
-                    o = this.TryParseObject(tokens);
-                    Uri context = this.TryParseContext(tokens);
+                    // TODO Move Token -> Node logic into individual parsing methods
+                    IToken s = this.TryParseSubject(context);
+                    IToken p = this.TryParsePredicate(context);
+                    IToken o = this.TryParseObject(context);
+                    INode g = this.TryParseGraphName(context);
 
-                    this.TryParseTriple(handler, s, p, o, context);
+                    this.TryParseQuad(context, s, p, o, g);
 
-                    next = tokens.Peek();
+                    next = context.Tokens.Peek();
                 } while (next.TokenType != Token.EOF);
 
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
             }
             catch (RdfParsingTerminatedException)
             {
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
                 //Discard this - it justs means the Handler told us to stop
             }
             catch
             {
-                handler.EndRdf(false);
+                context.Handler.EndRdf(false);
                 throw;
             }
         }
 
-        private IToken TryParseSubject(ITokenQueue tokens)
+        private IToken TryParseSubject(TokenisingParserContext context)
         {
-            IToken next = tokens.Dequeue();
+            IToken next = context.Tokens.Dequeue();
             switch (next.TokenType)
             {
                 case Token.BLANKNODEWITHID:
@@ -230,9 +192,9 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private IToken TryParsePredicate(ITokenQueue tokens)
+        private IToken TryParsePredicate(TokenisingParserContext context)
         {
-            IToken next = tokens.Dequeue();
+            IToken next = context.Tokens.Dequeue();
             switch (next.TokenType)
             {
                 case Token.URI:
@@ -243,9 +205,9 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private IToken TryParseObject(ITokenQueue tokens)
+        private IToken TryParseObject(TokenisingParserContext context)
         {
-            IToken next = tokens.Dequeue();
+            IToken next = context.Tokens.Dequeue();
             switch (next.TokenType)
             {
                 case Token.BLANKNODEWITHID:
@@ -257,15 +219,15 @@ namespace VDS.RDF.Parsing
 
                 case Token.LITERAL:
                     //Check for Datatype/Language
-                    IToken temp = tokens.Peek();
+                    IToken temp = context.Tokens.Peek();
                     if (temp.TokenType == Token.DATATYPE)
                     {
-                        tokens.Dequeue();
+                        context.Tokens.Dequeue();
                         return new LiteralWithDataTypeToken(next, (DataTypeToken)temp);
                     }
                     else if (temp.TokenType == Token.LANGSPEC)
                     {
-                        tokens.Dequeue();
+                        context.Tokens.Dequeue();
                         return new LiteralWithLanguageSpecifierToken(next, (LanguageSpecifierToken)temp);
                     }
                     else
@@ -277,80 +239,68 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private Uri TryParseContext(ITokenQueue tokens)
+        private INode TryParseGraphName(TokenisingParserContext context)
         {
-            IToken next = tokens.Dequeue();
+            IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.DOT)
             {
-                return null;
+                return Quad.DefaultGraphNode;
             }
             else
             {
-                INode context;
+                INode graph;
                 switch (next.TokenType)
                 {
                     case Token.BLANKNODEWITHID:
-                        context = new BlankNode(next.Value.Substring(2));
+                        graph = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
                         break;
                     case Token.URI:
-                        context = new UriNode(UriFactory.Create(next.Value));
+                        graph = context.Handler.CreateUriNode(UriFactory.Create(next.Value));
                         break;
                     case Token.LITERAL:
                         //Check for Datatype/Language
-                        IToken temp = tokens.Peek();
+                        IToken temp = context.Tokens.Peek();
                         if (temp.TokenType == Token.LANGSPEC)
                         {
-                            tokens.Dequeue();
-                            context = new LiteralNode(next.Value, temp.Value);
+                            context.Tokens.Dequeue();
+                            graph = new LiteralNode(next.Value, temp.Value);
                         }
                         else if (temp.TokenType == Token.DATATYPE)
                         {
-                            tokens.Dequeue();
-                            context = new LiteralNode(next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
+                            context.Tokens.Dequeue();
+                            graph = new LiteralNode(next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
                         }
                         else
                         {
-                            context = new LiteralNode(next.Value);
+                            graph = new LiteralNode(next.Value);
                         }
                         break;
                     default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Graph Name for the Quad", next);
                 }
 
                 //Ensure we then see a . to terminate the Quad
-                next = tokens.Dequeue();
+                next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.DOT)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Quad", next);
                 }
 
-                //Finally return the Context URI
-                if (context.NodeType == NodeType.Uri)
-                {
-                    return ((IUriNode)context).Uri;
-                }
-                else if (context.NodeType == NodeType.Literal)
-                {
-                    return UriFactory.Create("nquads:literal:" + context.GetHashCode());
-                }
-                else
-                {
-                    throw ParserHelper.Error("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple", next);
-                }
+                return graph;
             }
         }
 
-        private void TryParseTriple(IRdfHandler handler, IToken s, IToken p, IToken o, Uri graphUri)
+        private void TryParseQuad(TokenisingParserContext context, IToken s, IToken p, IToken o, INode graphName)
         {
             INode subj, pred, obj;
 
             switch (s.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    subj = handler.CreateBlankNode(s.Value.Substring(2));
+                    subj = context.BlankNodeGenerator.CreateBlankNode(s.Value.Substring(2));
                     break;
                 case Token.URI:
-                    subj = ParserHelper.TryResolveUri(handler, s);
+                    subj = ParserHelper.TryResolveUri(context, s);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
@@ -359,7 +309,7 @@ namespace VDS.RDF.Parsing
             switch (p.TokenType)
             {
                 case Token.URI:
-                    pred = ParserHelper.TryResolveUri(handler, p);
+                    pred = ParserHelper.TryResolveUri(context, p);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + p.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", p);
@@ -368,26 +318,26 @@ namespace VDS.RDF.Parsing
             switch (o.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    obj = handler.CreateBlankNode(o.Value.Substring(2));
+                    obj = context.BlankNodeGenerator.CreateBlankNode(o.Value.Substring(2));
                     break;
                 case Token.LITERAL:
-                    obj = handler.CreateLiteralNode(o.Value);
+                    obj = context.Handler.CreateLiteralNode(o.Value);
                     break;
                 case Token.LITERALWITHDT:
                     String dtUri = ((LiteralWithDataTypeToken)o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, UriFactory.Create(dtUri.Substring(1, dtUri.Length - 2)));
+                    obj = context.Handler.CreateLiteralNode(o.Value, UriFactory.Create(dtUri.Substring(1, dtUri.Length - 2)));
                     break;
                 case Token.LITERALWITHLANG:
-                    obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken)o).Language);
+                    obj = context.Handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken)o).Language);
                     break;
                 case Token.URI:
-                    obj = ParserHelper.TryResolveUri(handler, o);
+                    obj = ParserHelper.TryResolveUri(context, o);
                     break;
                 default:
                         throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
             }
 
-            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphUri))) ParserHelper.Stop();
+            if (!context.Handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop();
         }
 
         /// <summary>
@@ -396,7 +346,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message</param>
         private void RaiseWarning(String message)
         {
-            StoreReaderWarning d = this.Warning;
+            RdfReaderWarning d = this.Warning;
             if (d != null)
             {
                 d(message);

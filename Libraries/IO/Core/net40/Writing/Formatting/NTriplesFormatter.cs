@@ -164,7 +164,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(INode b, QuadSegment? segment)
         {
-            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
+            if (segment == QuadSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this.FormatName));
             return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
         }
 

@@ -466,7 +466,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.BLANKNODEWITHID:
-                    subj = context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
+                    subj = context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -581,7 +581,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        pred = context.Handler.CreateBlankNode(predToken.Value.Substring(2));
+                        pred = context.BlankNodeGenerator.CreateBlankNode(predToken.Value.Substring(2));
                         break;
 
                     case Token.COMMENT:
@@ -749,7 +749,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        obj = context.Handler.CreateBlankNode(objToken.Value.Substring(2));
+                        obj = context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
                         break;
 
                     case Token.COMMA:
@@ -970,7 +970,7 @@ namespace VDS.RDF.Parsing
                         obj = context.Handler.CreateBlankNode();
                         break;
                     case Token.BLANKNODEWITHID:
-                        obj = context.Handler.CreateBlankNode(next.Value.Substring(2));
+                        obj = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
                         break;
                     case Token.COMMENT:
                         //Discard and continue
@@ -1159,7 +1159,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.QNAME:
-                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true)));
+                        secondItem = context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(next.Value, context.Namespaces, context.BaseUri, true));
                         break;
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
@@ -1168,9 +1168,8 @@ namespace VDS.RDF.Parsing
                         secondItem = this.TryParseLiteral(context, next);
                         break;
                     case Token.URI:
-                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString())));
+                        secondItem = context.Handler.CreateUriNode(UriFactory.ResolveUri(next.Value, context.BaseUri));
                         break;
-
                     default:
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, only Literals, QNames and URIs are valid as Path Items", next);
                 }
@@ -1236,12 +1235,11 @@ namespace VDS.RDF.Parsing
                                 if (next.Value.StartsWith("<"))
                                 {
                                     dturi = next.Value.Substring(1, next.Value.Length - 2);
-                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.ResolveUri(dturi, context.BaseUri));
                                 }
                                 else
                                 {
-                                    dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true);
-                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(dturi));
+                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.ResolvePrefixedName(next.Value, context.Namespaces, context.BaseUri, true));
                                 }
                             }
                             catch (RdfException rdfEx)
@@ -1267,12 +1265,11 @@ namespace VDS.RDF.Parsing
                         if (litdt.DataType.StartsWith("<"))
                         {
                             dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.ResolveUri(dturi, context.BaseUri));
                         }
                         else
                         {
-                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri, true);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(dturi));
+                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.ResolvePrefixedName(litdt.DataType, context.Namespaces, context.BaseUri, true));
                         }
                     }
                     catch (RdfException rdfEx)

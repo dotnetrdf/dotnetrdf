@@ -68,9 +68,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Handler used to handle the generated RDF
         /// </summary>
-        public IRdfHandler Handler { get; private set; }
+        public virtual IRdfHandler Handler { get; protected set; }
 
-        public IBlankNodeGenerator BlankNodeGenerator { get; private set; }
+        public virtual IBlankNodeGenerator BlankNodeGenerator { get; private set; }
 
         /// <summary>
         /// Gets/Sets whether to trace parsing
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map for the parsing context
         /// </summary>
-        public INamespaceMapper Namespaces
+        public virtual INamespaceMapper Namespaces
         {
             get
             {
