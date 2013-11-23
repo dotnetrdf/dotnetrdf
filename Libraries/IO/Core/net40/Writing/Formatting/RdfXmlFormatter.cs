@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// A formatter which formats triples for RDF/XML output
     /// </summary>
-    public class RdfXmlFormatter 
+    public class RdfXmlFormatter
         : IGraphFormatter
     {
         private QNameOutputMapper _mapper;
@@ -75,10 +75,11 @@ namespace VDS.RDF.Writing.Formatting
                     }
                 }
             }
-            if (g.BaseUri != null)
-            {
-                output.Append(" xml:base=\"" + WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri) + "\"");
-            }
+            // TODO Provide a way to specify Base URI for writers
+            //if (g.BaseUri != null)
+            //{
+            //    output.Append(" xml:base=\"" + WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri) + "\"");
+            //}
             output.Append(">");
             return output.ToString();
         }
@@ -131,7 +132,7 @@ namespace VDS.RDF.Writing.Formatting
 
         private void GetQName(Uri u, out String qname, out String ns)
         {
-            if (this._mapper != null && this._mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (this._mapper != null && this._mapper.ReduceToPrefixedName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
@@ -187,7 +188,7 @@ namespace VDS.RDF.Writing.Formatting
             switch (t.Predicate.NodeType)
             {
                 case NodeType.Uri:
-                    Uri u = ((IUriNode)t.Predicate).Uri;
+                    Uri u = t.Predicate.Uri;
                     this.GetQName(u, out qname, out ns);
                     output.Append('\t');
                     if (ns.Equals(String.Empty))
@@ -209,7 +210,6 @@ namespace VDS.RDF.Writing.Formatting
                     throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable("RDF/XML"));
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
-
             }
 
             switch (t.Object.NodeType)
@@ -220,8 +220,12 @@ namespace VDS.RDF.Writing.Formatting
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)t.Object;
-                    if (lit.DataType != null)
+                    INode lit = t.Object;
+                    if (lit.HasLanguage)
+                    {
+                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                    }
+                    else if (lit.HasDataType)
                     {
                         if (lit.DataType.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
@@ -231,12 +235,8 @@ namespace VDS.RDF.Writing.Formatting
                         {
                             output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
                         }
-                    } 
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
                     }
-                    else 
+                    else
                     {
                         output.AppendLine(">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
                     }

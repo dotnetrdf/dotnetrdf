@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     //Set the Base Uri
                     String baseUri = attr.Value;
 
-                    if (RdfXmlSpecsHelper.IsAbsoluteURI(baseUri))
+                    if (RdfXmlSpecsHelper.IsAbsoluteUri(baseUri))
                     {
                         //Absolute Uri
                         root.BaseUri = UriFactory.Create(baseUri);
@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 {
                     //Set Base Uri
 
-                    if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
+                    if (RdfXmlSpecsHelper.IsAbsoluteUri(attr.Value))
                     {
                         //Absolute Uri
                         element.BaseUri = UriFactory.Create(attr.Value);
@@ -264,7 +264,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 {
                     //Register a Namespace
                     Uri uri;
-                    if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
+                    if (RdfXmlSpecsHelper.IsAbsoluteUri(attr.Value))
                     {
                         //Absolute Uri
                         uri = UriFactory.Create(attr.Value);
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     //Register a Default Namespace (Empty Prefix)
                     Uri uri;
 
-                    if (RdfXmlSpecsHelper.IsAbsoluteURI(attr.Value))
+                    if (RdfXmlSpecsHelper.IsAbsoluteUri(attr.Value))
                     {
                         //Absolute Uri
                         uri = UriFactory.Create(attr.Value);

@@ -262,10 +262,11 @@ namespace VDS.RDF.Writing
 
             //Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
-            if (context.Graph.BaseUri != null)
-            {
-                context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.AbsoluteUri);
-            }
+            // TODO Provide a way to pass Base URI to writers
+            //if (context.Graph.BaseUri != null)
+            //{
+            //    context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.AbsoluteUri);
+            //}
 
             //Add all the existing Namespace Definitions here
             context.Namespaces.IncrementNesting();
@@ -384,7 +385,7 @@ namespace VDS.RDF.Writing
 
                 //Generate the Type Reference creating a temporary namespace if necessary
                 UriRefType outType;
-                IUriNode typeNode = (IUriNode)typeTriple.Object;
+                INode typeNode = typeTriple.Object;
                 String uriref = this.GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
@@ -533,7 +534,7 @@ namespace VDS.RDF.Writing
             foreach (Triple t in ts)
             {
                 UriRefType outType;
-                IUriNode p = (IUriNode)t.Predicate;
+                INode p = t.Predicate;
                 String uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
@@ -576,7 +577,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Variable:
                     throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable("RDF/XML"));
             }
-            IUriNode p = (IUriNode)t.Predicate;
+            INode p = t.Predicate;
 
             //First generate the Predicate Node
             UriRefType outType;
@@ -636,8 +637,14 @@ namespace VDS.RDF.Writing
 
                 case NodeType.Literal:
                     //Write as content of the current element
-                    ILiteralNode lit = (ILiteralNode)t.Object;
-                    if (lit.DataType != null)
+                    INode lit = t.Object;
+                    if (lit.HasLanguage)
+                    {
+                        //Language specified Literal
+                        context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
+                        context.Writer.WriteString(lit.Value);
+                    } 
+                    else if (lit.HasDataType)
                     {
                         if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
@@ -651,12 +658,6 @@ namespace VDS.RDF.Writing
                             context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, lit.DataType.AbsoluteUri);//Uri.EscapeUriString(lit.DataType.ToString()));
                             context.Writer.WriteString(lit.Value);
                         }
-                    }
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        //Language specified Literal
-                        context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
-                        context.Writer.WriteString(lit.Value);
                     }
                     else
                     {
@@ -795,13 +796,14 @@ namespace VDS.RDF.Writing
                         uriref = context.Namespaces.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
-                    else
-                    {
-                        String baseUri = context.Graph.BaseUri.AbsoluteUri;
-                        if (!baseUri.EndsWith("#")) baseUri += "#";
-                        uriref = baseUri + uriref;
-                        outType = UriRefType.Uri;
-                    }
+                    // TODO Provide a way to specify the Base URI for writers
+                    //else
+                    //{
+                    //    String baseUri = context.BaseUri.AbsoluteUri;
+                    //    if (!baseUri.EndsWith("#")) baseUri += "#";
+                    //    uriref = baseUri + uriref;
+                    //    outType = UriRefType.Uri;
+                    //}
                 }
             }
 

@@ -36,7 +36,7 @@ namespace VDS.RDF.Specifications
     /// </summary>
     public static class RdfXmlSpecsHelper
     {
-        private static Regex _isabsoluteuri = new Regex("^([a-zA-Z]+:(//)?|mailto:)", RegexOptions.IgnoreCase);
+        private static readonly Regex _isAbsoluteUri = new Regex("^([a-zA-Z]+:(//)?|mailto:)", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Checks whether a Uri Reference is an absolute Uri
@@ -44,9 +44,9 @@ namespace VDS.RDF.Specifications
         /// <param name="uriref">Uri Reference to Test</param>
         /// <returns></returns>
         /// <remarks>Implemented by seeing if the Uri Reference starts with a Uri scheme specifier</remarks>
-        public static bool IsAbsoluteURI(String uriref)
+        public static bool IsAbsoluteUri(String uriref)
         {
-            return _isabsoluteuri.IsMatch(uriref);
+            return _isAbsoluteUri.IsMatch(uriref);
         }
 
         //The following set of Grammar Productions encode Tests as to the validity of Node URIs
@@ -55,19 +55,19 @@ namespace VDS.RDF.Specifications
         /// <summary>
         /// Array containing the Core Syntax Terms
         /// </summary>
-        private static String[] coreSyntaxTerms = { "rdf:RDF", "rdf:ID", "rdf:about", "rdf:parseType", "rdf:resource", "rdf:nodeID", "rdf:datatype" };
+        private static readonly String[] _coreSyntaxTerms = { "rdf:RDF", "rdf:ID", "rdf:about", "rdf:parseType", "rdf:resource", "rdf:nodeID", "rdf:datatype" };
         /// <summary>
         /// Array containing the other Syntax Terms
         /// </summary>
-        private static String[] syntaxTerms = { "rdf:Description", "rdf:li" };
+        private static readonly String[] _syntaxTerms = { "rdf:Description", "rdf:li" };
         /// <summary>
         /// Array containing the Old Syntax Terms
         /// </summary>
-        private static String[] oldTerms = { "rdf:aboutEach", "rdf:aboutEachPrefix", "rdf:bagID" };
+        private static readonly String[] _oldTerms = { "rdf:aboutEach", "rdf:aboutEachPrefix", "rdf:bagID" };
         /// <summary>
         /// Array containing Syntax Terms where the rdf: Prefix is mandated
         /// </summary>
-        private static String[] requiresRdfPrefix = { "about", "aboutEach", "ID", "bagID", "type", "resource", "parseType" };
+        private static readonly String[] _requiresRdfPrefix = { "about", "aboutEach", "ID", "bagID", "type", "resource", "parseType" };
 
         /// <summary>
         /// Checks whether a given QName is a Core Syntax Term
@@ -77,7 +77,7 @@ namespace VDS.RDF.Specifications
         public static bool IsCoreSyntaxTerm(String qname)
         {
             //Does the QName occur in the array of Core Syntax Terms?
-            return coreSyntaxTerms.Contains(qname);
+            return _coreSyntaxTerms.Contains(qname);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Specifications
         public static bool IsSyntaxTerm(String qname)
         {
             //Does the QName occur as a Core Syntax Term or in the Array of Syntax Terms?
-            return (IsCoreSyntaxTerm(qname) || syntaxTerms.Contains(qname));
+            return (IsCoreSyntaxTerm(qname) || _syntaxTerms.Contains(qname));
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Specifications
         public static bool IsOldTerm(String qname)
         {
             //Does the QName occur in the array of Old Syntax Terms?
-            return oldTerms.Contains(qname);
+            return _oldTerms.Contains(qname);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="qname">QName to Test</param>
         /// <returns>True if the QName is valid</returns>
-        public static bool IsPropertyElementURI(String qname)
+        public static bool IsPropertyElementUri(String qname)
         {
             //Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:Description") || IsOldTerm(qname))
@@ -145,7 +145,7 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="qname">QName to Test</param>
         /// <returns>True if the QName is valid</returns>
-        public static bool IsPropertyAttributeURI(String qname)
+        public static bool IsPropertyAttributeUri(String qname)
         {
             //Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:li") || qname.Equals("rdf:Description") || IsOldTerm(qname))
@@ -167,7 +167,7 @@ namespace VDS.RDF.Specifications
         /// <remarks>This embodies Local Names which must have an rdf prefix</remarks>
         public static bool IsAmbigiousAttributeName(String name)
         {
-            return requiresRdfPrefix.Contains(name);
+            return _requiresRdfPrefix.Contains(name);
         }
 
         /// <summary>

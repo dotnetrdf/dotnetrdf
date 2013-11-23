@@ -17,6 +17,11 @@ namespace VDS.RDF.Nodes
         private readonly IRdfHandler _handler;
         private readonly int _seed;
 
+        /// <summary>
+        /// Creates a new blank node generator
+        /// </summary>
+        /// <param name="handler">Handler used to actually create node instances</param>
+        /// <param name="seed">Seed</param>
         public RandomDerivedBlankNodeGenerator(IRdfHandler handler, int seed)
         {
             if (ReferenceEquals(handler, null)) throw new ArgumentNullException("handler");
@@ -34,10 +39,17 @@ namespace VDS.RDF.Nodes
             return _handler.CreateBlankNode(this.MapToGuid(id));
         }
 
+        /// <summary>
+        /// Maps a String identifier into a GUID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>GUID</returns>
         protected Guid MapToGuid(String id)
         {
             // Initialize a new random with a seed based on the combination of the seed of the generator and the hash code
             // This means that given the same ID we should generate the same sequence of random data and thus the same GUID
+            // NB - There is a small chance that this could result in the same GUID for different IDs but hopefully this chance
+            //      is small enough that for most people it won't be a problem
             Random rnd = new Random(Tools.CombineHashCodes(this._seed, id));
             int r = rnd.Next();
             short b = (short) (r >> 16);
@@ -45,7 +57,7 @@ namespace VDS.RDF.Nodes
             // TODO May be worth using some bytes from the ID to avoid non-identical IDs with colliding hash codes creating identical GUIDs
             byte[] d = new byte[8];
             rnd.NextBytes(d);
-            Guid guid = new Guid(id.GetHashCode(), b, c, d);
+            return new Guid(id.GetHashCode(), b, c, d);
         }
     }
 }

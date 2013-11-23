@@ -288,7 +288,7 @@ namespace VDS.RDF.Parsing
             try 
             {
                 //Create a new Parser Context and Parse
-                RdfXmlParserContext context = new RdfXmlParserContext(g, document, this._traceparsing);
+                RdfXmlParserContext context = new RdfXmlParserContext(new GraphHandler(g), document, this._traceparsing);
                 this.Parse(context);
             }
             catch (XmlException xmlEx)
@@ -384,9 +384,9 @@ namespace VDS.RDF.Parsing
             if (first is RootEvent)
             {
                 this.GrammarProductionDoc(context, (RootEvent)first);
-                if (setBaseUri && !((RootEvent)first).BaseUri.Equals(String.Empty))
+                if (setBaseUri && !ReferenceEquals(((RootEvent)first).BaseUri, null))
                 {
-                    baseUri = UriFactory.Create(Tools.ResolveUri(((RootEvent)first).BaseUri, String.Empty));
+                    baseUri = UriFactory.ResolveUri(((RootEvent)first).BaseUri, null);
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -394,9 +394,9 @@ namespace VDS.RDF.Parsing
             else
             {
                 this.GrammarProductionRDF(context, (ElementEvent)first);
-                if (setBaseUri && !((ElementEvent)first).BaseUri.Equals(String.Empty))
+                if (setBaseUri && !ReferenceEquals(((ElementEvent)first).BaseUri, null))
                 {
-                    baseUri = UriFactory.Create(Tools.ResolveUri(((ElementEvent)first).BaseUri, String.Empty));
+                    baseUri = UriFactory.ResolveUri(((ElementEvent)first).BaseUri, null);
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -570,18 +570,18 @@ namespace VDS.RDF.Parsing
 
             //Check the set of Attributes is Valid
             int limitedAttributesFound = 0;
-            String ID = String.Empty;
+            String id = String.Empty;
             foreach (AttributeEvent attr in element.Attributes)
             {
-                if (RdfXmlSpecsHelper.IsIDAttribute(attr))
+                if (IsIDAttribute(attr))
                 {
-                    ID = attr.Value;
+                    id = attr.Value;
                     limitedAttributesFound++;
 
                     //Set the Subject
                     element.Subject = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsNodeIDAttribute(attr))
+                else if (IsNodeIDAttribute(attr))
                 {
                     limitedAttributesFound++;
 
@@ -594,14 +594,14 @@ namespace VDS.RDF.Parsing
                     //Set the Subject
                     element.Subject = new BlankNodeIDEvent(attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsAboutAttribute(attr))
+                else if (IsAboutAttribute(attr))
                 {
                     limitedAttributesFound++;
 
                     //Set the Subject
                     element.Subject = new UriReferenceEvent(attr.Value, attr.SourceXml);
                 }
-                else if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
+                else if (IsPropertyAttribute(attr))
                 {
                     //Don't need to do anything here yet
                 }
@@ -646,7 +646,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        subj = context.Handler.CreateBlankNode(blank.Identifier);
+                        subj = context.BlankNodeGenerator.CreateBlankNode(blank.Identifier);
                     }
                 }
                 else
@@ -663,9 +663,9 @@ namespace VDS.RDF.Parsing
             element.SubjectNode = subj;
 
             //Validate the ID (if any)
-            if (!ID.Equals(String.Empty))
+            if (!id.Equals(String.Empty))
             {
-                this.ValidateID(context, ID, subj);
+                this.ValidateID(context, id, subj);
             }
 
             if (!element.QName.Equals("rdf:Description") && !element.QName.Equals(":Description"))
@@ -679,7 +679,7 @@ namespace VDS.RDF.Parsing
             //Go back over Attributes looking for property attributes
             foreach (AttributeEvent attr in element.Attributes)
             {
-                if (RdfXmlSpecsHelper.IsPropertyAttribute(attr))
+                if (IsPropertyAttribute(attr))
                 {
                     if (attr.QName.Equals("rdf:type"))
                     {
@@ -695,7 +695,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Generate a Property Triple
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(attr.QName, context.Namespaces, null)));
+                        pred = context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(attr.QName, context.Namespaces, null));
 
                         //Add Language to Literal if necessary
                         if (element.Language.Equals(String.Empty))
@@ -742,8 +742,6 @@ namespace VDS.RDF.Parsing
                 this.ProductionTrace("Property Element List");
             }
 
-            IRdfXmlEvent next;
-
             //Want to break up into a number of sublists
             while (eventlist.Count > 0)
             {
@@ -754,7 +752,7 @@ namespace VDS.RDF.Parsing
                 //Gather the Sublist taking account of nesting
                 do
                 {
-                    next = eventlist.Dequeue();
+                    IRdfXmlEvent next = eventlist.Dequeue();
                     subevents.Enqueue(next);
 
                     if (next is ElementEvent)
@@ -801,7 +799,7 @@ namespace VDS.RDF.Parsing
             element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
             this.ApplyNamespaces(context, element);
-            if (!RdfXmlSpecsHelper.IsPropertyElementURI(element.QName))
+            if (!RdfXmlSpecsHelper.IsPropertyElementUri(element.QName))
             {
                 //Invalid Uri
                 throw ParserHelper.Error("A Property Element was encountered with an invalid URI '" + element.QName + "'\nCore Syntax Terms, Old Syntax Terms and rdf:Description cannot be used as Property Element URIs", "PropertyElement", element);
@@ -910,7 +908,7 @@ namespace VDS.RDF.Parsing
             }
             else if (element.Attributes.Count == 1)
             {
-                if (!RdfXmlSpecsHelper.IsIDAttribute(element.Attributes.First()))
+                if (!IsIDAttribute(element.Attributes.First()))
                 {
                     throw ParserHelper.Error("A Resource Property Element was encountered with a single attribute which was not rdf:ID, only rdf:ID is permitted", element);
                 }
@@ -978,7 +976,7 @@ namespace VDS.RDF.Parsing
                 //Get the Attribute Event and generate a Uri from it
                 AttributeEvent attr = element.Attributes.First();
                 UriReferenceEvent uriref = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
-                IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                INode uri = this.Resolve(context, uriref, element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1035,10 +1033,10 @@ namespace VDS.RDF.Parsing
                 //Only rdf:ID and rdf:datatype allowed
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a)) {
+                    if (IsIDAttribute(a)) {
                         ID = "#" + a.Value;
                     }
-                    else if (RdfXmlSpecsHelper.IsDataTypeAttribute(a))
+                    else if (IsDataTypeAttribute(a))
                     {
                         datatype = a.Value;
                     } 
@@ -1084,7 +1082,7 @@ namespace VDS.RDF.Parsing
 
                 //Resolve the Datatype Uri
                 UriReferenceEvent dtref = new UriReferenceEvent(datatype, String.Empty);
-                IUriNode dturi = this.Resolve(context, dtref, element.BaseUri);
+                INode dturi = this.Resolve(context, dtref, element.BaseUri);
 
                 obj = context.Handler.CreateLiteralNode(text.Value, dturi.Uri);
             }
@@ -1097,7 +1095,7 @@ namespace VDS.RDF.Parsing
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                INode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1138,7 +1136,7 @@ namespace VDS.RDF.Parsing
                 //Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (IsIDAttribute(a))
                     {
                         ID = "#" + a.Value;
                     }
@@ -1193,7 +1191,7 @@ namespace VDS.RDF.Parsing
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                INode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1241,7 +1239,7 @@ namespace VDS.RDF.Parsing
                 //Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (IsIDAttribute(a))
                     {
                         ID = "#" + a.Value;
                     }
@@ -1284,7 +1282,7 @@ namespace VDS.RDF.Parsing
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                INode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1372,7 +1370,7 @@ namespace VDS.RDF.Parsing
                 //Check the attributes that do exist
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    if (IsIDAttribute(a))
                     {
                         ID = "#" + a.Value;
                     }
@@ -1465,7 +1463,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    INode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, b1);
                 }
@@ -1509,7 +1507,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    INode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, obj);
                 }
@@ -1544,7 +1542,7 @@ namespace VDS.RDF.Parsing
             ElementEvent parentEl;
 
             //Are there any attributes OR Only a rdf:ID attribute?
-            if (element.Attributes.Count == 0 || (element.Attributes.Count == 1 && RdfXmlSpecsHelper.IsIDAttribute(element.Attributes[0])))
+            if (element.Attributes.Count == 0 || (element.Attributes.Count == 1 && IsIDAttribute(element.Attributes[0])))
             {
                 //No Attributes/Only rdf:ID
 
@@ -1576,13 +1574,13 @@ namespace VDS.RDF.Parsing
 
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent("#" + element.Attributes[0].Value, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    INode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, obj);
                 }
 
             }
-            else if (element.Attributes.Count > 0 && element.Attributes.Where(a => RdfXmlSpecsHelper.IsDataTypeAttribute(a)).Count() == 1)
+            else if (element.Attributes.Count > 0 && element.Attributes.Count(a => IsDataTypeAttribute(a)) == 1)
             {
                 //Should be processed as a Typed Literal Event instead
                 EventQueue<IRdfXmlEvent> temp = new EventQueue<IRdfXmlEvent>();
@@ -1603,13 +1601,13 @@ namespace VDS.RDF.Parsing
                 int limitedAttributes = 0;
                 foreach (AttributeEvent a in element.Attributes)
                 {
-                    if (RdfXmlSpecsHelper.IsResourceAttribute(a))
+                    if (IsResourceAttribute(a))
                     {
                         //An rdf:resource attribute so a Uri Reference
                         res = new UriReferenceEvent(a.Value, a.SourceXml);
                         limitedAttributes++;
                     }
-                    else if (RdfXmlSpecsHelper.IsNodeIDAttribute(a))
+                    else if (IsNodeIDAttribute(a))
                     {
                         //An rdf:nodeID attribute so a Blank Node
 
@@ -1622,7 +1620,7 @@ namespace VDS.RDF.Parsing
                         res = new BlankNodeIDEvent(a.Value, a.SourceXml);
                         limitedAttributes++;
                     }
-                    else if (RdfXmlSpecsHelper.IsIDAttribute(a))
+                    else if (IsIDAttribute(a))
                     {
                         //Set the ID for later use in reification
                         ID = "#" + a.Value;
@@ -1647,25 +1645,10 @@ namespace VDS.RDF.Parsing
                     UriReferenceEvent uriref = (UriReferenceEvent)res;
                     subj = this.Resolve(context, uriref, element.BaseUri);
                 }
-                else if (res is BlankNodeIDEvent)
-                {
-                    BlankNodeIDEvent blank = (BlankNodeIDEvent)res;
-                    if (blank.Identifier.Equals(String.Empty))
-                    {
-                        //Have the Graph generate a Blank Node ID
-                        subj = context.Handler.CreateBlankNode();
-                    }
-                    else
-                    {
-                        //Use the supplied Blank Node ID
-                        subj = context.Handler.CreateBlankNode(blank.Identifier);
-                    }
-                }
                 else
                 {
-                    //Should never hit this case but required to get the Code to Compile
-                    //Have the Graph generate a Blank Node ID
-                    subj = context.Handler.CreateBlankNode();
+                    BlankNodeIDEvent blank = (BlankNodeIDEvent)res;
+                    subj = blank.Identifier.Equals(String.Empty) ? context.Handler.CreateBlankNode() : context.BlankNodeGenerator.CreateBlankNode(blank.Identifier);
                 }
 
                 //Validate the ID (if any)
@@ -1684,7 +1667,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    INode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, parentEl.SubjectNode, pred, subj);
                 }
@@ -1703,7 +1686,7 @@ namespace VDS.RDF.Parsing
 
                         if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, obj))) ParserHelper.Stop();
                     }
-                    else if (RdfXmlSpecsHelper.IsPropertyAttribute(a))
+                    else if (IsPropertyAttribute(a))
                     {
                         //A Property Attribute
 
@@ -1717,7 +1700,7 @@ namespace VDS.RDF.Parsing
                         {
 #endif
                             //Create the Predicate from the Attribute QName
-                            pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
+                            pred = context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(a.QName, context.Namespaces, null));
 
                             //Create the Object from the Attribute Value
                             if (element.Language.Equals(String.Empty))
@@ -1735,7 +1718,7 @@ namespace VDS.RDF.Parsing
                         }
 #endif
                     }
-                    else if (RdfXmlSpecsHelper.IsIDAttribute(a) || RdfXmlSpecsHelper.IsNodeIDAttribute(a) || RdfXmlSpecsHelper.IsResourceAttribute(a))
+                    else if (IsIDAttribute(a) || IsNodeIDAttribute(a) || IsResourceAttribute(a))
                     {
                         //These have already been processed
                         //We test for them so that we can then throw ParserHelper.Errors in the final case for unexpected attributes
@@ -1759,35 +1742,34 @@ namespace VDS.RDF.Parsing
         /// <param name="evt">Element Event</param>
         private void ApplyNamespaces(RdfXmlParserContext context, ElementEvent evt)
         {
-            if (!evt.BaseUri.Equals(String.Empty))
+            if (!ReferenceEquals(evt.BaseUri, null))
             {
-                Uri baseUri = UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
+                Uri baseUri = UriFactory.ResolveUri(evt.BaseUri, context.BaseUri);
                 context.BaseUri = baseUri;
                 if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
             foreach (NamespaceAttributeEvent ns in evt.NamespaceAttributes)
             {
-                if (!context.Namespaces.HasNamespace(ns.Prefix) || !context.Namespaces.GetNamespaceUri(ns.Prefix).AbsoluteUri.Equals(ns.Uri))
+                if (!context.Namespaces.HasNamespace(ns.Prefix) || !EqualityHelper.AreUrisEqual(context.Namespaces.GetNamespaceUri(ns.Prefix), ns.Uri))
                 {
-                    context.Namespaces.AddNamespace(ns.Prefix, UriFactory.Create(ns.Uri));
-                    if (!context.Handler.HandleNamespace(ns.Prefix, UriFactory.Create(ns.Uri))) ParserHelper.Stop();
+                    context.Namespaces.AddNamespace(ns.Prefix, UriFactory.Intern(ns.Uri));
+                    if (!context.Handler.HandleNamespace(ns.Prefix, UriFactory.Intern(ns.Uri))) ParserHelper.Stop();
                 }
             }
         }
 
         /// <summary>
-        /// Resolves a Uri Reference into a Uri Node against a given Base Uri
+        /// Resolves a Uri Reference into a URI Node against a given Base Uri
         /// </summary>
         /// <param name="context">Parser Context</param>
         /// <param name="uriref">Uri Reference to Resolve</param>
         /// <param name="baseUri">Base Uri to Resolve against</param>
         /// <returns></returns>
-        private INode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
+        private INode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, Uri baseUri)
         {
             try
             {
-                if (baseUri.Equals(String.Empty)) baseUri = context.BaseUri.ToSafeString();
-                INode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
+                INode u = context.Handler.CreateUriNode(UriFactory.ResolveUri(uriref.Identifier, baseUri));
                 return u;
             }
             catch (Exception ex)
@@ -1798,11 +1780,17 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Resolves a Prefixed Name into a URI Node
+        /// </summary>
+        /// <param name="context">Parser context</param>
+        /// <param name="el">Element whose prefixed name is to be resolved</param>
+        /// <returns></returns>
         private INode Resolve(RdfXmlParserContext context, ElementEvent el)
         {
             try
             {
-                INode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
+                INode u = context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(el.QName, context.Namespaces, null));
                 return u;
             }
             catch (Exception ex)
@@ -1961,7 +1949,7 @@ namespace VDS.RDF.Parsing
             if (attr.QName.Equals("rdf:ID"))
             {
                 //Must be a valid RDF ID
-                if (IsRdfID(attr.Value))
+                if (IsRdfId(attr.Value))
                 {
                     //OK
                     return true;
@@ -1990,7 +1978,7 @@ namespace VDS.RDF.Parsing
             if (attr.QName.Equals("rdf:nodeID"))
             {
                 //Must be a valid RDF ID
-                if (IsRdfID(attr.Value))
+                if (IsRdfId(attr.Value))
                 {
                     //OK
                     return true;
@@ -2035,7 +2023,7 @@ namespace VDS.RDF.Parsing
         {
             //QName must be a valid Property Attribute Uri
             //Any string value allowed so if Uri test is true then we're a property Attribute
-            return IsPropertyAttributeURI(attr.QName);
+            return RdfXmlSpecsHelper.IsPropertyAttributeUri(attr.QName);
         }
 
         /// <summary>
@@ -2081,7 +2069,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">ID Value to Test</param>
         /// <returns>True if the ID is valid</returns>
-        public static bool IsRdfID(String value)
+        public static bool IsRdfId(String value)
         {
             //Must be a valid NCName as defined in the XML Namespace Specification
             //Which is itself defined in terms of the XML Specification

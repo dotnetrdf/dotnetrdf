@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 output.Append('a');
             }
-            else if (this._qnameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
+            else if (this._qnameMapper.ReduceToPrefixedName(u.Uri.AbsoluteUri, out qname))
             {
                 if (this.IsValidQName(qname))
                 {

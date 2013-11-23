@@ -32,7 +32,8 @@ namespace VDS.RDF.Writing.Contexts
     /// <summary>
     /// Writer Context for NTriples Writers
     /// </summary>
-    public class NTriplesWriterContext : BaseWriterContext
+    public class NTriplesWriterContext
+        : BaseGraphWriterContext
     {
         /// <summary>
         /// Creates a new NTriples Writer Context with default settings
