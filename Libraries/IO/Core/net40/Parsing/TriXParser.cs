@@ -36,6 +36,7 @@ using System.Xml.Xsl;
 #endif
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
@@ -59,7 +60,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Current W3C Namespace Uri for TriX
         /// </summary>
-        public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
+        public const String TriXNamespaceUri = "http://www.w3.org/2004/03/trix/trix-1/";
 
         public void Load(IRdfHandler handler, StreamReader input)
         {
@@ -119,8 +120,8 @@ namespace VDS.RDF.Parsing
                                 inputReady = true;
                             }
 
-                            Regex getStylesheetURI = new Regex("href=\"([^\"]+)\"");
-                            String stylesheetUri = getStylesheetURI.Match(child.Value).Groups[1].Value;
+                            Regex getStylesheetUri = new Regex("href=\"([^\"]+)\"");
+                            String stylesheetUri = getStylesheetUri.Match(child.Value).Groups[1].Value;
 
                             //Load the Transform
                             XslCompiledTransform transform = new XslCompiledTransform();
@@ -142,7 +143,8 @@ namespace VDS.RDF.Parsing
 
                 //Start parsing
                 if (!inputReady) inputDoc = doc;
-                this.TryParseGraphset(inputDoc, handler);
+                TriXParserContext context = new TriXParserContext(handler);
+                this.TryParseGraphset(inputDoc, context);
 
                 input.Close();
             }
@@ -173,11 +175,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseGraphset(XmlDocument doc, IRdfHandler handler)
+        private void TryParseGraphset(XmlDocument doc, TriXParserContext context)
         {
             try
             {
-                handler.StartRdf();
+                context.Handler.StartRdf();
 
                 XmlElement graphsetEl = doc.DocumentElement;
                 if (!graphsetEl.Name.Equals("TriX"))
@@ -191,15 +193,15 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    bool trixNSDefined = false;
+                    bool trixNsDefined = false;
                     foreach (XmlAttribute attr in graphsetEl.Attributes)
                     {
                         if (attr.Name.Equals("xmlns"))
                         {
                             //Ensure that the xmlns attribute is defined and is the TriX namespace
-                            if (trixNSDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
-                            if (!attr.Value.Equals(TriXNamespaceURI)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceURI + "'");
-                            trixNSDefined = true;
+                            if (trixNsDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
+                            if (!attr.Value.Equals(TriXNamespaceUri)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceUri + "'");
+                            trixNsDefined = true;
                         }
                         else if (attr.LocalName.Equals("xmlns"))
                         {
@@ -207,7 +209,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    if (!trixNSDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
+                    if (!trixNsDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
                 }
 
                 //Process Child Nodes
@@ -216,25 +218,25 @@ namespace VDS.RDF.Parsing
                     //Ignore non-Element nodes
                     if (graph.NodeType == XmlNodeType.Element)
                     {
-                        this.TryParseGraph(graph, handler);
+                        this.TryParseGraph(graph, context);
                     }
                 }
 
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
             }
             catch (RdfParsingTerminatedException)
             {
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
                 //Discard this - it justs means the Handler told us to stop
             }
             catch
             {
-                handler.EndRdf(false);
+                context.Handler.EndRdf(false);
                 throw;
             }
         }
 
-        private void TryParseGraph(XmlNode graphEl, IRdfHandler handler)
+        private void TryParseGraph(XmlNode graphEl, TriXParserContext context)
         {
             //Ensure Node Name is correct
             if (!graphEl.Name.Equals("graph"))
@@ -280,7 +282,7 @@ namespace VDS.RDF.Parsing
             if (nameEl.Name.Equals("uri"))
             {
                 //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                graphName = handler.CreateUriNode(UriFactory.ResolveUri(nameEl.InnerText, null));
+                graphName = context.Handler.CreateUriNode(UriFactory.ResolveUri(nameEl.InnerText, null));
             }
             else if (nameEl.Name.Equals("id"))
             {
@@ -304,12 +306,12 @@ namespace VDS.RDF.Parsing
                         skipFirst = false;
                         continue;
                     }
-                    this.TryParseTriple(triple, handler, graphName);
+                    this.TryParseTriple(triple, context, graphName);
                 }
             }
         }
 
-        private void TryParseTriple(XmlNode tripleEl, IRdfHandler handler, INode graphName)
+        private void TryParseTriple(XmlNode tripleEl, TriXParserContext context, INode graphName)
         {
             //Verify Node Name
             if (!tripleEl.Name.Equals("triple"))
@@ -330,12 +332,11 @@ namespace VDS.RDF.Parsing
             INode subj, pred, obj;
             if (subjEl.Name.Equals("uri"))
             {
-                subj = handler.CreateUriNode(UriFactory.Create(subjEl.InnerText));
+                subj = context.Handler.CreateUriNode(UriFactory.Create(subjEl.InnerText));
             }
             else if (subjEl.Name.Equals("id"))
             {
-                // TODO Need a blank node generator for TriX parsing
-                subj = handler.CreateBlankNode(subjEl.InnerText);
+                subj = context.BlankNodeGenerator.CreateBlankNode(subjEl.InnerText);
             }
             else
             {
@@ -344,7 +345,7 @@ namespace VDS.RDF.Parsing
 
             if (predEl.Name.Equals("uri"))
             {
-                pred = handler.CreateUriNode(UriFactory.Create(predEl.InnerText));
+                pred = context.Handler.CreateUriNode(UriFactory.Create(predEl.InnerText));
             }
             else
             {
@@ -353,40 +354,32 @@ namespace VDS.RDF.Parsing
 
             if (objEl.Name.Equals("uri"))
             {
-                obj = handler.CreateUriNode(UriFactory.Create(objEl.InnerText));
+                obj = context.Handler.CreateUriNode(UriFactory.Create(objEl.InnerText));
             }
             else if (objEl.Name.Equals("id"))
             {
-                // TODO Need a blank node generator for TriX parsing
-                obj = handler.CreateBlankNode(objEl.InnerText);
+                obj = context.BlankNodeGenerator.CreateBlankNode(objEl.InnerText);
             }
             else if (objEl.Name.Equals("plainLiteral"))
             {
-                if (objEl.Attributes.GetNamedItem("xml:lang") != null)
-                {
-                    obj = handler.CreateLiteralNode(objEl.InnerText, objEl.Attributes["xml:lang"].Value);
-                }
-                else
-                {
-                    obj = handler.CreateLiteralNode(objEl.InnerText);
-                }
+                obj = objEl.Attributes != null && objEl.Attributes.GetNamedItem("xml:lang") != null ? context.Handler.CreateLiteralNode(objEl.InnerText, objEl.Attributes["xml:lang"].Value) : context.Handler.CreateLiteralNode(objEl.InnerText);
             }
             else if (objEl.Name.Equals("typedLiteral"))
             {
-                if (objEl.Attributes.GetNamedItem("datatype") != null)
+                if (objEl.Attributes != null && objEl.Attributes.GetNamedItem("datatype") != null)
                 {
                     Uri dtUri = UriFactory.Create(objEl.Attributes["datatype"].Value);
                     if (objEl.FirstChild.NodeType == XmlNodeType.Text)
                     {
-                        obj = handler.CreateLiteralNode(objEl.InnerText, dtUri);
+                        obj = context.Handler.CreateLiteralNode(objEl.InnerText, dtUri);
                     }
                     else if (objEl.FirstChild.NodeType == XmlNodeType.CDATA)
                     {
-                        obj = handler.CreateLiteralNode(objEl.FirstChild.InnerXml, dtUri);
+                        obj = context.Handler.CreateLiteralNode(objEl.FirstChild.InnerXml, dtUri);
                     }
                     else
                     {
-                        obj = handler.CreateLiteralNode(objEl.InnerText, dtUri);
+                        obj = context.Handler.CreateLiteralNode(objEl.InnerText, dtUri);
                     }
                 }
                 else
@@ -400,7 +393,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Assert the resulting Triple
-            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop(); ;
+            if (!context.Handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop(); ;
         }
 
         /// <summary>
@@ -409,7 +402,7 @@ namespace VDS.RDF.Parsing
         /// <param name="msg">The Error Message</param>
         /// <param name="n">The Node that is the cause of the Error</param>
         /// <returns></returns>
-        private RdfParseException Error(String msg, XmlNode n)
+        private static RdfParseException Error(String msg, XmlNode n)
         {
             StringBuilder output = new StringBuilder();
             output.AppendLine("[Source XML]");

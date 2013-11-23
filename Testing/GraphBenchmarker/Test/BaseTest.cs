@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             this.PreIterationSetup(testCase);
 
             DateTime start = DateTime.Now;
-            int actions = 0;
+            long actions = 0;
             for (int i = 0; i < this._iterations; i++)
             {
                 actions += this.RunIteration(testCase);
@@ -82,6 +82,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             return new TestResult(elapsed, actions, this._unit, TestMetricType.Speed);
         }
 
-        protected abstract int RunIteration(TestCase testCase);
+        protected abstract long RunIteration(TestCase testCase);
     }
 }

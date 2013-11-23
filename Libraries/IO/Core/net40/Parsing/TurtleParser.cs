@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
@@ -319,7 +320,7 @@ namespace VDS.RDF.Parsing
                     //Set the Base Uri resolving against the current Base if any
                     try
                     {
-                        Uri baseUri = UriFactory.Create(Tools.ResolveUri(u.Value, context.BaseUri.ToSafeString()));
+                        Uri baseUri = UriFactory.ResolveUri(u.Value, context.BaseUri);
                         context.BaseUri = baseUri;
                         if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                     }
@@ -345,7 +346,7 @@ namespace VDS.RDF.Parsing
                         //Register a Namespace resolving the Namespace Uri against the Base Uri
                         try
                         {
-                            Uri nsUri = UriFactory.Create(Tools.ResolveUri(ns.Value, context.BaseUri.ToSafeString()));
+                            Uri nsUri = UriFactory.ResolveUri(ns.Value, context.BaseUri);
                             String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length - 1) : String.Empty;
                             context.Namespaces.AddNamespace(nsPrefix, nsUri);
                             if (!context.Handler.HandleNamespace(nsPrefix, nsUri)) ParserHelper.Stop();
@@ -411,7 +412,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.BLANKNODEWITHID:
-                    subj = context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
+                    subj = context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -600,7 +601,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        obj = context.Handler.CreateBlankNode(objToken.Value.Substring(2));
+                        obj = context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
                         break;
 
                     case Token.COMMA:
@@ -740,16 +741,15 @@ namespace VDS.RDF.Parsing
         private void TryParseCollection(TurtleParserContext context, INode firstSubj)
         {
             //The opening bracket of the collection will already have been discarded when we get called
-            IToken next;
             INode subj = firstSubj;
-            INode obj = null, nextSubj;
+            INode obj = null;
             INode rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
             INode rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
             INode rdfNil = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
             do
             {
-                next = context.Tokens.Dequeue();
+                IToken next = context.Tokens.Dequeue();
 
                 if (context.TraceParsing)
                 {
@@ -762,7 +762,7 @@ namespace VDS.RDF.Parsing
                         obj = context.Handler.CreateBlankNode();
                         break;
                     case Token.BLANKNODEWITHID:
-                        obj = context.Handler.CreateBlankNode(next.Value.Substring(2));
+                        obj = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
                         break;
                     case Token.COMMENT:
                         //Discard and continue
@@ -834,7 +834,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //More stuff in the collection
-                    nextSubj = context.Handler.CreateBlankNode();
+                    INode nextSubj = context.Handler.CreateBlankNode();
                     if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj))) ParserHelper.Stop();
                     subj = nextSubj;
                 }
@@ -849,46 +849,35 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         private INode TryParseLiteral(TurtleParserContext context, IToken lit)
         {
-            IToken next;
-            String dturi;
+            Uri dtUri;
 
             switch (lit.TokenType)
             {
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
-                    next = context.Tokens.Peek();
-                    if (next.TokenType == Token.LANGSPEC)
+                    IToken next = context.Tokens.Peek();
+                    switch (next.TokenType)
                     {
-                        //Has a Language Specifier
-                        next = context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(lit.Value, next.Value);
-                    }
-                    else if (next.TokenType == Token.DATATYPE)
-                    {
-                        //Has a Datatype
-                        next = context.Tokens.Dequeue();
-                        try
-                        {
-                            if (next.Value.StartsWith("<"))
+                        case Token.LANGSPEC:
+                            next = context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(lit.Value, next.Value);
+                        case Token.DATATYPE:
+                            next = context.Tokens.Dequeue();
+                            try
                             {
-                                dturi = next.Value.Substring(1, next.Value.Length - 2);
-                                return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                                if (next.Value.StartsWith("<"))
+                                {
+                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.ResolveUri(next.Value.Substring(1, next.Value.Length - 2), context.BaseUri));
+                                }
+                                dtUri = UriFactory.ResolvePrefixedName(next.Value, context.Namespaces, context.BaseUri);
+                                return context.Handler.CreateLiteralNode(lit.Value, dtUri);
                             }
-                            else
+                            catch (RdfException rdfEx)
                             {
-                                dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri);
-                                return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(dturi));
+                                throw new RdfParseException("Unable to resolve the Datatype '" + next.Value + "' due to the following error:\n" + rdfEx.Message, next, rdfEx);
                             }
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the Datatype '" + next.Value + "' due to the following error:\n" + rdfEx.Message, next, rdfEx);
-                        }
-                    }
-                    else
-                    {
-                        //Just an untyped Literal
-                        return context.Handler.CreateLiteralNode(lit.Value);
+                        default:
+                            return context.Handler.CreateLiteralNode(lit.Value);
                     }
 
                 case Token.LITERALWITHDT:
@@ -897,14 +886,11 @@ namespace VDS.RDF.Parsing
                     {
                         if (litdt.DataType.StartsWith("<"))
                         {
-                            dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                            dtUri = UriFactory.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), context.BaseUri);
+                            return context.Handler.CreateLiteralNode(litdt.Value, dtUri);
                         }
-                        else
-                        {
-                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(dturi));
-                        }
+                        dtUri = UriFactory.ResolvePrefixedName(litdt.DataType, context.Namespaces, context.BaseUri);
+                        return context.Handler.CreateLiteralNode(litdt.Value, dtUri);
                     }
                     catch (RdfException rdfEx)
                     {
@@ -972,7 +958,6 @@ namespace VDS.RDF.Parsing
             return "Turtle";
         }
 
-
         /// <summary>
         /// Infers the Type of a Plain Literal
         /// </summary>
@@ -989,17 +974,17 @@ namespace VDS.RDF.Parsing
                 //Is a Boolean
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
             }
-            else if (_validInteger.IsMatch(value))
+            else if (TurtleSpecsHelper.IsValidInteger(value))
             {
                 //Is an Integer
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
             }
-            else if (_validDecimal.IsMatch(value))
+            else if (TurtleSpecsHelper.IsValidDecimal(value))
             {
                 //Is a Decimal
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
             }
-            else if (_validDouble.IsMatch(value))
+            else if (TurtleSpecsHelper.IsValidDouble(value))
             {
                 //Is a Double
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);

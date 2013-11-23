@@ -28,9 +28,11 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Specifications;
+using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing
 {
@@ -67,26 +69,28 @@ namespace VDS.RDF.Writing
 
             try
             {
-                //Setup the XML document
-                XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
-                writer.WriteStartDocument();
-                writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
-                writer.WriteStartAttribute("xmlns");
-                writer.WriteRaw(TriXParser.TriXNamespaceURI);
-                writer.WriteEndAttribute();
+                INamespaceMapper namespaces = WriterHelper.ExtractNamespaces(store);
+                TriXWriterContext context = new TriXWriterContext(store, namespaces, output, XmlWriter.Create(output, this.GetSettings()));
 
-                BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper();
+                //Setup the XML document
+                context.XmlWriter.WriteStartDocument();
+                context.XmlWriter.WriteStartElement("TriX", TriXParser.TriXNamespaceUri);
+                context.XmlWriter.WriteStartAttribute("xmlns");
+                context.XmlWriter.WriteRaw(TriXParser.TriXNamespaceUri);
+                context.XmlWriter.WriteEndAttribute();
 
                 //Output Graphs as XML <graph> elements
-                foreach (IGraph g in store.Graphs)
+                foreach (INode graphName in context.GraphStore.GraphNames)
                 {
-                    this.GraphToTriX(g, writer, bnodeMapper);
+                    context.CurrentGraphName = graphName;
+                    context.CurrentGraph = context.GraphStore[graphName];
+                    this.GraphToTriX(context);
                 }
 
                 //Save the XML to disk
-                writer.WriteEndDocument();
-                writer.Flush();
-                writer.Close();
+                context.XmlWriter.WriteEndDocument();
+                context.XmlWriter.Flush();
+                context.XmlWriter.Close();
                 output.Close();
             }
             catch
@@ -103,88 +107,92 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void GraphToTriX(IGraph g, XmlWriter writer, BlankNodeOutputMapper bnodeMapper)
+        private void GraphToTriX(TriXWriterContext context)
         {
             //Create the <graph> element
-            writer.WriteStartElement("graph");
+            context.XmlWriter.WriteStartElement("graph");
 
             //Is the Graph Named?
-            if (g.BaseUri != null)
+            // TODO Provide a static method to check whether a Graph name denotes the default graph
+            if (!ReferenceEquals(context.CurrentGraphName, null))
             {
-                if (!g.BaseUri.AbsoluteUri.StartsWith("trix:local:"))
+                switch (context.CurrentGraphName.NodeType)
                 {
-                    writer.WriteStartElement("uri");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri));
-                    writer.WriteEndElement();
-                }
-                else
-                {
-                    writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri.Substring(11)));
-                    writer.WriteEndElement();
+                    case NodeType.Uri:
+                        context.XmlWriter.WriteStartElement("uri");
+                        context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(context.CurrentGraphName.Uri.AbsoluteUri));
+                        context.XmlWriter.WriteEndElement();
+                        break;
+                    case NodeType.Blank:
+                        context.XmlWriter.WriteStartElement("id");
+                        context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(context.BlankNodeMapper.GetOutputId(context.CurrentGraphName.AnonID)));
+                        context.XmlWriter.WriteEndElement();
+                        break;
+                    default:
+                        throw new RdfOutputException("Unsupport graph name type for TriX output");
                 }
             }
 
             //Output the Triples
-            foreach (Triple t in g.Triples)
+            foreach (Triple t in context.CurrentGraph.Triples)
             {
-                writer.WriteStartElement("triple");
+                context.XmlWriter.WriteStartElement("triple");
 
-                this.NodeToTriX(t.Subject, writer, bnodeMapper);
-                this.NodeToTriX(t.Predicate, writer, bnodeMapper);
-                this.NodeToTriX(t.Object, writer, bnodeMapper);
+                this.NodeToTriX(t.Subject, context);
+                this.NodeToTriX(t.Predicate, context);
+                this.NodeToTriX(t.Object, context);
 
                 //</triple>
-                writer.WriteEndElement();
+                context.XmlWriter.WriteEndElement();
             }
 
             //</graph>
-            writer.WriteEndElement();
+            context.XmlWriter.WriteEndElement();
         }
 
-        private void NodeToTriX(INode n, XmlWriter writer, BlankNodeOutputMapper bnodeMapper)
+        private void NodeToTriX(INode n, TriXWriterContext context)
         {
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(bnodeMapper.GetOutputID((n).AnonID)));
-                    writer.WriteEndElement();
+                    context.XmlWriter.WriteStartElement("id");
+                    context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(context.BlankNodeMapper.GetOutputId((n).AnonID)));
+                    context.XmlWriter.WriteEndElement();
                     break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriX"));
                 case NodeType.Literal:
-                    if (n.HasDataType)
+                    if (n.HasDataType && !n.HasLanguage)
                     {
-                        writer.WriteStartElement("typedLiteral");
-                        writer.WriteStartAttribute("datatype");
-                        writer.WriteRaw(WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri));
-                        writer.WriteEndAttribute();
+                        context.XmlWriter.WriteStartElement("typedLiteral");
+                        context.XmlWriter.WriteStartAttribute("datatype");
+                        context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(n.DataType.AbsoluteUri));
+                        context.XmlWriter.WriteEndAttribute();
                         if (n.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
-                            writer.WriteCData(n.Value);
+                            context.XmlWriter.WriteCData(n.Value);
                         }
                         else
                         {
-                            writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                            context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(n.Value));
                         }
-                        writer.WriteEndElement();
+                        context.XmlWriter.WriteEndElement();
                     }
                     else
                     {
-                        writer.WriteStartElement("plainLiteral");
+                        context.XmlWriter.WriteStartElement("plainLiteral");
                         if (n.HasLanguage)
                         {
-                            writer.WriteAttributeString("xml", "lang", null, n.Language);
+                            context.XmlWriter.WriteAttributeString("xml", "lang", null, n.Language);
                         }
-                        writer.WriteRaw(WriterHelper.EncodeForXml(n.Value));
-                        writer.WriteEndElement();
+                        context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(n.Value));
+                        context.XmlWriter.WriteEndElement();
                     }
                     break;
                 case NodeType.Uri:
-                    writer.WriteStartElement("uri");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((INode)n).Uri.AbsoluteUri));
-                    writer.WriteEndElement();
+                    context.XmlWriter.WriteStartElement("uri");
+                    context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(((INode)n).Uri.AbsoluteUri));
+                    context.XmlWriter.WriteEndElement();
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriX"));

@@ -37,21 +37,14 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class BlankNodeOutputMapper
     {
+        /// <summary>
+        /// Default prefix prepended to the numeric IDs produced by this mapper
+        /// </summary>
         public const String DefaultOutputPrefix = "b";
 
         private readonly String _outputPrefix = DefaultOutputPrefix;
-        private IDictionary<Guid, String> _mappings = new MultiDictionary<Guid, String>();
+        private readonly IDictionary<Guid, String> _mappings = new MultiDictionary<Guid, String>();
         private long _nextid = 0;
-
-        /// <summary>
-        /// Creates a new Blank Node ID mapper
-        /// </summary>
-        /// <param name="validator">Function which determines whether IDs are valid or not</param>
-        [Obsolete("The BlankNodeOutputMapper no longer needs to validate the IDs, please use an alternative oveload of the constructor", true)]
-        public BlankNodeOutputMapper(Func<String, bool> validator)
-        {
-            throw new NotSupportedException();
-        }
 
         /// <summary>
         /// Creates a new mapper using the default settings
@@ -76,38 +69,27 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Takes a GUID and generates a valid output ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID</param>
         /// <returns></returns>
-        public String GetOutputID(Guid id)
+        public String GetOutputId(Guid id)
         {
             lock (this._mappings)
             {
-                String outputID;
-                if (!this._mappings.TryGetValue(id, out outputID))
+                String outputId;
+                if (!this._mappings.TryGetValue(id, out outputId))
                 {
-                    outputID = this.GetNextID();
-                    this._mappings.Add(id, outputID);
+                    outputId = this.GetNextId();
+                    this._mappings.Add(id, outputId);
                 }
-                return outputID;
+                return outputId;
             }
-        }
-
-        /// <summary>
-        /// Takes a ID, validates it and returns either the ID or an appropriate remapped ID
-        /// </summary>
-        /// <param name="id">ID to map</param>
-        /// <returns></returns>
-        [Obsolete("Obsolete, use the overload which takes a Guid instead", true)]
-        public String GetOutputID(String id)
-        {
-            throw new NotSupportedException();
         }
 
         /// <summary>
         /// Internal Helper function which generates the new IDs
         /// </summary>
         /// <returns></returns>
-        private String GetNextID()
+        private String GetNextId()
         {
             String nextID = this._outputPrefix + Interlocked.Increment(ref this._nextid);
             return nextID;

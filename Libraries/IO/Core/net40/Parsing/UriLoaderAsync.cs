@@ -95,9 +95,6 @@ namespace VDS.RDF.Parsing
                 return;
             }
 
-            //Set Base URI if necessary
-            if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
-
             UriLoader.Load(new GraphHandler(g), u, parser, (_, s) => callback(g, s), state);
         }
 
@@ -190,7 +187,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Sanitise the URI to remove any Fragment ID
-                u = Tools.StripUriFragment(u);
+                u = UriFactory.StripUriFragment(u);
 
                 //TODO: Add use of Cache into here, this is tricky because this code is primarily intended for Silverlight where we disable the cache purposefully
 

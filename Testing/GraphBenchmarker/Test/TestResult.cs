@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 {
@@ -14,79 +11,58 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
     public class TestResult
     {
-        private TimeSpan _elapsed;
-        private int _actions;
-        private String _unit;
-        private double _memory = 0d;
-        private TestMetricType _metric;
+        private readonly TestMetricType _metric;
 
-        public TestResult(TimeSpan elapsed, int actions, String unit, TestMetricType metric)
+        public TestResult(TimeSpan elapsed, long actions, String unit, TestMetricType metric)
         {
-            this._elapsed = elapsed;
-            this._actions = actions;
-            this._unit = unit;
+            Memory = 0d;
+            this.Elapsed = elapsed;
+            this.Actions = actions;
+            this.Unit = unit;
             this._metric = metric;
         }
 
         public TestResult(TimeSpan elapsed, long memory)
             : this(elapsed, 0, "Bytes", TestMetricType.MemoryUsage)
         {
-            this._memory = (double)memory;
+            this.Memory = (double)memory;
 
             //Convert up to KB if possible
-            if (this._memory > 1024d)
+            if (this.Memory > 1024d)
             {
-                this._memory /= 1024d;
-                this._unit = "Kilobytes";
+                this.Memory /= 1024d;
+                this.Unit = "Kilobytes";
 
                 //Convert up to MB if possible
-                if (this._memory > 1024d)
+                if (this.Memory > 1024d)
                 {
-                    this._memory /= 1024d;
-                    this._unit = "Megabytes";
+                    this.Memory /= 1024d;
+                    this.Unit = "Megabytes";
 
                     //Convert up to GB if possible
-                    if (this._memory > 1024d)
+                    if (this.Memory > 1024d)
                     {
-                        this._memory /= 1024d;
-                        this._unit = "Gigabytes";
+                        this.Memory /= 1024d;
+                        this.Unit = "Gigabytes";
                     }
                 }
             }
         }
 
-        public TimeSpan Elapsed
-        {
-            get
-            {
-                return this._elapsed;
-            }
-        }
+        public TimeSpan Elapsed { get; private set; }
 
-        public int Actions
-        {
-            get
-            {
-                return this._actions;
-            }
-        }
+        public long Actions { get; private set; }
 
-        public String Unit
-        {
-            get
-            {
-                return this._unit;
-            }
-        }
+        public string Unit { get; private set; }
 
         public double Speed
         {
             get
             {
-                if (this._actions > 0)
+                if (this.Actions > 0)
                 {
-                    double seconds = ((double)this._elapsed.TotalMilliseconds) / 1000d;
-                    return ((double)this._actions) / seconds;
+                    double seconds = ((double)this.Elapsed.TotalMilliseconds) / 1000d;
+                    return ((double)this.Actions) / seconds;
                 }
                 else
                 {
@@ -95,13 +71,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             }
         }
 
-        public double Memory
-        {
-            get
-            {
-                return this._memory;
-            }
-        }
+        public double Memory { get; private set; }
 
         public override string ToString()
         {

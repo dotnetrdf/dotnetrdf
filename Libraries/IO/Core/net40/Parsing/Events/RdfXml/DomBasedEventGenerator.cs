@@ -108,10 +108,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private RootEvent GenerateEventTree(RdfXmlParserContext context, XmlNode docEl)
         {
             //Get the Document Element
-            //XmlNode docEl = document.DocumentElement;
 
             //Generate a Root Event and Element Event from it
-            RootEvent root = new RootEvent(docEl.BaseURI, docEl.OuterXml);
+            RootEvent root = new RootEvent(UriFactory.Create(docEl.BaseURI), docEl.OuterXml);
             if (docEl.BaseURI.Equals(String.Empty))
             {
                 if (context.BaseUri != null)

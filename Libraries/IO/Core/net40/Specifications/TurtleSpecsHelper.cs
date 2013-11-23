@@ -67,7 +67,7 @@ namespace VDS.RDF.Specifications
     /// <summary>
     /// Helper function relating to the Turtle Specifications
     /// </summary>
-    public class TurtleSpecsHelper
+    public static class TurtleSpecsHelper
     {
         /// <summary>
         /// Pattern for Valid Integers in Turtle
@@ -97,6 +97,11 @@ namespace VDS.RDF.Specifications
         private readonly static Regex _validDecimal = new Regex(ValidDecimalPattern);
         private readonly static Regex _validDouble = new Regex(ValidDoublePattern);
         private readonly static Regex _isLongLiteral = new Regex(LongLiteralsPattern);
+
+        private static String ToSafeString(this Uri u)
+        {
+            return ReferenceEquals(u, null) ? String.Empty : u.AbsoluteUri;
+        }
 
         /// <summary>
         /// Determines whether a given String is a valid Plain Literal
@@ -253,7 +258,7 @@ namespace VDS.RDF.Specifications
             if (value.Equals(":")) return true;
 
             //IsPNPrefix() implements the appropriate productions for the different syntaxes
-            return IsPNPrefix(value.Substring(0, value.Length - 1), syntax);
+            return IsPnPrefix(value.Substring(0, value.Length - 1), syntax);
         }
 
         /// <summary>
@@ -262,7 +267,7 @@ namespace VDS.RDF.Specifications
         /// <param name="value">Value</param>
         /// <param name="syntax">Turtle Syntax</param>
         /// <returns></returns>
-        public static bool IsPNPrefix(String value, TurtleSyntax syntax)
+        public static bool IsPnPrefix(String value, TurtleSyntax syntax)
         {
             char[] cs = value.ToCharArray();
             int start = 1;
@@ -391,7 +396,7 @@ namespace VDS.RDF.Specifications
                         if (portions[p].Contains("%") || portions[p].Contains("\\") || Char.IsDigit(portions[p][0])) break;
 
                         //Otherwise must be a valid prefix
-                        if (!IsPNPrefix(portions[p], syntax)) return false;
+                        if (!IsPnPrefix(portions[p], syntax)) return false;
                     }
 
                     String final = portions[portions.Length - 1];
@@ -404,7 +409,7 @@ namespace VDS.RDF.Specifications
                     if (final.Length == 0) return true;
 
                     //Final portion conforms to PN_LOCAL
-                    return IsPNLocal(final);
+                    return IsPnLocal(final);
 
                 default:
                     //name	::=	nameStartChar nameChar*
@@ -452,7 +457,7 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="value">Value</param>
         /// <returns></returns>
-        public static bool IsPNLocal(String value)
+        public static bool IsPnLocal(String value)
         {
             //PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
 
@@ -460,7 +465,7 @@ namespace VDS.RDF.Specifications
             int start = 1, temp = 0;
 
             //Validate first character
-            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
+            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPlx(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
                 //Handle surrogate pairs for UTF-32 characters
                 if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
@@ -482,7 +487,7 @@ namespace VDS.RDF.Specifications
             for (int i = start; i < cs.Length - 1; i++)
             {
                 int j = i;
-                if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
+                if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPlx(cs, i, out j))
                 {
                     //Handle surrogate pairs for UTF-32 characters
                     if (UnicodeSpecsHelper.IsHighSurrogate(cs[i]) && i < cs.Length - 2)
@@ -522,7 +527,7 @@ namespace VDS.RDF.Specifications
         /// <param name="startIndex">Start Index</param>
         /// <param name="endIndex">Resulting End Index</param>
         /// <returns></returns>
-        public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
+        public static bool IsPlx(char[] cs, int startIndex, out int endIndex)
         {
             endIndex = startIndex;
             if (cs[startIndex] == '%')
@@ -648,7 +653,72 @@ namespace VDS.RDF.Specifications
         /// <returns>Unescaped QName</returns>
         public static String UnescapeQName(String value)
         {
-            return SparqlSpecsHelper.UnescapeQName(value);
+            if (!value.Contains('\\') && !value.Contains('%'))
+            {
+                return value;
+            }
+            StringBuilder output = new StringBuilder();
+            output.Append(value.Substring(0, value.IndexOf(':')));
+            char[] cs = value.ToCharArray();
+            for (int i = output.Length; i < cs.Length; i++)
+            {
+                switch (cs[i])
+                {
+                    case '\\':
+                        {
+                            if (i == cs.Length - 1) throw new RdfParseException("Invalid backslash to start an escape at the end of the Local Name, expecting a single character after the backslash");
+                            char esc = cs[i + 1];
+                            switch (esc)
+                            {
+                                case '_':
+                                case '~':
+                                case '-':
+                                case '.':
+                                case '!':
+                                case '$':
+                                case '&':
+                                case '\'':
+                                case '(':
+                                case ')':
+                                case '*':
+                                case '+':
+                                case ',':
+                                case ';':
+                                case '=':
+                                case '/':
+                                case '?':
+                                case '#':
+                                case '@':
+                                case '%':
+                                    output.Append(esc);
+                                    i++;
+                                    break;
+                                default:
+                                    throw new RdfParseException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_~-.|$&\\()*+,;=/?#@%) of characters in a Local Name");
+                            }
+                        }
+                        break;
+                    case '%':
+                        if (i > cs.Length - 2)
+                        {
+                            throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
+                        }
+                        else
+                        {
+                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
+                            {
+                                throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
+                            }
+                            output.Append(cs, i, 3);
+                            i += 2;
+                        }
+                        break;
+                    default:
+                        output.Append(cs[i]);
+                        break;
+                }
+            }
+            return output.ToString();
         }
 
         /// <summary>

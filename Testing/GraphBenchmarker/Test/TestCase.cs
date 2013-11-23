@@ -5,14 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using VDS.RDF;
+using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 {
     public class TestCase
     {
-        private Type _graphType, _tripleCollectionType, _nodeCollectionType;
+        private readonly Type _graphType, _tripleCollectionType, _nodeCollectionType;
         private IGraph _instance;
-        private BindingList<TestResult> _results = new BindingList<TestResult>();
+        private readonly BindingList<TestResult> _results = new BindingList<TestResult>();
         private long _initMemory = 0;
 
         public TestCase(Type graphType)

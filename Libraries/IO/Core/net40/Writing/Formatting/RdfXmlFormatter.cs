@@ -170,7 +170,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append("rdf:about=\"" + WriterHelper.EncodeForXml(t.Subject.ToString()) + "\"");
                     break;
                 case NodeType.Blank:
-                    output.Append("rdf:nodeID=\"" + this._bnodeMapper.GetOutputID((t.Subject).AnonID) + "\"");
+                    output.Append("rdf:nodeID=\"" + this._bnodeMapper.GetOutputId((t.Subject).AnonID) + "\"");
                     break;
                 case NodeType.Literal:
                     throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("RDF/XML"));
@@ -215,7 +215,7 @@ namespace VDS.RDF.Writing.Formatting
             switch (t.Object.NodeType)
             {
                 case NodeType.Blank:
-                    output.AppendLine(" rdf:nodeID=\"" + this._bnodeMapper.GetOutputID((t.Object).AnonID) + "\" />");
+                    output.AppendLine(" rdf:nodeID=\"" + this._bnodeMapper.GetOutputId((t.Object).AnonID) + "\" />");
                     break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));

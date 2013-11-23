@@ -26,10 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
-using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
@@ -43,7 +41,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     public class StreamingEventGenerator
         : IRdfXmlJitEventGenerator
     {
-        private XmlReader _reader;
+        private readonly XmlReader _reader;
         private bool _requireEndElement = false;
         private IRdfXmlEvent _rootEl;
         private bool _noRead = false;
@@ -51,9 +49,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private bool _parseLiteral = false;
         private bool _rdfRootSeen = false;
         private bool _stop = false;
-        private bool _hasLineInfo = false;
-        private String _currentBaseUri = String.Empty;
-        private Stack<String> _baseUris = new Stack<string>();
+        private readonly bool _hasLineInfo = false;
+        private Uri _currentBaseUri = null;
+        private readonly Stack<Uri> _baseUris = new Stack<Uri>();
 
         /// <summary>
         /// Creates a new Streaming Event Generator
@@ -70,7 +68,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="stream">Stream</param>
         /// <param name="baseUri">Base URI</param>
-        public StreamingEventGenerator(Stream stream, String baseUri)
+        public StreamingEventGenerator(Stream stream, Uri baseUri)
             : this(stream)
         {
             this._currentBaseUri = baseUri;
@@ -91,34 +89,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="reader">Text Reader</param>
         /// <param name="baseUri">Base URI</param>
-        public StreamingEventGenerator(TextReader reader, String baseUri)
+        public StreamingEventGenerator(TextReader reader, Uri baseUri)
             : this(reader)
         {
             this._currentBaseUri = baseUri;
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Creates a new Streaming Event Generator
-        /// </summary>
-        /// <param name="file">Filename</param>
-        public StreamingEventGenerator(String file)
-        {
-            this._reader = XmlReader.Create(new FileStream(file, FileMode.Open), this.GetSettings());
-            this._hasLineInfo = (this._reader is IXmlLineInfo);
-        }
-
-        /// <summary>
-        /// Creates a new Streaming Event Generator
-        /// </summary>
-        /// <param name="file">Filename</param>
-        /// <param name="baseUri">Base URI</param>
-        public StreamingEventGenerator(String file, String baseUri)
-            : this(file)
-        {
-            this._currentBaseUri = baseUri;
-        }
-#endif
 
         /// <summary>
         /// Initialises the XML Reader settings
@@ -205,7 +180,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                             root.DocumentElement = (ElementEvent)this._rootEl;
                             root.Children.Add((ElementEvent)this._rootEl);
 
-                            if (root.BaseUri.Equals(String.Empty))
+                            if (ReferenceEquals(root.BaseUri, null))
                             {
                                 root.BaseUri = this._currentBaseUri;                                
                             }
@@ -263,16 +238,16 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
         }
 
-        private String GetBaseUri()
+        private Uri GetBaseUri()
         {
             this._baseUris.Push(this._currentBaseUri);
-            if (this._reader.BaseURI.Equals(String.Empty))
+            if (String.IsNullOrEmpty(this._reader.BaseURI))
             {
                 return this._currentBaseUri;
             }
             else
             {
-                return this._reader.BaseURI;
+                return UriFactory.Create(this._reader.BaseURI);
             }
         }
 
@@ -294,11 +269,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 //Return a Namespace Attribute Event
                 if (this._reader.LocalName.Equals("xmlns"))
                 {
-                    return new NamespaceAttributeEvent(String.Empty, this._reader.Value, this._reader.Value, this.GetPosition());
+                    return new NamespaceAttributeEvent(String.Empty, UriFactory.Create(this._reader.Value), this._reader.Value, this.GetPosition());
                 }
                 else
                 {
-                    return new NamespaceAttributeEvent(this._reader.LocalName, this._reader.Value, this._reader.Value, this.GetPosition());
+                    return new NamespaceAttributeEvent(this._reader.LocalName, UriFactory.Create(this._reader.Value), this._reader.Value, this.GetPosition());
                 }
             }
             else if (this.IsInNamespace(XmlSpecsHelper.NamespaceXml) || (this._reader.NamespaceURI.Equals(String.Empty) && this._reader.Name.StartsWith("xml")))
@@ -359,7 +334,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     }
                     else if (attr is XmlBaseAttributeEvent)
                     {
-                        el.BaseUri = ((XmlBaseAttributeEvent)attr).BaseUri;
+                        el.BaseUri = UriFactory.Create(((XmlBaseAttributeEvent)attr).BaseUri);
                         this._currentBaseUri = el.BaseUri;
                     }
                 }

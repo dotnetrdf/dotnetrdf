@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using VDS.RDF.Query;
 using VDS.RDF.Specifications;
 
@@ -36,7 +37,10 @@ namespace VDS.RDF.Parsing.Tokens
     public class TsvTokeniser
         : BaseTokeniser
     {
-        private ParsingTextReader _in;
+        private const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
+        private readonly Regex _isValidVarName = new Regex(ValidVarNamesPattern);
+
+        private readonly ParsingTextReader _in;
 
         /// <summary>
         /// Creates a new TSV Tokeniser
@@ -227,15 +231,11 @@ namespace VDS.RDF.Parsing.Tokens
                 value = value.Substring(0, value.Length - 1);
             }
 
-            if (SparqlSpecsHelper.IsValidVarName(value))
+            if (IsValidVarName(value))
             {
                 return new VariableToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else
-            {
-                throw Error("The value '" + value + "' is not valid a Variable Name");
-            }
-
+            throw Error("The value '" + value + "' is not valid a Variable Name");
         }
 
         private IToken TryGetLangSpec()
@@ -479,7 +479,7 @@ namespace VDS.RDF.Parsing.Tokens
             if (this.Value.EndsWith(".")) this.Backtrack();
 
             String value = this.Value;
-            if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
+            if (!TurtleSpecsHelper.IsValidPlainLiteral(value, TurtleSyntax.Original))
             {
                 //Invalid Numeric Literal
                 throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
@@ -524,6 +524,38 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
             }
+        }
+
+        private bool IsValidVarName(String value)
+        {
+            if (this._isValidVarName.IsMatch(value))
+            {
+                return true;
+            }
+            //Have to validate Character by Character
+            char[] cs = value.ToCharArray();
+            char first = cs[0];
+
+            //First character must be an underscore or letter
+            if (first == '_' || Char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
+            {
+                //Remaining Characters must be underscores, letters, numbers or hyphens
+                for (int i = 1; i < cs.Length; i++)
+                {
+                    char c = cs[i];
+                    if (c != '_' && c != '-' && !Char.IsLetterOrDigit(c) && !UnicodeSpecsHelper.IsLetterOrDigit(c))
+                    {
+                        //Invalid Character
+                        return false;
+                    }
+                    //OK
+                }
+
+                //If we get here it's all fine
+                return true;
+            }
+            //Invalid Start Character
+            return false;
         }
     }
 }

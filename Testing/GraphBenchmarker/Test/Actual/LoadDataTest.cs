@@ -22,7 +22,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
             FileLoader.Load(testCase.Instance, this._data);
             TimeSpan elapsed = DateTime.Now - start;
 
-            return new TestResult(elapsed, testCase.Instance.Triples.Count, "Triples/Second", TestMetricType.Speed);
+            return new TestResult(elapsed, testCase.Instance.Count, "Triples/Second", TestMetricType.Speed);
         }
     }
 }

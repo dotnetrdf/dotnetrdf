@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
 using VDS.RDF.Utilities.GraphBenchmarker.Test;
 
 namespace VDS.RDF.Utilities.GraphBenchmarker
@@ -68,8 +70,8 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             {
                 foreach (String file in Directory.GetFiles(dir))
                 {
-                    String ext = MimeTypesHelper.GetTrueFileExtension(file);
-                    if (MimeTypesHelper.Definitions.Any(d => d.SupportsFileExtension(ext)))
+                    String ext = IOManager.GetTrueFileExtension(file);
+                    if (IOManager.Definitions.Any(d => d.SupportsFileExtension(ext)))
                     {
                         this._dataFiles.Add(file);
                     }

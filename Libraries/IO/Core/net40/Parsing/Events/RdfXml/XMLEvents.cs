@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <param name="baseUri">Base Uri of the Document</param>
         /// <param name="sourceXml">Source XML of the Document</param>
         /// <param name="pos">Position Info</param>
-        public RootEvent(String baseUri, String sourceXml, PositionInfo pos) 
+        public RootEvent(Uri baseUri, String sourceXml, PositionInfo pos) 
             : base(RdfXmlEvent.Root, sourceXml, pos)
         {
             Children = new List<ElementEvent>();
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="baseUri">Base Uri of the Document</param>
         /// <param name="sourceXml">Source XML of the Document</param>
-        public RootEvent(String baseUri, String sourceXml)
+        public RootEvent(Uri baseUri, String sourceXml)
             : this(baseUri, sourceXml, null) { }
 
         /// <summary>

@@ -58,6 +58,7 @@
     <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
+    <Compile Include="Parsing\Contexts\TriXParserContext.cs" />
     <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
     <Compile Include="Parsing\DataUriLoader.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TriXWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
     <Compile Include="Writing\CsvWriter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />

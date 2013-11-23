@@ -46,15 +46,15 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public const String ValidQNamesPattern = "^(([_A-Za-z])|([_A-Za-z][\\w\\-]*))?:?[_A-Za-z][\\w\\-]*$";
         /// <summary>
-        /// Patter for Valid Variable Names
+        /// Pattern for Valid Variable Names
         /// </summary>
         public const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
         private ParsingTextReader _in;
-        private List<String> _keywords = new List<string>();
+        private readonly List<String> _keywords = new List<string>();
         private bool _keywordsmode = false;
-        private Regex _isValidQName = new Regex(ValidQNamesPattern);
-        private Regex _isValidVarName = new Regex(ValidVarNamesPattern);
+        private readonly Regex _isValidQName = new Regex(ValidQNamesPattern);
+        private readonly Regex _isValidVarName = new Regex(ValidVarNamesPattern);
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
@@ -1278,39 +1278,30 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 return true;
             }
-            else
+            //Have to validate Character by Character
+            char[] cs = value.ToCharArray();
+            char first = cs[0];
+
+            //First character must be an underscore or letter
+            if (first == '_' || Char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
             {
-                //Have to validate Character by Character
-                char[] cs = value.ToCharArray();
-                char first = cs[0];
-
-                //First character must be an underscore or letter
-                if (first == '_' || Char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
+                //Remaining Characters must be underscores, letters, numbers or hyphens
+                for (int i = 1; i < cs.Length; i++)
                 {
-                    //Remaining Characters must be underscores, letters, numbers or hyphens
-                    for (int i = 1; i < cs.Length; i++)
+                    char c = cs[i];
+                    if (c != '_' && c != '-' && !Char.IsLetterOrDigit(c) && !UnicodeSpecsHelper.IsLetterOrDigit(c))
                     {
-                        char c = cs[i];
-                        if (c == '_' || c == '-' || Char.IsLetterOrDigit(c) || UnicodeSpecsHelper.IsLetterOrDigit(c))
-                        {
-                            //OK
-                        }
-                        else
-                        {
-                            //Invalid Character
-                            return false;
-                        }
+                        //Invalid Character
+                        return false;
                     }
+                    //OK
+                }
 
-                    //If we get here it's all fine
-                    return true;
-                }
-                else
-                {
-                    //Invalid Start Character
-                    return false;
-                }
+                //If we get here it's all fine
+                return true;
             }
+            //Invalid Start Character
+            return false;
         }
 
     }

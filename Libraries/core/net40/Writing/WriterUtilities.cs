@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
@@ -70,7 +72,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     public static class WriterHelper
     {
-        private static String _uriEncodeForXmlPattern = @"&([^;&\s]*)(?=\s|$|&)";
+        private const String UriEncodeForXmlPattern = @"&([^;&\s]*)(?=\s|$|&)";
 
         /// <summary>
         /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes (Turtle/N3/SPARQL)
@@ -78,7 +80,7 @@ namespace VDS.RDF.Writing
         /// <param name="id">ID to test</param>
         /// <returns></returns>
         /// <remarks>If false is returned then the writer will alter the ID in some way</remarks>
-        public static bool IsValidBlankNodeID(String id)
+        public static bool IsValidBlankNodeId(String id)
         {
             if (id == null) 
             {
@@ -112,7 +114,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static bool IsValidStrictBlankNodeID(String id)
+        public static bool IsValidStrictBlankNodeId(String id)
         {
             if (id == null)
             {
@@ -141,15 +143,30 @@ namespace VDS.RDF.Writing
         /// </returns>
         public static String EncodeForXml(String value)
         {
-            while (Regex.IsMatch(value, _uriEncodeForXmlPattern))
+            while (Regex.IsMatch(value, UriEncodeForXmlPattern))
             {
-                value = Regex.Replace(value, _uriEncodeForXmlPattern, "&amp;$1");
+                value = Regex.Replace(value, UriEncodeForXmlPattern, "&amp;$1");
             }
             if (value.EndsWith("&")) value += "amp;";
             return value.Replace("<", "&lt;")
                 .Replace(">", "&gt;")
                 .Replace("'", "&apos;")
                 .Replace("\"", "&quot;");
+        }
+
+        /// <summary>
+        /// Extracts all namespaces used by graphs within the store
+        /// </summary>
+        /// <param name="store">Graph store</param>
+        /// <returns>Namespaces</returns>
+        public static INamespaceMapper ExtractNamespaces(IGraphStore store)
+        {
+            INamespaceMapper namespaces = new NamespaceMapper(true);
+            foreach (IGraph g in store.Graphs)
+            {
+                namespaces.Import(g.Namespaces);
+            }
+            return namespaces;
         }
     }
 }

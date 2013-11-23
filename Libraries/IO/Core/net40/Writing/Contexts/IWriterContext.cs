@@ -1,5 +1,4 @@
 using System.IO;
-using VDS.RDF.Graphs;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts

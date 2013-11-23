@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static bool IsCached(Uri u)
         {
-            Uri temp = Tools.StripUriFragment(u);
+            Uri temp = UriFactory.StripUriFragment(u);
             return _cache.HasLocalCopy(temp, false);
         }
 #endif
@@ -211,9 +211,6 @@ namespace VDS.RDF.Parsing
                 return;
             }
 
-            //Set Base Uri if necessary
-            if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
-
             UriLoader.Load(new GraphHandler(g), u, parser);
         }
 
@@ -288,13 +285,13 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Sanitise the URI to remove any Fragment ID
-                u = Tools.StripUriFragment(u);
+                u = UriFactory.StripUriFragment(u);
 
 #if !NO_URICACHE
                 //Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
-                if (Options.UriLoaderCaching)
+                if (IOOptions.UriLoaderCaching)
                 {
                     if (_cache.HasETag(u))
                     {
@@ -414,7 +411,7 @@ namespace VDS.RDF.Parsing
                     parser.Warning += RaiseWarning;
 #if !NO_URICACHE
                     //To do caching we ask the cache to give us a handler and then we tie it to
-                    IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                    IRdfHandler cacheHandler = _cache.ToCache(u, UriFactory.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
                     if (cacheHandler != null)
                     {
                         //Note: We can ONLY use caching when we know that the Handler will accept all the data returned
@@ -439,9 +436,9 @@ namespace VDS.RDF.Parsing
                     {
                         //If we were trying to cache the response and something went wrong discard the cached copy
                         _cache.RemoveETag(u);
-                        _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        _cache.RemoveETag(UriFactory.StripUriFragment(httpResponse.ResponseUri));
                         _cache.RemoveLocalCopy(u);
-                        _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        _cache.RemoveLocalCopy(UriFactory.StripUriFragment(httpResponse.ResponseUri));
                     }
 #endif
                 }

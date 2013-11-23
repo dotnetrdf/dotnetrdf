@@ -209,7 +209,7 @@ namespace VDS.RDF.Writing.Formatting
                 else if (l.DataType != null)
                 {
                     output.Append("^^");
-                    if (this._qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out qname))
+                    if (this._qnameMapper.ReduceToPrefixedName(l.DataType.AbsoluteUri, out qname))
                     {
                         if (TurtleSpecsHelper.IsValidQName(qname))
                         {
@@ -242,7 +242,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(INode b, QuadSegment? segment)
         {
-            return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
+            return "_:" + this._bnodeMapper.GetOutputId(b.AnonID);
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            int triples = testCase.Instance.Triples.Count;
+            long triples = testCase.Instance.Count;
             timer.Stop();
             return new TestResult(timer.Elapsed, triples, "Triple(s)", TestMetricType.Count);
         }
