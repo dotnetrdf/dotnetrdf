@@ -72,56 +72,29 @@ namespace VDS.RDF
     /// </remarks>
     public static class Options
     {
-        private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
-        private static bool _litNormalization = false;
-        private static bool _fullIndexing = true;
-#if PORTABLE
-        private static bool _useDTDs = false; // Default to false because the PCL XML parser cannot handle entity declarations
-#else
-#endif
-        private static bool _internUris = true;
-        private static bool _forceHttpBasicAuth = false;
-        private static bool _validateIris = false;
-
-#if NET40 && !SILVERLIGHT
-        private static bool _usePLinq = true;
-#endif
-
-        private static bool _httpDebug = false;
-        private static bool _httpFullDebug = false;
-
-        private static CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
-        private static CompareOptions _defaultComparisonOptions = CompareOptions.Ordinal;
+        static Options()
+        {
+            InternUris = true;
+            LiteralEqualityMode = LiteralEqualityMode.Strict;
+            FullTripleIndexing = true;
+            DefaultComparisonOptions = CompareOptions.Ordinal;
+            DefaultCulture = CultureInfo.InvariantCulture;
+            HttpFullDebugging = false;
+            HttpDebugging = false;
+            ForceHttpBasicAuth = false;
+            ValidateIris = false;
+            LiteralValueNormalization = false;
+        }
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
         /// </summary>
-        public static LiteralEqualityMode LiteralEqualityMode
-        {
-            get
-            {
-                return _litEqualityMode;
-            }
-            set
-            {
-                _litEqualityMode = value;
-            }
-        }
+        public static LiteralEqualityMode LiteralEqualityMode { get; set; }
 
         /// <summary>
         /// Gets/Sets whether Literal Values should be normalized
         /// </summary>
-        public static bool LiteralValueNormalization
-        {
-            get
-            {
-                return _litNormalization;
-            }
-            set
-            {
-                _litNormalization = value;
-            }
-        }
+        public static bool LiteralValueNormalization { get; set; }
 
         /// <summary>
         /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it
@@ -134,34 +107,15 @@ namespace VDS.RDF
         /// Default setting for Full Indexing is enabled, enabling/disabling it only has an effect on indexed triple collection instances instantiated after full indexing was enabled/disabled i.e. existing Graphs in memory using the indexed triple collections continue to use the full indexing setting that was present when they were instantiated.
         /// </para>
         /// </remarks>
-        public static bool FullTripleIndexing
-        {
-            get
-            {
-                return _fullIndexing;
-            }
-            set
-            {
-                _fullIndexing = value;
-            }
-        }
+        public static bool FullTripleIndexing { get; set; }
 
+        /// <summary>
         /// Gets/Sets whether IRIs are validated by parsers which support this functionality
         /// </summary>
         /// <remarks>
         /// When enabled certain parsers will validate all IRIs they see to ensure that they are valid and throw a parser error if they are not.  Since there is a performance penalty associated with this and many older RDF standards were written pre-IRIs (thus enforcing IRI validity would reject data considered valid by those specifications) this feature is disabled by default.
         /// </remarks>
-        public static bool ValidateIris
-        {
-            get
-            {
-                return _validateIris;
-            }
-            set
-            {
-                _validateIris = value;
-            }
-        }
+        public static bool ValidateIris { get; set; }
 
         /// <summary>
         /// <summary>
@@ -175,62 +129,22 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Under Silverlight this will only work correctly if usernames and passwords are composed only of characters within the ASCII range.
         /// </para>
         /// </remarks>
-        public static bool ForceHttpBasicAuth
-        {
-            get
-            {
-                return _forceHttpBasicAuth;
-            }
-            set
-            {
-                _forceHttpBasicAuth = value;
-            }
-        }
+        public static bool ForceHttpBasicAuth { get; set; }
 
         /// <summary>
         /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage
         /// </summary>
-        public static bool InternUris
-        {
-            get
-            {
-                return _internUris;
-            }
-            set
-            {
-                _internUris = value;
-            }
-        }
-        
+        public static bool InternUris { get; set; }
+
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes
         /// </summary>
-        public static bool HttpDebugging {
-            get
-            {
-                return _httpDebug;
-            }
-            set
-            {
-                _httpDebug = value;
-            }
-        }
+        public static bool HttpDebugging { get; set; }
 
         /// <summary>
         /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes
         /// </summary>
-        public static bool HttpFullDebugging
-        {
-            get
-            {
-                return _httpFullDebug;
-            }
-            set
-            {
-                _httpFullDebug = value;
-            }
-        }
-
+        public static bool HttpFullDebugging { get; set; }
 
         /// <summary>
         /// Gets/Sets the default culture literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
@@ -238,17 +152,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The default is set to the invariant culture to preserve behavioural backwards compatibility with past versions of dotNetRDF
         /// </remarks>
-        public static CultureInfo DefaultCulture
-        {
-            get
-            {
-                return _defaultCulture;
-            }
-            set
-            {
-                _defaultCulture = value;
-            }
-        }
+        public static CultureInfo DefaultCulture { get; set; }
 
         /// <summary>
         /// Gets/Sets the default collation for literal comparison when literals are string or not implicitely comparable (different types, parse/cast error...)
@@ -256,17 +160,6 @@ namespace VDS.RDF
         /// <remarks>
         /// The default is set to <see cref="CompareOptions.Ordinal"/> to preserve behavioural backwards compatibility with past versions of dotNetRDF
         /// </remarks>
-        public static CompareOptions DefaultComparisonOptions
-        {
-            get
-            {
-                return _defaultComparisonOptions;
-            }
-            set
-            {
-                _defaultComparisonOptions = value;
-            }
-        }
-
+        public static CompareOptions DefaultComparisonOptions { get; set; }
     }
 }

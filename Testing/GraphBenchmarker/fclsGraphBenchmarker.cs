@@ -87,7 +87,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
                 if (this.lstIGraphImpl.SelectedItem != null)
                 {
                     Type t = (Type)this.lstIGraphImpl.SelectedItem;
-                    if (t.GetConstructors().Any(c => c.GetParameters().Length == 1 && c.GetParameters()[0].ParameterType.Equals(typeof(BaseTripleCollection))))
+                    if (t.GetConstructors().Any(c => c.GetParameters().Length == 1 && c.GetParameters()[0].ParameterType.Equals(typeof(ITripleCollection))))
                     {
                         this.lstTripleCollectionImpl.Enabled = true;
                     }

@@ -32,4 +32,20 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
             return new TestResult(TimeSpan.Zero, current - init);
         }
     }
+
+    public class MemoryUsagePerTripleCheck : SingleRunTest
+    {
+        public MemoryUsagePerTripleCheck()
+            : base("Memory Usage per Triple", "Checks how much memory is currently allocated per Triple") { }
+
+        public override TestResult Run(TestCase testCase)
+        {
+            long init = testCase.InitialMemory;
+            long current = GC.GetTotalMemory(false);
+            long perTriple = (current - init) / testCase.Instance.Count;
+            TestResult result = new TestResult(TimeSpan.Zero, perTriple);
+            result.Unit = result.Unit + "/Triple";
+            return result;
+        }
+    }
 }

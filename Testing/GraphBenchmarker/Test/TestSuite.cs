@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Utilities.GraphBenchmarker.Test.Actual;
 
@@ -12,126 +10,91 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
     public class TestSuite
     {
-        private BindingList<ITest> _tests = new BindingList<ITest>();
-        private BindingList<TestResult> _results = new BindingList<TestResult>();
-        private BindingList<TestCase> _cases = new BindingList<TestCase>();
-        private int _currTest = 0, _currTestCase = 0;
         private bool _cancelled = false;
-        private String _data;
-        private int _iterations;
 
         public TestSuite(IEnumerable<TestCase> testCases, String data, int iterations, TestSet set)
         {
-            this._data = data;
-            this._iterations = iterations;
+            Tests = new BindingList<ITest>();
+            TestCases = new BindingList<TestCase>();
+            CurrentTest = 0;
+            CurrentTestCase = 0;
+            this.Data = data;
+            this.Iterations = iterations;
 
             foreach (TestCase c in testCases)
             {
-                this._cases.Add(c);
+                this.TestCases.Add(c);
             }
 
             //Firstly add the Initial Memory Usage Check
-            this._tests.Add(new InitialMemoryUsageCheck());
+            this.Tests.Add(new InitialMemoryUsageCheck());
 
             //Then do a Load Test and a further Memory Usage Check
-            this._tests.Add(new LoadDataTest(data));
-            this._tests.Add(new CountTriplesTest());
-            this._tests.Add(new MemoryUsageCheck());
+            this.Tests.Add(new LoadDataTest(data));
+            this.Tests.Add(new CountTriplesTest());
+            this.Tests.Add(new MemoryUsageCheck());
+            this.Tests.Add(new MemoryUsagePerTripleCheck());
 
             //Then add the actual tests
             if (set == TestSet.Standard)
             {
-                this._tests.Add(new EnumerateTriplesTest(iterations));
-                this._tests.Add(new SubjectLookupTest(iterations));
-                this._tests.Add(new PredicateLookupTest(iterations));
-                this._tests.Add(new ObjectLookupTest(iterations));
+                this.Tests.Add(new EnumerateTriplesTest(iterations));
+                this.Tests.Add(new SubjectLookupTest(iterations));
+                this.Tests.Add(new PredicateLookupTest(iterations));
+                this.Tests.Add(new ObjectLookupTest(iterations));
 
                 //Do an Enumerate Test again to see if index population has changed performance
-                this._tests.Add(new EnumerateTriplesTest(iterations));
+                this.Tests.Add(new EnumerateTriplesTest(iterations));
 
                 //Finally add the final Memory Usage Check
-                this._tests.Add(new MemoryUsageCheck());
+                this.Tests.Add(new MemoryUsageCheck());
             }
         }
 
-        public String Data
-        {
-            get
-            {
-                return this._data;
-            }
-        }
+        public string Data { get; private set; }
 
-        public int Iterations
-        {
-            get
-            {
-                return this._iterations;
-            }
-        }
+        public int Iterations { get; private set; }
 
-        public BindingList<TestCase> TestCases
-        {
-            get
-            {
-                return this._cases;
-            }
-        }
+        public BindingList<TestCase> TestCases { get; private set; }
 
-        public BindingList<ITest> Tests
-        {
-            get
-            {
-                return this._tests;
-            }
-        }
+        public BindingList<ITest> Tests { get; private set; }
 
-        public int CurrentTest
-        {
-            get
-            {
-                return this._currTest;
-            }
-        }
+        public int CurrentTest { get; private set; }
 
-        public int CurrentTestCase
-        {
-            get
-            {
-                return this._currTestCase;
-            }
-        }
+        public int CurrentTestCase { get; private set; }
 
         public void Run()
         {
-            for (int c = 0; c < this._cases.Count; c++)
+            for (int c = 0; c < this.TestCases.Count; c++)
             {
                 if (this._cancelled) break;
 
-                this._currTestCase = c;
-                this._currTest = 0;
-                this._cases[c].Reset(true);
+                this.CurrentTestCase = c;
+                this.CurrentTest = 0;
+                this.TestCases[c].Reset(true);
 
                 this.RaiseProgress();
 
                 //Get the Initial Memory Usage allowing the GC to clean up as necessary
-                this._cases[c].InitialMemory = GC.GetTotalMemory(true);
+                this.TestCases[c].InitialMemory = GC.GetTotalMemory(true);
 
                 //Do this to ensure we've created the Graph instance
-                IGraph temp = this._cases[c].Instance;
+// ReSharper disable UnusedVariable
+                IGraph temp = this.TestCases[c].Instance;
+// ReSharper restore UnusedVariable
 
                 this.RaiseProgress();
 
-                for (int t = 0; t < this._tests.Count; t++)
+                for (int t = 0; t < this.Tests.Count; t++)
                 {
                     if (this._cancelled) break;
 
-                    this._currTest = t;
+                    this.CurrentTest = t;
                     this.RaiseProgress();
 
                     //Run the Test and remember the Results
-                    TestResult r = this._tests[t].Run(this._cases[c]);
-                    this._cases[c].Results.Add(r);
+                    TestResult r = this.Tests[t].Run(this.TestCases[c]);
+                    this.TestCases[c].Results.Add(r);
                 }
 
                 //Clear URI Factory after Tests to return memory usage to base levels
@@ -144,7 +107,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             }
             this._cancelled = false;
 
-            foreach (TestCase c in this._cases)
+            foreach (TestCase c in this.TestCases)
             {
                 c.Reset(false);
             }

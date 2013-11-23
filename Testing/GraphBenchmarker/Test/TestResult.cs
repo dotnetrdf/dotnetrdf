@@ -28,32 +28,26 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             this.Memory = (double)memory;
 
             //Convert up to KB if possible
-            if (this.Memory > 1024d)
-            {
-                this.Memory /= 1024d;
-                this.Unit = "Kilobytes";
+            if (!(this.Memory > 1024d)) return;
+            this.Memory /= 1024d;
+            this.Unit = "Kilobytes";
 
-                //Convert up to MB if possible
-                if (this.Memory > 1024d)
-                {
-                    this.Memory /= 1024d;
-                    this.Unit = "Megabytes";
+            //Convert up to MB if possible
+            if (!(this.Memory > 1024d)) return;
+            this.Memory /= 1024d;
+            this.Unit = "Megabytes";
 
-                    //Convert up to GB if possible
-                    if (this.Memory > 1024d)
-                    {
-                        this.Memory /= 1024d;
-                        this.Unit = "Gigabytes";
-                    }
-                }
-            }
+            //Convert up to GB if possible
+            if (!(this.Memory > 1024d)) return;
+            this.Memory /= 1024d;
+            this.Unit = "Gigabytes";
         }
 
         public TimeSpan Elapsed { get; private set; }
 
         public long Actions { get; private set; }
 
-        public string Unit { get; private set; }
+        public string Unit { get; set; }
 
         public double Speed
         {
