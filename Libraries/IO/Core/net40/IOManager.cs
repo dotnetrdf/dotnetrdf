@@ -329,19 +329,19 @@ namespace VDS.RDF
 
 
                     //Define CSV
-                    _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, typeof(CsvWriter), null));
+                    _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, typeof(CsvWriter)));
 #if !NO_COMPRESSION
                     _mimeTypes.Add(new MimeTypeDefinition("GZipped CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedCsvWriter)));
 #endif
 
                     //Define TSV
-                    _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, typeof(TsvWriter), null));
+                    _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, typeof(TsvWriter)));
 #if !NO_COMPRESSION
                     _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTsvWriter)));
 #endif
 
                     //Define GraphViz DOT
-                    _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, typeof(GraphVizWriter), null));
+                    _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, typeof(GraphVizWriter)));
 
                     _init = true;
                 }
