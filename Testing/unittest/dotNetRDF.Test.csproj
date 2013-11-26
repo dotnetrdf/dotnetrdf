@@ -155,6 +155,7 @@
     <Compile Include="Query\DataTableTests.cs" />
     <Compile Include="Query\DefaultGraphTests.cs" />
     <Compile Include="Query\DefaultGraphTests2.cs" />
+    <Compile Include="Query\DeltaTest.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExistsTests.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
