@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query
     [TestFixture]
     public class DeltaTest
     {
-        private const string Turtle = @"
+        private const string TestData = @"
 <http://r1> <http://r1> <http://r1> .
 <http://r2> <http://r2> <http://r2> .
 ";
@@ -87,54 +88,81 @@ WHERE
     FILTER (!SAMETERM(?o, ?o0))
 }
 ";
+        private const string NotExistsQuery = @"
+SELECT *
+WHERE
+{
+    GRAPH <http://g1>
+    {
+        ?s ?p ?o .
+    }
+    FILTER NOT EXISTS { GRAPH <http://g0> { ?s ?p ?o } }
+}
+";
 
-        [Test]
-        public void SparqlGraphDeltas()
+        private void TestQuery(IInMemoryQueryableStore store, String query, String queryName, int differences)
         {
-            IGraph g1 = new Graph();
-            IGraph g0 = new Graph();
+            using (SparqlResultSet resultSet = (SparqlResultSet)store.ExecuteQuery(query))
+            {
+                Console.WriteLine(queryName + ": " + resultSet.Count);
+                foreach (SparqlResult result in resultSet)
+                {
+                    Console.WriteLine(result.ToString());
+                }
+                Assert.AreEqual(differences, resultSet.Count);
+            }
+            Console.WriteLine();
+        }
 
-            new TurtleParser().Load(g1, new StringReader(Turtle));
-            new TurtleParser().Load(g0, new StringReader(Turtle));
-
-            g1.BaseUri = new Uri("http://g1");
-            g0.BaseUri = new Uri("http://g0");
+        private void TestDeltas(IGraph a, IGraph b, int differences)
+        {
+            a.BaseUri = new Uri("http://g1");
+            b.BaseUri = new Uri("http://g0");
 
             IInMemoryQueryableStore store = new TripleStore();
-            store.Add(g1);
-            store.Add(g0);
+            store.Add(a);
+            store.Add(b);
 
-            using (SparqlResultSet resultSet = (SparqlResultSet)store.ExecuteQuery(MinusQuery))
-            {
-                Console.WriteLine("Minus: " + resultSet.Count);
-                foreach (SparqlResult result in resultSet)
-                {
-                    Console.WriteLine(result.ToString());
-                }
-                Assert.AreEqual(0, resultSet.Count);
-            }
-            Console.WriteLine();
+            this.TestQuery(store, MinusQuery, "Minus", differences);
+            this.TestQuery(store, OptionalSameTermQuery, "OptionalSameTerm", differences);
+            this.TestQuery(store, OptionalInvertedSameTermQuery, "OptionalInvertedSameTerm", differences);
+            this.TestQuery(store, NotExistsQuery, "NotExists", differences);
+        }
 
-            using (SparqlResultSet resultSet = (SparqlResultSet)store.ExecuteQuery(OptionalSameTermQuery))
-            {
-                Console.WriteLine("OptionalSameTerm: " + resultSet.Count);
-                foreach (SparqlResult result in resultSet)
-                {
-                    Console.WriteLine(result.ToString());
-                }
-                Assert.AreEqual(0, resultSet.Count);
-            }
-            Console.WriteLine();
+        [Test]
+        public void SparqlGraphDeltas1()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
 
-            using (SparqlResultSet resultSet = (SparqlResultSet)store.ExecuteQuery(OptionalInvertedSameTermQuery))
-            {
-                Console.WriteLine("OptionalInvertedSameTerm: " + resultSet.Count);
-                foreach (SparqlResult result in resultSet)
-                {
-                    Console.WriteLine(result.ToString());
-                }
-                Assert.AreEqual(0, resultSet.Count);
-            }
+            new TurtleParser().Load(a, new StringReader(TestData));
+            new TurtleParser().Load(b, new StringReader(TestData));
+
+            this.TestDeltas(a, b, 0);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas2()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            new TurtleParser().Load(a, new StringReader(TestData));
+            new TurtleParser().Load(b, new StringReader(TestData));
+            b.Retract(b.GetTriplesWithSubject(new Uri("http://r1")).ToList());
+
+            this.TestDeltas(a, b, 1);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas3()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            new TurtleParser().Load(a, new StringReader(TestData));
+
+            this.TestDeltas(a, b, 2);
         }
     }
 }
