@@ -36,10 +36,23 @@ namespace VDS.RDF.Query
     [TestFixture]
     public class DeltaTest
     {
+        private readonly TurtleParser _parser = new TurtleParser();
+
         private const string TestData = @"
 <http://r1> <http://r1> <http://r1> .
 <http://r2> <http://r2> <http://r2> .
 ";
+
+        private const string TestData2 = @"
+<http://r1> <http://r1> <http://r1> , ""value"" .
+<http://r2> <http://r2> <http://r2> , 1234 .
+";
+
+        private const string TestData3 = @"
+<http://r1> <http://r1> <http://r1> , ""value"" , 1234, 123e4, 123.4, true, false .
+<http://r2> <http://r2> <http://r2> .
+";
+
 
         private const string MinusQuery = @"
 SELECT *
@@ -135,10 +148,11 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            new TurtleParser().Load(a, new StringReader(TestData));
-            new TurtleParser().Load(b, new StringReader(TestData));
+            this._parser.Load(a, new StringReader(TestData));
+            this._parser.Load(b, new StringReader(TestData));
 
             this.TestDeltas(a, b, 0);
+            this.TestDeltas(b, a, 0);
         }
 
         [Test]
@@ -147,11 +161,12 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            new TurtleParser().Load(a, new StringReader(TestData));
-            new TurtleParser().Load(b, new StringReader(TestData));
+            this._parser.Load(a, new StringReader(TestData));
+            this._parser.Load(b, new StringReader(TestData));
             b.Retract(b.GetTriplesWithSubject(new Uri("http://r1")).ToList());
 
             this.TestDeltas(a, b, 1);
+            this.TestDeltas(b, a, 0);
         }
 
         [Test]
@@ -160,9 +175,34 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            new TurtleParser().Load(a, new StringReader(TestData));
+            this._parser.Load(a, new StringReader(TestData));
 
             this.TestDeltas(a, b, 2);
+            this.TestDeltas(b, a, 0);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas4()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            this._parser.Load(a, new StringReader(TestData2));
+            this._parser.Load(b, new StringReader(TestData));
+
+            this.TestDeltas(a, b, 2);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas5()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            this._parser.Load(a, new StringReader(TestData3));
+            this._parser.Load(b, new StringReader(TestData));
+
+            this.TestDeltas(a, b, 6);
         }
     }
 }
