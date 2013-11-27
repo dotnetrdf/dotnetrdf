@@ -44,11 +44,16 @@ namespace VDS.RDF.Query
 ";
 
         private const string TestData2 = @"
+<http://r1> <http://r1> <http://r1> , <http://r2> .
+<http://r2> <http://r2> <http://r2> .
+";
+
+        private const string TestData3 = @"
 <http://r1> <http://r1> <http://r1> , ""value"" .
 <http://r2> <http://r2> <http://r2> , 1234 .
 ";
 
-        private const string TestData3 = @"
+        private const string TestData4 = @"
 <http://r1> <http://r1> <http://r1> , ""value"" , 1234, 123e4, 123.4, true, false .
 <http://r2> <http://r2> <http://r2> .
 ";
@@ -86,21 +91,6 @@ WHERE
 }
 ";
 
-        private const string OptionalInvertedSameTermQuery = @"
-SELECT *
-WHERE
-{
-    GRAPH <http://g1>
-    {
-        ?s ?p ?o .
-    }
-    OPTIONAL
-    {
-        GRAPH <http://g0> { ?s ?p ?o0 . }
-    }
-    FILTER (!SAMETERM(?o, ?o0))
-}
-";
         private const string NotExistsQuery = @"
 SELECT *
 WHERE
@@ -115,7 +105,7 @@ WHERE
 
         private void TestQuery(IInMemoryQueryableStore store, String query, String queryName, int differences)
         {
-            using (SparqlResultSet resultSet = (SparqlResultSet)store.ExecuteQuery(query))
+            using (SparqlResultSet resultSet = (SparqlResultSet) store.ExecuteQuery(query))
             {
                 Console.WriteLine(queryName + ": " + resultSet.Count);
                 foreach (SparqlResult result in resultSet)
@@ -138,7 +128,6 @@ WHERE
 
             this.TestQuery(store, MinusQuery, "Minus", differences);
             this.TestQuery(store, OptionalSameTermQuery, "OptionalSameTerm", differences);
-            this.TestQuery(store, OptionalInvertedSameTermQuery, "OptionalInvertedSameTerm", differences);
             this.TestQuery(store, NotExistsQuery, "NotExists", differences);
         }
 
@@ -162,6 +151,19 @@ WHERE
             IGraph b = new Graph();
 
             this._parser.Load(a, new StringReader(TestData));
+            this._parser.Load(b, new StringReader(TestData2));
+
+            this.TestDeltas(a, b, 0);
+            this.TestDeltas(b, a, 1);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas3()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            this._parser.Load(a, new StringReader(TestData));
             this._parser.Load(b, new StringReader(TestData));
             b.Retract(b.GetTriplesWithSubject(new Uri("http://r1")).ToList());
 
@@ -170,7 +172,7 @@ WHERE
         }
 
         [Test]
-        public void SparqlGraphDeltas3()
+        public void SparqlGraphDeltas4()
         {
             IGraph a = new Graph();
             IGraph b = new Graph();
@@ -182,24 +184,24 @@ WHERE
         }
 
         [Test]
-        public void SparqlGraphDeltas4()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            this._parser.Load(a, new StringReader(TestData2));
-            this._parser.Load(b, new StringReader(TestData));
-
-            this.TestDeltas(a, b, 2);
-        }
-
-        [Test]
         public void SparqlGraphDeltas5()
         {
             IGraph a = new Graph();
             IGraph b = new Graph();
 
             this._parser.Load(a, new StringReader(TestData3));
+            this._parser.Load(b, new StringReader(TestData));
+
+            this.TestDeltas(a, b, 2);
+        }
+
+        [Test]
+        public void SparqlGraphDeltas6()
+        {
+            IGraph a = new Graph();
+            IGraph b = new Graph();
+
+            this._parser.Load(a, new StringReader(TestData4));
             this._parser.Load(b, new StringReader(TestData));
 
             this.TestDeltas(a, b, 6);
