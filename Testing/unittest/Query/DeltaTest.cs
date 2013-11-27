@@ -37,6 +37,7 @@ namespace VDS.RDF.Query
     public class DeltaTest
     {
         private readonly TurtleParser _parser = new TurtleParser();
+        private readonly SparqlQueryParser _sparqlParser = new SparqlQueryParser();
 
         private const string TestData = @"
 <http://r1> <http://r1> <http://r1> .
@@ -63,28 +64,45 @@ namespace VDS.RDF.Query
 SELECT *
 WHERE
 {
-    GRAPH <http://g1>
+    GRAPH <http://a>
     {
         ?s ?p ?o .
     }
     MINUS
     {
-        GRAPH <http://g0> { ?s ?p ?o }
+        GRAPH <http://b> { ?s ?p ?o }
     }
 }
 ";
 
-        private const string OptionalSameTermQuery = @"
+        private const string OptionalSameTermQuery1 = @"
 SELECT *
 WHERE
 {
-    GRAPH <http://g1>
+    GRAPH <http://a>
     {
         ?s ?p ?o .
     }
     OPTIONAL
     {
-        GRAPH <http://g0> { ?s ?p ?o0 . }
+        GRAPH <http://b> { ?s0 ?p0 ?o0 . }
+        FILTER (SAMETERM(?s, ?s0) && SAMETERM(?p, ?p0) && SAMETERM(?o, ?o0))
+    }
+    FILTER(!BOUND(?s0))
+}
+";
+
+        private const string OptionalSameTermQuery2 = @"
+SELECT *
+WHERE
+{
+    GRAPH <http://a>
+    {
+        ?s ?p ?o .
+    }
+    OPTIONAL
+    {
+        GRAPH <http://b> { ?s ?p ?o0 . }
         FILTER (SAMETERM(?o, ?o0))
     }
     FILTER(!BOUND(?o0))
@@ -95,23 +113,25 @@ WHERE
 SELECT *
 WHERE
 {
-    GRAPH <http://g1>
+    GRAPH <http://a>
     {
         ?s ?p ?o .
     }
-    FILTER NOT EXISTS { GRAPH <http://g0> { ?s ?p ?o } }
+    FILTER NOT EXISTS { GRAPH <http://b> { ?s ?p ?o } }
 }
 ";
 
         private void TestQuery(IInMemoryQueryableStore store, String query, String queryName, int differences)
         {
-            using (SparqlResultSet resultSet = (SparqlResultSet) store.ExecuteQuery(query))
+            Console.WriteLine(queryName);
+            SparqlQuery q = this._sparqlParser.ParseFromString(query);
+            Console.WriteLine(q.ToAlgebra().ToString());
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            using (SparqlResultSet resultSet = processor.ProcessQuery(q) as SparqlResultSet)
             {
-                Console.WriteLine(queryName + ": " + resultSet.Count);
-                foreach (SparqlResult result in resultSet)
-                {
-                    Console.WriteLine(result.ToString());
-                }
+                Assert.IsNotNull(resultSet);
+                TestTools.ShowResults(resultSet);
                 Assert.AreEqual(differences, resultSet.Count);
             }
             Console.WriteLine();
@@ -119,15 +139,16 @@ WHERE
 
         private void TestDeltas(IGraph a, IGraph b, int differences)
         {
-            a.BaseUri = new Uri("http://g1");
-            b.BaseUri = new Uri("http://g0");
+            a.BaseUri = new Uri("http://a");
+            b.BaseUri = new Uri("http://b");
 
             IInMemoryQueryableStore store = new TripleStore();
             store.Add(a);
             store.Add(b);
 
             this.TestQuery(store, MinusQuery, "Minus", differences);
-            this.TestQuery(store, OptionalSameTermQuery, "OptionalSameTerm", differences);
+            this.TestQuery(store, OptionalSameTermQuery1, "OptionalSameTerm1", differences);
+            this.TestQuery(store, OptionalSameTermQuery2, "OptionalSameTerm2", differences);
             this.TestQuery(store, NotExistsQuery, "NotExists", differences);
         }
 
@@ -169,6 +190,7 @@ WHERE
 
             this.TestDeltas(a, b, 1);
             this.TestDeltas(b, a, 0);
+            // TODO This should pass
         }
 
         [Test]
@@ -193,6 +215,7 @@ WHERE
             this._parser.Load(b, new StringReader(TestData));
 
             this.TestDeltas(a, b, 2);
+            this.TestDeltas(b, a, 0);
         }
 
         [Test]
@@ -205,6 +228,7 @@ WHERE
             this._parser.Load(b, new StringReader(TestData));
 
             this.TestDeltas(a, b, 6);
+            this.TestDeltas(b, a, 0);
         }
     }
 }
