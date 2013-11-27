@@ -9,6 +9,8 @@ Added
 Changed
 - Bug Fixes
  - Fix a bug in how Sesame connections load the default graph
+ - Fix a bug causing incorrect results in some cases of { } OPTIONAL { } when the LHS and RHS are disjoint i.e. no
+   common variables (CORE-386)
 - Query
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
 
