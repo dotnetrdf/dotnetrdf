@@ -54,32 +54,32 @@ namespace VDS.RDF.Utilities.StoreManager
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewConnectionForm));
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLayout = new System.Windows.Forms.TableLayoutPanel();
             this.panStoreTypes = new System.Windows.Forms.Panel();
             this.lstStoreTypes = new System.Windows.Forms.ListBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.connSettings = new VDS.RDF.Utilities.StoreManager.Controls.ConnectionSettingsGrid();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tlpLayout.SuspendLayout();
             this.panStoreTypes.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // tlpLayout
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tlpLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.69014F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 78.30986F));
-            this.tableLayoutPanel1.Controls.Add(this.panStoreTypes, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.connSettings, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(959, 352);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tlpLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpLayout.ColumnCount = 2;
+            this.tlpLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.69014F));
+            this.tlpLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 78.30986F));
+            this.tlpLayout.Controls.Add(this.panStoreTypes, 0, 0);
+            this.tlpLayout.Controls.Add(this.connSettings, 1, 0);
+            this.tlpLayout.Location = new System.Drawing.Point(0, 0);
+            this.tlpLayout.Name = "tlpLayout";
+            this.tlpLayout.RowCount = 1;
+            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLayout.Size = new System.Drawing.Size(959, 352);
+            this.tlpLayout.TabIndex = 0;
             // 
             // panStoreTypes
             // 
@@ -123,14 +123,14 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(961, 356);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlpLayout);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NewConnectionForm";
             this.Text = "New Connection";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tlpLayout.ResumeLayout(false);
+            this.tlpLayout.PerformLayout();
             this.panStoreTypes.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -138,7 +138,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpLayout;
         private System.Windows.Forms.Panel panStoreTypes;
         private System.Windows.Forms.ListBox lstStoreTypes;
         private System.Windows.Forms.OpenFileDialog ofdBrowse;
