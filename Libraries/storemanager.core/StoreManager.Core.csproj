@@ -55,6 +55,7 @@
     <Compile Include="Connections\BuiltIn\SparqlGraphStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SparqlQueryConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\StardogConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\BaseStardogConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />

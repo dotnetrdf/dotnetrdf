@@ -37,4 +37,7 @@ soh
 SparqlGUI
 
 StoreManager
+- Split Stardog connection definitions into 1.x and 2.x
+- Improved how Recent and Favourite Connections are managed (CORE-377)
+- Ensure that the New Connection window does not clip some options (CORE-377)
 
