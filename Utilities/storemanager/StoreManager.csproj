@@ -115,6 +115,12 @@
     <Compile Include="InvalidTemplateForm.Designer.cs">
       <DependentUpon>InvalidTemplateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ManageConnectionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageConnectionsForm.Designer.cs">
+      <DependentUpon>ManageConnectionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NewStoreForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +170,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InvalidTemplateForm.resx">
       <DependentUpon>InvalidTemplateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageConnectionsForm.resx">
+      <DependentUpon>ManageConnectionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewStoreForm.resx">
       <DependentUpon>NewStoreForm.cs</DependentUpon>

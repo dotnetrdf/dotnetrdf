@@ -24,13 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
@@ -128,7 +122,7 @@ namespace VDS.RDF.Utilities.StoreManager
                                 }
                                 catch
                                 {
-                                    // silently ignore this error? seems like if MaxRecentConnections is hit, there is a bug in removing old connections...
+                                    // TODO Issue a warning if this happens
                                 }
                                 this.Close();
                             }
