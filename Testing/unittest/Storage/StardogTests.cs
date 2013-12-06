@@ -401,7 +401,6 @@ namespace VDS.RDF.Storage
         public void StorageStardogAmpersandsInDataTest()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
 
             //Save the Graph
             Graph g = new Graph();
@@ -454,6 +453,28 @@ namespace VDS.RDF.Storage
             stardog.CreateStore(template);
 
             stardog.Dispose();
+        }
+
+        [Test]
+        public void StorageStardogSparqlUpdate1()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+
+            Console.WriteLine("Dropping graph if it exists");
+            //stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
+            stardog.DeleteGraph("http://example.org/stardog/update/1");
+            Console.WriteLine("Dropped graph");
+            IGraph g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/1");
+            Assert.IsTrue(g.IsEmpty, "Graph should be empty");
+
+            Console.WriteLine("Inserting data");
+            stardog.Update("INSERT DATA { GRAPH <http://example.org/stardog/update/1> { <http://x> <http://y> <http://z> } }");
+            Console.WriteLine("Inserted data");
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/1");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
         }
 #endif
     }
