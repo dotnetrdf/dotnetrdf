@@ -2454,9 +2454,80 @@ namespace VDS.RDF.Storage
 
 #endif
 
+        /// <summary>
+        /// Executes a SPARQL Update against the Stardog store
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException("Async SPARQL updates are not yet implemented");
+            try
+            {
+                // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
+                // TODO Does this mean we need to commit any existing transaction? Or should we issue an error in this case?
+
+                //Create the Request, for simplicity async requests are always POST
+                HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
+
+                //Create the request body
+                request.ContentType = MimeTypesHelper.SparqlUpdate;
+
+                request.BeginGetRequestStream(r =>
+                {
+                    try
+                    {
+                        Stream stream = request.EndGetRequestStream(r);
+                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                        {
+                            writer.Write(sparqlUpdates);
+                            writer.Close();
+                        }
+
+                        Tools.HttpDebugRequest(request);
+
+                        //Get the Response and process based on the Content Type
+                        request.BeginGetResponse(r2 =>
+                        {
+                            try
+                            {
+                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2))
+                                {
+                                    Tools.HttpDebugResponse(response);
+                                    // If we get here the update completed OK
+                                    response.Close();
+                                }
+
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state);
+                            }
+                            catch (WebException webEx)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
+                            }
+                        }, state);
+                    }
+                    catch (WebException webEx)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
+                    }
+                }, state);
+            }
+            catch (WebException webEx)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
+            }
         }
     }
 
