@@ -63,12 +63,24 @@ namespace VDS.RDF.Storage
 
         protected override IStorageProvider GetManager()
         {
-            return (IStorageProvider)StardogTests.GetConnection();
+            return (IStorageProvider) StardogTests.GetConnection();
         }
 
-#if !NO_SYNC_HTTP // Many of these tests require a synchronous API
-        [Test]
+        [SetUp]
+        public void Setup()
+        {
+            Options.HttpDebugging = true;
+        }
 
+        [TearDown]
+        public void CleanUp()
+        {
+            Options.HttpDebugging = false;
+        }
+
+#if !NO_SYNC_HTTP
+        // Many of these tests require a synchronous API
+        [Test]
         public void StorageStardogLoadDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();
@@ -78,7 +90,7 @@ namespace VDS.RDF.Storage
             stardog.SaveGraph(g);
 
             Graph h = new Graph();
-            stardog.LoadGraph(h, (Uri)null);
+            stardog.LoadGraph(h, (Uri) null);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
@@ -117,36 +129,24 @@ namespace VDS.RDF.Storage
         [Test]
         public void StorageStardogSaveToDefaultGraph()
         {
-            try
+            StardogConnector stardog = StardogTests.GetConnection();
+            ;
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = null;
+            stardog.SaveGraph(g);
+
+            Graph h = new Graph();
+            stardog.LoadGraph(h, (Uri) null);
+            Console.WriteLine("Retrieved " + h.Triples.Count + " Triple(s) from Stardog");
+
+            if (g.Triples.Count == h.Triples.Count)
             {
-                //Options.UseBomForUtf8 = false;
-                Options.HttpDebugging = true;
-                //Options.HttpFullDebugging = true;
-
-                StardogConnector stardog = StardogTests.GetConnection();;
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = null;
-                stardog.SaveGraph(g);
-
-                Graph h = new Graph();
-                stardog.LoadGraph(h, (Uri)null);
-                Console.WriteLine("Retrieved " + h.Triples.Count + " Triple(s) from Stardog");
-
-                if (g.Triples.Count == h.Triples.Count)
-                {
-                    Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
-                }
-                else
-                {
-                    Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
-                }
+                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
             }
-            finally
+            else
             {
-                //Options.UseBomForUtf8 = true;
-                Options.HttpDebugging = false;
-                //Options.HttpFullDebugging = false;
+                Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
             }
         }
 
@@ -157,7 +157,8 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+                StardogConnector stardog = StardogTests.GetConnection();
+                ;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -181,7 +182,8 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+                StardogConnector stardog = StardogTests.GetConnection();
+                ;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 Uri u = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
@@ -202,38 +204,28 @@ namespace VDS.RDF.Storage
         [Test]
         public void StorageStardogSaveToNamedGraphOverwrite()
         {
-            try
-            {
-                //Options.UseBomForUtf8 = false;
-                Options.HttpDebugging = true;
+            StardogConnector stardog = StardogTests.GetConnection();
+            ;
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = new Uri("http://example.org/namedGraph");
+            stardog.SaveGraph(g);
 
-                StardogConnector stardog = StardogTests.GetConnection();;
-                Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = new Uri("http://example.org/namedGraph");
-                stardog.SaveGraph(g);
+            Graph h = new Graph();
+            stardog.LoadGraph(h, new Uri("http://example.org/namedGraph"));
 
-                Graph h = new Graph();
-                stardog.LoadGraph(h, new Uri("http://example.org/namedGraph"));
+            Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
 
-                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+            Graph i = new Graph();
+            i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            i.BaseUri = new Uri("http://example.org/namedGraph");
+            stardog.SaveGraph(i);
 
-                Graph i = new Graph();
-                i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-                i.BaseUri = new Uri("http://example.org/namedGraph");
-                stardog.SaveGraph(i);
+            Graph j = new Graph();
+            stardog.LoadGraph(j, "http://example.org/namedGraph");
 
-                Graph j = new Graph();
-                stardog.LoadGraph(j, "http://example.org/namedGraph");
-
-                Assert.AreNotEqual(g, j, "Retrieved Graph should not be equal to overwritten Graph");
-                Assert.AreEqual(i, j, "Retrieved Graph should be equal to Saved Graph");
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-                //Options.UseBomForUtf8 = true;
-            }
+            Assert.AreNotEqual(g, j, "Retrieved Graph should not be equal to overwritten Graph");
+            Assert.AreEqual(i, j, "Retrieved Graph should be equal to Saved Graph");
         }
 
         [Test]
@@ -243,7 +235,8 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+                StardogConnector stardog = StardogTests.GetConnection();
+                ;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -280,7 +273,8 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+                StardogConnector stardog = StardogTests.GetConnection();
+                ;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
@@ -321,7 +315,8 @@ namespace VDS.RDF.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+                StardogConnector stardog = StardogTests.GetConnection();
+                ;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/tempGraph");
@@ -354,120 +349,93 @@ namespace VDS.RDF.Storage
         [Test]
         public void StorageStardogReasoningQL()
         {
-            try
+            StardogConnector stardog = StardogTests.GetConnection();
+            ;
+
+            Graph g = new Graph();
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/reasoning");
+            stardog.SaveGraph(g);
+
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
+            Console.WriteLine(query);
+            Console.WriteLine();
+
+            SparqlResultSet resultsNoReasoning = stardog.Query(query) as SparqlResultSet;
+            if (resultsNoReasoning != null)
             {
-                //Options.UseBomForUtf8 = false;
-                Options.HttpDebugging = true;
-
-                StardogConnector stardog = StardogTests.GetConnection();;
-
-                Graph g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/reasoning");
-                stardog.SaveGraph(g);
-
-                String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
-                Console.WriteLine(query);
-                Console.WriteLine();
-
-                SparqlResultSet resultsNoReasoning = stardog.Query(query) as SparqlResultSet;
-                if (resultsNoReasoning != null)
-                {
-                    Console.WriteLine("Results without Reasoning");
-                    TestTools.ShowResults(resultsNoReasoning);
-                }
-                else
-                {
-                    Assert.Fail("Did not get a SPARQL Result Set as expected");
-                }
-
-                stardog.Reasoning = StardogReasoningMode.QL;
-                SparqlResultSet resultsWithReasoning = stardog.Query(query) as SparqlResultSet;
-                if (resultsWithReasoning != null)
-                {
-                    Console.WriteLine("Results with Reasoning");
-                    TestTools.ShowResults(resultsWithReasoning);
-                }
-                else
-                {
-                    Assert.Fail("Did not get a SPARQL Result Set as expected");
-                }
-
-                Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count, "Reasoning should yield as many if not more results");
+                Console.WriteLine("Results without Reasoning");
+                TestTools.ShowResults(resultsNoReasoning);
             }
-            finally
+            else
             {
-                //Options.UseBomForUtf8 = true;
-                Options.HttpDebugging = false;
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
+
+            stardog.Reasoning = StardogReasoningMode.QL;
+            SparqlResultSet resultsWithReasoning = stardog.Query(query) as SparqlResultSet;
+            if (resultsWithReasoning != null)
+            {
+                Console.WriteLine("Results with Reasoning");
+                TestTools.ShowResults(resultsWithReasoning);
+            }
+            else
+            {
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
+            }
+
+            Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count, "Reasoning should yield as many if not more results");
         }
 
         [Test]
         public void StorageStardogTransactionTest()
         {
-            try
-            {
-                Options.HttpDebugging = true;
-
-                StardogConnector stardog = StardogTests.GetConnection();;
-                stardog.Begin();
-                stardog.Commit();
-                stardog.Dispose();
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+            StardogConnector stardog = StardogTests.GetConnection();
+            ;
+            stardog.Begin();
+            stardog.Commit();
+            stardog.Dispose();
         }
 
         [Test]
         public void StorageStardogAmpersandsInDataTest()
         {
-            try
-            {
-                Options.HttpDebugging = true;
+            StardogConnector stardog = StardogTests.GetConnection();
+            ;
 
-                StardogConnector stardog = StardogTests.GetConnection();;
+            //Save the Graph
+            Graph g = new Graph();
+            const string fragment = "@prefix : <http://example.org/> . [] :string \"This has & ampersands in it\" .";
+            g.LoadFromString(fragment);
+            g.BaseUri = new Uri("http://example.org/ampersandGraph");
 
-                //Save the Graph
-                Graph g = new Graph();
-                String fragment = "@prefix : <http://example.org/> . [] :string \"This has & ampersands in it\" .";
-                g.LoadFromString(fragment);
-                g.BaseUri = new Uri("http://example.org/ampersandGraph");
+            Console.WriteLine("Original Graph:");
+            TestTools.ShowGraph(g);
 
-                Console.WriteLine("Original Graph:");
-                TestTools.ShowGraph(g);
+            stardog.SaveGraph(g);
 
-                stardog.SaveGraph(g);
+            //Retrieve and check it round trips
+            Graph h = new Graph();
+            stardog.LoadGraph(h, g.BaseUri);
 
-                //Retrieve and check it round trips
-                Graph h = new Graph();
-                stardog.LoadGraph(h, g.BaseUri);
+            Console.WriteLine("Graph as retrieved from Stardog:");
+            TestTools.ShowGraph(h);
 
-                Console.WriteLine("Graph as retrieved from Stardog:");
-                TestTools.ShowGraph(h);
+            Assert.AreEqual(g, h, "Graphs should be equal");
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                
-                //Now try to delete the data from this Graph
-                GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
-                SparqlUpdateParser parser = new SparqlUpdateParser();
-                processor.ProcessCommandSet(parser.ParseFromString("WITH <http://example.org/ampersandGraph> DELETE WHERE { ?s ?p ?o }"));
+            //Now try to delete the data from this Graph
+            GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            processor.ProcessCommandSet(parser.ParseFromString("WITH <http://example.org/ampersandGraph> DELETE WHERE { ?s ?p ?o }"));
 
-                Graph i = new Graph();
-                stardog.LoadGraph(i, g.BaseUri);
+            Graph i = new Graph();
+            stardog.LoadGraph(i, g.BaseUri);
 
-                Console.WriteLine("Graph as retrieved after the DELETE WHERE:");
-                TestTools.ShowGraph(i);
+            Console.WriteLine("Graph as retrieved after the DELETE WHERE:");
+            TestTools.ShowGraph(i);
 
-                Assert.AreNotEqual(g, i, "Graphs should not be equal");
-                Assert.AreNotEqual(h, i, "Graphs should not be equal");
-
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+            Assert.AreNotEqual(g, i, "Graphs should not be equal");
+            Assert.AreNotEqual(h, i, "Graphs should not be equal");
         }
 
         [Test]
@@ -483,18 +451,7 @@ namespace VDS.RDF.Storage
             IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
             Console.WriteLine("Template ID " + template.ID);
 
-            try
-            {
-                Options.HttpDebugging = true;
-                //Options.HttpFullDebugging = true;
-
-                stardog.CreateStore(template);
-            }
-            finally
-            {
-                //Options.HttpFullDebugging = false;
-                Options.HttpDebugging = false;
-            }
+            stardog.CreateStore(template);
 
             stardog.Dispose();
         }
