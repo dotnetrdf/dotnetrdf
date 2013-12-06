@@ -156,7 +156,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeout used for communicating with the SPARQL Endpoint
+        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint
         /// </summary>
         public virtual int Timeout
         {
@@ -640,7 +640,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeout used for communicating with the SPARQL Endpoint
+        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint
         /// </summary>
         public override int Timeout
         {

@@ -39,7 +39,7 @@ namespace VDS.RDF
     public abstract class BaseEndpoint
         : IConfigurationSerializable
     {
-        private Uri _endpoint = null;
+        private readonly Uri _endpoint = null;
         private int _timeout = 30000;
         private String _httpMode = "GET";
         private NetworkCredential _credentials;
@@ -60,7 +60,7 @@ namespace VDS.RDF
         /// Creates a new Base Endpoint
         /// </summary>
         /// <param name="endpointUri">Endpoint URI</param>
-        public BaseEndpoint(Uri endpointUri)
+        protected BaseEndpoint(Uri endpointUri)
         {
             if (endpointUri == null) throw new ArgumentNullException("endpointUri", "Endpoint URI cannot be null");
             this._endpoint = endpointUri;
@@ -98,15 +98,16 @@ namespace VDS.RDF
                 {
                     this._httpMode = value.ToUpper();
                 }
+                throw new ArgumentException("HTTP Mode can only be GET/POST, derived implementations should override this property if they wish to support more methods");
             }
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeouts used for Queries
+        /// Gets/Sets the HTTP Timeouts used specified in milliseconds
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Defaults to 30 Seconds
+        /// Defaults to 30 Seconds (i.e. the default value is 30,000)
         /// </para>
         /// <para>
         /// Not supported under Silverlight
