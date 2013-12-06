@@ -2448,7 +2448,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                throw StorageHelper.HandleHttpError(webEx, "executing a SPARQL update");
+                throw StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against");
             }
         }
 

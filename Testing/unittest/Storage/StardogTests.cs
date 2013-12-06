@@ -426,7 +426,7 @@ namespace VDS.RDF.Storage
             //Now try to delete the data from this Graph
             GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
             SparqlUpdateParser parser = new SparqlUpdateParser();
-            processor.ProcessCommandSet(parser.ParseFromString("WITH <http://example.org/ampersandGraph> DELETE WHERE { ?s ?p ?o }"));
+            processor.ProcessCommandSet(parser.ParseFromString("DELETE WHERE { GRAPH <http://example.org/ampersandGraph> { ?s ?p ?o } }"));
 
             Graph i = new Graph();
             stardog.LoadGraph(i, g.BaseUri);

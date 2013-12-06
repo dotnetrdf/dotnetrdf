@@ -37,7 +37,7 @@ namespace VDS.RDF.Update
     [TestFixture]
     public abstract class GenericUpdateProcessorTests
     {
-        private SparqlUpdateParser _parser = new SparqlUpdateParser();
+        private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
         protected abstract IStorageProvider GetManager();
 
@@ -46,7 +46,7 @@ namespace VDS.RDF.Update
         {
             IStorageProvider manager = this.GetManager();
             GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
             processor.ProcessCommandSet(cmds);
 
@@ -64,7 +64,7 @@ namespace VDS.RDF.Update
         {
             IStorageProvider manager = this.GetManager();
             GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
             processor.ProcessCommandSet(cmds);
 
