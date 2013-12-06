@@ -25,12 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
@@ -41,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager
     public partial class NewConnectionForm 
         : Form
     {
-        private List<IConnectionDefinition> _definitions = new List<IConnectionDefinition>();
+        private readonly List<IConnectionDefinition> _definitions = new List<IConnectionDefinition>();
         private IStorageProvider _connection;
 
         public NewConnectionForm()
