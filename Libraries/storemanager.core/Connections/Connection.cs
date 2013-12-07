@@ -10,6 +10,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     /// </summary>
     public class Connection
     {
+        /// <summary>
+        /// Namespace URI for the Store Manager namespace
+        /// </summary>
+        public const String StoreManagerNamespace = "http://www.dotnetrdf.org/StoreManager#";
+
         private String _name;
 
         /// <summary>
@@ -156,10 +161,16 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             serializable.SerializeConfiguration(context);
 
             // Add additional information
+            // Friendly Name
             context.Graph.NamespaceMap.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
             INode rdfsLabel = context.Graph.CreateUriNode("rdfs:label");
             context.Graph.Assert(rootNode, rdfsLabel, context.Graph.CreateLiteralNode(this.Name));
-            // TODO Serialize date information
+            // Store Manager tracked information
+            context.Graph.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:created"), this.Created.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastModified"), this.LastModified.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().FullName.ToLiteral(context.Graph));
         }
 
         /// <summary>
