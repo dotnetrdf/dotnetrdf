@@ -43,11 +43,11 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class ManagerForm : Form
     {
-        private IGraph _recentConnections = new QueryableGraph();
-        private String _recentConnectionsFile;
+        private readonly IGraph _recentConnections = new QueryableGraph();
+        private readonly String _recentConnectionsFile;
 
-        private IGraph _faveConnections = new QueryableGraph();
-        private String _faveConnectionsFile;
+        private readonly IGraph _faveConnections = new QueryableGraph();
+        private readonly String _faveConnectionsFile;
 
         public const int MaxRecentConnections = 9;
 
