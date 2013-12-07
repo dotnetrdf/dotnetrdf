@@ -79,5 +79,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="g">Graph</param>
         /// <param name="objNode">Object Node</param>
         void PopulateFrom(IGraph g, INode objNode);
+
+        /// <summary>
+        /// Make a copy of the defintion
+        /// </summary>
+        /// <returns>Copy of the existing definition</returns>
+        IConnectionDefinition Copy();
     }
 }

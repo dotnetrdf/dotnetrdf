@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Display Name of the Store</param>
         /// <param name="storeDescrip">Display Description of the Store</param>
         /// <param name="t">Type of the connection instance that this definition will generate</param>
-        public BaseConnectionDefinition(String storeName, String storeDescrip, Type t)
+        protected BaseConnectionDefinition(String storeName, String storeDescrip, Type t)
         {
             this.StoreName = storeName;
             this.StoreDescription = storeDescrip;
@@ -262,6 +262,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 }
             }
         }
+
+        /// <summary>
+        /// Makes a copy of the definition
+        /// </summary>
+        /// <returns>Copy of the definition</returns>
+        public abstract IConnectionDefinition Copy();
 
         /// <summary>
         /// Gets the available <see cref="ConnectionAttribute"/> annotated settings for the connection

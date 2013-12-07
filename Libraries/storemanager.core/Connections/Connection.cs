@@ -11,6 +11,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     /// Container class that holds all the necessary information about a connection
     /// </summary>
     public class Connection
+        : IEquatable<Connection>
     {
         /// <summary>
         /// Namespace URI for the Store Manager namespace
@@ -18,6 +19,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public const String StoreManagerNamespace = "http://www.dotnetrdf.org/StoreManager#";
 
         private String _name;
+
+        /// <summary>
+        /// Creates a new connection as a copy of the existing connection
+        /// </summary>
+        /// <param name="connection">Connection</param>
+        protected Connection(Connection connection)
+        {
+            this.Definition = connection.Definition.Copy();
+            this.RootUri = CreateRootUri();
+            this.Created = DateTimeOffset.UtcNow;
+            this.LastModified = this.Created;
+            this.LastOpened = null;
+            this.Name = "Copy of " + connection.Name;
+        }
 
         /// <summary>
         /// Creates a new connection which will initially be in the closed state
@@ -251,6 +266,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Makes a copy of this connection which will be in the closed state
+        /// </summary>
+        /// <returns>Copy</returns>
+        public Connection Copy()
+        {
+            return new Connection(this);
+        }
+
+        /// <summary>
         /// Gets the date based on the stored value using the default value if there was no stored value
         /// </summary>
         /// <param name="t">Triple whose object is the stored value</param>
@@ -273,6 +297,36 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 }
             }
             return defaultValue;
+        }
+
+        /// <summary>
+        /// Determines whether the connection is equal to another object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>True if equals, false otherwise</returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is Connection && this.Equals((Connection) obj);
+        }
+
+        /// <summary>
+        /// Gets the hash code for a connection
+        /// </summary>
+        /// <returns>Hash Code</returns>
+        public override int GetHashCode()
+        {
+            return this.RootUri.GetEnhancedHashCode();
+        }
+
+        /// <summary>
+        /// Determines whether the connection is equal to another connection
+        /// </summary>
+        /// <param name="other">Connection</param>
+        /// <returns>True if equals, false otherwise</returns>
+        public bool Equals(Connection other)
+        {
+            return EqualityHelper.AreUrisEqual(this.RootUri, other.RootUri);
         }
     }
 }
