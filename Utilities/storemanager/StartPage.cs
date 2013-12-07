@@ -84,7 +84,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     {
                         if (Properties.Settings.Default.AlwaysEdit)
                         {
-                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(connect.Type);
+                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(connect.Type);
                             if (def != null)
                             {
                                 def.PopulateFrom(connect.Graph, connect.ObjectNode);
@@ -183,7 +183,7 @@ namespace VDS.RDF.Utilities.StoreManager
             Type t = connect.Type;
             if (t != null)
             {
-                IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(t);
+                IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(t);
                 if (def != null)
                 {
                     def.PopulateFrom(connect.Graph, connect.ObjectNode);

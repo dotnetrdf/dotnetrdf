@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using VDS.RDF.Configuration;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
@@ -18,14 +20,26 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         private String _name;
 
         /// <summary>
-        /// Creates a new connection which was initially be in the closed state
+        /// Creates a new connection which will initially be in the closed state
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="rootUri">Root URI for the connections information</param>
+        public Connection(IGraph g, Uri rootUri)
+        {
+            if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
+            this.RootUri = rootUri;
+            this.LoadConfiguration(g);
+        }
+
+        /// <summary>
+        /// Creates a new connection which will initially be in the closed state
         /// </summary>
         /// <param name="definition">Definition</param>
         public Connection(IConnectionDefinition definition)
             : this(definition, CreateRootUri()) { }
 
         /// <summary>
-        /// Creates a new connection which was initially be in the closed state
+        /// Creates a new connection which will initially be in the closed state
         /// </summary>
         /// <param name="definition">Definition</param>
         /// <param name="rootUri">Root URI</param>
@@ -35,6 +49,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
             this.Definition = definition;
             this.RootUri = rootUri;
+
+            this.Created = DateTimeOffset.UtcNow;
+            this.LastModified = DateTimeOffset.UtcNow;
+            this.LastOpened = null;
         }
 
         /// <summary>
@@ -110,7 +128,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets/Sets the last opened date
         /// </summary>
-        public DateTimeOffset LastOpened { get; set; }
+        public DateTimeOffset? LastOpened { get; set; }
 
         /// <summary>
         /// Gets whether the connection is currently open
@@ -169,8 +187,49 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             context.Graph.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:created"), this.Created.ToLiteral(context.Graph));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastModified"), this.LastModified.ToLiteral(context.Graph));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.ToLiteral(context.Graph));
+            if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.Value.ToLiteral(context.Graph));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().FullName.ToLiteral(context.Graph));
+        }
+
+        /// <summary>
+        /// Loads the connection definition for the connection from the given graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        public void LoadConfiguration(IGraph g)
+        {
+            g.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
+            g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            INode rootNode = g.CreateUriNode(this.RootUri);
+
+            // First off need to find the definition type (if any)
+            Triple t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:definitionType")).FirstOrDefault();
+            if (t != null && t.Object.NodeType == NodeType.Literal)
+            {
+                Type defType = Type.GetType(((ILiteralNode) t.Object).Value);
+                if (defType != null)
+                {
+                    this.Definition = (IConnectionDefinition) Activator.CreateInstance(defType);
+                }
+            }
+            if (ReferenceEquals(this.Definition, null))
+            {
+                // Have to figure out the definition type another way
+                t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("dnr:type")).FirstOrDefault();
+                if (t != null && t.Object.NodeType == NodeType.Literal)
+                {
+                    Type providerType = Type.GetType(((ILiteralNode) t.Object).Value);
+                    IConnectionDefinition temp = ConnectionDefinitionManager.GetDefinitionByTargetType(providerType);
+                    if (temp != null)
+                    {
+                        this.Definition = (IConnectionDefinition) Activator.CreateInstance(temp.GetType());
+                    }
+                }
+            }
+            if (ReferenceEquals(this.Definition, null)) throw new ArgumentException("Unable to locate the necessary configuration information to load this connection from the given Graph");
+
+            // Populate information
+            this.Definition.PopulateFrom(g, rootNode);
+            this.LoadInformation(g);
         }
 
         /// <summary>
@@ -179,7 +238,41 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="g">Graph</param>
         public void LoadInformation(IGraph g)
         {
-            throw new NotImplementedException();
+            g.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
+            g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            INode rootNode = g.CreateUriNode(this.RootUri);
+
+            Triple created = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:created")).FirstOrDefault();
+            Triple lastModified = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastModified")).FirstOrDefault();
+            Triple lastOpened = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastOpened")).FirstOrDefault();
+            this.Created = GetDate(created, DateTimeOffset.UtcNow).Value;
+            this.LastModified = GetDate(lastModified, this.Created).Value;
+            this.LastOpened = GetDate(lastOpened, null);
+        }
+
+        /// <summary>
+        /// Gets the date based on the stored value using the default value if there was no stored value
+        /// </summary>
+        /// <param name="t">Triple whose object is the stored value</param>
+        /// <param name="defaultValue">Default value</param>
+        /// <returns>Date</returns>
+        private static DateTimeOffset? GetDate(Triple t, DateTimeOffset? defaultValue)
+        {
+            if (t == null) return defaultValue;
+            INode n = t.Object;
+            if (n.NodeType == NodeType.Literal)
+            {
+                IValuedNode value = n.AsValuedNode();
+                try
+                {
+                    return value.AsDateTimeOffset();
+                }
+                catch (RdfQueryException)
+                {
+                    return defaultValue;
+                }
+            }
+            return defaultValue;
         }
     }
 }

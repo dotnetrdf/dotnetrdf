@@ -463,7 +463,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     {
                         if (qc.Type != null)
                         {
-                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(qc.Type);
+                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(qc.Type);
                             if (def != null)
                             {
                                 def.PopulateFrom(qc.Graph, qc.ObjectNode);
@@ -717,7 +717,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
                     IStorageProvider manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
-                    IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(manager.GetType());
+                    IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(manager.GetType());
                     if (def != null)
                     {
                         if (manager is IConfigurationSerializable)
