@@ -461,8 +461,7 @@ namespace VDS.RDF.Storage
             StardogConnector stardog = StardogTests.GetConnection();
 
             Console.WriteLine("Dropping graph if it exists");
-            //stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
-            stardog.DeleteGraph("http://example.org/stardog/update/1");
+            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
             Console.WriteLine("Dropped graph");
             IGraph g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
