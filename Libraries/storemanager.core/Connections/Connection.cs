@@ -1,4 +1,29 @@
-﻿using System;
+/*
+dotNetRDF is free and open source software licensed under the MIT License
+
+-----------------------------------------------------------------------------
+
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System;
 using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
@@ -127,7 +152,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 if (!ReferenceEquals(this._name, null)) return this._name;
                 return !ReferenceEquals(this.StorageProvider, null) ? this.StorageProvider.ToString() : this.Definition.StoreName;
             }
-            set { this._name = value; }
+            set
+            {
+                if (!ReferenceEquals(value, null) && !value.Equals(this.Name)) this.LastModified = DateTimeOffset.UtcNow;
+                this._name = value;
+            }
         }
 
         /// <summary>
@@ -160,6 +189,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             if (!ReferenceEquals(this.StorageProvider, null)) return;
             this.StorageProvider = this.Definition.OpenConnection();
+            this.LastOpened = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -260,8 +290,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             Triple created = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:created")).FirstOrDefault();
             Triple lastModified = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastModified")).FirstOrDefault();
             Triple lastOpened = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastOpened")).FirstOrDefault();
+// ReSharper disable PossibleInvalidOperationException
+            // Resharper warnings are incorrect since logic of the GetDate() method guarantees we'll always produce a value
             this.Created = GetDate(created, DateTimeOffset.UtcNow).Value;
             this.LastModified = GetDate(lastModified, this.Created).Value;
+// ReSharper restore PossibleInvalidOperationException
             this.LastOpened = GetDate(lastOpened, null);
         }
 
