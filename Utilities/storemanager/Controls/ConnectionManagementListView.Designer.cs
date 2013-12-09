@@ -56,7 +56,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.tlpLayout = new System.Windows.Forms.TableLayoutPanel();
             this.lvwConnections = new System.Windows.Forms.ListView();
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colStore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colCreated = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colLastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colLastOpened = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colIsOpen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tlpLayout.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +79,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.tlpLayout.RowCount = 1;
             this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpLayout.Size = new System.Drawing.Size(439, 264);
+            this.tlpLayout.Size = new System.Drawing.Size(712, 264);
             this.tlpLayout.TabIndex = 0;
             // 
             // lvwConnections
@@ -85,25 +89,49 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwConnections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
-            this.colType});
+            this.colStore,
+            this.colCreated,
+            this.colLastModified,
+            this.colLastOpened,
+            this.colIsOpen});
+            this.lvwConnections.FullRowSelect = true;
             this.lvwConnections.GridLines = true;
             this.lvwConnections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvwConnections.Location = new System.Drawing.Point(3, 3);
             this.lvwConnections.Name = "lvwConnections";
-            this.lvwConnections.Size = new System.Drawing.Size(433, 258);
+            this.lvwConnections.Size = new System.Drawing.Size(706, 258);
             this.lvwConnections.TabIndex = 0;
             this.lvwConnections.UseCompatibleStateImageBehavior = false;
             this.lvwConnections.View = System.Windows.Forms.View.Details;
             // 
             // colName
             // 
-            this.colName.Text = "Name";
+            this.colName.Text = "Connection Name";
             this.colName.Width = 250;
             // 
-            // colType
+            // colStore
             // 
-            this.colType.Text = "Type";
-            this.colType.Width = 150;
+            this.colStore.Text = "Store";
+            this.colStore.Width = 150;
+            // 
+            // colCreated
+            // 
+            this.colCreated.Text = "Created";
+            this.colCreated.Width = 58;
+            // 
+            // colLastModified
+            // 
+            this.colLastModified.Text = "Last Modified";
+            this.colLastModified.Width = 89;
+            // 
+            // colLastOpened
+            // 
+            this.colLastOpened.Text = "Last Opened";
+            this.colLastOpened.Width = 83;
+            // 
+            // colIsOpen
+            // 
+            this.colIsOpen.Text = "Is Open?";
             // 
             // ConnectionManagementListView
             // 
@@ -111,7 +139,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpLayout);
             this.Name = "ConnectionManagementListView";
-            this.Size = new System.Drawing.Size(445, 270);
+            this.Size = new System.Drawing.Size(718, 270);
             this.tlpLayout.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -122,6 +150,10 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         private System.Windows.Forms.TableLayoutPanel tlpLayout;
         private System.Windows.Forms.ListView lvwConnections;
         private System.Windows.Forms.ColumnHeader colName;
-        private System.Windows.Forms.ColumnHeader colType;
+        private System.Windows.Forms.ColumnHeader colStore;
+        private System.Windows.Forms.ColumnHeader colCreated;
+        private System.Windows.Forms.ColumnHeader colLastModified;
+        private System.Windows.Forms.ColumnHeader colLastOpened;
+        private System.Windows.Forms.ColumnHeader colIsOpen;
     }
 }

@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
 {
@@ -32,6 +33,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     /// Interface for connections graphs which manage a set of connections which are serialized to a graph and a file on disk
     /// </summary>
     public interface IConnectionsGraph
+        : INotifyCollectionChanged
     {
         /// <summary>
         /// Gets the file on disk where this graph is saved

@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
@@ -101,6 +103,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 {
                     Connection leastRecent = this._connections.OrderBy(c => c.LastOpened).ThenBy(c => c.LastModified).First();
                     this._connections.Remove(leastRecent);
+                    this.RaiseRemoved(leastRecent);
                 }
             }
             base.Save();
@@ -122,11 +125,30 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             : base(g, file) { }
 
         /// <summary>
+        /// Handles property changed events on connections
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
+        protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("IsOpen"))
+            {
+                // If the IsOpen property changed then a connection may now be in the closed state
+                // Calling Save() causes closed connections to be culled
+                this.Save();
+            }
+            // Even though we will have raised any appropriate Remove notifications we should still bubble up the Changed notification regardless
+            this.RaiseChanged();
+        }
+
+        /// <summary>
         /// Saves the connections to the underlying graph and file on disk
         /// </summary>
         protected override void Save()
         {
+            List<Connection> inactive = this._connections.Where(c => !c.IsOpen).ToList();
             this._connections.RemoveAll(c => !c.IsOpen);
+            inactive.ForEach(c => this.RaiseRemoved(c));
             base.Save();
         }
     }

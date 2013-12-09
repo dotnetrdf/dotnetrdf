@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 
@@ -38,6 +40,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     {
         protected readonly List<Connection> _connections = new List<Connection>();
 
+        protected readonly PropertyChangedEventHandler _handler;
+
         /// <summary>
         /// Creates a new connection graph
         /// </summary>
@@ -50,9 +54,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
             this.File = file;
             this.Graph = g;
+            this._handler = this.HandlePropertyChanged;
 
             // Load in connections
             this.Load();
+        }
+
+        /// <summary>
+        /// Handles property changed events on connections
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event arguments</param>
+        protected virtual void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.RaiseChanged();
         }
 
         /// <summary>
@@ -76,7 +91,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         public virtual void Add(Connection connection)
         {
+            if (this._connections.Contains(connection)) return;
             this._connections.Add(connection);
+            connection.PropertyChanged += this._handler;
+            this.RaiseAdded(connection);
             this.Save();
         }
 
@@ -86,7 +104,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         public virtual void Remove(Connection connection)
         {
+            if (!this._connections.Contains(connection)) return;
             this._connections.Remove(connection);
+            connection.PropertyChanged -= this._handler;
+            this.RaiseRemoved(connection);
             this.Save();
         }
 
@@ -95,7 +116,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public virtual void Clear()
         {
+            this._connections.ForEach(c => c.PropertyChanged -= this._handler);
             this._connections.Clear();
+            this.RaiseCleared();
             this.Save();
         }
 
@@ -140,5 +163,34 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             }
             this.Graph.SaveToFile(this.File);
         }
+
+        protected void RaiseAdded(Connection connection)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, connection));
+        }
+
+        protected void RaiseRemoved(Connection connection)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, connection));
+        }
+
+        protected void RaiseChanged()
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace));
+        }
+
+        protected void RaiseCleared()
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        /// <summary>
+        /// Event which is raised when the graph changes
+        /// </summary>
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

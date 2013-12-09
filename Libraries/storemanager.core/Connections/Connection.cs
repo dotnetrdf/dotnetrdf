@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
@@ -36,8 +37,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     /// Container class that holds all the necessary information about a connection
     /// </summary>
     public class Connection
-        : IEquatable<Connection>
+        : IEquatable<Connection>, INotifyPropertyChanged
     {
+        private DateTimeOffset _created, _modified;
+
         /// <summary>
         /// Namespace URI for the Store Manager namespace
         /// </summary>
@@ -76,7 +79,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         /// <param name="definition">Definition</param>
         public Connection(IConnectionDefinition definition)
-            : this(definition, CreateRootUri()) { }
+            : this(definition, CreateRootUri())
+        {
+        }
 
         /// <summary>
         /// Creates a new connection which will initially be in the closed state
@@ -156,23 +161,40 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             {
                 if (!ReferenceEquals(value, null) && !value.Equals(this.Name)) this.LastModified = DateTimeOffset.UtcNow;
                 this._name = value;
+                this.RaisePropertyChanged("Name");
             }
         }
 
         /// <summary>
         /// Gets/Sets the created date
         /// </summary>
-        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset Created
+        {
+            get { return this._created; }
+            private set
+            {
+                this._created = value;
+                this.RaisePropertyChanged("Created");
+            }
+        }
 
         /// <summary>
         /// Gets/Sets the last modified date
         /// </summary>
-        public DateTimeOffset LastModified { get; set; }
+        public DateTimeOffset LastModified
+        {
+            get { return this._modified; }
+            private set
+            {
+                this._modified = value;
+                this.RaisePropertyChanged("LastModified");
+            }
+        }
 
         /// <summary>
         /// Gets/Sets the last opened date
         /// </summary>
-        public DateTimeOffset? LastOpened { get; set; }
+        public DateTimeOffset? LastOpened { get; private set; }
 
         /// <summary>
         /// Gets whether the connection is currently open
@@ -190,6 +212,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             if (!ReferenceEquals(this.StorageProvider, null)) return;
             this.StorageProvider = this.Definition.OpenConnection();
             this.LastOpened = DateTimeOffset.UtcNow;
+            this.RaisePropertyChanged("LastOpened");
+            this.RaisePropertyChanged("IsOpen");
         }
 
         /// <summary>
@@ -200,6 +224,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             if (ReferenceEquals(this.StorageProvider, null)) return;
             this.StorageProvider.Dispose();
             this.StorageProvider = null;
+            this.RaisePropertyChanged("IsOpen");
         }
 
         /// <summary>
@@ -360,6 +385,21 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public bool Equals(Connection other)
         {
             return EqualityHelper.AreUrisEqual(this.RootUri, other.RootUri);
+        }
+
+        /// <summary>
+        /// Event which is raised when a property changes
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Helper method for raising the property changed event
+        /// </summary>
+        /// <param name="propertyName">Property Name</param>
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
