@@ -55,6 +55,8 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.tlpAbout = new System.Windows.Forms.TableLayoutPanel();
+            this.lblCoreVersionActual = new System.Windows.Forms.Label();
+            this.lblCoreVersion = new System.Windows.Forms.Label();
             this.lblApiVersionActual = new System.Windows.Forms.Label();
             this.lblAppVersionActual = new System.Windows.Forms.Label();
             this.lblAppVersion = new System.Windows.Forms.Label();
@@ -63,8 +65,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.grpPlugins = new System.Windows.Forms.GroupBox();
             this.btnRescan = new System.Windows.Forms.Button();
             this.lstPlugins = new System.Windows.Forms.ListBox();
-            this.lblCoreVersion = new System.Windows.Forms.Label();
-            this.lblCoreVersionActual = new System.Windows.Forms.Label();
             this.tlpAbout.SuspendLayout();
             this.grpPlugins.SuspendLayout();
             this.SuspendLayout();
@@ -89,14 +89,40 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpAbout.Size = new System.Drawing.Size(411, 202);
+            this.tlpAbout.Size = new System.Drawing.Size(411, 214);
             this.tlpAbout.TabIndex = 0;
+            // 
+            // lblCoreVersionActual
+            // 
+            this.lblCoreVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCoreVersionActual.AutoSize = true;
+            this.lblCoreVersionActual.Location = new System.Drawing.Point(208, 30);
+            this.lblCoreVersionActual.Name = "lblCoreVersionActual";
+            this.lblCoreVersionActual.Size = new System.Drawing.Size(200, 30);
+            this.lblCoreVersionActual.TabIndex = 6;
+            this.lblCoreVersionActual.Text = "{0}";
+            this.lblCoreVersionActual.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblCoreVersion
+            // 
+            this.lblCoreVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCoreVersion.AutoSize = true;
+            this.lblCoreVersion.Location = new System.Drawing.Point(3, 30);
+            this.lblCoreVersion.Name = "lblCoreVersion";
+            this.lblCoreVersion.Size = new System.Drawing.Size(199, 30);
+            this.lblCoreVersion.TabIndex = 5;
+            this.lblCoreVersion.Text = "StoreManager.Core Version:";
+            this.lblCoreVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblApiVersionActual
             // 
-            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersionActual.AutoSize = true;
             this.lblApiVersionActual.Location = new System.Drawing.Point(208, 60);
             this.lblApiVersionActual.Name = "lblApiVersionActual";
@@ -107,9 +133,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lblAppVersionActual
             // 
-            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersionActual.AutoSize = true;
             this.lblAppVersionActual.Location = new System.Drawing.Point(208, 0);
             this.lblAppVersionActual.Name = "lblAppVersionActual";
@@ -120,9 +146,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lblAppVersion
             // 
-            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersion.AutoSize = true;
             this.lblAppVersion.Location = new System.Drawing.Point(3, 0);
             this.lblAppVersion.Name = "lblAppVersion";
@@ -133,9 +159,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lblApiVersion
             // 
-            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersion.AutoSize = true;
             this.lblApiVersion.Location = new System.Drawing.Point(3, 60);
             this.lblApiVersion.Name = "lblApiVersion";
@@ -150,7 +176,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tlpAbout.SetColumnSpan(this.lblInfo, 2);
             this.lblInfo.Location = new System.Drawing.Point(3, 90);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(399, 78);
+            this.lblInfo.Size = new System.Drawing.Size(404, 104);
             this.lblInfo.TabIndex = 4;
             this.lblInfo.Text = resources.GetString("lblInfo.Text");
             // 
@@ -158,7 +184,7 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             this.grpPlugins.Controls.Add(this.btnRescan);
             this.grpPlugins.Controls.Add(this.lstPlugins);
-            this.grpPlugins.Location = new System.Drawing.Point(12, 231);
+            this.grpPlugins.Location = new System.Drawing.Point(12, 232);
             this.grpPlugins.Name = "grpPlugins";
             this.grpPlugins.Size = new System.Drawing.Size(411, 127);
             this.grpPlugins.TabIndex = 1;
@@ -183,37 +209,11 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lstPlugins.Size = new System.Drawing.Size(396, 69);
             this.lstPlugins.TabIndex = 0;
             // 
-            // lblCoreVersion
-            // 
-            this.lblCoreVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCoreVersion.AutoSize = true;
-            this.lblCoreVersion.Location = new System.Drawing.Point(3, 30);
-            this.lblCoreVersion.Name = "lblCoreVersion";
-            this.lblCoreVersion.Size = new System.Drawing.Size(199, 30);
-            this.lblCoreVersion.TabIndex = 5;
-            this.lblCoreVersion.Text = "StoreManager.Core Version:";
-            this.lblCoreVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblCoreVersionActual
-            // 
-            this.lblCoreVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCoreVersionActual.AutoSize = true;
-            this.lblCoreVersionActual.Location = new System.Drawing.Point(208, 30);
-            this.lblCoreVersionActual.Name = "lblCoreVersionActual";
-            this.lblCoreVersionActual.Size = new System.Drawing.Size(200, 30);
-            this.lblCoreVersionActual.TabIndex = 6;
-            this.lblCoreVersionActual.Text = "{0}";
-            this.lblCoreVersionActual.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 370);
+            this.ClientSize = new System.Drawing.Size(435, 368);
             this.Controls.Add(this.grpPlugins);
             this.Controls.Add(this.tlpAbout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -224,6 +224,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About Store Manager";
+            this.Load += new System.EventHandler(this.AboutForm_Load);
             this.tlpAbout.ResumeLayout(false);
             this.tlpAbout.PerformLayout();
             this.grpPlugins.ResumeLayout(false);

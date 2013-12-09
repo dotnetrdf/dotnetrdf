@@ -77,5 +77,10 @@ namespace VDS.RDF.Utilities.StoreManager
             this.ShowDetectedAssemblies();
             this.lstPlugins.EndUpdate();
         }
+
+        private void AboutForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

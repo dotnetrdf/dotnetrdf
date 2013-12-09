@@ -118,10 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblInfo.Text" xml:space="preserve">
-    <value>Store Manager is part of the dotNetRDF Toolkit for Windows.  It provides a GUI for working with a variety of different RDF stores that are supported by dotNetRDF.
+    <value>Store Manager is part of the dotNetRDF Toolkit for Windows.  It provides a GUI for working with a variety of different RDF stores that are supported by dotNetRDF.  It also has the ability for users to add their own connection types for arbitrary storage backends.
 
-This software is still in Beta and may be buggy, please report any issues to the mailing list at dotnetrdf-bugs
-@lists.sourceforge.net</value>
+While every effort is made to keep this software as bug free as possible ocassionally we make mistakes or miss things, please report any issues to the mailing list at dotnetrdf-bugs@lists.sourceforge.net</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
