@@ -24,9 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
 {
@@ -105,6 +103,30 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     this._connections.Remove(leastRecent);
                 }
             }
+            base.Save();
+        }
+    }
+
+    /// <summary>
+    /// Manages a set of connections where only active connections i.e. those that are open will be serialized to the underlying graph
+    /// </summary>
+    public class ActiveConnectionsGraph
+        : ConnectionsGraph
+    {
+        /// <summary>
+        /// Creates a new connection graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="file">File on disk to which the graph should be saved</param>
+        public ActiveConnectionsGraph(IGraph g, string file)
+            : base(g, file) { }
+
+        /// <summary>
+        /// Saves the connections to the underlying graph and file on disk
+        /// </summary>
+        protected override void Save()
+        {
+            this._connections.RemoveAll(c => !c.IsOpen);
             base.Save();
         }
     }
