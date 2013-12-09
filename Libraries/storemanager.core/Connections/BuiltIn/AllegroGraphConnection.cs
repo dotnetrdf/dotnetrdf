@@ -119,5 +119,24 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
                 
             }
         }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            AllegroGraphConnectionDefinition definition = new AllegroGraphConnectionDefinition();
+            definition.Server = this.Server;
+            definition.CatalogID = this.CatalogID;
+            definition.UseRootCatalog = this.UseRootCatalog;
+            definition.StoreID = this.StoreID;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
+        }
     }
 }

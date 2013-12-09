@@ -66,5 +66,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
                 return new InMemoryManager();
             //}
         }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            InMemoryConnectionDefinition definition = new InMemoryConnectionDefinition();
+            return definition;
+        }
     }
 }

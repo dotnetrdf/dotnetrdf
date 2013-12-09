@@ -75,5 +75,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         {
             return new VirtuosoManager(this.Server, this.Port, this.Database, this.Username, this.Password);
         }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            VirtuosoConnectionDefinition definition = new VirtuosoConnectionDefinition();
+            definition.Server = this.Server;
+            definition.Port = this.Port;
+            definition.Database = this.Database;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
+        }
     }
 }

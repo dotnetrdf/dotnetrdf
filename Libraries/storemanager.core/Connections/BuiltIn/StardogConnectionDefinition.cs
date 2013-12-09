@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
 
@@ -62,15 +59,31 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
                 return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
             }
-            else
+            if (this.UseProxy)
             {
-                if (this.UseProxy)
-                {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
-                }
-
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
             }
+
+            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            StardogV2ConnectionDefinition definition = new StardogV2ConnectionDefinition();
+            definition.Server = this.Server;
+            definition.StoreID = this.StoreID;
+            definition.ReasoningMode = this.ReasoningMode;
+            definition.UseAnonymousAccount = this.UseAnonymousAccount;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
         }
     }
 
@@ -109,20 +122,36 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 if (this.UseProxy)
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
+                    return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
                 }
 
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
+                return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
             }
-            else
+            if (this.UseProxy)
             {
-                if (this.UseProxy)
-                {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
-                }
-
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
             }
+
+            return new StardogV1Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            StardogV1ConnectionDefinition definition = new StardogV1ConnectionDefinition();
+            definition.Server = this.Server;
+            definition.StoreID = this.StoreID;
+            definition.ReasoningMode = this.ReasoningMode;
+            definition.UseAnonymousAccount = this.UseAnonymousAccount;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
         }
     }
 }

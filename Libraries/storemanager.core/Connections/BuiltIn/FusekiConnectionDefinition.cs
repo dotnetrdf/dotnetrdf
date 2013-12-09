@@ -64,10 +64,21 @@ DefaultValue("http://localhost:3030/dataset/data")]
             {
                 return new FusekiConnector(this.Server, this.GetProxy());
             }
-            else
-            {
-                return new FusekiConnector(this.Server);
-            }
+            return new FusekiConnector(this.Server);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            FusekiConnectionDefinition definition = new FusekiConnectionDefinition();
+            definition.Server = this.Server;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
         }
     }
 }
