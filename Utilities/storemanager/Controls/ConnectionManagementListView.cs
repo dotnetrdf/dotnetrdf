@@ -37,17 +37,31 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
     public partial class ConnectionManagementListView
         : UserControl
     {
-        private readonly IConnectionsGraph _connections;
+        private IConnectionsGraph _connections;
+        private readonly NotifyCollectionChangedEventHandler _handler;
 
+        /// <summary>
+        /// Creates a new empty list view
+        /// </summary>
+        public ConnectionManagementListView()
+        {
+            InitializeComponent();
+            this._handler = this.HandleCollectionChanged;
+        }
+
+        /// <summary>
+        /// Creates a new list view with the given data source
+        /// </summary>
+        /// <param name="connections">Data source</param>
         public ConnectionManagementListView(IConnectionsGraph connections)
+            : this()
         {
             if (connections == null) throw new ArgumentNullException("connections");
             this._connections = connections;
-            InitializeComponent();
             this.BindData();
 
             // Subscribe to events on the connection graph
-            this._connections.CollectionChanged += this.HandleCollectionChanged;
+            this._connections.CollectionChanged += this._handler;
         }
 
         /// <summary>
@@ -98,10 +112,13 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.lvwConnections.BeginUpdate();
             this.lvwConnections.Items.Clear();
 
-            foreach (Connection connection in this._connections.Connections)
+            if (!ReferenceEquals(this._connections, null))
             {
-                ListViewItem item = this.BindItem(connection);
-                this.lvwConnections.Items.Add(item);
+                foreach (Connection connection in this._connections.Connections)
+                {
+                    ListViewItem item = this.BindItem(connection);
+                    this.lvwConnections.Items.Add(item);
+                }
             }
 
             this.lvwConnections.EndUpdate();
@@ -127,6 +144,31 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         }
 
         /// <summary>
+        /// Gets/Sets the data source for the control
+        /// </summary>
+        public IConnectionsGraph DataSource
+        {
+            get { return this._connections; }
+            set
+            {
+                if (this._connections != null)
+                {
+                    if (ReferenceEquals(this._connections, value)) return;
+                    this._connections.CollectionChanged -= this._handler;
+                    this._connections = value;
+                    if (value != null) this._connections.CollectionChanged += this._handler;
+                }
+                else
+                {
+                    this._connections = value;
+                    if (value != null) this._connections.CollectionChanged += this._handler;
+                }
+                // Always bind data after the data source changes
+                this.BindData();
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets whether multiple connections may be selected
         /// </summary>
         public bool MultiSelect
@@ -143,5 +185,19 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             get { return this.lvwConnections.View; }
             set { this.lvwConnections.View = value; }
         }
+
+        public bool AllowClose { get; set; }
+
+        public bool AllowOpen { get; set; }
+
+        public bool AllowShow { get; set; }
+
+        public bool AllowEdit { get; set; }
+
+        public bool AllowRename { get; set; }
+
+        public bool AllowRemove { get; set; }
+
+        public bool AllowCopy { get; set; }
     }
 }
