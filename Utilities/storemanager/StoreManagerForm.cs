@@ -59,6 +59,8 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             InitializeComponent();
 
+            splitQueryResults.Panel2Collapsed = true;
+
             //Configure Form
             this._manager = manager;
             this.Text = this._manager.ToString();
@@ -210,7 +212,15 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 else
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
+                    QueryTask task;
+                    if (this.chkAsEntities.Checked)
+                    {
+                        task = new QueryAsTableTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, (int)this.numValuesPerPredicateLimit.Value);
+                    }
+                    else
+                    {
+                        task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
+                    }
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
             }
@@ -1340,15 +1350,15 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (result is IGraph)
                 {
-                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result, this._manager.ToString());
-                    CrossThreadSetMdiParent(graphViewer);
-                    CrossThreadShow(graphViewer);
+
+                    CrossThreadShowQueryPanel(splitQueryResults);
+                    CrossThreadSetResultGraph(graphViewerControl, (IGraph)result, resultSetViewerControl);
                 }
                 else if (result is SparqlResultSet)
                 {
-                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString(), qTask.Query.NamespaceMap);
-                    CrossThreadSetMdiParent(resultsViewer);
-                    CrossThreadShow(resultsViewer);
+
+                    CrossThreadShowQueryPanel(splitQueryResults);
+                    CrossThreadSetResultSet(resultSetViewerControl, (SparqlResultSet)result, qTask.Query.NamespaceMap, graphViewerControl);
                 }
                 else
                 {
@@ -1558,6 +1568,18 @@ namespace VDS.RDF.Utilities.StoreManager
         protected override void OnClosed(EventArgs e)
         {
             this._manager.Dispose();
+        }
+
+        private void btnChangeOrientation_Click(object sender, EventArgs e)
+        {
+            if (this.splitQueryResults.Orientation == Orientation.Horizontal)
+            {
+                this.splitQueryResults.Orientation = Orientation.Vertical;
+            }
+            else
+            {
+                this.splitQueryResults.Orientation = Orientation.Horizontal;
+            }
         }
 
     }

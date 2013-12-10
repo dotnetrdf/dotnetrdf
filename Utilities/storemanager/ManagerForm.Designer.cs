@@ -57,6 +57,8 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuStrip = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNewConnection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSaveConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenConnection = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,8 +87,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
-            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tabConnections = new System.Windows.Forms.TabControl();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,10 +134,22 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuNewConnection.Text = "New Connection";
             this.mnuNewConnection.Click += new System.EventHandler(this.mnuNewConnection_Click);
             // 
+            // mnuNewFromExisting
+            // 
+            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
+            this.mnuNewFromExisting.Size = new System.Drawing.Size(232, 22);
+            this.mnuNewFromExisting.Text = "New Connection from Curent";
+            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
+            // 
             // mnuSaveConnection
             // 
             this.mnuSaveConnection.Name = "mnuSaveConnection";
-            this.mnuSaveConnection.Size = new System.Drawing.Size(235, 22);
+            this.mnuSaveConnection.Size = new System.Drawing.Size(232, 22);
             this.mnuSaveConnection.Text = "&Save Connection";
             this.mnuSaveConnection.Click += new System.EventHandler(this.mnuSaveConnection_Click);
             // 
@@ -332,23 +345,23 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             this.ofdConnection.Title = "Open Connection";
             // 
-            // mnuNewFromExisting
+            // tabConnections
             // 
-            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
-            this.mnuNewFromExisting.Size = new System.Drawing.Size(232, 22);
-            this.mnuNewFromExisting.Text = "New Connection from Curent";
-            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
+            this.tabConnections.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabConnections.Location = new System.Drawing.Point(0, 24);
+            this.tabConnections.Name = "tabConnections";
+            this.tabConnections.SelectedIndex = 0;
+            this.tabConnections.Size = new System.Drawing.Size(632, 24);
+            this.tabConnections.TabIndex = 4;
+            this.tabConnections.Visible = false;
+            this.tabConnections.Click += new System.EventHandler(this.tabConnections_Click);
             // 
             // ManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(632, 453);
+            this.Controls.Add(this.tabConnections);
             this.Controls.Add(this.stsBar);
             this.Controls.Add(this.mnuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -359,6 +372,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.Text = "dotNetRDF Store Manager";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.fclsManager_Load);
+            this.MdiChildActivate += new System.EventHandler(this.ManagerForm_MdiChildActivate);
             this.mnuStrip.ResumeLayout(false);
             this.mnuStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -401,6 +415,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Windows.Forms.ToolStripMenuItem mnuStartPage;
         private System.Windows.Forms.ToolStripMenuItem mnuNewFromExisting;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.TabControl tabConnections;
     }
 }
 
