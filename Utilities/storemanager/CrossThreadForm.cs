@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Windows.Forms;
+using VDS.RDF.GUI.WinForms;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -308,6 +310,53 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #region Cross Thread Form Management
 
+        private delegate void CrossThreadLoadResultSetDelegate(
+            ResultSetViewerControl resultSetViewerControl,
+            SparqlResultSet results,
+            INamespaceMapper nsmap,
+            UserControl controlToHide);
+
+        protected void CrossThreadSetResultSet(
+            ResultSetViewerControl resultSetViewerControl,
+            SparqlResultSet results,
+            INamespaceMapper nsmap,
+            UserControl controlToHide)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadLoadResultSetDelegate d = new CrossThreadLoadResultSetDelegate(this.CrossThreadSetResultSet);
+                this.Invoke(d, new Object[] { resultSetViewerControl, results, nsmap, controlToHide });
+            }
+            else
+            {
+                controlToHide.Hide();
+                resultSetViewerControl.Show();
+                resultSetViewerControl.Dock = DockStyle.Fill;
+                resultSetViewerControl.DisplayResultSet(results, nsmap);
+            }
+        }
+
+        private delegate void CrossThreadLoadGraphDelegate(
+            GraphViewerControl graphViewerControl, 
+            IGraph graph,
+            UserControl controlToHide);
+
+        protected void CrossThreadSetResultGraph(GraphViewerControl graphViewerControl, IGraph results, UserControl controlToHide)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadLoadGraphDelegate d = new CrossThreadLoadGraphDelegate(this.CrossThreadSetResultGraph);
+                this.Invoke(d, new Object[] { graphViewerControl, results, controlToHide });
+            }
+            else
+            {
+                controlToHide.Hide();
+                graphViewerControl.Show();
+                graphViewerControl.Dock = DockStyle.Fill;
+                graphViewerControl.DisplayGraph(results);
+            }
+        }
+
         private delegate void CrossThreadSetMdiParentDelegate(Form f);
 
         /// <summary>
@@ -327,6 +376,24 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private delegate void CrossThreadShowQueryPanelDelegate(SplitContainer splitContainer);
+
+        protected void CrossThreadShowQueryPanel(SplitContainer splitContainer)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadShowQueryPanelDelegate d = new CrossThreadShowQueryPanelDelegate(this.CrossThreadShowQueryPanel);
+                this.Invoke(d, new Object[] { splitContainer });
+            }
+            else
+            {
+
+                splitContainer.Panel2Collapsed = false;
+            }
+        }
+
+
+
         private delegate void CrossThreadShowDelegate(Form f);
 
         protected void CrossThreadShow(Form f)
@@ -338,6 +405,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             else
             {
+
                 f.Show();
             }
         }

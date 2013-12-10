@@ -74,6 +74,7 @@
     <Compile Include="Tasks\ITask.cs" />
     <Compile Include="Tasks\ListGraphsTasks.cs" />
     <Compile Include="Tasks\PreviewGraphTask.cs" />
+    <Compile Include="Tasks\QueryAsTableTask.cs" />
     <Compile Include="Tasks\QueryTask.cs" />
     <Compile Include="Tasks\TaskExtensions.cs" />
     <Compile Include="Tasks\UpdateTask.cs" />

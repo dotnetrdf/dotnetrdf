@@ -79,6 +79,18 @@
     <Compile Include="ExportResultSetOptionsForm.Designer.cs">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GraphViewerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GraphViewerControl.designer.cs">
+      <DependentUpon>GraphViewerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResultSetViewerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResultSetViewerControl.designer.cs">
+      <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ResultSetViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +135,12 @@
     <EmbeddedResource Include="ExportResultSetOptionsForm.resx">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphViewerControl.resx">
+      <DependentUpon>GraphViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResultSetViewerControl.resx">
+      <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ResultSetViewerForm.resx">
       <DependentUpon>ResultSetViewerForm.cs</DependentUpon>
