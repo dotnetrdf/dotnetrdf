@@ -98,7 +98,10 @@ namespace VDS.RDF
                 {
                     this._httpMode = value.ToUpper();
                 }
-                throw new ArgumentException("HTTP Mode can only be GET/POST, derived implementations should override this property if they wish to support more methods");
+                else
+                {
+                    throw new ArgumentException("HTTP Mode can only be GET/POST, derived implementations should override this property if they wish to support more methods");
+                }
             }
         }
 
