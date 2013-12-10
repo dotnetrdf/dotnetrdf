@@ -37,4 +37,5 @@ soh
 SparqlGUI
 
 StoreManager
+- Add tabbed interface (TOOLS-390)
 
