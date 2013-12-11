@@ -240,7 +240,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test]
+        [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingUriLoaderDBPedia3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
@@ -251,15 +251,31 @@ namespace VDS.RDF.Parsing
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
+                // Expect this to error since DBPedia sends text/plain Content-Type but Turtle like content
                 UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia4()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
                 Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-                INode rdfsLabel = g.CreateUriNode("rdfs:label");
-                Assert.IsTrue(g.GetTriplesWithPredicate(rdfsLabel).Any(), "Should be rdfs:label property present");
+                TestTools.ShowGraph(g);
             }
             finally
             {
