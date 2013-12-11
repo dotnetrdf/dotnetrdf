@@ -91,13 +91,13 @@ namespace VDS.RDF.Utilities.StoreManager
                                 EditConnectionForm edit = new EditConnectionForm(def);
                                 if (edit.ShowDialog() == DialogResult.OK)
                                 {
-                                    IStorageProvider manager = edit.Connection;
-                                    StoreManagerForm storeManager = new StoreManagerForm(manager);
+                                    Connection connection = edit.Connection;
+                                    StoreManagerForm storeManager = new StoreManagerForm(connection);
                                     storeManager.MdiParent = Program.MainForm;
                                     storeManager.Show();
 
                                     //Add to Recent Connections
-                                    Program.MainForm.AddRecentConnection(manager);
+                                    Program.MainForm.AddRecentConnection(connection);
 
                                     this.Close();
                                 }
@@ -111,14 +111,14 @@ namespace VDS.RDF.Utilities.StoreManager
                         {
                             try
                             {
-                                IStorageProvider manager = connect.GetConnection();
-                                StoreManagerForm storeManager = new StoreManagerForm(manager);
+                                Connection connection = connect.GetConnection();
+                                StoreManagerForm storeManager = new StoreManagerForm(connection);
                                 storeManager.MdiParent = Program.MainForm;
                                 storeManager.Show();
                                 try
                                 {
                                     //Add to Recent Connections
-                                    Program.MainForm.AddRecentConnection(manager);
+                                    Program.MainForm.AddRecentConnection(connection);
                                 }
                                 catch
                                 {
@@ -140,13 +140,13 @@ namespace VDS.RDF.Utilities.StoreManager
             NewConnectionForm newConn = new NewConnectionForm();
             if (newConn.ShowDialog() == DialogResult.OK)
             {
-                IStorageProvider manager = newConn.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(manager);
+                Connection connection = newConn.Connection;
+                StoreManagerForm storeManager = new StoreManagerForm(connection);
                 storeManager.MdiParent = Program.MainForm;
                 storeManager.Show();
 
                 //Add to Recent Connections
-                Program.MainForm.AddRecentConnection(manager);
+                Program.MainForm.AddRecentConnection(connection);
 
                 this.Close();
             }
@@ -190,13 +190,13 @@ namespace VDS.RDF.Utilities.StoreManager
                     EditConnectionForm edit = new EditConnectionForm(def);
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
-                        IStorageProvider manager = edit.Connection;
-                        StoreManagerForm storeManager = new StoreManagerForm(manager);
+                        Connection connection = edit.Connection;
+                        StoreManagerForm storeManager = new StoreManagerForm(connection);
                         storeManager.MdiParent = Program.MainForm;
                         storeManager.Show();
 
                         //Add to Recent Connections
-                        Program.MainForm.AddRecentConnection(manager);
+                        Program.MainForm.AddRecentConnection(connection);
 
                         this.Close();
                     }

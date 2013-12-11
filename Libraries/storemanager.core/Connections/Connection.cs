@@ -40,6 +40,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         : IEquatable<Connection>, INotifyPropertyChanged
     {
         private DateTimeOffset _created, _modified;
+        private bool _readOnly;
 
         /// <summary>
         /// Namespace URI for the Store Manager namespace
@@ -59,6 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.Created = DateTimeOffset.UtcNow;
             this.LastModified = this.Created;
             this.LastOpened = null;
+            this.IsReadOnly = connection.IsReadOnly;
             this.Name = "Copy of " + connection.Name;
         }
 
@@ -98,6 +100,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.Created = DateTimeOffset.UtcNow;
             this.LastModified = DateTimeOffset.UtcNow;
             this.LastOpened = null;
+            this.IsReadOnly = false;
         }
 
         /// <summary>
@@ -205,12 +208,49 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Gets whether this should be a read-only connection
+        /// </summary>
+        /// <remarks>
+        /// This is used as the default setting when calling the no-argument <see cref="Open()"/> method
+        /// </remarks>
+        public bool IsReadOnly
+        {
+            get { return this._readOnly; }
+            private set
+            {
+                if (value == this._readOnly) return;
+                this._readOnly = value;
+                this.RaisePropertyChanged("IsReadOnly");
+            }
+        }
+
+        /// <summary>
         /// Opens the connection if it is not already open
         /// </summary>
         public void Open()
         {
+            this.Open(this.IsReadOnly);
+        }
+
+        /// <summary>
+        /// Opens the connection if it is not already open
+        /// </summary>
+        public void Open(bool readOnly)
+        {
             if (!ReferenceEquals(this.StorageProvider, null)) return;
+            this.IsReadOnly = readOnly;
             this.StorageProvider = this.Definition.OpenConnection();
+            if (this.IsReadOnly && !this.StorageProvider.IsReadOnly)
+            {
+                if (this.StorageProvider is IQueryableStorage)
+                {
+                    this.StorageProvider = new QueryableReadOnlyConnector((IQueryableStorage) this.StorageProvider);
+                }
+                else
+                {
+                    this.StorageProvider = new ReadOnlyConnector(this.StorageProvider);
+                }
+            }
             this.LastOpened = DateTimeOffset.UtcNow;
             this.RaisePropertyChanged("LastOpened");
             this.RaisePropertyChanged("IsOpen");
@@ -259,6 +299,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastModified"), this.LastModified.ToLiteral(context.Graph));
             if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.Value.ToLiteral(context.Graph));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().FullName.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:readOnly"), this.IsReadOnly.ToLiteral(context.Graph));
         }
 
         /// <summary>
@@ -312,6 +353,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             INode rootNode = g.CreateUriNode(this.RootUri);
 
+            // Created, Last Modified and Last Opened
             Triple created = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:created")).FirstOrDefault();
             Triple lastModified = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastModified")).FirstOrDefault();
             Triple lastOpened = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastOpened")).FirstOrDefault();
@@ -321,6 +363,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.LastModified = GetDate(lastModified, this.Created).Value;
 // ReSharper restore PossibleInvalidOperationException
             this.LastOpened = GetDate(lastOpened, null);
+
+            // Read-Only?
+            this.IsReadOnly = ConfigurationLoader.GetConfigurationBoolean(g, rootNode, g.CreateUriNode("store:readOnly"), false);
         }
 
         /// <summary>

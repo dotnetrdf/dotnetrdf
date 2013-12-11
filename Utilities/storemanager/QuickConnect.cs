@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.StoreManager
@@ -104,7 +105,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// Attempts to load the Connection
         /// </summary>
         /// <returns></returns>
-        public IStorageProvider GetConnection()
+        public Connection GetConnection()
         {
             Object temp = ConfigurationLoader.LoadObject(this._g, this._objNode);
             if (temp is IStorageProvider)

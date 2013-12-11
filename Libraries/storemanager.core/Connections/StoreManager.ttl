@@ -59,3 +59,8 @@ store:lastOpened a rdf:Property ;
 store:definitionType a rdf:Property ;
 	rdfs:label "Definition Type" ;
 	rdfs:comment "Used to associate serialized configuration with the IConnectionDefinition implementing type that its Configuration may be populated from." .
+
+store:readOnly a rdf:Property ;
+	rdfs:label "Read Only" ;
+	rdfs:comment "Used to state that a connection should default to read only mode" ;
+	rdfs:range xsd:boolean .

@@ -519,7 +519,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public void AddRecentConnection(IStorageProvider manager)
+        public void AddRecentConnection(Connection manager)
         {
             INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
 

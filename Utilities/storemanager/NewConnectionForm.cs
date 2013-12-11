@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Controls;
 
@@ -37,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager
         : Form
     {
         private readonly List<IConnectionDefinition> _definitions = new List<IConnectionDefinition>();
-        private IStorageProvider _connection;
+        private Connection _connection;
 
         public NewConnectionForm()
         {
@@ -55,7 +54,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lstStoreTypes.SelectedItem = def;
         }
 
-        public IStorageProvider Connection
+        public Connection Connection
         {
             get
             {
@@ -72,7 +71,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void HandleConnected(Object Sender, ConnectedEventArgs e)
+        private void HandleConnected(Object sender, ConnectedEventArgs e)
         {
             this._connection = e.Connection;
             this.DialogResult = DialogResult.OK;

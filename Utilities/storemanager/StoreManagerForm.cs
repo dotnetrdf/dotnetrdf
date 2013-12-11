@@ -36,6 +36,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
+using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
@@ -55,7 +56,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// Creates a new Store Manager form
         /// </summary>
         /// <param name="manager">Storage provider</param>
-        public StoreManagerForm(IStorageProvider manager)
+        public StoreManagerForm(Connection manager)
         {
             InitializeComponent();
 

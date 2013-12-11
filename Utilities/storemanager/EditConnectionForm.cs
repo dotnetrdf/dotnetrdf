@@ -24,14 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Controls;
 
@@ -50,7 +43,7 @@ namespace VDS.RDF.Utilities.StoreManager
         public EditConnectionForm(IConnectionDefinition def)
         {
             InitializeComponent();
-            this.connSettings.Definition = def;
+            this.connSettings.Definition = def.Copy();
             this.connSettings.Connected += this.HandleConnected;
         }
 
@@ -69,7 +62,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <summary>
         /// Gets the Connection if it has been created
         /// </summary>
-        public IStorageProvider Connection
+        public Connection Connection
         {
             get;
             private set;
