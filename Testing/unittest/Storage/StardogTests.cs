@@ -459,19 +459,75 @@ namespace VDS.RDF.Storage
         public void StorageStardogSparqlUpdate1()
         {
             StardogConnector stardog = StardogTests.GetConnection();
+            IGraph g;
 
-            Console.WriteLine("Dropping graph if it exists");
-            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
-            Console.WriteLine("Dropped graph");
-            IGraph g = new Graph();
+            g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
-            Assert.IsTrue(g.IsEmpty, "Graph should be empty");
+            if (!g.IsEmpty)
+            {
+                Console.WriteLine("Dropping graph");
+                stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
+                Console.WriteLine("Dropped graph");
+                Thread.Sleep(2500);
+                g = new Graph();
+                stardog.LoadGraph(g, "http://example.org/stardog/update/1");
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+            }
 
             Console.WriteLine("Inserting data");
             stardog.Update("INSERT DATA { GRAPH <http://example.org/stardog/update/1> { <http://x> <http://y> <http://z> } }");
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
+        }
+
+        [Test]
+        public void StorageStardogSparqlUpdate2()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            IGraph g;
+
+            Console.WriteLine("Dropping graph");
+            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/2>");
+            Console.WriteLine("Dropped graph");
+            Thread.Sleep(2500);
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/2");
+            Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+
+            Console.WriteLine("Inserting data");
+            stardog.Update("INSERT DATA { GRAPH <http://example.org/stardog/update/2> { <http://x> <http://y> <http://z> } }");
+            Console.WriteLine("Inserted data");
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/2");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
+        }
+
+        [Test]
+        public void StorageStardogSparqlUpdate3()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            IGraph g;
+
+            Console.WriteLine("Dropping graph");
+            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/3>");
+            Console.WriteLine("Dropped graph");
+            Thread.Sleep(2500);
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/3");
+            Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
+
+            Console.WriteLine("Inserting data");
+            IGraph newData = new Graph();
+            newData.BaseUri = new Uri("http://example.org/stardog/update/3");
+            newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")), newData.CreateUriNode(new Uri("http://z")));
+            stardog.SaveGraph(newData);
+            Console.WriteLine("Inserted data");
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/3");
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
             Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
         }
