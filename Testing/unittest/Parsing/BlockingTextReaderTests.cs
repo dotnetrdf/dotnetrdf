@@ -442,7 +442,7 @@ namespace VDS.RDF.Parsing
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"), new Notation3Parser());
+                UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new Notation3Parser());
 
                 TestTools.ShowGraph(g);
             }
