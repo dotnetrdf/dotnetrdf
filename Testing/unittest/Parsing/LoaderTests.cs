@@ -240,6 +240,35 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        [Test]
+        public void ParsingUriLoaderDBPedia3()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"));
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                INode rdfsLabel = g.CreateUriNode("rdfs:label");
+                Assert.IsTrue(g.GetTriplesWithPredicate(rdfsLabel).Any(), "Should be rdfs:label property present");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
 #endif
 
         [Test]
