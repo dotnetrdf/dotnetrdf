@@ -796,5 +796,10 @@ namespace VDS.RDF.Utilities.StoreManager
             //close corresponding tabpage
             ((sender as Form).Tag as TabPage).Dispose();
         }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
     }
 }

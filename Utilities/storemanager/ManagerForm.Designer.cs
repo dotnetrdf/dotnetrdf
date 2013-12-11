@@ -347,6 +347,7 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // tabConnections
             // 
+            this.tabConnections.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
             this.tabConnections.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabConnections.Location = new System.Drawing.Point(0, 24);
             this.tabConnections.Name = "tabConnections";
