@@ -83,7 +83,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets the managed connections
         /// </summary>
-        public IEnumerable<Connection> Connections { get { return this._connections; } }
+        public IEnumerable<Connection> Connections
+        {
+            get { return this._connections; }
+        }
+
+        /// <summary>
+        /// Gets the number of connections
+        /// </summary>
+        public int Count
+        {
+            get { return this._connections.Count; }
+        }
 
         /// <summary>
         /// Adds a connection

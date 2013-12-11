@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class StartPage : Form
     {
-        public StartPage(IGraph recent, IGraph faves)
+        public StartPage(IConnectionsGraph recent, IConnectionsGraph faves)
         {
             InitializeComponent();
 
@@ -47,92 +47,52 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void StartPage_Load(object sender, EventArgs e)
         {
-
         }
 
-        private void FillConnectionList(IGraph config, ListBox lbox)
+        private void FillConnectionList(IConnectionsGraph connections, ListBox lbox)
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-
-            query.CommandText = "SELECT * WHERE { ?obj a @type . OPTIONAL { ?obj rdfs:label ?label } }";
-            query.CommandText += " ORDER BY DESC(?obj)";
-            query.SetParameter("type", config.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
-
-            SparqlResultSet results = config.ExecuteQuery(query) as SparqlResultSet;
-            if (results != null)
+            foreach (Connection connection in connections.Connections)
             {
-                foreach (SparqlResult r in results)
+                lbox.Items.Add(connection);
+            }
+            lbox.DoubleClick += (sender, args) =>
                 {
-                    QuickConnect connect;
-                    if (r.HasValue("label") && r["label"] != null)
+                    Connection connection = lbox.SelectedItem as Connection;
+                    if (connection == null) return;
+                    if (Properties.Settings.Default.AlwaysEdit)
                     {
-                        connect = new QuickConnect(config, r["obj"], r["label"].ToString());
+                        EditConnectionForm edit = new EditConnectionForm(connection.Definition);
+                        if (edit.ShowDialog() == DialogResult.OK)
+                        {
+                            connection = edit.Connection;
+                            StoreManagerForm storeManager = new StoreManagerForm(connection);
+                            storeManager.MdiParent = Program.MainForm;
+                            storeManager.Show();
+
+                            //Add to Recent Connections
+                            Program.MainForm.AddRecentConnection(connection);
+
+                            this.Close();
+                        }
                     }
                     else
                     {
-                        connect = new QuickConnect(config, r["obj"]);
-                    }
-                    lbox.Items.Add(connect);
-                }
-            }
-            lbox.DoubleClick += new EventHandler((sender, args) =>
-                {
-                    QuickConnect connect = lbox.SelectedItem as QuickConnect;
-                    if (connect != null)
-                    {
-                        if (Properties.Settings.Default.AlwaysEdit)
+                        try
                         {
-                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(connect.Type);
-                            if (def != null)
-                            {
-                                def.PopulateFrom(connect.Graph, connect.ObjectNode);
-                                EditConnectionForm edit = new EditConnectionForm(def);
-                                if (edit.ShowDialog() == DialogResult.OK)
-                                {
-                                    Connection connection = edit.Connection;
-                                    StoreManagerForm storeManager = new StoreManagerForm(connection);
-                                    storeManager.MdiParent = Program.MainForm;
-                                    storeManager.Show();
-
-                                    //Add to Recent Connections
-                                    Program.MainForm.AddRecentConnection(connection);
-
-                                    this.Close();
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Selected Connection is not editable", "Connection Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            connection.Open();
+                            StoreManagerForm storeManager = new StoreManagerForm(connection);
+                            storeManager.MdiParent = Program.MainForm;
+                            storeManager.Show();
+                            //Add to Recent Connections
+                            Program.MainForm.AddRecentConnection(connection);
+                            this.Close();
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            try
-                            {
-                                Connection connection = connect.GetConnection();
-                                StoreManagerForm storeManager = new StoreManagerForm(connection);
-                                storeManager.MdiParent = Program.MainForm;
-                                storeManager.Show();
-                                try
-                                {
-                                    //Add to Recent Connections
-                                    Program.MainForm.AddRecentConnection(connection);
-                                }
-                                catch
-                                {
-                                    // TODO Issue a warning if this happens
-                                }
-                                this.Close();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Error Opening Connection " + connect.ToString() + ":\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            MessageBox.Show("Error Opening Connection " + connection.Name + ":\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
-                });
+                };
         }
 
         private void btnNewConnection_Click(object sender, EventArgs e)
@@ -167,7 +127,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuEditFave_Click(object sender, EventArgs e)
         {
-            EditConnection(this.lstFaves);   
+            EditConnection(this.lstFaves);
         }
 
         private void mnuEditRecent_Click(object sender, EventArgs e)
@@ -177,38 +137,21 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void EditConnection(ListBox lbox)
         {
-            QuickConnect connect = lbox.SelectedItem as QuickConnect;
-            if (connect == null) return;
+            Connection connection = lbox.SelectedItem as Connection;
+            if (connection == null) return;
 
-            Type t = connect.Type;
-            if (t != null)
+            EditConnectionForm edit = new EditConnectionForm(connection.Definition);
+            if (edit.ShowDialog() == DialogResult.OK)
             {
-                IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(t);
-                if (def != null)
-                {
-                    def.PopulateFrom(connect.Graph, connect.ObjectNode);
-                    EditConnectionForm edit = new EditConnectionForm(def);
-                    if (edit.ShowDialog() == DialogResult.OK)
-                    {
-                        Connection connection = edit.Connection;
-                        StoreManagerForm storeManager = new StoreManagerForm(connection);
-                        storeManager.MdiParent = Program.MainForm;
-                        storeManager.Show();
+                connection = edit.Connection;
+                StoreManagerForm storeManager = new StoreManagerForm(connection);
+                storeManager.MdiParent = Program.MainForm;
+                storeManager.Show();
 
-                        //Add to Recent Connections
-                        Program.MainForm.AddRecentConnection(connection);
+                //Add to Recent Connections
+                Program.MainForm.AddRecentConnection(connection);
 
-                        this.Close();
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("The selected connection is not editable", "Edit Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("The selected connection is not editable", "Edit Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
             }
         }
 

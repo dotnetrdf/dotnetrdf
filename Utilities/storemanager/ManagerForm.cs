@@ -27,9 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using VDS.RDF;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
@@ -43,11 +41,7 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class ManagerForm : Form
     {
-        private readonly IGraph _recentConnections = new QueryableGraph();
-        private readonly String _recentConnectionsFile;
-
-        private readonly IGraph _faveConnections = new QueryableGraph();
-        private readonly String _faveConnectionsFile;
+        private readonly IConnectionsGraph _favouriteConnections, _recentConnections;
 
         public const int MaxRecentConnections = 9;
 
@@ -77,26 +71,26 @@ namespace VDS.RDF.Utilities.StoreManager
             try
             {
                 String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                String sepChar = new String(new char[] { Path.DirectorySeparatorChar });
+                String sepChar = new String(new char[] {Path.DirectorySeparatorChar});
                 if (!appDataDir.EndsWith(sepChar)) appDataDir += sepChar;
                 appDataDir = Path.Combine(appDataDir, "dotNetRDF" + sepChar);
                 if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
                 appDataDir = Path.Combine(appDataDir, "Store Manager" + sepChar);
                 if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
-                this._recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
-                this._faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
+                String recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
+                String faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
 
-                if (File.Exists(this._recentConnectionsFile))
+                if (File.Exists(recentConnectionsFile))
                 {
                     //Load Recent Connections
-                    FileLoader.Load(this._recentConnections, this._recentConnectionsFile);
+                    this._recentConnections = new RecentConnectionsesGraph(new Graph(), recentConnectionsFile, MaxRecentConnections);
                     this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, MaxRecentConnections);
                 }
-                if (File.Exists(this._faveConnectionsFile))
+                if (File.Exists(faveConnectionsFile))
                 {
                     //Load Favourite Connections
-                    FileLoader.Load(this._faveConnections, this._faveConnectionsFile);
-                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0, true, this._faveConnectionsFile);
+                    this._favouriteConnections = new ConnectionsGraph(new Graph(), faveConnectionsFile);
+                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._favouriteConnections, 0);
                 }
             }
             catch
@@ -116,7 +110,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (Properties.Settings.Default.ShowStartPage)
             {
-                StartPage start = new StartPage(this._recentConnections, this._faveConnections);
+                StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
                 start.ShowDialog();
             }
         }
@@ -196,7 +190,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     Object manager;
                     if (this.ActiveMdiChild is StoreManagerForm)
                     {
-                        manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
+                        manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
                     }
                     else
                     {
@@ -233,7 +227,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             }
 
                             //Save the Connection
-                            ((IConfigurationSerializable)manager).SerializeConfiguration(context);
+                            ((IConfigurationSerializable) manager).SerializeConfiguration(context);
 
                             try
                             {
@@ -277,13 +271,13 @@ namespace VDS.RDF.Utilities.StoreManager
                     openConnections.MdiParent = this;
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
-                        IStorageProvider manager = openConnections.Connection;
-                        StoreManagerForm genManagerForm = new StoreManagerForm(manager);
+                        Connection connection = openConnections.Connection;
+                        StoreManagerForm genManagerForm = new StoreManagerForm(connection);
                         genManagerForm.MdiParent = this;
                         genManagerForm.Show();
 
                         //Add to Recent Connections
-                        this.AddRecentConnection(manager);
+                        this.AddRecentConnection(connection);
                     }
                 }
                 catch (RdfParseException)
@@ -297,108 +291,31 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config)
+        private void FillConnectionsMenu(ToolStripMenuItem menu, IConnectionsGraph config, int maxItems)
         {
-            this.FillConnectionsMenu(menu, config, 0);
-        }
+            if (config == null || config.Count == 0) return;
 
-        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems)
-        {
-            this.FillConnectionsMenu(menu, config, maxItems, false, null);
-        }
-
-        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems, bool addRemoveOption)
-        {
-            this.FillConnectionsMenu(menu, config, maxItems, addRemoveOption, null);
-        }
-
-        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems, bool addRemoveOption, String persistentFile)
-        {
-            if (config == null || config.Triples.Count == 0) return;
-
-            SparqlParameterizedString query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
-
-            query.CommandText = "SELECT * WHERE { ?obj a @type . OPTIONAL { ?obj rdfs:label ?label } }";
-            query.CommandText += " ORDER BY DESC(?obj)";
-
-            Graph g = new Graph();
-            query.SetParameter("type", g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
-
-            if (maxItems > 0) query.CommandText += " LIMIT " + maxItems;
-
-            SparqlResultSet results = config.ExecuteQuery(query) as SparqlResultSet;
-            if (results != null)
+            int count = 0;
+            foreach (Connection connection in config.Connections)
             {
-                foreach (SparqlResult r in results)
-                {
-                    ToolStripMenuItem item = new ToolStripMenuItem();
-                    if (r.HasValue("label") && r["label"] != null)
-                    {
-                        INode lblNode = r["label"];
-                        if (lblNode.NodeType == NodeType.Literal)
-                        {
-                            item.Text = ((ILiteralNode)lblNode).Value;
-                        }
-                        else
-                        {
-                            item.Text = lblNode.ToString();
-                        }
-                    }
-                    else
-                    {
-                        item.Text = r["obj"].ToString();
-                    }
-                    item.Tag = new QuickConnect(config, r["obj"]);
-                    item.Click += new EventHandler(QuickConnectClick);
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = connection.Name;
+                item.Tag = connection;
+                item.Click += new EventHandler(QuickConnectClick);
 
-                    ToolStripMenuItem edit = new ToolStripMenuItem();
-                    edit.Text = "Edit Connection";
-                    edit.Tag = item.Tag;
-                    edit.Click += new EventHandler(QuickEditClick);
-                    item.DropDownItems.Add(edit);
+                ToolStripMenuItem edit = new ToolStripMenuItem();
+                edit.Text = "Edit Connection";
+                edit.Tag = item.Tag;
+                edit.Click += new EventHandler(QuickEditClick);
+                item.DropDownItems.Add(edit);
 
-                    if (addRemoveOption)
-                    {
-                        ToolStripMenuItem remove = new ToolStripMenuItem();
-                        remove.Text = "Remove Connection from this List";
-                        remove.Tag = new QuickRemove(menu, config, r["obj"], persistentFile);
-                        remove.Click += new EventHandler(QuickRemoveClick);
-                        item.DropDownItems.Add(remove);
+                menu.DropDownItems.Add(item);
 
-                        ToolStripMenuItem connect = new ToolStripMenuItem();
-                        connect.Text = "Open Connection";
-                        connect.Tag = item.Tag;
-                        connect.Click += new EventHandler(QuickConnectClick);
-                        item.DropDownItems.Add(connect);
-                    }
-
-                    menu.DropDownItems.Add(item);
-                }
+                count++;
+                if (maxItems > 0 && count >= maxItems) break;
             }
         }
 
-        private void RemoveFromConnectionsMenu(ToolStripMenuItem menu, INode objNode)
-        {
-            if (menu.DropDownItems.Count > 2)
-            {
-                int i = 2;
-                while (i < menu.DropDownItems.Count)
-                {
-                    Object tag = menu.DropDownItems[i].Tag;
-                    if (tag is QuickConnect)
-                    {
-                        if (((QuickConnect)tag).ObjectNode.Equals(objNode))
-                        {
-                            menu.DropDownItems.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                    i++;
-                }
-            }
-        }
 
         private void QuickConnectClick(object sender, EventArgs e)
         {
@@ -406,34 +323,29 @@ namespace VDS.RDF.Utilities.StoreManager
             Object tag = null;
             if (sender is Control)
             {
-                tag = ((Control)sender).Tag;
+                tag = ((Control) sender).Tag;
             }
             else if (sender is ToolStripItem)
             {
-                tag = ((ToolStripItem)sender).Tag;
+                tag = ((ToolStripItem) sender).Tag;
             }
             else if (sender is Menu)
             {
-                tag = ((Menu)sender).Tag;
+                tag = ((Menu) sender).Tag;
             }
-
-            if (tag != null)
+            if (tag == null) return;
+            if (!(tag is Connection)) return;
+            Connection connection = (Connection) tag;
+            try
             {
-                if (tag is QuickConnect)
-                {
-                    QuickConnect qc = (QuickConnect)tag;
-                    try
-                    {
-                        IStorageProvider manager = qc.GetConnection();
-                        StoreManagerForm genManager = new StoreManagerForm(manager);
-                        genManager.MdiParent = this;
-                        genManager.Show();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Unable to load the Connection due to an error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
+                connection.Open();
+                StoreManagerForm genManager = new StoreManagerForm(connection);
+                genManager.MdiParent = this;
+                genManager.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to open the connection due to the following error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -443,52 +355,36 @@ namespace VDS.RDF.Utilities.StoreManager
             Object tag = null;
             if (sender is Control)
             {
-                tag = ((Control)sender).Tag;
+                tag = ((Control) sender).Tag;
             }
             else if (sender is ToolStripItem)
             {
-                tag = ((ToolStripItem)sender).Tag;
+                tag = ((ToolStripItem) sender).Tag;
             }
             else if (sender is Menu)
             {
-                tag = ((Menu)sender).Tag;
+                tag = ((Menu) sender).Tag;
             }
 
             if (tag != null)
             {
-                if (tag is QuickConnect)
+                if (tag is Connection)
                 {
-                    QuickConnect qc = (QuickConnect)tag;
+                    Connection connection = (Connection) tag;
                     try
                     {
-                        if (qc.Type != null)
+                        EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
+                        if (editConn.ShowDialog() == DialogResult.OK)
                         {
-                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(qc.Type);
-                            if (def != null)
-                            {
-                                def.PopulateFrom(qc.Graph, qc.ObjectNode);
-                                EditConnectionForm editConn = new EditConnectionForm(def);
-                                if (editConn.ShowDialog() == DialogResult.OK)
-                                {
-                                    IStorageProvider manager = editConn.Connection;
-                                    StoreManagerForm storeManager = new StoreManagerForm(manager);
-                                    storeManager.MdiParent = Program.MainForm;
-                                    storeManager.Show();
+                            connection = editConn.Connection;
+                            StoreManagerForm storeManager = new StoreManagerForm(connection);
+                            storeManager.MdiParent = Program.MainForm;
+                            storeManager.Show();
 
-                                    //Add to Recent Connections
-                                    this.AddRecentConnection(manager);
+                            //Add to Recent Connections
+                            this.AddRecentConnection(connection);
 
-                                    this.Close();
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("This Connection is not ediatable", "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("This Connection is not ediatable", "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            this.Close();
                         }
                     }
                     catch (Exception ex)
@@ -499,70 +395,23 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void QuickRemoveClick(object sender, EventArgs e)
+        public void AddRecentConnection(Connection connection)
         {
-            if (sender == null) return;
-            Object tag = null;
-            if (sender is ToolStripItem)
+            if (this._recentConnections == null) return;
+            try
             {
-                tag = ((ToolStripItem)sender).Tag;
+                this._recentConnections.Add(connection);
             }
-
-            if (tag != null)
+            catch
             {
-                if (tag is QuickRemove)
-                {
-                    QuickRemove rem = (QuickRemove)tag;
-                    rem.Remove();
-                    this.RemoveFromConnectionsMenu(rem.Menu, rem.ObjectNode);
-                }
+                MessageBox.Show("Unable to update recent connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-        }
-
-        public void AddRecentConnection(Connection manager)
-        {
-            INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
-
-            if (objNode != null) this.AddConnectionToMenu(manager, this._recentConnections, objNode, this.mnuRecentConnections, this._recentConnectionsFile, false);
-
-            //Check the number of Recent Connections and delete the Oldest if more than 9
-            INode rdfType = this._recentConnections.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode storageProvider = this._recentConnections.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            List<INode> conns = (from t in
-                                 this._recentConnections.GetTriplesWithPredicateObject(rdfType, storageProvider)
-                                 select t.Subject).ToList();
-            if (conns.Count > MaxRecentConnections)
-            {
-                
-                conns.Sort();
-                conns.Reverse();
-
-                conns.RemoveRange(0, MaxRecentConnections);
-
-                //Remember the ToList() on the retract otherwise we'll hit an error
-                foreach (INode obj in conns)
-                {
-                    this._recentConnections.Retract(this._recentConnections.GetTriplesWithSubject(obj).ToList());
-                    this.RemoveFromConnectionsMenu(this.mnuRecentConnections, obj);
-                }
-
-                try
-                {
-                    //Persist the graph to disk
-                    CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
-                    ttlwriter.Save(this._recentConnections, this._recentConnectionsFile);
-                }
-                catch
-                {
-                    MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }            
         }
 
         public void AddFavouriteConnection(IStorageProvider manager)
         {
             INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
-            this.AddConnectionToMenu(manager, this._faveConnections, objNode, this.mnuFavouriteConnections, this._faveConnectionsFile, true);    
+            this.AddConnectionToMenu(manager, this._faveConnections, objNode, this.mnuFavouriteConnections, this._faveConnectionsFile, true);
         }
 
         private void AddConnectionToMenu(IStorageProvider manager, IGraph g, INode objNode, ToolStripMenuItem parentItem, String persistentFile, bool addRemove)
@@ -599,55 +448,43 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private INode AddConnection(IGraph config, IStorageProvider manager, String persistentFile)
+        private void AddConnection(IConnectionsGraph connections, Connection connection)
         {
-            if (config == null) return null;
-
-            ConfigurationSerializationContext context = new ConfigurationSerializationContext(config);
-
-            if (manager is IConfigurationSerializable)
+            if (connections == null) return;
+            try
             {
-                INode objNode = context.Graph.CreateUriNode(new Uri("dotnetrdf:storemanager:" + DateTime.Now.ToString("yyyyMMddhhmmss")));
-                context.NextSubject = objNode;
-                ((IConfigurationSerializable)manager).SerializeConfiguration(context);
-
-                if (persistentFile != null)
-                {
-                    try
-                    {
-                        //Persist the graph to disk
-                        CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
-                        ttlwriter.Save(config, persistentFile);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-
-                return objNode;
+                connections.Add(connection);
             }
-
-            return null;
+            catch
+            {
+                MessageBox.Show("Unable to add a connection to a file", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void ClearRecentConnections()
         {
-            this.ClearConnections(this.mnuRecentConnections, this._recentConnections, this._recentConnectionsFile);
+            this.ClearConnections(this.mnuRecentConnections, this._recentConnections);
         }
 
         private void ClearFavouriteConnections()
         {
             if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                this.ClearConnections(this.mnuFavouriteConnections, this._faveConnections, this._faveConnectionsFile);
+                this.ClearConnections(this.mnuFavouriteConnections, this._favouriteConnections);
             }
         }
 
-        private void ClearConnections(ToolStripMenuItem menu, IGraph g, String persistentFile)
+        private void ClearConnections(ToolStripMenuItem menu, IConnectionsGraph connections)
         {
-            g.Clear();
-            if (persistentFile != null && File.Exists(persistentFile)) File.Delete(persistentFile);
+            if (connections == null) return;
+            try
+            {
+                connections.Clear();
+            }
+            catch
+            {
+                MessageBox.Show("Unable to clear connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
             while (menu.DropDownItems.Count > 2)
             {
@@ -671,7 +508,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IStorageProvider manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
+                    IStorageProvider manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
                     this.AddFavouriteConnection(manager);
                 }
                 else
@@ -700,13 +537,13 @@ namespace VDS.RDF.Utilities.StoreManager
             newConn.StartPosition = FormStartPosition.CenterParent;
             if (newConn.ShowDialog() == DialogResult.OK)
             {
-                IStorageProvider manager = newConn.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(manager);
+                Connection connection = newConn.Connection;
+                StoreManagerForm storeManager = new StoreManagerForm(connection);
                 storeManager.MdiParent = this;
                 storeManager.Show();
 
                 //Add to Recent Connections
-                this.AddRecentConnection(manager);
+                this.AddRecentConnection(connection);
             }
         }
 
@@ -716,7 +553,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IStorageProvider manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
+                    IStorageProvider manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
                     IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(manager.GetType());
                     if (def != null)
                     {
@@ -726,7 +563,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             ConfigurationSerializationContext ctx = new ConfigurationSerializationContext(g);
                             INode n = g.CreateBlankNode();
                             ctx.NextSubject = n;
-                            ((IConfigurationSerializable)manager).SerializeConfiguration(ctx);
+                            ((IConfigurationSerializable) manager).SerializeConfiguration(ctx);
                             def.PopulateFrom(g, n);
 
                             EditConnectionForm editConn = new EditConnectionForm(def);
@@ -753,7 +590,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuStartPage_Click(object sender, EventArgs e)
         {
-            StartPage start = new StartPage(this._recentConnections, this._faveConnections);
+            StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
             start.Owner = this;
             start.ShowDialog();
         }

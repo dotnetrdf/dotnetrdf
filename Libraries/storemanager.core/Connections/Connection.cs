@@ -423,6 +423,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Gets the string representation of this connection
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
+        /// <summary>
         /// Determines whether the connection is equal to another connection
         /// </summary>
         /// <param name="other">Connection</param>

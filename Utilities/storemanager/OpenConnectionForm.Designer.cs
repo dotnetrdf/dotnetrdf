@@ -33,7 +33,7 @@ terms.
 
 */
 
-namespace VDS.RDF.GUI.WinForms
+namespace VDS.RDF.Utilities.StoreManager
 {
     partial class OpenConnectionForm
     {

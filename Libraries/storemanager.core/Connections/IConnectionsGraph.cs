@@ -51,6 +51,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         IEnumerable<Connection> Connections { get; }
 
         /// <summary>
+        /// Gets the number of connections
+        /// </summary>
+        int Count { get; }
+
+        /// <summary>
         /// Adds a connection
         /// </summary>
         /// <param name="connection">Connection</param>
