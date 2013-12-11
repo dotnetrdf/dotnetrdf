@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -277,13 +278,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     openConnections.MdiParent = this;
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
-                        IStorageProvider manager = openConnections.Connection;
-                        StoreManagerForm genManagerForm = new StoreManagerForm(manager);
-                        genManagerForm.MdiParent = this;
-                        genManagerForm.Show();
-
-                        //Add to Recent Connections
-                        this.AddRecentConnection(manager);
+                        ShowStoreManagerForm(openConnections.Connection, true);
                     }
                 }
                 catch (RdfParseException)
@@ -424,10 +419,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     QuickConnect qc = (QuickConnect)tag;
                     try
                     {
-                        IStorageProvider manager = qc.GetConnection();
-                        StoreManagerForm genManager = new StoreManagerForm(manager);
-                        genManager.MdiParent = this;
-                        genManager.Show();
+                        ShowStoreManagerForm(qc.GetConnection(), true);
                     }
                     catch (Exception ex)
                     {
@@ -470,14 +462,8 @@ namespace VDS.RDF.Utilities.StoreManager
                                 EditConnectionForm editConn = new EditConnectionForm(def);
                                 if (editConn.ShowDialog() == DialogResult.OK)
                                 {
-                                    IStorageProvider manager = editConn.Connection;
-                                    StoreManagerForm storeManager = new StoreManagerForm(manager);
-                                    storeManager.MdiParent = Program.MainForm;
-                                    storeManager.Show();
-
-                                    //Add to Recent Connections
-                                    this.AddRecentConnection(manager);
-
+                                    ShowStoreManagerForm(editConn.Connection, true);
+                                    
                                     this.Close();
                                 }
                             }
@@ -700,13 +686,7 @@ namespace VDS.RDF.Utilities.StoreManager
             newConn.StartPosition = FormStartPosition.CenterParent;
             if (newConn.ShowDialog() == DialogResult.OK)
             {
-                IStorageProvider manager = newConn.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(manager);
-                storeManager.MdiParent = this;
-                storeManager.Show();
-
-                //Add to Recent Connections
-                this.AddRecentConnection(manager);
+                ShowStoreManagerForm(newConn.Connection, true);
             }
         }
 
@@ -732,10 +712,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             EditConnectionForm editConn = new EditConnectionForm(def);
                             if (editConn.ShowDialog() == DialogResult.OK)
                             {
-                                StoreManagerForm managerForm = new StoreManagerForm(editConn.Connection);
-                                this.AddRecentConnection(editConn.Connection);
-                                managerForm.MdiParent = this;
-                                managerForm.Show();
+                                ShowStoreManagerForm(editConn.Connection, true);
                             }
                             return;
                         }
@@ -744,6 +721,22 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             MessageBox.Show("The current connection is not editable", "New Connection from Current Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+
+        public void ShowStoreManagerForm(IStorageProvider connection, bool addRecentConnection = false)
+        {
+            StoreManagerForm genManager = new StoreManagerForm(connection);
+            genManager.MdiParent = this;
+            genManager.Show();
+
+            if (addRecentConnection)
+            {
+                this.AddRecentConnection(connection);
+            }
+        }
+
+       
+
 
         private void mnuShowStartPage_Click(object sender, EventArgs e)
         {
@@ -756,6 +749,52 @@ namespace VDS.RDF.Utilities.StoreManager
             StartPage start = new StartPage(this._recentConnections, this._faveConnections);
             start.Owner = this;
             start.ShowDialog();
+        }
+
+        private void tabConnections_Click(object sender, EventArgs e)
+        {
+            //when selecting a tab also select coresponding MDI form
+            if ((tabConnections.SelectedTab != null) && (tabConnections.SelectedTab.Tag != null))
+            {
+                if (this.ActiveMdiChild != null && 
+                    this.ActiveMdiChild.WindowState == FormWindowState.Maximized &&
+                    (tabConnections.SelectedTab.Tag as Form).WindowState != FormWindowState.Maximized)
+                {
+                    (tabConnections.SelectedTab.Tag as Form).WindowState = FormWindowState.Maximized;
+                }
+                (tabConnections.SelectedTab.Tag as Form).Select();
+            }
+        }
+
+        private void ManagerForm_MdiChildActivate(object sender, EventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                if (this.ActiveMdiChild.Tag == null)
+                {
+                    // Add a tabPage to tabControl with child form caption
+                    TabPage tp = new TabPage(this.ActiveMdiChild.Text);
+                    tp.Tag = this.ActiveMdiChild;
+                    tp.Parent = tabConnections;
+                    tabConnections.SelectedTab = tp;
+
+                    this.ActiveMdiChild.Tag = tp;
+                    this.ActiveMdiChild.FormClosed += new FormClosedEventHandler(ActiveMdiChild_FormClosed);
+                }
+                else
+                {
+                    //we already have an associated tab so select it
+                    tabConnections.SelectTab((this.ActiveMdiChild.Tag as TabPage));
+                }
+
+                if (!tabConnections.Visible) tabConnections.Visible = true;
+            }
+        }
+
+        private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //close corresponding tabpage
+            ((sender as Form).Tag as TabPage).Dispose();
         }
     }
 }
