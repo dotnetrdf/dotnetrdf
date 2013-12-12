@@ -98,8 +98,37 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.RootUri = rootUri;
 
             this.Created = DateTimeOffset.UtcNow;
-            this.LastModified = DateTimeOffset.UtcNow;
+            this.LastModified = this.Created;
             this.LastOpened = null;
+            this.IsReadOnly = false;
+        }
+
+        /// <summary>
+        /// Creates a connection which is in the open state
+        /// </summary>
+        /// <param name="definition">Definition</param>
+        /// <param name="provider">Storage Provider</param>
+        public Connection(IConnectionDefinition definition, IStorageProvider provider)
+            : this(definition, provider, CreateRootUri()) { }
+
+        /// <summary>
+        /// Creates a connection which is in the open state
+        /// </summary>
+        /// <param name="definition">Definition</param>
+        /// <param name="provider">Storage Provider</param>
+        /// <param name="rootUri">Root URI</param>
+        public Connection(IConnectionDefinition definition, IStorageProvider provider, Uri rootUri)
+        {
+            if (ReferenceEquals(definition, null)) throw new ArgumentNullException("definition");
+            if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
+            if (ReferenceEquals(provider, null)) throw new ArgumentNullException("provider");
+            this.Definition = definition;
+            this.RootUri = rootUri;
+            this.StorageProvider = provider;
+
+            this.Created = DateTimeOffset.UtcNow;
+            this.LastModified = this.Created;
+            this.LastOpened = this.Created;
             this.IsReadOnly = false;
         }
 

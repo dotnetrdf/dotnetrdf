@@ -47,8 +47,6 @@ namespace VDS.RDF.Utilities.StoreManager
     public partial class StoreManagerForm
         : CrossThreadForm
     {
-        private readonly Connection _connection;
-        private readonly IStorageProvider _manager;
         private int _taskId;
         private readonly EventHandler _copyGraphHandler, _moveGraphHandler;
         private readonly System.Timers.Timer _timStartup;
@@ -65,11 +63,12 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
 
             //Configure Connection
-            this._connection = connection;
-            this._manager = connection.StorageProvider;
+            this.Connection = connection;
+            this.StorageProvider = connection.StorageProvider;
             this.Text = connection.Name;
 
-            // TODO Subscribe to relevant events on the connection
+            // Subscribe to events on the connection
+            this.Connection.PropertyChanged += ConnectionOnPropertyChanged;
 
             //Configure Tasks List
             this.lvwTasks.ListViewItemSorter = new SortTasksByID();
@@ -85,7 +84,28 @@ namespace VDS.RDF.Utilities.StoreManager
             _timStartup = new System.Timers.Timer(250);
             _timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
         }
-    
+
+        private void ConnectionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            String property = propertyChangedEventArgs.PropertyName;
+            if (property.Equals("IsOpen"))
+            {
+                // If the connection gets closed then close the form
+                if (!this.Connection.IsOpen)
+                    this.Close();
+            }
+            else if (property.Equals("Name"))
+            {
+                // If the connection is renamed update the form title
+                this.Text = this.Connection.Name;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the storage provider
+        /// </summary>
+        private IStorageProvider StorageProvider { get; set; }
+
         /// <summary>
         /// Gets the connection
         /// </summary>
@@ -94,17 +114,17 @@ namespace VDS.RDF.Utilities.StoreManager
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
         {
             //Determine whether SPARQL Query is supported
-            if (!(this._manager is IQueryableStorage))
+            if (!(this.StorageProvider is IQueryableStorage))
             {
                 this.tabFunctions.TabPages.Remove(this.tabSparqlQuery);
             }
 
             //Determine what SPARQL Update mode if any is supported
-            if (this._manager is IUpdateableStorage)
+            if (this.StorageProvider is IUpdateableStorage)
             {
                 this.lblUpdateMode.Text = "Update Mode: Native";
             }
-            else if (!this._manager.IsReadOnly)
+            else if (!this.StorageProvider.IsReadOnly)
             {
                 this.lblUpdateMode.Text = "Update Mode: Approximated";
             }
@@ -114,19 +134,19 @@ namespace VDS.RDF.Utilities.StoreManager
             }
 
             //Disable Import for Read-Only stores
-            if (this._manager.IsReadOnly)
+            if (this.StorageProvider.IsReadOnly)
             {
                 this.tabFunctions.TabPages.Remove(this.tabImport);
             }
 
             //Disable Server Management for non Storage Servers
-            if (this._manager.ParentServer == null)
+            if (this.StorageProvider.ParentServer == null)
             {
                 this.tabFunctions.TabPages.Remove(this.tabServer);
             }
 
             //Show Connection Information
-            this.propInfo.SelectedObject = this._connection.Information;
+            this.propInfo.SelectedObject = this.Connection.Information;
 
             //Run Startup Timer
             _timStartup.Start();
@@ -139,7 +159,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void ListGraphs()
         {
-            ListGraphsTask task = new ListGraphsTask(this._manager);
+            ListGraphsTask task = new ListGraphsTask(this.StorageProvider);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
         }
 
@@ -148,7 +168,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void ListStores()
         {
-            ListStoresTask task = new ListStoresTask(this._manager.ParentServer);
+            ListStoresTask task = new ListStoresTask(this.StorageProvider.ParentServer);
             this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
@@ -158,7 +178,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="graphUri">Graph URI</param>
         private void ViewGraph(String graphUri)
         {
-            ViewGraphTask task = new ViewGraphTask(this._manager, graphUri);
+            ViewGraphTask task = new ViewGraphTask(this.StorageProvider, graphUri);
             this.AddTask<IGraph>(task, this.ViewGraphCallback);
         }
 
@@ -168,7 +188,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="graphUri">Graph URI</param>
         private void PreviewGraph(String graphUri)
         {
-            PreviewGraphTask task = new PreviewGraphTask(this._manager, graphUri, Properties.Settings.Default.PreviewSize);
+            PreviewGraphTask task = new PreviewGraphTask(this.StorageProvider, graphUri, Properties.Settings.Default.PreviewSize);
             this.AddTask<IGraph>(task, this.PreviewGraphCallback);
         }
 
@@ -178,7 +198,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="graphUri">Graph URI</param>
         private void CountTriples(String graphUri)
         {
-            CountTriplesTask task = new CountTriplesTask(this._manager, graphUri);
+            CountTriplesTask task = new CountTriplesTask(this.StorageProvider, graphUri);
             this.AddTask<TaskValueResult<int>>(task, this.CountTriplesCallback);
         }
 
@@ -188,7 +208,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="graphUri">Graph URI</param>
         private void DeleteGraph(String graphUri)
         {
-            DeleteGraphTask task = new DeleteGraphTask(this._manager, graphUri);
+            DeleteGraphTask task = new DeleteGraphTask(this.StorageProvider, graphUri);
             this.AddTask<TaskResult>(task, this.DeleteGraphCallback);
         }
 
@@ -197,22 +217,22 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         private void Query()
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Query", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (this._manager is IQueryableStorage)
+            if (this.StorageProvider is IQueryableStorage)
             {
                 if (this.chkPageQuery.Checked)
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage) this._manager, this.txtSparqlQuery.Text, (int) this.numPageSize.Value);
+                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text, (int) this.numPageSize.Value);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
                 else
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage) this._manager, this.txtSparqlQuery.Text);
+                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
             }
@@ -227,13 +247,13 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         private void SparqlUpdate()
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Update", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            UpdateTask task = new UpdateTask(this._manager, this.txtSparqlUpdate.Text);
+            UpdateTask task = new UpdateTask(this.StorageProvider, this.txtSparqlUpdate.Text);
             this.AddTask<TaskResult>(task, this.UpdateCallback);
         }
 
@@ -242,7 +262,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         private void ImportFile()
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -268,7 +288,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 return;
             }
 
-            ImportFileTask task = new ImportFileTask(this._manager, this.txtImportFile.Text, targetUri, (int) this.numBatchSize.Value);
+            ImportFileTask task = new ImportFileTask(this.StorageProvider, this.txtImportFile.Text, targetUri, (int) this.numBatchSize.Value);
             this.AddTask<TaskResult>(task, this.ImportCallback);
         }
 
@@ -277,7 +297,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         private void ImportUri()
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -305,7 +325,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
             try
             {
-                ImportUriTask task = new ImportUriTask(this._manager, new Uri(this.txtImportUri.Text), targetUri, (int) this.numBatchSize.Value);
+                ImportUriTask task = new ImportUriTask(this.StorageProvider, new Uri(this.txtImportUri.Text), targetUri, (int) this.numBatchSize.Value);
                 this.AddTask<TaskResult>(task, this.ImportCallback);
             }
             catch (UriFormatException uriEx)
@@ -319,7 +339,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         private void Export()
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -331,7 +351,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 return;
             }
 
-            ExportTask task = new ExportTask(this._manager, this.txtExportFile.Text);
+            ExportTask task = new ExportTask(this.StorageProvider, this.txtExportFile.Text);
             this.AddTask<TaskResult>(task, this.ExportCallback);
         }
 
@@ -345,19 +365,19 @@ namespace VDS.RDF.Utilities.StoreManager
             if (target == null) return;
 
             Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
-            if (ReferenceEquals(this._manager, target))
+            if (ReferenceEquals(this.StorageProvider, target))
             {
                 CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Copy");
 
                 if (rename.ShowDialog() == DialogResult.OK)
                 {
-                    CopyMoveTask task = new CopyMoveTask(this._manager, target, source, rename.Uri, ReferenceEquals(this._manager, target));
+                    CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, rename.Uri, ReferenceEquals(this.StorageProvider, target));
                     this.AddTask(task, this.CopyMoveRenameCallback);
                 }
             }
             else
             {
-                CopyMoveTask task = new CopyMoveTask(this._manager, target, source, source, true);
+                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, source, true);
                 this.AddTask(task, this.CopyMoveRenameCallback);
             }
         }
@@ -372,7 +392,7 @@ namespace VDS.RDF.Utilities.StoreManager
             Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
             if (rename.ShowDialog() == DialogResult.OK)
             {
-                CopyMoveTask task = new CopyMoveTask(this._manager, this._manager, source, rename.Uri, false);
+                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, this.StorageProvider, source, rename.Uri, false);
                 this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
             }
         }
@@ -386,14 +406,14 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (target == null) return;
 
-            if (ReferenceEquals(this._manager, target))
+            if (ReferenceEquals(this.StorageProvider, target))
             {
                 this.RenameGraph(graphUri);
             }
             else
             {
                 Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
-                CopyMoveTask task = new CopyMoveTask(this._manager, target, source, source, false);
+                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, source, false);
                 this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
             }
         }
@@ -406,7 +426,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void GetStore(String id)
         {
-            GetStoreTask task = new GetStoreTask(this._manager.ParentServer, id);
+            GetStoreTask task = new GetStoreTask(this.StorageProvider.ParentServer, id);
             this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
         }
 
@@ -416,7 +436,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void DeleteStore(String id)
         {
-            DeleteStoreTask task = new DeleteStoreTask(this._manager.ParentServer, id);
+            DeleteStoreTask task = new DeleteStoreTask(this.StorageProvider.ParentServer, id);
             this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
         }
 
@@ -426,7 +446,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void CreateStore(IStoreTemplate template)
         {
-            CreateStoreTask task = new CreateStoreTask(this._manager.ParentServer, template);
+            CreateStoreTask task = new CreateStoreTask(this.StorageProvider.ParentServer, template);
             this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
         }
 
@@ -488,7 +508,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
                 CopyMoveDragInfo info = new CopyMoveDragInfo(this, graphUri);
                 DragDropEffects effects = DragDropEffects.Copy;
-                if (this._manager.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if this manager supports DeleteGraph()
+                if (this.StorageProvider.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if this manager supports DeleteGraph()
 
                 this.lvwGraphs.DoDragDrop(info, effects);
             }
@@ -500,7 +520,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (!e.Data.GetDataPresent(typeof (CopyMoveDragInfo))) return;
 
             //Cannot Copy/Move if a read-only manager is the target
-            if (this._manager.IsReadOnly) return;
+            if (this.StorageProvider.IsReadOnly) return;
 
             CopyMoveDragInfo info = e.Data.GetData(typeof (CopyMoveDragInfo)) as CopyMoveDragInfo;
             if (info == null) return;
@@ -522,23 +542,23 @@ namespace VDS.RDF.Utilities.StoreManager
                     //Check whether Move is permitted?
                     if ((e.Effect & DragDropEffects.Move) != 0)
                     {
-                        CopyMoveDialogue copyMoveConfirm = new CopyMoveDialogue(info, this._manager);
+                        CopyMoveDialogue copyMoveConfirm = new CopyMoveDialogue(info, this.StorageProvider);
                         if (copyMoveConfirm.ShowDialog() == DialogResult.OK)
                         {
                             if (copyMoveConfirm.IsMove)
                             {
-                                info.Form.MoveGraph(info.SourceUri, this._manager);
+                                info.Form.MoveGraph(info.SourceUri, this.StorageProvider);
                             }
                             else if (copyMoveConfirm.IsCopy)
                             {
-                                info.Form.CopyGraph(info.SourceUri, this._manager);
+                                info.Form.CopyGraph(info.SourceUri, this.StorageProvider);
                             }
                         }
                     }
                     else
                     {
                         //Just do a Copy
-                        info.Form.CopyGraph(info.SourceUri, this._manager);
+                        info.Form.CopyGraph(info.SourceUri, this.StorageProvider);
                     }
                 }
             }
@@ -546,11 +566,11 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void timStartup_Tick(object sender, EventArgs e)
         {
-            if (this._manager.IsReady)
+            if (this.StorageProvider.IsReady)
             {
                 this.CrossThreadSetText(this.stsCurrent, "Store is ready");
                 this.ListGraphs();
-                if (this._manager.ParentServer != null)
+                if (this.StorageProvider.ParentServer != null)
                 {
                     this.ListStores();
                 }
@@ -612,11 +632,11 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
-                this.mnuDeleteGraph.Enabled = this._manager.DeleteSupported;
+                this.mnuDeleteGraph.Enabled = this.StorageProvider.DeleteSupported;
                 this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Properties.Settings.Default.PreviewSize);
-                this.mnuMoveGraphTo.Enabled = this._manager.DeleteSupported;
-                this.mnuCopyGraph.Enabled = !this._manager.IsReadOnly;
-                this.mnuRenameGraph.Enabled = !this._manager.IsReadOnly && this._manager.DeleteSupported;
+                this.mnuMoveGraphTo.Enabled = this.StorageProvider.DeleteSupported;
+                this.mnuCopyGraph.Enabled = !this.StorageProvider.IsReadOnly;
+                this.mnuRenameGraph.Enabled = !this.StorageProvider.IsReadOnly && this.StorageProvider.DeleteSupported;
 
                 //Fill Copy To and Move To menus
                 while (this.mnuCopyGraphTo.DropDownItems.Count > 2)
@@ -629,7 +649,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 foreach (Connection connection in Program.ActiveConnections)
                 {
-                    if (!ReferenceEquals(connection.StorageProvider, this._manager) && !connection.StorageProvider.IsReadOnly)
+                    if (!ReferenceEquals(connection.StorageProvider, this.StorageProvider) && !connection.StorageProvider.IsReadOnly)
                     {
                         //Copy To entry
                         ToolStripMenuItem item = new ToolStripMenuItem(connection.Name);
@@ -644,7 +664,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuMoveGraphTo.DropDownItems.Add(item);
                     }
                 }
-                if (mnuCopyGraphTo.DropDownItems.Count == 2 && this._manager.IsReadOnly)
+                if (mnuCopyGraphTo.DropDownItems.Count == 2 && this.StorageProvider.IsReadOnly)
                 {
                     this.mnuCopyGraphTo.Enabled = false;
                 }
@@ -706,7 +726,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                this.CopyGraph(graphUri, this._manager);
+                this.CopyGraph(graphUri, this.StorageProvider);
             }
         }
 
@@ -861,55 +881,55 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (tag is QueryTask)
                 {
-                    TaskInformationForm<Object> queryInfo = new TaskInformationForm<object>((QueryTask) tag, this._manager.ToString());
+                    TaskInformationForm<Object> queryInfo = new TaskInformationForm<object>((QueryTask) tag, this.StorageProvider.ToString());
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is UpdateTask)
                 {
-                    TaskInformationForm<TaskResult> updateInfo = new TaskInformationForm<TaskResult>((UpdateTask) tag, this._manager.ToString());
+                    TaskInformationForm<TaskResult> updateInfo = new TaskInformationForm<TaskResult>((UpdateTask) tag, this.StorageProvider.ToString());
                     updateInfo.MdiParent = this.MdiParent;
                     updateInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    TaskInformationForm<IEnumerable<Uri>> listInfo = new TaskInformationForm<IEnumerable<Uri>>((ListGraphsTask) tag, this._manager.ToString());
+                    TaskInformationForm<IEnumerable<Uri>> listInfo = new TaskInformationForm<IEnumerable<Uri>>((ListGraphsTask) tag, this.StorageProvider.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is ListStoresTask)
                 {
-                    TaskInformationForm<IEnumerable<String>> storeInfo = new TaskInformationForm<IEnumerable<string>>((ListStoresTask) tag, this._manager.ToString());
+                    TaskInformationForm<IEnumerable<String>> storeInfo = new TaskInformationForm<IEnumerable<string>>((ListStoresTask) tag, this.StorageProvider.ToString());
                     storeInfo.MdiParent = this.MdiParent;
                     storeInfo.Show();
                 }
                 else if (tag is GetStoreTask)
                 {
-                    TaskInformationForm<IStorageProvider> getStoreInfo = new TaskInformationForm<IStorageProvider>((GetStoreTask) tag, this._manager.ToString());
+                    TaskInformationForm<IStorageProvider> getStoreInfo = new TaskInformationForm<IStorageProvider>((GetStoreTask) tag, this.StorageProvider.ToString());
                     getStoreInfo.MdiParent = this.MdiParent;
                     getStoreInfo.Show();
                 }
                 else if (tag is CountTriplesTask)
                 {
-                    TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask) tag, this._manager.ToString());
+                    TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask) tag, this.StorageProvider.ToString());
                     countInfo.MdiParent = this.MdiParent;
                     countInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
-                    TaskInformationForm<IGraph> graphInfo = new TaskInformationForm<IGraph>((ITask<IGraph>) tag, this._manager.ToString());
+                    TaskInformationForm<IGraph> graphInfo = new TaskInformationForm<IGraph>((ITask<IGraph>) tag, this.StorageProvider.ToString());
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>) tag, this._manager.ToString());
+                    TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>) tag, this.StorageProvider.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
                 else if (tag is ITask<TaskValueResult<bool>>)
                 {
-                    TaskInformationForm<TaskValueResult<bool>> boolInfo = new TaskInformationForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this._manager.ToString());
+                    TaskInformationForm<TaskValueResult<bool>> boolInfo = new TaskInformationForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.StorageProvider.ToString());
                     boolInfo.MdiParent = this.MdiParent;
                     boolInfo.Show();
                 }
@@ -929,43 +949,43 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (tag is QueryTask)
                 {
-                    TaskErrorTraceForm<Object> queryInfo = new TaskErrorTraceForm<object>((ITask<Object>) tag, this._manager.ToString());
+                    TaskErrorTraceForm<Object> queryInfo = new TaskErrorTraceForm<object>((ITask<Object>) tag, this.StorageProvider.ToString());
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    TaskErrorTraceForm<IEnumerable<Uri>> listInfo = new TaskErrorTraceForm<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>) tag, this._manager.ToString());
+                    TaskErrorTraceForm<IEnumerable<Uri>> listInfo = new TaskErrorTraceForm<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>) tag, this.StorageProvider.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is ListStoresTask)
                 {
-                    TaskErrorTraceForm<IEnumerable<String>> storeInfo = new TaskErrorTraceForm<IEnumerable<string>>((ListStoresTask) tag, this._manager.ToString());
+                    TaskErrorTraceForm<IEnumerable<String>> storeInfo = new TaskErrorTraceForm<IEnumerable<string>>((ListStoresTask) tag, this.StorageProvider.ToString());
                     storeInfo.MdiParent = this.MdiParent;
                     storeInfo.Show();
                 }
                 else if (tag is GetStoreTask)
                 {
-                    TaskErrorTraceForm<IStorageProvider> getStoreInfo = new TaskErrorTraceForm<IStorageProvider>((GetStoreTask) tag, this._manager.ToString());
+                    TaskErrorTraceForm<IStorageProvider> getStoreInfo = new TaskErrorTraceForm<IStorageProvider>((GetStoreTask) tag, this.StorageProvider.ToString());
                     getStoreInfo.MdiParent = this.MdiParent;
                     getStoreInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
-                    TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>) tag, this._manager.ToString());
+                    TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>) tag, this.StorageProvider.ToString());
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>) tag, this._manager.ToString());
+                    TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>) tag, this.StorageProvider.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
                 else if (tag is ITask<TaskValueResult<bool>>)
                 {
-                    TaskErrorTraceForm<TaskValueResult<bool>> boolInfo = new TaskErrorTraceForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this._manager.ToString());
+                    TaskErrorTraceForm<TaskValueResult<bool>> boolInfo = new TaskErrorTraceForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.StorageProvider.ToString());
                     boolInfo.MdiParent = this.MdiParent;
                     boolInfo.Show();
                 }
@@ -992,13 +1012,13 @@ namespace VDS.RDF.Utilities.StoreManager
 
                         if (result is IGraph)
                         {
-                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this._manager.ToString());
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this.StorageProvider.ToString());
                             CrossThreadSetMdiParent(graphViewer);
                             CrossThreadShow(graphViewer);
                         }
                         else if (result is SparqlResultSet)
                         {
-                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this._manager.ToString(), qTask.Query.NamespaceMap);
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.StorageProvider.ToString(), qTask.Query.NamespaceMap);
                             CrossThreadSetMdiParent(resultsViewer);
                             CrossThreadShow(resultsViewer);
                         }
@@ -1017,7 +1037,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     ITask<IGraph> graphTask = (ITask<IGraph>) tag;
                     if (graphTask.Result != null)
                     {
-                        GraphViewerForm graphViewer = new GraphViewerForm(graphTask.Result, this._manager.ToString());
+                        GraphViewerForm graphViewer = new GraphViewerForm(graphTask.Result, this.StorageProvider.ToString());
                         CrossThreadSetMdiParent(graphViewer);
                         CrossThreadShow(graphViewer);
                     }
@@ -1035,7 +1055,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuStores_Opening(object sender, CancelEventArgs e)
         {
-            IStorageServer server = this._manager.ParentServer;
+            IStorageServer server = this.StorageProvider.ParentServer;
             if (server == null)
             {
                 e.Cancel = true;
@@ -1057,7 +1077,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuNewStore_Click(object sender, EventArgs e)
         {
-            NewStoreForm newStore = new NewStoreForm(this._manager.ParentServer);
+            NewStoreForm newStore = new NewStoreForm(this.StorageProvider.ParentServer);
             if (newStore.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.CreateStore(newStore.Template);
@@ -1225,7 +1245,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this._manager.ToString());
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.StorageProvider.ToString());
                 CrossThreadSetMdiParent(graphViewer);
                 CrossThreadShow(graphViewer);
             }
@@ -1246,7 +1266,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this._manager.ToString());
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.StorageProvider.ToString());
                 CrossThreadSetMdiParent(graphViewer);
                 CrossThreadShow(graphViewer);
             }
@@ -1339,13 +1359,13 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (result is IGraph)
                 {
-                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this._manager.ToString());
+                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this.StorageProvider.ToString());
                     CrossThreadSetMdiParent(graphViewer);
                     CrossThreadShow(graphViewer);
                 }
                 else if (result is SparqlResultSet)
                 {
-                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this._manager.ToString(), qTask.Query.NamespaceMap);
+                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.StorageProvider.ToString(), qTask.Query.NamespaceMap);
                     CrossThreadSetMdiParent(resultsViewer);
                     CrossThreadShow(resultsViewer);
                 }
@@ -1458,7 +1478,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (task is CopyMoveTask)
                 {
                     CopyMoveTask cmTask = (CopyMoveTask) task;
-                    if (!ReferenceEquals(this._manager, cmTask.Target))
+                    if (!ReferenceEquals(this.StorageProvider, cmTask.Target))
                     {
                         foreach (StoreManagerForm managerForm in Program.MainForm.MdiChildren.OfType<StoreManagerForm>())
                         {
@@ -1486,7 +1506,9 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.State == TaskState.Completed)
             {
-                Connection connection = null; // TODO Need a way to create a Connection from a known Storage Provider
+                // TODO Need to modify the connection definition appropriately to set the relevant store ID
+                IConnectionDefinition definition = this.Connection.Definition.Copy();
+                Connection connection = new Connection(definition, task.Result);
                 StoreManagerForm manager = new StoreManagerForm(connection);
                 CrossThreadSetMdiParent(manager);
                 CrossThreadShow(manager);
@@ -1555,7 +1577,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         protected override void OnClosed(EventArgs e)
         {
-            this._manager.Dispose();
+            this.StorageProvider.Dispose();
         }
     }
 
