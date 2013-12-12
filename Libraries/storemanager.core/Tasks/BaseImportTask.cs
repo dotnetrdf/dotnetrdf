@@ -38,12 +38,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public abstract class BaseImportTask 
         : CancellableTask<TaskResult>
     {
-        private IStorageProvider _manager;
-        private Uri _targetUri;
+        private readonly IStorageProvider _manager;
+        private readonly Uri _targetUri;
         private CancellableHandler _canceller;
-        private StoreCountHandler _counter = new StoreCountHandler();
-        private ImportProgressHandler _progress;
-        private int _batchSize;
+        private readonly StoreCountHandler _counter = new StoreCountHandler();
+        private readonly ImportProgressHandler _progress;
+        private readonly int _batchSize;
 
         /// <summary>
         /// Creates a new Import Task

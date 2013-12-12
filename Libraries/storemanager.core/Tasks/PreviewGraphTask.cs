@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 
@@ -38,9 +35,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class PreviewGraphTask 
         : CancellableTask<IGraph>
     {
-        private IStorageProvider _manager;
-        private String _graphUri;
-        private int _previewSize = 100;
+        private readonly IStorageProvider _manager;
+        private readonly String _graphUri;
+        private readonly int _previewSize = 100;
         private CancellableHandler _canceller;
 
         /// <summary>

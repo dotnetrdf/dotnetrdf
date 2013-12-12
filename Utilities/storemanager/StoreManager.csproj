@@ -176,7 +176,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\CopyMoveDragInfo.cs" />
-    <Compile Include="Tasks\CopyMoveRenameTask.cs" />
     <EmbeddedResource Include="Controls\ConnectionManagementListView.resx">
       <DependentUpon>ConnectionManagementListView.cs</DependentUpon>
     </EmbeddedResource>

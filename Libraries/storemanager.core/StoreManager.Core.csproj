@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\BaseImportTask.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\CopyMoveRenameTask.cs" />
     <Compile Include="Tasks\CreateStoreTask.cs" />
     <Compile Include="Tasks\DeleteStoreTask.cs" />
     <Compile Include="Tasks\GetStoreTask.cs" />

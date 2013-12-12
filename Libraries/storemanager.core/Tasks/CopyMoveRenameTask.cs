@@ -86,23 +86,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             if (ReferenceEquals(source, target) && !forceCopy)
             {
-                //Source and Target Store are same so must be a Rename
-                return "Move";
+                //Source and Target Store are same and not copying so must be a Rename
+                return "Rename";
             }
-            else
-            {
-                //Different Source and Target store so a Copy/Move
-                if (forceCopy)
-                {
-                    //Source and Target URI are equal so a Copy
-                    return "Copy";
-                }
-                else
-                {
-                    //Otherwise is a Move
-                    return "Move";
-                }
-            }
+            //Different Source and Target store so a Copy/Move
+            return forceCopy ? "Copy" : "Move";
         }
 
         /// <summary>
@@ -120,9 +108,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     if (ReferenceEquals(this._source, this._target) && this._source is IUpdateableStorage)
                     {
                         //If the Source and Target are identical and it supports SPARQL Update natively then we'll just issue a MOVE command
-                        this.Information = "Issuing a MOVE command to renamed Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
-                        SparqlParameterizedString update = new SparqlParameterizedString();
-                        update.CommandText = "MOVE";
+                        this.Information = "Issuing a MOVE command to rename Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
+                        SparqlParameterizedString update = new SparqlParameterizedString {CommandText = "MOVE"};
                         if (this._sourceUri == null)
                         {
                             update.CommandText += " DEFAULT TO";
@@ -142,7 +129,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.SetUri("target", this._targetUri);
                         }
                         ((IUpdateableStorage)this._source).Update(update.ToString());
-                        this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.AbsoluteUri + "'";
+                        this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.ToSafeString() + "'";
                     }
                     else
                     {
@@ -183,11 +170,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             this.Information = "Removing source graph to complete the move operation";
                             this._source.DeleteGraph(this._sourceUri);
 
-                            this.Information = "Move completed OK, Graph moved to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target.ToString());
+                            this.Information = "Move completed OK, Graph moved to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target);
                         }
                         else
                         {
-                            this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target.ToString()) + ".  Please note that as the Source Triple Store does not support deleting Graphs so the Graph remains present in the Source Store";
+                            this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target) + ".  Please note that as the Source Triple Store does not support deleting Graphs so the Graph remains present in the Source Store";
                         }
                     }
 
@@ -280,11 +267,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     class CopyMoveProgressHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private CopyMoveTask _task;
-        private String _action;
-        private bool _streaming;
-        private int _count = 0;
+        private readonly IRdfHandler _handler;
+        private readonly CopyMoveTask _task;
+        private readonly String _action;
+        private readonly bool _streaming;
+        private int _count;
 
         /// <summary>
         /// Creates a new handler

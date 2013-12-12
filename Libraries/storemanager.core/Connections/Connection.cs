@@ -130,6 +130,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.LastModified = this.Created;
             this.LastOpened = this.Created;
             this.IsReadOnly = false;
+
+            // Because when created this way the definition may pertain not to this specific connection
+            // we need to serialize and re-populate the definition to ensure we have the correct information
+            IGraph g = new Graph();
+            this.SaveConfiguration(g);
+            INode rootNode = g.CreateUriNode(this.RootUri);
+            this.Definition.PopulateFrom(g, rootNode);
         }
 
         /// <summary>
