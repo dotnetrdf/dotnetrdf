@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -44,7 +41,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
         {
             this.Form = form;
-            this.Source = form.Manager;
+            this.Source = form.Connection;
             this.SourceUri = sourceUri;
         }
 
@@ -58,9 +55,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
 
         /// <summary>
-        /// Drag Source Storage Provider
+        /// Drag source connection
         /// </summary>
-        public IStorageProvider Source
+        public Connection Source
         {
             get;
             private set;

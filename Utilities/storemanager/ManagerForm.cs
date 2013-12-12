@@ -187,63 +187,37 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    Object manager;
-                    if (this.ActiveMdiChild is StoreManagerForm)
+                    try
                     {
-                        manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                    if (manager is IConfigurationSerializable)
-                    {
+                        Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
                         this.sfdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
                         if (this.sfdConnection.ShowDialog() == DialogResult.OK)
                         {
                             //Append to existing configuration file or overwrite?
-                            ConfigurationSerializationContext context;
                             if (File.Exists(this.sfdConnection.FileName))
                             {
                                 DialogResult result = MessageBox.Show("The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort", "Append Connection?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                                 switch (result)
                                 {
                                     case DialogResult.Yes:
-                                        Graph g = new Graph();
-                                        FileLoader.Load(g, this.sfdConnection.FileName);
-                                        context = new ConfigurationSerializationContext(g);
+                                        // Nothing to do here, the subsequent creation of the connections graph will cause existing connections to be loaded in so the operation will be an append
                                         break;
                                     case DialogResult.No:
-                                        context = new ConfigurationSerializationContext();
+                                        File.Delete(this.sfdConnection.FileName);
                                         break;
                                     default:
                                         return;
                                 }
                             }
-                            else
-                            {
-                                //Create new configuration file
-                                context = new ConfigurationSerializationContext();
-                            }
 
-                            //Save the Connection
-                            ((IConfigurationSerializable) manager).SerializeConfiguration(context);
-
-                            try
-                            {
-                                IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(this.sfdConnection.FileName));
-                                writer.Save(context.Graph, this.sfdConnection.FileName);
-                            }
-                            catch (RdfWriterSelectionException)
-                            {
-                                CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-                                ttlwriter.Save(context.Graph, this.sfdConnection.FileName);
-                            }
+                            // Open the connections file and add to it which automatically causes it to be saved
+                            IConnectionsGraph connections = new ConnectionsGraph(new Graph(), this.sfdConnection.FileName);
+                            connections.Add(connection);
                         }
                     }
-                    else
+                    catch
                     {
-                        MessageBox.Show("Unable to save the current connection as it does not support this feature", "Save Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Unable to save connection", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
@@ -264,10 +238,9 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 try
                 {
-                    Graph g = new Graph();
-                    FileLoader.Load(g, this.ofdConnection.FileName);
+                    IConnectionsGraph connections = new ConnectionsGraph(new Graph(), this.ofdConnection.FileName);
 
-                    OpenConnectionForm openConnections = new OpenConnectionForm(g);
+                    OpenConnectionForm openConnections = new OpenConnectionForm(connections);
                     openConnections.MdiParent = this;
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
@@ -408,44 +381,38 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public void AddFavouriteConnection(IStorageProvider manager)
+        public void AddFavouriteConnection(Connection connection)
         {
-            INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
-            this.AddConnectionToMenu(manager, this._faveConnections, objNode, this.mnuFavouriteConnections, this._faveConnectionsFile, true);
+            if (this._favouriteConnections == null)
+            {
+                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                this._favouriteConnections.Add(connection);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
-        private void AddConnectionToMenu(IStorageProvider manager, IGraph g, INode objNode, ToolStripMenuItem parentItem, String persistentFile, bool addRemove)
+        private void AddConnectionToMenu(Connection connection, ToolStripMenuItem parentItem)
         {
-            if (objNode != null)
-            {
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Text = manager.ToString();
-                item.Tag = new QuickConnect(g, objNode);
-                item.Click += new EventHandler(QuickConnectClick);
+            if (connection == null) return;
+            ToolStripMenuItem item = new ToolStripMenuItem();
+            item.Text = connection.Name;
+            item.Tag = connection;
+            item.Click += new EventHandler(QuickConnectClick);
 
-                ToolStripMenuItem edit = new ToolStripMenuItem();
-                edit.Text = "Edit Connection";
-                edit.Tag = item.Tag;
-                edit.Click += new EventHandler(QuickEditClick);
-                item.DropDownItems.Add(edit);
+            ToolStripMenuItem edit = new ToolStripMenuItem();
+            edit.Text = "Edit Connection";
+            edit.Tag = item.Tag;
+            edit.Click += new EventHandler(QuickEditClick);
+            item.DropDownItems.Add(edit);
 
-                if (addRemove)
-                {
-                    ToolStripMenuItem remove = new ToolStripMenuItem();
-                    remove.Text = "Remove Connection from this List";
-                    remove.Tag = new QuickRemove(parentItem, g, objNode, persistentFile);
-                    remove.Click += new EventHandler(QuickRemoveClick);
-                    item.DropDownItems.Add(remove);
-
-                    ToolStripMenuItem connect = new ToolStripMenuItem();
-                    connect.Text = "Open Connection";
-                    connect.Tag = item.Tag;
-                    connect.Click += new EventHandler(QuickConnectClick);
-                    item.DropDownItems.Add(connect);
-                }
-
-                parentItem.DropDownItems.Add(item);
-            }
+            parentItem.DropDownItems.Add(item);
         }
 
         private void AddConnection(IConnectionsGraph connections, Connection connection)
@@ -508,8 +475,8 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IStorageProvider manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
-                    this.AddFavouriteConnection(manager);
+                    Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
+                    this.AddFavouriteConnection(connection);
                 }
                 else
                 {
@@ -553,30 +520,16 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IStorageProvider manager = ((StoreManagerForm) this.ActiveMdiChild).Manager;
-                    IConnectionDefinition def = ConnectionDefinitionManager.GetDefinitionByTargetType(manager.GetType());
-                    if (def != null)
+                    Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
+                    EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
+                    if (editConn.ShowDialog() == DialogResult.OK)
                     {
-                        if (manager is IConfigurationSerializable)
-                        {
-                            Graph g = new Graph();
-                            ConfigurationSerializationContext ctx = new ConfigurationSerializationContext(g);
-                            INode n = g.CreateBlankNode();
-                            ctx.NextSubject = n;
-                            ((IConfigurationSerializable) manager).SerializeConfiguration(ctx);
-                            def.PopulateFrom(g, n);
-
-                            EditConnectionForm editConn = new EditConnectionForm(def);
-                            if (editConn.ShowDialog() == DialogResult.OK)
-                            {
-                                StoreManagerForm managerForm = new StoreManagerForm(editConn.Connection);
-                                this.AddRecentConnection(editConn.Connection);
-                                managerForm.MdiParent = this;
-                                managerForm.Show();
-                            }
-                            return;
-                        }
+                        StoreManagerForm managerForm = new StoreManagerForm(editConn.Connection);
+                        this.AddRecentConnection(editConn.Connection);
+                        managerForm.MdiParent = this;
+                        managerForm.Show();
                     }
+                    return;
                 }
             }
             MessageBox.Show("The current connection is not editable", "New Connection from Current Error", MessageBoxButtons.OK, MessageBoxIcon.Information);

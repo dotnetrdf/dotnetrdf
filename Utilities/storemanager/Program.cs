@@ -27,11 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    static class Program
+    internal static class Program
     {
         private static ManagerForm _main;
 
@@ -39,7 +39,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -47,27 +47,27 @@ namespace VDS.RDF.Utilities.StoreManager
             Application.Run(_main);
         }
 
+        /// <summary>
+        /// Gets the main form
+        /// </summary>
         public static ManagerForm MainForm
         {
-            get
-            {
-                return _main;
-            }
+            get { return _main; }
         }
 
-        public static IEnumerable<IStorageProvider> ActiveConnections
+        /// <summary>
+        /// Gets the active connections by examining the open store manager forms
+        /// </summary>
+        public static IEnumerable<Connection> ActiveConnections
         {
             get
             {
                 if (_main != null)
                 {
                     return (from managerForm in _main.MdiChildren.OfType<StoreManagerForm>()
-                            select managerForm.Manager);
+                            select managerForm.Connection);
                 }
-                else
-                {
-                    return Enumerable.Empty<IStorageProvider>();
-                }
+                return Enumerable.Empty<Connection>();
             }
         }
     }
