@@ -360,24 +360,24 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="target">Target</param>
-        public void CopyGraph(String graphUri, IStorageProvider target)
+        public void CopyGraph(String graphUri, Connection target)
         {
             if (target == null) return;
 
             Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
-            if (ReferenceEquals(this.StorageProvider, target))
+            if (ReferenceEquals(this.Connection, target))
             {
                 CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Copy");
 
                 if (rename.ShowDialog() == DialogResult.OK)
                 {
-                    CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, rename.Uri, ReferenceEquals(this.StorageProvider, target));
+                    CopyMoveTask task = new CopyMoveTask(this.Connection, target, source, rename.Uri, ReferenceEquals(this.Connection, target));
                     this.AddTask(task, this.CopyMoveRenameCallback);
                 }
             }
             else
             {
-                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, source, true);
+                CopyMoveTask task = new CopyMoveTask(this.Connection, target, source, source, true);
                 this.AddTask(task, this.CopyMoveRenameCallback);
             }
         }
@@ -392,7 +392,7 @@ namespace VDS.RDF.Utilities.StoreManager
             Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
             if (rename.ShowDialog() == DialogResult.OK)
             {
-                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, this.StorageProvider, source, rename.Uri, false);
+                CopyMoveTask task = new CopyMoveTask(this.Connection, this.Connection, source, rename.Uri, false);
                 this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
             }
         }
@@ -402,18 +402,18 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="target">Target</param>
-        public void MoveGraph(String graphUri, IStorageProvider target)
+        public void MoveGraph(String graphUri, Connection target)
         {
             if (target == null) return;
 
-            if (ReferenceEquals(this.StorageProvider, target))
+            if (ReferenceEquals(this.Connection, target))
             {
                 this.RenameGraph(graphUri);
             }
             else
             {
                 Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
-                CopyMoveTask task = new CopyMoveTask(this.StorageProvider, target, source, source, false);
+                CopyMoveTask task = new CopyMoveTask(this.Connection, target, source, source, false);
                 this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
             }
         }
@@ -542,23 +542,23 @@ namespace VDS.RDF.Utilities.StoreManager
                     //Check whether Move is permitted?
                     if ((e.Effect & DragDropEffects.Move) != 0)
                     {
-                        CopyMoveDialogue copyMoveConfirm = new CopyMoveDialogue(info, this.StorageProvider);
+                        CopyMoveDialogue copyMoveConfirm = new CopyMoveDialogue(info, this.Connection);
                         if (copyMoveConfirm.ShowDialog() == DialogResult.OK)
                         {
                             if (copyMoveConfirm.IsMove)
                             {
-                                info.Form.MoveGraph(info.SourceUri, this.StorageProvider);
+                                info.Form.MoveGraph(info.SourceUri, this.Connection);
                             }
                             else if (copyMoveConfirm.IsCopy)
                             {
-                                info.Form.CopyGraph(info.SourceUri, this.StorageProvider);
+                                info.Form.CopyGraph(info.SourceUri, this.Connection);
                             }
                         }
                     }
                     else
                     {
                         //Just do a Copy
-                        info.Form.CopyGraph(info.SourceUri, this.StorageProvider);
+                        info.Form.CopyGraph(info.SourceUri, this.Connection);
                     }
                 }
             }
@@ -566,16 +566,14 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void timStartup_Tick(object sender, EventArgs e)
         {
-            if (this.StorageProvider.IsReady)
+            if (!this.StorageProvider.IsReady) return;
+            this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+            this.ListGraphs();
+            if (this.StorageProvider.ParentServer != null)
             {
-                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
-                this.ListGraphs();
-                if (this.StorageProvider.ParentServer != null)
-                {
-                    this.ListStores();
-                }
-                this._timStartup.Stop();
+                this.ListStores();
             }
+            this._timStartup.Stop();
         }
 
         private void btnSaveQuery_Click(object sender, EventArgs e)
@@ -726,7 +724,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                this.CopyGraph(graphUri, this.StorageProvider);
+                this.CopyGraph(graphUri, this.Connection);
             }
         }
 
@@ -743,13 +741,11 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null) return;
-            if (item.Tag is IStorageProvider)
+            if (!(item.Tag is Connection)) return;
+            if (this.lvwGraphs.SelectedItems.Count > 0)
             {
-                if (this.lvwGraphs.SelectedItems.Count > 0)
-                {
-                    String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                    this.CopyGraph(graphUri, item.Tag as IStorageProvider);
-                }
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                this.CopyGraph(graphUri, item.Tag as Connection);
             }
         }
 
@@ -757,13 +753,11 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null) return;
-            if (item.Tag is IStorageProvider)
+            if (!(item.Tag is Connection)) return;
+            if (this.lvwGraphs.SelectedItems.Count > 0)
             {
-                if (this.lvwGraphs.SelectedItems.Count > 0)
-                {
-                    String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                    this.MoveGraph(graphUri, item.Tag as IStorageProvider);
-                }
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                this.MoveGraph(graphUri, item.Tag as Connection);
             }
         }
 
@@ -771,7 +765,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #region Tasks Context Menu
 
-        private void mnuTasks_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void mnuTasks_Opening(object sender, CancelEventArgs e)
         {
             if (this.lvwTasks.SelectedItems.Count > 0)
             {

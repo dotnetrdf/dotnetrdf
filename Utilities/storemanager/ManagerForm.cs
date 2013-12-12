@@ -24,27 +24,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.GUI;
-using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Storage;
 using VDS.RDF.Configuration;
-using VDS.RDF.Writing;
 using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
+    /// <summary>
+    /// A form which provides an interface for managing connections to multiple stores
+    /// </summary>
     public partial class ManagerForm : Form
     {
         private readonly IConnectionsGraph _favouriteConnections, _recentConnections;
 
         public const int MaxRecentConnections = 9;
 
+        /// <summary>
+        /// Creates a new form
+        /// </summary>
         public ManagerForm()
         {
             InitializeComponent();
@@ -67,6 +69,10 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             this.mnuShowStartPage.Checked = Properties.Settings.Default.ShowStartPage;
 
+            //Ensure Configuration Loader has known required Object Factorires registered
+            ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
+            ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
+
             //Check whether we have a Recent and Favourites Connections Graph
             try
             {
@@ -85,12 +91,18 @@ namespace VDS.RDF.Utilities.StoreManager
                     //Load Recent Connections
                     this._recentConnections = new RecentConnectionsesGraph(new Graph(), recentConnectionsFile, MaxRecentConnections);
                     this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, MaxRecentConnections);
+
+                    // Subscribe to collection changed events
+                    this._recentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
                 }
                 if (File.Exists(faveConnectionsFile))
                 {
                     //Load Favourite Connections
                     this._favouriteConnections = new ConnectionsGraph(new Graph(), faveConnectionsFile);
                     this.FillConnectionsMenu(this.mnuFavouriteConnections, this._favouriteConnections, 0);
+
+                    // Subscribe to collection changed events
+                    this._favouriteConnections.CollectionChanged += FavouriteConnectionsOnCollectionChanged;
                 }
             }
             catch
@@ -98,21 +110,47 @@ namespace VDS.RDF.Utilities.StoreManager
                 //If errors occur then ignore Recent Connections
             }
 
-            //Ensure Configuration Loader has any required Object Factorires registered
-            ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
-            ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
-
             //Prepare Connection Definitions so users don't get a huge lag the first time they use these
             ConnectionDefinitionManager.GetDefinitions().Count();
         }
 
+        private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            this.HandleConnectionsGraphChanged(sender, notifyCollectionChangedEventArgs, this._recentConnections, this.mnuRecentConnections);
+        }
+
+        private void RecentConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            this.HandleConnectionsGraphChanged(sender, notifyCollectionChangedEventArgs, this._favouriteConnections, this.mnuFavouriteConnections);
+        }
+
+        private void HandleConnectionsGraphChanged(object sender, NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item)
+        {
+            switch (args.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Connection connection in args.NewItems.OfType<Connection>())
+                    {
+                        this.AddConnectionToMenu(connection, item);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Connection connection in args.OldItems.OfType<Connection>())
+                    {
+                        RemoveConnectionFromMenu(connection, item);
+                    }
+                    break;
+                default:
+                    this.FillConnectionsMenu(item, connections, MaxRecentConnections);
+                    break;
+            }
+        }
+
         private void fclsManager_Load(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.ShowStartPage)
-            {
-                StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
-                start.ShowDialog();
-            }
+            if (!Properties.Settings.Default.ShowStartPage) return;
+            StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
+            start.ShowDialog();
         }
 
         private void mnuStrip_MenuActivate(object sender, System.EventArgs e)
@@ -264,22 +302,23 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void FillConnectionsMenu(ToolStripMenuItem menu, IConnectionsGraph config, int maxItems)
+        private void FillConnectionsMenu(ToolStripDropDownItem menu, IConnectionsGraph config, int maxItems)
         {
+            // Clear existing items (except the items that are the clear options)
+            while (menu.DropDownItems.Count > 2)
+            {
+                menu.DropDownItems.RemoveAt(2);
+            }
             if (config == null || config.Count == 0) return;
 
             int count = 0;
             foreach (Connection connection in config.Connections)
             {
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Text = connection.Name;
-                item.Tag = connection;
-                item.Click += new EventHandler(QuickConnectClick);
+                ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
+                item.Click += QuickConnectClick;
 
-                ToolStripMenuItem edit = new ToolStripMenuItem();
-                edit.Text = "Edit Connection";
-                edit.Tag = item.Tag;
-                edit.Click += new EventHandler(QuickEditClick);
+                ToolStripMenuItem edit = new ToolStripMenuItem {Text = "Edit Connection", Tag = item.Tag};
+                edit.Click += QuickEditClick;
                 item.DropDownItems.Add(edit);
 
                 menu.DropDownItems.Add(item);
@@ -288,7 +327,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (maxItems > 0 && count >= maxItems) break;
             }
         }
-
 
         private void QuickConnectClick(object sender, EventArgs e)
         {
@@ -398,21 +436,30 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void AddConnectionToMenu(Connection connection, ToolStripMenuItem parentItem)
+        private void AddConnectionToMenu(Connection connection, ToolStripDropDownItem parentItem)
         {
             if (connection == null) return;
-            ToolStripMenuItem item = new ToolStripMenuItem();
-            item.Text = connection.Name;
-            item.Tag = connection;
-            item.Click += new EventHandler(QuickConnectClick);
+            ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
+            item.Click += QuickConnectClick;
 
             ToolStripMenuItem edit = new ToolStripMenuItem();
             edit.Text = "Edit Connection";
             edit.Tag = item.Tag;
-            edit.Click += new EventHandler(QuickEditClick);
+            edit.Click += QuickEditClick;
             item.DropDownItems.Add(edit);
 
             parentItem.DropDownItems.Add(item);
+        }
+
+        private static void RemoveConnectionFromMenu(Connection connection, ToolStripDropDownItem parentItem)
+        {
+            if (connection == null) return;
+            for (int i = 0; i < parentItem.DropDownItems.Count; i++)
+            {
+                if (!ReferenceEquals(parentItem.DropDownItems[i].Tag, connection)) continue;
+                parentItem.DropDownItems.RemoveAt(i);
+                i--;
+            }
         }
 
         private void AddConnection(IConnectionsGraph connections, Connection connection)
@@ -430,18 +477,18 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void ClearRecentConnections()
         {
-            this.ClearConnections(this.mnuRecentConnections, this._recentConnections);
+            ClearConnections(this.mnuRecentConnections, this._recentConnections);
         }
 
         private void ClearFavouriteConnections()
         {
             if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                this.ClearConnections(this.mnuFavouriteConnections, this._favouriteConnections);
+                ClearConnections(this.mnuFavouriteConnections, this._favouriteConnections);
             }
         }
 
-        private void ClearConnections(ToolStripMenuItem menu, IConnectionsGraph connections)
+        private static void ClearConnections(ToolStripMenuItem menu, IConnectionsGraph connections)
         {
             if (connections == null) return;
             try
@@ -453,6 +500,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 MessageBox.Show("Unable to clear connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            if (menu == null) return;
             while (menu.DropDownItems.Count > 2)
             {
                 menu.DropDownItems.RemoveAt(2);

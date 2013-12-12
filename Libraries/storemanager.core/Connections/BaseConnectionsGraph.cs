@@ -38,8 +38,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     public abstract class BaseConnectionsGraph
         : IConnectionsGraph
     {
+        /// <summary>
+        /// List of connections
+        /// </summary>
         protected readonly List<Connection> _connections = new List<Connection>();
 
+        /// <summary>
+        /// Property changed event handler
+        /// </summary>
         protected readonly PropertyChangedEventHandler _handler;
 
         /// <summary>
@@ -175,24 +181,38 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             this.Graph.SaveToFile(this.File);
         }
 
+        /// <summary>
+        /// Raises the appropriate collection changed event to indicate a connection was added
+        /// </summary>
+        /// <param name="connection">Connection</param>
         protected void RaiseAdded(Connection connection)
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, connection));
         }
 
+        /// <summary>
+        /// Raises the appropriate collection changed event to indicate a connection was removed
+        /// </summary>
+        /// <param name="connection">Connection</param>
         protected void RaiseRemoved(Connection connection)
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, connection));
         }
 
+        /// <summary>
+        /// Raises the appropriate collection changed event
+        /// </summary>
         protected void RaiseChanged()
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace));
         }
 
+        /// <summary>
+        /// Raises the appropriate collection changed event to indicate the collection was cleared
+        /// </summary>
         protected void RaiseCleared()
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
@@ -200,7 +220,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// Event which is raised when the graph changes
+        /// Event which is raised when the set of collections changes
         /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }

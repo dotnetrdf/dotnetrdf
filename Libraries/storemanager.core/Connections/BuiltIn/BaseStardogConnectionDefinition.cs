@@ -36,6 +36,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
     public abstract class BaseStardogConnectionDefinition
         : BaseHttpServerConnectionDefinition
     {
+        /// <summary>
+        /// Creates a new definition
+        /// </summary>
+        /// <param name="storeName">Store name</param>
+        /// <param name="storeDescrip">Store description</param>
+        /// <param name="t">Type</param>
         protected BaseStardogConnectionDefinition(string storeName, string storeDescrip, Type t) 
             : base(storeName, storeDescrip, t) { }
 

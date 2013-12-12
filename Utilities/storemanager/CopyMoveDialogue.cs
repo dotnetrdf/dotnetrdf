@@ -32,13 +32,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
     partial class CopyMoveDialogue : Form
     {
-        public CopyMoveDialogue(CopyMoveDragInfo info, IStorageProvider target)
+        public CopyMoveDialogue(CopyMoveDragInfo info, Connection target)
         {
             InitializeComponent();
 
