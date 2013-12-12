@@ -89,7 +89,9 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (File.Exists(recentConnectionsFile))
                 {
                     //Load Recent Connections
-                    this._recentConnections = new RecentConnectionsesGraph(new Graph(), recentConnectionsFile, MaxRecentConnections);
+                    IGraph recent = new Graph();
+                    recent.LoadFromFile(recentConnectionsFile);
+                    this._recentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, MaxRecentConnections);
                     this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, MaxRecentConnections);
 
                     // Subscribe to collection changed events
@@ -98,7 +100,9 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (File.Exists(faveConnectionsFile))
                 {
                     //Load Favourite Connections
-                    this._favouriteConnections = new ConnectionsGraph(new Graph(), faveConnectionsFile);
+                    IGraph faves = new Graph();
+                    faves.LoadFromFile(faveConnectionsFile);
+                    this._favouriteConnections = new ConnectionsGraph(faves, faveConnectionsFile);
                     this.FillConnectionsMenu(this.mnuFavouriteConnections, this._favouriteConnections, 0);
 
                     // Subscribe to collection changed events
@@ -116,15 +120,15 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(sender, notifyCollectionChangedEventArgs, this._recentConnections, this.mnuRecentConnections);
+            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this._favouriteConnections, this.mnuFavouriteConnections, 0);
         }
 
         private void RecentConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(sender, notifyCollectionChangedEventArgs, this._favouriteConnections, this.mnuFavouriteConnections);
+            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this._recentConnections, this.mnuRecentConnections, MaxRecentConnections);
         }
 
-        private void HandleConnectionsGraphChanged(object sender, NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item)
+        private void HandleConnectionsGraphChanged(NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item, int maxItems)
         {
             switch (args.Action)
             {
@@ -141,7 +145,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     }
                     break;
                 default:
-                    this.FillConnectionsMenu(item, connections, MaxRecentConnections);
+                    this.FillConnectionsMenu(item, connections, maxItems);
                     break;
             }
         }
@@ -232,13 +236,15 @@ namespace VDS.RDF.Utilities.StoreManager
                         if (this.sfdConnection.ShowDialog() == DialogResult.OK)
                         {
                             //Append to existing configuration file or overwrite?
+                            IGraph cs = new Graph();
                             if (File.Exists(this.sfdConnection.FileName))
                             {
                                 DialogResult result = MessageBox.Show("The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort", "Append Connection?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                                 switch (result)
                                 {
                                     case DialogResult.Yes:
-                                        // Nothing to do here, the subsequent creation of the connections graph will cause existing connections to be loaded in so the operation will be an append
+                                        // Load in existing connections
+                                        cs.LoadFromFile(this.sfdConnection.FileName);
                                         break;
                                     case DialogResult.No:
                                         File.Delete(this.sfdConnection.FileName);
@@ -249,7 +255,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             }
 
                             // Open the connections file and add to it which automatically causes it to be saved
-                            IConnectionsGraph connections = new ConnectionsGraph(new Graph(), this.sfdConnection.FileName);
+                            IConnectionsGraph connections = new ConnectionsGraph(cs, this.sfdConnection.FileName);
                             connections.Add(connection);
                         }
                     }
@@ -276,7 +282,9 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 try
                 {
-                    IConnectionsGraph connections = new ConnectionsGraph(new Graph(), this.ofdConnection.FileName);
+                    IGraph cs = new Graph();
+                    cs.LoadFromFile(this.ofdConnection.FileName);
+                    IConnectionsGraph connections = new ConnectionsGraph(cs, this.ofdConnection.FileName);
 
                     OpenConnectionForm openConnections = new OpenConnectionForm(connections);
                     openConnections.MdiParent = this;
@@ -423,7 +431,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this._favouriteConnections == null)
             {
-                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Unable to update favourite connections since there is no favourite connections file available", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -459,19 +467,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (!ReferenceEquals(parentItem.DropDownItems[i].Tag, connection)) continue;
                 parentItem.DropDownItems.RemoveAt(i);
                 i--;
-            }
-        }
-
-        private void AddConnection(IConnectionsGraph connections, Connection connection)
-        {
-            if (connections == null) return;
-            try
-            {
-                connections.Add(connection);
-            }
-            catch
-            {
-                MessageBox.Show("Unable to add a connection to a file", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
