@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2012 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,6 +61,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (!connection.IsOpen) throw new ArgumentException("Connection must be in open state", "connection");
 
             InitializeComponent();
+            this.Closing += OnClosing;
 
             //Configure Connection
             this.Connection = connection;
@@ -84,32 +85,6 @@ namespace VDS.RDF.Utilities.StoreManager
             _timStartup = new System.Timers.Timer(250);
             _timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
         }
-
-        private void ConnectionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            String property = propertyChangedEventArgs.PropertyName;
-            if (property.Equals("IsOpen"))
-            {
-                // If the connection gets closed then close the form
-                if (!this.Connection.IsOpen)
-                    this.Close();
-            }
-            else if (property.Equals("Name"))
-            {
-                // If the connection is renamed update the form title
-                this.Text = this.Connection.Name;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the storage provider
-        /// </summary>
-        private IStorageProvider StorageProvider { get; set; }
-
-        /// <summary>
-        /// Gets the connection
-        /// </summary>
-        public Connection Connection { get; private set; }
 
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
         {
@@ -151,6 +126,41 @@ namespace VDS.RDF.Utilities.StoreManager
             //Run Startup Timer
             _timStartup.Start();
         }
+
+        #region Connection Management
+
+        private void ConnectionOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            String property = propertyChangedEventArgs.PropertyName;
+            if (property.Equals("IsOpen"))
+            {
+                // If the connection gets closed then close the form
+                if (!this.Connection.IsOpen)
+                    this.Close();
+            }
+            else if (property.Equals("Name"))
+            {
+                // If the connection is renamed update the form title
+                this.Text = this.Connection.Name;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the storage provider
+        /// </summary>
+        private IStorageProvider StorageProvider { get; set; }
+
+        /// <summary>
+        /// Gets the connection
+        /// </summary>
+        public Connection Connection { get; private set; }
+
+        /// <summary>
+        /// Gets/Sets whether to force close the connection when this form closes
+        /// </summary>
+        private bool ForceClose { get; set; }
+
+        #endregion
 
         #region Store Operations
 
@@ -1500,7 +1510,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.State == TaskState.Completed)
             {
-                // TODO Need to modify the connection definition appropriately to set the relevant store ID
+                // TODO Need a better way to modify the connection definition appropriately to set the relevant Store ID - currently this is done via a hack in the Connection constructor
                 IConnectionDefinition definition = this.Connection.Definition.Copy();
                 Connection connection = new Connection(definition, task.Result);
                 StoreManagerForm manager = new StoreManagerForm(connection);
@@ -1569,9 +1579,27 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #endregion
 
+        private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
+        {
+            if (this.Connection.ActiveUsers > 1)
+            {
+                CloseConnectionDialogue closeConnection = new CloseConnectionDialogue();
+                if (closeConnection.ShowDialog() == DialogResult.Cancel)
+                {
+                    cancelEventArgs.Cancel = true;
+                    return;
+                }
+                this.ForceClose = closeConnection.ForceClose;
+            }
+            else
+            {
+                this.ForceClose = false;
+            }
+        }
+
         protected override void OnClosed(EventArgs e)
         {
-            this.StorageProvider.Dispose();
+            this.Connection.Close(this.ForceClose);
         }
     }
 

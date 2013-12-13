@@ -245,6 +245,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Gets how many active users of this connection there are i.e. how many times has <see cref="Open()"/> been called on this connection
+        /// </summary>
+        public int ActiveUsers { get; private set; }
+
+        /// <summary>
         /// Gets whether this should be a read-only connection
         /// </summary>
         /// <remarks>
@@ -272,11 +277,28 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Opens the connection if it is not already open
         /// </summary>
+        /// <param name="readOnly">Whether to open the connection in read-only mode</param>
+        /// <remarks>
+        /// If the connection is already open then this merely increments the <see cref="ActiveUsers"/> property and updates the <see cref="LastOpened"/> date and returns.
+        /// </remarks>
         public void Open(bool readOnly)
         {
-            if (!ReferenceEquals(this.StorageProvider, null)) return;
+            if (!ReferenceEquals(this.StorageProvider, null))
+            {
+                // Already open so increment active users
+                this.ActiveUsers++;
+                this.LastOpened = DateTimeOffset.UtcNow;
+                this.RaisePropertyChanged("ActiveUsers");
+                this.RaisePropertyChanged("LastOpened");
+                return;
+            }
+
+            // Need to open the connection
+            this.ActiveUsers++;
             this.IsReadOnly = readOnly;
             this.StorageProvider = this.Definition.OpenConnection();
+
+            // Make read-only if necessary
             if (this.IsReadOnly && !this.StorageProvider.IsReadOnly)
             {
                 if (this.StorageProvider is IQueryableStorage)
@@ -289,16 +311,36 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 }
             }
             this.LastOpened = DateTimeOffset.UtcNow;
+            this.RaisePropertyChanged("ActiveUsers");
             this.RaisePropertyChanged("LastOpened");
             this.RaisePropertyChanged("IsOpen");
         }
 
         /// <summary>
-        /// Closes the connection if it is not already closed
+        /// Request to close the connection, if there are multiple active users then the actual connection will remain open
         /// </summary>
         public void Close()
         {
+            this.Close(false);
+        }
+
+        /// <summary>
+        /// Request to close the connection if it is not already closed, if there are multiple active users then the connection will remain open unless <paramref name="forceClose"/> is set to true
+        /// </summary>
+        /// <param name="forceClose">Whether to force close even if there are multiple active users</param>
+        public void Close(bool forceClose)
+        {
+            // If not open do nothing
             if (ReferenceEquals(this.StorageProvider, null)) return;
+
+            // Decrement ative users
+            this.ActiveUsers--;
+            this.RaisePropertyChanged("ActiveUsers");
+
+            // Still in use so leave open
+            if (this.ActiveUsers != 0 && !forceClose) return;
+
+            // Close the connection for real
             this.StorageProvider.Dispose();
             this.StorageProvider = null;
             this.RaisePropertyChanged("IsOpen");
