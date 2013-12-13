@@ -50,8 +50,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     /// <summary>
     /// Manages a set of connections where a maximum number of connections are managed, if the number if exceeded then the least recent connection(s) are eliminated
     /// </summary>
-    public class RecentConnectionsesGraph :
-        ConnectionsGraph
+    public class RecentConnectionsesGraph
+        : ConnectionsGraph
     {
         private int _maxConnections;
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected override void Save()
         {
-            if (this._connections.Count > this.MaxConnections)
+            if (this.MaxConnections > 0 && this._connections.Count > this.MaxConnections)
             {
                 while (this._connections.Count > this.MaxConnections)
                 {
