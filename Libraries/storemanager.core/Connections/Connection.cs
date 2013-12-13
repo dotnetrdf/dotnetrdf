@@ -310,33 +310,48 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="g">Graph</param>
         public void SaveConfiguration(IGraph g)
         {
-            if (ReferenceEquals(this.StorageProvider, null)) throw new InvalidOperationException("Cannot save the configuration of a closed connection");
-
-            IConfigurationSerializable serializable = this.StorageProvider as IConfigurationSerializable;
-            if (ReferenceEquals(serializable, null)) throw new InvalidOperationException("The underlying connection does not support serializing its configuration");
-
             ConfigurationSerializationContext context = new ConfigurationSerializationContext(g);
             INode rootNode = context.Graph.CreateUriNode(this.RootUri);
-            // Remove any previous saved configuration
-            // Note that this may leave some orphaned configuration information for complex configurations but since that would be linked by blank nodes it won't matter
-            context.Graph.Retract(context.Graph.GetTriplesWithSubject(rootNode).ToList());
 
-            // Serialize the new configuration state
-            context.NextSubject = rootNode;
-            serializable.SerializeConfiguration(context);
+            // Save the specific configuration for the connection only if it is currently open
+            if (!ReferenceEquals(this.StorageProvider, null))
+            {
+                IConfigurationSerializable serializable = this.StorageProvider as IConfigurationSerializable;
+                if (ReferenceEquals(serializable, null)) throw new InvalidOperationException("The underlying connection does not support serializing its configuration");
 
-            // Add additional information
+                // Remove any previous saved configuration
+                // Note that this may leave some orphaned configuration information for complex configurations but since that would be linked by blank nodes it won't matter
+                context.Graph.Retract(context.Graph.GetTriplesWithSubject(rootNode).ToList());
+
+                // Serialize the new configuration state
+                context.NextSubject = rootNode;
+                serializable.SerializeConfiguration(context);
+            }
+
+            // Always save the additional Store Manager information
+
             // Friendly Name
             context.Graph.NamespaceMap.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
             INode rdfsLabel = context.Graph.CreateUriNode("rdfs:label");
+            context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, rdfsLabel).ToList());
             context.Graph.Assert(rootNode, rdfsLabel, context.Graph.CreateLiteralNode(this.Name));
+
             // Store Manager tracked information
             context.Graph.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:created"), this.Created.ToLiteral(context.Graph));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastModified"), this.LastModified.ToLiteral(context.Graph));
-            if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.Value.ToLiteral(context.Graph));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().AssemblyQualifiedName.ToLiteral(context.Graph));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:readOnly"), this.IsReadOnly.ToLiteral(context.Graph));
+            INode created = context.Graph.CreateUriNode("store:created");
+            context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, created).ToList());
+            context.Graph.Assert(rootNode, created, this.Created.ToLiteral(context.Graph));
+            INode lastModified = context.Graph.CreateUriNode("store:lastModified");
+            context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, lastModified).ToList());
+            context.Graph.Assert(rootNode, lastModified, this.LastModified.ToLiteral(context.Graph));
+            INode lastOpened = context.Graph.CreateUriNode("store:lastOpened");
+            context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, lastOpened).ToList());
+            if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, lastOpened, this.LastOpened.Value.ToLiteral(context.Graph));
+            INode defType = context.Graph.CreateUriNode("store:definitionType");
+            context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, defType).ToList());
+            context.Graph.Assert(rootNode, defType, this.Definition.GetType().AssemblyQualifiedName.ToLiteral(context.Graph));
+            INode readOnly = context.Graph.CreateUriNode("store:readOnly");
+            context.Graph.Assert(rootNode, readOnly, this.IsReadOnly.ToLiteral(context.Graph));
         }
 
         /// <summary>

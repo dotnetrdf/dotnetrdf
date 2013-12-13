@@ -173,7 +173,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected virtual void Save()
         {
-            this.Graph.Clear();
+            // Only clear the graph if there are no connections
+            if (this._connections.Count == 0) this.Graph.Clear();
             foreach (Connection connection in this._connections)
             {
                 connection.SaveConfiguration(this.Graph);
