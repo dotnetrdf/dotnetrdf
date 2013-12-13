@@ -138,5 +138,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.Password = this.Password;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[AllegroGraph] Store '" + this.StoreID.ToSafeString() + "' in Catalog '" + (this.UseRootCatalog ? "Root Catalog" : this.CatalogID.ToSafeString()) + "' on Server '" + this.Server.ToSafeString() + "'";
+        }
     }
 }

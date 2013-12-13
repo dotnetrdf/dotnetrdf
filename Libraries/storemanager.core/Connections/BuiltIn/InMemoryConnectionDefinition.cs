@@ -76,5 +76,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             InMemoryConnectionDefinition definition = new InMemoryConnectionDefinition();
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[In-Memory]";
+        }
     }
 }

@@ -287,5 +287,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             return this.GetEnumerator();
         }
 
+        /// <summary>
+        /// Definitions <strong>should</strong> provide a ToString() implementation which is used for displaying friendly names for connections that haven't been explicitly named by users
+        /// </summary>
+        /// <returns>Friendly name for the connection that this definition will create</returns>
+        public abstract override String ToString();
     }
 }

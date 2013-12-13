@@ -81,5 +81,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.ProxyServer = this.ProxyServer;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[SPARQL Graph Store HTTP Protocol] " + this.Server.ToSafeString();
+        }
     }
 }

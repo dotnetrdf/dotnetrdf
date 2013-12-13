@@ -87,5 +87,32 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         [Connection(DisplayName = "Use the Stardog default anonymous user account instead of an explicit Username and Password?", DisplayOrder = 5, Type = ConnectionSettingType.Boolean),
          DefaultValue(false)]
         public bool UseAnonymousAccount { get; set; }
+
+        public override string ToString()
+        {
+            String mode = String.Empty;
+            switch (this.ReasoningMode)
+            {
+                case StardogReasoningMode.QL:
+                    mode = " (OWL QL Reasoning)";
+                    break;
+                case StardogReasoningMode.EL:
+                    mode = " (OWL EL Reasoning)";
+                    break;
+                case StardogReasoningMode.RL:
+                    mode = " (OWL RL Reasoning)";
+                    break;
+                case StardogReasoningMode.DL:
+                    mode = " (OWL DL Reasoning)";
+                    break;
+                case StardogReasoningMode.RDFS:
+                    mode = " (RDFS Reasoning)";
+                    break;
+                case StardogReasoningMode.SL:
+                    mode = " (SL Reasoning)";
+                    break;
+            }
+            return "[Stardog] Knowledge Base '" + this.StoreID.ToSafeString() + "' on Server '" + this.Server.ToSafeString() + "'" + mode;
+        }
     }
 }

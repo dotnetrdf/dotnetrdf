@@ -90,5 +90,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.Password = this.Password;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[Virtuoso] " + this.Database.ToSafeString() + ":" + this.Port.ToSafeString();
+        }
     }
 }

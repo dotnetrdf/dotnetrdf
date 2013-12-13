@@ -80,5 +80,10 @@ DefaultValue("http://localhost:3030/dataset/data")]
             definition.ProxyServer = this.ProxyServer;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[Fuseki] " + this.Server.ToSafeString();
+        }
     }
 }

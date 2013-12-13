@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using VDS.RDF.Configuration;
@@ -194,7 +195,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             get
             {
                 if (!ReferenceEquals(this._name, null)) return this._name;
-                return !ReferenceEquals(this.StorageProvider, null) ? this.StorageProvider.ToString() : this.Definition.StoreName;
+                return !ReferenceEquals(this.StorageProvider, null) ? this.StorageProvider.ToString() : this.Definition.ToString();
             }
             set
             {
@@ -334,7 +335,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:created"), this.Created.ToLiteral(context.Graph));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastModified"), this.LastModified.ToLiteral(context.Graph));
             if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:lastOpened"), this.LastOpened.Value.ToLiteral(context.Graph));
-            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().FullName.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:definitionType"), this.Definition.GetType().AssemblyQualifiedName.ToLiteral(context.Graph));
             context.Graph.Assert(rootNode, context.Graph.CreateUriNode("store:readOnly"), this.IsReadOnly.ToLiteral(context.Graph));
         }
 
@@ -352,11 +353,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             Triple t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:definitionType")).FirstOrDefault();
             if (t != null && t.Object.NodeType == NodeType.Literal)
             {
-                Type defType = Type.GetType(((ILiteralNode) t.Object).Value);
+                String typeString = ((ILiteralNode) t.Object).Value;
+                Type defType = TryGetType(typeString, new string[] {"StoreManager.Core", "dotNetRDF", "dotNetRDF.Data.Virtuoso"});
                 if (defType != null)
                 {
                     this.Definition = (IConnectionDefinition) Activator.CreateInstance(defType);
-                }
+                } 
+                
             }
             if (ReferenceEquals(this.Definition, null))
             {
@@ -364,11 +367,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("dnr:type")).FirstOrDefault();
                 if (t != null && t.Object.NodeType == NodeType.Literal)
                 {
-                    Type providerType = Type.GetType(((ILiteralNode) t.Object).Value);
-                    IConnectionDefinition temp = ConnectionDefinitionManager.GetDefinitionByTargetType(providerType);
-                    if (temp != null)
+                    String typeString = ((ILiteralNode)t.Object).Value;
+                    Type providerType = TryGetType(typeString, new string[] { "StoreManager.Core", "dotNetRDF", "dotNetRDF.Data.Virtuoso" });
+                    if (providerType != null)
                     {
-                        this.Definition = (IConnectionDefinition) Activator.CreateInstance(temp.GetType());
+                        IConnectionDefinition temp = ConnectionDefinitionManager.GetDefinitionByTargetType(providerType);
+                        if (temp != null)
+                        {
+                            this.Definition = (IConnectionDefinition) Activator.CreateInstance(temp.GetType());
+                        }
                     }
                 }
             }
@@ -377,6 +384,56 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             // Populate information
             this.Definition.PopulateFrom(g, rootNode);
             this.LoadInformation(g);
+        }
+
+        /// <summary>
+        /// Tries to load a type using the given type name
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// First tries to load the type using the precise type name given, if this succeeds then the type is returned.
+        /// </para>
+        /// <para>
+        /// If this fails and the given type name does not contain any assembly information it then attempts to load the type adding the assembly name to the type name.  If the type is found in any of the assemblies it is returned, assemblies will be searched in the order specified so if a type name is ambigious between assemblies then you need to either specify the assembly explicitly in the type name or specify the assemblies to search in the preferred search order.
+        /// </para>
+        /// <para>
+        /// If the type cannot be found then <strong>null</strong> will be returned.
+        /// </para>
+        /// </remarks>
+        /// <param name="typeString">Type String</param>
+        /// <param name="assemblies">Assemblies to search</param>
+        /// <returns>Type if found, null otherwise</returns>
+        private static Type TryGetType(String typeString, IEnumerable<string> assemblies)
+        {
+            // Try type name as given
+            try
+            {
+                Type type = Type.GetType(typeString);
+                if (type != null) return type;
+            }
+            catch
+            {
+                // Ignore and try searching assemblies
+            }
+            // If type name contained assembly information searching assemblies will not help
+            if (typeString.Contains(",")) return null;
+
+            // Search assemblies
+            foreach (String assembly in assemblies)
+            {
+                try
+                {
+                    Type type = Type.GetType(typeString + ", " + assembly);
+                    if (type != null) return type;
+                }
+                catch
+                {
+                    // Ignore and try next assembly
+                }
+            }
+
+            // Failed to find anything
+            return null;
         }
 
         /// <summary>

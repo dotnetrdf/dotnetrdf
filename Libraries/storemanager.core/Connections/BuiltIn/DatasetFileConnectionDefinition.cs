@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
 
@@ -85,6 +82,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.File = this.File;
             definition.Async = this.Async;
             return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[Dataset File] " + this.File.ToSafeString();
         }
     }
 }

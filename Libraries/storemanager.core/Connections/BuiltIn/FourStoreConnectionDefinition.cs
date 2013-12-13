@@ -83,5 +83,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.ProxyServer = this.ProxyServer;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[4store] " + this.Server.ToSafeString();
+        }
     }
 }

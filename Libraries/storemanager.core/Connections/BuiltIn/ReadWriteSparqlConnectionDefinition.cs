@@ -123,5 +123,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.ProxyServer = this.ProxyServer;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[SPARQL Query & Update] Query: " + this.QueryEndpointUri.ToSafeString() + " Update: " + this.UpdateEndpointUri.ToSafeString();
+        }
     }
 }

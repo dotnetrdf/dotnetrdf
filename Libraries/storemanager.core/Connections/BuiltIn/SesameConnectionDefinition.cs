@@ -101,5 +101,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.Password = this.Password;
             return definition;
         }
+
+        public override string ToString()
+        {
+            return "[Sesame] Store '" + this.StoreID.ToSafeString() + "' on Server '" + this.Server.ToSafeString() + "'";
+        }
     }
 }
