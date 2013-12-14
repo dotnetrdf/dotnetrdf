@@ -57,6 +57,8 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuStrip = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNewConnection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSaveConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenConnection = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,8 +87,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
-            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuManageConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -114,6 +115,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuSaveConnection,
             this.mnuAddFavourite,
             this.mnuOpenConnection,
+            this.mnuManageConnections,
             this.mnuFileSep1,
             this.mnuStartPage,
             this.mnuFileSep2,
@@ -133,10 +135,22 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuNewConnection.Text = "New Connection";
             this.mnuNewConnection.Click += new System.EventHandler(this.mnuNewConnection_Click);
             // 
+            // mnuNewFromExisting
+            // 
+            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
+            this.mnuNewFromExisting.Size = new System.Drawing.Size(232, 22);
+            this.mnuNewFromExisting.Text = "New Connection from Curent";
+            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
+            // 
             // mnuSaveConnection
             // 
             this.mnuSaveConnection.Name = "mnuSaveConnection";
-            this.mnuSaveConnection.Size = new System.Drawing.Size(235, 22);
+            this.mnuSaveConnection.Size = new System.Drawing.Size(232, 22);
             this.mnuSaveConnection.Text = "&Save Connection";
             this.mnuSaveConnection.Click += new System.EventHandler(this.mnuSaveConnection_Click);
             // 
@@ -332,17 +346,12 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             this.ofdConnection.Title = "Open Connection";
             // 
-            // mnuNewFromExisting
+            // mnuManageConnections
             // 
-            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
-            this.mnuNewFromExisting.Size = new System.Drawing.Size(232, 22);
-            this.mnuNewFromExisting.Text = "New Connection from Curent";
-            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
+            this.mnuManageConnections.Name = "mnuManageConnections";
+            this.mnuManageConnections.Size = new System.Drawing.Size(232, 22);
+            this.mnuManageConnections.Text = "&Manage Connections";
+            this.mnuManageConnections.Click += new System.EventHandler(this.mnuManageConnections_Click);
             // 
             // ManagerForm
             // 
@@ -401,6 +410,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Windows.Forms.ToolStripMenuItem mnuStartPage;
         private System.Windows.Forms.ToolStripMenuItem mnuNewFromExisting;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem mnuManageConnections;
     }
 }
 

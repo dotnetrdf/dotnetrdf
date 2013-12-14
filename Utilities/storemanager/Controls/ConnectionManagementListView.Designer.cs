@@ -63,14 +63,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.colLastModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colLastOpened = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colIsOpen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colActiveUsers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mnuContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRename = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShow = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRemove = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tlpLayout.SuspendLayout();
             this.mnuContext.SuspendLayout();
@@ -95,8 +96,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.tlpLayout.Name = "tlpLayout";
             this.tlpLayout.RowCount = 1;
             this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 229F));
-            this.tlpLayout.Size = new System.Drawing.Size(712, 230);
+            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 230F));
+            this.tlpLayout.Size = new System.Drawing.Size(778, 230);
             this.tlpLayout.TabIndex = 0;
             // 
             // lvwConnections
@@ -110,13 +111,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.colCreated,
             this.colLastModified,
             this.colLastOpened,
-            this.colIsOpen});
+            this.colIsOpen,
+            this.colActiveUsers});
+            this.lvwConnections.ContextMenuStrip = this.mnuContext;
             this.lvwConnections.FullRowSelect = true;
             this.lvwConnections.GridLines = true;
             this.lvwConnections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvwConnections.Location = new System.Drawing.Point(3, 3);
             this.lvwConnections.Name = "lvwConnections";
-            this.lvwConnections.Size = new System.Drawing.Size(706, 224);
+            this.lvwConnections.Size = new System.Drawing.Size(772, 224);
             this.lvwConnections.TabIndex = 0;
             this.lvwConnections.UseCompatibleStateImageBehavior = false;
             this.lvwConnections.View = System.Windows.Forms.View.Details;
@@ -150,6 +153,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             // 
             this.colIsOpen.Text = "Is Open?";
             // 
+            // colActiveUsers
+            // 
+            this.colActiveUsers.Text = "Active Users";
+            this.colActiveUsers.Width = 74;
+            // 
             // mnuContext
             // 
             this.mnuContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -170,6 +178,12 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.mnuRename.Size = new System.Drawing.Size(152, 22);
             this.mnuRename.Text = "&Rename";
             // 
+            // mnuEdit
+            // 
+            this.mnuEdit.Name = "mnuEdit";
+            this.mnuEdit.Size = new System.Drawing.Size(152, 22);
+            this.mnuEdit.Text = "&Edit";
+            // 
             // mnuOpen
             // 
             this.mnuOpen.Name = "mnuOpen";
@@ -187,6 +201,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.mnuClose.Name = "mnuClose";
             this.mnuClose.Size = new System.Drawing.Size(152, 22);
             this.mnuClose.Text = "&Close";
+            this.mnuClose.Click += new System.EventHandler(this.mnuClose_Click);
             // 
             // toolStripSeparator2
             // 
@@ -198,12 +213,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.mnuRemove.Name = "mnuRemove";
             this.mnuRemove.Size = new System.Drawing.Size(152, 22);
             this.mnuRemove.Text = "Remove";
-            // 
-            // mnuEdit
-            // 
-            this.mnuEdit.Name = "mnuEdit";
-            this.mnuEdit.Size = new System.Drawing.Size(152, 22);
-            this.mnuEdit.Text = "&Edit";
+            this.mnuRemove.Click += new System.EventHandler(this.mnuRemove_Click);
             // 
             // ConnectionManagementListView
             // 
@@ -211,7 +221,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpLayout);
             this.Name = "ConnectionManagementListView";
-            this.Size = new System.Drawing.Size(718, 271);
+            this.Size = new System.Drawing.Size(784, 271);
             this.tlpLayout.ResumeLayout(false);
             this.mnuContext.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -236,5 +246,6 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem mnuRemove;
         private System.Windows.Forms.ToolStripMenuItem mnuEdit;
+        private System.Windows.Forms.ColumnHeader colActiveUsers;
     }
 }

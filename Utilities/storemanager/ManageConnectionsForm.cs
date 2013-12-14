@@ -23,14 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -39,6 +33,24 @@ namespace VDS.RDF.Utilities.StoreManager
         public ManageConnectionsForm()
         {
             InitializeComponent();
+        }
+
+        public IConnectionsGraph ActiveConnections
+        {
+            get { return this.lvwActive.DataSource; }
+            set { this.lvwActive.DataSource = value; }
+        }
+
+        public IConnectionsGraph RecentConnections
+        {
+            get { return this.lvwRecent.DataSource; }
+            set { this.lvwRecent.DataSource = value; }
+        }
+
+        public IConnectionsGraph FavouriteConnections
+        {
+            get { return this.lvwFavourite.DataSource; }
+            set { this.lvwFavourite.DataSource = value; }
         }
     }
 }

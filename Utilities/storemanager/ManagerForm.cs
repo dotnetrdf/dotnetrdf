@@ -590,5 +590,14 @@ namespace VDS.RDF.Utilities.StoreManager
             start.Owner = this;
             start.ShowDialog();
         }
+
+        private void mnuManageConnections_Click(object sender, EventArgs e)
+        {
+            ManageConnectionsForm manageConnectionsForm = new ManageConnectionsForm();
+            manageConnectionsForm.RecentConnections = this._recentConnections;
+            manageConnectionsForm.FavouriteConnections = this._favouriteConnections;
+            manageConnectionsForm.MdiParent = this;
+            manageConnectionsForm.Show();
+        }
     }
 }

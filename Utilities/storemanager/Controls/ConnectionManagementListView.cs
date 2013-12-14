@@ -24,7 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
@@ -60,12 +62,45 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this._connections = connections;
             this.BindData();
 
-            // Subscribe to events on the connection graph
+            // Subscribe to events on connections graph
             this._connections.CollectionChanged += this._handler;
+
+            // Subscribe to context menu events so we can configure the available options
+            this.mnuContext.Opening += MnuContextOnOpening;
         }
 
         /// <summary>
-        /// Handles collection changed events on the connection graph updating the list view automatically as necessary
+        /// Gets the currently selected connections
+        /// </summary>
+        /// <returns>Connections</returns>
+        private List<Connection> GetSelectedConnections()
+        {
+            return (from ListViewItem item
+                    in this.lvwConnections.SelectedItems
+                    where item.Tag is Connection
+                    select (Connection)item.Tag).ToList();
+        }
+
+        private void MnuContextOnOpening(object sender, CancelEventArgs cancelEventArgs)
+        {
+            if (this.lvwConnections.SelectedItems.Count == 0)
+            {
+                cancelEventArgs.Cancel = true;
+                return;
+            }
+
+            // Enable appropriate options based on settings and selected connection states
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            this.mnuClose.Enabled = this.AllowClose && selectedConnections.All(c => c.IsOpen);
+            this.mnuEdit.Enabled = this.AllowEdit;
+            this.mnuOpen.Enabled = this.AllowOpen && selectedConnections.All(c => !c.IsOpen);
+            this.mnuRemove.Enabled = this.AllowRemove;
+            this.mnuRename.Enabled = this.AllowRename;
+            this.mnuShow.Enabled = this.AllowShow && selectedConnections.All(c => c.IsOpen);
+        }
+
+        /// <summary>
+        /// Handles collection changed events on connections graph updating the list view automatically as necessary
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Event Arguments</param>
@@ -78,7 +113,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                     this.lvwConnections.BeginUpdate();
                     foreach (Connection connection in e.NewItems.OfType<Connection>())
                     {
-                        ListViewItem item = this.BindItem(connection);
+                        ListViewItem item = BindItem(connection);
                         this.lvwConnections.Items.Add(item);
                     }
                     this.lvwConnections.EndUpdate();
@@ -114,9 +149,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
             if (!ReferenceEquals(this._connections, null))
             {
-                foreach (Connection connection in this._connections.Connections)
+                foreach (ListViewItem item in this._connections.Connections.Select(connection => BindItem(connection)))
                 {
-                    ListViewItem item = this.BindItem(connection);
                     this.lvwConnections.Items.Add(item);
                 }
             }
@@ -129,17 +163,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         /// <param name="connection">Connection</param>
         /// <returns>List View item</returns>
-        private ListViewItem BindItem(Connection connection)
+        private static ListViewItem BindItem(Connection connection)
         {
             ListViewItem item = new ListViewItem(connection.Name);
             item.Tag = connection;
             item.SubItems.Add(connection.Definition.StoreName);
             item.SubItems.Add(connection.Created.ToString());
             item.SubItems.Add(connection.LastModified.ToString());
-            if (connection.LastOpened.HasValue)
-            {
-                item.SubItems.Add(connection.LastOpened.Value.ToString());
-            }
+            item.SubItems.Add(connection.LastOpened.HasValue ? connection.LastOpened.Value.ToString() : String.Empty);
+            item.SubItems.Add(connection.ActiveUsers.ToString());
             return item;
         }
 
@@ -186,18 +218,64 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             set { this.lvwConnections.View = value; }
         }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be closed from this view
+        /// </summary>
         public bool AllowClose { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be opened from this view
+        /// </summary>
         public bool AllowOpen { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be shown from this view
+        /// </summary>
         public bool AllowShow { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be edited from this view
+        /// </summary>
         public bool AllowEdit { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be renamed from this view
+        /// </summary>
         public bool AllowRename { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be removed from this view
+        /// </summary>
         public bool AllowRemove { get; set; }
 
+        /// <summary>
+        /// Gets/Sets whether connections may be copied from this view
+        /// </summary>
         public bool AllowCopy { get; set; }
+
+        /// <summary>
+        /// Gets/Sets whether actions that are not themselves associated with a dialogue require confirmations
+        /// </summary>
+        public bool RequireConfirmation { get; set; }
+
+        private void mnuRemove_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                // TODO Add confirmation dialogue if enabled
+                this._connections.Remove(connection);
+            }
+        }
+
+        private void mnuClose_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                // TODO Add confirmation dialogue if enabled
+                connection.Close();
+            }
+        }
     }
 }
