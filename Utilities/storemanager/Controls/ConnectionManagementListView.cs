@@ -116,6 +116,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         ListViewItem item = BindItem(connection);
                         this.lvwConnections.Items.Add(item);
                     }
+                    this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                     this.lvwConnections.EndUpdate();
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -130,6 +131,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                             i--;
                         }
                     }
+                    this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                     this.lvwConnections.EndUpdate();
                     break;
                 default:
@@ -154,6 +156,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                     this.lvwConnections.Items.Add(item);
                 }
             }
+            this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
             this.lvwConnections.EndUpdate();
         }
@@ -171,6 +174,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             item.SubItems.Add(connection.Created.ToString());
             item.SubItems.Add(connection.LastModified.ToString());
             item.SubItems.Add(connection.LastOpened.HasValue ? connection.LastOpened.Value.ToString() : String.Empty);
+            item.SubItems.Add(connection.IsOpen ? "Yes" : "No");
             item.SubItems.Add(connection.ActiveUsers.ToString());
             return item;
         }
