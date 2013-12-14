@@ -50,6 +50,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private int _taskId;
         private readonly EventHandler _copyGraphHandler, _moveGraphHandler;
         private readonly System.Timers.Timer _timStartup;
+        private bool _closing = true;
 
         /// <summary>
         /// Creates a new Store Manager form
@@ -135,7 +136,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (property.Equals("IsOpen"))
             {
                 // If the connection gets closed then close the form
-                if (!this.Connection.IsOpen)
+                if (!this.Connection.IsOpen && !this._closing)
                     this.Close();
             }
             else if (property.Equals("Name"))
@@ -1595,6 +1596,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.ForceClose = false;
             }
+            this._closing = true;
         }
 
         protected override void OnClosed(EventArgs e)
