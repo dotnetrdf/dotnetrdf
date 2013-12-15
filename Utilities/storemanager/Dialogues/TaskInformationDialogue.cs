@@ -24,20 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 using VDS.RDF.GUI.WinForms;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
     /// <summary>
     /// Form for viewing Task Information

@@ -37,6 +37,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Dialogues;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
