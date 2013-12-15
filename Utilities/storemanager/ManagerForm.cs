@@ -30,8 +30,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.GUI;
-using VDS.RDF.Parsing;
 using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
@@ -141,7 +141,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <summary>
         /// Gets the active connections (may be null)
         /// </summary>
-        public IConnectionsGraph ActiveConnections { get; private set; }
+        public ActiveConnectionsGraph ActiveConnections { get; private set; }
 
         /// <summary>
         /// Gets the first form associated with a given connection (if any)
@@ -150,11 +150,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <returns>Form if found, null otherwise</returns>
         public StoreManagerForm GetStoreManagerForm(Connection connection)
         {
-            foreach (StoreManagerForm form in this.MdiChildren.OfType<StoreManagerForm>())
-            {
-                if (ReferenceEquals(form.Connection, connection)) return form;
-            }
-            return null;
+            return this.MdiChildren.OfType<StoreManagerForm>().FirstOrDefault(form => ReferenceEquals(form.Connection, connection));
         }
 
         private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -381,13 +377,68 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void PromptRestoreConnections()
+        {
+            if (this.ActiveConnections == null) return;
+            if (Properties.Settings.Default.PromptRestoreActiveConnections)
+            {
+                if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
+                {
+                    // TODO Make into proper dialogue with option to disable future prompts
+                    try
+                    {
+                        if (MessageBox.Show("Do you wish to restore active connections next time you start Store Manager?", "Save Active Connections?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        {
+                            this.ActiveConnections.Clear();
+                            Properties.Settings.Default.RestoreActiveConnections = false;
+                        }
+                        else
+                        {
+                            Properties.Settings.Default.RestoreActiveConnections = true;
+                            this.ActiveConnections.Close();
+                        }
+                        Properties.Settings.Default.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Failed to update active connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            else
+            {
+                this.ActiveConnections.Clear();
+            }
+        }
+
+        private void RestoreConnections()
+        {
+            if (!Properties.Settings.Default.RestoreActiveConnections) return;
+            foreach (Connection connection in this.ActiveConnections.Connections.ToList())
+            {
+                try
+                {
+                    connection.Open();
+                    StoreManagerForm storeManager = new StoreManagerForm(connection);
+                    storeManager.MdiParent = this;
+                    storeManager.Show();
+                    this.AddRecentConnection(connection);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to restore connection " + connection.Name, "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            this.LayoutMdi(MdiLayout.Cascade);
+        }
+
         #endregion
 
         #region Event Handlers
 
         private void fclsManager_Load(object sender, EventArgs e)
         {
-            // TODO If restore active connections was set to true then re-open active connections at this point
+            this.RestoreConnections();
 
             if (!Properties.Settings.Default.ShowStartPage) return;
             StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
@@ -396,8 +447,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            // TODO Prompt user if they want to restore active connections next time
-            // TODO Clear active connections graph if they say no
+            this.PromptRestoreConnections();
         }
 
         #endregion
@@ -435,6 +485,10 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuExit_Click(object sender, EventArgs e)
         {
+            // Prompt for restoring connections
+            this.PromptRestoreConnections();
+
+            // Close children
             foreach (Form childForm in this.MdiChildren)
             {
                 childForm.Close();

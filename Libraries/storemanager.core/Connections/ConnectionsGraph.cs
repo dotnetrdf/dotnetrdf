@@ -116,13 +116,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     public class ActiveConnectionsGraph
         : ConnectionsGraph
     {
+        private bool _firstRun = true;
+
         /// <summary>
         /// Creates a new connection graph
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="file">File on disk to which the graph should be saved</param>
         public ActiveConnectionsGraph(IGraph g, string file)
-            : base(g, file) { }
+            : base(g, file)
+        {
+            IsClosed = false;
+        }
 
         /// <summary>
         /// Handles property changed events on connections
@@ -131,6 +136,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="e">Event arguments</param>
         protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (this.IsClosed) return;
             if (e.PropertyName.Equals("IsOpen"))
             {
                 // If the IsOpen property changed then a connection may now be in the closed state
@@ -142,14 +148,42 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Loads the connections from the underlying graph
+        /// </summary>
+        protected override void Load()
+        {
+            base.Load();
+            // Doing the save will trim any excess connections
+            this.Save();
+        }
+
+        /// <summary>
         /// Saves the connections to the underlying graph and file on disk
         /// </summary>
         protected override void Save()
         {
-            List<Connection> inactive = this._connections.Where(c => !c.IsOpen).ToList();
-            this._connections.RemoveAll(c => !c.IsOpen);
-            inactive.ForEach(c => this.RaiseRemoved(c));
+            if (!this._firstRun && !this.IsClosed)
+            {
+                List<Connection> inactive = this._connections.Where(c => !c.IsOpen).ToList();
+                this._connections.RemoveAll(c => !c.IsOpen);
+                inactive.ForEach(c => this.RaiseRemoved(c));
+            }
             base.Save();
+            this._firstRun = false;
+        }
+
+        /// <summary>
+        /// Gets whether the active connections graph is closed
+        /// </summary>
+        public bool IsClosed { get; private set; }
+
+        /// <summary>
+        /// Closes the active connections graph
+        /// </summary>
+        public void Close()
+        {
+            this.Save();
+            this.IsClosed = true;
         }
     }
 }

@@ -97,5 +97,29 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
                 this["MaxRecentConnections"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RestoreActiveConnections {
+            get {
+                return ((bool)(this["RestoreActiveConnections"]));
+            }
+            set {
+                this["RestoreActiveConnections"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PromptRestoreActiveConnections {
+            get {
+                return ((bool)(this["PromptRestoreActiveConnections"]));
+            }
+            set {
+                this["PromptRestoreActiveConnections"] = value;
+            }
+        }
     }
 }
