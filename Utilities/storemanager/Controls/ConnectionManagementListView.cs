@@ -281,6 +281,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             foreach (Connection connection in selectedConnections)
             {
                 // TODO Add confirmation dialogue if enabled
+                // TODO Handle errors
                 this._connections.Remove(connection);
             }
         }
@@ -291,7 +292,52 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             foreach (Connection connection in selectedConnections)
             {
                 // TODO Add confirmation dialogue if enabled
+                // TODO Handle errors
                 connection.Close();
+            }
+        }
+
+        private void mnuShow_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                StoreManagerForm form = Program.MainForm.GetStoreManagerForm(connection);
+                if (form == null) continue;
+                form.Show();
+                form.Focus();
+            }
+        }
+
+        private void mnuOpen_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                // TODO Handle errors
+                connection.Open();
+                StoreManagerForm storeManager = new StoreManagerForm(connection);
+                Program.MainForm.AddRecentConnection(connection);
+                storeManager.MdiParent = Program.MainForm;
+                storeManager.Show();
+            }
+        }
+
+        private void mnuEdit_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                // TODO Handle errors
+                EditConnectionForm editConnection = new EditConnectionForm(connection.Definition);
+                editConnection.MdiParent = Program.MainForm;
+                if (editConnection.ShowDialog() == DialogResult.OK)
+                {
+                    StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
+                    Program.MainForm.AddRecentConnection(editConnection.Connection);
+                    storeManager.MdiParent = Program.MainForm;
+                    storeManager.Show();
+                }
             }
         }
     }

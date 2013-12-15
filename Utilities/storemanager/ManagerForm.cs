@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -46,6 +47,7 @@ namespace VDS.RDF.Utilities.StoreManager
         public ManagerForm()
         {
             InitializeComponent();
+            this.Closing += OnClosing;
             Constants.WindowIcon = this.Icon;
 
             //Ensure we upgrade settings if user has come from an older version of the application
@@ -141,6 +143,20 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public IConnectionsGraph ActiveConnections { get; private set; }
 
+        /// <summary>
+        /// Gets the first form associated with a given connection (if any)
+        /// </summary>
+        /// <param name="connection">Connection</param>
+        /// <returns>Form if found, null otherwise</returns>
+        public StoreManagerForm GetStoreManagerForm(Connection connection)
+        {
+            foreach (StoreManagerForm form in this.MdiChildren.OfType<StoreManagerForm>())
+            {
+                if (ReferenceEquals(form.Connection, connection)) return form;
+            }
+            return null;
+        }
+
         private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.FavouriteConnections, this.mnuFavouriteConnections, 0);
@@ -175,10 +191,10 @@ namespace VDS.RDF.Utilities.StoreManager
 
         public void AddRecentConnection(Connection connection)
         {
-            if (this.RecentConnections == null) return;
             try
             {
-                this.RecentConnections.Add(connection);
+                if (this.RecentConnections != null) this.RecentConnections.Add(connection);
+                if (this.ActiveConnections != null) this.ActiveConnections.Add(connection);
             }
             catch
             {
@@ -371,9 +387,17 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void fclsManager_Load(object sender, EventArgs e)
         {
+            // TODO If restore active connections was set to true then re-open active connections at this point
+
             if (!Properties.Settings.Default.ShowStartPage) return;
             StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
             start.ShowDialog();
+        }
+
+        private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
+        {
+            // TODO Prompt user if they want to restore active connections next time
+            // TODO Clear active connections graph if they say no
         }
 
         #endregion
@@ -625,6 +649,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private void mnuManageConnections_Click(object sender, EventArgs e)
         {
             ManageConnectionsForm manageConnectionsForm = new ManageConnectionsForm();
+            manageConnectionsForm.ActiveConnections = this.ActiveConnections;
             manageConnectionsForm.RecentConnections = this.RecentConnections;
             manageConnectionsForm.FavouriteConnections = this.FavouriteConnections;
             manageConnectionsForm.MdiParent = this;
