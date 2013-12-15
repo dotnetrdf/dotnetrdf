@@ -163,11 +163,11 @@
     <Compile Include="Dialogues\TaskErrorTraceDialogue.Designer.cs">
       <DependentUpon>TaskErrorTraceDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\TaskInformationForm.cs">
+    <Compile Include="Dialogues\TaskInformationDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogues\TaskInformationForm.Designer.cs">
-      <DependentUpon>TaskInformationForm.cs</DependentUpon>
+    <Compile Include="Dialogues\TaskInformationDialogue.Designer.cs">
+      <DependentUpon>TaskInformationDialogue.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ListViewColumnSorter.cs" />
     <Compile Include="Forms\NewConnectionForm.cs">
@@ -278,8 +278,8 @@
       <DependentUpon>TaskErrorTraceDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogues\TaskInformationForm.resx">
-      <DependentUpon>TaskInformationForm.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogues\TaskInformationDialogue.resx">
+      <DependentUpon>TaskInformationDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewConnectionForm.resx">

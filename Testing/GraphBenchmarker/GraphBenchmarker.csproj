@@ -72,7 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Utilities\storemanager\CrossThreadForm.cs">
+    <Compile Include="..\..\Utilities\storemanager\Forms\CrossThreadForm.cs">
       <Link>CrossThreadForm.cs</Link>
       <SubType>Form</SubType>
     </Compile>
