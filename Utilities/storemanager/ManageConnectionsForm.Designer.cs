@@ -57,17 +57,17 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tlpLayout = new System.Windows.Forms.TableLayoutPanel();
             this.btnClose = new System.Windows.Forms.Button();
             this.tabConnections = new System.Windows.Forms.TabControl();
-            this.tabRecentConnections = new System.Windows.Forms.TabPage();
-            this.tabFavouriteConnections = new System.Windows.Forms.TabPage();
             this.tabActiveConnections = new System.Windows.Forms.TabPage();
             this.lvwActive = new VDS.RDF.Utilities.StoreManager.Controls.ConnectionManagementListView();
+            this.tabRecentConnections = new System.Windows.Forms.TabPage();
             this.lvwRecent = new VDS.RDF.Utilities.StoreManager.Controls.ConnectionManagementListView();
+            this.tabFavouriteConnections = new System.Windows.Forms.TabPage();
             this.lvwFavourite = new VDS.RDF.Utilities.StoreManager.Controls.ConnectionManagementListView();
             this.tlpLayout.SuspendLayout();
             this.tabConnections.SuspendLayout();
+            this.tabActiveConnections.SuspendLayout();
             this.tabRecentConnections.SuspendLayout();
             this.tabFavouriteConnections.SuspendLayout();
-            this.tabActiveConnections.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpLayout
@@ -113,28 +113,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabConnections.Size = new System.Drawing.Size(900, 352);
             this.tabConnections.TabIndex = 1;
             // 
-            // tabRecentConnections
-            // 
-            this.tabRecentConnections.Controls.Add(this.lvwRecent);
-            this.tabRecentConnections.Location = new System.Drawing.Point(4, 22);
-            this.tabRecentConnections.Name = "tabRecentConnections";
-            this.tabRecentConnections.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRecentConnections.Size = new System.Drawing.Size(892, 326);
-            this.tabRecentConnections.TabIndex = 0;
-            this.tabRecentConnections.Text = "Recent Connections";
-            this.tabRecentConnections.UseVisualStyleBackColor = true;
-            // 
-            // tabFavouriteConnections
-            // 
-            this.tabFavouriteConnections.Controls.Add(this.lvwFavourite);
-            this.tabFavouriteConnections.Location = new System.Drawing.Point(4, 22);
-            this.tabFavouriteConnections.Name = "tabFavouriteConnections";
-            this.tabFavouriteConnections.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFavouriteConnections.Size = new System.Drawing.Size(892, 326);
-            this.tabFavouriteConnections.TabIndex = 1;
-            this.tabFavouriteConnections.Text = "Favourite Connections";
-            this.tabFavouriteConnections.UseVisualStyleBackColor = true;
-            // 
             // tabActiveConnections
             // 
             this.tabActiveConnections.Controls.Add(this.lvwActive);
@@ -148,6 +126,13 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lvwActive
             // 
+            this.lvwActive.AllowClose = true;
+            this.lvwActive.AllowCopy = true;
+            this.lvwActive.AllowEdit = true;
+            this.lvwActive.AllowOpen = true;
+            this.lvwActive.AllowRemove = false;
+            this.lvwActive.AllowRename = true;
+            this.lvwActive.AllowShow = true;
             this.lvwActive.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -155,12 +140,31 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lvwActive.Location = new System.Drawing.Point(6, 6);
             this.lvwActive.MultiSelect = true;
             this.lvwActive.Name = "lvwActive";
+            this.lvwActive.RequireConfirmation = false;
             this.lvwActive.Size = new System.Drawing.Size(880, 317);
             this.lvwActive.TabIndex = 0;
             this.lvwActive.View = System.Windows.Forms.View.Details;
             // 
+            // tabRecentConnections
+            // 
+            this.tabRecentConnections.Controls.Add(this.lvwRecent);
+            this.tabRecentConnections.Location = new System.Drawing.Point(4, 22);
+            this.tabRecentConnections.Name = "tabRecentConnections";
+            this.tabRecentConnections.Padding = new System.Windows.Forms.Padding(3);
+            this.tabRecentConnections.Size = new System.Drawing.Size(892, 326);
+            this.tabRecentConnections.TabIndex = 0;
+            this.tabRecentConnections.Text = "Recent Connections";
+            this.tabRecentConnections.UseVisualStyleBackColor = true;
+            // 
             // lvwRecent
             // 
+            this.lvwRecent.AllowClose = true;
+            this.lvwRecent.AllowCopy = true;
+            this.lvwRecent.AllowEdit = true;
+            this.lvwRecent.AllowOpen = true;
+            this.lvwRecent.AllowRemove = false;
+            this.lvwRecent.AllowRename = true;
+            this.lvwRecent.AllowShow = true;
             this.lvwRecent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -168,12 +172,31 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lvwRecent.Location = new System.Drawing.Point(6, 5);
             this.lvwRecent.MultiSelect = true;
             this.lvwRecent.Name = "lvwRecent";
+            this.lvwRecent.RequireConfirmation = false;
             this.lvwRecent.Size = new System.Drawing.Size(880, 317);
             this.lvwRecent.TabIndex = 1;
             this.lvwRecent.View = System.Windows.Forms.View.Details;
             // 
+            // tabFavouriteConnections
+            // 
+            this.tabFavouriteConnections.Controls.Add(this.lvwFavourite);
+            this.tabFavouriteConnections.Location = new System.Drawing.Point(4, 22);
+            this.tabFavouriteConnections.Name = "tabFavouriteConnections";
+            this.tabFavouriteConnections.Padding = new System.Windows.Forms.Padding(3);
+            this.tabFavouriteConnections.Size = new System.Drawing.Size(892, 326);
+            this.tabFavouriteConnections.TabIndex = 1;
+            this.tabFavouriteConnections.Text = "Favourite Connections";
+            this.tabFavouriteConnections.UseVisualStyleBackColor = true;
+            // 
             // lvwFavourite
             // 
+            this.lvwFavourite.AllowClose = true;
+            this.lvwFavourite.AllowCopy = true;
+            this.lvwFavourite.AllowEdit = true;
+            this.lvwFavourite.AllowOpen = true;
+            this.lvwFavourite.AllowRemove = true;
+            this.lvwFavourite.AllowRename = true;
+            this.lvwFavourite.AllowShow = true;
             this.lvwFavourite.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -181,6 +204,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lvwFavourite.Location = new System.Drawing.Point(6, 5);
             this.lvwFavourite.MultiSelect = true;
             this.lvwFavourite.Name = "lvwFavourite";
+            this.lvwFavourite.RequireConfirmation = false;
             this.lvwFavourite.Size = new System.Drawing.Size(880, 317);
             this.lvwFavourite.TabIndex = 1;
             this.lvwFavourite.View = System.Windows.Forms.View.Details;
@@ -196,9 +220,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this.Text = "Manage Connections";
             this.tlpLayout.ResumeLayout(false);
             this.tabConnections.ResumeLayout(false);
+            this.tabActiveConnections.ResumeLayout(false);
             this.tabRecentConnections.ResumeLayout(false);
             this.tabFavouriteConnections.ResumeLayout(false);
-            this.tabActiveConnections.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

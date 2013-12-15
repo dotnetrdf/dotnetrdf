@@ -49,6 +49,9 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         {
             InitializeComponent();
             this._handler = this.HandleCollectionChanged;
+
+            // Subscribe to context menu events so we can configure the available options
+            this.mnuContext.Opening += MnuContextOnOpening;
         }
 
         /// <summary>
@@ -64,9 +67,6 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
             // Subscribe to events on connections graph
             this._connections.CollectionChanged += this._handler;
-
-            // Subscribe to context menu events so we can configure the available options
-            this.mnuContext.Opening += MnuContextOnOpening;
         }
 
         /// <summary>

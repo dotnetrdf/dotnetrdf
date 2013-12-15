@@ -217,7 +217,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         protected void RaiseChanged()
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
-            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace));
+            if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         /// <summary>
