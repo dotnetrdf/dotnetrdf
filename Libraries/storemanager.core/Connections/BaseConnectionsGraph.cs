@@ -109,6 +109,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public virtual void Add(Connection connection)
         {
             if (this._connections.Contains(connection)) return;
+            if (!ConnectionInstancePool.Contains(connection))
+            {
+                ConnectionInstancePool.Add(connection);
+            }
             this._connections.Add(connection);
             connection.PropertyChanged += this._handler;
             this.RaiseAdded(connection);
@@ -163,7 +167,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 if (connectionNode.NodeType != NodeType.Uri) continue;
                 Uri connectionUri = ((IUriNode) connectionNode).Uri;
 
-                Connection connection = new Connection(this.Graph, connectionUri);
+                Connection connection;
+                if (!ConnectionInstancePool.TryGetInstance(connectionUri, out connection))
+                {
+                    connection = new Connection(this.Graph, connectionUri);
+                    ConnectionInstancePool.Add(connection);
+                }
                 this._connections.Add(connection);
             }
         }

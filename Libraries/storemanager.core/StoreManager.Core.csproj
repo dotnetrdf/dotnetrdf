@@ -61,6 +61,7 @@
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
+    <Compile Include="Connections\ConnectionInstancePool.cs" />
     <Compile Include="Connections\ConnectionsGraph.cs" />
     <Compile Include="Connections\ConnectionInfo.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />

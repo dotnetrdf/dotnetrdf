@@ -40,10 +40,6 @@ namespace VDS.RDF.Utilities.StoreManager
     /// </summary>
     public partial class ManagerForm : Form
     {
-        private readonly IConnectionsGraph _favouriteConnections, _recentConnections;
-
-        public const int MaxRecentConnections = 9;
-
         /// <summary>
         /// Creates a new form
         /// </summary>
@@ -56,6 +52,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (Properties.Settings.Default.UpgradeRequired)
             {
                 Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpgradeRequired = false;
                 Properties.Settings.Default.Save();
                 Properties.Settings.Default.Reload();
             }
@@ -73,7 +70,20 @@ namespace VDS.RDF.Utilities.StoreManager
             ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
             ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
 
+            //Prepare Connection Definitions so users don't get a huge lag the first time they use these
+            ConnectionDefinitionManager.GetDefinitions().Count();
+
             //Check whether we have a Recent and Favourites Connections Graph
+            this.LoadConnections();
+        }
+
+        #region Connection Management
+
+        /// <summary>
+        /// Loads in favourite, recent and active connections
+        /// </summary>
+        private void LoadConnections()
+        {
             try
             {
                 String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -85,47 +95,60 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
                 String recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
                 String faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
+                String activeConnectionsFile = Path.Combine(appDataDir, "active.ttl");
 
-                if (File.Exists(recentConnectionsFile))
-                {
-                    //Load Recent Connections
-                    IGraph recent = new Graph();
-                    recent.LoadFromFile(recentConnectionsFile);
-                    this._recentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, MaxRecentConnections);
-                    this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, MaxRecentConnections);
+                // Load Favourite Connections
+                IGraph faves = new Graph();
+                if (File.Exists(faveConnectionsFile)) faves.LoadFromFile(faveConnectionsFile);
+                this.FavouriteConnections = new ConnectionsGraph(faves, faveConnectionsFile);
+                this.FillConnectionsMenu(this.mnuFavouriteConnections, this.FavouriteConnections, 0);
 
-                    // Subscribe to collection changed events
-                    this._recentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
-                }
-                if (File.Exists(faveConnectionsFile))
-                {
-                    //Load Favourite Connections
-                    IGraph faves = new Graph();
-                    faves.LoadFromFile(faveConnectionsFile);
-                    this._favouriteConnections = new ConnectionsGraph(faves, faveConnectionsFile);
-                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._favouriteConnections, 0);
+                // Subscribe to collection changed events
+                this.FavouriteConnections.CollectionChanged += FavouriteConnectionsOnCollectionChanged;
 
-                    // Subscribe to collection changed events
-                    this._favouriteConnections.CollectionChanged += FavouriteConnectionsOnCollectionChanged;
-                }
+                // Load Recent Connections
+                IGraph recent = new Graph();
+                if (File.Exists(recentConnectionsFile)) recent.LoadFromFile(recentConnectionsFile);
+                this.RecentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, Properties.Settings.Default.MaxRecentConnections);
+                this.FillConnectionsMenu(this.mnuRecentConnections, this.RecentConnections, Properties.Settings.Default.MaxRecentConnections);
+
+                // Subscribe to collection changed events
+                this.RecentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
+
+                // Load Active Connections
+                IGraph active = new Graph();
+                if (File.Exists(activeConnectionsFile)) active.LoadFromFile(activeConnectionsFile);
+                this.ActiveConnections = new ActiveConnectionsGraph(active, activeConnectionsFile);
             }
             catch
             {
-                //If errors occur then ignore Recent Connections
+                MessageBox.Show("Unable to Load Connections", "An error occurred trying to load the favourite, recent and active connections", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            //Prepare Connection Definitions so users don't get a huge lag the first time they use these
-            ConnectionDefinitionManager.GetDefinitions().Count();
         }
+
+        /// <summary>
+        /// Gets the favourite connections (may be null)
+        /// </summary>
+        public IConnectionsGraph FavouriteConnections { get; private set; }
+
+        /// <summary>
+        /// Gets the recent connections (may be null)
+        /// </summary>
+        public IConnectionsGraph RecentConnections { get; private set; }
+
+        /// <summary>
+        /// Gets the active connections (may be null)
+        /// </summary>
+        public IConnectionsGraph ActiveConnections { get; private set; }
 
         private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this._favouriteConnections, this.mnuFavouriteConnections, 0);
+            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.FavouriteConnections, this.mnuFavouriteConnections, 0);
         }
 
         private void RecentConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this._recentConnections, this.mnuRecentConnections, MaxRecentConnections);
+            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.RecentConnections, this.mnuRecentConnections, Properties.Settings.Default.MaxRecentConnections);
         }
 
         private void HandleConnectionsGraphChanged(NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item, int maxItems)
@@ -150,12 +173,212 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        public void AddRecentConnection(Connection connection)
+        {
+            if (this.RecentConnections == null) return;
+            try
+            {
+                this.RecentConnections.Add(connection);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to update recent connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        public void AddFavouriteConnection(Connection connection)
+        {
+            if (this.FavouriteConnections == null)
+            {
+                MessageBox.Show("Unable to update favourite connections since there is no favourite connections file available", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                this.FavouriteConnections.Add(connection);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void AddConnectionToMenu(Connection connection, ToolStripDropDownItem parentItem)
+        {
+            if (connection == null) return;
+            ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
+            item.Click += QuickConnectClick;
+
+            ToolStripMenuItem edit = new ToolStripMenuItem();
+            edit.Text = "Edit Connection";
+            edit.Tag = item.Tag;
+            edit.Click += QuickEditClick;
+            item.DropDownItems.Add(edit);
+
+            parentItem.DropDownItems.Add(item);
+        }
+
+        private static void RemoveConnectionFromMenu(Connection connection, ToolStripDropDownItem parentItem)
+        {
+            if (connection == null) return;
+            for (int i = 0; i < parentItem.DropDownItems.Count; i++)
+            {
+                if (!ReferenceEquals(parentItem.DropDownItems[i].Tag, connection)) continue;
+                parentItem.DropDownItems.RemoveAt(i);
+                i--;
+            }
+        }
+
+        private void ClearRecentConnections()
+        {
+            ClearConnections(this.mnuRecentConnections, this.RecentConnections);
+        }
+
+        private void ClearFavouriteConnections()
+        {
+            if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                ClearConnections(this.mnuFavouriteConnections, this.FavouriteConnections);
+            }
+        }
+
+        private static void ClearConnections(ToolStripMenuItem menu, IConnectionsGraph connections)
+        {
+            if (connections == null) return;
+            try
+            {
+                connections.Clear();
+            }
+            catch
+            {
+                MessageBox.Show("Unable to clear connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            if (menu == null) return;
+            while (menu.DropDownItems.Count > 2)
+            {
+                menu.DropDownItems.RemoveAt(2);
+            }
+        }
+
+        private void FillConnectionsMenu(ToolStripDropDownItem menu, IConnectionsGraph config, int maxItems)
+        {
+            // Clear existing items (except the items that are the clear options)
+            while (menu.DropDownItems.Count > 2)
+            {
+                menu.DropDownItems.RemoveAt(2);
+            }
+            if (config == null || config.Count == 0) return;
+
+            int count = 0;
+            foreach (Connection connection in config.Connections)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
+                item.Click += QuickConnectClick;
+
+                ToolStripMenuItem edit = new ToolStripMenuItem {Text = "Edit Connection", Tag = item.Tag};
+                edit.Click += QuickEditClick;
+                item.DropDownItems.Add(edit);
+
+                menu.DropDownItems.Add(item);
+
+                count++;
+                if (maxItems > 0 && count >= maxItems) break;
+            }
+        }
+
+        private void QuickConnectClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            Object tag = null;
+            if (sender is Control)
+            {
+                tag = ((Control) sender).Tag;
+            }
+            else if (sender is ToolStripItem)
+            {
+                tag = ((ToolStripItem) sender).Tag;
+            }
+            else if (sender is Menu)
+            {
+                tag = ((Menu) sender).Tag;
+            }
+            if (tag == null) return;
+            if (!(tag is Connection)) return;
+            Connection connection = (Connection) tag;
+            try
+            {
+                connection.Open();
+                StoreManagerForm genManager = new StoreManagerForm(connection);
+                genManager.MdiParent = this;
+                genManager.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to open the connection due to the following error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void QuickEditClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            Object tag = null;
+            if (sender is Control)
+            {
+                tag = ((Control) sender).Tag;
+            }
+            else if (sender is ToolStripItem)
+            {
+                tag = ((ToolStripItem) sender).Tag;
+            }
+            else if (sender is Menu)
+            {
+                tag = ((Menu) sender).Tag;
+            }
+
+            if (tag != null)
+            {
+                if (tag is Connection)
+                {
+                    Connection connection = (Connection) tag;
+                    try
+                    {
+                        EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
+                        if (editConn.ShowDialog() == DialogResult.OK)
+                        {
+                            connection = editConn.Connection;
+                            StoreManagerForm storeManager = new StoreManagerForm(connection);
+                            storeManager.MdiParent = Program.MainForm;
+                            storeManager.Show();
+
+                            //Add to Recent Connections
+                            this.AddRecentConnection(connection);
+
+                            this.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Unable to edit the Connection due to an error: " + ex.Message, "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Event Handlers
+
         private void fclsManager_Load(object sender, EventArgs e)
         {
             if (!Properties.Settings.Default.ShowStartPage) return;
-            StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
+            StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
             start.ShowDialog();
         }
+
+        #endregion
+
+        #region Menu Event Handlers
 
         private void mnuStrip_MenuActivate(object sender, System.EventArgs e)
         {
@@ -310,198 +533,6 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void FillConnectionsMenu(ToolStripDropDownItem menu, IConnectionsGraph config, int maxItems)
-        {
-            // Clear existing items (except the items that are the clear options)
-            while (menu.DropDownItems.Count > 2)
-            {
-                menu.DropDownItems.RemoveAt(2);
-            }
-            if (config == null || config.Count == 0) return;
-
-            int count = 0;
-            foreach (Connection connection in config.Connections)
-            {
-                ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
-                item.Click += QuickConnectClick;
-
-                ToolStripMenuItem edit = new ToolStripMenuItem {Text = "Edit Connection", Tag = item.Tag};
-                edit.Click += QuickEditClick;
-                item.DropDownItems.Add(edit);
-
-                menu.DropDownItems.Add(item);
-
-                count++;
-                if (maxItems > 0 && count >= maxItems) break;
-            }
-        }
-
-        private void QuickConnectClick(object sender, EventArgs e)
-        {
-            if (sender == null) return;
-            Object tag = null;
-            if (sender is Control)
-            {
-                tag = ((Control) sender).Tag;
-            }
-            else if (sender is ToolStripItem)
-            {
-                tag = ((ToolStripItem) sender).Tag;
-            }
-            else if (sender is Menu)
-            {
-                tag = ((Menu) sender).Tag;
-            }
-            if (tag == null) return;
-            if (!(tag is Connection)) return;
-            Connection connection = (Connection) tag;
-            try
-            {
-                connection.Open();
-                StoreManagerForm genManager = new StoreManagerForm(connection);
-                genManager.MdiParent = this;
-                genManager.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Unable to open the connection due to the following error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void QuickEditClick(object sender, EventArgs e)
-        {
-            if (sender == null) return;
-            Object tag = null;
-            if (sender is Control)
-            {
-                tag = ((Control) sender).Tag;
-            }
-            else if (sender is ToolStripItem)
-            {
-                tag = ((ToolStripItem) sender).Tag;
-            }
-            else if (sender is Menu)
-            {
-                tag = ((Menu) sender).Tag;
-            }
-
-            if (tag != null)
-            {
-                if (tag is Connection)
-                {
-                    Connection connection = (Connection) tag;
-                    try
-                    {
-                        EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
-                        if (editConn.ShowDialog() == DialogResult.OK)
-                        {
-                            connection = editConn.Connection;
-                            StoreManagerForm storeManager = new StoreManagerForm(connection);
-                            storeManager.MdiParent = Program.MainForm;
-                            storeManager.Show();
-
-                            //Add to Recent Connections
-                            this.AddRecentConnection(connection);
-
-                            this.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Unable to edit the Connection due to an error: " + ex.Message, "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
-        }
-
-        public void AddRecentConnection(Connection connection)
-        {
-            if (this._recentConnections == null) return;
-            try
-            {
-                this._recentConnections.Add(connection);
-            }
-            catch
-            {
-                MessageBox.Show("Unable to update recent connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        public void AddFavouriteConnection(Connection connection)
-        {
-            if (this._favouriteConnections == null)
-            {
-                MessageBox.Show("Unable to update favourite connections since there is no favourite connections file available", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            try
-            {
-                this._favouriteConnections.Add(connection);
-            }
-            catch
-            {
-                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void AddConnectionToMenu(Connection connection, ToolStripDropDownItem parentItem)
-        {
-            if (connection == null) return;
-            ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
-            item.Click += QuickConnectClick;
-
-            ToolStripMenuItem edit = new ToolStripMenuItem();
-            edit.Text = "Edit Connection";
-            edit.Tag = item.Tag;
-            edit.Click += QuickEditClick;
-            item.DropDownItems.Add(edit);
-
-            parentItem.DropDownItems.Add(item);
-        }
-
-        private static void RemoveConnectionFromMenu(Connection connection, ToolStripDropDownItem parentItem)
-        {
-            if (connection == null) return;
-            for (int i = 0; i < parentItem.DropDownItems.Count; i++)
-            {
-                if (!ReferenceEquals(parentItem.DropDownItems[i].Tag, connection)) continue;
-                parentItem.DropDownItems.RemoveAt(i);
-                i--;
-            }
-        }
-
-        private void ClearRecentConnections()
-        {
-            ClearConnections(this.mnuRecentConnections, this._recentConnections);
-        }
-
-        private void ClearFavouriteConnections()
-        {
-            if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                ClearConnections(this.mnuFavouriteConnections, this._favouriteConnections);
-            }
-        }
-
-        private static void ClearConnections(ToolStripMenuItem menu, IConnectionsGraph connections)
-        {
-            if (connections == null) return;
-            try
-            {
-                connections.Clear();
-            }
-            catch
-            {
-                MessageBox.Show("Unable to clear connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            if (menu == null) return;
-            while (menu.DropDownItems.Count > 2)
-            {
-                menu.DropDownItems.RemoveAt(2);
-            }
-        }
-
         private void mnuClearRecentConnections_Click(object sender, EventArgs e)
         {
             this.ClearRecentConnections();
@@ -586,7 +617,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuStartPage_Click(object sender, EventArgs e)
         {
-            StartPage start = new StartPage(this._recentConnections, this._favouriteConnections);
+            StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
             start.Owner = this;
             start.ShowDialog();
         }
@@ -594,10 +625,12 @@ namespace VDS.RDF.Utilities.StoreManager
         private void mnuManageConnections_Click(object sender, EventArgs e)
         {
             ManageConnectionsForm manageConnectionsForm = new ManageConnectionsForm();
-            manageConnectionsForm.RecentConnections = this._recentConnections;
-            manageConnectionsForm.FavouriteConnections = this._favouriteConnections;
+            manageConnectionsForm.RecentConnections = this.RecentConnections;
+            manageConnectionsForm.FavouriteConnections = this.FavouriteConnections;
             manageConnectionsForm.MdiParent = this;
             manageConnectionsForm.Show();
         }
+
+        #endregion
     }
 }

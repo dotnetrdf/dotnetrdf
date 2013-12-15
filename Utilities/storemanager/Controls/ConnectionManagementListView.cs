@@ -116,7 +116,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         ListViewItem item = BindItem(connection);
                         this.lvwConnections.Items.Add(item);
                     }
-                    this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    this.ResizeColumns();
                     this.lvwConnections.EndUpdate();
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -131,7 +131,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                             i--;
                         }
                     }
-                    this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    this.ResizeColumns();
                     this.lvwConnections.EndUpdate();
                     break;
                 default:
@@ -156,7 +156,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                     this.lvwConnections.Items.Add(item);
                 }
             }
-            this.lvwConnections.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            this.ResizeColumns();
 
             this.lvwConnections.EndUpdate();
         }
@@ -177,6 +177,19 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             item.SubItems.Add(connection.IsOpen ? "Yes" : "No");
             item.SubItems.Add(connection.ActiveUsers.ToString());
             return item;
+        }
+
+        private void ResizeColumns()
+        {
+            bool hasItems = this.lvwConnections.Items.Count > 0;
+            ColumnHeaderAutoResizeStyle resizeStyle = hasItems ? ColumnHeaderAutoResizeStyle.ColumnContent : ColumnHeaderAutoResizeStyle.HeaderSize;
+
+            this.lvwConnections.AutoResizeColumn(0, resizeStyle);
+            this.lvwConnections.AutoResizeColumn(1, resizeStyle);
+            this.lvwConnections.AutoResizeColumn(2, resizeStyle);
+            this.lvwConnections.AutoResizeColumn(3, resizeStyle);
+            this.lvwConnections.AutoResizeColumn(4,ColumnHeaderAutoResizeStyle.HeaderSize);
+            this.lvwConnections.AutoResizeColumn(5, ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         /// <summary>
