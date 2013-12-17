@@ -16,6 +16,8 @@ Changed
  - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
 - Query
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
+- Storage
+ - Add native SPARQL Update support to StardogV2Connector (CORE-376)
 
 Removed
 

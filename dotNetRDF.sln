@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Library", "Core Library", "{D0EBD311-D634-4254-B787-3573CE8E808C}"
 	ProjectSection(SolutionItems) = preProject
+		Libraries\ChangeLog.txt = Libraries\ChangeLog.txt
 		Libraries\core\net40\Compiler Symbols.txt = Libraries\core\net40\Compiler Symbols.txt
 		Libraries\core\net40\Compiling.txt = Libraries\core\net40\Compiling.txt
 		Libraries\ReadMe.txt = Libraries\ReadMe.txt
