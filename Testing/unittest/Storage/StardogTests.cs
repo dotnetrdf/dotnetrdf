@@ -531,6 +531,52 @@ namespace VDS.RDF.Storage
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
             Assert.AreEqual(1, g.Triples.Count, "Should be 1 triple in the graph");
         }
+
+        [Test, Timeout(30000)]
+        public void StorageStardogSparqlUpdate4()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            IGraph g;
+
+            // Begin a transaction
+            stardog.Begin();
+
+            // Try to make an update
+            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/4>; INSERT DATA { GRAPH <http://example.org/stardog/update/4> { <http://x> <http://y> <http://z> } }");
+
+            // Commit the transaction
+            stardog.Commit();
+
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/4");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty after update");
+            Assert.AreEqual(1, g.Triples.Count, "Graph should contain 1 triple");
+
+            stardog.Dispose();
+        }
+
+        [Test, Timeout(30000)]
+        public void StorageStardogSparqlUpdate5()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            IGraph g;
+
+            // Begin a transaction
+            stardog.Begin();
+
+            // Try to make an update
+            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/5>; INSERT DATA { GRAPH <http://example.org/stardog/update/5> { <http://x> <http://y> <http://z> } }");
+
+            // Rollback the transaction
+            stardog.Rollback();
+
+            g = new Graph();
+            stardog.LoadGraph(g, "http://example.org/stardog/update/5");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty after update");
+            Assert.AreEqual(1, g.Triples.Count, "Graph should contain 1 triple");
+
+            stardog.Dispose();
+        }
 #endif
     }
 }

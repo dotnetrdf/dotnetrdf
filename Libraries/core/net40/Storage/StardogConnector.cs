@@ -2417,12 +2417,14 @@ namespace VDS.RDF.Storage
         /// Executes a SPARQL Update against the Stardog store
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <remarks>
+        /// Stardog executes SPARQL update requests in their own self contained transactions which do not interact with normal Stardog transactions that may be managed via this API.  In some cases this can lead to unexpected behaviour, for example if you call <see cref="BaseStardogConnector.Begin()"/>, make an update and then call <see cref="BaseStardogConnector.Rollback()"/> the updates will not be rolled back.
+        /// </remarks>
         public void Update(string sparqlUpdate)
         {
             try
             {
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
-                // TODO Does this mean we need to commit any existing transaction? Or should we issue an error in this case?
 
                 //Create the Request
                 HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
@@ -2460,12 +2462,14 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdates">SPARQL Update</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to callback</param>
+        /// <remarks>
+        /// Stardog executes SPARQL update requests in their own self contained transactions which do not interact with normal Stardog transactions that may be managed via this API.  In some cases this can lead to unexpected behaviour, for example if you call <see cref="BaseStardogConnector.Begin(AsyncStorageCallback, Object)"/>, make an update and then call <see cref="BaseStardogConnector.Rollback(AsyncStorageCallback, Object)"/> the updates will not be rolled back.
+        /// </remarks>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             try
             {
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
-                // TODO Does this mean we need to commit any existing transaction? Or should we issue an error in this case?
 
                 //Create the Request, for simplicity async requests are always POST
                 HttpWebRequest request = this.CreateRequest(this._kb + "/update", MimeTypesHelper.Any, "POST", null);
