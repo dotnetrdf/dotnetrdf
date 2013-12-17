@@ -1,4 +1,4 @@
-﻿namespace VDS.RDF.Utilities.StoreManager
+﻿namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
     partial class CloseConnectionDialogue
     {

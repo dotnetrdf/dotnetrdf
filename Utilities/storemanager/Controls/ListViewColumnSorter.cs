@@ -27,12 +27,15 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Controls
 {
+    /// <summary>
+    /// A column sorter for list views
+    /// </summary>
     public class ListViewColumnSorter : IComparer
     {
-        private int _column = 0;
-        private int _modifier = 1;
+        private readonly int _column = 0;
+        private readonly int _modifier = 1;
 
         public ListViewColumnSorter(int column, SortOrder order)
         {
@@ -43,27 +46,16 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+
         public int Compare(object x, object y)
         {
-            if (x is ListViewItem && y is ListViewItem)
-            {
-                ListViewItem a = (ListViewItem)x;
-                ListViewItem b = (ListViewItem)y;
+            if (!(x is ListViewItem) || !(y is ListViewItem)) return 0;
+            ListViewItem a = (ListViewItem) x;
+            ListViewItem b = (ListViewItem) y;
 
-                int numA, numB;
-                if (Int32.TryParse(a.SubItems[this._column].Text, out numA) && Int32.TryParse(b.SubItems[this._column].Text, out numB))
-                {
-                    return this._modifier * numA.CompareTo(numB);
-                }
-                else
-                {
-                    return this._modifier * a.SubItems[this._column].Text.CompareTo(b.SubItems[this._column].Text);
-                }
-            }
-            else
-            {
-                return 0;
-            }
+            int numA, numB;
+            if (Int32.TryParse(a.SubItems[this._column].Text, out numA) && Int32.TryParse(b.SubItems[this._column].Text, out numB)) return this._modifier*numA.CompareTo(numB);
+            return this._modifier*String.Compare(a.SubItems[this._column].Text, b.SubItems[this._column].Text, System.StringComparison.CurrentCulture);
         }
     }
 }

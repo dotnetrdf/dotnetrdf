@@ -26,12 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using VDS.RDF.Configuration;
-using VDS.RDF.Query;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     public partial class StartPage : Form
     {
@@ -89,7 +87,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error Opening Connection " + connection.Name + ":\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(string.Format(Resources.StartPage_Open_Error_Text, connection.Name, ex.Message), Resources.ConnectionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 };
@@ -98,30 +96,28 @@ namespace VDS.RDF.Utilities.StoreManager
         private void btnNewConnection_Click(object sender, EventArgs e)
         {
             NewConnectionForm newConn = new NewConnectionForm();
-            if (newConn.ShowDialog() == DialogResult.OK)
-            {
-                Connection connection = newConn.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(connection);
-                storeManager.MdiParent = Program.MainForm;
-                storeManager.Show();
+            if (newConn.ShowDialog() != DialogResult.OK) return;
+            Connection connection = newConn.Connection;
+            StoreManagerForm storeManager = new StoreManagerForm(connection);
+            storeManager.MdiParent = Program.MainForm;
+            storeManager.Show();
 
-                //Add to Recent Connections
-                Program.MainForm.AddRecentConnection(connection);
+            //Add to Recent Connections
+            Program.MainForm.AddRecentConnection(connection);
 
-                this.Close();
-            }
+            this.Close();
         }
 
         private void chkAlwaysShow_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ShowStartPage = this.chkAlwaysShow.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.ShowStartPage = this.chkAlwaysShow.Checked;
+            Settings.Default.Save();
         }
 
         private void chkAlwaysEdit_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.AlwaysEdit = this.chkAlwaysEdit.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.AlwaysEdit = this.chkAlwaysEdit.Checked;
+            Settings.Default.Save();
         }
 
 
@@ -141,24 +137,21 @@ namespace VDS.RDF.Utilities.StoreManager
             if (connection == null) return;
 
             EditConnectionForm edit = new EditConnectionForm(connection.Definition);
-            if (edit.ShowDialog() == DialogResult.OK)
-            {
-                connection = edit.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(connection);
-                storeManager.MdiParent = Program.MainForm;
-                storeManager.Show();
+            if (edit.ShowDialog() != DialogResult.OK) return;
+            connection = edit.Connection;
+            StoreManagerForm storeManager = new StoreManagerForm(connection);
+            storeManager.MdiParent = Program.MainForm;
+            storeManager.Show();
 
-                //Add to Recent Connections
-                Program.MainForm.AddRecentConnection(connection);
+            //Add to Recent Connections
+            Program.MainForm.AddRecentConnection(connection);
 
-                this.Close();
-            }
+            this.Close();
         }
 
-        private void CheckConnectionContext(ListBox lbox, CancelEventArgs e)
+        private static void CheckConnectionContext(ListBox lbox, CancelEventArgs e)
         {
-            if (lbox == null) e.Cancel = true;
-            if (lbox.SelectedItem == null) e.Cancel = true;
+            if (lbox == null || lbox.SelectedItem == null) e.Cancel = true;
         }
 
         private void mnuFaveConnections_Opening(object sender, CancelEventArgs e)

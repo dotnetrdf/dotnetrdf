@@ -37,7 +37,7 @@ using System;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     /// <summary>
     /// A Form that can be used to select an IStorageProvider instance defined in an RDF Graph using the dotNetRDF Configuration Vocabulary

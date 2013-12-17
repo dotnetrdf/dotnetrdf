@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Forms;
 using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager
@@ -85,15 +86,25 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="exit">Whether the program should now exit</param>
         public static void HandleInternalError(String message, Exception ex, bool exit)
         {
+            // TODO Log the actual exception
             if (exit)
             {
-                MessageBox.Show(Resources.HandleInternalError_Exit + message, Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.HandleInternalError_Exit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Environment.Exit(1);
             }
             else
             {
-                MessageBox.Show(Resources.HandleInternalError_NonExit + message, Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.HandleInternalError_NonExit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        /// <summary>
+        /// Generic internal error handler
+        /// </summary>
+        /// <param name="message">Friendly message to display to the user</param>
+        public static void HandleInternalError(string message)
+        {
+            HandleInternalError(message, null);
         }
     }
 }

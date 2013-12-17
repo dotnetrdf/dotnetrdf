@@ -26,21 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     public partial class NewStoreForm : Form
     {
-        private IStorageServer _server;
-        private IStoreTemplate _defaultTemplate;
-        private BindingList<IStoreTemplate> _templates = new BindingList<IStoreTemplate>();
+        private readonly IStorageServer _server;
+        private readonly IStoreTemplate _defaultTemplate;
+        private readonly BindingList<IStoreTemplate> _templates = new BindingList<IStoreTemplate>();
 
         public NewStoreForm(IStorageServer server)
         {
@@ -62,6 +59,9 @@ namespace VDS.RDF.Utilities.StoreManager
 
         }
 
+        /// <summary>
+        /// Gets/Sets the template
+        /// </summary>
         public IStoreTemplate Template
         {
             get;
@@ -83,14 +83,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (enabled)
             {
                 //Update Property Grid
-                if (this.radTemplateDefault.Checked)
-                {
-                    this.propConfig.SelectedObject = this._defaultTemplate;
-                }
-                else
-                {
-                    this.propConfig.SelectedObject = this.cboTemplates.SelectedItem;
-                }
+                this.propConfig.SelectedObject = this.radTemplateDefault.Checked ? this._defaultTemplate : this.cboTemplates.SelectedItem;
                 this.propConfig.Refresh();
             }
             else
@@ -134,19 +127,17 @@ namespace VDS.RDF.Utilities.StoreManager
 
         void propConfig_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            if (e.ChangedItem.Label.Equals("ID"))
+            if (e.ChangedItem.Label == null || !e.ChangedItem.Label.Equals("ID")) return;
+            String id = e.ChangedItem.Value.ToString();
+            if (!id.Equals(this.txtStoreID.Text))
             {
-                String id = e.ChangedItem.Value.ToString();
-                if (!id.Equals(this.txtStoreID.Text))
-                {
-                    this.txtStoreID.Text = id;
-                }
+                this.txtStoreID.Text = id;
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
@@ -154,7 +145,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this.Template = this.propConfig.SelectedObject as IStoreTemplate;
 
-            List<String> errors = this.Template.Validate().ToList();
+            List<String> errors = this.Template != null ? this.Template.Validate().ToList() : new List<string> { "No template selected"};
             if (errors.Count > 0)
             {
                 InvalidTemplateForm invalid = new InvalidTemplateForm(errors);
@@ -162,7 +153,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             else
             {
-                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
                 this.Close();
             }
         }

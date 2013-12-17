@@ -33,8 +33,9 @@ using VDS.RDF.GUI;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     /// <summary>
     /// A form which provides an interface for managing connections to multiple stores
@@ -122,9 +123,9 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (File.Exists(activeConnectionsFile)) active.LoadFromFile(activeConnectionsFile);
                 this.ActiveConnections = new ActiveConnectionsGraph(active, activeConnectionsFile);
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to Load Connections", "An error occurred trying to load the favourite, recent and active connections", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.HandleInternalError(Resources.LoadConnections_Error, ex);
             }
         }
 
@@ -192,9 +193,9 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (this.RecentConnections != null) this.RecentConnections.Add(connection);
                 if (this.ActiveConnections != null) this.ActiveConnections.Add(connection);
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to update recent connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.HandleInternalError(Resources.RecentConnections_Update_Error, ex);
             }
         }
 
@@ -202,16 +203,16 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this.FavouriteConnections == null)
             {
-                MessageBox.Show("Unable to update favourite connections since there is no favourite connections file available", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.HandleInternalError(Resources.FavouriteConnections_NoFile);
                 return;
             }
             try
             {
                 this.FavouriteConnections.Add(connection);
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to update favourite connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.HandleInternalError(Resources.FavouriteConnections_Update_Error, ex);
             }
         }
 
@@ -222,7 +223,7 @@ namespace VDS.RDF.Utilities.StoreManager
             item.Click += QuickConnectClick;
 
             ToolStripMenuItem edit = new ToolStripMenuItem();
-            edit.Text = "Edit Connection";
+            edit.Text = Resources.EditConnection;
             edit.Tag = item.Tag;
             edit.Click += QuickEditClick;
             item.DropDownItems.Add(edit);
@@ -248,7 +249,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void ClearFavouriteConnections()
         {
-            if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(Resources.FavouriteConnections_ConfirmClear_Text, Resources.FavouriteConnections_ConfirmClear_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 ClearConnections(this.mnuFavouriteConnections, this.FavouriteConnections);
             }
@@ -261,9 +262,9 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 connections.Clear();
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Unable to clear connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.HandleInternalError(Resources.ClearConnections_Error, ex);
             }
 
             if (menu == null) return;
@@ -288,7 +289,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 ToolStripMenuItem item = new ToolStripMenuItem {Text = connection.Name, Tag = connection};
                 item.Click += QuickConnectClick;
 
-                ToolStripMenuItem edit = new ToolStripMenuItem {Text = "Edit Connection", Tag = item.Tag};
+                ToolStripMenuItem edit = new ToolStripMenuItem {Text = Resources.EditConnection, Tag = item.Tag};
                 edit.Click += QuickEditClick;
                 item.DropDownItems.Add(edit);
 
@@ -327,7 +328,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to open the connection due to the following error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.QuickConnect_Error_Text, ex.Message), Resources.QuickConnect_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -371,7 +372,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Unable to edit the Connection due to an error: " + ex.Message, "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(string.Format(Resources.QuickEdit_Error_Text, ex.Message), Resources.QuickEdit_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -380,7 +381,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private void PromptRestoreConnections()
         {
             if (this.ActiveConnections == null) return;
-            if (Properties.Settings.Default.PromptRestoreActiveConnections)
+            if (Settings.Default.PromptRestoreActiveConnections)
             {
                 if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
                 {
@@ -390,18 +391,18 @@ namespace VDS.RDF.Utilities.StoreManager
                         if (MessageBox.Show("Do you wish to restore active connections next time you start Store Manager?", "Save Active Connections?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         {
                             this.ActiveConnections.Clear();
-                            Properties.Settings.Default.RestoreActiveConnections = false;
+                            Settings.Default.RestoreActiveConnections = false;
                         }
                         else
                         {
-                            Properties.Settings.Default.RestoreActiveConnections = true;
+                            Settings.Default.RestoreActiveConnections = true;
                             this.ActiveConnections.Close();
                         }
-                        Properties.Settings.Default.Save();
+                        Settings.Default.Save();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Failed to update active connections", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.HandleInternalError(Resources.ActiveConnections_Update_Error, ex);
                     }
                 }
             }
@@ -413,7 +414,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void RestoreConnections()
         {
-            if (!Properties.Settings.Default.RestoreActiveConnections) return;
+            if (!Settings.Default.RestoreActiveConnections) return;
             foreach (Connection connection in this.ActiveConnections.Connections.ToList())
             {
                 try
@@ -426,7 +427,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to restore connection " + connection.Name, "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.HandleInternalError(string.Format(Resources.RestoreConnection_Error, connection.Name), ex);
                 }
             }
             this.LayoutMdi(MdiLayout.Cascade);
@@ -440,7 +441,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this.RestoreConnections();
 
-            if (!Properties.Settings.Default.ShowStartPage) return;
+            if (!Settings.Default.ShowStartPage) return;
             StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
             start.ShowDialog();
         }
@@ -540,7 +541,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             IGraph cs = new Graph();
                             if (File.Exists(this.sfdConnection.FileName))
                             {
-                                DialogResult result = MessageBox.Show("The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort", "Append Connection?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                DialogResult result = MessageBox.Show(Resources.SaveConnection_Append_Text, Resources.SaveConnection_Append_Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                                 switch (result)
                                 {
                                     case DialogResult.Yes:
@@ -560,9 +561,9 @@ namespace VDS.RDF.Utilities.StoreManager
                             connections.Add(connection);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Unable to save connection", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.HandleInternalError(Resources.SaveConnection_Error, ex);
                     }
                 }
                 else
@@ -602,11 +603,11 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 catch (RdfParseException)
                 {
-                    MessageBox.Show("Unable to open a connection from the given file as it was not a valid RDF Graph or was in a format that the library does not understand", "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Resources.OpenConnection_InvalidFile_Text, Resources.OpenConnection_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to open the given file due to the following error:\n" + ex.Message, "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(Resources.OpenConnection_Error_Text, ex.Message), Resources.OpenConnection_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -623,25 +624,17 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuAddFavourite_Click(object sender, EventArgs e)
         {
-            if (this.ActiveMdiChild != null)
-            {
-                if (this.ActiveMdiChild is StoreManagerForm)
-                {
-                    Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
-                    this.AddFavouriteConnection(connection);
-                }
-                else
-                {
-                    MessageBox.Show("Only Generic Store Connections may be added to your Favourites", "Add To Favourite Connections Failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
+            if (this.ActiveMdiChild == null) return;
+            if (!(this.ActiveMdiChild is StoreManagerForm)) return;
+            Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
+            this.AddFavouriteConnection(connection);
         }
 
         private void mnuUseUtf8Bom_Click(object sender, EventArgs e)
         {
             Options.UseBomForUtf8 = this.mnuUseUtf8Bom.Checked;
-            Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
-            Properties.Settings.Default.Save();
+            Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
+            Settings.Default.Save();
         }
 
         private void mnuAbout_Click(object sender, EventArgs e)
@@ -654,16 +647,14 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             NewConnectionForm newConn = new NewConnectionForm();
             newConn.StartPosition = FormStartPosition.CenterParent;
-            if (newConn.ShowDialog() == DialogResult.OK)
-            {
-                Connection connection = newConn.Connection;
-                StoreManagerForm storeManager = new StoreManagerForm(connection);
-                storeManager.MdiParent = this;
-                storeManager.Show();
+            if (newConn.ShowDialog() != DialogResult.OK) return;
+            Connection connection = newConn.Connection;
+            StoreManagerForm storeManager = new StoreManagerForm(connection);
+            storeManager.MdiParent = this;
+            storeManager.Show();
 
-                //Add to Recent Connections
-                this.AddRecentConnection(connection);
-            }
+            //Add to Recent Connections
+            this.AddRecentConnection(connection);
         }
 
         private void mnuNewFromExisting_Click(object sender, EventArgs e)
@@ -684,13 +675,13 @@ namespace VDS.RDF.Utilities.StoreManager
                     return;
                 }
             }
-            MessageBox.Show("The current connection is not editable", "New Connection from Current Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(Resources.NewFromExisting_Error_Text, Resources.NewFromExisting_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void mnuShowStartPage_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
-            Properties.Settings.Default.Save();
+            Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
+            Settings.Default.Save();
         }
 
         private void mnuStartPage_Click(object sender, EventArgs e)

@@ -40,7 +40,7 @@ using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Dialogues;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     /// <summary>
     /// Form for managing stores
@@ -74,7 +74,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.Connection.PropertyChanged += ConnectionOnPropertyChanged;
 
             //Configure Tasks List
-            this.lvwTasks.ListViewItemSorter = new SortTasksByID();
+            this.lvwTasks.ListViewItemSorter = new SortTasksById();
 
             //Configure Graphs List
             this.lvwGraphs.ItemDrag += new ItemDragEventHandler(lvwGraphs_ItemDrag);
@@ -455,7 +455,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <summary>
         /// Requests a store be created
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="template">Template</param>
         public void CreateStore(IStoreTemplate template)
         {
             CreateStoreTask task = new CreateStoreTask(this.StorageProvider.ParentServer, template);
@@ -1125,7 +1125,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             String[] items = new String[]
                 {
-                    (++this._taskId).ToString(),
+                    (++this._taskId).ToString(System.Globalization.CultureInfo.CurrentUICulture),
                     task.Name,
                     task.State.GetStateDescription(),
                     task.Information
@@ -1182,14 +1182,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 foreach (Uri u in task.Result)
                 {
-                    if (u != null)
-                    {
-                        this.CrossThreadAdd(this.lvwGraphs, u.AbsoluteUri);
-                    }
-                    else
-                    {
-                        this.CrossThreadAdd(this.lvwGraphs, "Default Graph");
-                    }
+                    this.CrossThreadAdd(this.lvwGraphs, u != null ? u.AbsoluteUri : "Default Graph");
                 }
 
                 this.CrossThreadEndUpdate(this.lvwGraphs);
@@ -1607,9 +1600,9 @@ namespace VDS.RDF.Utilities.StoreManager
     }
 
     /// <summary>
-    /// Comparer for sorting tasks by their IDs
+    /// Comparer for sorting tasks in ascending order by their IDs
     /// </summary>
-    internal class SortTasksByID
+    internal class SortTasksById
         : IComparer, IComparer<ListViewItem>
     {
         /// <summary>
@@ -1620,22 +1613,11 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <returns></returns>
         public int Compare(ListViewItem x, ListViewItem y)
         {
-            int a, b;
-            if (Int32.TryParse(x.SubItems[0].Text, out a))
-            {
-                if (Int32.TryParse(y.SubItems[0].Text, out b))
-                {
-                    return -1*a.CompareTo(b);
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-            else
-            {
-                return -1;
-            }
+            int a;
+            if (!Int32.TryParse(x.SubItems[0].Text, out a)) return -1;
+            int b;
+            if (Int32.TryParse(y.SubItems[0].Text, out b)) return -1*a.CompareTo(b);
+            return 1;
         }
 
         #region IComparer Members
@@ -1652,10 +1634,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 return this.Compare((ListViewItem) x, (ListViewItem) y);
             }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         #endregion

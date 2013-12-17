@@ -119,11 +119,11 @@
   </resheader>
   <data name="HandleInternalError_Exit" xml:space="preserve">
     <value>An unexpected internal error occurred and Store Manager will close once you close this dialogue:
-</value>
+{0}</value>
   </data>
   <data name="HandleInternalError_NonExit" xml:space="preserve">
     <value>An unexpected internal error occurred:
-</value>
+{0}</value>
   </data>
   <data name="Internal_Error" xml:space="preserve">
     <value>Internal Error</value>
@@ -157,5 +157,118 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="QueryResults_NotViewable" xml:space="preserve">
+    <value>Unable to show Query Results as did not get a Graph/Result Set as expected</value>
+  </data>
+  <data name="QueryResults_Unavailable_Text" xml:space="preserve">
+    <value>Query Results are not available</value>
+  </data>
+  <data name="QueryResults_NotViewable_Title" xml:space="preserve">
+    <value>Unable to Show Results</value>
+  </data>
+  <data name="QueryResults_Unavailable_Title" xml:space="preserve">
+    <value>Results Unavailable</value>
+  </data>
+  <data name="TaskForm_Title" xml:space="preserve">
+    <value>{0} on {1}</value>
+  </data>
+  <data name="Graph_Unavailable_Text" xml:space="preserve">
+    <value>Graph is not available</value>
+  </data>
+  <data name="Graph_Unavailable_Title" xml:space="preserve">
+    <value>Graph Unavailable</value>
+  </data>
+  <data name="Colon" xml:space="preserve">
+    <value>:</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="BrowseFor" xml:space="preserve">
+    <value>Browse for {0}</value>
+  </data>
+  <data name="Connection_Failed" xml:space="preserve">
+    <value>Connection to {0} Failed</value>
+  </data>
+  <data name="InvalidUri_Text" xml:space="preserve">
+    <value>Not a valid URI: {0}</value>
+  </data>
+  <data name="InvalidUri_Title" xml:space="preserve">
+    <value>Invalid URI</value>
+  </data>
+  <data name="LoadConnections_Error" xml:space="preserve">
+    <value>An error occurred trying to load the favourite, recent and active connections</value>
+  </data>
+  <data name="RecentConnections_Update_Error" xml:space="preserve">
+    <value>Unable to update recent connections</value>
+  </data>
+  <data name="FavouriteConnections_NoFile" xml:space="preserve">
+    <value>Unable to update favourite connections since there is no favourite connections file available</value>
+  </data>
+  <data name="FavouriteConnections_Update_Error" xml:space="preserve">
+    <value>Unable to update favourite connections</value>
+  </data>
+  <data name="EditConnection" xml:space="preserve">
+    <value>Edit Connection</value>
+  </data>
+  <data name="FavouriteConnections_ConfirmClear_Text" xml:space="preserve">
+    <value>Are you sure you wish to clear your Favourite Connections?</value>
+  </data>
+  <data name="FavouriteConnections_ConfirmClear_Title" xml:space="preserve">
+    <value>Clear Favourite Connections?</value>
+  </data>
+  <data name="ClearConnections_Error" xml:space="preserve">
+    <value>Unable to clear connections</value>
+  </data>
+  <data name="QuickConnect_Error_Title" xml:space="preserve">
+    <value>Quick Connect Error</value>
+  </data>
+  <data name="QuickConnect_Error_Text" xml:space="preserve">
+    <value>Unable to open the connection due to the following error: {0}</value>
+  </data>
+  <data name="QuickEdit_Error_Text" xml:space="preserve">
+    <value>Unable to edit the Connection due to an error: {0}</value>
+  </data>
+  <data name="QuickEdit_Error_Title" xml:space="preserve">
+    <value>Quick Edit Error</value>
+  </data>
+  <data name="ActiveConnections_Update_Error" xml:space="preserve">
+    <value>Failed to update active connections</value>
+  </data>
+  <data name="RestoreConnection_Error" xml:space="preserve">
+    <value>Unable to restore connection {0}</value>
+  </data>
+  <data name="SaveConnection_Append_Text" xml:space="preserve">
+    <value>The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort</value>
+  </data>
+  <data name="SaveConnection_Append_Title" xml:space="preserve">
+    <value>Append Connection?</value>
+  </data>
+  <data name="SaveConnection_Error" xml:space="preserve">
+    <value>Unable to save connection</value>
+  </data>
+  <data name="OpenConnection_InvalidFile_Text" xml:space="preserve">
+    <value>Unable to open a connection from the given file as it was not a valid RDF Graph or was in a format that the library does not understand</value>
+  </data>
+  <data name="OpenConnection_Error_Title" xml:space="preserve">
+    <value>Open Connection Failed</value>
+  </data>
+  <data name="OpenConnection_Error_Text" xml:space="preserve">
+    <value>Unable to open the given file due to the following error:
+{0}</value>
+  </data>
+  <data name="NewFromExisting_Error_Text" xml:space="preserve">
+    <value>The current connection is not editable</value>
+  </data>
+  <data name="NewFromExisting_Error_Title" xml:space="preserve">
+    <value>New Connection from Current Error</value>
+  </data>
+  <data name="StartPage_Open_Error_Text" xml:space="preserve">
+    <value>Error Opening Connection {0}:
+{1}</value>
+  </data>
+  <data name="ConnectionError" xml:space="preserve">
+    <value>Connection Error</value>
   </data>
 </root>

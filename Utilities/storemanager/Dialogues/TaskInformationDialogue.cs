@@ -27,6 +27,8 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using VDS.RDF.Query;
+using VDS.RDF.Utilities.StoreManager.Forms;
+using VDS.RDF.Utilities.StoreManager.Properties;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 using VDS.RDF.GUI.WinForms;
@@ -48,26 +50,20 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         public TaskInformationForm(ITask<T> task, String subtitle)
             : this()
         {
-            this.Text = task.Name + " on " + subtitle;
-            this.btnErrorTrace.Click += new EventHandler(delegate(Object sender, EventArgs e)
+            this.Text = string.Format(Resources.TaskForm_Title, task.Name, subtitle);
+            this.btnErrorTrace.Click += delegate
                 {
                     TaskErrorTraceForm<T> errorTrace = new TaskErrorTraceForm<T>(task, subtitle);
                     errorTrace.MdiParent = this.MdiParent;
                     errorTrace.Show();
-                });
+                };
             this.ShowInformation(task);
 
-            task.StateChanged += new TaskStateChanged(delegate()
-                {
-                    this.ShowInformation(task);
-                });
+            task.StateChanged += new TaskStateChanged(() => this.ShowInformation(task));
 
             if (task is CancellableTask<T>)
             {
-                this.btnCancel.Click += new EventHandler(delegate(Object sender, EventArgs e)
-                    {
-                        ((CancellableTask<T>)task).Cancel();
-                    });
+                this.btnCancel.Click += new EventHandler((sender, e) => ((CancellableTask<T>) task).Cancel());
             }
         }
 
@@ -77,12 +73,9 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.ShowQueryInformation(task);
             if (task.Query == null)
             {
-                task.StateChanged += new TaskStateChanged(delegate()
-                    {
-                        this.ShowQueryInformation(task);
-                    });
+                task.StateChanged += new TaskStateChanged(() => this.ShowQueryInformation(task));
             }
-            this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
+            this.btnViewResults.Click += delegate
                 {
                     if (task.Result != null)
                     {
@@ -94,21 +87,21 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                         }
                         else if (task.Result is SparqlResultSet)
                         {
-                            INamespaceMapper nsmap = (task is QueryTask ? ((QueryTask)task).Query.NamespaceMap : null);
+                            INamespaceMapper nsmap = ((QueryTask) task).Query.NamespaceMap;
                             ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, subtitle, nsmap);
                             resultsViewer.MdiParent = this.MdiParent;
                             resultsViewer.Show();
                         }
                         else
                         {
-                            MessageBox.Show("Unable to show Query Results as did not get a Graph/Result Set as expected", "Unable to Show Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(Resources.QueryResults_NotViewable, Resources.QueryResults_NotViewable_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Query Results are not available", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                });
+                };
         }
 
         public TaskInformationForm(UpdateTask task, String subtitle)
@@ -117,10 +110,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.ShowUpdateInformation(task);
             if (task.Updates == null)
             {
-                task.StateChanged += new TaskStateChanged(delegate()
-                    {
-                        this.ShowUpdateInformation(task);
-                    });
+                task.StateChanged += new TaskStateChanged(() => this.ShowUpdateInformation(task));
             }
         }
 
@@ -140,26 +130,19 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             : this((ITask<T>)task, subtitle)
         {
             CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
-            this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
+            this.btnViewResults.Click += delegate
                 {
                     if (task.Result != null)
                     {
-                        if (task.Result is IGraph)
-                        {
-                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)task.Result, subtitle);
-                            graphViewer.MdiParent = this.MdiParent;
-                            graphViewer.Show();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Unable to show Results as did not get a Graph as expected", "Unable to Show Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        GraphViewerForm graphViewer = new GraphViewerForm(task.Result, subtitle);
+                        graphViewer.MdiParent = this.MdiParent;
+                        graphViewer.Show();
                     }
                     else
                     {
-                        MessageBox.Show("Results are not available", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(Resources.Graph_Unavailable_Text, Resources.Graph_Unavailable_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                });
+                };
         }
 
         public TaskInformationForm(ITask<TaskValueResult<bool>> task, String subtitle)

@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Forms;
 using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Controls

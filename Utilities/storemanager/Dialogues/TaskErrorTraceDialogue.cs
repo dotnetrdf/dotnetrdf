@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using VDS.RDF.Utilities.StoreManager.Forms;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager.Dialogues
@@ -39,10 +40,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.Text = String.Format(this.Text, task.Name, subtitle);
             this.ShowErrorTrace(task);
 
-            task.StateChanged += new TaskStateChanged(delegate()
-                {
-                    this.ShowErrorTrace(task);
-                });
+            task.StateChanged += new TaskStateChanged(() => this.ShowErrorTrace(task));
 
             this.btnClose.Focus();
         }

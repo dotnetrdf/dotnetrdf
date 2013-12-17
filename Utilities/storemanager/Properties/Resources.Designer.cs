@@ -61,6 +61,69 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to update active connections.
+        /// </summary>
+        internal static string ActiveConnections_Update_Error {
+            get {
+                return ResourceManager.GetString("ActiveConnections_Update_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        internal static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for {0}.
+        /// </summary>
+        internal static string BrowseFor {
+            get {
+                return ResourceManager.GetString("BrowseFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to clear connections.
+        /// </summary>
+        internal static string ClearConnections_Error {
+            get {
+                return ResourceManager.GetString("ClearConnections_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :.
+        /// </summary>
+        internal static string Colon {
+            get {
+                return ResourceManager.GetString("Colon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection to {0} Failed.
+        /// </summary>
+        internal static string Connection_Failed {
+            get {
+                return ResourceManager.GetString("Connection_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection Error.
+        /// </summary>
+        internal static string ConnectionError {
+            get {
+                return ResourceManager.GetString("ConnectionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to close the connection {0}.
         /// </summary>
         internal static string ConnectionManagement_Close_Error {
@@ -133,8 +196,71 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Connection.
+        /// </summary>
+        internal static string EditConnection {
+            get {
+                return ResourceManager.GetString("EditConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to clear your Favourite Connections?.
+        /// </summary>
+        internal static string FavouriteConnections_ConfirmClear_Text {
+            get {
+                return ResourceManager.GetString("FavouriteConnections_ConfirmClear_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Favourite Connections?.
+        /// </summary>
+        internal static string FavouriteConnections_ConfirmClear_Title {
+            get {
+                return ResourceManager.GetString("FavouriteConnections_ConfirmClear_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to update favourite connections since there is no favourite connections file available.
+        /// </summary>
+        internal static string FavouriteConnections_NoFile {
+            get {
+                return ResourceManager.GetString("FavouriteConnections_NoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to update favourite connections.
+        /// </summary>
+        internal static string FavouriteConnections_Update_Error {
+            get {
+                return ResourceManager.GetString("FavouriteConnections_Update_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph is not available.
+        /// </summary>
+        internal static string Graph_Unavailable_Text {
+            get {
+                return ResourceManager.GetString("Graph_Unavailable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Unavailable.
+        /// </summary>
+        internal static string Graph_Unavailable_Title {
+            get {
+                return ResourceManager.GetString("Graph_Unavailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected internal error occurred and Store Manager will close once you close this dialogue:
-        ///.
+        ///{0}.
         /// </summary>
         internal static string HandleInternalError_Exit {
             get {
@@ -144,7 +270,7 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to An unexpected internal error occurred:
-        ///.
+        ///{0}.
         /// </summary>
         internal static string HandleInternalError_NonExit {
             get {
@@ -162,11 +288,220 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not a valid URI: {0}.
+        /// </summary>
+        internal static string InvalidUri_Text {
+            get {
+                return ResourceManager.GetString("InvalidUri_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid URI.
+        /// </summary>
+        internal static string InvalidUri_Title {
+            get {
+                return ResourceManager.GetString("InvalidUri_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred trying to load the favourite, recent and active connections.
+        /// </summary>
+        internal static string LoadConnections_Error {
+            get {
+                return ResourceManager.GetString("LoadConnections_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current connection is not editable.
+        /// </summary>
+        internal static string NewFromExisting_Error_Text {
+            get {
+                return ResourceManager.GetString("NewFromExisting_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Connection from Current Error.
+        /// </summary>
+        internal static string NewFromExisting_Error_Title {
+            get {
+                return ResourceManager.GetString("NewFromExisting_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to open the given file due to the following error:
+        ///{0}.
+        /// </summary>
+        internal static string OpenConnection_Error_Text {
+            get {
+                return ResourceManager.GetString("OpenConnection_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Connection Failed.
+        /// </summary>
+        internal static string OpenConnection_Error_Title {
+            get {
+                return ResourceManager.GetString("OpenConnection_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to open a connection from the given file as it was not a valid RDF Graph or was in a format that the library does not understand.
+        /// </summary>
+        internal static string OpenConnection_InvalidFile_Text {
+            get {
+                return ResourceManager.GetString("OpenConnection_InvalidFile_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to show Query Results as did not get a Graph/Result Set as expected.
+        /// </summary>
+        internal static string QueryResults_NotViewable {
+            get {
+                return ResourceManager.GetString("QueryResults_NotViewable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to Show Results.
+        /// </summary>
+        internal static string QueryResults_NotViewable_Title {
+            get {
+                return ResourceManager.GetString("QueryResults_NotViewable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query Results are not available.
+        /// </summary>
+        internal static string QueryResults_Unavailable_Text {
+            get {
+                return ResourceManager.GetString("QueryResults_Unavailable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results Unavailable.
+        /// </summary>
+        internal static string QueryResults_Unavailable_Title {
+            get {
+                return ResourceManager.GetString("QueryResults_Unavailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to open the connection due to the following error: {0}.
+        /// </summary>
+        internal static string QuickConnect_Error_Text {
+            get {
+                return ResourceManager.GetString("QuickConnect_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick Connect Error.
+        /// </summary>
+        internal static string QuickConnect_Error_Title {
+            get {
+                return ResourceManager.GetString("QuickConnect_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to edit the Connection due to an error: {0}.
+        /// </summary>
+        internal static string QuickEdit_Error_Text {
+            get {
+                return ResourceManager.GetString("QuickEdit_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick Edit Error.
+        /// </summary>
+        internal static string QuickEdit_Error_Title {
+            get {
+                return ResourceManager.GetString("QuickEdit_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to update recent connections.
+        /// </summary>
+        internal static string RecentConnections_Update_Error {
+            get {
+                return ResourceManager.GetString("RecentConnections_Update_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to restore connection {0}.
+        /// </summary>
+        internal static string RestoreConnection_Error {
+            get {
+                return ResourceManager.GetString("RestoreConnection_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort.
+        /// </summary>
+        internal static string SaveConnection_Append_Text {
+            get {
+                return ResourceManager.GetString("SaveConnection_Append_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Append Connection?.
+        /// </summary>
+        internal static string SaveConnection_Append_Title {
+            get {
+                return ResourceManager.GetString("SaveConnection_Append_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to save connection.
+        /// </summary>
+        internal static string SaveConnection_Error {
+            get {
+                return ResourceManager.GetString("SaveConnection_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Opening Connection {0}:
+        ///{1}.
+        /// </summary>
+        internal static string StartPage_Open_Error_Text {
+            get {
+                return ResourceManager.GetString("StartPage_Open_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} on {1}.
+        /// </summary>
+        internal static string TaskForm_Title {
+            get {
+                return ResourceManager.GetString("TaskForm_Title", resourceCulture);
             }
         }
         

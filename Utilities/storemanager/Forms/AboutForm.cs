@@ -25,21 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     public partial class AboutForm
         : Form
     {
-        private HashSet<Assembly> _assemblies = new HashSet<Assembly>();
+        private readonly HashSet<Assembly> _assemblies = new HashSet<Assembly>();
 
         public AboutForm()
         {

@@ -24,18 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
     partial class CopyMoveDialogue : Form
     {

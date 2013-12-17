@@ -28,7 +28,7 @@ using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Controls;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     /// <summary>
     /// Form for editing connection definitions

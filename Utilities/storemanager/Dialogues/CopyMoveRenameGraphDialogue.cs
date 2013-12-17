@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Windows.Forms;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
@@ -52,7 +53,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             }
             catch (UriFormatException uriEx)
             {
-                MessageBox.Show("Not a valid URI: " + uriEx.Message, "Invalid URI", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(Resources.InvalidUri_Text, uriEx.Message), Resources.InvalidUri_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

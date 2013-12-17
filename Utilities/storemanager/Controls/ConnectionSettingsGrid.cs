@@ -34,6 +34,7 @@ using System.Text;
 using System.Windows.Forms;
 using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Controls
 {
@@ -80,7 +81,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 if (setting.Value.Type != ConnectionSettingType.Boolean)
                 {
                     Label label = new Label();
-                    label.Text = setting.Value.DisplayName + ":";
+                    label.Text = setting.Value.DisplayName + Resources.Colon;
                     label.TextAlign = ContentAlignment.MiddleLeft;
                     tblSettings.Controls.Add(label, 0, i);
                 }
@@ -211,29 +212,29 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         fileFlow.Controls.Add(fileBox);
 
                         Button browse = new Button();
-                        browse.Text = "Browse";
+                        browse.Text = Resources.Browse;
                         browse.Tag = setting.Value;
                         fileFlow.Controls.Add(browse);
 
                         //Add the Event Handler which updates the Definition as the user types
-                        fileBox.TextChanged += new EventHandler((_, args) =>
+                        fileBox.TextChanged += (_, args) =>
                             {
                                 var propertyInfo = fileBox.Tag as PropertyInfo;
                                 if (propertyInfo != null) propertyInfo.SetValue(def, fileBox.Text, null);
-                            });
+                            };
 
                         //Add the Event Handler for the Browse Button
-                        browse.Click += new EventHandler((_, args) =>
-                        {
-                            ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
-                            if (attr == null) return;
-                            this.ofdBrowse.Title = "Browse for " + attr.DisplayName;
-                            this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
-                            if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                        browse.Click += (_, args) =>
                             {
-                                fileBox.Text = this.ofdBrowse.FileName;
-                            }
-                        });
+                                ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
+                                if (attr == null) return;
+                                this.ofdBrowse.Title = string.Format(Resources.BrowseFor, attr.DisplayName);
+                                this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
+                                if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                                {
+                                    fileBox.Text = this.ofdBrowse.FileName;
+                                }
+                            };
 
                         tblSettings.Controls.Add(fileFlow, 1, i);
 
@@ -276,7 +277,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Connection to " + this._def.StoreName + " Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, string.Format(Resources.Connection_Failed, this._def.StoreName), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
