@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Timers;
 using System.Windows.Forms;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Query;
