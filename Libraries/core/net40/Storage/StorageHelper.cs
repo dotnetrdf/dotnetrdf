@@ -104,19 +104,32 @@ namespace VDS.RDF.Storage
                     }
                     catch
                     {
-                        return errorProvider("A HTTP error occurred while " + action + " the Store. Error getting response, see inner exception for further details", webEx);
+                        return errorProvider("A HTTP error " + GetStatusLine(webEx) + " occurred while " + action + " the Store.\nError getting response, see aforementioned status line or inner exception for further details", webEx);
                     }
-                    return errorProvider("A HTTP error occured while " + action + " the Store. Store returned the following error message: " + responseText + "\nSee inner exception for further details", webEx);
+                    return errorProvider("A HTTP error " + GetStatusLine(webEx) + " occured while " + action + " the Store.\nStore returned the following error message: " + responseText + "\nSee aforementioned status line or inner exception for further details", webEx);
                 }
-                else
-                {
-                    return errorProvider("A HTTP error occurred while " + action + " the Store. Empty response, see inner exception for further details", webEx);
-                }
+                return errorProvider("A HTTP error " + GetStatusLine(webEx) + " occurred while " + action + " the Store.\nEmpty response body, see aformentioned status line or the inner exception for further details", webEx);
             }
-            else
+            return errorProvider("A HTTP error " + GetStatusLine(webEx) + " occurred while " + action + " the Store.\nNo response, see aforementioned status line or inner exception for further details", webEx);
+        }
+
+        /// <summary>
+        /// Tries to get the status line for inclusion in the HTTP error message
+        /// </summary>
+        /// <param name="webEx">Web exception</param>
+        /// <returns>Status line if available, empty string otherwise</returns>
+        private static String GetStatusLine(WebException webEx)
+        {
+            if (webEx.Response != null)
             {
-                return errorProvider("A HTTP error occurred while " + action + " the Store. No response, see inner exception for further details", webEx);
+                HttpWebResponse httpResponse = webEx.Response as HttpWebResponse;
+                if (httpResponse != null)
+                {
+                    return "(HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription + ")";
+                }
+                return webEx.Status.ToSafeString();
             }
+            return String.Empty;
         }
 
         /// <summary>
