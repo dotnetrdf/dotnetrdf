@@ -13,7 +13,7 @@
     
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
-		<Feature Id="ProductFeature" Title="DotNetRDF Toolkit" Level="1">
+		<Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
     
