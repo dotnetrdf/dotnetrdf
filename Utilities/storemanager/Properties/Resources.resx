@@ -158,7 +158,7 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
-  <data name="QueryResults_NotViewable" xml:space="preserve">
+  <data name="QueryResults_NotViewable_Text" xml:space="preserve">
     <value>Unable to show Query Results as did not get a Graph/Result Set as expected</value>
   </data>
   <data name="QueryResults_Unavailable_Text" xml:space="preserve">
@@ -270,5 +270,133 @@
   </data>
   <data name="ConnectionError" xml:space="preserve">
     <value>Connection Error</value>
+  </data>
+  <data name="ConnectionMustBeOpen" xml:space="preserve">
+    <value>Connection must be in open state</value>
+  </data>
+  <data name="UpdateModeNative" xml:space="preserve">
+    <value>Update Mode: Native</value>
+  </data>
+  <data name="UpdarteModeApproximated" xml:space="preserve">
+    <value>Update Mode: Approximated</value>
+  </data>
+  <data name="StoreNotReady_Query_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to make a SPARQL Query</value>
+  </data>
+  <data name="StoreNotReady_Title" xml:space="preserve">
+    <value>Store Not Ready</value>
+  </data>
+  <data name="Query_Unsupported" xml:space="preserve">
+    <value>Unable to execute a SPARQL Query since your Store does not support SPARQL</value>
+  </data>
+  <data name="Query_Error_Title" xml:space="preserve">
+    <value>SPARQL Query Error</value>
+  </data>
+  <data name="StoreNotReady_Update_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to make a SPARQL Update</value>
+  </data>
+  <data name="StoreNoteReady_Import_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to Import Data</value>
+  </data>
+  <data name="ImportData_NoFile_Text" xml:space="preserve">
+    <value>Please enter a File to import from!</value>
+  </data>
+  <data name="ImportData_NoFile_Title" xml:space="preserve">
+    <value>No File to Import</value>
+  </data>
+  <data name="ImportData_InvalidTarget_Text" xml:space="preserve">
+    <value>Cannot import data to an Invalid Default Target Graph URI - {0}</value>
+  </data>
+  <data name="ImportData_InvalidTarget_Title" xml:space="preserve">
+    <value>Invalid Default Target Graph URI</value>
+  </data>
+  <data name="ImportData_NoUri_Text" xml:space="preserve">
+    <value>Please enter a URI to import from!</value>
+  </data>
+  <data name="ImportData_NoUri_Title" xml:space="preserve">
+    <value>No URI to Import</value>
+  </data>
+  <data name="ImportData_InvalidSource_Text" xml:space="preserve">
+    <value>Cannot import data from an invalid URI - {0}</value>
+  </data>
+  <data name="ImportData_InvalidSource_Title" xml:space="preserve">
+    <value>Invalid Import URI</value>
+  </data>
+  <data name="ExportData_NoFile_Text" xml:space="preserve">
+    <value>Please enter a File to export to!</value>
+  </data>
+  <data name="ExportData_NoFile_Title" xml:space="preserve">
+    <value>No Export Destination</value>
+  </data>
+  <data name="DeleteGraph_Confirm_Text" xml:space="preserve">
+    <value>Are you sure you wish to delete the Graph '{0}'?  This action is non-reversible</value>
+  </data>
+  <data name="DeleteGraph_Confirm_Title" xml:space="preserve">
+    <value>Delete Graph Confirmation</value>
+  </data>
+  <data name="TaskInfo_Unavailable_Text" xml:space="preserve">
+    <value>Task Information cannot be shown as the Task type is unknown</value>
+  </data>
+  <data name="TaskInfo_Unavailable_Title" xml:space="preserve">
+    <value>Task Information Unavailable</value>
+  </data>
+  <data name="OpenStore_Error_Text" xml:space="preserve">
+    <value>No Store selected</value>
+  </data>
+  <data name="OpenStore_Error_Title" xml:space="preserve">
+    <value>Open Store Error</value>
+  </data>
+  <data name="DeleteStore_Confirm_Text" xml:space="preserve">
+    <value>Are you sure you wish to delete the Store '{0}'?  This action is non-reversible</value>
+  </data>
+  <data name="DeleteStore_Confirm_Title" xml:space="preserve">
+    <value>Delete Store Confirmation</value>
+  </data>
+  <data name="TriplesCounted" xml:space="preserve">
+    <value>Triples Counted</value>
+  </data>
+  <data name="Status_RenderingGraphList" xml:space="preserve">
+    <value>Rendering Graph List...</value>
+  </data>
+  <data name="Status_Ready" xml:space="preserve">
+    <value>Store is ready</value>
+  </data>
+  <data name="ListGraphs_Information" xml:space="preserve">
+    <value>{0} Graph URI(s) were returned</value>
+  </data>
+  <data name="Status_GraphListingUnavailable" xml:space="preserve">
+    <value>Graph Listing unavailable - Store is ready</value>
+  </data>
+  <data name="ListGraphs_Error_Text" xml:space="preserve">
+    <value>Unable to list Graphs due to the following error:
+{0}</value>
+  </data>
+  <data name="ListGraphs_Error_Title" xml:space="preserve">
+    <value>Graph List Unavailable</value>
+  </data>
+  <data name="Status_RenderingStoreList" xml:space="preserve">
+    <value>Rendering Store List...</value>
+  </data>
+  <data name="ListStores_Information" xml:space="preserve">
+    <value>{0} Store IDs were returned</value>
+  </data>
+  <data name="Status_StoreListUnavailable" xml:space="preserve">
+    <value>Store Listing unavailable - Store is ready</value>
+  </data>
+  <data name="ListStores_Error_Text" xml:space="preserve">
+    <value>Unable to list Stores due to the following error:
+{0}</value>
+  </data>
+  <data name="ListStores_Error_Title" xml:space="preserve">
+    <value>Store List Unavailable</value>
+  </data>
+  <data name="ViewGraph_Error_Text" xml:space="preserve">
+    <value>View Graph Failed due to the following error: {0}</value>
+  </data>
+  <data name="ViewGraph_Error_Title" xml:space="preserve">
+    <value>View Graph Failed</value>
+  </data>
+  <data name="ViewGraph_UnknownError_Text" xml:space="preserve">
+    <value>View Graph Failed due to an unknown error</value>
   </data>
 </root>

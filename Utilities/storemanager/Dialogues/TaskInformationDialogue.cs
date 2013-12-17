@@ -59,11 +59,11 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                 };
             this.ShowInformation(task);
 
-            task.StateChanged += new TaskStateChanged(() => this.ShowInformation(task));
+            task.StateChanged += () => this.ShowInformation(task);
 
             if (task is CancellableTask<T>)
             {
-                this.btnCancel.Click += new EventHandler((sender, e) => ((CancellableTask<T>) task).Cancel());
+                this.btnCancel.Click += (sender, e) => ((CancellableTask<T>) task).Cancel();
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.ShowQueryInformation(task);
             if (task.Query == null)
             {
-                task.StateChanged += new TaskStateChanged(() => this.ShowQueryInformation(task));
+                task.StateChanged += () => this.ShowQueryInformation(task);
             }
             this.btnViewResults.Click += delegate
                 {
@@ -87,14 +87,14 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                         }
                         else if (task.Result is SparqlResultSet)
                         {
-                            INamespaceMapper nsmap = ((QueryTask) task).Query.NamespaceMap;
+                            INamespaceMapper nsmap = task.Query.NamespaceMap;
                             ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, subtitle, nsmap);
                             resultsViewer.MdiParent = this.MdiParent;
                             resultsViewer.Show();
                         }
                         else
                         {
-                            MessageBox.Show(Resources.QueryResults_NotViewable, Resources.QueryResults_NotViewable_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(Resources.QueryResults_NotViewable_Text, Resources.QueryResults_NotViewable_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else
@@ -110,7 +110,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.ShowUpdateInformation(task);
             if (task.Updates == null)
             {
-                task.StateChanged += new TaskStateChanged(() => this.ShowUpdateInformation(task));
+                task.StateChanged += () => this.ShowUpdateInformation(task);
             }
         }
 

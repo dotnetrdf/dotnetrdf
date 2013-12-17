@@ -25,14 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Properties;
 
@@ -99,11 +95,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         if (setting.Value.Type == ConnectionSettingType.Password) box.PasswordChar = '*';
 
                         //Add the Event Handler which updates the Definition as the user types
-                        box.TextChanged += new EventHandler((_, args) =>
+                        box.TextChanged += (_, args) =>
                             {
                                 var propertyInfo = box.Tag as PropertyInfo;
                                 if (propertyInfo != null) propertyInfo.SetValue(def, box.Text, null);
-                            });
+                            };
 
                         //Show DisplaySuffix if relevant
                         if (!String.IsNullOrEmpty(setting.Value.DisplaySuffix))
@@ -138,11 +134,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         check.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition when the Checkbox changes
-                        check.CheckedChanged += new EventHandler((_, args) =>
+                        check.CheckedChanged += (_, args) =>
                             {
                                 var propertyInfo = check.Tag as PropertyInfo;
                                 if (propertyInfo != null) propertyInfo.SetValue(def, check.Checked, null);
-                            });
+                            };
 
                         this.tblSettings.SetColumnSpan(check, 2);
                         this.tblSettings.Controls.Add(check, 0, i);
@@ -168,11 +164,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         num.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition as the number changes
-                        num.ValueChanged += new EventHandler((_, args) =>
+                        num.ValueChanged += (_, args) =>
                             {
                                 var propertyInfo = num.Tag as PropertyInfo;
                                 if (propertyInfo != null) propertyInfo.SetValue(def, (int)num.Value, null);
-                            });
+                            };
 
                         tblSettings.Controls.Add(num, 1, i);
                         break;
@@ -186,11 +182,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         ebox.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition as the selection changes
-                        ebox.SelectedIndexChanged += new EventHandler((_, args) =>
+                        ebox.SelectedIndexChanged += (_, args) =>
                             {
                                 var propertyInfo = ebox.Tag as PropertyInfo;
-                                if (propertyInfo != null) propertyInfo.SetValue(def, (Enum)ebox.SelectedItem, null);
-                            });
+                                if (propertyInfo != null) propertyInfo.SetValue(def, ebox.SelectedItem, null);
+                            };
 
                         tblSettings.Controls.Add(ebox, 1, i);
                         break;

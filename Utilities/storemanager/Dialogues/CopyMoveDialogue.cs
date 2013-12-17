@@ -36,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         {
             InitializeComponent();
 
-            this.lblConfirm.Text = String.Format(this.lblConfirm.Text, info.SourceUri, info.Source.ToString(), target.ToString());
+            this.lblConfirm.Text = String.Format(this.lblConfirm.Text, info.SourceUri, info.Source, target);
         }
 
         public bool IsCopy

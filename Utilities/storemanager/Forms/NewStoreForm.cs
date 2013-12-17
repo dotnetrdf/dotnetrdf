@@ -51,11 +51,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 this._templates.Add(template);
             }
             this.cboTemplates.DataSource = this._templates;
-            this.radTemplateDefault.Text = String.Format(this.radTemplateDefault.Text, this._defaultTemplate.ToString());
+            this.radTemplateDefault.Text = String.Format(this.radTemplateDefault.Text, this._defaultTemplate);
 
             //Wire up property grid
-            this.propConfig.SelectedObjectsChanged += new EventHandler(propConfig_SelectedObjectsChanged);
-            this.propConfig.PropertyValueChanged += new PropertyValueChangedEventHandler(propConfig_PropertyValueChanged);
+            this.propConfig.SelectedObjectsChanged += propConfig_SelectedObjectsChanged;
+            this.propConfig.PropertyValueChanged += propConfig_PropertyValueChanged;
 
         }
 

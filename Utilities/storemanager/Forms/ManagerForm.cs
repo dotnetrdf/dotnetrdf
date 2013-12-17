@@ -52,22 +52,22 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             Constants.WindowIcon = this.Icon;
 
             //Ensure we upgrade settings if user has come from an older version of the application
-            if (Properties.Settings.Default.UpgradeRequired)
+            if (Settings.Default.UpgradeRequired)
             {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.UpgradeRequired = false;
-                Properties.Settings.Default.Save();
-                Properties.Settings.Default.Reload();
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+                Settings.Default.Reload();
             }
 
             //Enable UTF-8 BOM Output if relevant
             Options.UseBomForUtf8 = false;
-            if (Properties.Settings.Default.UseUtf8Bom)
+            if (Settings.Default.UseUtf8Bom)
             {
                 this.mnuUseUtf8Bom.Checked = true;
                 Options.UseBomForUtf8 = true;
             }
-            this.mnuShowStartPage.Checked = Properties.Settings.Default.ShowStartPage;
+            this.mnuShowStartPage.Checked = Settings.Default.ShowStartPage;
 
             //Ensure Configuration Loader has known required Object Factorires registered
             ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
@@ -112,8 +112,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 // Load Recent Connections
                 IGraph recent = new Graph();
                 if (File.Exists(recentConnectionsFile)) recent.LoadFromFile(recentConnectionsFile);
-                this.RecentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, Properties.Settings.Default.MaxRecentConnections);
-                this.FillConnectionsMenu(this.mnuRecentConnections, this.RecentConnections, Properties.Settings.Default.MaxRecentConnections);
+                this.RecentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, Settings.Default.MaxRecentConnections);
+                this.FillConnectionsMenu(this.mnuRecentConnections, this.RecentConnections, Settings.Default.MaxRecentConnections);
 
                 // Subscribe to collection changed events
                 this.RecentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
@@ -161,7 +161,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void RecentConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.RecentConnections, this.mnuRecentConnections, Properties.Settings.Default.MaxRecentConnections);
+            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.RecentConnections, this.mnuRecentConnections, Settings.Default.MaxRecentConnections);
         }
 
         private void HandleConnectionsGraphChanged(NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item, int maxItems)
@@ -455,7 +455,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         #region Menu Event Handlers
 
-        private void mnuStrip_MenuActivate(object sender, System.EventArgs e)
+        private void mnuStrip_MenuActivate(object sender, EventArgs e)
         {
             if (this.ActiveMdiChild != null)
             {

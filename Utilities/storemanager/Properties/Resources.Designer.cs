@@ -196,11 +196,74 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection must be in open state.
+        /// </summary>
+        internal static string ConnectionMustBeOpen {
+            get {
+                return ResourceManager.GetString("ConnectionMustBeOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete the Graph &apos;{0}&apos;?  This action is non-reversible.
+        /// </summary>
+        internal static string DeleteGraph_Confirm_Text {
+            get {
+                return ResourceManager.GetString("DeleteGraph_Confirm_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Graph Confirmation.
+        /// </summary>
+        internal static string DeleteGraph_Confirm_Title {
+            get {
+                return ResourceManager.GetString("DeleteGraph_Confirm_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete the Store &apos;{0}&apos;?  This action is non-reversible.
+        /// </summary>
+        internal static string DeleteStore_Confirm_Text {
+            get {
+                return ResourceManager.GetString("DeleteStore_Confirm_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Store Confirmation.
+        /// </summary>
+        internal static string DeleteStore_Confirm_Title {
+            get {
+                return ResourceManager.GetString("DeleteStore_Confirm_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Connection.
         /// </summary>
         internal static string EditConnection {
             get {
                 return ResourceManager.GetString("EditConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a File to export to!.
+        /// </summary>
+        internal static string ExportData_NoFile_Text {
+            get {
+                return ResourceManager.GetString("ExportData_NoFile_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Export Destination.
+        /// </summary>
+        internal static string ExportData_NoFile_Title {
+            get {
+                return ResourceManager.GetString("ExportData_NoFile_Title", resourceCulture);
             }
         }
         
@@ -279,6 +342,78 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot import data from an invalid URI - {0}.
+        /// </summary>
+        internal static string ImportData_InvalidSource_Text {
+            get {
+                return ResourceManager.GetString("ImportData_InvalidSource_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Import URI.
+        /// </summary>
+        internal static string ImportData_InvalidSource_Title {
+            get {
+                return ResourceManager.GetString("ImportData_InvalidSource_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot import data to an Invalid Default Target Graph URI - {0}.
+        /// </summary>
+        internal static string ImportData_InvalidTarget_Text {
+            get {
+                return ResourceManager.GetString("ImportData_InvalidTarget_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Default Target Graph URI.
+        /// </summary>
+        internal static string ImportData_InvalidTarget_Title {
+            get {
+                return ResourceManager.GetString("ImportData_InvalidTarget_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a File to import from!.
+        /// </summary>
+        internal static string ImportData_NoFile_Text {
+            get {
+                return ResourceManager.GetString("ImportData_NoFile_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No File to Import.
+        /// </summary>
+        internal static string ImportData_NoFile_Title {
+            get {
+                return ResourceManager.GetString("ImportData_NoFile_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a URI to import from!.
+        /// </summary>
+        internal static string ImportData_NoUri_Text {
+            get {
+                return ResourceManager.GetString("ImportData_NoUri_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No URI to Import.
+        /// </summary>
+        internal static string ImportData_NoUri_Title {
+            get {
+                return ResourceManager.GetString("ImportData_NoUri_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal Error.
         /// </summary>
         internal static string Internal_Error {
@@ -302,6 +437,62 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         internal static string InvalidUri_Title {
             get {
                 return ResourceManager.GetString("InvalidUri_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to list Graphs due to the following error:
+        ///{0}.
+        /// </summary>
+        internal static string ListGraphs_Error_Text {
+            get {
+                return ResourceManager.GetString("ListGraphs_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph List Unavailable.
+        /// </summary>
+        internal static string ListGraphs_Error_Title {
+            get {
+                return ResourceManager.GetString("ListGraphs_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Graph URI(s) were returned.
+        /// </summary>
+        internal static string ListGraphs_Information {
+            get {
+                return ResourceManager.GetString("ListGraphs_Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to list Stores due to the following error:
+        ///{0}.
+        /// </summary>
+        internal static string ListStores_Error_Text {
+            get {
+                return ResourceManager.GetString("ListStores_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store List Unavailable.
+        /// </summary>
+        internal static string ListStores_Error_Title {
+            get {
+                return ResourceManager.GetString("ListStores_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Store IDs were returned.
+        /// </summary>
+        internal static string ListStores_Information {
+            get {
+                return ResourceManager.GetString("ListStores_Information", resourceCulture);
             }
         }
         
@@ -370,11 +561,47 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Store selected.
+        /// </summary>
+        internal static string OpenStore_Error_Text {
+            get {
+                return ResourceManager.GetString("OpenStore_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Store Error.
+        /// </summary>
+        internal static string OpenStore_Error_Title {
+            get {
+                return ResourceManager.GetString("OpenStore_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SPARQL Query Error.
+        /// </summary>
+        internal static string Query_Error_Title {
+            get {
+                return ResourceManager.GetString("Query_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to execute a SPARQL Query since your Store does not support SPARQL.
+        /// </summary>
+        internal static string Query_Unsupported {
+            get {
+                return ResourceManager.GetString("Query_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to show Query Results as did not get a Graph/Result Set as expected.
         /// </summary>
-        internal static string QueryResults_NotViewable {
+        internal static string QueryResults_NotViewable_Text {
             get {
-                return ResourceManager.GetString("QueryResults_NotViewable", resourceCulture);
+                return ResourceManager.GetString("QueryResults_NotViewable_Text", resourceCulture);
             }
         }
         
@@ -497,11 +724,164 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graph Listing unavailable - Store is ready.
+        /// </summary>
+        internal static string Status_GraphListingUnavailable {
+            get {
+                return ResourceManager.GetString("Status_GraphListingUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store is ready.
+        /// </summary>
+        internal static string Status_Ready {
+            get {
+                return ResourceManager.GetString("Status_Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering Graph List....
+        /// </summary>
+        internal static string Status_RenderingGraphList {
+            get {
+                return ResourceManager.GetString("Status_RenderingGraphList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering Store List....
+        /// </summary>
+        internal static string Status_RenderingStoreList {
+            get {
+                return ResourceManager.GetString("Status_RenderingStoreList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store Listing unavailable - Store is ready.
+        /// </summary>
+        internal static string Status_StoreListUnavailable {
+            get {
+                return ResourceManager.GetString("Status_StoreListUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait for Store to be ready before attempting to Import Data.
+        /// </summary>
+        internal static string StoreNoteReady_Import_Text {
+            get {
+                return ResourceManager.GetString("StoreNoteReady_Import_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait for Store to be ready before attempting to make a SPARQL Query.
+        /// </summary>
+        internal static string StoreNotReady_Query_Text {
+            get {
+                return ResourceManager.GetString("StoreNotReady_Query_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store Not Ready.
+        /// </summary>
+        internal static string StoreNotReady_Title {
+            get {
+                return ResourceManager.GetString("StoreNotReady_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait for Store to be ready before attempting to make a SPARQL Update.
+        /// </summary>
+        internal static string StoreNotReady_Update_Text {
+            get {
+                return ResourceManager.GetString("StoreNotReady_Update_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} on {1}.
         /// </summary>
         internal static string TaskForm_Title {
             get {
                 return ResourceManager.GetString("TaskForm_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Information cannot be shown as the Task type is unknown.
+        /// </summary>
+        internal static string TaskInfo_Unavailable_Text {
+            get {
+                return ResourceManager.GetString("TaskInfo_Unavailable_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Information Unavailable.
+        /// </summary>
+        internal static string TaskInfo_Unavailable_Title {
+            get {
+                return ResourceManager.GetString("TaskInfo_Unavailable_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triples Counted.
+        /// </summary>
+        internal static string TriplesCounted {
+            get {
+                return ResourceManager.GetString("TriplesCounted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Mode: Approximated.
+        /// </summary>
+        internal static string UpdarteModeApproximated {
+            get {
+                return ResourceManager.GetString("UpdarteModeApproximated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Mode: Native.
+        /// </summary>
+        internal static string UpdateModeNative {
+            get {
+                return ResourceManager.GetString("UpdateModeNative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Graph Failed due to the following error: {0}.
+        /// </summary>
+        internal static string ViewGraph_Error_Text {
+            get {
+                return ResourceManager.GetString("ViewGraph_Error_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Graph Failed.
+        /// </summary>
+        internal static string ViewGraph_Error_Title {
+            get {
+                return ResourceManager.GetString("ViewGraph_Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Graph Failed due to an unknown error.
+        /// </summary>
+        internal static string ViewGraph_UnknownError_Text {
+            get {
+                return ResourceManager.GetString("ViewGraph_UnknownError_Text", resourceCulture);
             }
         }
         

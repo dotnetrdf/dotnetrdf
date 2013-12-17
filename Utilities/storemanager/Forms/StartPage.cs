@@ -39,8 +39,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
             this.FillConnectionList(recent, this.lstRecent);
             this.FillConnectionList(faves, this.lstFaves);
-            this.chkAlwaysEdit.Checked = Properties.Settings.Default.AlwaysEdit;
-            this.chkAlwaysShow.Checked = Properties.Settings.Default.ShowStartPage;
+            this.chkAlwaysEdit.Checked = Settings.Default.AlwaysEdit;
+            this.chkAlwaysShow.Checked = Settings.Default.ShowStartPage;
         }
 
         private void StartPage_Load(object sender, EventArgs e)
@@ -57,7 +57,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 {
                     Connection connection = lbox.SelectedItem as Connection;
                     if (connection == null) return;
-                    if (Properties.Settings.Default.AlwaysEdit)
+                    if (Settings.Default.AlwaysEdit)
                     {
                         EditConnectionForm edit = new EditConnectionForm(connection.Definition);
                         if (edit.ShowDialog() == DialogResult.OK)

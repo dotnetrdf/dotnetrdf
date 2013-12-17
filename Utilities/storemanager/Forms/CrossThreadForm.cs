@@ -42,7 +42,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadMessageDelegate d = new CrossThreadMessageDelegate(this.CrossThreadMessage);
+                CrossThreadMessageDelegate d = this.CrossThreadMessage;
                 this.Invoke(d, new Object[] { message, title, icon });
             }
             else
@@ -63,7 +63,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetTextDelegate d = new CrossThreadSetTextDelegate(this.CrossThreadSetText);
+                CrossThreadSetTextDelegate d = this.CrossThreadSetText;
                 this.Invoke(d, new Object[] { c, text });
             }
             else
@@ -76,7 +76,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetToolStripTextDelegate d = new CrossThreadSetToolStripTextDelegate(this.CrossThreadSetText);
+                CrossThreadSetToolStripTextDelegate d = this.CrossThreadSetText;
                 this.Invoke(d, new Object[] { item, text });
             }
             else
@@ -95,7 +95,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetVisibilityDelegate d = new CrossThreadSetVisibilityDelegate(this.CrossThreadSetVisibility);
+                CrossThreadSetVisibilityDelegate d = this.CrossThreadSetVisibility;
                 this.Invoke(d, new Object[] { c, visible });
             }
             else
@@ -114,7 +114,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadRefreshDelegate d = new CrossThreadRefreshDelegate(this.CrossThreadRefresh);
+                CrossThreadRefreshDelegate d = this.CrossThreadRefresh;
                 this.Invoke(d, new Object[] { c });
             }
             else
@@ -133,7 +133,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadBeginUpdateDelegate d = new CrossThreadBeginUpdateDelegate(this.CrossThreadBeginUpdate);
+                CrossThreadBeginUpdateDelegate d = this.CrossThreadBeginUpdate;
                 this.Invoke(d, new Object[] { lview });
             }
             else
@@ -148,7 +148,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadEndUpdateDelegate d = new CrossThreadEndUpdateDelegate(this.CrossThreadEndUpdate);
+                CrossThreadEndUpdateDelegate d = this.CrossThreadEndUpdate;
                 this.Invoke(d, new Object[] { lview });
             }
             else
@@ -163,7 +163,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadClearDelegate d = new CrossThreadClearDelegate(this.CrossThreadClear);
+                CrossThreadClearDelegate d = this.CrossThreadClear;
                 this.Invoke(d, new Object[] { lview });
             }
             else
@@ -178,7 +178,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadAddDelegate d = new CrossThreadAddDelegate(this.CrossThreadAdd);
+                CrossThreadAddDelegate d = this.CrossThreadAdd;
                 this.Invoke(d, new Object[] { lview, item });
             }
             else
@@ -193,7 +193,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadAddItemDelegate d = new CrossThreadAddItemDelegate(this.CrossThreadAddItem);
+                CrossThreadAddItemDelegate d = this.CrossThreadAddItem;
                 this.Invoke(d, new Object[] { lview, item });
             }
             else
@@ -208,7 +208,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadAlterSubItemDelegate d = new CrossThreadAlterSubItemDelegate(this.CrossThreadAlterSubItem);
+                CrossThreadAlterSubItemDelegate d = this.CrossThreadAlterSubItem;
                 this.Invoke(d, new Object[] { item, index, text });
             }
             else
@@ -227,13 +227,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadGetSelectedItemDelegate d = new CrossThreadGetSelectedItemDelegate(this.CrossThreadGetSelectedItem);
+                CrossThreadGetSelectedItemDelegate d = this.CrossThreadGetSelectedItem;
                 return this.Invoke(d, new Object[] { lbox });
-            } 
-            else 
-            {
-                return lbox.SelectedItem;
             }
+            return lbox.SelectedItem;
         }
 
         private delegate int CrossThreadGetSelectedIndexDelegate(ListControl c);
@@ -242,13 +239,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadGetSelectedIndexDelegate d = new CrossThreadGetSelectedIndexDelegate(this.CrossThreadGetSelectedIndex);
+                CrossThreadGetSelectedIndexDelegate d = this.CrossThreadGetSelectedIndex;
                 return (int)this.Invoke(d, new Object[] { c });
             }
-            else
-            {
-                return c.SelectedIndex;
-            }
+            return c.SelectedIndex;
         }
 
         #endregion
@@ -261,7 +255,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetEnabledDelegate d = new CrossThreadSetEnabledDelegate(this.CrossThreadSetEnabled);
+                CrossThreadSetEnabledDelegate d = this.CrossThreadSetEnabled;
                 this.Invoke(d, new Object[] { c, enabled });
             }
             else
@@ -280,7 +274,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadUpdateProgressDelegate d = new CrossThreadUpdateProgressDelegate(this.CrossThreadUpdateProgress);
+                CrossThreadUpdateProgressDelegate d = this.CrossThreadUpdateProgress;
                 this.Invoke(d, new Object[] { prg, value });
             }
             else
@@ -295,7 +289,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetProgressMaximumDelegate d = new CrossThreadSetProgressMaximumDelegate(this.CrossThreadSetProgressMaximum);
+                CrossThreadSetProgressMaximumDelegate d = this.CrossThreadSetProgressMaximum;
                 this.Invoke(d, new Object[] { prg, value });
             }
             else
@@ -318,7 +312,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadSetMdiParentDelegate d = new CrossThreadSetMdiParentDelegate(this.CrossThreadSetMdiParent);
+                CrossThreadSetMdiParentDelegate d = this.CrossThreadSetMdiParent;
                 this.Invoke(d, new Object[] { f });
             }
             else
@@ -333,7 +327,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadShowDelegate d = new CrossThreadShowDelegate(this.CrossThreadShow);
+                CrossThreadShowDelegate d = this.CrossThreadShow;
                 this.Invoke(d, new Object[] { f });
             }
             else
@@ -348,7 +342,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (this.InvokeRequired)
             {
-                CrossThreadCloseDelegate d = new CrossThreadCloseDelegate(this.CrossThreadClose);
+                CrossThreadCloseDelegate d = this.CrossThreadClose;
                 this.Invoke(d, new Object[] { f });
             }
             else

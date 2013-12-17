@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.Text = String.Format(this.Text, task.Name, subtitle);
             this.ShowErrorTrace(task);
 
-            task.StateChanged += new TaskStateChanged(() => this.ShowErrorTrace(task));
+            task.StateChanged += () => this.ShowErrorTrace(task);
 
             this.btnClose.Focus();
         }

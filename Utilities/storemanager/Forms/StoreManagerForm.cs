@@ -38,6 +38,7 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Dialogues;
+using VDS.RDF.Utilities.StoreManager.Properties;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager.Forms
@@ -60,7 +61,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public StoreManagerForm(Connection connection)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (!connection.IsOpen) throw new ArgumentException("Connection must be in open state", "connection");
+            if (!connection.IsOpen) throw new ArgumentException(Resources.ConnectionMustBeOpen, "connection");
 
             InitializeComponent();
             this.Closing += OnClosing;
@@ -77,15 +78,15 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.lvwTasks.ListViewItemSorter = new SortTasksById();
 
             //Configure Graphs List
-            this.lvwGraphs.ItemDrag += new ItemDragEventHandler(lvwGraphs_ItemDrag);
-            this.lvwGraphs.DragEnter += new DragEventHandler(lvwGraphs_DragEnter);
-            this.lvwGraphs.DragDrop += new DragEventHandler(lvwGraphs_DragDrop);
+            this.lvwGraphs.ItemDrag += lvwGraphs_ItemDrag;
+            this.lvwGraphs.DragEnter += lvwGraphs_DragEnter;
+            this.lvwGraphs.DragDrop += lvwGraphs_DragDrop;
             this._copyGraphHandler = this.CopyGraphClick;
             this._moveGraphHandler = this.MoveGraphClick;
 
             //Startup Timer
             _timStartup = new System.Timers.Timer(250);
-            _timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
+            _timStartup.Elapsed += timStartup_Tick;
         }
 
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
@@ -99,11 +100,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             //Determine what SPARQL Update mode if any is supported
             if (this.StorageProvider is IUpdateableStorage)
             {
-                this.lblUpdateMode.Text = "Update Mode: Native";
+                this.lblUpdateMode.Text = Resources.UpdateModeNative;
             }
             else if (!this.StorageProvider.IsReadOnly)
             {
-                this.lblUpdateMode.Text = "Update Mode: Approximated";
+                this.lblUpdateMode.Text = Resources.UpdarteModeApproximated;
             }
             else
             {
@@ -172,7 +173,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void ListGraphs()
         {
             ListGraphsTask task = new ListGraphsTask(this.StorageProvider);
-            this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
+            this.AddTask(task, this.ListGraphsCallback);
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void ListStores()
         {
             ListStoresTask task = new ListStoresTask(this.StorageProvider.ParentServer);
-            this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
+            this.AddTask(task, this.ListStoresCallback);
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void ViewGraph(String graphUri)
         {
             ViewGraphTask task = new ViewGraphTask(this.StorageProvider, graphUri);
-            this.AddTask<IGraph>(task, this.ViewGraphCallback);
+            this.AddTask(task, this.ViewGraphCallback);
         }
 
         /// <summary>
@@ -200,8 +201,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// <param name="graphUri">Graph URI</param>
         private void PreviewGraph(String graphUri)
         {
-            PreviewGraphTask task = new PreviewGraphTask(this.StorageProvider, graphUri, Properties.Settings.Default.PreviewSize);
-            this.AddTask<IGraph>(task, this.PreviewGraphCallback);
+            PreviewGraphTask task = new PreviewGraphTask(this.StorageProvider, graphUri, Settings.Default.PreviewSize);
+            this.AddTask(task, this.PreviewGraphCallback);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void CountTriples(String graphUri)
         {
             CountTriplesTask task = new CountTriplesTask(this.StorageProvider, graphUri);
-            this.AddTask<TaskValueResult<int>>(task, this.CountTriplesCallback);
+            this.AddTask(task, this.CountTriplesCallback);
         }
 
         /// <summary>
@@ -221,7 +222,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void DeleteGraph(String graphUri)
         {
             DeleteGraphTask task = new DeleteGraphTask(this.StorageProvider, graphUri);
-            this.AddTask<TaskResult>(task, this.DeleteGraphCallback);
+            this.AddTask(task, this.DeleteGraphCallback);
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Query", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNotReady_Query_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -240,17 +241,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (this.chkPageQuery.Checked)
                 {
                     QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text, (int) this.numPageSize.Value);
-                    this.AddTask<Object>(task, this.QueryCallback);
+                    this.AddTask(task, this.QueryCallback);
                 }
                 else
                 {
                     QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text);
-                    this.AddTask<Object>(task, this.QueryCallback);
+                    this.AddTask(task, this.QueryCallback);
                 }
             }
             else
             {
-                MessageBox.Show("Unable to execute a SPARQL Query since your Store does not support SPARQL", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.Query_Unsupported, Resources.Query_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -261,12 +262,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Update", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNotReady_Update_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             UpdateTask task = new UpdateTask(this.StorageProvider, this.txtSparqlUpdate.Text);
-            this.AddTask<TaskResult>(task, this.UpdateCallback);
+            this.AddTask(task, this.UpdateCallback);
         }
 
         /// <summary>
@@ -276,13 +277,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNoteReady_Import_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (this.txtImportFile.Text.Equals(String.Empty))
             {
-                MessageBox.Show("Please enter a File to import from!", "No File to Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.ImportData_NoFile_Text, Resources.ImportData_NoFile_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -296,12 +297,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             catch (UriFormatException uriEx)
             {
-                MessageBox.Show("Cannot import data to an Invalid Default Target Graph URI - " + uriEx.Message, "Invalid Default Target Graph URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.ImportData_InvalidTarget_Text, uriEx.Message), Resources.ImportData_InvalidTarget_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             ImportFileTask task = new ImportFileTask(this.StorageProvider, this.txtImportFile.Text, targetUri, (int) this.numBatchSize.Value);
-            this.AddTask<TaskResult>(task, this.ImportCallback);
+            this.AddTask(task, this.ImportCallback);
         }
 
         /// <summary>
@@ -311,13 +312,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNoteReady_Import_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (this.txtImportUri.Text.Equals(String.Empty))
             {
-                MessageBox.Show("Please enter a URI to import from!", "No URI to Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.ImportData_NoUri_Text, Resources.ImportData_NoUri_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -331,18 +332,18 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             catch (UriFormatException uriEx)
             {
-                MessageBox.Show("Cannot import data to an Invalid Default Target Graph URI - " + uriEx.Message, "Invalid Default Target Graph URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.ImportData_InvalidTarget_Text, uriEx.Message), Resources.ImportData_InvalidTarget_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
                 ImportUriTask task = new ImportUriTask(this.StorageProvider, new Uri(this.txtImportUri.Text), targetUri, (int) this.numBatchSize.Value);
-                this.AddTask<TaskResult>(task, this.ImportCallback);
+                this.AddTask(task, this.ImportCallback);
             }
             catch (UriFormatException uriEx)
             {
-                MessageBox.Show("Cannot import data from an invalid URI - " + uriEx.Message, "Invalid Import URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.ImportData_InvalidSource_Text, uriEx.Message), Resources.ImportData_InvalidSource_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -353,18 +354,18 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNoteReady_Import_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (this.txtExportFile.Text.Equals(String.Empty))
             {
-                MessageBox.Show("Please enter a File to export to!", "No Export Destination", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.ExportData_NoFile_Text, Resources.ExportData_NoFile_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             ExportTask task = new ExportTask(this.StorageProvider, this.txtExportFile.Text);
-            this.AddTask<TaskResult>(task, this.ExportCallback);
+            this.AddTask(task, this.ExportCallback);
         }
 
         /// <summary>
@@ -402,11 +403,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Rename");
             Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
-            if (rename.ShowDialog() == DialogResult.OK)
-            {
-                CopyMoveTask task = new CopyMoveTask(this.Connection, this.Connection, source, rename.Uri, false);
-                this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
-            }
+            if (rename.ShowDialog() != DialogResult.OK) return;
+            CopyMoveTask task = new CopyMoveTask(this.Connection, this.Connection, source, rename.Uri, false);
+            this.AddTask(task, this.CopyMoveRenameCallback);
         }
 
         /// <summary>
@@ -426,7 +425,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
                 CopyMoveTask task = new CopyMoveTask(this.Connection, target, source, source, false);
-                this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
+                this.AddTask(task, this.CopyMoveRenameCallback);
             }
         }
 
@@ -439,7 +438,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void GetStore(String id)
         {
             GetStoreTask task = new GetStoreTask(this.StorageProvider.ParentServer, id);
-            this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
+            this.AddTask(task, this.GetStoreCallback);
         }
 
         /// <summary>
@@ -449,7 +448,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void DeleteStore(String id)
         {
             DeleteStoreTask task = new DeleteStoreTask(this.StorageProvider.ParentServer, id);
-            this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
+            this.AddTask(task, this.DeleteStoreCallback);
         }
 
         /// <summary>
@@ -459,7 +458,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void CreateStore(IStoreTemplate template)
         {
             CreateStoreTask task = new CreateStoreTask(this.StorageProvider.ParentServer, template);
-            this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
+            this.AddTask(task, this.CreateStoreCallback);
         }
 
         #endregion
@@ -502,7 +501,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.ImportUri();
         }
 
-        private void lvwGraphs_DoubleClick(object sender, System.EventArgs e)
+        private void lvwGraphs_DoubleClick(object sender, EventArgs e)
         {
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
@@ -579,7 +578,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void timStartup_Tick(object sender, EventArgs e)
         {
             if (!this.StorageProvider.IsReady) return;
-            this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+            this.CrossThreadSetText(this.stsCurrent, Resources.Status_Ready);
             this.ListGraphs();
             if (this.StorageProvider.ParentServer != null)
             {
@@ -638,12 +637,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         #region Graphs Context Menu
 
-        private void mnuGraphs_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        private void mnuGraphs_Opening(object sender, CancelEventArgs e)
         {
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 this.mnuDeleteGraph.Enabled = this.StorageProvider.DeleteSupported;
-                this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Properties.Settings.Default.PreviewSize);
+                this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Settings.Default.PreviewSize);
                 this.mnuMoveGraphTo.Enabled = this.StorageProvider.DeleteSupported;
                 this.mnuCopyGraph.Enabled = !this.StorageProvider.IsReadOnly;
                 this.mnuRenameGraph.Enabled = !this.StorageProvider.IsReadOnly && this.StorageProvider.DeleteSupported;
@@ -698,15 +697,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuDeleteGraph_Click(object sender, EventArgs e)
         {
-            if (this.lvwGraphs.SelectedItems.Count > 0)
-            {
-                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                if (MessageBox.Show("Are you sure you wish to delete the Graph '" + graphUri + "'?  This action is non-reversible", "Delete Graph Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
-                {
-                    if (graphUri.Equals("Default Graph")) graphUri = null;
-                    this.DeleteGraph(graphUri);
-                }
-            }
+            if (this.lvwGraphs.SelectedItems.Count <= 0) return;
+            String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+            if (MessageBox.Show(string.Format(Resources.DeleteGraph_Confirm_Text, graphUri), Resources.DeleteGraph_Confirm_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            if (graphUri.Equals("Default Graph")) graphUri = null;
+            this.DeleteGraph(graphUri);
         }
 
         private void mnuPreviewGraph_Click(object sender, EventArgs e)
@@ -941,7 +936,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else
                 {
-                    MessageBox.Show("Task Information cannot be shown as the Task type is unknown", "Task Information Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(Resources.TaskInfo_Unavailable_Text, Resources.TaskInfo_Unavailable_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -997,7 +992,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else
                 {
-                    MessageBox.Show("Task Information cannot be shown as the Task type is unknown", "Task Information Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(Resources.TaskInfo_Unavailable_Text, Resources.TaskInfo_Unavailable_Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -1030,12 +1025,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         }
                         else
                         {
-                            CrossThreadMessage("Unable to show Query Results as did not get a Graph/Result Set as expected", "Unable to Show Results", MessageBoxIcon.Error);
+                            CrossThreadMessage(Resources.QueryResults_NotViewable_Text, Resources.QueryResults_NotViewable_Title, MessageBoxIcon.Error);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Query Results are unavailable", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                       CrossThreadMessage(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxIcon.Error);
                     }
                 }
                 else if (tag is ITask<IGraph>)
@@ -1049,7 +1044,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     else
                     {
-                        CrossThreadMessage("Unable to show Graph as there is no Graph as expected", "Unable to Show Graph", MessageBoxIcon.Error);
+                        CrossThreadMessage(Resources.Graph_Unavailable_Text, Resources.Graph_Unavailable_Title, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1084,7 +1079,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void mnuNewStore_Click(object sender, EventArgs e)
         {
             NewStoreForm newStore = new NewStoreForm(this.StorageProvider.ParentServer);
-            if (newStore.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (newStore.ShowDialog() == DialogResult.OK)
             {
                 this.CreateStore(newStore.Template);
             }
@@ -1099,7 +1094,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             else
             {
-                MessageBox.Show("No Store selected", "Open Store Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.OpenStore_Error_Text, Resources.OpenStore_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1108,7 +1103,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             if (this.lvwStores.SelectedItems.Count > 0)
             {
                 String id = this.lvwStores.SelectedItems[0].Text;
-                if (MessageBox.Show("Are you sure you wish to delete the Store '" + id + "'?  This action is non-reversible", "Delete Store Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show(string.Format(Resources.DeleteStore_Confirm_Text, id), Resources.DeleteStore_Confirm_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     this.DeleteStore(id);
                 }
@@ -1135,7 +1130,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             CrossThreadAddItem(this.lvwTasks, item);
 
             //Ensure that the Task Information gets updated automatically when the Task State changes
-            TaskStateChanged d = delegate()
+            TaskStateChanged d = delegate
                 {
                     CrossThreadAlterSubItem(item, 2, task.State.GetStateDescription());
                     CrossThreadAlterSubItem(item, 3, task.Information);
@@ -1175,7 +1170,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                this.CrossThreadSetText(this.stsCurrent, "Rendering Graph List...");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_RenderingGraphList);
                 this.CrossThreadSetVisibility(this.lvwGraphs, true);
                 this.CrossThreadBeginUpdate(this.lvwGraphs);
                 this.CrossThreadClear(this.lvwGraphs);
@@ -1187,17 +1182,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
                 this.CrossThreadEndUpdate(this.lvwGraphs);
 
-                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_Ready);
                 this.CrossThreadSetEnabled(this.btnGraphRefresh, true);
 
-                task.Information = this.lvwGraphs.Items.Count + " Graph URI(s) were returned";
+                task.Information = string.Format(Resources.ListGraphs_Information, this.lvwGraphs.Items.Count);
             }
             else
             {
-                this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_GraphListingUnavailable);
                 if (task.Error != null)
                 {
-                    CrossThreadMessage("Unable to list Graphs due to the following error:\n" + task.Error.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    CrossThreadMessage(string.Format(Resources.ListGraphs_Error_Text, task.Error.Message), Resources.ListGraphs_Error_Title, MessageBoxIcon.Warning);
                 }
                 this.CrossThreadSetVisibility(this.lvwGraphs, false);
                 this.CrossThreadSetVisibility(this.lblGraphListUnavailable, true);
@@ -1209,7 +1204,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                this.CrossThreadSetText(this.stsCurrent, "Rendering Store List...");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_RenderingStoreList);
                 this.CrossThreadSetVisibility(this.lvwStores, true);
                 this.CrossThreadBeginUpdate(this.lvwStores);
                 this.CrossThreadClear(this.lvwStores);
@@ -1224,17 +1219,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
                 this.CrossThreadEndUpdate(this.lvwStores);
 
-                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_Ready);
                 this.CrossThreadSetEnabled(this.btnRefreshStores, true);
 
-                task.Information = this.lvwStores.Items.Count + " Store IDs were returned";
+                task.Information = string.Format(Resources.ListStores_Information, this.lvwStores.Items.Count);
             }
             else
             {
-                this.CrossThreadSetText(this.stsCurrent, "Store Listing unavailable - Store is ready");
+                this.CrossThreadSetText(this.stsCurrent, Resources.Status_StoreListUnavailable);
                 if (task.Error != null)
                 {
-                    CrossThreadMessage("Unable to list Stores due to the following error:\n" + task.Error.Message, "Store List Unavailable", MessageBoxIcon.Warning);
+                    CrossThreadMessage(string.Format(Resources.ListStores_Error_Text, task.Error.Message), Resources.ListStores_Error_Title, MessageBoxIcon.Warning);
                 }
                 this.CrossThreadRefresh(this.tabServer);
             }
@@ -1252,11 +1247,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 if (task.Error != null)
                 {
-                    CrossThreadMessage("View Graph Failed due to the following error: " + task.Error.Message, "View Graph Failed", MessageBoxIcon.Error);
+                    CrossThreadMessage(string.Format(Resources.ViewGraph_Error_Text, task.Error.Message), Resources.ViewGraph_Error_Title, MessageBoxIcon.Error);
                 }
                 else
                 {
-                    CrossThreadMessage("View Graph Failed due to an unknown error", "View Graph Failed", MessageBoxIcon.Error);
+                    CrossThreadMessage(Resources.ViewGraph_UnknownError_Text, Resources.ViewGraph_Error_Title, MessageBoxIcon.Error);
                 }
             }
         }
@@ -1286,7 +1281,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                MessageBox.Show(task.Information, "Triples Counted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CrossThreadMessage(task.Information, Resources.TriplesCounted, MessageBoxIcon.Information);
             }
             else
             {
@@ -1323,7 +1318,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void QueryCallback(ITask<Object> task)
         {
-            QueryTask qTask = null;
+            QueryTask qTask;
             if (task is QueryTask)
             {
                 qTask = (QueryTask) task;
@@ -1342,7 +1337,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     catch
                     {
-                        //Ignore Exceptions in reporting Execution Time
+                        // TODO Display general status without execution time
                     }
                 }
             }
@@ -1364,7 +1359,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else if (result is SparqlResultSet)
                 {
-                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.StorageProvider.ToString(), qTask.Query.NamespaceMap);
+                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.StorageProvider.ToString(), qTask.Query != null ? qTask.Query.NamespaceMap : null);
                     CrossThreadSetMdiParent(resultsViewer);
                     CrossThreadShow(resultsViewer);
                 }
@@ -1406,7 +1401,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     catch
                     {
-                        //Ignore Exceptions in reporting Execution Time
+                        // TODO Display general status without execution time
                     }
                 }
             }
@@ -1477,11 +1472,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (task is CopyMoveTask)
                 {
                     CopyMoveTask cmTask = (CopyMoveTask) task;
-                    if (!ReferenceEquals(this.StorageProvider, cmTask.Target))
+                    if (!ReferenceEquals(this.Connection, cmTask.Target))
                     {
                         foreach (StoreManagerForm managerForm in Program.MainForm.MdiChildren.OfType<StoreManagerForm>())
                         {
-                            if (ReferenceEquals(this, managerForm) || !ReferenceEquals(cmTask.Target, managerForm.Connection.StorageProvider)) continue;
+                            if (ReferenceEquals(this, managerForm) || !ReferenceEquals(cmTask.Target, managerForm.Connection)) continue;
                             managerForm.ListGraphs();
                             break;
                         }
