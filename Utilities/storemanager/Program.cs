@@ -28,13 +28,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
     internal static class Program
     {
-        private static ManagerForm _main;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -43,17 +42,14 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            _main = new ManagerForm();
-            Application.Run(_main);
+            MainForm = new ManagerForm();
+            Application.Run(MainForm);
         }
 
         /// <summary>
         /// Gets the main form
         /// </summary>
-        public static ManagerForm MainForm
-        {
-            get { return _main; }
-        }
+        public static ManagerForm MainForm { get; private set; }
 
         /// <summary>
         /// Gets the active connections by examining the open store manager forms
@@ -62,12 +58,41 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             get
             {
-                if (_main != null)
+                if (MainForm != null)
                 {
-                    return (from managerForm in _main.MdiChildren.OfType<StoreManagerForm>()
+                    return (from managerForm in MainForm.MdiChildren.OfType<StoreManagerForm>()
                             select managerForm.Connection);
                 }
                 return Enumerable.Empty<Connection>();
+            }
+        }
+
+        /// <summary>
+        /// Generic internal error handler
+        /// </summary>
+        /// <param name="message">Friendly message to display to the user</param>
+        /// <param name="ex">Exception</param>
+        public static void HandleInternalError(String message, Exception ex)
+        {
+            HandleInternalError(message, ex, false);
+        }
+
+        /// <summary>
+        /// Generic internal error handler
+        /// </summary>
+        /// <param name="message">Friendly message to display to the user</param>
+        /// <param name="ex">Exception</param>
+        /// <param name="exit">Whether the program should now exit</param>
+        public static void HandleInternalError(String message, Exception ex, bool exit)
+        {
+            if (exit)
+            {
+                MessageBox.Show(Resources.HandleInternalError_Exit + message, Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(1);
+            }
+            else
+            {
+                MessageBox.Show(Resources.HandleInternalError_NonExit + message, Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

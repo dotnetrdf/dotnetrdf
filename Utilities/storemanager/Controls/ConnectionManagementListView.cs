@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Controls
 {
@@ -76,9 +77,9 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         private List<Connection> GetSelectedConnections()
         {
             return (from ListViewItem item
-                    in this.lvwConnections.SelectedItems
+                        in this.lvwConnections.SelectedItems
                     where item.Tag is Connection
-                    select (Connection)item.Tag).ToList();
+                    select (Connection) item.Tag).ToList();
         }
 
         private void MnuContextOnOpening(object sender, CancelEventArgs cancelEventArgs)
@@ -174,8 +175,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             item.SubItems.Add(connection.Created.ToString());
             item.SubItems.Add(connection.LastModified.ToString());
             item.SubItems.Add(connection.LastOpened.HasValue ? connection.LastOpened.Value.ToString() : String.Empty);
-            item.SubItems.Add(connection.IsOpen ? "Yes" : "No");
-            item.SubItems.Add(connection.ActiveUsers.ToString());
+            item.SubItems.Add(connection.IsOpen ? Resources.Yes : Resources.No);
+            item.SubItems.Add(connection.ActiveUsers.ToString(System.Globalization.CultureInfo.CurrentUICulture));
             return item;
         }
 
@@ -188,7 +189,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.lvwConnections.AutoResizeColumn(1, resizeStyle);
             this.lvwConnections.AutoResizeColumn(2, resizeStyle);
             this.lvwConnections.AutoResizeColumn(3, resizeStyle);
-            this.lvwConnections.AutoResizeColumn(4,ColumnHeaderAutoResizeStyle.HeaderSize);
+            this.lvwConnections.AutoResizeColumn(4, ColumnHeaderAutoResizeStyle.HeaderSize);
             this.lvwConnections.AutoResizeColumn(5, ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
@@ -280,9 +281,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             List<Connection> selectedConnections = this.GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                // TODO Add confirmation dialogue if enabled
-                // TODO Handle errors
-                this._connections.Remove(connection);
+                if (this.RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmRemove_Text, connection.Name), Resources.ConnectionManagement_ConfirmRemove_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
+                try
+                {
+                    this._connections.Remove(connection);
+                }
+                catch (Exception ex)
+                {
+                    Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Remove_Error, connection.Name), ex);
+                }
             }
         }
 
@@ -291,9 +298,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             List<Connection> selectedConnections = this.GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                // TODO Add confirmation dialogue if enabled
-                // TODO Handle errors
-                connection.Close();
+                if (this.RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmClose_Text, connection.Name), Resources.ConnectionManagement_ConfirmClose_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
+                try
+                {
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                   Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Close_Error, connection.Name), ex);
+                }
             }
         }
 
@@ -314,12 +327,18 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             List<Connection> selectedConnections = this.GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                // TODO Handle errors
-                connection.Open();
-                StoreManagerForm storeManager = new StoreManagerForm(connection);
-                Program.MainForm.AddRecentConnection(connection);
-                storeManager.MdiParent = Program.MainForm;
-                storeManager.Show();
+                try
+                {
+                    connection.Open();
+                    StoreManagerForm storeManager = new StoreManagerForm(connection);
+                    Program.MainForm.AddRecentConnection(connection);
+                    storeManager.MdiParent = Program.MainForm;
+                    storeManager.Show();
+                }
+                catch (Exception ex)
+                {
+                    Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Open_Error, connection.Name), ex);
+                }
             }
         }
 
@@ -328,15 +347,21 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             List<Connection> selectedConnections = this.GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                // TODO Handle errors
-                EditConnectionForm editConnection = new EditConnectionForm(connection.Definition);
-                editConnection.MdiParent = Program.MainForm;
-                if (editConnection.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
-                    Program.MainForm.AddRecentConnection(editConnection.Connection);
-                    storeManager.MdiParent = Program.MainForm;
-                    storeManager.Show();
+                    EditConnectionForm editConnection = new EditConnectionForm(connection.Definition);
+                    editConnection.MdiParent = Program.MainForm;
+                    if (editConnection.ShowDialog() == DialogResult.OK)
+                    {
+                        StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
+                        Program.MainForm.AddRecentConnection(editConnection.Connection);
+                        storeManager.MdiParent = Program.MainForm;
+                        storeManager.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Edit_Error, connection.Name), ex);
                 }
             }
         }

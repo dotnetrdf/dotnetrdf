@@ -162,7 +162,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lvwRecent.AllowCopy = true;
             this.lvwRecent.AllowEdit = true;
             this.lvwRecent.AllowOpen = true;
-            this.lvwRecent.AllowRemove = false;
+            this.lvwRecent.AllowRemove = true;
             this.lvwRecent.AllowRename = true;
             this.lvwRecent.AllowShow = true;
             this.lvwRecent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
