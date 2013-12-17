@@ -73,15 +73,15 @@ namespace VDS.RDF.Query
     {
         private String _command = String.Empty;
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
-        private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
-        private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
-        private SparqlFormatter _formatter = new SparqlFormatter();
-        private IGraph _g = new NonIndexedGraph();
+        private readonly Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
+        private readonly Dictionary<String, INode> _variables = new Dictionary<string, INode>();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly IGraph _g = new NonIndexedGraph();
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
 
-        private const String _validParameterNamePattern = "^@?[\\w\\-_]+$";
-        private const String _validVariableNamePattern = "^[?$]?[\\w\\-_]+$";
+        private const String ValidParameterNamePattern = "^@?[\\w\\-_]+$";
+        private const String ValidVariableNamePattern = "^[?$]?[\\w\\-_]+$";
 
         /// <summary>
         /// Creates a new empty parameterized String
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the Query/Update
+        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the command
         /// </summary>
         public INamespaceMapper Namespaces
         {
@@ -114,6 +114,11 @@ namespace VDS.RDF.Query
                 if (value != null) this._nsmap = value;
             }
         }
+
+        /// <summary>
+        /// Gets/Sets the Base URI which will be used to prepend BASE declarations to the command
+        /// </summary>
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets/Sets the parameterized Command Text
@@ -218,7 +223,7 @@ namespace VDS.RDF.Query
         public void SetParameter(String name, INode value)
         {
             //Only allow the setting of valid parameter names
-            if (!Regex.IsMatch(name, _validParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
+            if (!Regex.IsMatch(name, ValidParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
 
             //OPT: Could ensure that the parameter name actually appears in the command?
             name = (name.StartsWith("@")) ? name.Substring(1) : name;
@@ -268,7 +273,7 @@ namespace VDS.RDF.Query
         public void SetVariable(String name, INode value)
         {
             //Only allow the setting of valid variable names
-            if (!Regex.IsMatch(name, _validVariableNamePattern)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
+            if (!Regex.IsMatch(name, ValidVariableNamePattern)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
 
             if (this._variables.ContainsKey(name))
             {
@@ -422,14 +427,7 @@ namespace VDS.RDF.Query
         public void SetLiteral(String name, String value, Uri datatype)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
-            if (datatype == null)
-            {
-                this.SetParameter(name, new LiteralNode(this._g, value));
-            }
-            else
-            {
-                this.SetParameter(name, new LiteralNode(this._g, value, datatype));
-            }
+            this.SetParameter(name, datatype == null ? new LiteralNode(this._g, value) : new LiteralNode(this._g, value, datatype));
         }
 
         /// <summary>
@@ -467,7 +465,7 @@ namespace VDS.RDF.Query
         public void SetBlankNode(String name, String value)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Blank Node to have a null ID");
-            if (value.Equals(String.Empty)) throw new ArgumentException("value", "Cannot set a Blank Node to have an empty ID");
+            if (value.Equals(String.Empty)) throw new ArgumentException("Cannot set a Blank Node to have an empty ID", "value");
             this.SetParameter(name, this._g.CreateBlankNode(value));
         }
 
@@ -528,10 +526,16 @@ namespace VDS.RDF.Query
         {
             String output = String.Empty;
 
-            //First prepend any Namespace Declarations
+            // First prepend Base declaration
+            if (this.BaseUri != null)
+            {
+                output += "BASE <" + this._formatter.FormatUri(this.BaseUri) + ">\r\n";
+            }
+
+            // Next prepend any Namespace Declarations
             foreach (String prefix in this._nsmap.Prefixes)
             {
-                output += "PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\n";
+                output += "PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\r\n";
             }
                 
             //Then add the actual Command Text
