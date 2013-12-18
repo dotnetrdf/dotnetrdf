@@ -33,6 +33,7 @@ using VDS.RDF.GUI;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Dialogues;
 using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Forms
@@ -378,27 +379,32 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
-        private void PromptRestoreConnections()
+        private bool PromptRestoreConnections()
         {
-            if (this.ActiveConnections == null) return;
+            if (this.ActiveConnections == null) return false;
             if (Settings.Default.PromptRestoreActiveConnections)
             {
                 if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
                 {
-                    // TODO Make into proper dialogue with option to disable future prompts
                     try
                     {
-                        if (MessageBox.Show("Do you wish to restore active connections next time you start Store Manager?", "Save Active Connections?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        RestoreConnectionsDialogue restoreConnections = new RestoreConnectionsDialogue();
+                        DialogResult result = restoreConnections.ShowDialog();
+                        switch (result)
                         {
-                            this.ActiveConnections.Clear();
-                            Settings.Default.RestoreActiveConnections = false;
-                        }
-                        else
-                        {
-                            Settings.Default.RestoreActiveConnections = true;
-                            this.ActiveConnections.Close();
+                            case DialogResult.Cancel:
+                                return true;
+                            case DialogResult.Yes:
+                                Settings.Default.RestoreActiveConnections = true;
+                                this.ActiveConnections.Close();
+                                break;
+                            default:
+                                Settings.Default.RestoreActiveConnections = false;
+                                this.ActiveConnections.Clear();
+                                break;
                         }
                         Settings.Default.Save();
+                        return false;
                     }
                     catch (Exception ex)
                     {
@@ -406,10 +412,19 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                 }
             }
+            else if (Settings.Default.AlwaysRestoreActiveConnections)
+            {
+                if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
+                {
+                    Settings.Default.RestoreActiveConnections = true;
+                    this.ActiveConnections.Close();
+                }
+            }
             else
             {
                 this.ActiveConnections.Clear();
             }
+            return false;
         }
 
         private void RestoreConnections()

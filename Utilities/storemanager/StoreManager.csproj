@@ -105,6 +105,12 @@
     <Compile Include="Dialogues\CopyMoveRenameGraphDialogue.Designer.cs">
       <DependentUpon>CopyMoveRenameGraphDialogue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogues\RestoreConnectionsDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogues\RestoreConnectionsDialogue.Designer.cs">
+      <DependentUpon>RestoreConnectionsDialogue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CrossThreadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,6 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConnectionSettingsGrid.resx">
       <DependentUpon>ConnectionSettingsGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogues\RestoreConnectionsDialogue.resx">
+      <DependentUpon>RestoreConnectionsDialogue.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EditConnectionForm.resx">
       <DependentUpon>EditConnectionForm.cs</DependentUpon>

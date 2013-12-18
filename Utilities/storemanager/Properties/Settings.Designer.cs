@@ -121,5 +121,17 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
                 this["PromptRestoreActiveConnections"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlwaysRestoreActiveConnections {
+            get {
+                return ((bool)(this["AlwaysRestoreActiveConnections"]));
+            }
+            set {
+                this["AlwaysRestoreActiveConnections"] = value;
+            }
+        }
     }
 }
