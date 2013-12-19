@@ -57,6 +57,8 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
 
+           
+
             //Ensure we upgrade settings if user has come from an older version of the application
             if (Properties.Settings.Default.UpgradeRequired)
             {
@@ -727,6 +729,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             StoreManagerForm genManager = new StoreManagerForm(connection);
             genManager.MdiParent = this;
+            genManager.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
             genManager.Show();
 
             if (addRecentConnection)
@@ -760,9 +763,13 @@ namespace VDS.RDF.Utilities.StoreManager
                     this.ActiveMdiChild.WindowState == FormWindowState.Maximized &&
                     (tabConnections.SelectedTab.Tag as Form).WindowState != FormWindowState.Maximized)
                 {
+                    (tabConnections.SelectedTab.Tag as Form).Hide();
                     (tabConnections.SelectedTab.Tag as Form).WindowState = FormWindowState.Maximized;
+                    (tabConnections.SelectedTab.Tag as Form).Show();
+                   
                 }
                 (tabConnections.SelectedTab.Tag as Form).Select();
+                
             }
         }
 
@@ -801,5 +808,20 @@ namespace VDS.RDF.Utilities.StoreManager
         {
 
         }
+
+        private void mnuShowEntityButtons_Click(object sender, EventArgs e)
+        {
+            foreach (var mdiChild in this.MdiChildren)
+            {
+                if (mdiChild is StoreManagerForm)
+                {
+                    var smf = (StoreManagerForm)mdiChild;
+                    smf.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
+                }
+            }
+           
+        }
+
+       
     }
 }

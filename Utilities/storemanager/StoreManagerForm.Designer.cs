@@ -78,8 +78,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableQueryTab = new System.Windows.Forms.TableLayoutPanel();
             this.txtSparqlQuery = new System.Windows.Forms.TextBox();
             this.panelQuery = new System.Windows.Forms.Panel();
-            this.numValuesPerPredicateLimit = new System.Windows.Forms.NumericUpDown();
-            this.chkAsEntities = new System.Windows.Forms.CheckBox();
+            this.btnOpenEntityGeneratorForm = new System.Windows.Forms.Button();
             this.btnChangeOrientation = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnLoadQuery = new System.Windows.Forms.Button();
@@ -162,7 +161,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.splitQueryResults.SuspendLayout();
             this.tableQueryTab.SuspendLayout();
             this.panelQuery.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numValuesPerPredicateLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPageSize)).BeginInit();
             this.tabSparqlUpdate.SuspendLayout();
             this.tableUpdateTab.SuspendLayout();
@@ -217,16 +215,16 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lblGraphListUnavailable
             // 
-            this.lblGraphListUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblGraphListUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGraphListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGraphListUnavailable.Location = new System.Drawing.Point(23, 117);
             this.lblGraphListUnavailable.Name = "lblGraphListUnavailable";
             this.lblGraphListUnavailable.Size = new System.Drawing.Size(568, 31);
             this.lblGraphListUnavailable.TabIndex = 6;
             this.lblGraphListUnavailable.Text = "Unable to list Graphs since your selected Store does not support this feature fro" +
-    "m within this Tool";
+                "m within this Tool";
             this.lblGraphListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblGraphListUnavailable.Visible = false;
             // 
@@ -245,9 +243,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // lvwGraphs
             // 
             this.lvwGraphs.AllowDrop = true;
-            this.lvwGraphs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwGraphs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwGraphs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colGraphURI});
             this.lvwGraphs.ContextMenuStrip = this.mnuGraphs;
@@ -418,13 +416,12 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtSparqlQuery.Size = new System.Drawing.Size(590, 138);
             this.txtSparqlQuery.TabIndex = 1;
             this.txtSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
-    "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
-    "\n";
+                "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
+                "\n";
             // 
             // panelQuery
             // 
-            this.panelQuery.Controls.Add(this.numValuesPerPredicateLimit);
-            this.panelQuery.Controls.Add(this.chkAsEntities);
+            this.panelQuery.Controls.Add(this.btnOpenEntityGeneratorForm);
             this.panelQuery.Controls.Add(this.btnChangeOrientation);
             this.panelQuery.Controls.Add(this.btnSaveQuery);
             this.panelQuery.Controls.Add(this.btnLoadQuery);
@@ -437,33 +434,16 @@ namespace VDS.RDF.Utilities.StoreManager
             this.panelQuery.Size = new System.Drawing.Size(588, 62);
             this.panelQuery.TabIndex = 8;
             // 
-            // numValuesPerPredicateLimit
+            // btnOpenEntityGeneratorForm
             // 
-            this.numValuesPerPredicateLimit.Location = new System.Drawing.Point(238, 36);
-            this.numValuesPerPredicateLimit.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numValuesPerPredicateLimit.Name = "numValuesPerPredicateLimit";
-            this.numValuesPerPredicateLimit.Size = new System.Drawing.Size(35, 20);
-            this.numValuesPerPredicateLimit.TabIndex = 10;
-            this.numValuesPerPredicateLimit.ThousandsSeparator = true;
-            this.numValuesPerPredicateLimit.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // chkAsEntities
-            // 
-            this.chkAsEntities.AutoSize = true;
-            this.chkAsEntities.Location = new System.Drawing.Point(173, 39);
-            this.chkAsEntities.Name = "chkAsEntities";
-            this.chkAsEntities.Size = new System.Drawing.Size(72, 17);
-            this.chkAsEntities.TabIndex = 9;
-            this.chkAsEntities.Text = "AsEntities";
-            this.chkAsEntities.UseVisualStyleBackColor = true;
+            this.btnOpenEntityGeneratorForm.Location = new System.Drawing.Point(174, 35);
+            this.btnOpenEntityGeneratorForm.Name = "btnOpenEntityGeneratorForm";
+            this.btnOpenEntityGeneratorForm.Size = new System.Drawing.Size(123, 23);
+            this.btnOpenEntityGeneratorForm.TabIndex = 8;
+            this.btnOpenEntityGeneratorForm.Text = "CreateQueryForEntities";
+            this.btnOpenEntityGeneratorForm.UseVisualStyleBackColor = true;
+            this.btnOpenEntityGeneratorForm.Visible = false;
+            this.btnOpenEntityGeneratorForm.Click += new System.EventHandler(this.btnOpenEntityGeneratorForm_Click);
             // 
             // btnChangeOrientation
             // 
@@ -536,7 +516,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.chkPageQuery.Size = new System.Drawing.Size(390, 17);
             this.chkPageQuery.TabIndex = 2;
             this.chkPageQuery.Text = "Issue this query repeatedly until there are no further results using page size of" +
-    " ";
+                " ";
             this.chkPageQuery.UseVisualStyleBackColor = true;
             // 
             // lblQueryIntro
@@ -632,8 +612,8 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtSparqlUpdate.Size = new System.Drawing.Size(592, 416);
             this.txtSparqlUpdate.TabIndex = 2;
             this.txtSparqlUpdate.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
-    "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
-    "\n";
+                "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
+                "\n";
             // 
             // lblUpdateIntro
             // 
@@ -927,9 +907,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // lvwStores
             // 
             this.lvwStores.AllowDrop = true;
-            this.lvwStores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwStores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colStoreID});
             this.lvwStores.ContextMenuStrip = this.mnuStores;
@@ -994,9 +974,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // propInfo
             // 
-            this.propInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.propInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.propInfo.Location = new System.Drawing.Point(6, 57);
             this.propInfo.Name = "propInfo";
             this.propInfo.Size = new System.Drawing.Size(603, 491);
@@ -1038,9 +1018,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lvwTasks
             // 
-            this.lvwTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwTasks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colID,
             this.colTask,
@@ -1208,7 +1188,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableQueryTab.PerformLayout();
             this.panelQuery.ResumeLayout(false);
             this.panelQuery.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numValuesPerPredicateLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPageSize)).EndInit();
             this.tabSparqlUpdate.ResumeLayout(false);
             this.tableUpdateTab.ResumeLayout(false);
@@ -1337,7 +1316,6 @@ namespace VDS.RDF.Utilities.StoreManager
         private GUI.WinForms.ResultSetViewerControl resultSetViewerControl;
         private System.Windows.Forms.Button btnChangeOrientation;
         private GUI.WinForms.GraphViewerControl graphViewerControl;
-        private System.Windows.Forms.CheckBox chkAsEntities;
-        private System.Windows.Forms.NumericUpDown numValuesPerPredicateLimit;
+        private System.Windows.Forms.Button btnOpenEntityGeneratorForm;
     }
 }

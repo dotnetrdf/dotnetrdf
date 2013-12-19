@@ -310,6 +310,26 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #region Cross Thread Form Management
 
+
+        private delegate void CrossThreadSetQueryDelegate(
+           TextBox txtSparqlQuery,
+           string newQuery);
+
+        protected void CrossThreadSetQuery(
+            TextBox txtSparqlQuery,
+            string newQuery)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadSetQueryDelegate d = new CrossThreadSetQueryDelegate(this.CrossThreadSetQuery);
+                this.Invoke(d, new Object[] { txtSparqlQuery, newQuery});
+            }
+            else
+            {
+                txtSparqlQuery.Text = newQuery;
+            }
+        }
+
         private delegate void CrossThreadLoadResultSetDelegate(
             ResultSetViewerControl resultSetViewerControl,
             SparqlResultSet results,

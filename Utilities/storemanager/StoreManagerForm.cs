@@ -60,6 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
 
             splitQueryResults.Panel2Collapsed = true;
+            
 
             //Configure Form
             this._manager = manager;
@@ -130,6 +131,11 @@ namespace VDS.RDF.Utilities.StoreManager
 
             //Run Startup Timer
             timStartup.Start();
+        }
+
+        public void ShowHideEntitiesButtons(bool state)
+        {
+            this.btnOpenEntityGeneratorForm.Visible = state;
         }
 
         #region Store Operations
@@ -212,15 +218,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 else
                 {
-                    QueryTask task;
-                    if (this.chkAsEntities.Checked)
-                    {
-                        task = new QueryAsTableTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, (int)this.numValuesPerPredicateLimit.Value);
-                    }
-                    else
-                    {
-                        task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
-                    }
+                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
             }
@@ -229,6 +227,31 @@ namespace VDS.RDF.Utilities.StoreManager
                 MessageBox.Show("Unable to execute a SPARQL Query since your Store does not support SPARQL", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Runs a QueryAsTableTask
+        /// </summary>
+        public void GenerateQueryForEntities(int predicateLimitCount, int columnWordsCount)
+        {
+            if (!this._manager.IsReady)
+            {
+                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Query", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (this._manager is IQueryableStorage)
+            {
+                QueryTask task = new QueryAsTableTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, predicateLimitCount, columnWordsCount);
+               
+                this.AddTask<Object>(task, this.QueryCallback);
+                
+            }
+            else
+            {
+                MessageBox.Show("Unable to execute a SPARQL Query since your Store does not support SPARQL", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         /// <summary>
         /// Runs an Update
@@ -1346,11 +1369,19 @@ namespace VDS.RDF.Utilities.StoreManager
 
             if (task.State == TaskState.Completed)
             {
+                //in this case we only need to ovewrite query window
+                if (task is QueryAsTableTask)
+                {
+                    var queryAsTableTask = (QueryAsTableTask) task;
+                    CrossThreadSetQuery(this.txtSparqlQuery, queryAsTableTask.OutputTableQuery);
+                    return;
+                }
+
+
                 Object result = task.Result;
 
                 if (result is IGraph)
                 {
-
                     CrossThreadShowQueryPanel(splitQueryResults);
                     CrossThreadSetResultGraph(graphViewerControl, (IGraph)result, resultSetViewerControl);
                 }
@@ -1580,6 +1611,13 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.splitQueryResults.Orientation = Orientation.Horizontal;
             }
+        }
+
+        private void btnOpenEntityGeneratorForm_Click(object sender, EventArgs e)
+        {
+            var entityQueryGeneratorForm = new EntityQueryGeneratorForm();
+            entityQueryGeneratorForm.Tag = this;
+            entityQueryGeneratorForm.ShowDialog();
         }
 
     }

@@ -76,6 +76,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUseUtf8Bom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowStartPage = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowEntityButtons = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWindows = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCascade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileVertical = new System.Windows.Forms.ToolStripMenuItem();
@@ -242,7 +243,8 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             this.mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuUseUtf8Bom,
-            this.mnuShowStartPage});
+            this.mnuShowStartPage,
+            this.mnuShowEntityButtons});
             this.mnuOptions.Name = "mnuOptions";
             this.mnuOptions.Size = new System.Drawing.Size(61, 20);
             this.mnuOptions.Text = "&Options";
@@ -264,6 +266,14 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuShowStartPage.Size = new System.Drawing.Size(217, 22);
             this.mnuShowStartPage.Text = "Show Start Page";
             this.mnuShowStartPage.Click += new System.EventHandler(this.mnuShowStartPage_Click);
+            // 
+            // mnuShowEntityButtons
+            // 
+            this.mnuShowEntityButtons.CheckOnClick = true;
+            this.mnuShowEntityButtons.Name = "mnuShowEntityButtons";
+            this.mnuShowEntityButtons.Size = new System.Drawing.Size(217, 22);
+            this.mnuShowEntityButtons.Text = "Show Entity Query Buttons";
+            this.mnuShowEntityButtons.Click += new System.EventHandler(this.mnuShowEntityButtons_Click);
             // 
             // mnuWindows
             // 
@@ -417,6 +427,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Windows.Forms.ToolStripMenuItem mnuNewFromExisting;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabControl tabConnections;
+        private System.Windows.Forms.ToolStripMenuItem mnuShowEntityButtons;
     }
 }
 
