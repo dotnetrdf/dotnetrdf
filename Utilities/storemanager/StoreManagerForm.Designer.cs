@@ -76,7 +76,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
             this.splitQueryResults = new System.Windows.Forms.SplitContainer();
             this.tableQueryTab = new System.Windows.Forms.TableLayoutPanel();
+            this.rtbSparqlQuery = new System.Windows.Forms.RichTextBox();
             this.panelQuery = new System.Windows.Forms.Panel();
+            this.btnFormatQuery = new System.Windows.Forms.Button();
             this.btnOpenEntityGeneratorForm = new System.Windows.Forms.Button();
             this.btnChangeOrientation = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
@@ -150,7 +152,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
             this.tableForm = new System.Windows.Forms.TableLayoutPanel();
-            this.rtbSparqlQuery = new System.Windows.Forms.RichTextBox();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -405,8 +406,25 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableQueryTab.Size = new System.Drawing.Size(596, 262);
             this.tableQueryTab.TabIndex = 7;
             // 
+            // rtbSparqlQuery
+            // 
+            this.rtbSparqlQuery.AcceptsTab = true;
+            this.rtbSparqlQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbSparqlQuery.DetectUrls = false;
+            this.rtbSparqlQuery.Location = new System.Drawing.Point(3, 53);
+            this.rtbSparqlQuery.Name = "rtbSparqlQuery";
+            this.rtbSparqlQuery.Size = new System.Drawing.Size(590, 138);
+            this.rtbSparqlQuery.TabIndex = 9;
+            this.rtbSparqlQuery.Text = "PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX  rdfs: <http://" +
+                "www.w3.org/2000/01/rdf-schema#>\nPREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>" +
+                "";
+            this.rtbSparqlQuery.TextChanged += new System.EventHandler(this.rtbSparqlQuery_TextChanged);
+            // 
             // panelQuery
             // 
+            this.panelQuery.Controls.Add(this.btnFormatQuery);
             this.panelQuery.Controls.Add(this.btnOpenEntityGeneratorForm);
             this.panelQuery.Controls.Add(this.btnChangeOrientation);
             this.panelQuery.Controls.Add(this.btnSaveQuery);
@@ -420,9 +438,19 @@ namespace VDS.RDF.Utilities.StoreManager
             this.panelQuery.Size = new System.Drawing.Size(588, 62);
             this.panelQuery.TabIndex = 8;
             // 
+            // btnFormatQuery
+            // 
+            this.btnFormatQuery.Location = new System.Drawing.Point(173, 35);
+            this.btnFormatQuery.Name = "btnFormatQuery";
+            this.btnFormatQuery.Size = new System.Drawing.Size(53, 23);
+            this.btnFormatQuery.TabIndex = 9;
+            this.btnFormatQuery.Text = "Format";
+            this.btnFormatQuery.UseVisualStyleBackColor = true;
+            this.btnFormatQuery.Click += new System.EventHandler(this.button1_Click);
+            // 
             // btnOpenEntityGeneratorForm
             // 
-            this.btnOpenEntityGeneratorForm.Location = new System.Drawing.Point(173, 35);
+            this.btnOpenEntityGeneratorForm.Location = new System.Drawing.Point(232, 35);
             this.btnOpenEntityGeneratorForm.Name = "btnOpenEntityGeneratorForm";
             this.btnOpenEntityGeneratorForm.Size = new System.Drawing.Size(123, 23);
             this.btnOpenEntityGeneratorForm.TabIndex = 8;
@@ -1150,20 +1178,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableForm.Size = new System.Drawing.Size(646, 600);
             this.tableForm.TabIndex = 3;
             // 
-            // rtbSparqlQuery
-            // 
-            this.rtbSparqlQuery.AcceptsTab = true;
-            this.rtbSparqlQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbSparqlQuery.DetectUrls = false;
-            this.rtbSparqlQuery.Location = new System.Drawing.Point(3, 53);
-            this.rtbSparqlQuery.Name = "rtbSparqlQuery";
-            this.rtbSparqlQuery.Size = new System.Drawing.Size(590, 138);
-            this.rtbSparqlQuery.TabIndex = 9;
-            this.rtbSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://ww" +
-                "w.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>";
-            // 
             // StoreManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1316,5 +1330,6 @@ namespace VDS.RDF.Utilities.StoreManager
         private GUI.WinForms.GraphViewerControl graphViewerControl;
         private System.Windows.Forms.Button btnOpenEntityGeneratorForm;
         private System.Windows.Forms.RichTextBox rtbSparqlQuery;
+        private System.Windows.Forms.Button btnFormatQuery;
     }
 }

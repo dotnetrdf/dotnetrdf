@@ -77,6 +77,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuUseUtf8Bom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowStartPage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowEntityButtons = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuWordWrapQuery = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowQueryUrls = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowQueryHighLighting = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWindows = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCascade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileVertical = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,8 +92,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
             this.tabConnections = new System.Windows.Forms.TabControl();
-            this.mnuWordWrapQuery = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuShowQueryUrls = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -249,7 +250,8 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuShowStartPage,
             this.mnuShowEntityButtons,
             this.mnuWordWrapQuery,
-            this.mnuShowQueryUrls});
+            this.mnuShowQueryUrls,
+            this.mnuShowQueryHighLighting});
             this.mnuOptions.Name = "mnuOptions";
             this.mnuOptions.Size = new System.Drawing.Size(61, 20);
             this.mnuOptions.Text = "&Options";
@@ -279,6 +281,30 @@ namespace VDS.RDF.Utilities.StoreManager
             this.mnuShowEntityButtons.Size = new System.Drawing.Size(217, 22);
             this.mnuShowEntityButtons.Text = "Show Entity Query Buttons";
             this.mnuShowEntityButtons.Click += new System.EventHandler(this.mnuShowEntityButtons_Click);
+            // 
+            // mnuWordWrapQuery
+            // 
+            this.mnuWordWrapQuery.CheckOnClick = true;
+            this.mnuWordWrapQuery.Name = "mnuWordWrapQuery";
+            this.mnuWordWrapQuery.Size = new System.Drawing.Size(217, 22);
+            this.mnuWordWrapQuery.Text = "Word Wrap Query";
+            this.mnuWordWrapQuery.Click += new System.EventHandler(this.wordWrapQueryToolStripMenuItem_Click);
+            // 
+            // mnuShowQueryUrls
+            // 
+            this.mnuShowQueryUrls.CheckOnClick = true;
+            this.mnuShowQueryUrls.Name = "mnuShowQueryUrls";
+            this.mnuShowQueryUrls.Size = new System.Drawing.Size(217, 22);
+            this.mnuShowQueryUrls.Text = "Show Query Urls";
+            this.mnuShowQueryUrls.Click += new System.EventHandler(this.mnuShowQueryUrls_Click);
+            // 
+            // mnuShowQueryHighLighting
+            // 
+            this.mnuShowQueryHighLighting.CheckOnClick = true;
+            this.mnuShowQueryHighLighting.Name = "mnuShowQueryHighLighting";
+            this.mnuShowQueryHighLighting.Size = new System.Drawing.Size(217, 22);
+            this.mnuShowQueryHighLighting.Text = "Show Query HighLighting";
+            this.mnuShowQueryHighLighting.Click += new System.EventHandler(this.mnuShowQueryHighLighting_Click);
             // 
             // mnuWindows
             // 
@@ -372,22 +398,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabConnections.Visible = false;
             this.tabConnections.Click += new System.EventHandler(this.tabConnections_Click);
             // 
-            // mnuWordWrapQuery
-            // 
-            this.mnuWordWrapQuery.CheckOnClick = true;
-            this.mnuWordWrapQuery.Name = "mnuWordWrapQuery";
-            this.mnuWordWrapQuery.Size = new System.Drawing.Size(217, 22);
-            this.mnuWordWrapQuery.Text = "Word Wrap Query";
-            this.mnuWordWrapQuery.Click += new System.EventHandler(this.wordWrapQueryToolStripMenuItem_Click);
-            // 
-            // mnuShowQueryUrls
-            // 
-            this.mnuShowQueryUrls.CheckOnClick = true;
-            this.mnuShowQueryUrls.Name = "mnuShowQueryUrls";
-            this.mnuShowQueryUrls.Size = new System.Drawing.Size(217, 22);
-            this.mnuShowQueryUrls.Text = "Show Query Urls";
-            this.mnuShowQueryUrls.Click += new System.EventHandler(this.mnuShowQueryUrls_Click);
-            // 
             // ManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -451,6 +461,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Windows.Forms.ToolStripMenuItem mnuShowEntityButtons;
         private System.Windows.Forms.ToolStripMenuItem mnuWordWrapQuery;
         private System.Windows.Forms.ToolStripMenuItem mnuShowQueryUrls;
+        private System.Windows.Forms.ToolStripMenuItem mnuShowQueryHighLighting;
     }
 }
 

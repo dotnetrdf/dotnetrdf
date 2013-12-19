@@ -117,12 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblQueryIntro.Text" xml:space="preserve">
-    <value>Enter a SPARQL Query in the following box, select the format for SPARQL Results (SELECT/ASK) queries using the subsequent dropdown list.  Queries that return Graphs (CONSTRUCT/DESCRIBE) will display the Graph as a list of Triples in a new window from where you can then save the Graph in a format of your choice.</value>
-  </data>
   <metadata name="mnuGraphs.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>719, 20</value>
   </metadata>
+  <data name="lblQueryIntro.Text" xml:space="preserve">
+    <value>Enter a SPARQL Query in the following box, select the format for SPARQL Results (SELECT/ASK) queries using the subsequent dropdown list.  Queries that return Graphs (CONSTRUCT/DESCRIBE) will display the Graph as a list of Triples in a new window from where you can then save the Graph in a format of your choice.</value>
+  </data>
   <data name="lblUpdateIntro.Text" xml:space="preserve">
     <value>Enter a SPARQL Update Command in the following box.  If this Store supports SPARQL Update natively then the Stores implementation will be used, if not then dotNetRDFs update processor will be used to apply the updates which depending on the capabilities of the Store may be slower/incomplete.</value>
   </data>

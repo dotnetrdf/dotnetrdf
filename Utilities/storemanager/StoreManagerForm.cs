@@ -27,8 +27,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
 using VDS.RDF.GUI.WinForms;
@@ -50,6 +52,8 @@ namespace VDS.RDF.Utilities.StoreManager
         private int _taskID = 0;
         private EventHandler _copyGraphHandler, _moveGraphHandler;
         private System.Timers.Timer timStartup;
+        private bool CodeFormatInProgress = false;
+        private readonly List<HighLight> _highLights = new List<HighLight>();
 
         /// <summary>
         /// Creates a new Store Manager form
@@ -60,7 +64,7 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
 
             splitQueryResults.Panel2Collapsed = true;
-            
+            ActivateHighLighting();
 
             //Configure Form
             this._manager = manager;
@@ -79,6 +83,28 @@ namespace VDS.RDF.Utilities.StoreManager
             //Startup Timer
             timStartup = new System.Timers.Timer(250);
             timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
+
+        }
+
+        private bool _showHighlighting;
+        public bool ShowHighlighting
+        {
+            get
+            {
+                return _showHighlighting;
+            }
+            set
+            {
+                _showHighlighting = value;
+                if (value)
+                {
+                    this.ActivateHighLighting();
+                }
+                else
+                {
+                    this.ClearHighLighting();
+                }
+            }
         }
 
         /// <summary>
@@ -1630,6 +1656,161 @@ namespace VDS.RDF.Utilities.StoreManager
             entityQueryGeneratorForm.ShowDialog();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var rtb = this.rtbSparqlQuery;
+
+            if (!CodeFormatInProgress)
+            {
+                try
+                {
+                    rtb.Text = ReGenerateRTBText(rtb.Text);
+                   
+                }
+                finally 
+                {
+                    CodeFormatInProgress = false;
+                }
+            }
+        }
+
+       
+
+        private string ReGenerateRTBText(string Text)
+        {
+            CodeFormatInProgress = true;
+            string[] text = Regex.Split(Text, "\n");
+
+            int lvl = 0;
+            string newString = "";
+            bool lineAdded = false;
+            foreach (string line in text)
+            {
+                
+                if (line.Contains("{"))
+                {
+                    newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                    lineAdded = true;
+                    lvl += line.Count(f => f == '{');
+                }
+                if (line.Contains("}"))
+                {
+                    lvl -= line.Count(f => f == '}');
+                    if (!lineAdded)
+                    {
+                        newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                        lineAdded = true;
+                    }
+                }
+
+                if (!lineAdded)
+                {
+                    newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                }
+
+                lineAdded = false;
+            }
+
+            return newString.TrimEnd('\n');
+        }
+
+        private string indentation(int IndentLevel)
+        {
+            string space = "";
+            if (IndentLevel > 0)
+                for (int lvl = 0; lvl < IndentLevel; lvl++)
+                {
+                    space += " ".PadLeft(8);
+                }
+
+            return space;
+        }
+
+        private void rtbSparqlQuery_TextChanged(object sender, EventArgs e)
+        {
+            ActivateHighLighting();
+        }
+
+        private void ActivateHighLighting()
+        {
+            if (_showHighlighting)
+            {
+                int initialSelectionStart = rtbSparqlQuery.SelectionStart;
+                ClearHighLighting();
+                HighLightText("prefix", Color.DarkBlue);
+
+                HighLightText("select", Color.Blue);
+                HighLightText("FROM", Color.Blue);
+                HighLightText("FROM NAMED", Color.Blue);
+                HighLightText("GRAPH", Color.Blue);
+                
+                HighLightText("describe", Color.Blue);
+                HighLightText("ask", Color.Blue);
+                HighLightText("construct", Color.Blue);
+
+                HighLightText("where", Color.Blue);
+                HighLightText("filter", Color.Blue);
+                HighLightText("distinct", Color.Blue);
+                HighLightText("optional", Color.Blue);
+
+                HighLightText("order by", Color.Blue);
+                HighLightText("limit", Color.Blue);
+                HighLightText("offset", Color.Blue);
+                HighLightText("REDUCED", Color.Blue);
+                
+
+                HighLightText("GROUP BY", Color.Blue);
+                HighLightText("HAVING", Color.Blue);
+
+                
+            
+                rtbSparqlQuery.SelectionStart = initialSelectionStart;
+                rtbSparqlQuery.SelectionLength = 0;
+            }
+
+        }
+
+        private void HighLightText(string text, Color color)
+        {
+            if (text.Length > 0)
+            {
+                int startPosition = 0;
+                int foundPosition = 0;
+                while (foundPosition > -1)
+                {
+                    foundPosition = rtbSparqlQuery.Find(text, startPosition, RichTextBoxFinds.WholeWord);
+                    if (foundPosition >= 0)
+                    {
+                        rtbSparqlQuery.Select(foundPosition, text.Length);
+                        rtbSparqlQuery.SelectionColor = color;
+                        startPosition = foundPosition + text.Length;
+                        _highLights.Add(new HighLight() { Start = foundPosition, End = text.Length });
+                    }
+                }
+            }
+        }
+
+        private void ClearHighLighting()
+        {
+            rtbSparqlQuery.Select(0, rtbSparqlQuery.TextLength -1);
+            rtbSparqlQuery.SelectionColor = rtbSparqlQuery.ForeColor;
+//            foreach (var highLight in _highLights)
+//            {
+//                rtbSparqlQuery.Select(highLight.Start, highLight.End);
+//                rtbSparqlQuery.SelectionBackColor = rtbSparqlQuery.BackColor;
+//            }
+            _highLights.Clear();
+        }
+
+        
+
+
+    }
+
+    class HighLight
+    {
+        public int Start { get; set; }
+        public int End { get; set; }
     }
 
     /// <summary>

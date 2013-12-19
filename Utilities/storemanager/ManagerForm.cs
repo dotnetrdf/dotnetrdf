@@ -732,6 +732,7 @@ namespace VDS.RDF.Utilities.StoreManager
             genManager.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
             genManager.WordWrapQuery(this.mnuWordWrapQuery.Checked);
             genManager.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
+            genManager.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
             genManager.Show();
 
             if (addRecentConnection)
@@ -847,6 +848,22 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
             }
         }
+
+        private void mnuShowQueryHighLighting_Click(object sender, EventArgs e)
+        {
+            foreach (var mdiChild in this.MdiChildren)
+            {
+                if (mdiChild is StoreManagerForm)
+                {
+                    var smf = (StoreManagerForm)mdiChild;
+                    smf.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
+                }
+            }
+        }
+
+       
+
+       
 
        
     }
