@@ -312,11 +312,11 @@ namespace VDS.RDF.Utilities.StoreManager
 
 
         private delegate void CrossThreadSetQueryDelegate(
-           TextBox txtSparqlQuery,
+           RichTextBox txtSparqlQuery,
            string newQuery);
 
         protected void CrossThreadSetQuery(
-            TextBox txtSparqlQuery,
+            RichTextBox txtSparqlQuery,
             string newQuery)
         {
             if (this.InvokeRequired)

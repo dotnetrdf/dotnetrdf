@@ -138,6 +138,16 @@ namespace VDS.RDF.Utilities.StoreManager
             this.btnOpenEntityGeneratorForm.Visible = state;
         }
 
+        public void WordWrapQuery(bool state)
+        {
+            this.rtbSparqlQuery.WordWrap = state;
+        }
+
+        public void ShowQueryUrls(bool state)
+        {
+            this.rtbSparqlQuery.DetectUrls = state;
+        }
+
         #region Store Operations
 
         /// <summary>
@@ -213,12 +223,12 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.chkPageQuery.Checked)
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, (int)this.numPageSize.Value);
+                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.rtbSparqlQuery.Text, (int)this.numPageSize.Value);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
                 else
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
+                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.rtbSparqlQuery.Text);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
             }
@@ -241,7 +251,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
             if (this._manager is IQueryableStorage)
             {
-                QueryTask task = new QueryAsTableTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, predicateLimitCount, columnWordsCount);
+                QueryTask task = new QueryAsTableTask((IQueryableStorage)this._manager, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
                
                 this.AddTask<Object>(task, this.QueryCallback);
                 
@@ -599,7 +609,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 using (StreamWriter writer = new StreamWriter(this.sfdQuery.FileName))
                 {
-                    writer.Write(this.txtSparqlQuery.Text);
+                    writer.Write(this.rtbSparqlQuery.Text);
                 }
             }
         }
@@ -611,7 +621,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 using (StreamReader reader = new StreamReader(this.ofdQuery.FileName))
                 {
-                    this.txtSparqlQuery.Text = reader.ReadToEnd();
+                    this.rtbSparqlQuery.Text = reader.ReadToEnd();
                 }
             }
         }
@@ -1373,7 +1383,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (task is QueryAsTableTask)
                 {
                     var queryAsTableTask = (QueryAsTableTask) task;
-                    CrossThreadSetQuery(this.txtSparqlQuery, queryAsTableTask.OutputTableQuery);
+                    CrossThreadSetQuery(this.rtbSparqlQuery, queryAsTableTask.OutputTableQuery);
                     return;
                 }
 

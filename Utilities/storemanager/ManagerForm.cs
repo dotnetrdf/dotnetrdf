@@ -730,6 +730,8 @@ namespace VDS.RDF.Utilities.StoreManager
             StoreManagerForm genManager = new StoreManagerForm(connection);
             genManager.MdiParent = this;
             genManager.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
+            genManager.WordWrapQuery(this.mnuWordWrapQuery.Checked);
+            genManager.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
             genManager.Show();
 
             if (addRecentConnection)
@@ -820,6 +822,30 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
             }
            
+        }
+
+        private void wordWrapQueryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var mdiChild in this.MdiChildren)
+            {
+                if (mdiChild is StoreManagerForm)
+                {
+                    var smf = (StoreManagerForm)mdiChild;
+                    smf.WordWrapQuery(this.mnuWordWrapQuery.Checked);
+                }
+            }
+        }
+
+        private void mnuShowQueryUrls_Click(object sender, EventArgs e)
+        {
+            foreach (var mdiChild in this.MdiChildren)
+            {
+                if (mdiChild is StoreManagerForm)
+                {
+                    var smf = (StoreManagerForm)mdiChild;
+                    smf.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
+                }
+            }
         }
 
        
