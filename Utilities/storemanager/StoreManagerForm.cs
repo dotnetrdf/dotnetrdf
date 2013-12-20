@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
@@ -95,6 +96,8 @@ namespace VDS.RDF.Utilities.StoreManager
        
 
         private bool _showHighlighting;
+        
+
         public bool ShowHighlighting
         {
             get
@@ -1664,7 +1667,8 @@ namespace VDS.RDF.Utilities.StoreManager
             entityQueryGeneratorForm.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void btnFormatQuery_Click(object sender, EventArgs e)
         {
             var rtb = this.rtbSparqlQuery;
 
@@ -1755,6 +1759,8 @@ namespace VDS.RDF.Utilities.StoreManager
             if (_showHighlighting && !_codeHighLightingInProgress)
             {
                 _codeHighLightingInProgress = true;
+                
+                rtbSparqlQuery.BeginUpdate();
                 int initialSelectionStart = rtbSparqlQuery.SelectionStart;
                 ClearHighLighting();
                 HighLightText("prefix", Color.DarkBlue);
@@ -1786,7 +1792,10 @@ namespace VDS.RDF.Utilities.StoreManager
             
                 rtbSparqlQuery.SelectionStart = initialSelectionStart;
                 rtbSparqlQuery.SelectionLength = 0;
+                rtbSparqlQuery.EndUpdate();
+                rtbSparqlQuery.Invalidate();
                 _codeHighLightingInProgress = false;
+
             }
 
         }
@@ -1815,16 +1824,8 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             rtbSparqlQuery.Select(0, rtbSparqlQuery.TextLength -1);
             rtbSparqlQuery.SelectionColor = rtbSparqlQuery.ForeColor;
-//            foreach (var highLight in _highLights)
-//            {
-//                rtbSparqlQuery.Select(highLight.Start, highLight.End);
-//                rtbSparqlQuery.SelectionBackColor = rtbSparqlQuery.BackColor;
-//            }
             _highLights.Clear();
         }
-
-        
-
 
     }
 

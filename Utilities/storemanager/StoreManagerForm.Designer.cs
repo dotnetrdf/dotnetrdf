@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using VDS.RDF.GUI.WinForms;
+
 namespace VDS.RDF.Utilities.StoreManager
 {
     partial class StoreManagerForm
@@ -76,7 +78,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
             this.splitQueryResults = new System.Windows.Forms.SplitContainer();
             this.tableQueryTab = new System.Windows.Forms.TableLayoutPanel();
-            this.rtbSparqlQuery = new System.Windows.Forms.RichTextBox();
+            this.rtbSparqlQuery = new DnrRichTextBox();
             this.panelQuery = new System.Windows.Forms.Panel();
             this.btnFormatQuery = new System.Windows.Forms.Button();
             this.btnOpenEntityGeneratorForm = new System.Windows.Forms.Button();
@@ -446,7 +448,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.btnFormatQuery.TabIndex = 9;
             this.btnFormatQuery.Text = "Format";
             this.btnFormatQuery.UseVisualStyleBackColor = true;
-            this.btnFormatQuery.Click += new System.EventHandler(this.button1_Click);
+            this.btnFormatQuery.Click += new System.EventHandler(this.btnFormatQuery_Click);
             // 
             // btnOpenEntityGeneratorForm
             // 
@@ -1329,7 +1331,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Windows.Forms.Button btnChangeOrientation;
         private GUI.WinForms.GraphViewerControl graphViewerControl;
         private System.Windows.Forms.Button btnOpenEntityGeneratorForm;
-        private System.Windows.Forms.RichTextBox rtbSparqlQuery;
+        private GUI.WinForms.DnrRichTextBox rtbSparqlQuery;
         private System.Windows.Forms.Button btnFormatQuery;
     }
 }

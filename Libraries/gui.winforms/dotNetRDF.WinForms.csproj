@@ -73,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="DnrRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ExportResultSetOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
