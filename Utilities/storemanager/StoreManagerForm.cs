@@ -39,6 +39,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Utilities.StoreManager.Tasks;
+using Timer = System.Windows.Forms.Timer;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -54,6 +55,8 @@ namespace VDS.RDF.Utilities.StoreManager
         private System.Timers.Timer timStartup;
         private bool CodeFormatInProgress = false;
         private readonly List<HighLight> _highLights = new List<HighLight>();
+        private Timer _highLightsUpdateTimer = new Timer();
+        private bool _codeHighLightingInProgress = false;
 
         /// <summary>
         /// Creates a new Store Manager form
@@ -84,7 +87,12 @@ namespace VDS.RDF.Utilities.StoreManager
             timStartup = new System.Timers.Timer(250);
             timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
 
+            //set highlight delay for 2 secs
+            _highLightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
+            _highLightsUpdateTimer.Tick += HighLightsUpdateTimerOnTick;
         }
+
+       
 
         private bool _showHighlighting;
         public bool ShowHighlighting
@@ -1728,13 +1736,25 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void rtbSparqlQuery_TextChanged(object sender, EventArgs e)
         {
+            //reset timer
+            _highLightsUpdateTimer.Stop();
+            if (!_codeHighLightingInProgress)
+            {
+                _highLightsUpdateTimer.Start();
+            }
+        }
+
+        private void HighLightsUpdateTimerOnTick(object sender, EventArgs eventArgs)
+        {
+            _highLightsUpdateTimer.Stop();
             ActivateHighLighting();
         }
 
         private void ActivateHighLighting()
         {
-            if (_showHighlighting)
+            if (_showHighlighting && !_codeHighLightingInProgress)
             {
+                _codeHighLightingInProgress = true;
                 int initialSelectionStart = rtbSparqlQuery.SelectionStart;
                 ClearHighLighting();
                 HighLightText("prefix", Color.DarkBlue);
@@ -1766,6 +1786,7 @@ namespace VDS.RDF.Utilities.StoreManager
             
                 rtbSparqlQuery.SelectionStart = initialSelectionStart;
                 rtbSparqlQuery.SelectionLength = 0;
+                _codeHighLightingInProgress = false;
             }
 
         }
