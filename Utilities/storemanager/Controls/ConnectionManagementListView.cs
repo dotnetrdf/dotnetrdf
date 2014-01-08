@@ -94,7 +94,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             // Enable appropriate options based on settings and selected connection states
             List<Connection> selectedConnections = this.GetSelectedConnections();
             this.mnuClose.Enabled = this.AllowClose && selectedConnections.All(c => c.IsOpen);
-            this.mnuEdit.Enabled = this.AllowEdit;
+            this.mnuEdit.Enabled = this.AllowEdit && selectedConnections.All(c => !c.IsOpen);
             this.mnuOpen.Enabled = this.AllowOpen && selectedConnections.All(c => !c.IsOpen);
             this.mnuRemove.Enabled = this.AllowRemove;
             this.mnuRename.Enabled = this.AllowRename;
@@ -350,7 +350,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             {
                 try
                 {
-                    EditConnectionForm editConnection = new EditConnectionForm(connection.Definition);
+                    EditConnectionForm editConnection = new EditConnectionForm(connection, false);
                     editConnection.MdiParent = Program.MainForm;
                     if (editConnection.ShowDialog() == DialogResult.OK)
                     {

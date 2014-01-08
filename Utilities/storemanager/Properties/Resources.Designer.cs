@@ -250,6 +250,24 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot edit an open connection, please close the connection before attempting to edit it.
+        /// </summary>
+        internal static string EditConnection_Forbidden_Text {
+            get {
+                return ResourceManager.GetString("EditConnection_Forbidden_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Forbidden.
+        /// </summary>
+        internal static string EditConnection_Forbidden_Title {
+            get {
+                return ResourceManager.GetString("EditConnection_Forbidden_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter a File to export to!.
         /// </summary>
         internal static string ExportData_NoFile_Text {
@@ -502,6 +520,15 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         internal static string LoadConnections_Error {
             get {
                 return ResourceManager.GetString("LoadConnections_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New From Existing.
+        /// </summary>
+        internal static string NewFromExisting {
+            get {
+                return ResourceManager.GetString("NewFromExisting", resourceCulture);
             }
         }
         

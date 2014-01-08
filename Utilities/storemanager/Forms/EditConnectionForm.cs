@@ -27,6 +27,7 @@ using System;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
 using VDS.RDF.Utilities.StoreManager.Controls;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Forms
 {
@@ -36,15 +37,29 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
     public partial class EditConnectionForm
         : Form
     {
+        private bool _editing = false;
+
         /// <summary>
         /// Creates a new Edit Connection Form
         /// </summary>
-        /// <param name="def">Definition</param>
-        public EditConnectionForm(IConnectionDefinition def)
+        /// <param name="connection">Connection</param>
+        /// <param name="copy">Whether to take a copy of the connection</param>
+        public EditConnectionForm(Connection connection, bool copy)
         {
             InitializeComponent();
-            this.connSettings.Definition = def.Copy();
+            if (!copy && connection.IsOpen) throw new ArgumentException("Cannot edit an open connection");
+            this.Connection = copy ? connection.Copy() : connection;
+            this.connSettings.Definition = this.Connection.Definition;
             this.connSettings.Connected += this.HandleConnected;
+
+            if (copy)
+            {
+                this.Text = Resources.NewFromExisting;
+            }
+            else
+            {
+                this._editing = true;
+            }
         }
 
         /// <summary>
@@ -54,7 +69,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// <param name="e">Connection Event arguments</param>
         private void HandleConnected(Object sender, ConnectedEventArgs e)
         {
-            this.Connection = e.Connection;
+            if (!this._editing)
+            {
+                // When not editing need to take the newly created connection
+                this.Connection = e.Connection;
+            }
+            else
+            {
+                // Otherwise take just the definition and update the last modified
+                this.Connection.Definition = e.Connection.Definition;
+                this.Connection.LastModified = DateTimeOffset.UtcNow;
+            }
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -62,10 +87,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// <summary>
         /// Gets the Connection if it has been created
         /// </summary>
-        public Connection Connection
-        {
-            get;
-            private set;
-        }
+        public Connection Connection { get; private set; }
     }
 }

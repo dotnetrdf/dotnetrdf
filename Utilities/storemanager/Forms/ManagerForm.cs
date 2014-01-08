@@ -355,9 +355,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (tag is Connection)
                 {
                     Connection connection = (Connection) tag;
+                    if (connection.IsOpen)
+                    {
+                        MessageBox.Show(Resources.EditConnection_Forbidden_Text, Resources.EditConnection_Forbidden_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                     try
                     {
-                        EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
+                        EditConnectionForm editConn = new EditConnectionForm(connection, false);
                         if (editConn.ShowDialog() == DialogResult.OK)
                         {
                             connection = editConn.Connection;
@@ -679,7 +684,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
                     Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
-                    EditConnectionForm editConn = new EditConnectionForm(connection.Definition);
+                    EditConnectionForm editConn = new EditConnectionForm(connection, true);
                     if (editConn.ShowDialog() == DialogResult.OK)
                     {
                         StoreManagerForm managerForm = new StoreManagerForm(editConn.Connection);

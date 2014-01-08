@@ -157,7 +157,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets the connection definition used to create the connection
         /// </summary>
-        public IConnectionDefinition Definition { get; private set; }
+        public IConnectionDefinition Definition { get; set; }
 
         /// <summary>
         /// Gets the storage provider
@@ -224,7 +224,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public DateTimeOffset LastModified
         {
             get { return this._modified; }
-            private set
+            set
             {
                 this._modified = value;
                 this.RaisePropertyChanged("LastModified");

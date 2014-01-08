@@ -59,7 +59,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     if (connection == null) return;
                     if (Settings.Default.AlwaysEdit)
                     {
-                        EditConnectionForm edit = new EditConnectionForm(connection.Definition);
+                        if (connection.IsOpen)
+                        {
+                            MessageBox.Show(Resources.EditConnection_Forbidden_Text, Resources.EditConnection_Forbidden_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                        EditConnectionForm edit = new EditConnectionForm(connection, false);
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
                             connection = edit.Connection;
@@ -136,7 +141,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             Connection connection = lbox.SelectedItem as Connection;
             if (connection == null) return;
 
-            EditConnectionForm edit = new EditConnectionForm(connection.Definition);
+            if (connection.IsOpen)
+            {
+                MessageBox.Show(Resources.EditConnection_Forbidden_Text, Resources.EditConnection_Forbidden_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            EditConnectionForm edit = new EditConnectionForm(connection, false);
             if (edit.ShowDialog() != DialogResult.OK) return;
             connection = edit.Connection;
             StoreManagerForm storeManager = new StoreManagerForm(connection);
