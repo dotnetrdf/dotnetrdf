@@ -558,51 +558,6 @@ namespace VDS.RDF.Query
 #endif
 
         /// <summary>
-        /// Applies generic request options (timeout, authorization and proxy server) to a request
-        /// </summary>
-        /// <param name="httpRequest">HTTP Request</param>
-        private void ApplyRequestOptions(HttpWebRequest httpRequest)
-        {
-#if !SILVERLIGHT
-            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
-#endif
-
-            //Apply Credentials to request if necessary
-            if (this.Credentials != null)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
-                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    httpRequest.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    //Leave .Net to handle the HTTP auth challenge response itself
-                    httpRequest.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                    httpRequest.PreAuthenticate = true;
-#endif
-                }
-            }
-
-#if !NO_PROXY
-            //Use a Proxy if required
-            if (this.Proxy == null) return;
-            httpRequest.Proxy = this.Proxy;
-            if (this.UseCredentialsForProxy)
-            {
-                httpRequest.Proxy.Credentials = this.Credentials;
-            }
-#endif
-        }
-
-        /// <summary>
         /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
         /// </summary>
         /// <param name="query">SPARQL Query String</param>

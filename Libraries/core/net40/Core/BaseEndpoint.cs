@@ -113,7 +113,7 @@ namespace VDS.RDF
         /// Defaults to 30 Seconds (i.e. the default value is 30,000)
         /// </para>
         /// <para>
-        /// Not supported under Silverlight
+        /// Not supported under Silverlight/Windows Phone
         /// </para>
         /// </remarks>
         public int Timeout
@@ -279,16 +279,9 @@ namespace VDS.RDF
         /// </summary>
         public ICredentials ProxyCredentials
         {
-            get 
+            get
             {
-                if (this._proxy != null)
-                {
-                    return this._proxy.Credentials;
-                }
-                else
-                {
-                    return null;
-                }
+                return this._proxy != null ? this._proxy.Credentials : null;
             }
             set
             {
@@ -372,6 +365,51 @@ namespace VDS.RDF
                 }
 #endif
             }            
+        }
+
+        /// <summary>
+        /// Applies generic request options (timeout, authorization and proxy server) to a request
+        /// </summary>
+        /// <param name="httpRequest">HTTP Request</param>
+        protected void ApplyRequestOptions(HttpWebRequest httpRequest)
+        {
+#if !SILVERLIGHT
+            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
+#endif
+
+            //Apply Credentials to request if necessary
+            if (this.Credentials != null)
+            {
+                if (Options.ForceHttpBasicAuth)
+                {
+                    //Forcibly include a HTTP basic authentication header
+#if !SILVERLIGHT
+                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers["Authorization"] = "Basic " + credentials;
+#endif
+                }
+                else
+                {
+                    //Leave .Net to handle the HTTP auth challenge response itself
+                    httpRequest.Credentials = this.Credentials;
+#if !SILVERLIGHT
+                    httpRequest.PreAuthenticate = true;
+#endif
+                }
+            }
+
+#if !NO_PROXY
+            //Use a Proxy if required
+            if (this.Proxy == null) return;
+            httpRequest.Proxy = this.Proxy;
+            if (this.UseCredentialsForProxy)
+            {
+                httpRequest.Proxy.Credentials = this.Credentials;
+            }
+#endif
         }
     }
 }
