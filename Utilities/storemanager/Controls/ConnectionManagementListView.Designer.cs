@@ -67,6 +67,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.mnuContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuRename = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShow = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClose = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,7 +81,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(167, 6);
             // 
             // tlpLayout
             // 
@@ -163,6 +164,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.mnuContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuRename,
             this.mnuEdit,
+            this.mnuNewFromExisting,
             toolStripSeparator1,
             this.mnuOpen,
             this.mnuShow,
@@ -170,51 +172,58 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.toolStripSeparator2,
             this.mnuRemove});
             this.mnuContext.Name = "mnuContext";
-            this.mnuContext.Size = new System.Drawing.Size(153, 170);
+            this.mnuContext.Size = new System.Drawing.Size(171, 170);
             // 
             // mnuRename
             // 
             this.mnuRename.Name = "mnuRename";
-            this.mnuRename.Size = new System.Drawing.Size(152, 22);
+            this.mnuRename.Size = new System.Drawing.Size(170, 22);
             this.mnuRename.Text = "&Rename";
             // 
             // mnuEdit
             // 
             this.mnuEdit.Name = "mnuEdit";
-            this.mnuEdit.Size = new System.Drawing.Size(152, 22);
+            this.mnuEdit.Size = new System.Drawing.Size(170, 22);
             this.mnuEdit.Text = "&Edit";
             this.mnuEdit.Click += new System.EventHandler(this.mnuEdit_Click);
+            // 
+            // mnuNewFromExisting
+            // 
+            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
+            this.mnuNewFromExisting.Size = new System.Drawing.Size(170, 22);
+            this.mnuNewFromExisting.Text = "&New from Existing";
+            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
             // 
             // mnuOpen
             // 
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(152, 22);
+            this.mnuOpen.Size = new System.Drawing.Size(170, 22);
             this.mnuOpen.Text = "&Open";
             this.mnuOpen.Click += new System.EventHandler(this.mnuOpen_Click);
             // 
             // mnuShow
             // 
             this.mnuShow.Name = "mnuShow";
-            this.mnuShow.Size = new System.Drawing.Size(152, 22);
+            this.mnuShow.Size = new System.Drawing.Size(170, 22);
             this.mnuShow.Text = "&Show";
             this.mnuShow.Click += new System.EventHandler(this.mnuShow_Click);
             // 
             // mnuClose
             // 
             this.mnuClose.Name = "mnuClose";
-            this.mnuClose.Size = new System.Drawing.Size(152, 22);
+            this.mnuClose.Size = new System.Drawing.Size(170, 22);
             this.mnuClose.Text = "&Close";
             this.mnuClose.Click += new System.EventHandler(this.mnuClose_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(167, 6);
             // 
             // mnuRemove
             // 
             this.mnuRemove.Name = "mnuRemove";
-            this.mnuRemove.Size = new System.Drawing.Size(152, 22);
+            this.mnuRemove.Size = new System.Drawing.Size(170, 22);
             this.mnuRemove.Text = "Remove";
             this.mnuRemove.Click += new System.EventHandler(this.mnuRemove_Click);
             // 
@@ -250,5 +259,6 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         private System.Windows.Forms.ToolStripMenuItem mnuRemove;
         private System.Windows.Forms.ToolStripMenuItem mnuEdit;
         private System.Windows.Forms.ColumnHeader colActiveUsers;
+        private System.Windows.Forms.ToolStripMenuItem mnuNewFromExisting;
     }
 }

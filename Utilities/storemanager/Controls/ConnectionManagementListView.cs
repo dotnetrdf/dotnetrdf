@@ -95,6 +95,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             List<Connection> selectedConnections = this.GetSelectedConnections();
             this.mnuClose.Enabled = this.AllowClose && selectedConnections.All(c => c.IsOpen);
             this.mnuEdit.Enabled = this.AllowEdit && selectedConnections.All(c => !c.IsOpen);
+            this.mnuNewFromExisting.Enabled = this.AllowNewFromExisting;
             this.mnuOpen.Enabled = this.AllowOpen && selectedConnections.All(c => !c.IsOpen);
             this.mnuRemove.Enabled = this.AllowRemove;
             this.mnuRename.Enabled = this.AllowRename;
@@ -270,7 +271,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// <summary>
         /// Gets/Sets whether connections may be copied from this view
         /// </summary>
-        public bool AllowCopy { get; set; }
+        public bool AllowNewFromExisting { get; set; }
 
         /// <summary>
         /// Gets/Sets whether actions that are not themselves associated with a dialogue require confirmations
@@ -351,6 +352,30 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 try
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, false);
+                    editConnection.MdiParent = Program.MainForm;
+                    if (editConnection.ShowDialog() == DialogResult.OK)
+                    {
+                        StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
+                        Program.MainForm.AddRecentConnection(editConnection.Connection);
+                        storeManager.MdiParent = Program.MainForm;
+                        storeManager.Show();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Edit_Error, connection.Name), ex);
+                }
+            }
+        }
+
+        private void mnuNewFromExisting_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                try
+                {
+                    EditConnectionForm editConnection = new EditConnectionForm(connection, true);
                     editConnection.MdiParent = Program.MainForm;
                     if (editConnection.ShowDialog() == DialogResult.OK)
                     {
