@@ -124,38 +124,7 @@ namespace VDS.RDF.Update
 
                 //Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
-
-                //Apply Credentials to request if necessary
-                if (this.Credentials != null)
-                {
-                    if (Options.ForceHttpBasicAuth)
-                    {
-                        //Forcibly include a HTTP basic authentication header
-                        string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                        request.Headers.Add("Authorization", "Basic " + credentials);
-                    }
-                    else
-                    {
-                        //Leave .Net to cope with HTTP auth challenge response
-                        request.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                        request.PreAuthenticate = true;
-#endif
-                    }
-                }
-
-#if !NO_PROXY
-                //Use a Proxy if required
-                if (this.Proxy != null)
-                {
-                    request.Proxy = this.Proxy;
-                    if (this.UseCredentialsForProxy)
-                    {
-                        request.Proxy.Credentials = this.Credentials;
-                    }
-                }
-#endif
-
+                this.ApplyRequestOptions(request);
                 Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
@@ -202,43 +171,7 @@ namespace VDS.RDF.Update
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
-
-            //Apply Credentials to request if necessary
-            if (this.Credentials != null)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
-                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    //Leave .Net to cope with HTTP auth challenge response
-                    request.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                    request.PreAuthenticate = true;
-#endif
-                }
-            }
-
-#if !NO_PROXY
-            //Use a Proxy if required
-            if (this.Proxy != null)
-            {
-                request.Proxy = this.Proxy;
-                if (this.UseCredentialsForProxy)
-                {
-                    request.Proxy.Credentials = this.Credentials;
-                }
-            }
-#endif
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
