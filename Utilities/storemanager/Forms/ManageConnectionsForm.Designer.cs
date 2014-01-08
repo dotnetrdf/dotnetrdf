@@ -127,7 +127,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwActive
             // 
             this.lvwActive.AllowClose = true;
-            this.lvwActive.AllowCopy = true;
+            this.lvwActive.AllowNewFromExisting = true;
             this.lvwActive.AllowEdit = true;
             this.lvwActive.AllowOpen = true;
             this.lvwActive.AllowRemove = false;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwRecent
             // 
             this.lvwRecent.AllowClose = true;
-            this.lvwRecent.AllowCopy = true;
+            this.lvwRecent.AllowNewFromExisting = true;
             this.lvwRecent.AllowEdit = true;
             this.lvwRecent.AllowOpen = true;
             this.lvwRecent.AllowRemove = true;
@@ -191,7 +191,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwFavourite
             // 
             this.lvwFavourite.AllowClose = true;
-            this.lvwFavourite.AllowCopy = true;
+            this.lvwFavourite.AllowNewFromExisting = true;
             this.lvwFavourite.AllowEdit = true;
             this.lvwFavourite.AllowOpen = true;
             this.lvwFavourite.AllowRemove = true;
