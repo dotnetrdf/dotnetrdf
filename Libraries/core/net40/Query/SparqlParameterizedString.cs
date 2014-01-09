@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
@@ -75,7 +76,7 @@ namespace VDS.RDF.Query
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
         private readonly Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private readonly Dictionary<String, INode> _variables = new Dictionary<string, INode>();
-        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private SparqlFormatter _formatter;
         private readonly IGraph _g = new NonIndexedGraph();
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
@@ -133,6 +134,28 @@ namespace VDS.RDF.Query
             {
                 this._command = value;
             }
+        }
+
+        /// <summary>
+        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query
+        /// </summary>
+        /// <param name="query">Query</param>
+        public void AppendSubQuery(SparqlQuery query)
+        {
+            this.Namespaces.Import(query.NamespaceMap);
+            this._formatter = new SparqlFormatter(this.Namespaces);
+            this.CommandText += this._formatter.Format(new SubQueryPattern(query));
+        }
+
+        /// <summary>
+        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// </summary>
+        /// <param name="query">Query</param>
+        public void AppendSubQuery(SparqlParameterizedString query)
+        {
+            this.Namespaces.Import(query.Namespaces);
+            this._formatter = new SparqlFormatter(this.Namespaces);
+            this.CommandText += query.CommandText;
         }
 
         /// <summary>
@@ -525,6 +548,7 @@ namespace VDS.RDF.Query
         public override string ToString()
         {
             String output = String.Empty;
+            this._formatter = new SparqlFormatter(this.Namespaces);
 
             // First prepend Base declaration
             if (this.BaseUri != null)

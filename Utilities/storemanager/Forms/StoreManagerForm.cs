@@ -31,7 +31,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Timers;
 using System.Windows.Forms;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Query;
@@ -55,7 +54,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private readonly EventHandler _copyGraphHandler, _moveGraphHandler;
         private bool _codeFormatInProgress = false;
         private readonly List<HighLight> _highLights = new List<HighLight>();
-        private readonly Timer _highLightsUpdateTimer = new Timer();
+        private readonly Timer _highlightsUpdateTimer = new Timer();
         private bool _codeHighLightingInProgress = false;
         private int _taskId;
         private readonly System.Timers.Timer _timStartup;
@@ -99,8 +98,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this._timStartup.Elapsed += timStartup_Tick;
 
             //set highlight delay for 2 secs
-            _highLightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
-            _highLightsUpdateTimer.Tick += HighLightsUpdateTimerOnTick;
+            _highlightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
+            _highlightsUpdateTimer.Tick += HighlightsUpdateTimerOnTick;
         }
 
         private bool _showHighlighting;
@@ -120,7 +119,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else
                 {
-                    this.ClearHighLighting();
+                    this.ClearHighlighting();
                 }
             }
         }
@@ -311,7 +310,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         }
 
         /// <summary>
-        /// Runs a QueryAsTableTask
+        /// Runs a GenerateEntitiesQueryTask
         /// </summary>
         public void GenerateQueryForEntities(int predicateLimitCount, int columnWordsCount)
         {
@@ -323,9 +322,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
             if (this.StorageProvider is IQueryableStorage)
             {
-                QueryTask task = new QueryAsTableTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
+                GenerateEntitiesQueryTask task = new GenerateEntitiesQueryTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
 
-                this.AddTask(task, this.QueryCallback);
+                this.AddTask(task, this.GenerateEntitiesQueryCallback);
             }
             else
             {
@@ -598,7 +597,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
                 CopyMoveDragInfo info = new CopyMoveDragInfo(this, graphUri);
                 DragDropEffects effects = DragDropEffects.Copy;
-                if (this.StorageProvider.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if this manager supports DeleteGraph()
+                if (this.StorageProvider.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if this storage supports DeleteGraph()
 
                 this.lvwGraphs.DoDragDrop(info, effects);
             }
@@ -609,14 +608,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             if ((e.AllowedEffect & DragDropEffects.Copy) == 0 && (e.AllowedEffect & DragDropEffects.Move) == 0) return;
             if (!e.Data.GetDataPresent(typeof (CopyMoveDragInfo))) return;
 
-            //Cannot Copy/Move if a read-only manager is the target
+            //Cannot Copy/Move if a read-only storage is the target
             if (this.StorageProvider.IsReadOnly) return;
 
             CopyMoveDragInfo info = e.Data.GetData(typeof (CopyMoveDragInfo)) as CopyMoveDragInfo;
             if (info == null) return;
 
             DragDropEffects effects = DragDropEffects.Copy;
-            if (info.Source.StorageProvider.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if the source manager supports DeleteGraph()
+            if (info.Source.StorageProvider.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if the source storage supports DeleteGraph()
             e.Effect = effects;
         }
 
@@ -1429,9 +1428,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             if (task.State == TaskState.Completed)
             {
                 //in this case we only need to ovewrite query window
-                if (task is QueryAsTableTask)
+                if (task is GenerateEntitiesQueryTask)
                 {
-                    var queryAsTableTask = (QueryAsTableTask) task;
+                    var queryAsTableTask = (GenerateEntitiesQueryTask) task;
                     CrossThreadSetQuery(this.rtbSparqlQuery, queryAsTableTask.OutputTableQuery);
                     return;
                 }
@@ -1463,6 +1462,26 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 else
                 {
                     CrossThreadMessage("Query Failed due to an unknown error", "Query Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void GenerateEntitiesQueryCallback(ITask<String> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                // TODO Display generated query properly
+                CrossThreadSetText(this.rtbSparqlQuery, task.Result);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Generating an entities query failed due to the following error: " + task.Error.Message, "Generate Entities Query Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Generating an entities query failed due to an unknown error", "Generate Entities Query Failed", MessageBoxIcon.Error);
                 }
             }
         }
@@ -1706,7 +1725,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 try
                 {
-                    rtb.Text = ReGenerateRTBText(rtb.Text);
+                    rtb.Text = ReGenerateRtbText(rtb.Text);
                 }
                 finally
                 {
@@ -1715,7 +1734,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
-        private string ReGenerateRTBText(string Text)
+        private string ReGenerateRtbText(string Text)
         {
             _codeFormatInProgress = true;
             string[] text = Regex.Split(Text, "\n");
@@ -1727,7 +1746,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 if (line.Contains("{"))
                 {
-                    newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
                     lineAdded = true;
                     lvl += line.Count(f => f == '{');
                 }
@@ -1736,14 +1755,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     lvl -= line.Count(f => f == '}');
                     if (!lineAdded)
                     {
-                        newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                        newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
                         lineAdded = true;
                     }
                 }
 
                 if (!lineAdded)
                 {
-                    newString += indentation(lvl) + line.TrimStart(' ') + "\n";
+                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
                 }
 
                 lineAdded = false;
@@ -1752,31 +1771,33 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             return newString.TrimEnd('\n');
         }
 
-        private string indentation(int IndentLevel)
+        private static string ApplyIndentation(int indentLevel)
         {
             string space = "";
-            if (IndentLevel > 0)
-                for (int lvl = 0; lvl < IndentLevel; lvl++)
+            if (indentLevel > 0)
+            {
+                for (int lvl = 0; lvl < indentLevel; lvl++)
                 {
                     space += " ".PadLeft(8);
                 }
+            }
 
             return space;
         }
 
         private void rtbSparqlQuery_TextChanged(object sender, EventArgs e)
         {
-            //reset timer
-            _highLightsUpdateTimer.Stop();
+            // Reset timer
+            _highlightsUpdateTimer.Stop();
             if (!_codeHighLightingInProgress)
             {
-                _highLightsUpdateTimer.Start();
+                _highlightsUpdateTimer.Start();
             }
         }
 
-        private void HighLightsUpdateTimerOnTick(object sender, EventArgs eventArgs)
+        private void HighlightsUpdateTimerOnTick(object sender, EventArgs eventArgs)
         {
-            _highLightsUpdateTimer.Stop();
+            _highlightsUpdateTimer.Stop();
             ActivateHighLighting();
         }
 
@@ -1788,31 +1809,31 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
                 rtbSparqlQuery.BeginUpdate();
                 int initialSelectionStart = rtbSparqlQuery.SelectionStart;
-                ClearHighLighting();
-                HighLightText("prefix", Color.DarkBlue);
+                ClearHighlighting();
+                HighlightText("prefix", Color.DarkBlue);
 
-                HighLightText("select", Color.Blue);
-                HighLightText("FROM", Color.Blue);
-                HighLightText("FROM NAMED", Color.Blue);
-                HighLightText("GRAPH", Color.Blue);
+                HighlightText("select", Color.Blue);
+                HighlightText("FROM", Color.Blue);
+                HighlightText("FROM NAMED", Color.Blue);
+                HighlightText("GRAPH", Color.Blue);
 
-                HighLightText("describe", Color.Blue);
-                HighLightText("ask", Color.Blue);
-                HighLightText("construct", Color.Blue);
+                HighlightText("describe", Color.Blue);
+                HighlightText("ask", Color.Blue);
+                HighlightText("construct", Color.Blue);
 
-                HighLightText("where", Color.Blue);
-                HighLightText("filter", Color.Blue);
-                HighLightText("distinct", Color.Blue);
-                HighLightText("optional", Color.Blue);
+                HighlightText("where", Color.Blue);
+                HighlightText("filter", Color.Blue);
+                HighlightText("distinct", Color.Blue);
+                HighlightText("optional", Color.Blue);
 
-                HighLightText("order by", Color.Blue);
-                HighLightText("limit", Color.Blue);
-                HighLightText("offset", Color.Blue);
-                HighLightText("REDUCED", Color.Blue);
+                HighlightText("order by", Color.Blue);
+                HighlightText("limit", Color.Blue);
+                HighlightText("offset", Color.Blue);
+                HighlightText("REDUCED", Color.Blue);
 
 
-                HighLightText("GROUP BY", Color.Blue);
-                HighLightText("HAVING", Color.Blue);
+                HighlightText("GROUP BY", Color.Blue);
+                HighlightText("HAVING", Color.Blue);
 
                 rtbSparqlQuery.SelectionStart = initialSelectionStart;
                 rtbSparqlQuery.SelectionLength = 0;
@@ -1822,27 +1843,23 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
-        private void HighLightText(string text, Color color)
+        private void HighlightText(string text, Color color)
         {
-            if (text.Length > 0)
+            if (text.Length <= 0) return;
+            int startPosition = 0;
+            int foundPosition = 0;
+            while (foundPosition > -1)
             {
-                int startPosition = 0;
-                int foundPosition = 0;
-                while (foundPosition > -1)
-                {
-                    foundPosition = rtbSparqlQuery.Find(text, startPosition, RichTextBoxFinds.WholeWord);
-                    if (foundPosition >= 0)
-                    {
-                        rtbSparqlQuery.Select(foundPosition, text.Length);
-                        rtbSparqlQuery.SelectionColor = color;
-                        startPosition = foundPosition + text.Length;
-                        _highLights.Add(new HighLight() {Start = foundPosition, End = text.Length});
-                    }
-                }
+                foundPosition = rtbSparqlQuery.Find(text, startPosition, RichTextBoxFinds.WholeWord);
+                if (foundPosition < 0) continue;
+                rtbSparqlQuery.Select(foundPosition, text.Length);
+                rtbSparqlQuery.SelectionColor = color;
+                startPosition = foundPosition + text.Length;
+                _highLights.Add(new HighLight() {Start = foundPosition, End = text.Length});
             }
         }
 
-        private void ClearHighLighting()
+        private void ClearHighlighting()
         {
             rtbSparqlQuery.Select(0, rtbSparqlQuery.TextLength - 1);
             rtbSparqlQuery.SelectionColor = rtbSparqlQuery.ForeColor;
