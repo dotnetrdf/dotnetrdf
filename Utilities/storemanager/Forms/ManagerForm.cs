@@ -689,8 +689,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             MessageBox.Show(Resources.NewFromExisting_Error_Text, Resources.NewFromExisting_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
-        public void ShowStoreManagerForm(IStorageProvider connection, bool addRecentConnection = false)
+        public void ShowStoreManagerForm(Connection connection, bool addRecentConnection = false)
         {
             StoreManagerForm genManager = new StoreManagerForm(connection);
             genManager.MdiParent = this;

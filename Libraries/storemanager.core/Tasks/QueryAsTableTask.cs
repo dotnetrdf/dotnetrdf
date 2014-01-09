@@ -8,11 +8,15 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
-    public class QueryAsTableTask : QueryTask
+    // TODO Needs a massive code clean up
+    // - Should not use string manipulation to build query
+    // - Should not extend QueryTask since it does not return results rather returns a new query
+
+    public class QueryAsTableTask
+        : QueryTask
     {
-        private int _minValuesPerPredicateLimit;
-        private int _columnNameWords;
-        public string OutputTableQuery { get; set; }
+        private readonly int _minValuesPerPredicateLimit;
+        private readonly int _columnNameWords;
 
         public QueryAsTableTask(IQueryableStorage manager, string query, int minValuesPerPredicateLimit, int columnNameWords)
             : base(manager, query)
@@ -49,20 +53,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             //create a dynamic query
             //for each predicate with predicateCount > _minValuesPerPredicateLimit add a new column and an optional filter in where clause
 
-            SparqlVariable subject;
-
-            SparqlQuery intialQuery = this._parser.ParseFromString(this._query);
+            SparqlQuery intialQuery = this._parser.ParseFromString(this.QueryString);
 
             if (intialQuery.QueryType != SparqlQueryType.Select && intialQuery.QueryType != SparqlQueryType.SelectDistinct)
             {
                 throw new RdfQueryException("Only Sparql select Query with variables is supported for table format");
             }
 
-//            //separate prefixes from query command (since it's a select q type search for "select" keyword)
-            var indexOfSelect = this._query.ToLower().IndexOf("select", System.StringComparison.Ordinal);
-            var intialQueryCommand = this._query.Remove(0, indexOfSelect);
-            subject = intialQuery.Variables.First();
-           
+            // Separate prefixes from query command (since it's a select q type search for "select" keyword)
+            var indexOfSelect = this.QueryString.ToLower().IndexOf("select", System.StringComparison.Ordinal);
+            var intialQueryCommand = this.QueryString.Remove(0, indexOfSelect);
+            SparqlVariable subject = intialQuery.Variables.First();
+
             var getPredicatesQueryParameterizedString = new SparqlParameterizedString();
             getPredicatesQueryParameterizedString.Namespaces = intialQuery.NamespaceMap;
             getPredicatesQueryParameterizedString.CommandText = string.Format(@"
@@ -77,9 +79,8 @@ where
 GROUP BY ?p
 ", intialQueryCommand);
             getPredicatesQueryParameterizedString.SetParameter("subject", new Graph().CreateVariableNode(subject.Name));
-            //getPredicatesQueryParameterizedString.SetParameter("intialQueryCommand", new Graph().CreateBlankNode(intialQueryCommand)); 
 
-            this._query = getPredicatesQueryParameterizedString.ToString();
+            this.QueryString = getPredicatesQueryParameterizedString.ToString();
 
             //get predicates and nr of usages
             var results = base.RunTaskInternal();
@@ -87,7 +88,7 @@ GROUP BY ?p
             //contruct second query for final result
             try
             {
-                var sparqlResults =  results as SparqlResultSet;
+                var sparqlResults = results as SparqlResultSet;
 
                 if (sparqlResults == null)
                 {
@@ -95,16 +96,16 @@ GROUP BY ?p
                 }
 
                 var selectColumns = new StringBuilder();
-                selectColumns.Append(subject + " " + System.Environment.NewLine);
+                selectColumns.AppendLine(subject.ToString());
 
-                var optionlaFilters = new StringBuilder();
-            
+                var optionalFilters = new StringBuilder();
+
                 //foreach predicate add a column and an "optional" query clause
                 foreach (var sparqlResult in sparqlResults)
                 {
                     var subjectValue = sparqlResult[sparqlResult.Variables.First()];
-                    var count = sparqlResult["count"] as LiteralNode;
-                    var predicateCount = Int32.Parse(count.Value);
+                    IValuedNode count = sparqlResult["count"].AsValuedNode();
+                    var predicateCount = count != null ? count.AsInteger() : 0;
                     if (predicateCount <= _minValuesPerPredicateLimit)
                     {
                         continue;
@@ -113,7 +114,7 @@ GROUP BY ?p
                     selectColumns.Append(columnName + " " + System.Environment.NewLine);
 
                     var filter = string.Format("optional{{{0} <{1}> {2}.}}{3}", subject, subjectValue, columnName, System.Environment.NewLine);
-                    optionlaFilters.Append(filter);
+                    optionalFilters.Append(filter);
                 }
 
                 var tableQueryParameterizedString = new SparqlParameterizedString();
@@ -127,14 +128,10 @@ where
 {2}
 }}
 }}
-", selectColumns, optionlaFilters, intialQueryCommand);
+", selectColumns, optionalFilters, intialQueryCommand);
 
                 var intialQueryCommented = "#" + intialQuery.ToString().Replace(System.Environment.NewLine, System.Environment.NewLine + "#").TrimEnd('#') + System.Environment.NewLine;
                 this.OutputTableQuery = intialQueryCommented + tableQueryParameterizedString;
-//                this._query = tableQuery;
-//
-//                //execute final query
-//                results = base.RunTaskInternal();
             }
             catch (Exception)
             {
@@ -143,7 +140,6 @@ where
             }
 
             return results;
-
         }
 
         /// <summary>
@@ -154,11 +150,9 @@ where
         private string GetColumnName(INode node)
         {
             var nodeString = node.ToString();
-            var isUri = false;
             if (nodeString.StartsWith("<"))
             {
-                isUri = true;
-                nodeString = nodeString.Substring(1, nodeString.Length - 2);//remove <>
+                nodeString = nodeString.Substring(1, nodeString.Length - 2); //remove <>
             }
 
             //for a given uri: "http://www.example.org/word1/word2" and _columnNameWords = 2 the result is: word1/word2
@@ -167,24 +161,22 @@ where
             var wordsCount = 0;
             for (int i = nodeString.Length - 1; i >= 0; i--)
             {
-                if (nodeString[i] == '/' || nodeString[i] == '#') //'#' is in case of rdf:type full uri
-                {
-                    wordsCount++;
-                    if (wordsCount == _columnNameWords)
-                    {
-                        startIndex = i;
-                        break;
-                    }
-                }
+                if (nodeString[i] != '/' && nodeString[i] != '#') continue;
+                wordsCount++;
+                if (wordsCount != _columnNameWords) continue;
+                startIndex = i;
+                break;
             }
-            nodeString = nodeString.Substring(startIndex+1, nodeString.Length - startIndex-1);
+            nodeString = nodeString.Substring(startIndex + 1, nodeString.Length - startIndex - 1);
 
             //replace special chars
             var validPredicate = Regex.Replace(nodeString, @"[^\d\w\s]", "_");
-            return "?"+validPredicate;
+            return "?" + validPredicate;
         }
 
-
-
+        /// <summary>
+        /// Gets/Sets the output table query
+        /// </summary>
+        public string OutputTableQuery { get; private set; }
     }
 }

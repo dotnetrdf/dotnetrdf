@@ -30,7 +30,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows.Forms;
@@ -53,16 +52,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
     public partial class StoreManagerForm
         : CrossThreadForm
     {
-        private int _taskID = 0;
-        private EventHandler _copyGraphHandler, _moveGraphHandler;
-        private System.Timers.Timer timStartup;
-        private bool CodeFormatInProgress = false;
+        private readonly EventHandler _copyGraphHandler, _moveGraphHandler;
+        private bool _codeFormatInProgress = false;
         private readonly List<HighLight> _highLights = new List<HighLight>();
-        private Timer _highLightsUpdateTimer = new Timer();
+        private readonly Timer _highLightsUpdateTimer = new Timer();
         private bool _codeHighLightingInProgress = false;
         private int _taskId;
-        private readonly EventHandler _copyGraphHandler, _moveGraphHandler;
-        private readonly System.Timers.Timer _timStartup;
+        private readonly System.Timers.Timer timStartup;
         private bool _closing = true;
 
         /// <summary>
@@ -99,8 +95,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this._moveGraphHandler = this.MoveGraphClick;
 
             //Startup Timer
-            timStartup = new System.Timers.Timer(250);
-            timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
+            this.timStartup = new System.Timers.Timer(250);
+            this.timStartup.Elapsed += timStartup_Tick;
 
             //set highlight delay for 2 secs
             _highLightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
@@ -109,6 +105,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private bool _showHighlighting;
 
+        /// <summary>
+        /// Gets/Sets whether query highlighting is enabled
+        /// </summary>
         public bool ShowHighlighting
         {
             get
@@ -167,7 +166,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.propInfo.SelectedObject = this.Connection.Information;
 
             //Run Startup Timer
-            _timStartup.Start();
+            this.timStartup.Start();
         }
 
         #region Connection Management
@@ -299,12 +298,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 if (this.chkPageQuery.Checked)
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text, (int) this.numPageSize.Value);
+                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text, (int) this.numPageSize.Value);
                     this.AddTask(task, this.QueryCallback);
                 }
                 else
                 {
-                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.txtSparqlQuery.Text);
+                    QueryTask task = new QueryTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text);
                     this.AddTask(task, this.QueryCallback);
                 }
             }
@@ -319,15 +318,15 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// </summary>
         public void GenerateQueryForEntities(int predicateLimitCount, int columnWordsCount)
         {
-            if (!this._manager.IsReady)
+            if (!this.StorageProvider.IsReady)
             {
                 MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Query", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (this._manager is IQueryableStorage)
+            if (this.StorageProvider is IQueryableStorage)
             {
-                QueryTask task = new QueryAsTableTask((IQueryableStorage)this._manager, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
+                QueryTask task = new QueryAsTableTask((IQueryableStorage)this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
                
                 this.AddTask<Object>(task, this.QueryCallback);
                 
@@ -668,7 +667,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 this.ListStores();
             }
-            this._timStartup.Stop();
+            this.timStartup.Stop();
         }
 
         private void btnSaveQuery_Click(object sender, EventArgs e)
@@ -1707,7 +1706,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             var rtb = this.rtbSparqlQuery;
 
-            if (!CodeFormatInProgress)
+            if (!_codeFormatInProgress)
             {
                 try
                 {
@@ -1716,14 +1715,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 finally 
                 {
-                    CodeFormatInProgress = false;
+                    _codeFormatInProgress = false;
                 }
             }
         }
 
         private string ReGenerateRTBText(string Text)
         {
-            CodeFormatInProgress = true;
+            _codeFormatInProgress = true;
             string[] text = Regex.Split(Text, "\n");
 
             int lvl = 0;
