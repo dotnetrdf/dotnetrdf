@@ -143,7 +143,7 @@ namespace VDS.RDF.Query
         public void AppendSubQuery(SparqlQuery query)
         {
             this.Namespaces.Import(query.NamespaceMap);
-            this._formatter = new SparqlFormatter(this.Namespaces);
+            this._formatter = new SparqlFormatter();
             this.CommandText += this._formatter.Format(new SubQueryPattern(query));
         }
 
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query
         public void AppendSubQuery(SparqlParameterizedString query)
         {
             this.Namespaces.Import(query.Namespaces);
-            this._formatter = new SparqlFormatter(this.Namespaces);
+            this._formatter = new SparqlFormatter();
             this.CommandText += query.CommandText;
         }
 

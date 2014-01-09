@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -100,6 +101,9 @@ GROUP BY ?p";
             try
             {
                 // Get predicates and number of usages
+#if DEBUG
+                Debug.WriteLine(getPredicatesQuery.ToString());
+#endif
                 SparqlResultSet sparqlResults = (SparqlResultSet) this._storage.Query(getPredicatesQuery.ToString());
                 if (sparqlResults == null)
                 {
@@ -163,6 +167,9 @@ WHERE
         /// <returns></returns>
         private string GetColumnName(INode node)
         {
+            // TODO A / would be invalid in a SPARQL variable name so escape it
+            // TODO Use the predicates from the original query to create a compact column name when possible
+            // TODO Access the URI sensibly rather than by ugly string manipulation
             var nodeString = node.ToString();
             if (nodeString.StartsWith("<"))
             {
@@ -185,7 +192,7 @@ WHERE
 
             // Replace special characters
             var validPredicate = Regex.Replace(nodeString, @"[^\d\w\s]", "_");
-            return "?" + validPredicate;
+            return validPredicate;
         }
 
         /// <summary>
