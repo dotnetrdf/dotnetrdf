@@ -74,21 +74,17 @@ namespace VDS.RDF.GUI.WinForms
             {
                 if (t.Namespace == null) continue;
 
-                if (t.Namespace.Equals("VDS.RDF.Writing.Formatting"))
+                if (!t.Namespace.Equals("VDS.RDF.Writing.Formatting")) continue;
+                if (!t.GetInterfaces().Contains(targetType)) continue;
+                try
                 {
-                    if (t.GetInterfaces().Contains(targetType))
-                    {
-                        try
-                        {
-                            INodeFormatter formatter = (INodeFormatter)Activator.CreateInstance(t);
-                            formatters.Add(formatter);
-                            if (formatter.GetType().Equals(this._formatter.GetType())) this._formatter = formatter;
-                        }
-                        catch
-                        {
-                            //Ignore this Formatter
-                        }
-                    }
+                    INodeFormatter formatter = (INodeFormatter)Activator.CreateInstance(t);
+                    formatters.Add(formatter);
+                    if (formatter.GetType() == this._formatter.GetType()) this._formatter = formatter;
+                }
+                catch
+                {
+                    //Ignore this Formatter
                 }
             }
             formatters.Sort(new ToStringComparer<INodeFormatter>());

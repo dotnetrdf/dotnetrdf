@@ -38,20 +38,19 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : ITask<TResult> where TResult : class
     {
         private TaskState _state = TaskState.Unknown;
-        private String _name, _information;
-        private RunTaskInternalDelegate _delegate;
+        private String _information;
+        private readonly RunTaskInternalDelegate _delegate;
         private Exception _error;
-        private TResult _result;
         private TaskCallback<TResult> _callback;
         private DateTime? _start = null, _end = null;
 
         /// <summary>
         /// Creates a new Base Task
         /// </summary>
-        /// <param name="name"></param>
-        public BaseTask(String name)
+        /// <param name="name">Task Name</param>
+        protected BaseTask(String name)
         {
-            this._name = name;
+            this.Name = name;
             this._state = TaskState.NotRun;
             this._delegate = new BaseTask<TResult>.RunTaskInternalDelegate(this.RunTaskInternal);
         }
@@ -61,10 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public TaskState State
         {
-            get 
-            {
-                return this._state;
-            }
+            get { return this._state; }
             protected set
             {
                 this._state = value;
@@ -75,23 +71,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets the Task Name
         /// </summary>
-        public String Name
-        {
-            get 
-            {
-                return this._name;
-            }
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets/Sets the Task Information
         /// </summary>
         public String Information
         {
-            get 
-            {
-               return this._information;
-            }
+            get { return this._information; }
             set
             {
                 this._information = value;
@@ -104,10 +91,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public Exception Error
         {
-            get
-            {
-                return this._error;
-            }
+            get { return this._error; }
             protected set
             {
                 this._error = value;
@@ -122,31 +106,16 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                if (this._start == null)
-                {
-                    return null;
-                }
-                else if (this._end != null)
-                {
-                    return (this._end.Value - this._start.Value);
-                }
-                else
-                {
-                    return (DateTime.Now - this._start.Value);
-                }
+                if (this._start == null) return null;
+                if (this._end != null) return (this._end.Value - this._start.Value);
+                return (DateTime.Now - this._start.Value);
             }
         }
 
         /// <summary>
         /// Gets the Task Result
         /// </summary>
-        public TResult Result
-        {
-            get
-            {
-                return this._result;
-            }
-        }
+        public TResult Result { get; private set; }
 
         /// <summary>
         /// Runs the Task
@@ -182,7 +151,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             try
             {
                 //End the Invoke saving the Result
-                this._result = this._delegate.EndInvoke(result);
+                this.Result = this._delegate.EndInvoke(result);
                 this.State = TaskState.Completed;
             }
             catch (Exception ex)
@@ -203,10 +172,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets whether the Task may be cancelled
         /// </summary>
-        public abstract bool IsCancellable
-        {
-            get;
-        }
+        public abstract bool IsCancellable { get; }
 
         /// <summary>
         /// Cancels the Task
@@ -235,35 +201,33 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// Abstract Base Class for cancellable Tasks
     /// </summary>
     /// <typeparam name="T">Task Result Type</typeparam>
-    public abstract class CancellableTask<T> 
+    public abstract class CancellableTask<T>
         : BaseTask<T> where T : class
     {
-        private bool _cancelled = false;
-
         /// <summary>
         /// Creates a new Task
         /// </summary>
-        /// <param name="name">Name</param>
-        public CancellableTask(String name)
-            : base(name) { }
+        /// <param name="name">Task Name</param>
+        protected CancellableTask(String name)
+            : base(name)
+        {
+            HasBeenCancelled = false;
+        }
 
         /// <summary>
         /// Gets whether the Task is cancellable, true unless the task has already completed
         /// </summary>
-        public sealed override bool IsCancellable
+        public override sealed bool IsCancellable
         {
-            get 
-            {
-                return this.State != TaskState.Completed && this.State != TaskState.CompletedWithErrors;
-            }
+            get { return this.State != TaskState.Completed && this.State != TaskState.CompletedWithErrors; }
         }
 
         /// <summary>
         /// Cancels the task
         /// </summary>
-        public sealed override void Cancel()
+        public override sealed void Cancel()
         {
-            this._cancelled = true;
+            this.HasBeenCancelled = true;
             this.State = TaskState.RunningCancelled;
             this.CancelInternal();
         }
@@ -271,48 +235,44 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets whether we've been told to cancel
         /// </summary>
-        public bool HasBeenCancelled
-        {
-            get
-            {
-                return this._cancelled;
-            }
-        }
+        public bool HasBeenCancelled { get; private set; }
 
         /// <summary>
         /// Virtual method that derived classes may override if they wish to take action as soon as we are told to cancel
         /// </summary>
-        protected virtual void CancelInternal() { }
+        protected virtual void CancelInternal()
+        {
+        }
     }
 
     /// <summary>
     /// Abstract Base Class for non-cancellable Tasks
     /// </summary>
     /// <typeparam name="T">Task Result Type</typeparam>
-    public abstract class NonCancellableTask<T> : BaseTask<T> where T : class
+    public abstract class NonCancellableTask<T>
+        : BaseTask<T> where T : class
     {
         /// <summary>
         /// Creates a new Task
         /// </summary>
         /// <param name="name">Name</param>
-        public NonCancellableTask(String name)
-            : base(name) { }
+        protected NonCancellableTask(String name)
+            : base(name)
+        {
+        }
 
         /// <summary>
         /// Returns that the Task may not be cancelled
         /// </summary>
         public override bool IsCancellable
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         /// <summary>
         /// Has no effect since the Task may not be cancelled
         /// </summary>
-        public sealed override void Cancel()
+        public override sealed void Cancel()
         {
             //Does Nothing
         }

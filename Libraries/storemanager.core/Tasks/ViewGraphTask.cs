@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
@@ -37,8 +34,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ViewGraphTask 
         : NonCancellableTask<IGraph>
     {
-        private IStorageProvider _manager;
-        private String _graphUri;
+        private readonly IStorageProvider _manager;
+        private readonly String _graphUri;
 
         /// <summary>
         /// Creates a new view graph task

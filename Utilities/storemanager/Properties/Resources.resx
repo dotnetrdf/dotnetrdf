@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,300 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="HandleInternalError_Exit" xml:space="preserve">
+    <value>An unexpected internal error occurred and Store Manager will close once you close this dialogue:
+{0}</value>
+  </data>
+  <data name="HandleInternalError_NonExit" xml:space="preserve">
+    <value>An unexpected internal error occurred:
+{0}</value>
+  </data>
+  <data name="Internal_Error" xml:space="preserve">
+    <value>Internal Error</value>
+  </data>
+  <data name="ConnectionManagement_ConfirmClose_Text" xml:space="preserve">
+    <value>Are you sure you wish to close the connection {0}?  This will close all windows and tasks currently using this connection.</value>
+  </data>
+  <data name="ConnectionManagement_ConfirmClose_Title" xml:space="preserve">
+    <value>Confirm Close</value>
+  </data>
+  <data name="ConnectionManagement_ConfirmRemove_Title" xml:space="preserve">
+    <value>Confirm Remove</value>
+  </data>
+  <data name="ConnectionManagement_ConfirmRemove_Text" xml:space="preserve">
+    <value>Are you sure you wish to remove the connection {0}?</value>
+  </data>
+  <data name="ConnectionManagement_Remove_Error" xml:space="preserve">
+    <value>Unable to remove the connection {0}</value>
+  </data>
+  <data name="ConnectionManagement_Close_Error" xml:space="preserve">
+    <value>Unable to close the connection {0}</value>
+  </data>
+  <data name="ConnectionManagement_Open_Error" xml:space="preserve">
+    <value>Unable to open the connection {0}</value>
+  </data>
+  <data name="ConnectionManagement_Edit_Error" xml:space="preserve">
+    <value>Unable to edit the connection {0}</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="QueryResults_NotViewable_Text" xml:space="preserve">
+    <value>Unable to show Query Results as did not get a Graph/Result Set as expected</value>
+  </data>
+  <data name="QueryResults_Unavailable_Text" xml:space="preserve">
+    <value>Query Results are not available</value>
+  </data>
+  <data name="QueryResults_NotViewable_Title" xml:space="preserve">
+    <value>Unable to Show Results</value>
+  </data>
+  <data name="QueryResults_Unavailable_Title" xml:space="preserve">
+    <value>Results Unavailable</value>
+  </data>
+  <data name="TaskForm_Title" xml:space="preserve">
+    <value>{0} on {1}</value>
+  </data>
+  <data name="Graph_Unavailable_Text" xml:space="preserve">
+    <value>Graph is not available</value>
+  </data>
+  <data name="Graph_Unavailable_Title" xml:space="preserve">
+    <value>Graph Unavailable</value>
+  </data>
+  <data name="Colon" xml:space="preserve">
+    <value>:</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="BrowseFor" xml:space="preserve">
+    <value>Browse for {0}</value>
+  </data>
+  <data name="Connection_Failed" xml:space="preserve">
+    <value>Connection to {0} Failed</value>
+  </data>
+  <data name="InvalidUri_Text" xml:space="preserve">
+    <value>Not a valid URI: {0}</value>
+  </data>
+  <data name="InvalidUri_Title" xml:space="preserve">
+    <value>Invalid URI</value>
+  </data>
+  <data name="LoadConnections_Error" xml:space="preserve">
+    <value>An error occurred trying to load the favourite, recent and active connections</value>
+  </data>
+  <data name="RecentConnections_Update_Error" xml:space="preserve">
+    <value>Unable to update recent connections</value>
+  </data>
+  <data name="FavouriteConnections_NoFile" xml:space="preserve">
+    <value>Unable to update favourite connections since there is no favourite connections file available</value>
+  </data>
+  <data name="FavouriteConnections_Update_Error" xml:space="preserve">
+    <value>Unable to update favourite connections</value>
+  </data>
+  <data name="EditConnection" xml:space="preserve">
+    <value>Edit Connection</value>
+  </data>
+  <data name="FavouriteConnections_ConfirmClear_Text" xml:space="preserve">
+    <value>Are you sure you wish to clear your Favourite Connections?</value>
+  </data>
+  <data name="FavouriteConnections_ConfirmClear_Title" xml:space="preserve">
+    <value>Clear Favourite Connections?</value>
+  </data>
+  <data name="ClearConnections_Error" xml:space="preserve">
+    <value>Unable to clear connections</value>
+  </data>
+  <data name="QuickConnect_Error_Title" xml:space="preserve">
+    <value>Quick Connect Error</value>
+  </data>
+  <data name="QuickConnect_Error_Text" xml:space="preserve">
+    <value>Unable to open the connection due to the following error: {0}</value>
+  </data>
+  <data name="QuickEdit_Error_Text" xml:space="preserve">
+    <value>Unable to edit the Connection due to an error: {0}</value>
+  </data>
+  <data name="QuickEdit_Error_Title" xml:space="preserve">
+    <value>Quick Edit Error</value>
+  </data>
+  <data name="ActiveConnections_Update_Error" xml:space="preserve">
+    <value>Failed to update active connections</value>
+  </data>
+  <data name="RestoreConnection_Error" xml:space="preserve">
+    <value>Unable to restore connection {0}</value>
+  </data>
+  <data name="SaveConnection_Append_Text" xml:space="preserve">
+    <value>The selected connection file already exists - would you like to append this connection to that file?  Click Yes to append to this file, No to overwrite and Cancel to abort</value>
+  </data>
+  <data name="SaveConnection_Append_Title" xml:space="preserve">
+    <value>Append Connection?</value>
+  </data>
+  <data name="SaveConnection_Error" xml:space="preserve">
+    <value>Unable to save connection</value>
+  </data>
+  <data name="OpenConnection_InvalidFile_Text" xml:space="preserve">
+    <value>Unable to open a connection from the given file as it was not a valid RDF Graph or was in a format that the library does not understand</value>
+  </data>
+  <data name="OpenConnection_Error_Title" xml:space="preserve">
+    <value>Open Connection Failed</value>
+  </data>
+  <data name="OpenConnection_Error_Text" xml:space="preserve">
+    <value>Unable to open the given file due to the following error:
+{0}</value>
+  </data>
+  <data name="NewFromExisting_Error_Text" xml:space="preserve">
+    <value>The current connection is not editable</value>
+  </data>
+  <data name="NewFromExisting_Error_Title" xml:space="preserve">
+    <value>New Connection from Current Error</value>
+  </data>
+  <data name="StartPage_Open_Error_Text" xml:space="preserve">
+    <value>Error Opening Connection {0}:
+{1}</value>
+  </data>
+  <data name="ConnectionError" xml:space="preserve">
+    <value>Connection Error</value>
+  </data>
+  <data name="ConnectionMustBeOpen" xml:space="preserve">
+    <value>Connection must be in open state</value>
+  </data>
+  <data name="UpdateModeNative" xml:space="preserve">
+    <value>Update Mode: Native</value>
+  </data>
+  <data name="UpdarteModeApproximated" xml:space="preserve">
+    <value>Update Mode: Approximated</value>
+  </data>
+  <data name="StoreNotReady_Query_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to make a SPARQL Query</value>
+  </data>
+  <data name="StoreNotReady_Title" xml:space="preserve">
+    <value>Store Not Ready</value>
+  </data>
+  <data name="Query_Unsupported" xml:space="preserve">
+    <value>Unable to execute a SPARQL Query since your Store does not support SPARQL</value>
+  </data>
+  <data name="Query_Error_Title" xml:space="preserve">
+    <value>SPARQL Query Error</value>
+  </data>
+  <data name="StoreNotReady_Update_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to make a SPARQL Update</value>
+  </data>
+  <data name="StoreNoteReady_Import_Text" xml:space="preserve">
+    <value>Please wait for Store to be ready before attempting to Import Data</value>
+  </data>
+  <data name="ImportData_NoFile_Text" xml:space="preserve">
+    <value>Please enter a File to import from!</value>
+  </data>
+  <data name="ImportData_NoFile_Title" xml:space="preserve">
+    <value>No File to Import</value>
+  </data>
+  <data name="ImportData_InvalidTarget_Text" xml:space="preserve">
+    <value>Cannot import data to an Invalid Default Target Graph URI - {0}</value>
+  </data>
+  <data name="ImportData_InvalidTarget_Title" xml:space="preserve">
+    <value>Invalid Default Target Graph URI</value>
+  </data>
+  <data name="ImportData_NoUri_Text" xml:space="preserve">
+    <value>Please enter a URI to import from!</value>
+  </data>
+  <data name="ImportData_NoUri_Title" xml:space="preserve">
+    <value>No URI to Import</value>
+  </data>
+  <data name="ImportData_InvalidSource_Text" xml:space="preserve">
+    <value>Cannot import data from an invalid URI - {0}</value>
+  </data>
+  <data name="ImportData_InvalidSource_Title" xml:space="preserve">
+    <value>Invalid Import URI</value>
+  </data>
+  <data name="ExportData_NoFile_Text" xml:space="preserve">
+    <value>Please enter a File to export to!</value>
+  </data>
+  <data name="ExportData_NoFile_Title" xml:space="preserve">
+    <value>No Export Destination</value>
+  </data>
+  <data name="DeleteGraph_Confirm_Text" xml:space="preserve">
+    <value>Are you sure you wish to delete the Graph '{0}'?  This action is non-reversible</value>
+  </data>
+  <data name="DeleteGraph_Confirm_Title" xml:space="preserve">
+    <value>Delete Graph Confirmation</value>
+  </data>
+  <data name="TaskInfo_Unavailable_Text" xml:space="preserve">
+    <value>Task Information cannot be shown as the Task type is unknown</value>
+  </data>
+  <data name="TaskInfo_Unavailable_Title" xml:space="preserve">
+    <value>Task Information Unavailable</value>
+  </data>
+  <data name="OpenStore_Error_Text" xml:space="preserve">
+    <value>No Store selected</value>
+  </data>
+  <data name="OpenStore_Error_Title" xml:space="preserve">
+    <value>Open Store Error</value>
+  </data>
+  <data name="DeleteStore_Confirm_Text" xml:space="preserve">
+    <value>Are you sure you wish to delete the Store '{0}'?  This action is non-reversible</value>
+  </data>
+  <data name="DeleteStore_Confirm_Title" xml:space="preserve">
+    <value>Delete Store Confirmation</value>
+  </data>
+  <data name="TriplesCounted" xml:space="preserve">
+    <value>Triples Counted</value>
+  </data>
+  <data name="Status_RenderingGraphList" xml:space="preserve">
+    <value>Rendering Graph List...</value>
+  </data>
+  <data name="Status_Ready" xml:space="preserve">
+    <value>Store is ready</value>
+  </data>
+  <data name="ListGraphs_Information" xml:space="preserve">
+    <value>{0} Graph URI(s) were returned</value>
+  </data>
+  <data name="Status_GraphListingUnavailable" xml:space="preserve">
+    <value>Graph Listing unavailable - Store is ready</value>
+  </data>
+  <data name="ListGraphs_Error_Text" xml:space="preserve">
+    <value>Unable to list Graphs due to the following error:
+{0}</value>
+  </data>
+  <data name="ListGraphs_Error_Title" xml:space="preserve">
+    <value>Graph List Unavailable</value>
+  </data>
+  <data name="Status_RenderingStoreList" xml:space="preserve">
+    <value>Rendering Store List...</value>
+  </data>
+  <data name="ListStores_Information" xml:space="preserve">
+    <value>{0} Store IDs were returned</value>
+  </data>
+  <data name="Status_StoreListUnavailable" xml:space="preserve">
+    <value>Store Listing unavailable - Store is ready</value>
+  </data>
+  <data name="ListStores_Error_Text" xml:space="preserve">
+    <value>Unable to list Stores due to the following error:
+{0}</value>
+  </data>
+  <data name="ListStores_Error_Title" xml:space="preserve">
+    <value>Store List Unavailable</value>
+  </data>
+  <data name="ViewGraph_Error_Text" xml:space="preserve">
+    <value>View Graph Failed due to the following error: {0}</value>
+  </data>
+  <data name="ViewGraph_Error_Title" xml:space="preserve">
+    <value>View Graph Failed</value>
+  </data>
+  <data name="ViewGraph_UnknownError_Text" xml:space="preserve">
+    <value>View Graph Failed due to an unknown error</value>
+  </data>
+  <data name="NewFromExisting" xml:space="preserve">
+    <value>New From Existing</value>
+  </data>
+  <data name="EditConnection_Forbidden_Text" xml:space="preserve">
+    <value>Cannot edit an open connection, please close the connection before attempting to edit it</value>
+  </data>
+  <data name="EditConnection_Forbidden_Title" xml:space="preserve">
+    <value>Edit Forbidden</value>
+  </data>
 </root>

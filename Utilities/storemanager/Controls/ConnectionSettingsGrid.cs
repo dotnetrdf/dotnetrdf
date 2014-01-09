@@ -25,15 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using VDS.RDF.Storage;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
 namespace VDS.RDF.Utilities.StoreManager.Controls
 {
@@ -44,7 +41,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         : UserControl
     {
         private IConnectionDefinition _def;
-        private IStorageProvider _connection;
+        private Connection _connection;
 
         /// <summary>
         /// Creates a new Connection Settings Grid
@@ -80,7 +77,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 if (setting.Value.Type != ConnectionSettingType.Boolean)
                 {
                     Label label = new Label();
-                    label.Text = setting.Value.DisplayName + ":";
+                    label.Text = setting.Value.DisplayName + Resources.Colon;
                     label.TextAlign = ContentAlignment.MiddleLeft;
                     tblSettings.Controls.Add(label, 0, i);
                 }
@@ -92,16 +89,17 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         //String/Password so show a Textbox
                         TextBox box = new TextBox();
                         String s = (String)setting.Key.GetValue(def, null);
-                        box.Text = (s != null) ? s : String.Empty;
+                        box.Text = s ?? String.Empty;
                         box.Width = 225;
                         box.Tag = setting.Key;
                         if (setting.Value.Type == ConnectionSettingType.Password) box.PasswordChar = '*';
 
                         //Add the Event Handler which updates the Definition as the user types
-                        box.TextChanged += new EventHandler((_sender, args) =>
-                        {
-                            (box.Tag as PropertyInfo).SetValue(def, box.Text, null);
-                        });
+                        box.TextChanged += (_, args) =>
+                            {
+                                var propertyInfo = box.Tag as PropertyInfo;
+                                if (propertyInfo != null) propertyInfo.SetValue(def, box.Text, null);
+                            };
 
                         //Show DisplaySuffix if relevant
                         if (!String.IsNullOrEmpty(setting.Value.DisplaySuffix))
@@ -136,10 +134,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         check.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition when the Checkbox changes
-                        check.CheckedChanged += new EventHandler((_sender, args) =>
-                        {
-                            (check.Tag as PropertyInfo).SetValue(def, check.Checked, null);
-                        });
+                        check.CheckedChanged += (_, args) =>
+                            {
+                                var propertyInfo = check.Tag as PropertyInfo;
+                                if (propertyInfo != null) propertyInfo.SetValue(def, check.Checked, null);
+                            };
 
                         this.tblSettings.SetColumnSpan(check, 2);
                         this.tblSettings.Controls.Add(check, 0, i);
@@ -165,10 +164,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         num.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition as the number changes
-                        num.ValueChanged += new EventHandler((_sender, args) =>
-                        {
-                            (num.Tag as PropertyInfo).SetValue(def, (int)num.Value, null);
-                        });
+                        num.ValueChanged += (_, args) =>
+                            {
+                                var propertyInfo = num.Tag as PropertyInfo;
+                                if (propertyInfo != null) propertyInfo.SetValue(def, (int)num.Value, null);
+                            };
 
                         tblSettings.Controls.Add(num, 1, i);
                         break;
@@ -182,10 +182,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         ebox.Tag = setting.Key;
 
                         //Add the Event Handler which updates the Definition as the selection changes
-                        ebox.SelectedIndexChanged += new EventHandler((_sender, args) =>
-                        {
-                            (ebox.Tag as PropertyInfo).SetValue(def, (Enum)ebox.SelectedItem, null);
-                        });
+                        ebox.SelectedIndexChanged += (_, args) =>
+                            {
+                                var propertyInfo = ebox.Tag as PropertyInfo;
+                                if (propertyInfo != null) propertyInfo.SetValue(def, ebox.SelectedItem, null);
+                            };
 
                         tblSettings.Controls.Add(ebox, 1, i);
                         break;
@@ -201,34 +202,35 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
                         TextBox fileBox = new TextBox();
                         fileBox.Width = 225;
-                        fileBox.Text = (file != null) ? file : String.Empty;
+                        fileBox.Text = file ?? String.Empty;
                         fileBox.Width = 225;
                         fileBox.Tag = setting.Key;
                         fileFlow.Controls.Add(fileBox);
 
                         Button browse = new Button();
-                        browse.Text = "Browse";
+                        browse.Text = Resources.Browse;
                         browse.Tag = setting.Value;
                         fileFlow.Controls.Add(browse);
 
                         //Add the Event Handler which updates the Definition as the user types
-                        fileBox.TextChanged += new EventHandler((_sender, args) =>
-                        {
-                            (fileBox.Tag as PropertyInfo).SetValue(def, fileBox.Text, null);
-                        });
+                        fileBox.TextChanged += (_, args) =>
+                            {
+                                var propertyInfo = fileBox.Tag as PropertyInfo;
+                                if (propertyInfo != null) propertyInfo.SetValue(def, fileBox.Text, null);
+                            };
 
                         //Add the Event Handler for the Browse Button
-                        browse.Click += new EventHandler((_sender, args) =>
-                        {
-                            ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
-                            if (attr == null) return;
-                            this.ofdBrowse.Title = "Browse for " + attr.DisplayName;
-                            this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
-                            if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                        browse.Click += (_, args) =>
                             {
-                                fileBox.Text = this.ofdBrowse.FileName;
-                            }
-                        });
+                                ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
+                                if (attr == null) return;
+                                this.ofdBrowse.Title = string.Format(Resources.BrowseFor, attr.DisplayName);
+                                this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
+                                if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                                {
+                                    fileBox.Text = this.ofdBrowse.FileName;
+                                }
+                            };
 
                         tblSettings.Controls.Add(fileFlow, 1, i);
 
@@ -250,11 +252,9 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             }
             set
             {
-                if (!ReferenceEquals(this._def, value))
-                {
-                    this._def = value;
-                    this.Render(value);
-                }
+                if (ReferenceEquals(this._def, value)) return;
+                this._def = value;
+                this.Render(value);
             }
         }
 
@@ -267,24 +267,13 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         {
             try
             {
-                this._connection = this._def.OpenConnection();
-                if (this.chkForceReadOnly.Checked)
-                {
-                    if (this._connection is IQueryableStorage)
-                    {
-                        this._connection = new QueryableReadOnlyConnector((IQueryableStorage)this._connection);
-                    }
-                    else
-                    {
-                        this._connection = new ReadOnlyConnector(this._connection);
-                    }
-                }
-
+                this._connection = new Connection(this._def.Copy());
+                this._connection.Open(this.chkForceReadOnly.Checked);
                 this.RaiseConnected();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Connection to " + this._def.StoreName + " Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, string.Format(Resources.Connection_Failed, this._def.StoreName), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

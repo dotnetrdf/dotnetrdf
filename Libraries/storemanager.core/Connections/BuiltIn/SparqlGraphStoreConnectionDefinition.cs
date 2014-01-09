@@ -65,10 +65,26 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 return new SparqlHttpProtocolConnector(this.Server, this.GetProxy());
             }
-            else
-            {
-                return new SparqlHttpProtocolConnector(this.Server);
-            }
+            return new SparqlHttpProtocolConnector(this.Server);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            SparqlGraphStoreConnectionDefinition definition = new SparqlGraphStoreConnectionDefinition();
+            definition.Server = this.Server;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[SPARQL Graph Store HTTP Protocol] " + this.Server.ToSafeString();
         }
     }
 }
