@@ -58,7 +58,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private readonly Timer _highLightsUpdateTimer = new Timer();
         private bool _codeHighLightingInProgress = false;
         private int _taskId;
-        private readonly System.Timers.Timer timStartup;
+        private readonly System.Timers.Timer _timStartup;
         private bool _closing = true;
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this._moveGraphHandler = this.MoveGraphClick;
 
             //Startup Timer
-            this.timStartup = new System.Timers.Timer(250);
-            this.timStartup.Elapsed += timStartup_Tick;
+            this._timStartup = new System.Timers.Timer(250);
+            this._timStartup.Elapsed += timStartup_Tick;
 
             //set highlight delay for 2 secs
             _highLightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
@@ -110,10 +110,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// </summary>
         public bool ShowHighlighting
         {
-            get
-            {
-                return _showHighlighting;
-            }
+            get { return _showHighlighting; }
             set
             {
                 _showHighlighting = value;
@@ -166,7 +163,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.propInfo.SelectedObject = this.Connection.Information;
 
             //Run Startup Timer
-            this.timStartup.Start();
+            this._timStartup.Start();
         }
 
         #region Connection Management
@@ -204,24 +201,24 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         #endregion
 
-	#region Editor Options
+        #region Editor Options
 
         public void ShowQueryUrls(bool state)
         {
             this.rtbSparqlQuery.DetectUrls = state;
         }
 
-	public void ShowHideEntitiesButtons(bool state)
-	{
+        public void ShowHideEntitiesButtons(bool state)
+        {
             this.btnOpenEntityGeneratorForm.Visible = state;
-	}
+        }
 
         public void WordWrapQuery(bool state)
         {
             this.rtbSparqlQuery.WordWrap = state;
         }
 
-	#endregion
+        #endregion
 
         #region Store Operations
 
@@ -320,20 +317,19 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (!this.StorageProvider.IsReady)
             {
-                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Query", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.StoreNotReady_Query_Text, Resources.StoreNotReady_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (this.StorageProvider is IQueryableStorage)
             {
-                QueryTask task = new QueryAsTableTask((IQueryableStorage)this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
-               
-                this.AddTask<Object>(task, this.QueryCallback);
-                
+                QueryTask task = new QueryAsTableTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
+
+                this.AddTask(task, this.QueryCallback);
             }
             else
             {
-                MessageBox.Show("Unable to execute a SPARQL Query since your Store does not support SPARQL", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.Query_Unsupported, Resources.Query_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -667,7 +663,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 this.ListStores();
             }
-            this.timStartup.Stop();
+            this._timStartup.Stop();
         }
 
         private void btnSaveQuery_Click(object sender, EventArgs e)
@@ -1113,7 +1109,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     else
                     {
-                       CrossThreadMessage(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxIcon.Error);
+                        CrossThreadMessage(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxIcon.Error);
                     }
                 }
                 else if (tag is ITask<IGraph>)
@@ -1446,12 +1442,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (result is IGraph)
                 {
                     CrossThreadShowQueryPanel(splitQueryResults);
-                    CrossThreadSetResultGraph(graphViewerControl, (IGraph)result, resultSetViewerControl);
+                    CrossThreadSetResultGraph(graphViewerControl, (IGraph) result, resultSetViewerControl);
                 }
                 else if (result is SparqlResultSet)
                 {
                     CrossThreadShowQueryPanel(splitQueryResults);
-                    CrossThreadSetResultSet(resultSetViewerControl, (SparqlResultSet)result, qTask.Query.NamespaceMap, graphViewerControl);
+                    CrossThreadSetResultSet(resultSetViewerControl, (SparqlResultSet) result, qTask.Query.NamespaceMap, graphViewerControl);
                 }
                 else
                 {
@@ -1711,9 +1707,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 try
                 {
                     rtb.Text = ReGenerateRTBText(rtb.Text);
-                   
                 }
-                finally 
+                finally
                 {
                     _codeFormatInProgress = false;
                 }
@@ -1730,7 +1725,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             bool lineAdded = false;
             foreach (string line in text)
             {
-                
                 if (line.Contains("{"))
                 {
                     newString += indentation(lvl) + line.TrimStart(' ') + "\n";
@@ -1791,7 +1785,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             if (_showHighlighting && !_codeHighLightingInProgress)
             {
                 _codeHighLightingInProgress = true;
-                
+
                 rtbSparqlQuery.BeginUpdate();
                 int initialSelectionStart = rtbSparqlQuery.SelectionStart;
                 ClearHighLighting();
@@ -1801,7 +1795,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 HighLightText("FROM", Color.Blue);
                 HighLightText("FROM NAMED", Color.Blue);
                 HighLightText("GRAPH", Color.Blue);
-                
+
                 HighLightText("describe", Color.Blue);
                 HighLightText("ask", Color.Blue);
                 HighLightText("construct", Color.Blue);
@@ -1815,7 +1809,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 HighLightText("limit", Color.Blue);
                 HighLightText("offset", Color.Blue);
                 HighLightText("REDUCED", Color.Blue);
-                
+
 
                 HighLightText("GROUP BY", Color.Blue);
                 HighLightText("HAVING", Color.Blue);
@@ -1825,9 +1819,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 rtbSparqlQuery.EndUpdate();
                 rtbSparqlQuery.Invalidate();
                 _codeHighLightingInProgress = false;
-
             }
-
         }
 
         private void HighLightText(string text, Color color)
@@ -1844,7 +1836,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         rtbSparqlQuery.Select(foundPosition, text.Length);
                         rtbSparqlQuery.SelectionColor = color;
                         startPosition = foundPosition + text.Length;
-                        _highLights.Add(new HighLight() { Start = foundPosition, End = text.Length });
+                        _highLights.Add(new HighLight() {Start = foundPosition, End = text.Length});
                     }
                 }
             }
@@ -1852,14 +1844,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void ClearHighLighting()
         {
-            rtbSparqlQuery.Select(0, rtbSparqlQuery.TextLength -1);
+            rtbSparqlQuery.Select(0, rtbSparqlQuery.TextLength - 1);
             rtbSparqlQuery.SelectionColor = rtbSparqlQuery.ForeColor;
             _highLights.Clear();
         }
-
     }
 
-    class HighLight
+    internal class HighLight
     {
         public int Start { get; set; }
         public int End { get; set; }
