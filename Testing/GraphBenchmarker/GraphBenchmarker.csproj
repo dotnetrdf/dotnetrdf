@@ -179,6 +179,10 @@
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

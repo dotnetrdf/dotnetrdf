@@ -139,6 +139,12 @@
     <EmbeddedResource Include="ResultSetViewerControl.resx">
       <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GraphViewerControl.resx">
+      <DependentUpon>GraphViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResultSetViewerControl.resx">
+      <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResultSetViewerForm.resx">
       <DependentUpon>ResultSetViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>

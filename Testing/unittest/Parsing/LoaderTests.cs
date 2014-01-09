@@ -240,6 +240,51 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingUriLoaderDBPedia3()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                // Expect this to error since DBPedia sends text/plain Content-Type but Turtle like content
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"));
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia4()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
+                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                TestTools.ShowGraph(g);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
 #endif
 
         [Test]
