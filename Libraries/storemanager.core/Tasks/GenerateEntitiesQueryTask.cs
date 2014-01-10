@@ -144,6 +144,7 @@ GROUP BY ?p";
                 StringBuilder optionalFilters = new StringBuilder();
                 foreach (SparqlResult sparqlResult in sparqlResults)
                 {
+                    if (!sparqlResult.HasBoundValue("p")) continue;
                     INode predicate = sparqlResult["p"];
                     IValuedNode count = sparqlResult["count"].AsValuedNode();
                     long predicateCount = count != null ? count.AsInteger() : 0;
@@ -158,6 +159,8 @@ GROUP BY ?p";
                     optionalFilters.AppendLine("  OPTIONAL { @subject @predicate" + predicateIndex + " ?" + predicateColumnName + " }");
                     entitiesQuery.SetParameter("predicate" + predicateIndex, predicate);
                 }
+
+                if (selectColumns.Count == 1) throw new RdfQueryException("No predicates which matched the criteria were found so an entities query cannot be generated");
 
                 entitiesQuery.CommandText = "SELECT DISTINCT ";
                 foreach (String column in selectColumns)

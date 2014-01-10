@@ -1131,6 +1131,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 GenerateEntitiesQueryTask genTask = (GenerateEntitiesQueryTask) tag;
                 StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", this.Connection.Name), genTask.Result, this.rtbSparqlQuery, "Query Editor");
+                CrossThreadSetMdiParent(dialogue);
+                CrossThreadShow(dialogue);
             }
             else if (tag is ITask<IGraph>)
             {
@@ -1486,6 +1488,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             if (task.State == TaskState.Completed)
             {
                 StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", this.Connection.Name), task.Result, this.rtbSparqlQuery, "Query Editor");
+                CrossThreadSetMdiParent(dialogue);
                 CrossThreadShow(dialogue);
             }
             else
