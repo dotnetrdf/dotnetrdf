@@ -124,9 +124,7 @@ GROUP BY ?p";
             try
             {
                 // Get predicates and number of usages
-#if DEBUG
-                Debug.WriteLine(getPredicatesQuery.ToString());
-#endif
+                this.Information = "Running query to extract predicates for entities selected by original query...";
                 SparqlResultSet sparqlResults = (SparqlResultSet) this._storage.Query(getPredicatesQuery.ToString());
                 if (sparqlResults == null)
                 {
@@ -142,6 +140,7 @@ GROUP BY ?p";
                 // For each predicate add a column and an appropriate OPTIONAL clause
                 int predicateIndex = 0;
                 StringBuilder optionalFilters = new StringBuilder();
+                this.Information = "Generating Entities Query...";
                 foreach (SparqlResult sparqlResult in sparqlResults)
                 {
                     if (!sparqlResult.HasBoundValue("p")) continue;
@@ -176,6 +175,7 @@ WHERE
                 entitiesQuery.CommandText += @"
 }";
 
+                this.Information = "Generated Entities Query with " + (selectColumns.Count - 1) + " Predicate Columns";
                 this.OutputTableQuery = entitiesQuery.ToString();
             }
             catch (Exception)
