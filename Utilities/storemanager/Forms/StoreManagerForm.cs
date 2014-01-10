@@ -33,6 +33,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using VDS.RDF.GUI.WinForms;
+using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;

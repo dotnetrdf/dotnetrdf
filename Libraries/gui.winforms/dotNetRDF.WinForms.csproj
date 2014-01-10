@@ -56,6 +56,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="dotNetRDF.WinForms, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -75,6 +76,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controls\DnrRichTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FormatterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FormatterControl.Designer.cs">
+      <DependentUpon>FormatterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ExportResultSetOptionsForm.cs">
       <SubType>Form</SubType>
@@ -129,6 +136,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\FormatterControl.resx">
+      <DependentUpon>FormatterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExportResultSetOptionsForm.resx">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>

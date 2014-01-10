@@ -34,6 +34,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
+using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;

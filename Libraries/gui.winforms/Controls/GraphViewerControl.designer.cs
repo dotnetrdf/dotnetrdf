@@ -1,4 +1,4 @@
-﻿namespace VDS.RDF.GUI.WinForms
+﻿namespace VDS.RDF.GUI.WinForms.Controls
 {
     partial class GraphViewerControl
     {
@@ -28,33 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cboFormat = new System.Windows.Forms.ComboBox();
-            this.lblFormat = new System.Windows.Forms.Label();
             this.dgvTriples = new System.Windows.Forms.DataGridView();
             this.btnVisualise = new System.Windows.Forms.Button();
             this.lnkBaseURI = new System.Windows.Forms.LinkLabel();
             this.lblBaseURI = new System.Windows.Forms.Label();
             this.btnExport = new System.Windows.Forms.Button();
+            this.fmtSelector = new VDS.RDF.GUI.WinForms.Controls.FormatterControl();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTriples)).BeginInit();
             this.SuspendLayout();
-            // 
-            // cboFormat
-            // 
-            this.cboFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFormat.FormattingEnabled = true;
-            this.cboFormat.Location = new System.Drawing.Point(93, 32);
-            this.cboFormat.Name = "cboFormat";
-            this.cboFormat.Size = new System.Drawing.Size(154, 21);
-            this.cboFormat.TabIndex = 10;
-            // 
-            // lblFormat
-            // 
-            this.lblFormat.AutoSize = true;
-            this.lblFormat.Location = new System.Drawing.Point(4, 35);
-            this.lblFormat.Name = "lblFormat";
-            this.lblFormat.Size = new System.Drawing.Size(94, 13);
-            this.lblFormat.TabIndex = 9;
-            this.lblFormat.Text = "Format Values as  ";
             // 
             // dgvTriples
             // 
@@ -111,12 +92,20 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // fmtSelector
+            // 
+            this.fmtSelector.CurrentFormatter = null;
+            this.fmtSelector.DefaultFormatter = null;
+            this.fmtSelector.Location = new System.Drawing.Point(7, 30);
+            this.fmtSelector.Name = "fmtSelector";
+            this.fmtSelector.Size = new System.Drawing.Size(251, 28);
+            this.fmtSelector.TabIndex = 14;
+            // 
             // GraphViewerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cboFormat);
-            this.Controls.Add(this.lblFormat);
+            this.Controls.Add(this.fmtSelector);
             this.Controls.Add(this.dgvTriples);
             this.Controls.Add(this.btnVisualise);
             this.Controls.Add(this.lnkBaseURI);
@@ -132,12 +121,11 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cboFormat;
-        private System.Windows.Forms.Label lblFormat;
         private System.Windows.Forms.DataGridView dgvTriples;
         private System.Windows.Forms.Button btnVisualise;
         private System.Windows.Forms.LinkLabel lnkBaseURI;
         private System.Windows.Forms.Label lblBaseURI;
         private System.Windows.Forms.Button btnExport;
+        private FormatterControl fmtSelector;
     }
 }

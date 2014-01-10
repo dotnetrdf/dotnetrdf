@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Windows.Forms;
+using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Query;
 using VDS.RDF.Utilities.StoreManager.Forms;
 using VDS.RDF.Utilities.StoreManager.Properties;

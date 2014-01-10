@@ -36,10 +36,9 @@ terms.
 using System;
 using System.IO;
 using System.Windows.Forms;
-using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.GUI.WinForms
+namespace VDS.RDF.GUI.WinForms.Forms
 {
     /// <summary>
     /// A Form that can be used to Visualise a Graph using GraphViz (or produce DOT output for use with GraphViz)

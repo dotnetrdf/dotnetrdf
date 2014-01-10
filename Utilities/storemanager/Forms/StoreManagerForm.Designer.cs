@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.GUI.WinForms;
+using VDS.RDF.GUI.WinForms.Controls;
 
 namespace VDS.RDF.Utilities.StoreManager.Forms
 {
@@ -89,8 +90,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.numPageSize = new System.Windows.Forms.NumericUpDown();
             this.chkPageQuery = new System.Windows.Forms.CheckBox();
             this.lblQueryIntro = new System.Windows.Forms.Label();
-            this.graphViewerControl = new VDS.RDF.GUI.WinForms.GraphViewerControl();
-            this.resultSetViewerControl = new VDS.RDF.GUI.WinForms.ResultSetViewerControl();
+            this.graphViewerControl = new GraphViewerControl();
+            this.resultSetViewerControl = new ResultSetViewerControl();
             this.tabSparqlUpdate = new System.Windows.Forms.TabPage();
             this.tableUpdateTab = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -1327,9 +1328,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private System.Windows.Forms.TableLayoutPanel tableUpdateTab;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.SplitContainer splitQueryResults;
-        private GUI.WinForms.ResultSetViewerControl resultSetViewerControl;
+        private ResultSetViewerControl resultSetViewerControl;
         private System.Windows.Forms.Button btnChangeOrientation;
-        private GUI.WinForms.GraphViewerControl graphViewerControl;
+        private GraphViewerControl graphViewerControl;
         private System.Windows.Forms.Button btnOpenEntityGeneratorForm;
         private GUI.WinForms.DnrRichTextBox rtbSparqlQuery;
         private System.Windows.Forms.Button btnFormatQuery;

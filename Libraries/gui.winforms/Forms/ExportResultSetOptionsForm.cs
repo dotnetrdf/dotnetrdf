@@ -38,10 +38,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.GUI.WinForms
+namespace VDS.RDF.GUI.WinForms.Forms
 {
     /// <summary>
     /// A Form that can be used to select options for Exporting a SPARQL Result Set to a File

@@ -39,11 +39,11 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using VDS.RDF;
+using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.GUI.WinForms
+namespace VDS.RDF.GUI.WinForms.Controls
 {
     /// <summary>
     /// A Form that displays a Graph using a DataGridView
@@ -51,13 +51,31 @@ namespace VDS.RDF.GUI.WinForms
     public partial class GraphViewerControl : UserControl
     {
         private IGraph _g;
-        private INodeFormatter _formatter = new NTriplesFormatter();
+        private Formatter _lastFormatter;
+        private INodeFormatter _formatter = new TurtleFormatter();
 
+        /// <summary>
+        /// Creates a new control
+        /// </summary>
         public GraphViewerControl()
         {
              InitializeComponent();
+             this.fmtSelector.DefaultFormatter = typeof(TurtleFormatter);
+             this.fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
         }
 
+        private void fmtSelector_FormatterChanged(object sender, Formatter formatter)
+        {
+            if (ReferenceEquals(formatter, this._lastFormatter)) return;
+            this._lastFormatter = formatter;
+            this._formatter = formatter.CreateInstance(this._g.NamespaceMap);
+
+            if (this.dgvTriples.DataSource == null) return;
+            DataTable tbl = (DataTable)this.dgvTriples.DataSource;
+            this.dgvTriples.DataSource = null;
+            this.dgvTriples.Refresh();
+            this.dgvTriples.DataSource = tbl;
+        }
 
         /// <summary>
         /// Displays the given Graph
@@ -65,37 +83,8 @@ namespace VDS.RDF.GUI.WinForms
         /// <param name="g">Graph to display</param>
         public void DisplayGraph(IGraph g)
         {
-            //Load Formatters
-            List<INodeFormatter> formatters = new List<INodeFormatter>();
-            Type targetType = typeof(INodeFormatter);
-            foreach (Type t in Assembly.GetAssembly(targetType).GetTypes())
-            {
-                if (t.Namespace == null) continue;
-
-                if (t.Namespace.Equals("VDS.RDF.Writing.Formatting"))
-                {
-                    if (t.GetInterfaces().Contains(targetType))
-                    {
-                        try
-                        {
-                            INodeFormatter formatter = (INodeFormatter)Activator.CreateInstance(t);
-                            formatters.Add(formatter);
-                            if (formatter.GetType().Equals(this._formatter.GetType())) this._formatter = formatter;
-                        }
-                        catch
-                        {
-                            //Ignore this Formatter
-                        }
-                    }
-                }
-            }
-            formatters.Sort(new ToStringComparer<INodeFormatter>());
-            this.cboFormat.DataSource = formatters;
-            this.cboFormat.SelectedItem = this._formatter;
-            this.cboFormat.SelectedIndexChanged += new System.EventHandler(this.cboFormat_SelectedIndexChanged);
-
-            this.dgvTriples.CellFormatting += new DataGridViewCellFormattingEventHandler(dgvTriples_CellFormatting);
-            this.dgvTriples.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
+            this.dgvTriples.CellFormatting += dgvTriples_CellFormatting;
+            this.dgvTriples.CellContentClick += dgvTriples_CellClick;
 
             if (g.BaseUri != null)
             {
@@ -164,84 +153,31 @@ namespace VDS.RDF.GUI.WinForms
             }
         }
 
-        private void GraphViewerForm_Load(object sender, System.EventArgs e)
-        {
-            //Load Graph and Populate Form Fields
-            this.LoadInternal();
-        }
-
         private void LoadInternal()
         {
             //Show Graph Uri
-            if (this._g.BaseUri != null)
-            {
-                this.lnkBaseURI.Text = this._g.BaseUri.ToString();
-            }
-            else
-            {
-                this.lnkBaseURI.Text = "null";
-            }
+            this.lnkBaseURI.Text = this._g.BaseUri != null ? this._g.BaseUri.ToString() : "null";
 
             //Show Triples
             this.dgvTriples.DataSource = this._g.ToDataTable();
         }
 
-        private void cboFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (this.cboFormat.SelectedItem != null)
-            {
-                INodeFormatter formatter = this.cboFormat.SelectedItem as INodeFormatter;
-                if (formatter != null)
-                {
-                    INodeFormatter currFormatter = this._formatter;
-
-                    Type t = formatter.GetType();
-                    Type graphType = typeof(IGraph);
-                    if (t.GetConstructors().Any(c => c.IsPublic && c.GetParameters().Any() && c.GetParameters().All(p => p.ParameterType.Equals(graphType))))
-                    {
-                        try
-                        {
-                            this._formatter = (INodeFormatter)Activator.CreateInstance(t, new object[] { this._g });
-                        }
-                        catch
-                        {
-                            this._formatter = formatter;
-                        }
-                    }
-                    else
-                    {
-                        this._formatter = formatter;
-                    }
-
-                    if (!ReferenceEquals(currFormatter, this._formatter) || !currFormatter.GetType().Equals(this._formatter.GetType()))
-                    {
-                        DataTable tbl = (DataTable)this.dgvTriples.DataSource;
-                        this.dgvTriples.DataSource = null;
-                        this.dgvTriples.Refresh();
-                        this.dgvTriples.DataSource = tbl;
-                    }
-                }
-            }
-        }
-
         private void btnExport_Click(object sender, EventArgs e)
         {
             ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
-            if (exporter.ShowDialog() == DialogResult.OK)
+            if (exporter.ShowDialog() != DialogResult.OK) return;
+            IRdfWriter writer = exporter.Writer;
+            String file = exporter.File;
+
+            try
             {
-                IRdfWriter writer = exporter.Writer;
-                String file = exporter.File;
+                writer.Save(this._g, file);
 
-                try
-                {
-                    writer.Save(this._g, file);
-
-                    MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred attempting to export the Graph:\n" + ex.Message, "Graph Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred attempting to export the Graph:\n" + ex.Message, "Graph Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
