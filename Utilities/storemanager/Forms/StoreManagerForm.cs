@@ -1486,8 +1486,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 control.DataSource = task.Result;
                 control.Anchor = AnchorStyles.Bottom |
                                  AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                control.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-                control.AutoSize = true;
                 control.Closed += delegate
                     {
                         this.tabResults.TabPages.Remove(tabPage);

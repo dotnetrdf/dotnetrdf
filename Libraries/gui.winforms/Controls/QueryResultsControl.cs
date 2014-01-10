@@ -61,23 +61,27 @@ namespace VDS.RDF.GUI.WinForms.Controls
                 {
                     this._dataSource = value;
                     this.splPanel.SuspendLayout();
+                    this.splPanel.Panel2.SuspendLayout();
                     this.splPanel.Panel2.Controls.Clear();
                     ResultSetViewerControl control = new ResultSetViewerControl();
                     control.DisplayResultSet((SparqlResultSet)value, this.Namespaces);
                     control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     this.splPanel.Panel2.Controls.Add(control);
+                    this.splPanel.Panel2.ResumeLayout();
                     this.splPanel.ResumeLayout();
                 } 
                 else if (value is IGraph)
                 {
                     this._dataSource = value;
                     this.splPanel.SuspendLayout();
+                    this.splPanel.Panel2.SuspendLayout();
                     this.splPanel.Panel2.Controls.Clear();
                     GraphViewerControl control = new GraphViewerControl();
                     IGraph g = (IGraph) value;
                     control.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, this.Namespaces));
                     control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
                     this.splPanel.Panel2.Controls.Add(control);
+                    this.splPanel.Panel2.ResumeLayout();
                     this.splPanel.ResumeLayout();
                 }
                 else

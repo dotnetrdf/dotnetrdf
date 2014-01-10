@@ -34,14 +34,12 @@
             this.flpToggleButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnToggleQuery = new System.Windows.Forms.Button();
             this.btnToggleResults = new System.Windows.Forms.Button();
-            this.flpControlButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnClose = new System.Windows.Forms.Button();
             this.tlpLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splPanel)).BeginInit();
             this.splPanel.Panel1.SuspendLayout();
             this.splPanel.SuspendLayout();
             this.flpToggleButtons.SuspendLayout();
-            this.flpControlButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpLayout
@@ -54,7 +52,6 @@
             this.tlpLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpLayout.Controls.Add(this.splPanel, 0, 1);
             this.tlpLayout.Controls.Add(this.flpToggleButtons, 0, 0);
-            this.tlpLayout.Controls.Add(this.flpControlButtons, 1, 0);
             this.tlpLayout.Location = new System.Drawing.Point(3, 3);
             this.tlpLayout.Name = "tlpLayout";
             this.tlpLayout.RowCount = 2;
@@ -98,11 +95,13 @@
             this.flpToggleButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpLayout.SetColumnSpan(this.flpToggleButtons, 2);
             this.flpToggleButtons.Controls.Add(this.btnToggleQuery);
             this.flpToggleButtons.Controls.Add(this.btnToggleResults);
+            this.flpToggleButtons.Controls.Add(this.btnClose);
             this.flpToggleButtons.Location = new System.Drawing.Point(3, 3);
             this.flpToggleButtons.Name = "flpToggleButtons";
-            this.flpToggleButtons.Size = new System.Drawing.Size(258, 29);
+            this.flpToggleButtons.Size = new System.Drawing.Size(522, 29);
             this.flpToggleButtons.TabIndex = 3;
             // 
             // btnToggleQuery
@@ -125,22 +124,10 @@
             this.btnToggleResults.UseVisualStyleBackColor = true;
             this.btnToggleResults.Click += new System.EventHandler(this.btnToggleResults_Click);
             // 
-            // flpControlButtons
-            // 
-            this.flpControlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpControlButtons.Controls.Add(this.btnClose);
-            this.flpControlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpControlButtons.Location = new System.Drawing.Point(267, 3);
-            this.flpControlButtons.Name = "flpControlButtons";
-            this.flpControlButtons.Size = new System.Drawing.Size(258, 29);
-            this.flpControlButtons.TabIndex = 4;
-            // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(180, 3);
+            this.btnClose.Location = new System.Drawing.Point(197, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -161,7 +148,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splPanel)).EndInit();
             this.splPanel.ResumeLayout(false);
             this.flpToggleButtons.ResumeLayout(false);
-            this.flpControlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -173,7 +159,6 @@
         private System.Windows.Forms.TextBox txtQuery;
         private System.Windows.Forms.FlowLayoutPanel flpToggleButtons;
         private System.Windows.Forms.Button btnToggleQuery;
-        private System.Windows.Forms.FlowLayoutPanel flpControlButtons;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnToggleResults;
 

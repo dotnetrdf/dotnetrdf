@@ -90,6 +90,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.numPageSize = new System.Windows.Forms.NumericUpDown();
             this.chkPageQuery = new System.Windows.Forms.CheckBox();
             this.lblQueryIntro = new System.Windows.Forms.Label();
+            this.tabResults = new System.Windows.Forms.TabControl();
             this.tabSparqlUpdate = new System.Windows.Forms.TabPage();
             this.tableUpdateTab = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -153,7 +154,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
             this.tableForm = new System.Windows.Forms.TableLayoutPanel();
-            this.tabResults = new System.Windows.Forms.TabControl();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -401,7 +401,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tableQueryTab.Margin = new System.Windows.Forms.Padding(0);
             this.tableQueryTab.Name = "tableQueryTab";
             this.tableQueryTab.RowCount = 3;
-            this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
             this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 68F));
             this.tableQueryTab.Size = new System.Drawing.Size(596, 262);
@@ -414,9 +414,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbSparqlQuery.DetectUrls = false;
-            this.rtbSparqlQuery.Location = new System.Drawing.Point(3, 53);
+            this.rtbSparqlQuery.Location = new System.Drawing.Point(3, 24);
             this.rtbSparqlQuery.Name = "rtbSparqlQuery";
-            this.rtbSparqlQuery.Size = new System.Drawing.Size(590, 138);
+            this.rtbSparqlQuery.Size = new System.Drawing.Size(590, 167);
             this.rtbSparqlQuery.TabIndex = 9;
             this.rtbSparqlQuery.Text = "PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX  rdfs: <http://" +
     "www.w3.org/2000/01/rdf-schema#>\nPREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>" +
@@ -539,9 +539,21 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.lblQueryIntro.Location = new System.Drawing.Point(0, 0);
             this.lblQueryIntro.Margin = new System.Windows.Forms.Padding(0);
             this.lblQueryIntro.Name = "lblQueryIntro";
-            this.lblQueryIntro.Size = new System.Drawing.Size(594, 48);
+            this.lblQueryIntro.Size = new System.Drawing.Size(594, 21);
             this.lblQueryIntro.TabIndex = 0;
-            this.lblQueryIntro.Text = resources.GetString("lblQueryIntro.Text");
+            this.lblQueryIntro.Text = "Enter a SPARQL Query in the following box, results will displayed below with opti" +
+    "ons for exporting the results if desired";
+            // 
+            // tabResults
+            // 
+            this.tabResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabResults.Location = new System.Drawing.Point(7, 3);
+            this.tabResults.Name = "tabResults";
+            this.tabResults.SelectedIndex = 0;
+            this.tabResults.Size = new System.Drawing.Size(584, 258);
+            this.tabResults.TabIndex = 0;
             // 
             // tabSparqlUpdate
             // 
@@ -1163,17 +1175,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tableForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableForm.Size = new System.Drawing.Size(646, 600);
             this.tableForm.TabIndex = 3;
-            // 
-            // tabResults
-            // 
-            this.tabResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabResults.Location = new System.Drawing.Point(7, 3);
-            this.tabResults.Name = "tabResults";
-            this.tabResults.SelectedIndex = 0;
-            this.tabResults.Size = new System.Drawing.Size(584, 258);
-            this.tabResults.TabIndex = 0;
             // 
             // StoreManagerForm
             // 
