@@ -57,11 +57,10 @@
             this.tlpLayout.Controls.Add(this.flpControlButtons, 1, 0);
             this.tlpLayout.Location = new System.Drawing.Point(3, 3);
             this.tlpLayout.Name = "tlpLayout";
-            this.tlpLayout.RowCount = 3;
-            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.61947F));
-            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 89.38053F));
-            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpLayout.Size = new System.Drawing.Size(837, 360);
+            this.tlpLayout.RowCount = 2;
+            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLayout.Size = new System.Drawing.Size(528, 360);
             this.tlpLayout.TabIndex = 0;
             // 
             // splPanel
@@ -70,15 +69,15 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpLayout.SetColumnSpan(this.splPanel, 2);
-            this.splPanel.Location = new System.Drawing.Point(3, 39);
+            this.splPanel.Location = new System.Drawing.Point(3, 38);
             this.splPanel.Name = "splPanel";
             this.splPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splPanel.Panel1
             // 
             this.splPanel.Panel1.Controls.Add(this.txtQuery);
-            this.splPanel.Size = new System.Drawing.Size(831, 297);
-            this.splPanel.SplitterDistance = 87;
+            this.splPanel.Size = new System.Drawing.Size(522, 319);
+            this.splPanel.SplitterDistance = 93;
             this.splPanel.TabIndex = 0;
             // 
             // txtQuery
@@ -91,7 +90,7 @@
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.ReadOnly = true;
             this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtQuery.Size = new System.Drawing.Size(825, 81);
+            this.txtQuery.Size = new System.Drawing.Size(516, 87);
             this.txtQuery.TabIndex = 0;
             // 
             // flpToggleButtons
@@ -103,7 +102,7 @@
             this.flpToggleButtons.Controls.Add(this.btnToggleResults);
             this.flpToggleButtons.Location = new System.Drawing.Point(3, 3);
             this.flpToggleButtons.Name = "flpToggleButtons";
-            this.flpToggleButtons.Size = new System.Drawing.Size(412, 30);
+            this.flpToggleButtons.Size = new System.Drawing.Size(258, 29);
             this.flpToggleButtons.TabIndex = 3;
             // 
             // btnToggleQuery
@@ -133,15 +132,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flpControlButtons.Controls.Add(this.btnClose);
             this.flpControlButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpControlButtons.Location = new System.Drawing.Point(421, 3);
+            this.flpControlButtons.Location = new System.Drawing.Point(267, 3);
             this.flpControlButtons.Name = "flpControlButtons";
-            this.flpControlButtons.Size = new System.Drawing.Size(413, 30);
+            this.flpControlButtons.Size = new System.Drawing.Size(258, 29);
             this.flpControlButtons.TabIndex = 4;
             // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(335, 3);
+            this.btnClose.Location = new System.Drawing.Point(180, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 3;
@@ -155,7 +154,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tlpLayout);
             this.Name = "QueryResultsControl";
-            this.Size = new System.Drawing.Size(843, 366);
+            this.Size = new System.Drawing.Size(534, 366);
             this.tlpLayout.ResumeLayout(false);
             this.splPanel.Panel1.ResumeLayout(false);
             this.splPanel.Panel1.PerformLayout();

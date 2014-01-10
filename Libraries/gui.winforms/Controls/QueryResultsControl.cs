@@ -76,6 +76,9 @@ namespace VDS.RDF.GUI.WinForms.Controls
                     GraphViewerControl control = new GraphViewerControl();
                     IGraph g = (IGraph) value;
                     control.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, this.Namespaces));
+                    control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                    this.splPanel.Panel2.Controls.Add(control);
+                    this.splPanel.ResumeLayout();
                 }
                 else
                 {
