@@ -304,7 +304,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         #region Cross Thread Form Management
 
-
         private delegate void CrossThreadSetQueryDelegate(
            RichTextBox txtSparqlQuery,
            string newQuery);

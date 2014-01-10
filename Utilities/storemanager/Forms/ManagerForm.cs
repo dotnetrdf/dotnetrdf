@@ -679,12 +679,28 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public void ShowStoreManagerForm(Connection connection)
         {
             StoreManagerForm storeManagerForm = new StoreManagerForm(connection);
-            storeManagerForm.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
-            storeManagerForm.WordWrapQuery(this.mnuWordWrapQuery.Checked);
-            storeManagerForm.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
-            storeManagerForm.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
-            CrossThreadSetMdiParent(storeManagerForm);
+            CrossThreadSetMdiParent(storeManagerForm, this);
             CrossThreadShow(storeManagerForm);
+
+            ToolStripButton quickJumpButton = new ToolStripButton(connection.Name);
+            connection.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                {
+                    if (args.PropertyName.Equals("Name")) CrossThreadSetText(quickJumpButton, connection.Name);
+                    if (args.PropertyName.Equals("IsOpen") && !connection.IsOpen)
+                    {
+                        this.quickJumpBar.Items.Remove(quickJumpButton);
+                        if (this.quickJumpBar.Items.Count == 1) this.quickJumpBar.Visible = false;
+                    }
+                };
+            quickJumpButton.Click += delegate(object sender, EventArgs args)
+                {
+                    StoreManagerForm form = this.GetStoreManagerForm(connection);
+                    if (form == null) return;
+                    form.Show();
+                    form.Focus();
+                };
+            quickJumpBar.Items.Add(quickJumpButton);
+            this.quickJumpBar.Visible = true;
 
             this.AddRecentConnection(connection);
         }
@@ -702,27 +718,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             start.ShowDialog();
         }
 
-        private void tabConnections_Click(object sender, EventArgs e)
+        private void mnuManageConnections_Click(object sender, EventArgs e)
         {
-            //when selecting a tab also select coresponding MDI form
-            if ((tabConnections.SelectedTab != null) && (tabConnections.SelectedTab.Tag != null))
-            {
-                if (this.ActiveMdiChild != null && 
-                    this.ActiveMdiChild.WindowState == FormWindowState.Maximized &&
-                    (tabConnections.SelectedTab.Tag as Form).WindowState != FormWindowState.Maximized)
-                {
-                    (tabConnections.SelectedTab.Tag as Form).Hide();
-                    (tabConnections.SelectedTab.Tag as Form).WindowState = FormWindowState.Maximized;
-                    (tabConnections.SelectedTab.Tag as Form).Show();
-                   
-                }
-                (tabConnections.SelectedTab.Tag as Form).Select();
-                
-            }
-	}
-
-	private void mnuManageConnections_Click(object sender, EventArgs e)
-	{
             ManageConnectionsForm manageConnectionsForm = new ManageConnectionsForm();
             manageConnectionsForm.ActiveConnections = this.ActiveConnections;
             manageConnectionsForm.RecentConnections = this.RecentConnections;
@@ -731,82 +728,32 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             manageConnectionsForm.Show();
         }
 
-        private void ManagerForm_MdiChildActivate(object sender, EventArgs e)
-        {
-            if (this.ActiveMdiChild != null)
-            {
-                if (this.ActiveMdiChild.Tag == null)
-                {
-                    // Add a tabPage to tabControl with child form caption
-                    TabPage tp = new TabPage(this.ActiveMdiChild.Text);
-                    tp.Tag = this.ActiveMdiChild;
-                    tp.Parent = tabConnections;
-                    tabConnections.SelectedTab = tp;
-
-                    this.ActiveMdiChild.Tag = tp;
-                    this.ActiveMdiChild.FormClosed += new FormClosedEventHandler(ActiveMdiChild_FormClosed);
-                }
-                else
-                {
-                    //we already have an associated tab so select it
-                    tabConnections.SelectTab((this.ActiveMdiChild.Tag as TabPage));
-                }
-
-                if (!tabConnections.Visible) tabConnections.Visible = true;
-            }
-        }
-
-        private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //close corresponding tabpage
-            ((sender as Form).Tag as TabPage).Dispose();
-        }
-
-        private void mnuShowEntityButtons_Click(object sender, EventArgs e)
-        {
-            foreach (var mdiChild in this.MdiChildren)
-            {
-                if (mdiChild is StoreManagerForm)
-                {
-                    var smf = (StoreManagerForm)mdiChild;
-                    smf.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
-                }
-            }
-        }
-
         private void wordWrapQueryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var mdiChild in this.MdiChildren)
-            {
-                if (mdiChild is StoreManagerForm)
-                {
-                    var smf = (StoreManagerForm)mdiChild;
-                    smf.WordWrapQuery(this.mnuWordWrapQuery.Checked);
-                }
-            }
+            Settings.Default.EditorWordWrap = this.mnuWordWrapQuery.Checked;
+            Settings.Default.Save();
+            this.UpdateEditors();
         }
 
         private void mnuShowQueryUrls_Click(object sender, EventArgs e)
         {
-            foreach (var mdiChild in this.MdiChildren)
-            {
-                if (mdiChild is StoreManagerForm)
-                {
-                    var smf = (StoreManagerForm)mdiChild;
-                    smf.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
-                }
-            }
+            Settings.Default.EditorDetectUrls = this.mnuShowQueryUrls.Checked;
+            Settings.Default.Save();
+            this.UpdateEditors();
         }
 
         private void mnuShowQueryHighLighting_Click(object sender, EventArgs e)
         {
-            foreach (var mdiChild in this.MdiChildren)
+            Settings.Default.EditorHighlighting = this.mnuShowQueryHighLighting.Checked;
+            Settings.Default.Save();
+            this.UpdateEditors();
+        }
+
+        private void UpdateEditors()
+        {
+            foreach (StoreManagerForm storeManagerForm in this.MdiChildren.OfType<StoreManagerForm>())
             {
-                if (mdiChild is StoreManagerForm)
-                {
-                    var smf = (StoreManagerForm)mdiChild;
-                    smf.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
-                }
+                storeManagerForm.ApplyEditorOptions();
             }
         }
 

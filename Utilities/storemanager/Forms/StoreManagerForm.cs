@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.Closing += OnClosing;
 
             splitQueryResults.Panel2Collapsed = true;
-            ActivateHighLighting();
+            ActivateHighlighting();
 
             //Configure Connection
             this.Connection = connection;
@@ -100,28 +100,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             //set highlight delay for 2 secs
             _highlightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
             _highlightsUpdateTimer.Tick += HighlightsUpdateTimerOnTick;
-        }
-
-        private bool _showHighlighting;
-
-        /// <summary>
-        /// Gets/Sets whether query highlighting is enabled
-        /// </summary>
-        public bool ShowHighlighting
-        {
-            get { return _showHighlighting; }
-            set
-            {
-                _showHighlighting = value;
-                if (value)
-                {
-                    this.ActivateHighLighting();
-                }
-                else
-                {
-                    this.ClearHighlighting();
-                }
-            }
         }
 
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
@@ -202,19 +180,21 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         #region Editor Options
 
-        public void ShowQueryUrls(bool state)
+        /// <summary>
+        /// Method that should be called whenever editor options are changed so that all editors are updated
+        /// </summary>
+        public void ApplyEditorOptions()
         {
-            this.rtbSparqlQuery.DetectUrls = state;
-        }
-
-        public void ShowHideEntitiesButtons(bool state)
-        {
-            this.btnOpenEntityGeneratorForm.Visible = state;
-        }
-
-        public void WordWrapQuery(bool state)
-        {
-            this.rtbSparqlQuery.WordWrap = state;
+            this.rtbSparqlQuery.WordWrap = Settings.Default.EditorWordWrap;
+            this.rtbSparqlQuery.DetectUrls = Settings.Default.EditorDetectUrls;
+            if (Settings.Default.EditorHighlighting)
+            {
+                this.ActivateHighlighting();
+            }
+            else
+            {
+                this.ClearHighlighting();
+            }
         }
 
         #endregion
@@ -1752,19 +1732,19 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
-        private string ReGenerateRtbText(string Text)
+        private string ReGenerateRtbText(string text)
         {
             _codeFormatInProgress = true;
-            string[] text = Regex.Split(Text, "\n");
+            string[] currentText = Regex.Split(text, "\r?\n");
 
             int lvl = 0;
             string newString = "";
             bool lineAdded = false;
-            foreach (string line in text)
+            foreach (string line in currentText)
             {
                 if (line.Contains("{"))
                 {
-                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
+                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\r\n";
                     lineAdded = true;
                     lvl += line.Count(f => f == '{');
                 }
@@ -1773,20 +1753,20 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     lvl -= line.Count(f => f == '}');
                     if (!lineAdded)
                     {
-                        newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
+                        newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\r\n";
                         lineAdded = true;
                     }
                 }
 
                 if (!lineAdded)
                 {
-                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\n";
+                    newString += ApplyIndentation(lvl) + line.TrimStart(' ') + "\r\n";
                 }
 
                 lineAdded = false;
             }
 
-            return newString.TrimEnd('\n');
+            return newString.TrimEnd('\n').TrimEnd('\r');
         }
 
         private static string ApplyIndentation(int indentLevel)
@@ -1816,49 +1796,47 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void HighlightsUpdateTimerOnTick(object sender, EventArgs eventArgs)
         {
             _highlightsUpdateTimer.Stop();
-            ActivateHighLighting();
+            ActivateHighlighting();
         }
 
-        private void ActivateHighLighting()
+        private void ActivateHighlighting()
         {
-            if (_showHighlighting && !_codeHighLightingInProgress)
-            {
-                _codeHighLightingInProgress = true;
+            if (_codeHighLightingInProgress) return;
+            _codeHighLightingInProgress = true;
 
-                rtbSparqlQuery.BeginUpdate();
-                int initialSelectionStart = rtbSparqlQuery.SelectionStart;
-                ClearHighlighting();
-                HighlightText("prefix", Color.DarkBlue);
+            rtbSparqlQuery.BeginUpdate();
+            int initialSelectionStart = rtbSparqlQuery.SelectionStart;
+            ClearHighlighting();
+            HighlightText("prefix", Color.DarkBlue);
 
-                HighlightText("select", Color.Blue);
-                HighlightText("FROM", Color.Blue);
-                HighlightText("FROM NAMED", Color.Blue);
-                HighlightText("GRAPH", Color.Blue);
+            HighlightText("select", Color.Blue);
+            HighlightText("FROM", Color.Blue);
+            HighlightText("FROM NAMED", Color.Blue);
+            HighlightText("GRAPH", Color.Blue);
 
-                HighlightText("describe", Color.Blue);
-                HighlightText("ask", Color.Blue);
-                HighlightText("construct", Color.Blue);
+            HighlightText("describe", Color.Blue);
+            HighlightText("ask", Color.Blue);
+            HighlightText("construct", Color.Blue);
 
-                HighlightText("where", Color.Blue);
-                HighlightText("filter", Color.Blue);
-                HighlightText("distinct", Color.Blue);
-                HighlightText("optional", Color.Blue);
+            HighlightText("where", Color.Blue);
+            HighlightText("filter", Color.Blue);
+            HighlightText("distinct", Color.Blue);
+            HighlightText("optional", Color.Blue);
 
-                HighlightText("order by", Color.Blue);
-                HighlightText("limit", Color.Blue);
-                HighlightText("offset", Color.Blue);
-                HighlightText("REDUCED", Color.Blue);
+            HighlightText("order by", Color.Blue);
+            HighlightText("limit", Color.Blue);
+            HighlightText("offset", Color.Blue);
+            HighlightText("REDUCED", Color.Blue);
 
 
-                HighlightText("GROUP BY", Color.Blue);
-                HighlightText("HAVING", Color.Blue);
+            HighlightText("GROUP BY", Color.Blue);
+            HighlightText("HAVING", Color.Blue);
 
-                rtbSparqlQuery.SelectionStart = initialSelectionStart;
-                rtbSparqlQuery.SelectionLength = 0;
-                rtbSparqlQuery.EndUpdate();
-                rtbSparqlQuery.Invalidate();
-                _codeHighLightingInProgress = false;
-            }
+            rtbSparqlQuery.SelectionStart = initialSelectionStart;
+            rtbSparqlQuery.SelectionLength = 0;
+            rtbSparqlQuery.EndUpdate();
+            rtbSparqlQuery.Invalidate();
+            _codeHighLightingInProgress = false;
         }
 
         private void HighlightText(string text, Color color)
