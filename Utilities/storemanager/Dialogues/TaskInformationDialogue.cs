@@ -164,7 +164,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.btnViewResults.Click += delegate
                 {
                     StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", subtitle), task.Result);
-                    CrossThreadSetMdiParent(this.MdiParent);
+                    CrossThreadSetMdiParent(dialogue);
                     CrossThreadShow(dialogue);
                 };
             this.btnViewResults.Enabled = task.State == TaskState.Completed;
