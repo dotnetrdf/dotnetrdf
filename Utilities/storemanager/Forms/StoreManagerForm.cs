@@ -32,7 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using VDS.RDF.GUI.WinForms;
+using VDS.RDF.GUI.WinForms.Controls;
 using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -60,6 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private int _taskId;
         private readonly System.Timers.Timer _timStartup;
         private bool _closing = true;
+        private int _queryId = 0;
 
         /// <summary>
         /// Creates a new Store Manager form
@@ -76,7 +77,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             splitQueryResults.Panel2Collapsed = true;
             ActivateHighlighting();
 
-            //Configure Connection
+            // Configure Connection
             this.Connection = connection;
             this.StorageProvider = connection.StorageProvider;
             this.Text = connection.Name;
@@ -84,21 +85,24 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // Subscribe to events on the connection
             this.Connection.PropertyChanged += ConnectionOnPropertyChanged;
 
-            //Configure Tasks List
+            // Configure Tasks List
             this.lvwTasks.ListViewItemSorter = new SortTasksById();
 
-            //Configure Graphs List
+            // Configure Graphs List
             this.lvwGraphs.ItemDrag += lvwGraphs_ItemDrag;
             this.lvwGraphs.DragEnter += lvwGraphs_DragEnter;
             this.lvwGraphs.DragDrop += lvwGraphs_DragDrop;
             this._copyGraphHandler = this.CopyGraphClick;
             this._moveGraphHandler = this.MoveGraphClick;
 
-            //Startup Timer
+            // Startup Timer
             this._timStartup = new System.Timers.Timer(250);
             this._timStartup.Elapsed += timStartup_Tick;
 
-            //set highlight delay for 2 secs
+            // Apply Editor Options
+            this.ApplyEditorOptions();
+
+            // Set highlight delay for 2 secs
             _highlightsUpdateTimer.Interval = (int) TimeSpan.FromSeconds(2).TotalMilliseconds;
             _highlightsUpdateTimer.Tick += HighlightsUpdateTimerOnTick;
         }
@@ -1062,7 +1066,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else if (tag is ITask<String>)
                 {
-                    TaskErrorTraceForm<String> stringInfo = new TaskErrorTraceForm<string>((ITask<String>)tag, this.Connection.Name);
+                    TaskErrorTraceForm<String> stringInfo = new TaskErrorTraceForm<string>((ITask<String>) tag, this.Connection.Name);
                     stringInfo.MdiParent = this.MdiParent;
                     stringInfo.Show();
                 }
@@ -1094,7 +1098,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     else if (result is SparqlResultSet)
                     {
-                        ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, qTask.Query != null ? qTask.Query.NamespaceMap : null, this.Connection.Name);
+                        ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, qTask.Query != null ? qTask.Query.NamespaceMap : null, this.Connection.Name);
                         CrossThreadSetMdiParent(resultsViewer);
                         CrossThreadShow(resultsViewer);
                     }
@@ -1131,7 +1135,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             else if (tag is ITask<String>)
             {
-                    
             }
         }
 
@@ -1439,12 +1442,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 if (result is IGraph)
                 {
                     CrossThreadShowQueryPanel(splitQueryResults);
-                    CrossThreadSetResultGraph(graphViewerControl, (IGraph) result, resultSetViewerControl);
+                    this.DisplayQueryResults(qTask);
                 }
                 else if (result is SparqlResultSet)
                 {
                     CrossThreadShowQueryPanel(splitQueryResults);
-                    CrossThreadSetResultSet(resultSetViewerControl, (SparqlResultSet) result, qTask.Query.NamespaceMap, graphViewerControl);
+                    this.DisplayQueryResults(qTask);
                 }
                 else
                 {
@@ -1461,6 +1464,40 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 {
                     CrossThreadMessage("Query Failed due to an unknown error", "Query Failed", MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private delegate void DisplayQueryResultsDelegate(QueryTask task);
+
+        private void DisplayQueryResults(QueryTask task)
+        {
+            if (this.InvokeRequired)
+            {
+                DisplayQueryResultsDelegate d = this.DisplayQueryResults;
+                this.Invoke(d, new object[] {task});
+            }
+            else
+            {
+                TabPage tabPage = new TabPage();
+                tabPage.Text = "Query " + ++this._queryId;
+                QueryResultsControl control = new QueryResultsControl();
+                control.Namespaces = task.Query != null ? task.Query.NamespaceMap : null;
+                control.QueryString = task.QueryString;
+                control.DataSource = task.Result;
+                control.Anchor = AnchorStyles.Bottom |
+                                 AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                control.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                control.AutoSize = true;
+                control.Closed += delegate
+                    {
+                        this.tabResults.TabPages.Remove(tabPage);
+                        if (this.tabResults.TabPages.Count == 0) this.splitQueryResults.Panel2Collapsed = true;
+                    };
+                tabPage.SuspendLayout();
+                tabPage.Controls.Add(control);
+                this.tabResults.TabPages.Add(tabPage);
+                this.tabResults.SelectTab(tabPage);
+                tabPage.ResumeLayout();
             }
         }
 

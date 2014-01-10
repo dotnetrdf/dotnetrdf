@@ -54,4 +54,10 @@ namespace VDS.RDF.GUI.WinForms
     /// <param name="sender">Originator of the event</param>
     /// <param name="formatter">Formatter that is now selected</param>
     public delegate void FormatterChanged(Object sender, Formatter formatter);
+
+    /// <summary>
+    /// Event that occurs when results are closed
+    /// </summary>
+    /// <param name="sender">Originator of the event</param>
+    public delegate void ResultsClosed(Object sender);
 }

@@ -79,7 +79,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
             this.splitQueryResults = new System.Windows.Forms.SplitContainer();
             this.tableQueryTab = new System.Windows.Forms.TableLayoutPanel();
-            this.rtbSparqlQuery = new DnrRichTextBox();
+            this.rtbSparqlQuery = new VDS.RDF.GUI.WinForms.DnrRichTextBox();
             this.panelQuery = new System.Windows.Forms.Panel();
             this.btnFormatQuery = new System.Windows.Forms.Button();
             this.btnOpenEntityGeneratorForm = new System.Windows.Forms.Button();
@@ -90,8 +90,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.numPageSize = new System.Windows.Forms.NumericUpDown();
             this.chkPageQuery = new System.Windows.Forms.CheckBox();
             this.lblQueryIntro = new System.Windows.Forms.Label();
-            this.graphViewerControl = new GraphViewerControl();
-            this.resultSetViewerControl = new ResultSetViewerControl();
             this.tabSparqlUpdate = new System.Windows.Forms.TabPage();
             this.tableUpdateTab = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -155,6 +153,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
             this.tableForm = new System.Windows.Forms.TableLayoutPanel();
+            this.tabResults = new System.Windows.Forms.TabControl();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -219,16 +218,16 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // 
             // lblGraphListUnavailable
             // 
-            this.lblGraphListUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblGraphListUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGraphListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGraphListUnavailable.Location = new System.Drawing.Point(23, 117);
             this.lblGraphListUnavailable.Name = "lblGraphListUnavailable";
             this.lblGraphListUnavailable.Size = new System.Drawing.Size(568, 31);
             this.lblGraphListUnavailable.TabIndex = 6;
             this.lblGraphListUnavailable.Text = "Unable to list Graphs since your selected Store does not support this feature fro" +
-                "m within this Tool";
+    "m within this Tool";
             this.lblGraphListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblGraphListUnavailable.Visible = false;
             // 
@@ -247,9 +246,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwGraphs
             // 
             this.lvwGraphs.AllowDrop = true;
-            this.lvwGraphs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwGraphs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwGraphs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colGraphURI});
             this.lvwGraphs.ContextMenuStrip = this.mnuGraphs;
@@ -385,8 +384,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // 
             // splitQueryResults.Panel2
             // 
-            this.splitQueryResults.Panel2.Controls.Add(this.graphViewerControl);
-            this.splitQueryResults.Panel2.Controls.Add(this.resultSetViewerControl);
+            this.splitQueryResults.Panel2.Controls.Add(this.tabResults);
             this.splitQueryResults.Size = new System.Drawing.Size(598, 534);
             this.splitQueryResults.SplitterDistance = 264;
             this.splitQueryResults.TabIndex = 0;
@@ -412,17 +410,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // rtbSparqlQuery
             // 
             this.rtbSparqlQuery.AcceptsTab = true;
-            this.rtbSparqlQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbSparqlQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbSparqlQuery.DetectUrls = false;
             this.rtbSparqlQuery.Location = new System.Drawing.Point(3, 53);
             this.rtbSparqlQuery.Name = "rtbSparqlQuery";
             this.rtbSparqlQuery.Size = new System.Drawing.Size(590, 138);
             this.rtbSparqlQuery.TabIndex = 9;
             this.rtbSparqlQuery.Text = "PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX  rdfs: <http://" +
-                "www.w3.org/2000/01/rdf-schema#>\nPREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>" +
-                "";
+    "www.w3.org/2000/01/rdf-schema#>\nPREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>" +
+    "";
             this.rtbSparqlQuery.TextChanged += new System.EventHandler(this.rtbSparqlQuery_TextChanged);
             // 
             // panelQuery
@@ -533,7 +531,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.chkPageQuery.Size = new System.Drawing.Size(390, 17);
             this.chkPageQuery.TabIndex = 2;
             this.chkPageQuery.Text = "Issue this query repeatedly until there are no further results using page size of" +
-                " ";
+    " ";
             this.chkPageQuery.UseVisualStyleBackColor = true;
             // 
             // lblQueryIntro
@@ -544,21 +542,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.lblQueryIntro.Size = new System.Drawing.Size(594, 48);
             this.lblQueryIntro.TabIndex = 0;
             this.lblQueryIntro.Text = resources.GetString("lblQueryIntro.Text");
-            // 
-            // graphViewerControl
-            // 
-            this.graphViewerControl.Location = new System.Drawing.Point(3, 151);
-            this.graphViewerControl.Name = "graphViewerControl";
-            this.graphViewerControl.Size = new System.Drawing.Size(591, 116);
-            this.graphViewerControl.TabIndex = 1;
-            // 
-            // resultSetViewerControl
-            // 
-            this.resultSetViewerControl.BackColor = System.Drawing.Color.Transparent;
-            this.resultSetViewerControl.Location = new System.Drawing.Point(0, 0);
-            this.resultSetViewerControl.Name = "resultSetViewerControl";
-            this.resultSetViewerControl.Size = new System.Drawing.Size(597, 145);
-            this.resultSetViewerControl.TabIndex = 0;
             // 
             // tabSparqlUpdate
             // 
@@ -629,8 +612,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.txtSparqlUpdate.Size = new System.Drawing.Size(592, 416);
             this.txtSparqlUpdate.TabIndex = 2;
             this.txtSparqlUpdate.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
-                "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
-                "\n";
+    "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
+    "\n";
             // 
             // lblUpdateIntro
             // 
@@ -924,9 +907,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwStores
             // 
             this.lvwStores.AllowDrop = true;
-            this.lvwStores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwStores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colStoreID});
             this.lvwStores.ContextMenuStrip = this.mnuStores;
@@ -991,9 +974,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // 
             // propInfo
             // 
-            this.propInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.propInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.propInfo.Location = new System.Drawing.Point(6, 57);
             this.propInfo.Name = "propInfo";
             this.propInfo.Size = new System.Drawing.Size(603, 491);
@@ -1035,9 +1018,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // 
             // lvwTasks
             // 
-            this.lvwTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvwTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwTasks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colID,
             this.colTask,
@@ -1180,6 +1163,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tableForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableForm.Size = new System.Drawing.Size(646, 600);
             this.tableForm.TabIndex = 3;
+            // 
+            // tabResults
+            // 
+            this.tabResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabResults.Location = new System.Drawing.Point(7, 3);
+            this.tabResults.Name = "tabResults";
+            this.tabResults.SelectedIndex = 0;
+            this.tabResults.Size = new System.Drawing.Size(584, 258);
+            this.tabResults.TabIndex = 0;
             // 
             // StoreManagerForm
             // 
@@ -1328,11 +1322,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private System.Windows.Forms.TableLayoutPanel tableUpdateTab;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.SplitContainer splitQueryResults;
-        private ResultSetViewerControl resultSetViewerControl;
         private System.Windows.Forms.Button btnChangeOrientation;
-        private GraphViewerControl graphViewerControl;
         private System.Windows.Forms.Button btnOpenEntityGeneratorForm;
         private GUI.WinForms.DnrRichTextBox rtbSparqlQuery;
         private System.Windows.Forms.Button btnFormatQuery;
+        private System.Windows.Forms.TabControl tabResults;
     }
 }

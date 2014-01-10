@@ -23,6 +23,8 @@ namespace VDS.RDF.GUI.WinForms.Controls
         public ResultSetViewerControl()
         {
             InitializeComponent();
+            this.dgvResults.CellFormatting += dgvTriples_CellFormatting;
+            this.dgvResults.CellContentClick += dgvTriples_CellClick;
             this.fmtSelector.DefaultFormatter = typeof (SparqlFormatter);
             this.fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
         }
@@ -31,10 +33,16 @@ namespace VDS.RDF.GUI.WinForms.Controls
         {
             if (ReferenceEquals(formatter, this._lastFormatter)) return;
             this._lastFormatter = formatter;
-            this._formatter = formatter.CreateInstance(this._nsmap);
+            this.Reformat();
+        }
+
+        private void Reformat()
+        {
+            if (ReferenceEquals(this._lastFormatter, null)) return;
+            this._formatter = this._lastFormatter.CreateInstance(this._nsmap);
 
             if (this.dgvResults.DataSource == null) return;
-            DataTable tbl = (DataTable)this.dgvResults.DataSource;
+            DataTable tbl = (DataTable) this.dgvResults.DataSource;
             this.dgvResults.DataSource = null;
             this.dgvResults.Refresh();
             this.dgvResults.DataSource = tbl;
@@ -46,9 +54,6 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="results">SPARQL Result to display</param>
         public void DisplayResultSet(SparqlResultSet results)
         {
-            this.dgvResults.CellFormatting += dgvTriples_CellFormatting;
-            this.dgvResults.CellContentClick += dgvTriples_CellClick;
-
             this._results = results;
 
             this.Text = this.GetTitle();
@@ -57,7 +62,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             this.LoadInternal();
         }
 
-       /// <summary>
+        /// <summary>
         /// Creates a new Result Set viewer form
         /// </summary>
         /// <param name="results">Result Set</param>
@@ -84,10 +89,10 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         #region Internal Implementation
 
-        void dgvTriples_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void dgvTriples_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (!(e.Value is INode)) return;
-            INode n = (INode)e.Value;
+            INode n = (INode) e.Value;
             e.Value = this._formatter.Format(n);
             e.FormattingApplied = true;
             switch (n.NodeType)
@@ -99,15 +104,15 @@ namespace VDS.RDF.GUI.WinForms.Controls
             }
         }
 
-        void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             Object value = this.dgvResults[e.ColumnIndex, e.RowIndex].Value;
             if (value == null) return;
             if (!(value is INode)) return;
-            INode n = (INode)value;
+            INode n = (INode) value;
             if (n.NodeType == NodeType.Uri)
             {
-                this.RaiseUriClicked(((IUriNode)n).Uri);
+                this.RaiseUriClicked(((IUriNode) n).Uri);
             }
         }
 
@@ -117,7 +122,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             if (this._results.ResultsType == SparqlResultsType.Boolean)
             {
                 DataTable table = new DataTable();
-                table.Columns.Add(new DataColumn("ASK", typeof(String)));
+                table.Columns.Add(new DataColumn("ASK", typeof (String)));
                 DataRow row = table.NewRow();
                 row["ASK"] = this._results.Result.ToString();
                 table.Rows.Add(row);
@@ -125,7 +130,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             }
             else
             {
-                this.dgvResults.DataSource = (DataTable)this._results;
+                this.dgvResults.DataSource = (DataTable) this._results;
             }
         }
 

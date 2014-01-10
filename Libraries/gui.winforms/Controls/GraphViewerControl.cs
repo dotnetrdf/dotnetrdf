@@ -60,6 +60,8 @@ namespace VDS.RDF.GUI.WinForms.Controls
         public GraphViewerControl()
         {
              InitializeComponent();
+             this.dgvTriples.CellFormatting += dgvTriples_CellFormatting;
+             this.dgvTriples.CellContentClick += dgvTriples_CellClick;
              this.fmtSelector.DefaultFormatter = typeof(TurtleFormatter);
              this.fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
         }
@@ -68,7 +70,13 @@ namespace VDS.RDF.GUI.WinForms.Controls
         {
             if (ReferenceEquals(formatter, this._lastFormatter)) return;
             this._lastFormatter = formatter;
-            this._formatter = formatter.CreateInstance(this._g.NamespaceMap);
+            this.Reformat();
+        }
+
+        private void Reformat()
+        {
+            if (ReferenceEquals(this._lastFormatter, null)) return;
+            this._formatter = this._lastFormatter.CreateInstance(this._g.NamespaceMap);
 
             if (this.dgvTriples.DataSource == null) return;
             DataTable tbl = (DataTable)this.dgvTriples.DataSource;
@@ -83,8 +91,18 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="g">Graph to display</param>
         public void DisplayGraph(IGraph g)
         {
-            this.dgvTriples.CellFormatting += dgvTriples_CellFormatting;
-            this.dgvTriples.CellContentClick += dgvTriples_CellClick;
+            this.DisplayGraph(g, g.NamespaceMap);
+        }
+
+        /// <summary>
+        /// Displays the given Graph
+        /// </summary>
+        /// <param name="g">Graph to display</param>
+        /// <param name="namespaces">Namespaces to use which may be different than those attached to the actual graph</param>
+        public void DisplayGraph(IGraph g, INamespaceMapper namespaces)
+        {
+            this.dgvTriples.DataSource = null;
+            this.dgvTriples.Refresh();
 
             if (g.BaseUri != null)
             {
@@ -107,49 +125,43 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         void dgvTriples_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.Value is INode)
+            if (!(e.Value is INode)) return;
+            INode n = (INode)e.Value;
+
+            TripleSegment? segment = null;
+            switch (e.ColumnIndex)
             {
-                INode n = (INode)e.Value;
+                case 0:
+                    segment = TripleSegment.Subject;
+                    break;
+                case 1:
+                    segment = TripleSegment.Predicate;
+                    break;
+                case 2:
+                    segment = TripleSegment.Object;
+                    break;
+            }
 
-                TripleSegment? segment = null;
-                switch (e.ColumnIndex)
-                {
-                    case 0:
-                        segment = TripleSegment.Subject;
-                        break;
-                    case 1:
-                        segment = TripleSegment.Predicate;
-                        break;
-                    case 2:
-                        segment = TripleSegment.Object;
-                        break;
-                }
-
-                e.Value = this._formatter.Format(n, segment);
-                e.FormattingApplied = true;
-                switch (n.NodeType)
-                {
-                    case NodeType.Uri:
-                        e.CellStyle.Font = new System.Drawing.Font(e.CellStyle.Font, System.Drawing.FontStyle.Underline);
-                        e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0, 255);
-                        break;
-                }
+            e.Value = this._formatter.Format(n, segment);
+            e.FormattingApplied = true;
+            switch (n.NodeType)
+            {
+                case NodeType.Uri:
+                    e.CellStyle.Font = new System.Drawing.Font(e.CellStyle.Font, System.Drawing.FontStyle.Underline);
+                    e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0, 255);
+                    break;
             }
         }
 
         void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             Object value = this.dgvTriples[e.ColumnIndex, e.RowIndex].Value;
-            if (value != null)
+            if (value == null) return;
+            if (!(value is INode)) return;
+            INode n = (INode)value;
+            if (n.NodeType == NodeType.Uri)
             {
-                if (value is INode)
-                {
-                    INode n = (INode)value;
-                    if (n.NodeType == NodeType.Uri)
-                    {
-                        this.RaiseUriClicked(((IUriNode)n).Uri);
-                    }
-                }
+                this.RaiseUriClicked(((IUriNode)n).Uri);
             }
         }
 

@@ -83,6 +83,12 @@
     <Compile Include="Controls\FormatterControl.Designer.cs">
       <DependentUpon>FormatterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\QueryResultsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\QueryResultsControl.Designer.cs">
+      <DependentUpon>QueryResultsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ExportResultSetOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +144,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\FormatterControl.resx">
       <DependentUpon>FormatterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\QueryResultsControl.resx">
+      <DependentUpon>QueryResultsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExportResultSetOptionsForm.resx">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
