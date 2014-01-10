@@ -124,4 +124,7 @@
     <value>For example consider having a list of persons, each person subject of the rdf:type :Person, and each person having one or more of the properties: :Age, :Name, :FullName, :Email, and so on.
 This feature generates a query that returns all the persons and their properties without knowing in advance the properties.</value>
   </data>
+  <metadata name="ttpTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

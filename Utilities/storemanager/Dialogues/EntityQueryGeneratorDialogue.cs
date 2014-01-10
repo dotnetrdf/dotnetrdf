@@ -60,19 +60,5 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         /// Gets the Query String the user entered
         /// </summary>
         public String QueryString { get; private set; }
-
-        private void btnShowExample_Click(object sender, EventArgs e)
-        {
-            if (this.grpExamples.Visible)
-            {
-                this.grpExamples.Visible = false;
-                this.btnShowExample.Text = Resources.ShowExample;
-            }
-            else
-            {
-                this.grpExamples.Visible = true;
-                this.btnShowExample.Text = Resources.HideExample;
-            }
-        }
     }
 }
