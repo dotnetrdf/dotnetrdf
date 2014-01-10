@@ -203,12 +203,25 @@ WHERE
             {
                 // Issue temporary namespaces
                 String tempNsPrefix = "ns" + this._nextTempID;
+                String nsUri = u.AbsoluteUri;
+                if (nsUri.Contains("#"))
+                {
+                    //Create a Hash Namespace Uri
+                    nsUri = nsUri.Substring(0, nsUri.LastIndexOf("#") + 1);
+                }
+                else if (nsUri.Contains("/"))
+                {
+                    //Create a Slash Namespace Uri
+                    nsUri = nsUri.Substring(0, nsUri.LastIndexOf("/") + 1);
+                }
+                Uri tempNsUri;
+                if (!Uri.TryCreate(nsUri, UriKind.Absolute, out tempNsUri)) tempNsUri = u;
                 while (namespaces.HasNamespace(tempNsPrefix))
                 {
                     this._nextTempID++;
                     tempNsPrefix = "ns" + this._nextTempID;
                 }
-                namespaces.AddNamespace(tempNsPrefix, u);
+                namespaces.AddNamespace(tempNsPrefix, tempNsUri);
                 if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
                 {
                     qname = null;
@@ -253,7 +266,8 @@ WHERE
                     cs[i] = '_';
                 }
             }
-            return new string(cs);
+            // Trim trailing underscores
+            return new string(cs).TrimEnd('_');
         }
 
         /// <summary>
