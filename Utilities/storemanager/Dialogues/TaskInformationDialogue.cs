@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                         else if (task.Result is SparqlResultSet)
                         {
                             INamespaceMapper nsmap = task.Query.NamespaceMap;
-                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, subtitle, nsmap);
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, nsmap, subtitle);
                             resultsViewer.MdiParent = this.MdiParent;
                             resultsViewer.Show();
                         }

@@ -1094,7 +1094,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     else if (result is SparqlResultSet)
                     {
-                        ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.Connection.Name, qTask.Query.NamespaceMap);
+                        ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, qTask.Query != null ? qTask.Query.NamespaceMap : null, this.Connection.Name);
                         CrossThreadSetMdiParent(resultsViewer);
                         CrossThreadShow(resultsViewer);
                     }
