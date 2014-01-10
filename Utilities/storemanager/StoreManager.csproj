@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -105,6 +105,12 @@
     <Compile Include="Dialogues\CopyMoveRenameGraphDialogue.Designer.cs">
       <DependentUpon>CopyMoveRenameGraphDialogue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogues\StringResultDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogues\StringResultDialogue.Designer.cs">
+      <DependentUpon>StringResultDialogue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogues\RestoreConnectionsDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,11 +132,11 @@
     <Compile Include="Forms\EditConnectionForm.Designer.cs">
       <DependentUpon>EditConnectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EntityQueryGeneratorForm.cs">
+    <Compile Include="Dialogues\EntityQueryGeneratorDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EntityQueryGeneratorForm.Designer.cs">
-      <DependentUpon>EntityQueryGeneratorForm.cs</DependentUpon>
+    <Compile Include="Dialogues\EntityQueryGeneratorDialogue.Designer.cs">
+      <DependentUpon>EntityQueryGeneratorDialogue.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Forms\InvalidTemplateForm.cs">
@@ -203,11 +209,14 @@
     <EmbeddedResource Include="Dialogues\RestoreConnectionsDialogue.resx">
       <DependentUpon>RestoreConnectionsDialogue.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogues\StringResultDialogue.resx">
+      <DependentUpon>StringResultDialogue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\EditConnectionForm.resx">
       <DependentUpon>EditConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EntityQueryGeneratorForm.resx">
-      <DependentUpon>EntityQueryGeneratorForm.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogues\EntityQueryGeneratorDialogue.resx">
+      <DependentUpon>EntityQueryGeneratorDialogue.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InvalidTemplateForm.resx">
       <DependentUpon>InvalidTemplateForm.cs</DependentUpon>

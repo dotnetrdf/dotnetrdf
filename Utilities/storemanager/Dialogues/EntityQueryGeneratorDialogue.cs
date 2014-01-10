@@ -25,26 +25,54 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Windows.Forms;
-using VDS.RDF.Utilities.StoreManager.Forms;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
-namespace VDS.RDF.Utilities.StoreManager
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
-    public partial class EntityQueryGeneratorForm : Form
+    public partial class EntityQueryGeneratorDialogue : Form
     {
-        public EntityQueryGeneratorForm()
+        public EntityQueryGeneratorDialogue(String query)
         {
             InitializeComponent();
+            this.txtCurrentQuery.Text = query;
         }
 
-        private void btnClos_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
-            ((StoreManagerForm) this.Tag).GenerateQueryForEntities((int)this.numValuesPerPredicateLimit.Value, (int)numColumnWords.Value);
+            this.DialogResult = DialogResult.OK;
+            this.MinPredicateUsageLimit = (int) this.numValuesPerPredicateLimit.Value;
+            this.QueryString = this.txtCurrentQuery.Text;
             this.Close();
+        }
+
+        /// <summary>
+        /// Gets the minimum number of times a predicate must be used to be included in the generated query
+        /// </summary>
+        public int MinPredicateUsageLimit { get; private set; }
+
+        /// <summary>
+        /// Gets the Query String the user entered
+        /// </summary>
+        public String QueryString { get; private set; }
+
+        private void btnShowExample_Click(object sender, EventArgs e)
+        {
+            if (this.grpExamples.Visible)
+            {
+                this.grpExamples.Visible = false;
+                this.btnShowExample.Text = Resources.ShowExample;
+            }
+            else
+            {
+                this.grpExamples.Visible = true;
+                this.btnShowExample.Text = Resources.HideExample;
+            }
         }
     }
 }

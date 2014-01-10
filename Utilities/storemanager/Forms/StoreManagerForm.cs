@@ -312,7 +312,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// <summary>
         /// Runs a GenerateEntitiesQueryTask
         /// </summary>
-        public void GenerateQueryForEntities(int predicateLimitCount, int columnWordsCount)
+        public void GenerateEntitiesQuery(String query, int predicateLimitCount)
         {
             if (!this.StorageProvider.IsReady)
             {
@@ -322,8 +322,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
             if (this.StorageProvider is IQueryableStorage)
             {
-                GenerateEntitiesQueryTask task = new GenerateEntitiesQueryTask((IQueryableStorage) this.StorageProvider, this.rtbSparqlQuery.Text, predicateLimitCount, columnWordsCount);
-
+                GenerateEntitiesQueryTask task = new GenerateEntitiesQueryTask((IQueryableStorage) this.StorageProvider, query, predicateLimitCount);
                 this.AddTask(task, this.GenerateEntitiesQueryCallback);
             }
             else
@@ -331,7 +330,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 MessageBox.Show(Resources.Query_Unsupported, Resources.Query_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         /// <summary>
         /// Runs an Update
@@ -1415,7 +1413,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     catch
                     {
-                        // TODO Display general status without execution time
+                        this.CrossThreadSetText(this.stsCurrent, qTask.State == TaskState.Completed ? "Query Completed OK" : "Query Failed");
                     }
                 }
             }
@@ -1427,15 +1425,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
             if (task.State == TaskState.Completed)
             {
-                //in this case we only need to ovewrite query window
-                if (task is GenerateEntitiesQueryTask)
-                {
-                    var queryAsTableTask = (GenerateEntitiesQueryTask) task;
-                    CrossThreadSetQuery(this.rtbSparqlQuery, queryAsTableTask.OutputTableQuery);
-                    return;
-                }
-
-
                 Object result = task.Result;
 
                 if (result is IGraph)
@@ -1470,8 +1459,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed)
             {
-                // TODO Display generated query properly
-                CrossThreadSetText(this.rtbSparqlQuery, task.Result);
+                StringResultDialogue dialogue = new StringResultDialogue(this.Connection.Name + " - Generated Entity Query", task.Result, this.rtbSparqlQuery, "Query Editor");
+                CrossThreadShow(dialogue);
             }
             else
             {
@@ -1506,7 +1495,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     catch
                     {
-                        // TODO Display general status without execution time
+                        this.CrossThreadSetText(this.stsCurrent, uTask.State == TaskState.Completed ? "Updates Completed OK" : "Updates Failed");
                     }
                 }
             }
@@ -1712,9 +1701,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void btnOpenEntityGeneratorForm_Click(object sender, EventArgs e)
         {
-            var entityQueryGeneratorForm = new EntityQueryGeneratorForm();
-            entityQueryGeneratorForm.Tag = this;
-            entityQueryGeneratorForm.ShowDialog();
+            EntityQueryGeneratorDialogue queryGeneratorDialogue = new EntityQueryGeneratorDialogue(this.rtbSparqlQuery.Text);
+            if (queryGeneratorDialogue.ShowDialog() == DialogResult.OK)
+            {
+                this.GenerateEntitiesQuery(queryGeneratorDialogue.QueryString, queryGeneratorDialogue.MinPredicateUsageLimit);
+            }
         }
 
         private void btnFormatQuery_Click(object sender, EventArgs e)

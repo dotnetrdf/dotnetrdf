@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private readonly SparqlQueryParser _parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
         private readonly INodeFactory _nodeFactory = new NodeFactory();
         private readonly int _minValuesPerPredicateLimit;
-        private readonly int _columnNameWords;
+        private int _nextTempID = 0, _nextTempColumnID = -1;
 
         /// <summary>
         /// Creates a new task
@@ -57,14 +57,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="storage">Storage Provider</param>
         /// <param name="originalQuery">Query String</param>
         /// <param name="minValuesPerPredicateLimit">Minimum values per predicate limit</param>
-        /// <param name="columnNameWords"></param>
-        public GenerateEntitiesQueryTask(IQueryableStorage storage, String originalQuery, int minValuesPerPredicateLimit, int columnNameWords)
+        public GenerateEntitiesQueryTask(IQueryableStorage storage, String originalQuery, int minValuesPerPredicateLimit)
             : base("Generate Entities Query")
         {
             this._storage = storage;
             this.OriginalQueryString = originalQuery;
             this._minValuesPerPredicateLimit = minValuesPerPredicateLimit;
-            this._columnNameWords = columnNameWords;
         }
 
         /// <summary>
@@ -98,10 +96,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             // SELECT DISTINCT ?p (COUNT(?p) as ?count)
             // WHERE
             // {
-            //   ?sx ?p ?o.
             //   {
             //     # Original Query
             //   }
+            //   ?sx ?p ?o.
             // }
             // GROUP BY ?p
             // Create a dynamic originalQuery
@@ -115,11 +113,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             getPredicatesQuery.CommandText = @"
 SELECT DISTINCT ?p (COUNT(?p) as ?count)
 WHERE
-{
-  @subject ?p ?o.
-";
+{";
             getPredicatesQuery.AppendSubQuery(initialQuery);
-            getPredicatesQuery.CommandText += @"}
+            getPredicatesQuery.CommandText += @"
+  @subject ?p ?o.
+}
 GROUP BY ?p";
             getPredicatesQuery.SetParameter("subject", subjectNode);
 
@@ -144,7 +142,7 @@ GROUP BY ?p";
                 // For each predicate add a column and an appropriate OPTIONAL clause
                 int predicateIndex = 0;
                 StringBuilder optionalFilters = new StringBuilder();
-                foreach (var sparqlResult in sparqlResults)
+                foreach (SparqlResult sparqlResult in sparqlResults)
                 {
                     INode predicate = sparqlResult["p"];
                     IValuedNode count = sparqlResult["count"].AsValuedNode();
@@ -153,7 +151,9 @@ GROUP BY ?p";
                     // For each predicate with predicateCount > _minValuesPerPredicateLimit add a new column and an optional filter in where clause
                     if (predicateCount <= _minValuesPerPredicateLimit) continue;
                     predicateIndex++;
-                    String predicateColumnName = GetColumnName(predicate) + predicateIndex;
+                    String predicateColumnName = GetColumnName(predicate, entitiesQuery.Namespaces);
+                    if (predicateColumnName == null) continue;
+                    predicateColumnName += predicateIndex;
                     selectColumns.Add(predicateColumnName);
 
                     optionalFilters.AppendLine("  OPTIONAL { @subject @predicate" + predicateIndex + " ?" + predicateColumnName + " }");
@@ -186,38 +186,72 @@ WHERE
         }
 
         /// <summary>
-        /// Get column name by replacing special chars with '_'
+        /// Get column name by using qname compression and replacing special chars with underscores
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">Node</param>
+        /// <param name="namespaces">Namespaces</param>
         /// <returns></returns>
-        private string GetColumnName(INode node)
+        private string GetColumnName(INode node, INamespaceMapper namespaces)
         {
-            // TODO A / would be invalid in a SPARQL variable name so escape it
-            // TODO Use the predicates from the original query to create a compact column name when possible
-            // TODO Access the URI sensibly rather than by ugly string manipulation
-            var nodeString = node.ToString();
-            if (nodeString.StartsWith("<"))
+            if (node.NodeType != NodeType.Uri) return null;
+            Uri u = ((IUriNode) node).Uri;
+
+            String qname;
+            if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
             {
-                nodeString = nodeString.Substring(1, nodeString.Length - 2); //remove <>
+                // Issue temporary namespaces
+                String tempNsPrefix = "ns" + this._nextTempID;
+                while (namespaces.HasNamespace(tempNsPrefix))
+                {
+                    this._nextTempID++;
+                    tempNsPrefix = "ns" + this._nextTempID;
+                }
+                namespaces.AddNamespace(tempNsPrefix, u);
+                if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
+                {
+                    qname = null;
+                }
+            }
+            if (qname == null)
+            {
+                // Issue temporary column name
+                return "entityPredicateColumn" + (++this._nextTempColumnID);
+            }
+            // Sanitize qname column name
+            qname = qname.StartsWith("_") ? qname.Substring(1) : qname.Replace(':', '_');
+            if (SparqlSpecsHelper.IsValidVarName(qname)) return qname;
+            if (qname.Length == 0)
+            {
+                // Issue temporary column name
+                return "entityPredicateColumn " + (++this._nextTempColumnID);
             }
 
-            // For a given uri: "http://www.example.org/word1/word2" and _columnNameWords = 2 the result is: word1/word2
-            // For a given uri: "http://www.example.org/word1/word2" and _columnNameWords = 1 the result is: word1
-            int startIndex = 0;
-            var wordsCount = 0;
-            for (int i = nodeString.Length - 1; i >= 0; i--)
+            // Clean up illegal characters
+            // First Character must be from PN_CHARS_U or a digit
+            // Add a leading p for invalid first characters
+            char[] cs = qname.ToCharArray();
+            char first = cs[0];
+            if (!Char.IsDigit(first) || !SparqlSpecsHelper.IsPNCharsU(first))
             {
-                if (nodeString[i] != '/' && nodeString[i] != '#') continue;
-                wordsCount++;
-                if (wordsCount != _columnNameWords) continue;
-                startIndex = i;
-                break;
+                qname = "p" + qname;
+                if (SparqlSpecsHelper.IsValidVarName(qname)) return qname;
+                cs = qname.ToCharArray();
             }
-            nodeString = nodeString.Substring(startIndex + 1, nodeString.Length - startIndex - 1);
-
-            // Replace special characters
-            var validPredicate = Regex.Replace(nodeString, @"[^\d\w\s]", "_");
-            return validPredicate;
+            for (int i = 1; i < cs.Length; i++)
+            {
+                if (i >= cs.Length - 1) continue;
+                // Subsequent Chars must be from PN_CHARS (except -) or a '.'
+                // Replace invalid characters with _
+                if (cs[i] == '.' || cs[i] == '-')
+                {
+                    cs[i] = '_';
+                }
+                else if (!SparqlSpecsHelper.IsPNChars(cs[i]))
+                {
+                    cs[i] = '_';
+                }
+            }
+            return new string(cs);
         }
 
         /// <summary>

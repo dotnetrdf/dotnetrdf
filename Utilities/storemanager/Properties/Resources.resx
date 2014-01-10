@@ -408,4 +408,10 @@
   <data name="EditConnection_Forbidden_Title" xml:space="preserve">
     <value>Edit Forbidden</value>
   </data>
+  <data name="ShowExample" xml:space="preserve">
+    <value>Show Example</value>
+  </data>
+  <data name="HideExample" xml:space="preserve">
+    <value>Hide Example</value>
+  </data>
 </root>
