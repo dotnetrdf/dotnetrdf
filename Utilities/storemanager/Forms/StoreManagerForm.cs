@@ -898,6 +898,13 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = countTask.IsCancellable;
                     }
+                    else if (tag is GenerateEntitiesQueryTask)
+                    {
+                        GenerateEntitiesQueryTask genTask = (GenerateEntitiesQueryTask) tag;
+                        this.mnuViewErrors.Enabled = genTask.Error != null;
+                        this.mnuViewResults.Enabled = genTask.State == TaskState.Completed;
+                        this.mnuCancel.Enabled = genTask.IsCancellable;
+                    }
                     else if (tag is ITask<IGraph>)
                     {
                         ITask<IGraph> graphTask = (ITask<IGraph>) tag;
@@ -958,55 +965,61 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
                 if (tag is QueryTask)
                 {
-                    TaskInformationForm<Object> queryInfo = new TaskInformationForm<object>((QueryTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<Object> queryInfo = new TaskInformationForm<object>((QueryTask) tag, this.Connection.Name);
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is UpdateTask)
                 {
-                    TaskInformationForm<TaskResult> updateInfo = new TaskInformationForm<TaskResult>((UpdateTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<TaskResult> updateInfo = new TaskInformationForm<TaskResult>((UpdateTask) tag, this.Connection.Name);
                     updateInfo.MdiParent = this.MdiParent;
                     updateInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    TaskInformationForm<IEnumerable<Uri>> listInfo = new TaskInformationForm<IEnumerable<Uri>>((ListGraphsTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<IEnumerable<Uri>> listInfo = new TaskInformationForm<IEnumerable<Uri>>((ListGraphsTask) tag, this.Connection.Name);
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is ListStoresTask)
                 {
-                    TaskInformationForm<IEnumerable<String>> storeInfo = new TaskInformationForm<IEnumerable<string>>((ListStoresTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<IEnumerable<String>> storeInfo = new TaskInformationForm<IEnumerable<string>>((ListStoresTask) tag, this.Connection.Name);
                     storeInfo.MdiParent = this.MdiParent;
                     storeInfo.Show();
                 }
                 else if (tag is GetStoreTask)
                 {
-                    TaskInformationForm<IStorageProvider> getStoreInfo = new TaskInformationForm<IStorageProvider>((GetStoreTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<IStorageProvider> getStoreInfo = new TaskInformationForm<IStorageProvider>((GetStoreTask) tag, this.Connection.Name);
                     getStoreInfo.MdiParent = this.MdiParent;
                     getStoreInfo.Show();
                 }
                 else if (tag is CountTriplesTask)
                 {
-                    TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask) tag, this.Connection.Name);
                     countInfo.MdiParent = this.MdiParent;
                     countInfo.Show();
                 }
+                else if (tag is GenerateEntitiesQueryTask)
+                {
+                    TaskInformationForm<String> genEntitiesQueryInfo = new TaskInformationForm<string>((GenerateEntitiesQueryTask) tag, this.Connection.Name);
+                    genEntitiesQueryInfo.MdiParent = this.MdiParent;
+                    genEntitiesQueryInfo.Show();
+                }
                 else if (tag is ITask<IGraph>)
                 {
-                    TaskInformationForm<IGraph> graphInfo = new TaskInformationForm<IGraph>((ITask<IGraph>) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<IGraph> graphInfo = new TaskInformationForm<IGraph>((ITask<IGraph>) tag, this.Connection.Name);
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>) tag, this.Connection.Name);
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
                 else if (tag is ITask<TaskValueResult<bool>>)
                 {
-                    TaskInformationForm<TaskValueResult<bool>> boolInfo = new TaskInformationForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.StorageProvider.ToString());
+                    TaskInformationForm<TaskValueResult<bool>> boolInfo = new TaskInformationForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.Connection.Name);
                     boolInfo.MdiParent = this.MdiParent;
                     boolInfo.Show();
                 }
@@ -1026,45 +1039,51 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
                 if (tag is QueryTask)
                 {
-                    TaskErrorTraceForm<Object> queryInfo = new TaskErrorTraceForm<object>((ITask<Object>) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<Object> queryInfo = new TaskErrorTraceForm<object>((ITask<Object>) tag, this.Connection.Name);
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    TaskErrorTraceForm<IEnumerable<Uri>> listInfo = new TaskErrorTraceForm<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<IEnumerable<Uri>> listInfo = new TaskErrorTraceForm<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>) tag, this.Connection.Name);
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is ListStoresTask)
                 {
-                    TaskErrorTraceForm<IEnumerable<String>> storeInfo = new TaskErrorTraceForm<IEnumerable<string>>((ListStoresTask) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<IEnumerable<String>> storeInfo = new TaskErrorTraceForm<IEnumerable<string>>((ListStoresTask) tag, this.Connection.Name);
                     storeInfo.MdiParent = this.MdiParent;
                     storeInfo.Show();
                 }
                 else if (tag is GetStoreTask)
                 {
-                    TaskErrorTraceForm<IStorageProvider> getStoreInfo = new TaskErrorTraceForm<IStorageProvider>((GetStoreTask) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<IStorageProvider> getStoreInfo = new TaskErrorTraceForm<IStorageProvider>((GetStoreTask) tag, this.Connection.Name);
                     getStoreInfo.MdiParent = this.MdiParent;
                     getStoreInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
-                    TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>) tag, this.Connection.Name);
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>) tag, this.Connection.Name);
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
                 else if (tag is ITask<TaskValueResult<bool>>)
                 {
-                    TaskErrorTraceForm<TaskValueResult<bool>> boolInfo = new TaskErrorTraceForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.StorageProvider.ToString());
+                    TaskErrorTraceForm<TaskValueResult<bool>> boolInfo = new TaskErrorTraceForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>) tag, this.Connection.Name);
                     boolInfo.MdiParent = this.MdiParent;
                     boolInfo.Show();
+                }
+                else if (tag is ITask<String>)
+                {
+                    TaskErrorTraceForm<String> stringInfo = new TaskErrorTraceForm<string>((ITask<String>)tag, this.Connection.Name);
+                    stringInfo.MdiParent = this.MdiParent;
+                    stringInfo.Show();
                 }
                 else
                 {
@@ -1075,54 +1094,61 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuViewResults_Click(object sender, EventArgs e)
         {
-            if (this.lvwTasks.SelectedItems.Count > 0)
+            if (this.lvwTasks.SelectedItems.Count <= 0) return;
+            ListViewItem item = this.lvwTasks.SelectedItems[0];
+            Object tag = item.Tag;
+
+            if (tag is QueryTask)
             {
-                ListViewItem item = this.lvwTasks.SelectedItems[0];
-                Object tag = item.Tag;
-
-                if (tag is QueryTask)
+                QueryTask qTask = (QueryTask) tag;
+                if (qTask.State == TaskState.Completed && qTask.Result != null)
                 {
-                    QueryTask qTask = (QueryTask) tag;
-                    if (qTask.State == TaskState.Completed && qTask.Result != null)
-                    {
-                        Object result = qTask.Result;
+                    Object result = qTask.Result;
 
-                        if (result is IGraph)
-                        {
-                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this.StorageProvider.ToString());
-                            CrossThreadSetMdiParent(graphViewer);
-                            CrossThreadShow(graphViewer);
-                        }
-                        else if (result is SparqlResultSet)
-                        {
-                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.StorageProvider.ToString(), qTask.Query.NamespaceMap);
-                            CrossThreadSetMdiParent(resultsViewer);
-                            CrossThreadShow(resultsViewer);
-                        }
-                        else
-                        {
-                            CrossThreadMessage(Resources.QueryResults_NotViewable_Text, Resources.QueryResults_NotViewable_Title, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
+                    if (result is IGraph)
                     {
-                        CrossThreadMessage(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxIcon.Error);
-                    }
-                }
-                else if (tag is ITask<IGraph>)
-                {
-                    ITask<IGraph> graphTask = (ITask<IGraph>) tag;
-                    if (graphTask.Result != null)
-                    {
-                        GraphViewerForm graphViewer = new GraphViewerForm(graphTask.Result, this.StorageProvider.ToString());
+                        GraphViewerForm graphViewer = new GraphViewerForm((IGraph) result, this.Connection.Name);
                         CrossThreadSetMdiParent(graphViewer);
                         CrossThreadShow(graphViewer);
                     }
+                    else if (result is SparqlResultSet)
+                    {
+                        ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) result, this.Connection.Name, qTask.Query.NamespaceMap);
+                        CrossThreadSetMdiParent(resultsViewer);
+                        CrossThreadShow(resultsViewer);
+                    }
                     else
                     {
-                        CrossThreadMessage(Resources.Graph_Unavailable_Text, Resources.Graph_Unavailable_Title, MessageBoxIcon.Error);
+                        CrossThreadMessage(Resources.QueryResults_NotViewable_Text, Resources.QueryResults_NotViewable_Title, MessageBoxIcon.Error);
                     }
                 }
+                else
+                {
+                    CrossThreadMessage(Resources.QueryResults_Unavailable_Text, Resources.QueryResults_Unavailable_Title, MessageBoxIcon.Error);
+                }
+            }
+            else if (tag is GenerateEntitiesQueryTask)
+            {
+                GenerateEntitiesQueryTask genTask = (GenerateEntitiesQueryTask) tag;
+                StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", this.Connection.Name), genTask.Result, this.rtbSparqlQuery, "Query Editor");
+            }
+            else if (tag is ITask<IGraph>)
+            {
+                ITask<IGraph> graphTask = (ITask<IGraph>) tag;
+                if (graphTask.Result != null)
+                {
+                    GraphViewerForm graphViewer = new GraphViewerForm(graphTask.Result, this.Connection.Name);
+                    CrossThreadSetMdiParent(graphViewer);
+                    CrossThreadShow(graphViewer);
+                }
+                else
+                {
+                    CrossThreadMessage(Resources.Graph_Unavailable_Text, Resources.Graph_Unavailable_Title, MessageBoxIcon.Error);
+                }
+            }
+            else if (tag is ITask<String>)
+            {
+                    
             }
         }
 
@@ -1315,7 +1341,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.StorageProvider.ToString());
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.Connection.Name);
                 CrossThreadSetMdiParent(graphViewer);
                 CrossThreadShow(graphViewer);
             }
@@ -1336,7 +1362,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed && task.Result != null)
             {
-                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.StorageProvider.ToString());
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this.Connection.Name);
                 CrossThreadSetMdiParent(graphViewer);
                 CrossThreadShow(graphViewer);
             }
@@ -1459,7 +1485,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             if (task.State == TaskState.Completed)
             {
-                StringResultDialogue dialogue = new StringResultDialogue(this.Connection.Name + " - Generated Entity Query", task.Result, this.rtbSparqlQuery, "Query Editor");
+                StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", this.Connection.Name), task.Result, this.rtbSparqlQuery, "Query Editor");
                 CrossThreadShow(dialogue);
             }
             else

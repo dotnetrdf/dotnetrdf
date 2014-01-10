@@ -157,7 +157,18 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 
         }
 
-        private void ShowInformation(ITask<T> task)
+        public TaskInformationForm(GenerateEntitiesQueryTask task, String subtitle)
+            : this((ITask<T>) task, subtitle)
+        {
+            this.txtAdvInfo.Text = "Original Query String:" + Environment.NewLine + task.OriginalQueryString;
+            this.btnViewResults.Click += delegate
+                {
+                    StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", subtitle), task.Result);
+                    CrossThreadShow(dialogue);
+                };
+        }
+
+        private void ShowInformation(ITaskBase task)
         {
             CrossThreadSetText(this.lblTaskState, String.Format("Task State: {0}", task.State.GetStateDescription()));
             CrossThreadSetText(this.txtBasicInfo, task.Information);
@@ -170,34 +181,30 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         private void ShowQueryInformation(QueryTask task)
         {
             CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
+            if (task.Query == null) return;
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Parsed Query:");
             if (task.Query != null)
             {
-                StringWriter writer = new StringWriter();
-                writer.WriteLine("Parsed Query:");
-                if (task.Query != null)
-                {
-                    SparqlFormatter formatter = new SparqlFormatter(task.Query.NamespaceMap);
-                    writer.WriteLine(formatter.Format(task.Query));
-                    writer.WriteLine("SPARQL Algebra:");
-                    writer.WriteLine(task.Query.ToAlgebra().ToString());
-                }
-                else
-                {
-                    writer.WriteLine("Unavailable - Not standard SPARQL 1.0/1.1");
-                }
-                CrossThreadSetText(this.txtAdvInfo, writer.ToString());
+                SparqlFormatter formatter = new SparqlFormatter(task.Query.NamespaceMap);
+                writer.WriteLine(formatter.Format(task.Query));
+                writer.WriteLine("SPARQL Algebra:");
+                writer.WriteLine(task.Query.ToAlgebra().ToString());
             }
+            else
+            {
+                writer.WriteLine("Unavailable - Not standard SPARQL 1.0/1.1");
+            }
+            CrossThreadSetText(this.txtAdvInfo, writer.ToString());
         }
 
         private void ShowUpdateInformation(UpdateTask task)
         {
-            if (task.Updates != null)
-            {
-                StringWriter writer = new StringWriter();
-                writer.WriteLine("Parsed Updates:");
-                writer.WriteLine(task.Updates.ToString());
-                CrossThreadSetText(this.txtAdvInfo, writer.ToString());
-            }
+            if (task.Updates == null) return;
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("Parsed Updates:");
+            writer.WriteLine(task.Updates.ToString());
+            CrossThreadSetText(this.txtAdvInfo, writer.ToString());
         }
     }
 }
