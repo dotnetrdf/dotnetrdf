@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -43,7 +41,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
     /// <summary>
     /// A form which provides an interface for managing connections to multiple stores
     /// </summary>
-    public partial class ManagerForm : Form
+    public partial class ManagerForm
+        : CrossThreadForm
     {
         /// <summary>
         /// Creates a new form
@@ -53,8 +52,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             InitializeComponent();
             this.Closing += OnClosing;
             Constants.WindowIcon = this.Icon;
-
-           
 
             //Ensure we upgrade settings if user has come from an older version of the application
             if (Settings.Default.UpgradeRequired)
@@ -327,9 +324,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             try
             {
                 connection.Open();
-                StoreManagerForm genManager = new StoreManagerForm(connection);
-                genManager.MdiParent = this;
-                genManager.Show();
+                this.ShowStoreManagerForm(connection);
             }
             catch (Exception ex)
             {
@@ -370,12 +365,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         if (editConn.ShowDialog() == DialogResult.OK)
                         {
                             connection = editConn.Connection;
-                            StoreManagerForm storeManager = new StoreManagerForm(connection);
-                            storeManager.MdiParent = Program.MainForm;
-                            storeManager.Show();
-
-                            //Add to Recent Connections
-                            this.AddRecentConnection(connection);
+                            this.ShowStoreManagerForm(connection);
 
                             this.Close();
                         }
@@ -444,10 +434,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 try
                 {
                     connection.Open();
-                    StoreManagerForm storeManager = new StoreManagerForm(connection);
-                    storeManager.MdiParent = this;
-                    storeManager.Show();
-                    this.AddRecentConnection(connection);
+                    this.ShowStoreManagerForm(connection);
                 }
                 catch (Exception ex)
                 {
@@ -617,7 +604,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
                         Connection connection = openConnections.Connection;
-                        ShowStoreManagerForm(connection, true);
+                        ShowStoreManagerForm(connection);
                     }
                 }
                 catch (RdfParseException)
@@ -668,7 +655,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             newConn.StartPosition = FormStartPosition.CenterParent;
             if (newConn.ShowDialog() != DialogResult.OK) return;
             Connection connection = newConn.Connection;
-            ShowStoreManagerForm(connection, true);
+            ShowStoreManagerForm(connection);
         }
 
         private void mnuNewFromExisting_Click(object sender, EventArgs e)
@@ -681,7 +668,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     EditConnectionForm editConn = new EditConnectionForm(connection, true);
                     if (editConn.ShowDialog() == DialogResult.OK)
                     {
-                        ShowStoreManagerForm(editConn.Connection, true);
+                        ShowStoreManagerForm(editConn.Connection);
                     }
                     return;
                 }
@@ -689,20 +676,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             MessageBox.Show(Resources.NewFromExisting_Error_Text, Resources.NewFromExisting_Error_Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public void ShowStoreManagerForm(Connection connection, bool addRecentConnection = false)
+        public void ShowStoreManagerForm(Connection connection)
         {
-            StoreManagerForm genManager = new StoreManagerForm(connection);
-            genManager.MdiParent = this;
-            genManager.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
-            genManager.WordWrapQuery(this.mnuWordWrapQuery.Checked);
-            genManager.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
-            genManager.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
-            genManager.Show();
+            StoreManagerForm storeManagerForm = new StoreManagerForm(connection);
+            storeManagerForm.ShowHideEntitiesButtons(this.mnuShowEntityButtons.Checked);
+            storeManagerForm.WordWrapQuery(this.mnuWordWrapQuery.Checked);
+            storeManagerForm.ShowQueryUrls(this.mnuShowQueryUrls.Checked);
+            storeManagerForm.ShowHighlighting = this.mnuShowQueryHighLighting.Checked;
+            CrossThreadSetMdiParent(storeManagerForm);
+            CrossThreadShow(storeManagerForm);
 
-            if (addRecentConnection)
-            {
-                this.AddRecentConnection(connection);
-            }
+            this.AddRecentConnection(connection);
         }
 
         private void mnuShowStartPage_Click(object sender, EventArgs e)

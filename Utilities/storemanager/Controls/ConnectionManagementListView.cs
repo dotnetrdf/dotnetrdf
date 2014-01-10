@@ -332,10 +332,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 try
                 {
                     connection.Open();
-                    StoreManagerForm storeManager = new StoreManagerForm(connection);
-                    Program.MainForm.AddRecentConnection(connection);
-                    storeManager.MdiParent = Program.MainForm;
-                    storeManager.Show();
+                    Program.MainForm.ShowStoreManagerForm(connection);
                 }
                 catch (Exception ex)
                 {
@@ -353,13 +350,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, false);
                     editConnection.MdiParent = Program.MainForm;
-                    if (editConnection.ShowDialog() == DialogResult.OK)
-                    {
-                        StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
-                        Program.MainForm.AddRecentConnection(editConnection.Connection);
-                        storeManager.MdiParent = Program.MainForm;
-                        storeManager.Show();
-                    }
+                    if (editConnection.ShowDialog() != DialogResult.OK) continue;
+                    Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
                 catch (Exception ex)
                 {
@@ -377,13 +369,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, true);
                     editConnection.MdiParent = Program.MainForm;
-                    if (editConnection.ShowDialog() == DialogResult.OK)
-                    {
-                        StoreManagerForm storeManager = new StoreManagerForm(editConnection.Connection);
-                        Program.MainForm.AddRecentConnection(editConnection.Connection);
-                        storeManager.MdiParent = Program.MainForm;
-                        storeManager.Show();
-                    }
+                    if (editConnection.ShowDialog() != DialogResult.OK) continue;
+                    Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
                 catch (Exception ex)
                 {

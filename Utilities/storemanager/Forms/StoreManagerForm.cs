@@ -1626,9 +1626,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 // TODO Need a better way to modify the connection definition appropriately to set the relevant Store ID - currently this is done via a hack in the Connection constructor
                 IConnectionDefinition definition = this.Connection.Definition.Copy();
                 Connection connection = new Connection(definition, task.Result);
-                StoreManagerForm manager = new StoreManagerForm(connection);
-                CrossThreadSetMdiParent(manager);
-                CrossThreadShow(manager);
+                Program.MainForm.ShowStoreManagerForm(connection);
             }
             else
             {

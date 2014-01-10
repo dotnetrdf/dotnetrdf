@@ -390,6 +390,26 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
+        private delegate void CrossThreadSetMdiParentDelegate2(Form f, Form parent);
+
+        /// <summary>
+        /// Sets the MDI Parent of the given form to be the given parent
+        /// </summary>
+        /// <param name="f">Form</param>
+        /// <param name="parent">Parent</param>
+        protected void CrossThreadSetMdiParent(Form f, Form parent)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadSetMdiParentDelegate2 d = this.CrossThreadSetMdiParent;
+                this.Invoke(d, new object[] {f, parent});
+            }
+            else
+            {
+                f.MdiParent = parent;
+            }
+        }
+
         private delegate void CrossThreadShowQueryPanelDelegate(SplitContainer splitContainer);
 
         protected void CrossThreadShowQueryPanel(SplitContainer splitContainer)

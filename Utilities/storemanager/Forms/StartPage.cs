@@ -68,13 +68,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
                             connection = edit.Connection;
-                            StoreManagerForm storeManager = new StoreManagerForm(connection);
-                            storeManager.MdiParent = Program.MainForm;
-                            storeManager.Show();
-
-                            //Add to Recent Connections
-                            Program.MainForm.AddRecentConnection(connection);
-
+                            Program.MainForm.ShowStoreManagerForm(connection);
                             this.Close();
                         }
                     }
@@ -83,7 +77,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         try
                         {
                             connection.Open();
-                            Program.MainForm.ShowStoreManagerForm(connection, true);
+                            Program.MainForm.ShowStoreManagerForm(connection);
                             this.Close();
                         }
                         catch (Exception ex)
@@ -99,7 +93,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             NewConnectionForm newConn = new NewConnectionForm();
             if (newConn.ShowDialog() != DialogResult.OK) return;
             Connection connection = newConn.Connection;
-            Program.MainForm.ShowStoreManagerForm(newConn.Connection, true);
+            Program.MainForm.ShowStoreManagerForm(newConn.Connection);
 
             //Add to Recent Connections
             Program.MainForm.AddRecentConnection(connection);
@@ -143,7 +137,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             EditConnectionForm edit = new EditConnectionForm(connection, false);
             if (edit.ShowDialog() != DialogResult.OK) return;
             connection = edit.Connection;
-            Program.MainForm.ShowStoreManagerForm(connection, true);
+            Program.MainForm.ShowStoreManagerForm(connection);
 
             //Add to Recent Connections
             Program.MainForm.AddRecentConnection(connection);
