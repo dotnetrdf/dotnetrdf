@@ -153,7 +153,6 @@ GROUP BY ?p";
                     predicateIndex++;
                     String predicateColumnName = GetColumnName(predicate, entitiesQuery.Namespaces);
                     if (predicateColumnName == null) continue;
-                    predicateColumnName += predicateIndex;
                     selectColumns.Add(predicateColumnName);
 
                     optionalFilters.AppendLine("  OPTIONAL { @subject @predicate" + predicateIndex + " ?" + predicateColumnName + " }");

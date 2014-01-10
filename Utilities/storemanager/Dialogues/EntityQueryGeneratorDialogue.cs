@@ -34,7 +34,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         public EntityQueryGeneratorDialogue(String query)
         {
             InitializeComponent();
-            this.txtCurrentQuery.Text = query;
+            this.txtCurrentQuery.Text = query.Replace("\n", "\r\n");
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
