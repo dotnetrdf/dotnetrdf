@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
+                saveUri += "?graph=" + HttpUtility.UrlEncode(g.BaseUri.AbsoluteUri);
             }
             else
             {
