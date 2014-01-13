@@ -15,6 +15,7 @@ Changed
  - DELETE WHERE { } shorthand syntax was permitted to have a preceding WITH clause which was invalid SPARQL syntax (CORE-389)
  - URILoader.Load() can sometimes swallow exceptions (CORE-391)
  - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
+ - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
 - Documentation
  - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
 - Query

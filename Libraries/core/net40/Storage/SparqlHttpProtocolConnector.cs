@@ -217,7 +217,7 @@ namespace VDS.RDF.Storage
             String retrievalUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                retrievalUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -274,7 +274,7 @@ namespace VDS.RDF.Storage
             String lookupUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                lookupUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                lookupUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
+                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
             }
             else
             {
@@ -384,7 +384,7 @@ namespace VDS.RDF.Storage
             String updateUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                updateUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
             String deleteUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                deleteUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -500,7 +500,6 @@ namespace VDS.RDF.Storage
             g.BaseUri = origUri;
         }
 
-
         /// <summary>
         /// Loads a Graph from the Protocol Server
         /// </summary>
@@ -513,7 +512,7 @@ namespace VDS.RDF.Storage
             String retrievalUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                retrievalUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -538,7 +537,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
+                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
             }
             else
             {
@@ -580,7 +579,7 @@ namespace VDS.RDF.Storage
             String updateUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                updateUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -618,7 +617,7 @@ namespace VDS.RDF.Storage
             String deleteUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                deleteUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
