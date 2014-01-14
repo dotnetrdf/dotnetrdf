@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using VDS.RDF.GUI.WinForms.Controls;
@@ -56,8 +57,14 @@ namespace VDS.RDF.GUI.WinForms
     public delegate void FormatterChanged(Object sender, Formatter formatter);
 
     /// <summary>
-    /// Event that occurs when results are closed
+    /// Event that occurs when result are requested to be closed
     /// </summary>
     /// <param name="sender">Originator of the event</param>
-    public delegate void ResultsClosed(Object sender);
+    public delegate void ResultCloseRequested(Object sender);
+
+    /// <summary>
+    /// Event that occurs when results are requested to be detached
+    /// </summary>
+    /// <param name="sender">Originator of the event</param>
+    public delegate void ResultDetachRequested(Object sender);
 }

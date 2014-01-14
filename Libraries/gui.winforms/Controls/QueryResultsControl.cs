@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using VDS.RDF.Query;
 
@@ -10,6 +11,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
     public partial class QueryResultsControl : UserControl
     {
         private Object _dataSource;
+        private bool _allowDetach = true;
 
         /// <summary>
         /// Query Results Control
@@ -18,6 +20,10 @@ namespace VDS.RDF.GUI.WinForms.Controls
         {
             InitializeComponent();
             this.splPanel.Panel1Collapsed = true;
+            this.splResults.Visible = false;
+
+            // Only detachable if allowed and not already top level control on the form
+            this.btnDetach.Visible = this.AllowDetach && !(this.Parent is Form);
         }
 
         private void btnToggleQuery_Click(object sender, EventArgs e)
@@ -32,6 +38,20 @@ namespace VDS.RDF.GUI.WinForms.Controls
             this.splPanel.Panel2Collapsed = !this.splPanel.Panel2Collapsed;
             this.btnToggleQuery.Text = this.splPanel.Panel1Collapsed ? "Show &Query" : "Hide &Query";
             this.btnToggleResults.Text = this.splPanel.Panel2Collapsed ? "Show &Results" : "Hide &Results";
+        }
+
+        /// <summary>
+        /// Gets/Sets whether detaching results is allowing
+        /// </summary>
+        [DefaultValue(true)]
+        public bool AllowDetach
+        {
+            get { return this._allowDetach; }
+            set
+            {
+                this._allowDetach = value;
+                this.btnDetach.Visible = this._allowDetach;
+            }
         }
 
         /// <summary>
@@ -56,33 +76,31 @@ namespace VDS.RDF.GUI.WinForms.Controls
             get { return this._dataSource; }
             set
             {
-                if (value == null) return;
+                if (value == null)
+                {
+                    this.splResults.Visible = false;
+                    return;
+                }
                 if (value is SparqlResultSet)
                 {
                     this._dataSource = value;
-                    this.splPanel.SuspendLayout();
-                    this.splPanel.Panel2.SuspendLayout();
-                    this.splPanel.Panel2.Controls.Clear();
-                    ResultSetViewerControl control = new ResultSetViewerControl();
-                    control.DisplayResultSet((SparqlResultSet)value, this.Namespaces);
-                    control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                    this.splPanel.Panel2.Controls.Add(control);
-                    this.splPanel.Panel2.ResumeLayout();
-                    this.splPanel.ResumeLayout();
-                } 
+                    this.splResults.SuspendLayout();
+                    this.splResults.Panel1Collapsed = false;
+                    this.splResults.Panel2Collapsed = true;
+                    this.resultsViewer.DisplayResultSet((SparqlResultSet) value, this.Namespaces);
+                    this.splResults.ResumeLayout();
+                    this.splResults.Visible = true;
+                }
                 else if (value is IGraph)
                 {
                     this._dataSource = value;
-                    this.splPanel.SuspendLayout();
-                    this.splPanel.Panel2.SuspendLayout();
-                    this.splPanel.Panel2.Controls.Clear();
-                    GraphViewerControl control = new GraphViewerControl();
+                    this.splResults.SuspendLayout();
+                    this.splResults.Panel1Collapsed = true;
+                    this.splResults.Panel2Collapsed = false;
                     IGraph g = (IGraph) value;
-                    control.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, this.Namespaces));
-                    control.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                    this.splPanel.Panel2.Controls.Add(control);
-                    this.splPanel.Panel2.ResumeLayout();
-                    this.splPanel.ResumeLayout();
+                    this.graphViewer.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, this.Namespaces));
+                    this.splResults.ResumeLayout();
+                    this.splResults.Visible = true;
                 }
                 else
                 {
@@ -101,16 +119,37 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.RaiseClosed();
+            this.RaiseCloseRequested();
         }
 
-        protected void RaiseClosed()
+
+        private void btnDetach_Click(object sender, EventArgs e)
         {
-            ResultsClosed d = this.Closed;
+            this.RaiseDetachRequested();
+        }
+
+        protected void RaiseCloseRequested()
+        {
+            ResultCloseRequested d = this.CloseRequested;
             if (d == null) return;
             d(this);
         }
 
-        public event ResultsClosed Closed;
+        /// <summary>
+        /// Event which is raised when the user has clicked the close button
+        /// </summary>
+        public event ResultCloseRequested CloseRequested;
+
+        /// <summary>
+        /// Event which is raised when the user has clicked the detach button
+        /// </summary>
+        public event ResultDetachRequested DetachRequested;
+
+        protected void RaiseDetachRequested()
+        {
+            ResultDetachRequested d = this.DetachRequested;
+            if (d == null) return;
+            d(this);
+        }
     }
 }

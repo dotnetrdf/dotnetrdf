@@ -1484,10 +1484,25 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 control.Namespaces = task.Query != null ? task.Query.NamespaceMap : null;
                 control.QueryString = task.QueryString;
                 control.DataSource = task.Result;
-                control.Anchor = AnchorStyles.Bottom |
-                                 AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-                control.Closed += delegate
+                control.CloseRequested += delegate
                     {
+                        this.tabResults.TabPages.Remove(tabPage);
+                        if (this.tabResults.TabPages.Count == 0) this.splitQueryResults.Panel2Collapsed = true;
+                    };
+                control.DetachRequested += delegate
+                    {
+                        if (control.DataSource is SparqlResultSet)
+                        {
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet) control.DataSource, control.Namespaces, this.Connection.Name);
+                            CrossThreadSetMdiParent(resultsViewer);
+                            CrossThreadShow(resultsViewer);
+                        }
+                        else if (control.DataSource is IGraph)
+                        {
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)control.DataSource, this.Connection.Name);
+                            CrossThreadSetMdiParent(graphViewer);
+                            CrossThreadShow(graphViewer);
+                        }
                         this.tabResults.TabPages.Remove(tabPage);
                         if (this.tabResults.TabPages.Count == 0) this.splitQueryResults.Panel2Collapsed = true;
                     };
@@ -1496,6 +1511,15 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 this.tabResults.TabPages.Add(tabPage);
                 this.tabResults.SelectTab(tabPage);
                 tabPage.ResumeLayout();
+
+                // Try and get control to take up all available space
+                control.SuspendLayout();
+                control.Anchor = AnchorStyles.Bottom |
+                                 AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                control.Height = tabPage.Height;
+                control.Width = tabPage.Width;
+                control.ResumeLayout();
+                
             }
         }
 
