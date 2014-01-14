@@ -52,25 +52,22 @@ namespace VDS.RDF.GUI.WinForms.Forms
         /// </summary>
         /// <param name="results">SPARQL Result to display</param>
         public ResultSetViewerForm(SparqlResultSet results)
-            : this(results, null, GetTitle(results))
-        {
-        }
+            : this(results, null, null) { }
 
         /// <summary>
-        /// Displays the given SPARQL Result Set and prefixes the Form Title with the given Title
+        /// Displays the given SPARQL Result Set and prefixes the form title with the given title
         /// </summary>
         /// <param name="results">SPARQL Result Set to display</param>
-        /// <param name="title">Title</param>
+        /// <param name="title">Title prefix</param>
         public ResultSetViewerForm(SparqlResultSet results, String title)
-            : this(results, null, GetTitle(title, results))
-        {
-        }
+            : this(results, null, title) { }
 
         /// <summary>
         /// Creates a new Result Set viewer form
         /// </summary>
         /// <param name="results">Result Set</param>
         /// <param name="nsmap">Namespace Map to use for display</param>
+        /// <param name="title">Title prefix</param>
         public ResultSetViewerForm(SparqlResultSet results, INamespaceMapper nsmap, String title)
         {
             InitializeComponent();
@@ -79,7 +76,7 @@ namespace VDS.RDF.GUI.WinForms.Forms
                 this.Icon = Constants.WindowIcon;
             }
             this._results = results;
-            this.Text = title;
+            this.Text = GetTitle(title, results);
             this._nsmap = nsmap;
 
             this.resultsViewer.UriClicked += (sender, uri) => this.RaiseUriClicked(uri);
@@ -95,6 +92,7 @@ namespace VDS.RDF.GUI.WinForms.Forms
 
         private static String GetTitle(String title, SparqlResultSet results)
         {
+            if (title == null) return GetTitle(results);
             return String.Format("{0} - " + GetTitle(results), title);
         }
 
