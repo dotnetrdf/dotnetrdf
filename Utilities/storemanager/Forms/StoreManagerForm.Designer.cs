@@ -515,7 +515,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // 
             // btnSparqlQuery
             // 
-            this.btnSparqlQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSparqlQuery.Location = new System.Drawing.Point(517, 8);
             this.btnSparqlQuery.Name = "btnSparqlQuery";
             this.btnSparqlQuery.Size = new System.Drawing.Size(70, 23);
