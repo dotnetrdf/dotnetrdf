@@ -9,6 +9,8 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         public RenameConnectionDialogue(Connection connection)
         {
             InitializeComponent();
+            this.Connection = connection;
+            this.Text = String.Format(this.Text, this.Connection.Name);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

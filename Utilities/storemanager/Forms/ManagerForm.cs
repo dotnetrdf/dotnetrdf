@@ -668,6 +668,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             CrossThreadSetMdiParent(storeManagerForm, this);
             CrossThreadShow(storeManagerForm);
 
+            // Update Quick Jump Bar
             ToolStripButton quickJumpButton = new ToolStripButton(connection.Name);
             connection.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                 {
