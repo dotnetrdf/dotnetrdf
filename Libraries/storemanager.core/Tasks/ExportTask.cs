@@ -40,8 +40,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ExportTask
         : CancellableTask<TaskResult>
     {
-        private String _file;
-        private IStorageProvider _manager;
+        private readonly String _file;
+        private readonly IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Export Task
@@ -200,9 +200,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     class ExportProgressHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private ExportTask _task;
-        private int _count = 0;
+        private readonly IRdfHandler _handler;
+        private readonly ExportTask _task;
 
         /// <summary>
         /// Creates a new Export Progress handler
@@ -214,7 +213,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             this._handler = handler;
             this._task = task;
-            this._count = initCount;
+            this.TripleCount = initCount;
         }
 
         /// <summary>
@@ -284,11 +283,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._count++;
-            if (this._count % 1000 == 0)
+            this.TripleCount++;
+            if (this.TripleCount % 1000 == 0)
             {
                 if (this._task.HasBeenCancelled) return false;
-                this._task.Information = "Exported " + this._count + " triples so far...";
+                this._task.Information = "Exported " + this.TripleCount + " triples so far...";
             }
             return this._handler.HandleTriple(t);
         }
@@ -296,12 +295,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets the count of triples seen so far
         /// </summary>
-        public int TripleCount
-        {
-            get
-            {
-                return this._count;
-            }
-        }
+        public int TripleCount { get; private set; }
     }
 }

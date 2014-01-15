@@ -1478,10 +1478,7 @@ namespace VDS.RDF.Storage
             {
                 return "[Virtuoso] Custom Connection String";
             }
-            else
-            {
-                return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
-            }
+            return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
         }
 
         /// <summary>

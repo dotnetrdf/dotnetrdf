@@ -107,5 +107,26 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             }
             return new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
         }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            ReadWriteSparqlConnectionDefinition definition = new ReadWriteSparqlConnectionDefinition();
+            definition.QueryEndpointUri = this.QueryEndpointUri;
+            definition.QueryDefaultGraphUri = this.QueryDefaultGraphUri;
+            definition.UpdateEndpointUri = this.UpdateEndpointUri;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[SPARQL Query & Update] Query: " + this.QueryEndpointUri.ToSafeString() + " Update: " + this.UpdateEndpointUri.ToSafeString();
+        }
     }
 }

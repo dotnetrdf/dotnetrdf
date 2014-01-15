@@ -1,0 +1,66 @@
+# This file is part of dotNetRDF.
+#
+# dotNetRDF is free and open source software licensed under the MIT License
+#
+# -----------------------------------------------------------------------------
+#
+# Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-develop@lists.sf.net)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is furnished
+# to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix store: <http://www.dotnetrdf.org/StoreManager#>.
+
+@base <http://www.dotnetrdf.org/StoreManager#>.
+
+<http://www.dotnetrdf.org/StoreManager#> a owl:Ontology ;
+   rdfs:label "dotNetRDF Store Manager Vocabulary" ;
+   rdfs:comment """dotNetRDF Store Manager Vocabulary is used to in conjunction with the Configuration vocabulary to store information about managed connections.""" ;
+   dc:creator [ foaf:name "Rob Vesse" ] ;
+   vann:preferredNamespacePrefix "store" ;
+   vann:preferredNamespaceUri <http://www.dotnetrdf.org/configuration#> .
+   
+store:created a rdf:Property ;
+	rdfs:range xsd:dateTime ;
+	rdfs:label "Created" ;
+	rdfs:comment "Indicates when a connection was first created" .
+	
+store:lastModified a rdf:Property ;
+	rdfs:range xsd:dateTime ;
+	rdfs:label "Last Modified" ;
+	rdfs:comment "Indicates when a connection was last modified" .
+	
+store:lastOpened a rdf:Property ;
+	rdfs:range xsd:dateTime ;
+	rdfs:label "Last Opened" ;
+	rdfs:comment "Indicates when a connection was last opened" .
+	
+store:definitionType a rdf:Property ;
+	rdfs:label "Definition Type" ;
+	rdfs:comment "Used to associate serialized configuration with the IConnectionDefinition implementing type that its Configuration may be populated from." .
+
+store:readOnly a rdf:Property ;
+	rdfs:label "Read Only" ;
+	rdfs:comment "Used to state that a connection should default to read only mode" ;
+	rdfs:range xsd:boolean .

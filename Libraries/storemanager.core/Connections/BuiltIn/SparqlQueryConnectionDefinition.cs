@@ -91,5 +91,25 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             }
             return new SparqlConnector(endpoint, this.LoadMode);
         }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            SparqlQueryConnectionDefinition definition = new SparqlQueryConnectionDefinition();
+            definition.EndpointUri = this.EndpointUri;
+            definition.DefaultGraphUri = this.DefaultGraphUri;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[SPARQL Query] " + this.EndpointUri.ToSafeString();
+        }
     }
 }

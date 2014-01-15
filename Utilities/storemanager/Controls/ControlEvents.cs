@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager.Controls
 {
@@ -40,8 +37,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// <summary>
         /// Creates a new Connected Event arguments
         /// </summary>
-        /// <param name="connection">Storage Provider</param>
-        public ConnectedEventArgs(IStorageProvider connection)
+        /// <param name="connection">Connection</param>
+        public ConnectedEventArgs(Connection connection)
         {
             this.Connection = connection;
         }
@@ -49,7 +46,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// <summary>
         /// Gets/Sets the Connection
         /// </summary>
-        public IStorageProvider Connection
+        public Connection Connection
         {
             get;
             private set;

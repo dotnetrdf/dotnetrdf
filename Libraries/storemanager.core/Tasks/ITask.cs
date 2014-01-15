@@ -71,27 +71,19 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// </summary>
     public class TaskResult
     {
-        private bool _ok = false;
-
         /// <summary>
         /// Creates a Task Result
         /// </summary>
         /// <param name="ok">Whether the task complete successfully</param>
         public TaskResult(bool ok)
         {
-            this._ok = ok;
+            this.OK = ok;
         }
 
         /// <summary>
         /// Gets whether the Task completed successfully
         /// </summary>
-        public bool OK
-        {
-            get
-            {
-                return this._ok;
-            }
-        }
+        public bool OK { get; private set; }
     }
 
     /// <summary>
@@ -101,27 +93,19 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class TaskValueResult<T>
         where T : struct
     {
-        private T? _value;
-
         /// <summary>
         /// Creates a new result
         /// </summary>
         /// <param name="value">Value</param>
         public TaskValueResult(T? value)
         {
-            this._value = value;
+            this.Value = value;
         }
 
         /// <summary>
         /// Gets the value
         /// </summary>
-        public T? Value
-        {
-            get
-            {
-                return this._value;
-            }
-        }
+        public T? Value { get; private set; }
     }
 
     /// <summary>

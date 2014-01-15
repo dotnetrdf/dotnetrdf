@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -39,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// Gets the human readable description for a task state
         /// </summary>
         /// <param name="state">Task State</param>
-        /// <returns></returns>
+        /// <returns>State Description</returns>
         public static String GetStateDescription(this TaskState state)
         {
             switch (state)
@@ -56,7 +53,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     return "Running (Cancelled)";
                 case TaskState.Starting:
                     return "Starting";
-                case TaskState.Unknown:
                 default:
                     return "Unknown";
             }
