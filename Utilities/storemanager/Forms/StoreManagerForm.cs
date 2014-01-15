@@ -1860,6 +1860,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void ActivateHighlighting()
         {
+            if (!Settings.Default.EditorHighlighting) return;
             if (_codeHighLightingInProgress) return;
             _codeHighLightingInProgress = true;
 
