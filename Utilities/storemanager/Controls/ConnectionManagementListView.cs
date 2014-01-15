@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
+using VDS.RDF.Utilities.StoreManager.Dialogues;
 using VDS.RDF.Utilities.StoreManager.Forms;
 using VDS.RDF.Utilities.StoreManager.Properties;
 
@@ -349,7 +350,6 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 try
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, false);
-                    editConnection.MdiParent = Program.MainForm;
                     if (editConnection.ShowDialog() != DialogResult.OK) continue;
                     Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
@@ -368,13 +368,29 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 try
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, true);
-                    editConnection.MdiParent = Program.MainForm;
                     if (editConnection.ShowDialog() != DialogResult.OK) continue;
                     Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
                 catch (Exception ex)
                 {
                     Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Edit_Error, connection.Name), ex);
+                }
+            }
+        }
+
+        private void mnuRename_Click(object sender, EventArgs e)
+        {
+            List<Connection> selectedConnections = this.GetSelectedConnections();
+            foreach (Connection connection in selectedConnections)
+            {
+                try
+                {
+                    RenameConnectionDialogue renameConnection = new RenameConnectionDialogue(connection);
+                    renameConnection.ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    Program.HandleInternalError(string.Format(Resources.ConnectionManagement_Rename_Error, connection.Name), ex);
                 }
             }
         }

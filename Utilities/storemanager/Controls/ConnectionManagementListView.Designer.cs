@@ -172,13 +172,14 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             this.toolStripSeparator2,
             this.mnuRemove});
             this.mnuContext.Name = "mnuContext";
-            this.mnuContext.Size = new System.Drawing.Size(171, 170);
+            this.mnuContext.Size = new System.Drawing.Size(171, 192);
             // 
             // mnuRename
             // 
             this.mnuRename.Name = "mnuRename";
             this.mnuRename.Size = new System.Drawing.Size(170, 22);
             this.mnuRename.Text = "&Rename";
+            this.mnuRename.Click += new System.EventHandler(this.mnuRename_Click);
             // 
             // mnuEdit
             // 

@@ -196,6 +196,15 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to rename the connection {0}.
+        /// </summary>
+        internal static string ConnectionManagement_Rename_Error {
+            get {
+                return ResourceManager.GetString("ConnectionManagement_Rename_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection must be in open state.
         /// </summary>
         internal static string ConnectionMustBeOpen {

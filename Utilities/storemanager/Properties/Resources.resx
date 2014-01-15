@@ -414,4 +414,7 @@
   <data name="HideExample" xml:space="preserve">
     <value>Hide Example</value>
   </data>
+  <data name="ConnectionManagement_Rename_Error" xml:space="preserve">
+    <value>Unable to rename the connection {0}</value>
+  </data>
 </root>
