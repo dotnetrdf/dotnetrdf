@@ -57,10 +57,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tlpLayout = new System.Windows.Forms.TableLayoutPanel();
             this.panStoreTypes = new System.Windows.Forms.Panel();
             this.lstStoreTypes = new System.Windows.Forms.ListBox();
-            this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.connSettings = new VDS.RDF.Utilities.StoreManager.Controls.ConnectionSettingsGrid();
+            this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
+            this.panName = new System.Windows.Forms.Panel();
+            this.lblName = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
             this.tlpLayout.SuspendLayout();
             this.panStoreTypes.SuspendLayout();
+            this.panName.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpLayout
@@ -73,10 +77,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tlpLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.69014F));
             this.tlpLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 78.30986F));
             this.tlpLayout.Controls.Add(this.panStoreTypes, 0, 0);
-            this.tlpLayout.Controls.Add(this.connSettings, 1, 0);
+            this.tlpLayout.Controls.Add(this.connSettings, 1, 1);
+            this.tlpLayout.Controls.Add(this.panName, 1, 0);
             this.tlpLayout.Location = new System.Drawing.Point(0, 0);
             this.tlpLayout.Name = "tlpLayout";
-            this.tlpLayout.RowCount = 1;
+            this.tlpLayout.RowCount = 2;
+            this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tlpLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpLayout.Size = new System.Drawing.Size(959, 352);
             this.tlpLayout.TabIndex = 0;
@@ -90,6 +96,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.panStoreTypes.Controls.Add(this.lstStoreTypes);
             this.panStoreTypes.Location = new System.Drawing.Point(3, 3);
             this.panStoreTypes.Name = "panStoreTypes";
+            this.tlpLayout.SetRowSpan(this.panStoreTypes, 2);
             this.panStoreTypes.Size = new System.Drawing.Size(202, 346);
             this.panStoreTypes.TabIndex = 0;
             // 
@@ -113,10 +120,39 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.connSettings.AutoSize = true;
             this.connSettings.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.connSettings.Definition = null;
-            this.connSettings.Location = new System.Drawing.Point(211, 3);
+            this.connSettings.Location = new System.Drawing.Point(211, 38);
             this.connSettings.Name = "connSettings";
-            this.connSettings.Size = new System.Drawing.Size(745, 346);
+            this.connSettings.Size = new System.Drawing.Size(745, 311);
             this.connSettings.TabIndex = 1;
+            // 
+            // panName
+            // 
+            this.panName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panName.Controls.Add(this.txtName);
+            this.panName.Controls.Add(this.lblName);
+            this.panName.Location = new System.Drawing.Point(211, 3);
+            this.panName.Name = "panName";
+            this.panName.Size = new System.Drawing.Size(745, 29);
+            this.panName.TabIndex = 2;
+            // 
+            // lblName
+            // 
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(3, 9);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(182, 13);
+            this.lblName.TabIndex = 0;
+            this.lblName.Text = "Connection Friendly Name (Optional):";
+            // 
+            // txtName
+            // 
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtName.Location = new System.Drawing.Point(191, 6);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(547, 20);
+            this.txtName.TabIndex = 1;
             // 
             // NewConnectionForm
             // 
@@ -132,6 +168,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.tlpLayout.ResumeLayout(false);
             this.tlpLayout.PerformLayout();
             this.panStoreTypes.ResumeLayout(false);
+            this.panName.ResumeLayout(false);
+            this.panName.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -143,5 +181,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private System.Windows.Forms.ListBox lstStoreTypes;
         private System.Windows.Forms.OpenFileDialog ofdBrowse;
         private Controls.ConnectionSettingsGrid connSettings;
+        private System.Windows.Forms.Panel panName;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.TextBox txtName;
     }
 }

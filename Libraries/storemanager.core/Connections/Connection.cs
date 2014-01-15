@@ -501,6 +501,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             g.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
             g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
             INode rootNode = g.CreateUriNode(this.RootUri);
 
             // Created, Last Modified and Last Opened
@@ -516,6 +517,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
             // Read-Only?
             this.IsReadOnly = ConfigurationLoader.GetConfigurationBoolean(g, rootNode, g.CreateUriNode("store:readOnly"), false);
+
+            // Friendly Name
+            Triple nameTriple = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("rdfs:label")).FirstOrDefault();
+            if (nameTriple == null) return;
+            if (nameTriple.Object.NodeType != NodeType.Literal) return;
+            this.Name = ((ILiteralNode) nameTriple.Object).Value;
         }
 
         /// <summary>

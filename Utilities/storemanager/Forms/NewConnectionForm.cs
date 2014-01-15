@@ -74,6 +74,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void HandleConnected(Object sender, ConnectedEventArgs e)
         {
             this._connection = e.Connection;
+            if (!String.IsNullOrEmpty(this.txtName.Text)) this._connection.Name = this.txtName.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
