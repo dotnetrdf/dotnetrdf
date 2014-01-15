@@ -1752,6 +1752,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         protected override void OnClosed(EventArgs e)
         {
             this.Connection.Close(this.ForceClose);
+            base.OnClosed(e);
         }
 
         private void btnChangeOrientation_Click(object sender, EventArgs e)
