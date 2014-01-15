@@ -52,5 +52,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             get { return this.lvwFavourite.DataSource; }
             set { this.lvwFavourite.DataSource = value; }
         }
+
+        private void btnClose_Click(object sender, System.EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

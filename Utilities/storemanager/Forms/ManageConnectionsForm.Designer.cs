@@ -98,6 +98,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.btnClose.TabIndex = 0;
             this.btnClose.Text = "&Close";
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // tabConnections
             // 
@@ -127,8 +128,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwActive
             // 
             this.lvwActive.AllowClose = true;
-            this.lvwActive.AllowNewFromExisting = true;
             this.lvwActive.AllowEdit = true;
+            this.lvwActive.AllowNewFromExisting = true;
             this.lvwActive.AllowOpen = true;
             this.lvwActive.AllowRemove = false;
             this.lvwActive.AllowRename = true;
@@ -159,8 +160,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwRecent
             // 
             this.lvwRecent.AllowClose = true;
-            this.lvwRecent.AllowNewFromExisting = true;
             this.lvwRecent.AllowEdit = true;
+            this.lvwRecent.AllowNewFromExisting = true;
             this.lvwRecent.AllowOpen = true;
             this.lvwRecent.AllowRemove = true;
             this.lvwRecent.AllowRename = true;
@@ -191,8 +192,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             // lvwFavourite
             // 
             this.lvwFavourite.AllowClose = true;
-            this.lvwFavourite.AllowNewFromExisting = true;
             this.lvwFavourite.AllowEdit = true;
+            this.lvwFavourite.AllowNewFromExisting = true;
             this.lvwFavourite.AllowOpen = true;
             this.lvwFavourite.AllowRemove = true;
             this.lvwFavourite.AllowRename = true;
