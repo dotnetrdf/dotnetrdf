@@ -183,14 +183,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected virtual void Save()
         {
-            // Only clear the graph if there are no connections
-            if (this._connections.Count == 0) this.Graph.Clear();
+            // Only clear the graph if there are no connections or the derived implementation specifically requires
+            if (this._connections.Count == 0 || this.RequiresClearOnSave) this.Graph.Clear();
             foreach (Connection connection in this._connections)
             {
                 connection.SaveConfiguration(this.Graph);
             }
             this.Graph.SaveToFile(this.File);
         }
+
+        /// <summary>
+        /// Gets/Sets whether the implementation requires the on-disk graph to be cleared when saving
+        /// </summary>
+        protected virtual bool RequiresClearOnSave { get; set; }
 
         /// <summary>
         /// Raises the appropriate collection changed event to indicate a connection was added

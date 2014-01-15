@@ -173,6 +173,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
+        /// Gets that clear is required on save
+        /// </summary>
+        protected override bool RequiresClearOnSave
+        {
+            get { return true; }
+            set { return; }
+        }
+
+        /// <summary>
         /// Gets whether the active connections graph is closed
         /// </summary>
         public bool IsClosed { get; private set; }
