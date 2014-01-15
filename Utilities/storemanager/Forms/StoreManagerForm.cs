@@ -1779,20 +1779,18 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             var rtb = this.rtbSparqlQuery;
 
-            if (!_codeFormatInProgress)
+            if (_codeFormatInProgress) return;
+            try
             {
-                try
-                {
-                    rtb.Text = ReGenerateRtbText(rtb.Text);
-                }
-                finally
-                {
-                    _codeFormatInProgress = false;
-                }
+                rtb.Text = ReformatText(rtb.Text);
+            }
+            finally
+            {
+                _codeFormatInProgress = false;
             }
         }
 
-        private string ReGenerateRtbText(string text)
+        private string ReformatText(string text)
         {
             _codeFormatInProgress = true;
             string[] currentText = Regex.Split(text, "\r?\n");
@@ -1836,7 +1834,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 for (int lvl = 0; lvl < indentLevel; lvl++)
                 {
-                    space += " ".PadLeft(8);
+                    space += " ".PadLeft(2);
                 }
             }
 
