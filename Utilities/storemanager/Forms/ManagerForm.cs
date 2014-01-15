@@ -63,13 +63,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
 
             //Enable UTF-8 BOM Output if relevant
-            Options.UseBomForUtf8 = false;
-            if (Settings.Default.UseUtf8Bom)
-            {
-                this.mnuUseUtf8Bom.Checked = true;
-                Options.UseBomForUtf8 = true;
-            }
-            this.mnuShowStartPage.Checked = Settings.Default.ShowStartPage;
+            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
 
             //Ensure Configuration Loader has known required Object Factorires registered
             ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
@@ -636,13 +630,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.AddFavouriteConnection(connection);
         }
 
-        private void mnuUseUtf8Bom_Click(object sender, EventArgs e)
-        {
-            Options.UseBomForUtf8 = this.mnuUseUtf8Bom.Checked;
-            Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
-            Settings.Default.Save();
-        }
-
         private void mnuAbout_Click(object sender, EventArgs e)
         {
             AboutForm about = new AboutForm();
@@ -705,12 +692,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             this.AddRecentConnection(connection);
         }
 
-        private void mnuShowStartPage_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
-            Settings.Default.Save();
-        }
-
         private void mnuStartPage_Click(object sender, EventArgs e)
         {
             StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
@@ -728,25 +709,15 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             manageConnectionsForm.Show();
         }
 
-        private void wordWrapQueryToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuOptions_Click(object sender, EventArgs e)
         {
-            Settings.Default.EditorWordWrap = this.mnuWordWrapQuery.Checked;
-            Settings.Default.Save();
-            this.UpdateEditors();
-        }
+            // Show options dialogue
+            OptionsDialogue dialogue = new OptionsDialogue();
+            dialogue.MdiParent = this;
+            dialogue.Show();
 
-        private void mnuShowQueryUrls_Click(object sender, EventArgs e)
-        {
-            Settings.Default.EditorDetectUrls = this.mnuShowQueryUrls.Checked;
-            Settings.Default.Save();
-            this.UpdateEditors();
-        }
-
-        private void mnuShowQueryHighLighting_Click(object sender, EventArgs e)
-        {
-            Settings.Default.EditorHighlighting = this.mnuShowQueryHighLighting.Checked;
-            Settings.Default.Save();
-            this.UpdateEditors();
+            // Want to apply updated editor options when the dialogue is closed
+            dialogue.Closed += (o, args) => this.UpdateEditors();
         }
 
         private void UpdateEditors()

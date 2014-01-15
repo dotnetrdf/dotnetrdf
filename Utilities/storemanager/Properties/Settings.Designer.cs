@@ -137,18 +137,6 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool EditorDetectUrls {
-            get {
-                return ((bool)(this["EditorDetectUrls"]));
-            }
-            set {
-                this["EditorDetectUrls"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool EditorHighlighting {
             get {
                 return ((bool)(this["EditorHighlighting"]));
@@ -167,6 +155,18 @@ namespace VDS.RDF.Utilities.StoreManager.Properties {
             }
             set {
                 this["EditorWordWrap"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EditorDetectUrls {
+            get {
+                return ((bool)(this["EditorDetectUrls"]));
+            }
+            set {
+                this["EditorDetectUrls"] = value;
             }
         }
     }
