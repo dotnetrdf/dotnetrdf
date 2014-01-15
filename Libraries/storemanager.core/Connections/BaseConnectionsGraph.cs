@@ -174,6 +174,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     ConnectionInstancePool.Add(connection);
                 }
                 this._connections.Add(connection);
+                connection.PropertyChanged += this._handler;
             }
         }
 

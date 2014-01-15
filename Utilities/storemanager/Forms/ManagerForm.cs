@@ -372,9 +372,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
         }
 
-        private bool PromptRestoreConnections()
+        private void PromptRestoreConnections()
         {
-            if (this.ActiveConnections == null) return false;
+            if (this.ActiveConnections == null) return;
             if (Settings.Default.PromptRestoreActiveConnections)
             {
                 if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
@@ -386,7 +386,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         switch (result)
                         {
                             case DialogResult.Cancel:
-                                return true;
+                                return;
                             case DialogResult.Yes:
                                 Settings.Default.RestoreActiveConnections = true;
                                 this.ActiveConnections.Close();
@@ -397,7 +397,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                                 break;
                         }
                         Settings.Default.Save();
-                        return false;
+                        return;
                     }
                     catch (Exception ex)
                     {
@@ -417,7 +417,6 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 this.ActiveConnections.Clear();
             }
-            return false;
         }
 
         private void RestoreConnections()
@@ -499,7 +498,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             {
                 childForm.Close();
             }
-            this.Close();
+            Application.Exit();
         }
 
         private void mnuCascade_Click(object sender, EventArgs e)
