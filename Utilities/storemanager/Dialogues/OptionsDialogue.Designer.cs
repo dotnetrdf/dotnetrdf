@@ -222,7 +222,7 @@
             // 
             // numMaxRecentConnections
             // 
-            this.numMaxRecentConnections.Location = new System.Drawing.Point(223, 69);
+            this.numMaxRecentConnections.Location = new System.Drawing.Point(314, 69);
             this.numMaxRecentConnections.Maximum = new decimal(new int[] {
             9,
             0,
@@ -247,9 +247,9 @@
             this.lblMaxRecentConnections.AutoSize = true;
             this.lblMaxRecentConnections.Location = new System.Drawing.Point(4, 71);
             this.lblMaxRecentConnections.Name = "lblMaxRecentConnections";
-            this.lblMaxRecentConnections.Size = new System.Drawing.Size(215, 13);
+            this.lblMaxRecentConnections.Size = new System.Drawing.Size(304, 13);
             this.lblMaxRecentConnections.TabIndex = 4;
-            this.lblMaxRecentConnections.Text = "Maximum Recent Connections to remember:";
+            this.lblMaxRecentConnections.Text = "Maximum Recent Connections to remember (applies on restart):";
             // 
             // numPreviewSize
             // 

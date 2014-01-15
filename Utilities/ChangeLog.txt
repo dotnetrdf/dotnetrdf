@@ -38,6 +38,12 @@ SparqlGUI
 
 StoreManager
 - Assorted user interface improvements (TOOLS-390)
+ - Limited query syntax highlighting
+ - Query word wrapping
+ - Query reformatting
+ - Better management of multiple query results
+ - Entity Query Generation tool
+ - New Options dialogue
 - Split Stardog connection definitions into 1.x and 2.x
 - Improved how Recent and Favourite Connections are managed (TOOLS-377)
 - Ensure that the New Connection window does not clip some options (TOOLS-377)

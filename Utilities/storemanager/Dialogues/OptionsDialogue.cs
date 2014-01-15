@@ -22,6 +22,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             this.chkPromptRestoreActiveConnections.Checked = Settings.Default.PromptRestoreActiveConnections;
             this.chkShowStartPage.Checked = Settings.Default.ShowStartPage;
             this.chkUtf8Bom.Checked = Settings.Default.UseUtf8Bom;
+            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
 
             this.numMaxRecentConnections.Value = Settings.Default.MaxRecentConnections;
             this.numPreviewSize.Value = Settings.Default.PreviewSize;
@@ -37,6 +38,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             Settings.Default.PromptRestoreActiveConnections = this.chkPromptRestoreActiveConnections.Checked;
             Settings.Default.ShowStartPage = this.chkShowStartPage.Checked;
             Settings.Default.UseUtf8Bom = this.chkUtf8Bom.Checked;
+            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
 
             Settings.Default.MaxRecentConnections = (int) this.numMaxRecentConnections.Value;
             Settings.Default.PreviewSize = (int) this.numPreviewSize.Value;
