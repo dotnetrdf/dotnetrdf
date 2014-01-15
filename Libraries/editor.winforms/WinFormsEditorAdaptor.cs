@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         {
             try
             {
-                this.Apply(options as VisualOptions<FontFamily, Color>);
+                this.Apply(options as VisualOptions<Font, Color>);
             }
             catch
             {
@@ -71,26 +71,34 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         /// Applies visual options to the editor
         /// </summary>
         /// <param name="options">Visual Options</param>
-        public void Apply(VisualOptions<FontFamily, Color> options)
+        public void Apply(VisualOptions<Font, Color> options)
         {
             if (options == null) return;
 
-            //this.Control.Options.EnableEmailHyperlinks = options.EnableClickableUris;
-            //this.Control.Options.EnableHyperlinks = options.EnableClickableUris;
+            this.Control.BeginUpdate();
+            int initialSelectionStart = this.SelectionStart;
+            int initialSelectionLength = this.SelectionLength;
+            this.Control.DetectUrls = options.EnableClickableUris;
 
-            //if (options.FontFace != null)
-            //{
-            //    this.Control.FontFamily = options.FontFace;
-            //}
-            //this.Control.FontSize = options.FontSize;
-            //this.Control.Foreground = new SolidColorBrush(options.Foreground);
-            //this.Control.Background = new SolidColorBrush(options.Background);
+            this.Control.SelectAll();
+
+            Font finalFont = new Font(options.FontFace != null ? options.FontFace.FontFamily : this.Control.Font.FontFamily, (float) options.FontSize, FontStyle.Regular);
+            this.Control.Font = finalFont;
+            this.Control.SelectionFont = options.FontFace;
+            this.Control.ForeColor = options.Foreground;
+            this.Control.SelectionColor = options.Foreground;
+            this.Control.BackColor = options.Background;
+            this.Control.SelectionBackColor = options.Background;
 
             this.ShowLineNumbers = options.ShowLineNumbers;
             this.ShowSpaces = options.ShowSpaces;
             this.ShowTabs = options.ShowTabs;
             this.ShowEndOfLine = options.ShowEndOfLine;
             this.WordWrap = options.WordWrap;
+
+            this.Control.SelectionStart = initialSelectionStart;
+            this.Control.SelectionLength = initialSelectionLength;
+            this.Control.EndUpdate();
         }
 
         #region State
