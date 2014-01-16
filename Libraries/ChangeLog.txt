@@ -5,8 +5,6 @@ Change Log
 1.0.3
 -----
 
-Added
-
 Changed
 - Bug Fixes
  - Fix a bug in how Sesame connections load the default graph
@@ -17,14 +15,14 @@ Changed
  - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
  - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
  - Fix a bug in translating and evaluating complex property paths (CORE-395)
+- Dependencies
+ - Bumped Json.Net to 5.0.8
 - Documentation
  - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
 - Query
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
 - Storage
  - Add native SPARQL Update support to StardogV2Connector (CORE-376)
-
-Removed
 
 1.0.2
 -----

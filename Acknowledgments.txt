@@ -102,3 +102,4 @@ improvements in the code:
  - Maximillien Bronnimann
  - Tony Lootens
  - Austin Barton
+ - Eugen F
