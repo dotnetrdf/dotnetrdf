@@ -68,8 +68,16 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         if (edit.ShowDialog() == DialogResult.OK)
                         {
                             connection = edit.Connection;
-                            Program.MainForm.ShowStoreManagerForm(connection);
-                            this.Close();
+                            try
+                            {
+                                connection.Open();
+                                Program.MainForm.ShowStoreManagerForm(connection);
+                                this.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(string.Format(Resources.StartPage_Open_Error_Text, connection.Name, ex.Message), Resources.ConnectionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                     else
@@ -137,7 +145,15 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             EditConnectionForm edit = new EditConnectionForm(connection, false);
             if (edit.ShowDialog() != DialogResult.OK) return;
             connection = edit.Connection;
-            Program.MainForm.ShowStoreManagerForm(connection);
+            try
+            {
+                connection.Open();
+                Program.MainForm.ShowStoreManagerForm(connection);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format(Resources.StartPage_Open_Error_Text, connection.Name, ex.Message), Resources.ConnectionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             //Add to Recent Connections
             Program.MainForm.AddRecentConnection(connection);

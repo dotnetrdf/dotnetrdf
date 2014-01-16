@@ -529,6 +529,7 @@ namespace VDS.RDF.Storage
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
             INode loadMode = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+            INode skipParsing = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySkipParsing));
 
             //Basic information
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
@@ -537,6 +538,7 @@ namespace VDS.RDF.Storage
 
             //Serialize Load Mode
             context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(this._mode.ToString())));
+            context.Graph.Assert(new Triple(manager, skipParsing, this._skipLocalParsing.ToLiteral(context.Graph)));
 
             //Query Endpoint
             if (this._endpoint is IConfigurationSerializable)
