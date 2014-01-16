@@ -92,6 +92,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         }
 
         /// <summary>
+        /// Gets/Sets whether local parsing of queries should be skipped
+        /// </summary>
+        [Connection(DisplayName = "Skip Local Query and Update Parsing?", DisplayOrder = 4, Type = ConnectionSettingType.Boolean, PopulateFrom = ConfigurationLoader.PropertySkipParsing),
+         DefaultValue(false)]
+        public bool SkipLocalParsing { get; set; }
+
+        /// <summary>
         /// Opens the connection
         /// </summary>
         /// <returns></returns>
