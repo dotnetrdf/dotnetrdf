@@ -16,6 +16,7 @@ Changed
  - URILoader.Load() can sometimes swallow exceptions (CORE-391)
  - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
  - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
+ - Fix a bug in translating and evaluating complex property paths (CORE-395)
 - Documentation
  - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
 - Query
