@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._virtualCount;
+                return (_virtualCount==-1 ? this.Count : this._virtualCount);
             }
             internal set
             {
