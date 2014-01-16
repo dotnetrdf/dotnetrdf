@@ -25,6 +25,7 @@ rdfEditor (Not available under Mono)
 rdfOptStats
    
 rdfQuery
+- Several SPARQL query bugs fixed (CORE-386, CORE-393, CORE-395)
 
 rdfServer
 
@@ -35,6 +36,7 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
+- Several SPARQL query bugs fixed (CORE-386, CORE-393, CORE-395)
 
 StoreManager
 - Assorted user interface improvements (TOOLS-390)
@@ -45,6 +47,9 @@ StoreManager
  - Entity Query Generation tool
  - New Options dialogue
 - Split Stardog connection definitions into 1.x and 2.x
+- Support native Update for Stardog 2.x connections (CORE-376)
 - Improved how Recent and Favourite Connections are managed (TOOLS-377)
 - Ensure that the New Connection window does not clip some options (TOOLS-377)
 - Support saving and restoring active connections between sessions (TOOLS-377)
+- Allow disabling of Local Parsing for SPARQL connections (TOOLS-392)
+- Bug fixes to Fuseki and Sesame support (CORE-394)
