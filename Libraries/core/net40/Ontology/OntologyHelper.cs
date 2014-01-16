@@ -72,6 +72,7 @@ namespace VDS.RDF.Ontology
         public const String RdfsClass = NamespaceMapper.RDFS + "Class",
                             OwlClass = NamespaceMapper.OWL + "Class",
                             RdfsProperty = NamespaceMapper.RDF + "Property",
+                            RdfsResource = NamespaceMapper.RDF + "Resource",
                             OwlObjectProperty = NamespaceMapper.OWL + "ObjectProperty",
                             OwlDatatypeProperty = NamespaceMapper.OWL + "DatatypeProperty",
                             OwlAnnotationProperty = NamespaceMapper.OWL + "AnnotationProperty",
