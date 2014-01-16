@@ -1,4 +1,29 @@
-﻿using System;
+﻿/*
+dotNetRDF is free and open source software licensed under the MIT License
+
+-----------------------------------------------------------------------------
+
+Copyright (c) 2009-2012 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +37,10 @@ using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
+using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Update;
+using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin
 {
@@ -20,106 +49,103 @@ namespace VDS.RDF.Query.Spin
     /// </summary>
     public static class SpinSyntax
     {
-        public const String SpinNamespace = "http://spinrdf.org/spin#";
-        public const String SpinSparqlSyntaxNamespace = "http://spinrdf.org/sp#";
-
-        public const String SpinClassAggregation = SpinSparqlSyntaxNamespace + "Aggregation",
-                            SpinClassAltPath = SpinSparqlSyntaxNamespace + "AltPath",
-                            SpinClassAsc = SpinSparqlSyntaxNamespace + "Asc",
-                            SpinClassAsk = SpinSparqlSyntaxNamespace + "Ask",
-                            SpinClassAvg = SpinSparqlSyntaxNamespace + "Avg",
-                            SpinClassCommand = SpinSparqlSyntaxNamespace + "Command",
-                            SpinClassConstruct = SpinSparqlSyntaxNamespace + "Construct",
-                            SpinClassCount = SpinSparqlSyntaxNamespace + "Count",
-                            SpinClassDelete = SpinSparqlSyntaxNamespace + "Delete",
-                            SpinClassDesc = SpinSparqlSyntaxNamespace + "Desc",
-                            SpinClassElement = SpinSparqlSyntaxNamespace + "Element",
+        /* These are alredy defined as Nodes in the vocabulary namespace
+        public const String SpinClassAggregation = SP.NS_URI + "Aggregation",
+                            SpinClassAltPath = SP.NS_URI + "AltPath",
+                            SpinClassAsc = SP.NS_URI + "Asc",
+                            SpinClassAsk = SP.NS_URI + "Ask",
+                            SpinClassAvg = SP.NS_URI + "Avg",
+                            SpinClassCommand = SP.NS_URI + "Command",
+                            SpinClassConstruct = SP.NS_URI + "Construct",
+                            SpinClassCount = SP.NS_URI + "Count",
+                            SpinClassDelete = SP.NS_URI + "Delete",
+                            SpinClassDesc = SP.NS_URI + "Desc",
+                            SpinClassElement = SP.NS_URI + "Element",
                             SpinClassElementGroup = SpinClassElement + "Group",
                             SpinClassElementList = SpinClassElement + "List",
-                            SpinClassExists = SpinSparqlSyntaxNamespace + "Exists",
-                            SpinClassFilter = SpinSparqlSyntaxNamespace + "Filter",
-                            SpinClassInsert = SpinSparqlSyntaxNamespace + "Insert",
-                            SpinClassLet = SpinSparqlSyntaxNamespace + "Let",
-                            SpinClassMax = SpinSparqlSyntaxNamespace + "Max",
-                            SpinClassMin = SpinSparqlSyntaxNamespace + "Min",
-                            SpinClassMinus = SpinSparqlSyntaxNamespace + "Minus",
-                            SpinClassModify = SpinSparqlSyntaxNamespace + "Modify",
-                            SpinClassModPath = SpinSparqlSyntaxNamespace + "ModPath",
-                            SpinClassNamedGraph = SpinSparqlSyntaxNamespace + "NamedGraph",
-                            SpinClassNotExists = SpinSparqlSyntaxNamespace + "NotExists",
-                            SpinClassOptional = SpinSparqlSyntaxNamespace + "Optional",
-                            SpinClassOrderByCondition = SpinSparqlSyntaxNamespace + "OrderByCondition",
-                            SpinClassPath = SpinSparqlSyntaxNamespace + "Path",
-                            SpinClassQuery = SpinSparqlSyntaxNamespace + "Query",
-                            SpinClassReversePath = SpinSparqlSyntaxNamespace + "ReversePath",
-                            SpinClassSelect = SpinSparqlSyntaxNamespace + "Select",
-                            SpinClassSeqPath = SpinSparqlSyntaxNamespace + "SeqPath",
-                            SpinClassService = SpinSparqlSyntaxNamespace + "Service",
-                            SpinClassSubQuery = SpinSparqlSyntaxNamespace + "SubQuery",
-                            SpinClassSum = SpinSparqlSyntaxNamespace + "Sum",
-                            SpinClassSystemClass = SpinSparqlSyntaxNamespace + "SystemClass",
-                            SpinClassTriple = SpinSparqlSyntaxNamespace + "Triple",
+                            SpinClassExists = SP.NS_URI + "Exists",
+                            SpinClassFilter = SP.NS_URI + "Filter",
+                            SpinClassInsert = SP.NS_URI + "Insert",
+                            SpinClassLet = SP.NS_URI + "Let",
+                            SpinClassMax = SP.NS_URI + "Max",
+                            SpinClassMin = SP.NS_URI + "Min",
+                            SpinClassMinus = SP.NS_URI + "Minus",
+                            SpinClassModify = SP.NS_URI + "Modify",
+                            SpinClassModPath = SP.NS_URI + "ModPath",
+                            SpinClassNamedGraph = SP.NS_URI + "NamedGraph",
+                            SpinClassNotExists = SP.NS_URI + "NotExists",
+                            SpinClassOptional = SP.NS_URI + "Optional",
+                            SpinClassOrderByCondition = SP.NS_URI + "OrderByCondition",
+                            SpinClassPath = SP.NS_URI + "Path",
+                            SpinClassQuery = SP.NS_URI + "Query",
+                            SpinClassReversePath = SP.NS_URI + "ReversePath",
+                            SpinClassSelect = SP.NS_URI + "Select",
+                            SpinClassSeqPath = SP.NS_URI + "SeqPath",
+                            SpinClassService = SP.NS_URI + "Service",
+                            SpinClassSubQuery = SP.NS_URI + "SubQuery",
+                            SpinClassSum = SP.NS_URI + "Sum",
+                            SpinClassSystemClass = SP.NS_URI + "SystemClass",
+                            SpinClassTriple = SP.NS_URI + "Triple",
                             SpinClassTriplePath = SpinClassTriple + "Path",
                             SpinClassTriplePattern = SpinClassTriple + "Pattern",
                             SpinClassTripleTemplate = SpinClassTriple + "Template",
-                            SpinClassTuple = SpinSparqlSyntaxNamespace + "Tuple",
-                            SpinClassUnion = SpinSparqlSyntaxNamespace + "Union",
-                            SpinClassVariable = SpinSparqlSyntaxNamespace + "Variable";
+                            SpinClassTuple = SP.NS_URI + "Tuple",
+                            SpinClassUnion = SP.NS_URI + "Union",
+                            SpinClassVariable = SP.NS_URI + "Variable";
 
-        public const String SpinPropertyArgument = SpinSparqlSyntaxNamespace + "arg",
+        public const String SpinPropertyArgument = SP.NS_URI + "arg",
                             SpinPropertyArgument1 = SpinPropertyArgument + "1",
                             SpinPropertyArgument2 = SpinPropertyArgument + "2",
                             SpinPropertyArgument3 = SpinPropertyArgument + "3",
                             SpinPropertyArgument4 = SpinPropertyArgument + "4",
-                            SpinPropertyAs = SpinSparqlSyntaxNamespace + "as",
-                            SpinPropertyDeletePattern  = SpinSparqlSyntaxNamespace + "deletePattern",
-                            SpinPropertyDistinct = SpinSparqlSyntaxNamespace + "distinct",
-                            SpinPropertyElements = SpinSparqlSyntaxNamespace + "elements",
-                            SpinPropertyExpression = SpinSparqlSyntaxNamespace + "expression",
-                            SpinPropertyFrom = SpinSparqlSyntaxNamespace + "from",
-                            SpinPropertyFromNamed = SpinSparqlSyntaxNamespace + "fromNamed",
-                            SpinPropertyGraphIri = SpinSparqlSyntaxNamespace + "graphIRI",
-                            SpinPropertyGraphNameNode = SpinSparqlSyntaxNamespace + "graphNameNode",
-                            SpinPropertyGroupBy = SpinSparqlSyntaxNamespace + "groupBy",
-                            SpinPropertyHaving = SpinSparqlSyntaxNamespace + "having",
-                            SpinPropertyInsertPattern = SpinSparqlSyntaxNamespace + "insertPattern",
-                            SpinPropertyLimit = SpinSparqlSyntaxNamespace + "limit",
-                            SpinPropertyModMax = SpinSparqlSyntaxNamespace + "modMax",
-                            SpinPropertyModMin = SpinSparqlSyntaxNamespace + "modMin",
-                            SpinPropertyObject = SpinSparqlSyntaxNamespace + "object",
-                            SpinPropertyOffset = SpinSparqlSyntaxNamespace + "offset",
-                            SpinPropertyOrderBy = SpinSparqlSyntaxNamespace + "orderBy",
-                            SpinPropertyPath = SpinSparqlSyntaxNamespace + "path",
+                            SpinPropertyAs = SP.NS_URI + "as",
+                            SpinPropertyDeletePattern  = SP.NS_URI + "deletePattern",
+                            SpinPropertyDistinct = SP.NS_URI + "distinct",
+                            SpinPropertyElements = SP.NS_URI + "elements",
+                            SpinPropertyExpression = SP.NS_URI + "expression",
+                            SpinPropertyFrom = SP.NS_URI + "from",
+                            SpinPropertyFromNamed = SP.NS_URI + "fromNamed",
+                            SpinPropertyGraphIri = SP.NS_URI + "graphIRI",
+                            SpinPropertyGraphNameNode = SP.NS_URI + "graphNameNode",
+                            SpinPropertyGroupBy = SP.NS_URI + "groupBy",
+                            SpinPropertyHaving = SP.NS_URI + "having",
+                            SpinPropertyInsertPattern = SP.NS_URI + "insertPattern",
+                            SpinPropertyLimit = SP.NS_URI + "limit",
+                            SpinPropertyModMax = SP.NS_URI + "modMax",
+                            SpinPropertyModMin = SP.NS_URI + "modMin",
+                            SpinPropertyObject = SP.NS_URI + "object",
+                            SpinPropertyOffset = SP.NS_URI + "offset",
+                            SpinPropertyOrderBy = SP.NS_URI + "orderBy",
+                            SpinPropertyPath = SP.NS_URI + "path",
                             SpinPropertyPath1 = SpinPropertyPath + "1",
                             SpinPropertyPath2 = SpinPropertyPath + "2",
-                            SpinPropertyPredicate = SpinSparqlSyntaxNamespace + "predicate",
-                            SpinPropertyQuery = SpinSparqlSyntaxNamespace + "query",
-                            SpinPropertyReduced = SpinSparqlSyntaxNamespace + "reduced",
-                            SpinPropertyResultNodes = SpinSparqlSyntaxNamespace + "resultNodes",
-                            SpinPropertyResultVariables = SpinSparqlSyntaxNamespace + "resultVariables",
-                            SpinPropertyServiceUri = SpinSparqlSyntaxNamespace + "serviceURI",
-                            SpinPropertySubject = SpinSparqlSyntaxNamespace + "subject",
-                            SpinPropertySubPath = SpinSparqlSyntaxNamespace + "subPath",
-                            SpinPropertySystemProperty = SpinSparqlSyntaxNamespace + "systemProperty",
-                            SpinPropertyTemplates = SpinSparqlSyntaxNamespace + "templates",
-                            SpinPropertyText = SpinSparqlSyntaxNamespace + "text",
-                            SpinPropertyVariable = SpinSparqlSyntaxNamespace + "variable",
-                            SpinPropertyVariableName = SpinSparqlSyntaxNamespace + "varName",
-                            SpinPropertyWhere = SpinSparqlSyntaxNamespace + "where";
-
+                            SpinPropertyPredicate = SP.NS_URI + "predicate",
+                            SpinPropertyQuery = SP.NS_URI + "query",
+                            SpinPropertyReduced = SP.NS_URI + "reduced",
+                            SpinPropertyResultNodes = SP.NS_URI + "resultNodes",
+                            SpinPropertyResultVariables = SP.NS_URI + "resultVariables",
+                            SpinPropertyServiceUri = SP.NS_URI + "serviceURI",
+                            SpinPropertySubject = SP.NS_URI + "subject",
+                            SpinPropertySubPath = SP.NS_URI + "subPath",
+                            SpinPropertySystemProperty = SP.NS_URI + "systemProperty",
+                            SpinPropertyTemplates = SP.NS_URI + "templates",
+                            SpinPropertyText = SP.NS_URI + "text",
+                            SpinPropertyVariable = SP.NS_URI + "variable",
+                            SpinPropertyVariableName = SP.NS_URI + "SP.varName",
+                            SpinPropertyWhere = SP.NS_URI + "where";
+        */
         public static IGraph ToSpinRdf(this SparqlQuery query)
         {
             Graph g = new Graph();
-            g.NamespaceMap.AddNamespace("spin", new Uri(SpinNamespace));
-            g.NamespaceMap.AddNamespace("sp", new Uri(SpinSparqlSyntaxNamespace));
+            g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
+            g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
             query.ToSpinRdf(g);
-            return g;            
+            return g;
         }
 
         internal static INode ToSpinRdf(this SparqlQuery query, IGraph g)
         {
             INode root = g.CreateBlankNode();
-            INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             SpinVariableTable varTable = new SpinVariableTable(g);
 
             //Ensure the Query is optimised so that all the elements are placed in Graph Patterns
@@ -129,11 +155,11 @@ namespace VDS.RDF.Query.Spin
             switch (query.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    g.Assert(root, rdfType, g.CreateUriNode(new Uri(SpinClassAsk)));
+                    g.Assert(root, RDF.type, SP.ClassAsk);
                     break;
 
                 case SparqlQueryType.Construct:
-                    g.Assert(root, rdfType, g.CreateUriNode(new Uri(SpinClassConstruct)));
+                    g.Assert(root, RDF.type, SP.ClassConstruct);
                     break;
 
                 case SparqlQueryType.Describe:
@@ -146,14 +172,14 @@ namespace VDS.RDF.Query.Spin
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    g.Assert(root, rdfType, g.CreateUriNode(new Uri(SpinClassSelect)));
+                    g.Assert(root, RDF.type, SP.ClassSelect);
                     break;
                 case SparqlQueryType.Unknown:
                     throw new SpinException("Unknown query types cannot be represented in SPIN RDF Syntax");
             }
 
             //Process the WHERE clause
-            g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyWhere)), query.RootGraphPattern.ToSpinRdf(g, varTable));
+            g.Assert(root, SP.PropertyWhere, query.RootGraphPattern.ToSpinRdf(g, varTable));
 
             //Add Variables for a SELECT query
             if (SparqlSpecsHelper.IsSelectQuery(query.QueryType))
@@ -165,47 +191,42 @@ namespace VDS.RDF.Query.Spin
                     case SparqlQueryType.SelectReduced:
                         //Only Add Variables for SELECTs with explicit variable lists
                         INode vars = g.CreateBlankNode();
-                        g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyResultVariables)), vars);
+                        g.Assert(root, SP.PropertyResultVariables, vars);
 
                         //Get the Variables and generate the Nodes we'll use to help represent them
                         List<SparqlVariable> vs = query.Variables.Where(v => v.IsResultVariable).ToList();
-                        INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-                        INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-                        INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
-                        INode varClass = g.CreateUriNode(new Uri(SpinClassVariable));
-                        INode varName = g.CreateUriNode(new Uri(SpinPropertyVariableName));
-                        INode varAs = g.CreateUriNode(new Uri(SpinPropertyAs));
-                        INode expr = g.CreateUriNode(new Uri(SpinPropertyExpression));
 
                         for (int i = 0; i < vs.Count; i++)
                         {
                             SparqlVariable v = vs[i];
                             INode var = varTable[v.Name];
-                            g.Assert(vars, rdfFirst, var);
+                            g.Assert(vars, RDF.first, var);
                             if (i < vs.Count - 1)
                             {
                                 INode temp = g.CreateBlankNode();
-                                g.Assert(vars, rdfRest, temp);
+                                g.Assert(vars, RDF.rest, temp);
                                 vars = temp;
                             }
-                            //g.Assert(var, rdfType, varClass);
+                            // TODO check that was commented before modifications
+                            //g.Assert(var, RDF.type, SP.Variable);
 
                             if (v.IsAggregate)
                             {
-                                g.Assert(var, varAs, g.CreateLiteralNode(v.Name, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
-                                g.Assert(var, expr, v.Aggregate.ToSpinRdf(g, varTable));
+                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
+                                g.Assert(var, SP.PropertyExpression, v.Aggregate.ToSpinRdf(g, varTable));
                             }
                             else if (v.IsProjection)
                             {
-                                g.Assert(var, varAs, g.CreateLiteralNode(v.Name, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
-                                g.Assert(var, expr, v.Projection.ToSpinRdf(g, varTable));
+                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
+                                //TODO check for this
+                                //g.Assert(var, SP.expression, v.Projection.ToSpinRdf(query.RootGraphPattern, g, varTable));
                             }
                             else
                             {
-                                g.Assert(var, varName, g.CreateLiteralNode(v.Name, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
+                                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
                             }
                         }
-                        g.Assert(vars, rdfRest, rdfNil);
+                        g.Assert(vars, RDF.rest, RDF.nil);
 
                         break;
                 }
@@ -218,11 +239,11 @@ namespace VDS.RDF.Query.Spin
                 {
                     case SparqlQueryType.SelectAllDistinct:
                     case SparqlQueryType.SelectDistinct:
-                        g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyDistinct)), (true).ToLiteral(g));
+                        g.Assert(root, SP.PropertyDistinct, RDFUtil.TRUE);
                         break;
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectReduced:
-                        g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyReduced)), (true).ToLiteral(g));
+                        g.Assert(root, SP.PropertyReduced, RDFUtil.TRUE);
                         break;
                 }
             }
@@ -230,17 +251,17 @@ namespace VDS.RDF.Query.Spin
             //Add LIMIT and/or OFFSET if appropriate
             if (query.Limit > -1)
             {
-                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyLimit)), query.Limit.ToLiteral(g));
+                g.Assert(root, SP.PropertyLimit, query.Limit.ToLiteral(g));
             }
             if (query.Offset > 0)
             {
-                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyOffset)), query.Offset.ToLiteral(g));
+                g.Assert(root, SP.PropertyOffset, query.Offset.ToLiteral(g));
             }
 
             //Add ORDER BY if appropriate
             if (query.OrderBy != null)
             {
-                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyOrderBy)), query.OrderBy.ToSpinRdf(g, varTable));
+                g.Assert(root, SP.PropertyOrderBy, query.OrderBy.ToSpinRdf(g, varTable));
             }
 
             //Add GROUP BY and HAVING
@@ -256,6 +277,176 @@ namespace VDS.RDF.Query.Spin
             return root;
         }
 
+
+        public static IGraph ToSpinRdf(this SparqlUpdateCommand query)
+        {
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
+            g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
+            query.ToSpinRdf(g);
+            return g;
+        }
+
+        // TODO handle the defaultGraph case 
+        internal static INode ToSpinRdf(this SparqlUpdateCommand query, IGraph g)
+        {
+            INode root = g.CreateBlankNode();
+            SpinVariableTable varTable = new SpinVariableTable(g);
+
+            switch (query.CommandType)
+            {
+                case SparqlUpdateCommandType.Add:
+                    g.Assert(root, RDF.type, SP.ClassAdd);
+                    AddCommand add = (AddCommand)query;
+                    if (add.SourceUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(add.SourceUri));
+                    }
+                    if (add.DestinationUri == null)
+                    {
+                        g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(add.DestinationUri));
+                    }
+                    break;
+                case SparqlUpdateCommandType.Clear:
+                    g.Assert(root, RDF.type, SP.ClassClear);
+                    if (((ClearCommand)query).TargetUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((ClearCommand)query).TargetUri));
+                    }
+                    break;
+                case SparqlUpdateCommandType.Copy:
+                    g.Assert(root, RDF.type, SP.ClassCopy);
+                    CopyCommand copy = (CopyCommand)query;
+                    if (copy.SourceUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(copy.SourceUri));
+                    }
+                    if (copy.DestinationUri == null)
+                    {
+                        g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(copy.DestinationUri));
+                    }                
+                    break;
+                case SparqlUpdateCommandType.Create:
+                    g.Assert(root, RDF.type, SP.ClassCreate);
+                    CreateCommand create = (CreateCommand)query;
+                    if (create.TargetUri== null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(create.TargetUri));
+                    }
+                    break;
+                case SparqlUpdateCommandType.Delete:
+                    return new ModifyCommand(((DeleteCommand)query).DeletePattern, null, ((DeleteCommand)query).WherePattern).ToSpinRdf(g);
+                case SparqlUpdateCommandType.DeleteData:
+                    g.Assert(root, RDF.type, SP.ClassDeleteData);
+                    g.Assert(root, SP.PropertyData, ((DeleteDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
+                    break;
+                case SparqlUpdateCommandType.Drop:
+                    g.Assert(root, RDF.type, SP.ClassDrop);
+                    DropCommand drop = (DropCommand)query;
+                    if (drop.TargetUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(drop.TargetUri));
+                    }
+                    g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((DropCommand)query).TargetUri));
+                    break;
+                case SparqlUpdateCommandType.Insert:
+                    return new ModifyCommand(null, ((InsertCommand)query).InsertPattern, ((DeleteCommand)query).WherePattern).ToSpinRdf(g);
+                case SparqlUpdateCommandType.InsertData:
+                    g.Assert(root, RDF.type, SP.ClassInsertData);
+                    g.Assert(root, SP.PropertyData, ((InsertDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
+                    break;
+                case SparqlUpdateCommandType.Load:
+                    g.Assert(root, RDF.type, SP.ClassLoad);
+                    LoadCommand load = (LoadCommand)query;
+                    if (load.SourceUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(load.SourceUri));
+                    }
+                    if (load.TargetUri == null)
+                    {
+                        g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(load.TargetUri));
+                    }                
+                    break;
+                case SparqlUpdateCommandType.Modify:
+                    g.Assert(root, RDF.type, SP.ClassModify);
+                    ModifyCommand modify = (ModifyCommand)query;
+                    if (modify.GraphUri != null)
+                    {
+                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(modify.GraphUri));
+                    }
+                    if (modify.DeletePattern != null)
+                    {
+                        g.Assert(root, SP.PropertyDeletePattern, modify.DeletePattern.ToSpinRdf(g, varTable));
+                    }
+                    if (modify.InsertPattern != null)
+                    {
+                        g.Assert(root, SP.PropertyInsertPattern, modify.InsertPattern.ToSpinRdf(g, varTable));
+                    }
+                    g.Assert(root, SP.PropertyWhere, modify.WherePattern.ToSpinRdf(g, varTable));
+                    break;
+                case SparqlUpdateCommandType.Move:
+                    g.Assert(root, RDF.type, SP.ClassMove);
+                    MoveCommand move = (MoveCommand)query;
+                    if (move.SourceUri == null)
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(move.SourceUri));
+                    }
+                    if (move.DestinationUri == null)
+                    {
+                        g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
+                    }
+                    else
+                    {
+                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(move.DestinationUri));
+                    }                
+                    break;
+                case SparqlUpdateCommandType.Unknown:
+                    throw new NotSupportedException("Unkown SPARQL update query encountered " + query.ToString());
+                    break;
+            }
+            return root;
+        }
+
         internal static INode ToSpinRdf(this GraphPattern pattern, IGraph g, SpinVariableTable varTable)
         {
             INode p = g.CreateBlankNode();
@@ -263,63 +454,60 @@ namespace VDS.RDF.Query.Spin
 
             if (pattern.IsExists)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassExists))));
+                g.Assert(p, RDF.type, SP.ClassExists);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsGraph)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassNamedGraph))));
+                g.Assert(p, RDF.type, SP.ClassNamedGraph);
                 INode gSpec = pattern.GraphSpecifier.ToSpinRdf(g, varTable);
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyGraphNameNode)), gSpec));
+                //g.Assert(p, SP.named, gSpec); // TODO check which is right
+                g.Assert(p, SP.PropertyGraphNameNode, gSpec); // TODO check which is right
                 if (gSpec is IBlankNode)
                 {
-                    g.Assert(new Triple(gSpec, g.CreateUriNode(new Uri(SpinPropertyVariableName)), pattern.GraphSpecifier.Value.Substring(1).ToLiteral(g)));
+                    g.Assert(gSpec, SP.PropertyVarName, pattern.GraphSpecifier.Value.Substring(1).ToLiteral(g));
                 }
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsMinus)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassMinus))));
+                g.Assert(p, RDF.type, SP.ClassMinus);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsNotExists)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassNotExists))));
+                g.Assert(p, RDF.type, SP.ClassNotExists);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsOptional)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassOptional))));
+                g.Assert(p, RDF.type, SP.ClassOptional);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsService)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassService))));
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyServiceUri)), pattern.GraphSpecifier.ToSpinRdf(g, varTable)));
+                g.Assert(p, RDF.type, SP.ClassService);
+                g.Assert(p, SP.PropertyServiceURI, pattern.GraphSpecifier.ToSpinRdf(g, varTable));
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsSubQuery)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassSubQuery))));
+                g.Assert(p, RDF.type, SP.ClassSubQuery);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyQuery)), ps));
+                g.Assert(p, SP.PropertyQuery, ps);
             }
             else if (pattern.IsUnion)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassUnion))));
+                g.Assert(p, RDF.type, SP.ClassUnion);
                 ps = g.CreateBlankNode();
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
+                g.Assert(p, SP.PropertyElements, ps);
             }
-
-            INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
 
             if (!pattern.IsEmpty)
             {
@@ -329,20 +517,20 @@ namespace VDS.RDF.Query.Spin
                     INode current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                     if (i == 0)
                     {
-                        g.Assert(ps, rdfFirst, current);
+                        g.Assert(ps, RDF.first, current);
                     }
                     else
                     {
                         INode temp = g.CreateBlankNode();
-                        g.Assert(ps, rdfRest, temp);
-                        g.Assert(temp, rdfFirst, current);
+                        g.Assert(ps, RDF.rest, temp);
+                        g.Assert(temp, RDF.first, current);
                         ps = temp;
                     }
                 }
 
                 if (!pattern.HasChildGraphPatterns)
                 {
-                    g.Assert(ps, rdfRest, rdfNil);
+                    g.Assert(ps, RDF.rest, RDF.nil);
                 }
             }
 
@@ -354,17 +542,17 @@ namespace VDS.RDF.Query.Spin
                     INode current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
                     if (pattern.TriplePatterns.Count == 0 && i == 0)
                     {
-                        g.Assert(ps, rdfFirst, current);
+                        g.Assert(ps, RDF.first, current);
                     }
                     else
                     {
                         INode temp = g.CreateBlankNode();
-                        g.Assert(ps, rdfRest, temp);
-                        g.Assert(temp, rdfFirst, current);
+                        g.Assert(ps, RDF.rest, temp);
+                        g.Assert(temp, RDF.first, current);
                         ps = temp;
                     }
                 }
-                g.Assert(ps, rdfRest, rdfNil);
+                g.Assert(ps, RDF.rest, RDF.nil);
             }
 
             return p;
@@ -373,41 +561,40 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this ITriplePattern pattern, IGraph g, SpinVariableTable varTable)
         {
             INode p = g.CreateBlankNode();
-            INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
             if (pattern is TriplePattern)
             {
                 TriplePattern tp = (TriplePattern)pattern;
-                //g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassTriplePattern)));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertySubject)), tp.Subject.ToSpinRdf(g, varTable));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyPredicate)), tp.Predicate.ToSpinRdf(g, varTable));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyObject)), tp.Object.ToSpinRdf(g, varTable));
+                g.Assert(p, RDF.type, SP.ClassTriplePattern);
+                g.Assert(p, SP.PropertySubject, tp.Subject.ToSpinRdf(g, varTable));
+                g.Assert(p, SP.PropertyPredicate, tp.Predicate.ToSpinRdf(g, varTable));
+                g.Assert(p, SP.PropertyObject, tp.Object.ToSpinRdf(g, varTable));
             }
             else if (pattern is SubQueryPattern)
             {
-                g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassSubQuery)));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyQuery)), ((SubQueryPattern)pattern).SubQuery.ToSpinRdf(g));
+                g.Assert(p, RDF.type, SP.ClassSubQuery);
+                g.Assert(p, SP.PropertyQuery, ((SubQueryPattern)pattern).SubQuery.ToSpinRdf(g));
             }
             else if (pattern is FilterPattern)
             {
-                g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassFilter)));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyExpression)), ((FilterPattern)pattern).Filter.Expression.ToSpinRdf(g, varTable));
+                g.Assert(p, RDF.type, SP.ClassFilter);
+                g.Assert(p, SP.PropertyExpression, ((FilterPattern)pattern).Filter.Expression.ToSpinRdf(g, varTable));
             }
             else if (pattern is PropertyPathPattern)
             {
                 PropertyPathPattern pp = (PropertyPathPattern)pattern;
-                g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassTriplePath)));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertySubject)), pp.Subject.ToSpinRdf(g, varTable));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyPath)), pp.Path.ToSpinRdf(g, varTable));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyObject)), pp.Object.ToSpinRdf(g, varTable));
+                g.Assert(p, RDF.type, SP.ClassTriplePath);
+                g.Assert(p, SP.PropertySubject, pp.Subject.ToSpinRdf(g, varTable));
+                g.Assert(p, SP.PropertyPath, pp.Path.ToSpinRdf(g, varTable));
+                g.Assert(p, SP.PropertyObject, pp.Object.ToSpinRdf(g, varTable));
             }
             else if (pattern is LetPattern)
             {
-                g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassLet)));
+                g.Assert(p, RDF.type, SP.ClassLet);
                 INode var = g.CreateBlankNode();
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyVariable)), var);
-                g.Assert(var, g.CreateUriNode(new Uri(SpinPropertyVariableName)), g.CreateLiteralNode(((LetPattern)pattern).VariableName, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
-                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyExpression)), ((LetPattern)pattern).AssignExpression.ToSpinRdf(g, varTable));
+                g.Assert(p, SP.PropertyVariable, var);
+                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.string_.Uri));
+                g.Assert(p, SP.PropertyExpression, ((LetPattern)pattern).AssignExpression.ToSpinRdf(g, varTable));
             }
             else if (pattern is BindPattern)
             {
@@ -420,7 +607,6 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this PatternItem item, IGraph g, SpinVariableTable varTable)
         {
             INode i;
-            IUriNode varName = g.CreateUriNode(new Uri(SpinPropertyVariableName));
 
             if (item is NodeMatchPattern)
             {
@@ -428,9 +614,9 @@ namespace VDS.RDF.Query.Spin
             }
             else if (item is VariablePattern)
             {
-                //i = g.CreateUriNode(new Uri(SpinNamespace + "_" + item.VariableName));
+                //i = g.CreateUriNode(new Uri(SPIN.NS_URI + "_" + item.VariableName));
                 i = varTable[item.VariableName];
-                g.Assert(i, varName, g.CreateLiteralNode(item.VariableName, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
+                g.Assert(i, SP.PropertyVarName, g.CreateLiteralNode(item.VariableName, XSD.string_.Uri));
             }
             else if (item is BlankNodePattern)
             {
@@ -438,7 +624,7 @@ namespace VDS.RDF.Query.Spin
             }
             else if (item is FixedBlankNodePattern)
             {
-                throw new SpinException("Skolem Blank Node syntax extension is not representable in SPIN RDF Syntax");
+                throw new SpinException("Skolem Blank INode syntax extension is not representable in SPIN RDF Syntax");
             }
             else
             {
@@ -451,27 +637,26 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this ISparqlAggregate aggregate, IGraph g, SpinVariableTable varTable)
         {
             INode a = g.CreateBlankNode();
-            INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
             if (aggregate is AverageAggregate)
             {
-                g.Assert(a, rdfType, g.CreateUriNode(new Uri(SpinClassAvg)));
+                g.Assert(a, RDF.type, SP.ClassAvg);
             }
             else if (aggregate is CountAggregate)
             {
-                g.Assert(a, rdfType, g.CreateUriNode(new Uri(SpinClassCount)));
+                g.Assert(a, RDF.type, SP.ClassCount);
             }
             else if (aggregate is MaxAggregate)
             {
-                g.Assert(a, rdfType, g.CreateUriNode(new Uri(SpinClassMax)));
+                g.Assert(a, RDF.type, SP.ClassMax);
             }
             else if (aggregate is MinAggregate)
             {
-                g.Assert(a, rdfType, g.CreateUriNode(new Uri(SpinClassMin)));
+                g.Assert(a, RDF.type, SP.ClassMin);
             }
             else if (aggregate is SumAggregate)
             {
-                g.Assert(a, rdfType, g.CreateUriNode(new Uri(SpinClassSum)));
+                g.Assert(a, RDF.type, SP.ClassSum);
             }
             else if (aggregate is GroupConcatAggregate)
             {
@@ -482,7 +667,7 @@ namespace VDS.RDF.Query.Spin
                 throw new SpinException("SAMPLE aggregates are not yet representable in SPIN RDF Syntax");
             }
 
-            g.Assert(a, g.CreateUriNode(new Uri(SpinPropertyExpression)), aggregate.Expression.ToSpinRdf(g, varTable));
+            g.Assert(a, SP.PropertyExpression, aggregate.Expression.ToSpinRdf(g, varTable));
 
             return a;
         }
@@ -490,7 +675,6 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this ISparqlExpression expr, IGraph g, SpinVariableTable varTable)
         {
             INode e = g.CreateBlankNode();
-
             return e;
         }
 
@@ -498,10 +682,6 @@ namespace VDS.RDF.Query.Spin
         {
             INode o = g.CreateBlankNode();
 
-            INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
-            INode expr = g.CreateUriNode(new Uri(SpinPropertyExpression));
             INode item = null;
 
             do
@@ -513,15 +693,15 @@ namespace VDS.RDF.Query.Spin
                 else
                 {
                     INode temp = g.CreateBlankNode();
-                    g.Assert(o, rdfRest, temp);
+                    g.Assert(o, RDF.rest, temp);
                     item = temp;
                     ordering = ordering.Child;
                 }
-                g.Assert(o, rdfFirst, item);
+                g.Assert(o, RDF.first, item);
                 //TODO: Convert Expression
-                //g.Assert(o, expr, ordering.E
+                //g.Assert(o, SP.expression, ordering.E
             } while (ordering.Child != null);
-            
+
             return o;
         }
 

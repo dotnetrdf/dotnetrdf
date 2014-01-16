@@ -248,292 +248,292 @@ sp:Variable a rdfs:Class;
             rdfs:comment "A variable mentioned in a Triple or expression. Variables are often blank nodes with the variable name stored in ts:name. Variables can also be supplied with a URI in which case the system will attempt to reuse the same variable instance across multiple query definitions.";
             rdfs:label "Variable"^^xsd:string;
             rdfs:subClassOf sp:SystemClass.
-sp:all a rdf:Property;
+sp:all a rdf:Resource;
        rdfs:comment "Used in DROP and CLEAR."^^xsd:string;
        rdfs:label "all"^^xsd:string;
        rdfs:range xsd:boolean;
        rdfs:subPropertyOf sp:systemProperty.
-sp:arg a rdf:Property;
+sp:arg a rdf:Resource;
        rdfs:comment "Abstract superproperty for the enumerated arg1, arg2 etc.";
        rdfs:label "arg"^^xsd:string.
-sp:arg1 a rdf:Property;
+sp:arg1 a rdf:Resource;
         rdfs:comment "The first argument of a function call.";
         rdfs:label "arg1"^^xsd:string;
         rdfs:subPropertyOf sp:arg.
-sp:arg2 a rdf:Property;
+sp:arg2 a rdf:Resource;
         rdfs:comment "The second argument of a function call.";
         rdfs:label "arg2"^^xsd:string;
         rdfs:subPropertyOf sp:arg.
-sp:arg3 a rdf:Property;
+sp:arg3 a rdf:Resource;
         rdfs:comment "The third argument of a function call.";
         rdfs:label "arg3"^^xsd:string;
         rdfs:subPropertyOf sp:arg.
-sp:arg4 a rdf:Property;
+sp:arg4 a rdf:Resource;
         rdfs:comment "The forth argument of a function call.";
         rdfs:label "arg4"^^xsd:string;
         rdfs:subPropertyOf sp:arg.
-sp:arg5 a rdf:Property;
+sp:arg5 a rdf:Resource;
         rdfs:comment "The fifth argument of a function call. Further arguments are not common in SPARQL, therefore no sp:arg6, etc are defined here. However, they can be created if needed.";
         rdfs:label "arg5"^^xsd:string;
         rdfs:subPropertyOf sp:arg.
-sp:as a rdf:Property;
+sp:as a rdf:Resource;
       rdfs:comment "Points to a Variable used in an AS statement such as COUNT aggregates.";
       rdfs:label "as"^^xsd:string;
       rdfs:range sp:Variable;
       rdfs:subPropertyOf sp:systemProperty.
-sp:bindings a rdf:Property;
+sp:bindings a rdf:Resource;
             rdfs:comment "The actual bindings of a sp:Values element."^^xsd:string;
             rdfs:domain sp:Values;
             rdfs:label "bindings"^^xsd:string;
             rdfs:range rdf:List;
             rdfs:subPropertyOf sp:systemProperty.
-sp:default a rdf:Property;
+sp:default a rdf:Resource;
            rdfs:comment "Used in DROP and CLEAR."^^xsd:string;
            rdfs:label "default"^^xsd:string;
            rdfs:range xsd:boolean;
            rdfs:subPropertyOf sp:systemProperty.
-sp:deletePattern a rdf:Property;
+sp:deletePattern a rdf:Resource;
                  rdfs:comment "Points to a list of sp:TripleTemplates and sp:NamedGraphs in a modify operation."^^xsd:string;
                  rdfs:domain sp:Update;
                  rdfs:label "delete pattern"^^xsd:string;
                  rdfs:range rdf:List;
                  rdfs:subPropertyOf sp:systemProperty.
-sp:distinct a rdf:Property;
+sp:distinct a rdf:Resource;
             rdfs:comment "A marker property to indicate that a Select query is of type SELECT DISTINCT.";
             rdfs:domain sp:Select;
             rdfs:label "distinct"^^xsd:string;
             rdfs:range xsd:boolean;
             rdfs:subPropertyOf sp:systemProperty.
-sp:document a rdf:Property;
+sp:document a rdf:Resource;
             rdfs:comment "The URI of the document to load using a LOAD Update operation."^^xsd:string;
             rdfs:domain sp:Load;
             rdfs:label "document"^^xsd:string;
             rdfs:range rdfs:Resource;
             rdfs:subPropertyOf sp:systemProperty.
-sp:elements a rdf:Property;
+sp:elements a rdf:Resource;
             rdfs:comment "Points to an ElementList, for example in an Optional element.";
             rdfs:label "elements"^^xsd:string;
             rdfs:range sp:ElementList;
             rdfs:subPropertyOf sp:systemProperty.
-sp:expression a rdf:Property;
+sp:expression a rdf:Resource;
               rdfs:comment "Points to an expression, for example in a Filter or Assignment.";
               rdfs:label "expression"^^xsd:string;
               rdfs:subPropertyOf sp:systemProperty.
-sp:from a rdf:Property;
+sp:from a rdf:Resource;
         rdfs:comment "Specifies an RDF Dataset used by a Query (FROM syntax in SPARQL). Values of this property must be URI resources.";
         rdfs:domain sp:Query;
         rdfs:label "from"^^xsd:string;
         rdfs:range rdfs:Resource;
         rdfs:subPropertyOf sp:systemProperty.
-sp:fromNamed a rdf:Property;
+sp:fromNamed a rdf:Resource;
              rdfs:comment "Specifies a named RDF Dataset used by a Query (FROM NAMED syntax in SPARQL). Values of this property must be URI resources.";
              rdfs:domain sp:Query;
              rdfs:label "from named"^^xsd:string;
              rdfs:range rdfs:Resource;
              rdfs:subPropertyOf sp:systemProperty.
-sp:graphIRI a rdf:Property;
+sp:graphIRI a rdf:Resource;
             rdfs:comment "Points to graph names (IRIs) in various sp:Update operations."^^xsd:string;
             rdfs:label "graph IRI"^^xsd:string;
             rdfs:range rdfs:Resource;
             rdfs:subPropertyOf sp:systemProperty.
-sp:graphNameNode a rdf:Property;
+sp:graphNameNode a rdf:Resource;
                  rdfs:comment "The name (URI or Variable) of a NamedGraph.";
                  rdfs:domain sp:NamedGraph;
                  rdfs:label "graph name node"^^xsd:string;
                  rdfs:range rdfs:Resource;
                  rdfs:subPropertyOf sp:systemProperty.
-sp:groupBy a rdf:Property;
+sp:groupBy a rdf:Resource;
            rdfs:comment "Points from a Query to the list of GROUP BY expressions.";
            rdfs:domain sp:Select;
            rdfs:label "group by"^^xsd:string;
            rdfs:range rdf:List;
            rdfs:subPropertyOf sp:systemProperty.
-sp:having a rdf:Property;
+sp:having a rdf:Resource;
           rdfs:comment "Points from a SELECT query to a list of HAVING expressions."^^xsd:string;
           rdfs:domain sp:Select;
           rdfs:label "having"^^xsd:string;
           rdfs:range rdf:List;
           rdfs:subPropertyOf sp:systemProperty.
-sp:insertPattern a rdf:Property;
+sp:insertPattern a rdf:Resource;
                  rdfs:comment "Points to a list of sp:TripleTemplates or sp:NamedGraphs in a modify command."^^xsd:string;
                  rdfs:domain sp:Modify;
                  rdfs:label "insert pattern"^^xsd:string;
                  rdfs:range rdf:List;
                  rdfs:subPropertyOf sp:systemProperty.
-sp:into a rdf:Property;
+sp:into a rdf:Resource;
         rdfs:comment "The (optional) target of a LOAD Update operation."^^xsd:string;
         rdfs:domain sp:Load;
         rdfs:label "into"^^xsd:string;
         rdfs:range rdfs:Resource;
         rdfs:subPropertyOf sp:systemProperty.
-sp:limit a rdf:Property;
+sp:limit a rdf:Resource;
          rdfs:comment "The LIMIT solution modifier of a Query.";
          rdfs:domain sp:Query;
          rdfs:label "limit"^^xsd:string;
          rdfs:range xsd:long;
          rdfs:subPropertyOf sp:systemProperty.
-sp:modMax a rdf:Property;
+sp:modMax a rdf:Resource;
           rdfs:domain sp:ModPath;
           rdfs:label "mod max"^^xsd:string;
           rdfs:range xsd:integer;
           rdfs:subPropertyOf sp:systemProperty.
-sp:modMin a rdf:Property;
+sp:modMin a rdf:Resource;
           rdfs:domain sp:ModPath;
           rdfs:label "mod min"^^xsd:string;
           rdfs:range xsd:integer;
           rdfs:subPropertyOf sp:systemProperty.
-sp:named a rdf:Property;
+sp:named a rdf:Resource;
          rdfs:comment "Used in DROP and CLEAR."^^xsd:string;
          rdfs:label "named"^^xsd:string;
          rdfs:range xsd:boolean;
          rdfs:subPropertyOf sp:systemProperty.
-sp:node a rdf:Property;
+sp:node a rdf:Resource;
         rdfs:domain sp:ReverseLinkPath;
         rdfs:label "node"^^xsd:string;
         rdfs:subPropertyOf sp:systemProperty.
-sp:object a rdf:Property;
-          rdfs:comment "An RDF Node or Variable describing the object of a triple.";
+sp:object a rdf:Resource;
+          rdfs:comment "An RDF INode or Variable describing the object of a triple.";
           rdfs:domain sp:Tuple;
           rdfs:label "object"^^xsd:string;
           rdfs:subPropertyOf sp:systemProperty.
-sp:offset a rdf:Property;
+sp:offset a rdf:Resource;
           rdfs:comment "The OFFSET solution modifier of a Query.";
           rdfs:domain sp:Query;
           rdfs:label "offset"^^xsd:string;
           rdfs:range xsd:long;
           rdfs:subPropertyOf sp:systemProperty.
-sp:orderBy a rdf:Property;
+sp:orderBy a rdf:Resource;
            rdfs:comment "Links a query with an ORDER BY clause where the values are rdf:List containing OrderByConditions or expressions. While the domain of this property is sp:Query, only Describe and Select queries can have values of it.";
            rdfs:domain sp:Query;
            rdfs:label "order by"^^xsd:string;
            rdfs:range rdf:List;
            rdfs:subPropertyOf sp:systemProperty.
-sp:path a rdf:Property;
+sp:path a rdf:Resource;
         rdfs:comment "Points from a TriplePath to its path.";
         rdfs:domain sp:TriplePath;
         rdfs:label "path"^^xsd:string;
         rdfs:range sp:Path;
         rdfs:subPropertyOf sp:systemProperty.
-sp:path1 a rdf:Property;
+sp:path1 a rdf:Resource;
          rdfs:comment "The first child path of a property path. Used by sp:AltPath and sp:SeqPath.";
          rdfs:label "path1"^^xsd:string;
          rdfs:range sp:Path;
          rdfs:subPropertyOf sp:systemProperty.
-sp:path2 a rdf:Property;
+sp:path2 a rdf:Resource;
          rdfs:comment "The second child path of a property path. Used by sp:AltPath and sp:SeqPath.";
          rdfs:label "path2"^^xsd:string;
          rdfs:range sp:Path;
          rdfs:subPropertyOf sp:systemProperty.
-sp:predicate a rdf:Property;
+sp:predicate a rdf:Resource;
              rdfs:comment "A resource or Variable describing the predicate of a triple.";
              rdfs:domain sp:Triple;
              rdfs:label "predicate"^^xsd:string;
              rdfs:range rdfs:Resource;
              rdfs:subPropertyOf sp:systemProperty.
-sp:query a rdf:Property;
+sp:query a rdf:Resource;
          rdfs:comment "Links a SubQuery resource with the nested Query."^^xsd:string;
          rdfs:domain sp:SubQuery;
          rdfs:label "query"^^xsd:string;
          rdfs:range sp:Query;
          rdfs:subPropertyOf sp:systemProperty.
-sp:reduced a rdf:Property;
+sp:reduced a rdf:Resource;
            rdfs:comment "A property with true to indicate that a Select query has a REDUCED flag.";
            rdfs:domain sp:Select;
            rdfs:label "reduced"^^xsd:string;
            rdfs:range xsd:boolean;
            rdfs:subPropertyOf sp:systemProperty.
-sp:resultNodes a rdf:Property;
+sp:resultNodes a rdf:Resource;
                rdfs:comment "Contains the result nodes (URI resources or Variables) of a Describe query.";
                rdfs:domain sp:Describe;
                rdfs:label "result nodes"^^xsd:string;
                rdfs:range rdf:List;
                rdfs:subPropertyOf sp:systemProperty.
-sp:resultVariables a rdf:Property;
+sp:resultVariables a rdf:Resource;
                    rdfs:comment "An rdf:List of variables that are returned by a Select query.";
                    rdfs:domain sp:Select;
                    rdfs:label "result variables"^^xsd:string;
                    rdfs:range rdf:List;
                    rdfs:subPropertyOf sp:systemProperty.
-sp:separator a rdf:Property;
+sp:separator a rdf:Resource;
              rdfs:comment """Stores the separator=\"...\" value of a GROUP_CONCAT (sp:GroupConcat) aggregation."""^^xsd:string;
              rdfs:domain sp:GroupConcat;
              rdfs:label "separator"^^xsd:string;
              rdfs:range xsd:string;
              rdfs:subPropertyOf sp:systemProperty.
-sp:serviceURI a rdf:Property;
+sp:serviceURI a rdf:Resource;
               rdfs:comment "Used by sp:Service to specify the URI of the SPARQL end point to invoke. Must point to a URI node."^^xsd:string;
               rdfs:domain sp:Service;
               rdfs:label "service URI"^^xsd:string;
               rdfs:range rdfs:Resource;
               rdfs:subPropertyOf sp:systemProperty.
-sp:silent a rdf:Property;
+sp:silent a rdf:Resource;
           rdfs:label "silent"^^xsd:string;
           rdfs:range xsd:boolean;
           rdfs:subPropertyOf sp:systemProperty.
-sp:subPath a rdf:Property;
+sp:subPath a rdf:Resource;
            rdfs:comment "The child path of a property path expression. This is used by ReversePath and ModPath.";
            rdfs:label "sub path"^^xsd:string;
            rdfs:subPropertyOf sp:systemProperty.
-sp:subject a rdf:Property;
+sp:subject a rdf:Resource;
            rdfs:comment "A resource or Variable describing the subject of a triple.";
            rdfs:domain sp:Tuple;
            rdfs:label "subject"^^xsd:string;
            rdfs:range rdfs:Resource;
            rdfs:subPropertyOf sp:systemProperty.
-sp:systemProperty a rdf:Property;
+sp:systemProperty a rdf:Resource;
                   rdfs:comment "An abstract base proprerty that groups together the SP system properties. Users typically don't need to see them anyway.";
                   rdfs:label "SP system property"^^xsd:string.
-sp:templates a rdf:Property;
+sp:templates a rdf:Resource;
              rdfs:comment "Points to a list of TripleTemplates that form the head of a Construct query.";
              rdfs:domain sp:Construct;
              rdfs:label "templates"^^xsd:string;
              rdfs:range rdf:List;
              rdfs:subPropertyOf sp:systemProperty.
-sp:text a rdf:Property;
+sp:text a rdf:Resource;
         rdfs:comment "Can be attached to sp:Queries to store a textual representation of the query. This can be useful for tools that do not have a complete SPIN Syntax parser available.";
         rdfs:label "text"^^xsd:string;
         rdfs:range xsd:string;
         rdfs:subPropertyOf sp:systemProperty.
-sp:using a rdf:Property;
+sp:using a rdf:Resource;
          rdfs:domain sp:Modify;
          rdfs:label "using"^^xsd:string;
          rdfs:range rdfs:Resource;
          rdfs:subPropertyOf sp:systemProperty.
-sp:usingNamed a rdf:Property;
+sp:usingNamed a rdf:Resource;
               rdfs:domain sp:Modify;
               rdfs:label "using named"^^xsd:string;
               rdfs:range rdfs:Resource;
               rdfs:subPropertyOf sp:systemProperty.
-sp:values a rdf:Property;
+sp:values a rdf:Resource;
           rdfs:comment "The VALUES block at the end of a query. The object may just be an untyped blank node, i.e. the sp:Values type triple is optional."^^xsd:string;
           rdfs:domain sp:Query;
           rdfs:label "values"^^xsd:string;
           rdfs:range sp:Values;
           rdfs:subPropertyOf sp:systemProperty.
-sp:varName a rdf:Property;
+sp:varName a rdf:Resource;
            rdfs:comment "The name of a Variable.";
            rdfs:domain sp:Variable;
            rdfs:label "varName"^^xsd:string;
            rdfs:range xsd:string;
            rdfs:subPropertyOf sp:systemProperty.
-sp:varNames a rdf:Property;
+sp:varNames a rdf:Resource;
             rdfs:comment "The names of the variables (xsd:strings) of the variables declared for a VALUES element."^^xsd:string;
             rdfs:domain sp:Values;
             rdfs:label "var names"^^xsd:string;
             rdfs:range rdf:List;
             rdfs:subPropertyOf sp:systemProperty.
-sp:variable a rdf:Property;
+sp:variable a rdf:Resource;
             rdfs:comment "The variable of a Bind element."^^xsd:string;
             rdfs:domain sp:Bind;
             rdfs:label "variable"^^xsd:string;
             rdfs:range sp:Variable;
             rdfs:subPropertyOf sp:systemProperty.
-sp:where a rdf:Property;
+sp:where a rdf:Resource;
          rdfs:comment "The WHERE clause of a Query.";
          rdfs:label "where"^^xsd:string;
          rdfs:range sp:ElementList;
          rdfs:subPropertyOf sp:systemProperty.
-sp:with a rdf:Property;
+sp:with a rdf:Resource;
         rdfs:domain sp:Modify;
         rdfs:label "with"^^xsd:string;
         rdfs:range rdfs:Resource;

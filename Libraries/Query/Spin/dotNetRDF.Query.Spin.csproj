@@ -32,6 +32,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +54,12 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -68,10 +75,279 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Aggregations.cs" />
+    <Compile Include="Core\SPINImports.cs" />
+    <Compile Include="org\topbraid\spin\arq\ARQFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\core\ContainsVarChecker.cs" />
+    <Compile Include="org\topbraid\spin\core\ObjectPropertiesGetter.cs" />
+    <Compile Include="org\topbraid\spin\model\IAbstractAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IAggregation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IAsk.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IBind.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ICommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ICommandWithWhere.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IConstruct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IDescribe.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IElementGroup.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IElementList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IExists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IFunctionCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IMinus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IModule.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IModuleCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\impl\AbstractAttributeImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\AbstractSPINResource.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\AggregationImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ArgumentImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\AskImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\AttributeImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\BindImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ConstructImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\DescribeImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ElementImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ElementListImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ExistsImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\FilterImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\FunctionCallImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\FunctionImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\MinusImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ModuleCallImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ModuleImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\NamedGraphImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\NotExistsImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\OptionalImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\QueryImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\SelectImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ServiceImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\SPINInstanceImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\SubQueryImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TemplateCallImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TemplateImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TripleImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TriplePathImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TriplePatternImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TripleTemplateImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\TupleImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\UnionImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\ValuesImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\impl\VariableImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\INamedGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\INotExists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IOptional.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ISelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ISolutionModifierQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ISPINInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ISpinQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ISubQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITemplateCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITriple.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITriplePath.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITriplePattern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\ITripleTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IUnion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IValues.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\IVariable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IPrintable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IContextualSparqlPrinter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\StringContextualSparqlPrinter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\QueryOrTemplateCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\SPINFactory.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IClear.cs" />
+    <Compile Include="org\topbraid\spin\model\update\ICreate.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IDelete.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IDeleteData.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IDeleteWhere.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IDrop.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IInsert.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IInsertData.cs" />
+    <Compile Include="org\topbraid\spin\model\update\ILoad.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IModify.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\ClearImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\CreateImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\DeleteDataImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\DeleteImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\DeleteWhereImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\DropImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\InsertDataImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\InsertImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\LoadImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\ModifyImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\impl\UpdateImpl.cs" />
+    <Compile Include="org\topbraid\spin\model\update\IUpdate.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\AbstractElementVisitor.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\AbstractExpressionVisitor.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\AbstractTriplesVisitor.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\ElementWalker.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\ElementWalkerWithDepth.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\ExpressionVisitors.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\ExpressionWalker.cs" />
+    <Compile Include="org\topbraid\spin\model\visitor\IElementVisitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\model\visitor\IExpressionVisitor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\util\ModulesUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\util\SPINExpressions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\util\SPINUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progress\NullProgressMonitor.cs" />
+    <Compile Include="Progress\IProgressMonitor.cs" />
+    <Compile Include="Progress\IRunnableWithProgress.cs" />
+    <Compile Include="Progress\SimpleProgressMonitor.cs" />
+    <Compile Include="SpinWrappedDataset.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Statistics\SPINStatistics.cs" />
+    <Compile Include="Statistics\ISPINStatisticsListener.cs" />
+    <Compile Include="Statistics\SPINStatisticsManager.cs" />
+    <Compile Include="org\topbraid\spin\system\ExtraPrefixes.cs" />
+    <Compile Include="org\topbraid\spin\system\SPINLabels.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\system\SPINModuleRegistry.cs" />
+    <Compile Include="org\topbraid\spin\vocabulary\ARG.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\RDFx.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SP.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SPIN.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SPINMAP.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SPL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SPR.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="org\topbraid\spin\vocabulary\SPRA.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpinProcessor.cs" />
+    <Compile Include="SpinSyntax.cs" />
+    <Compile Include="Util\InternalUris.cs" />
+    <Compile Include="Util\OnDemandGraph.cs" />
+    <Compile Include="Util\PrefixMappings.cs" />
+    <Compile Include="Util\Resource.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpinException.cs" />
-    <Compile Include="SpinSyntax.cs" />
     <Compile Include="SpinVariableTable.cs" />
+    <Compile Include="Uris.cs" />
+    <Compile Include="Util\QuerySolutionMap.cs" />
+    <Compile Include="Util\RDFUtil.cs" />
+    <Compile Include="Util\DatasetUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="spin-sparql-syntax.ttl" />
@@ -99,7 +375,16 @@
       <Name>dotNetRDF</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="dotNetRDF.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="org\topbraid\spin\constraints\" />
+    <Folder Include="org\topbraid\spin\model\print\" />
+    <Folder Include="Sparql\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
