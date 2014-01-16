@@ -85,13 +85,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             try
             {
-                String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                String sepChar = new String(new char[] {Path.DirectorySeparatorChar});
-                if (!appDataDir.EndsWith(sepChar)) appDataDir += sepChar;
-                appDataDir = Path.Combine(appDataDir, "dotNetRDF" + sepChar);
-                if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
-                appDataDir = Path.Combine(appDataDir, "Store Manager" + sepChar);
-                if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
+                String appDataDir = Program.GetApplicationDataDirectory();
                 String recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
                 String faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
                 String activeConnectionsFile = Path.Combine(appDataDir, "active.ttl");
@@ -666,32 +660,39 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         public void ShowStoreManagerForm(Connection connection)
         {
-            StoreManagerForm storeManagerForm = new StoreManagerForm(connection);
-            CrossThreadSetMdiParent(storeManagerForm, this);
-            CrossThreadShow(storeManagerForm);
+            try
+            {
+                StoreManagerForm storeManagerForm = new StoreManagerForm(connection);
+                CrossThreadSetMdiParent(storeManagerForm, this);
+                CrossThreadShow(storeManagerForm);
 
-            // Update Quick Jump Bar
-            ToolStripButton quickJumpButton = new ToolStripButton(connection.Name);
-            connection.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
-                {
-                    if (args.PropertyName.Equals("Name")) CrossThreadSetText(quickJumpButton, connection.Name);
-                    if (args.PropertyName.Equals("IsOpen") && !connection.IsOpen)
+                // Update Quick Jump Bar
+                ToolStripButton quickJumpButton = new ToolStripButton(connection.Name);
+                connection.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
-                        this.quickJumpBar.Items.Remove(quickJumpButton);
-                        if (this.quickJumpBar.Items.Count == 1) this.quickJumpBar.Visible = false;
-                    }
-                };
-            quickJumpButton.Click += delegate(object sender, EventArgs args)
-                {
-                    StoreManagerForm form = this.GetStoreManagerForm(connection);
-                    if (form == null) return;
-                    form.Show();
-                    form.Focus();
-                };
-            quickJumpBar.Items.Add(quickJumpButton);
-            this.quickJumpBar.Visible = true;
+                        if (args.PropertyName.Equals("Name")) CrossThreadSetText(quickJumpButton, connection.Name);
+                        if (args.PropertyName.Equals("IsOpen") && !connection.IsOpen)
+                        {
+                            this.quickJumpBar.Items.Remove(quickJumpButton);
+                            if (this.quickJumpBar.Items.Count == 1) this.quickJumpBar.Visible = false;
+                        }
+                    };
+                quickJumpButton.Click += delegate(object sender, EventArgs args)
+                    {
+                        StoreManagerForm form = this.GetStoreManagerForm(connection);
+                        if (form == null) return;
+                        form.Show();
+                        form.Focus();
+                    };
+                quickJumpBar.Items.Add(quickJumpButton);
+                this.quickJumpBar.Visible = true;
 
-            this.AddRecentConnection(connection);
+                this.AddRecentConnection(connection);
+            }
+            catch (Exception ex)
+            {
+                Program.HandleInternalError("Unable to display a Store Manager form for the connection " + connection.Name, ex);
+            }
         }
 
         private void mnuStartPage_Click(object sender, EventArgs e)
