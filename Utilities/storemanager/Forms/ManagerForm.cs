@@ -359,6 +359,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         if (editConn.ShowDialog() == DialogResult.OK)
                         {
                             connection = editConn.Connection;
+                            connection.Open();
                             this.ShowStoreManagerForm(connection);
 
                             this.Close();
@@ -654,6 +655,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     EditConnectionForm editConn = new EditConnectionForm(connection, true);
                     if (editConn.ShowDialog() == DialogResult.OK)
                     {
+                        editConn.Connection.Open();
                         ShowStoreManagerForm(editConn.Connection);
                     }
                     return;

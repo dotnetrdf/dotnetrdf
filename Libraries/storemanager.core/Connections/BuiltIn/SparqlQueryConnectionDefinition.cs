@@ -96,7 +96,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 endpoint.Proxy = this.GetProxy();
             }
-            return new SparqlConnector(endpoint, this.LoadMode);
+            SparqlConnector connector = new SparqlConnector(endpoint, this.LoadMode);
+            connector.SkipLocalParsing = this.SkipLocalParsing;
+            return connector;
         }
 
         /// <summary>
@@ -108,6 +110,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             SparqlQueryConnectionDefinition definition = new SparqlQueryConnectionDefinition();
             definition.EndpointUri = this.EndpointUri;
             definition.DefaultGraphUri = this.DefaultGraphUri;
+            definition.LoadMode = this.LoadMode;
+            definition.SkipLocalParsing = this.SkipLocalParsing;
             definition.ProxyPassword = this.ProxyPassword;
             definition.ProxyUsername = this.ProxyUsername;
             definition.ProxyServer = this.ProxyServer;

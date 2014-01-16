@@ -351,6 +351,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, false);
                     if (editConnection.ShowDialog() != DialogResult.OK) continue;
+                    connection.Open();
                     Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
                 catch (Exception ex)
@@ -369,6 +370,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                 {
                     EditConnectionForm editConnection = new EditConnectionForm(connection, true);
                     if (editConnection.ShowDialog() != DialogResult.OK) continue;
+                    connection.Open();
                     Program.MainForm.ShowStoreManagerForm(editConnection.Connection);
                 }
                 catch (Exception ex)

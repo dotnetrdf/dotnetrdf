@@ -112,7 +112,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
                 endpoint.Proxy = proxy;
                 updateEndpoint.Proxy = proxy;
             }
-            return new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
+            ReadWriteSparqlConnector connector = new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
+            connector.SkipLocalParsing = this.SkipLocalParsing;
+            return connector;
         }
 
         /// <summary>
@@ -125,6 +127,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             definition.QueryEndpointUri = this.QueryEndpointUri;
             definition.QueryDefaultGraphUri = this.QueryDefaultGraphUri;
             definition.UpdateEndpointUri = this.UpdateEndpointUri;
+            definition.LoadMode = this.LoadMode;
+            definition.SkipLocalParsing = this.SkipLocalParsing;
             definition.ProxyPassword = this.ProxyPassword;
             definition.ProxyUsername = this.ProxyUsername;
             definition.ProxyServer = this.ProxyServer;

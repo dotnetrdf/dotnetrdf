@@ -16,10 +16,12 @@ namespace VDS.RDF.GUI.WinForms
 
         public void BeginUpdate()
         {
+            if (this.IsDisposed) return;
             SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
         }
         public void EndUpdate()
         {
+            if (this.IsDisposed) return;
             SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
             this.Invalidate();
         }
