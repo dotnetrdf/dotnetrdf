@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Algebra
                             if (!bothTerms)
                             {
                                 if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
-                                if (objVar != null && !objVar.Equals(subjVar)) s.Add(objVar, path[0]);
+                                if (objVar != null) s.Add(objVar, path[0]);
                             }
                             //Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Algebra
                             if (!bothTerms)
                             {
                                 if (subjVar != null) s.Add(subjVar, path[0]);
-                                if (objVar != null && !objVar.Equals(subjVar)) s.Add(objVar, path[path.Count - 1]);
+                                if (objVar != null) s.Add(objVar, path[path.Count - 1]);
                             }
                             //Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
