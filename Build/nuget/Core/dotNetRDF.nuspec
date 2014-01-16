@@ -51,8 +51,10 @@
       </group>
     </dependencies>
     <releaseNotes>
-     - Ensure Portable Class Library builds are included in package
-     - Fix a possible OOM when reading large RDF/XML files
+     - Fix several bugs with complex SPARQL evaluation
+     - Fix several bugs related to communicating with Sesame, Fuseki and SPARQL Graph Store protocol based stores
+     - Fix a bug with UriLoader swallowing exceptions resulting in unexpected empty graphs
+     - Native SPARQL Update support for Stardog 2.x connections
     </releaseNotes>
   </metadata>
 </package>
