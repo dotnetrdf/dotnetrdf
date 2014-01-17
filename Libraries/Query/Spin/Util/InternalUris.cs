@@ -40,6 +40,7 @@ namespace VDS.RDF.Query.Spin.Util
         public readonly static IUriNode PropertyReplacesGraph = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "replacesGraph"));
         public readonly static IUriNode PropertyUpdatesDataset = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "updatesDataset"));
         public readonly static IUriNode PropertyUpdatesGraph = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "updatesGraph"));
+        public readonly static IUriNode PropertyRemovesGraph = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "removesGraph"));
 
         public readonly static IUriNode PropertyResets = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "resets"));
 

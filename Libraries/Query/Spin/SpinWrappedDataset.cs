@@ -12,11 +12,9 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Query.Spin
 {
     /// <summary>
-    /// Provides SPIN capabilities for a Dataset over a StorageProvider that is not SPIN-aware.
-    /// Do we really need to miplement the ISparqlDataset interface since we do not really want to use it anyway ?
-    /// TODO creates a schema for RDFModel
-    /// TODO determine whether the graphs modifications should be handled by the External dataset or here. methinks it should be the responsibility of the external dataset...
-    ///     if this is the case, do we really need this class ?
+    /// Provides SPIN capabilities for a Dataset over a IUpdatableStorageProvider that is not SPIN-aware.
+    /// TODO creates a RDFS/OWL schema for SPINRuntime classes
+    /// TODO handle the DEFAULT graph special case.
     /// </summary>
     public class SpinWrappedDataset : ISparqlDataset
     {
@@ -39,8 +37,6 @@ namespace VDS.RDF.Query.Spin
         internal IUpdateableStorage _storage;
 
         private SpinProcessor _spinProcessor = new SpinProcessor();
-
-        private bool _useNativeTransactions = false;
 
         private QueryMode _queryExecutionMode = QueryMode.UserQuerying;
 
@@ -81,10 +77,6 @@ namespace VDS.RDF.Query.Spin
 
         internal void Initialise()
         {
-            if (_storage is ITransactionalStorage || _storage is IAsyncTransactionalStorage)
-            {
-                _useNativeTransactions = true;
-            }
             _datasetNode = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassDataset)
                 .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassUpdateControlledDataset))
                 .Select(t => t.Subject).FirstOrDefault();
@@ -113,18 +105,6 @@ namespace VDS.RDF.Query.Spin
             set
             {
                 _spinProcessor = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the underlying storage supports transactions or not.
-        /// This parameter is used to know to which extend update requests should be rewritten to not interfer with normal storage usage.
-        /// </summary>
-        internal bool UseNativeTransactions
-        {
-            get
-            {
-                return _useNativeTransactions;
             }
         }
 
@@ -182,7 +162,12 @@ namespace VDS.RDF.Query.Spin
             {
                 return _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph)
                     .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SPIN.ClassLibraryOntology))
-                    .Select(t => _underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, t.Subject).Any() ? null : Resource.Get(t.Subject, _spinProcessor));
+                    .Select(t => t.Subject)
+                    .Where(g =>
+                        !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, g)
+                        .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, g)).Any())
+                    .Select(g => Resource.Get(g, spinProcessor))
+                    .ToList();
             }
             private set { }
         }
@@ -192,8 +177,12 @@ namespace VDS.RDF.Query.Spin
             get
             {
                 List<Resource> graphs = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph)
-                    .Select(t => _underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, t.Subject).Any() ? null : Resource.Get(t.Subject, _spinProcessor))
-                   .ToList();
+                    .Select(t => t.Subject)
+                    .Where(g =>
+                        !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, g)
+                        .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, g)).Any())
+                    .Select(g => Resource.Get(g, spinProcessor))
+                    .ToList();
                 graphs.Add(Resource.Get(_datasetNode, _spinProcessor));
                 return graphs;
             }
@@ -258,23 +247,13 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public bool AddGraph(IGraph g)
         {
-            // TODO handle the default graph Uri;
-            Uri graphUri = g.BaseUri;
-            INode graphNode = RDFUtil.CreateUriNode(graphUri);
+            Uri originalGraphUri = g.BaseUri;
+            IResource graphNode = Resource.Get(RDFUtil.CreateUriNode(originalGraphUri), spinProcessor);
 
-            Triple t = _underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyUpdatesGraph, graphNode).Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, graphNode)).FirstOrDefault();
-            if (t != null)
-            {
-                g.BaseUri = ((IUriNode)t.Subject).Uri;
-                _storage.SaveGraph(g);
-                g.BaseUri = graphUri;
-            }
-            else
-            {
-                _storage.SaveGraph(g);
-                _underlyingRDFDataset.Assert(graphNode, RDF.type, SD.ClassGraph);
-                _underlyingRDFDataset.Assert(graphNode, SPINRuntime.PropertyReplacesGraph, graphNode); // TODO will this work ?
-            }
+            IResource updateControlledGraph = this.CreateUpdateControlledGraph(graphNode, SPINRuntime.PropertyReplacesGraph);
+            g.BaseUri = updateControlledGraph.Uri();
+            _storage.SaveGraph(g);
+            g.BaseUri = originalGraphUri;
             return true;
         }
 
@@ -286,17 +265,18 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public bool RemoveGraph(Uri graphUri)
         {
-            INode graphNode = RDFUtil.CreateUriNode(graphUri);
-            // TODO handle this case on transactional storage
-            if (_underlyingRDFDataset.ContainsTriple(new Triple(graphNode, RDF.type, SD.ClassGraph)))
+            IResource graphNode = Resource.Get(RDFUtil.CreateUriNode(graphUri), spinProcessor);
+            if (HasGraph(graphUri))
             {
-                _underlyingRDFDataset.Retract(graphNode, RDF.type, SD.ClassGraph);
-                Triple t = _underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyUpdatesGraph, graphNode).Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, graphNode)).FirstOrDefault();
-                if (t != null)
+                this.CreateUpdateControlledDataset();
+                // TODO mark the graph as removed instead of removing it from the RDF dataset so it will be removed from the original dataset when flushing
+                IResource updateControlledGraph = this.GetUpdateControlledGraph(graphNode);
+                if (updateControlledGraph != null)
                 {
-                    _underlyingRDFDataset.Retract(t);
-                    _storage.DeleteGraph(((IUriNode)t.Subject).Uri);
+                    _storage.DeleteGraph(updateControlledGraph.Uri());
+                    _underlyingRDFDataset.Retract(_underlyingRDFDataset.GetTriplesWithSubject(updateControlledGraph.getSource()).ToList());
                 }
+                _underlyingRDFDataset.Assert(_datasetNode, SPINRuntime.PropertyRemovesGraph, graphNode.getSource());
                 return true;
             }
             return false;
@@ -309,7 +289,7 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public bool HasGraph(Uri graphUri)
         {
-            return _underlyingRDFDataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph));
+            return _underlyingRDFDataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph)) && !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, RDFUtil.CreateUriNode(graphUri)).Any();
         }
 
         public IEnumerable<IGraph> Graphs
@@ -339,7 +319,7 @@ namespace VDS.RDF.Query.Spin
         {
             IGraph graph = this[graphUri];
             // TODO add handlers to monitor changes to the graph;
-            if (!_underlyingRDFDataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph)))
+            if (!HasGraph(graphUri))
             {
                 _underlyingRDFDataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph);
             }
@@ -356,9 +336,9 @@ namespace VDS.RDF.Query.Spin
             this.PersistDataset();
             IContextualSparqlPrinter sparqlFactory = new StringContextualSparqlPrinter(this);
             spinQuery.print(sparqlFactory);
-            if (_queryExecutionMode == QueryMode.SpinInferencing && spinQuery is IConstruct)
+            if (_queryExecutionMode != QueryMode.UserQuerying && spinQuery is IConstruct)
             {
-                ExecuteUpdate("");//TODO if the query is a CONSTRUCT query wrap it in a corresponding INSERT else return the query result normally
+                ExecuteUpdate(""); //TODO if the query is a CONSTRUCT query wrap it in a corresponding INSERT else return the query result normally
                 return null; // TODO is this correct or should we return the execution graph ?
             }
             return _storage.Query(sparqlFactory.ToString());
@@ -366,7 +346,12 @@ namespace VDS.RDF.Query.Spin
 
         public void ExecuteUpdate(string sparqlUpdateCommandSet)
         {
-            foreach (IUpdate update in _spinProcessor.BuildUpdate(sparqlUpdateCommandSet))
+            ExecuteUpdate(_spinProcessor.BuildUpdate(sparqlUpdateCommandSet));
+        }
+
+        internal void ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
+        {
+            foreach (IUpdate update in spinUpdateCommandSet)
             {
                 ExecuteUpdate(update);
             }
@@ -374,9 +359,7 @@ namespace VDS.RDF.Query.Spin
 
         internal void ExecuteUpdate(IUpdate spinQuery)
         {
-            this.CreateUpdateControlledDataset(); // TODO ?remove this, it should be finally handled directly through the IContextualSparqlPrinter usage?
             this.PersistDataset();
-            // TODO create a temporary SpinEval.ExecutionGraph in the dataset to monitor property deletions and new RDF.type triples...
             StringContextualSparqlPrinter sparqlFactory = new StringContextualSparqlPrinter(this);
             spinQuery.print(sparqlFactory);
             _storage.Update(sparqlFactory.getString());
@@ -399,12 +382,12 @@ namespace VDS.RDF.Query.Spin
 
         public void Flush()
         {
-            throw new NotImplementedException("TODO");
+            this.ApplyChanges();
         }
 
         public void Discard()
         {
-            throw new NotImplementedException("TODO");
+            this.DiscardChanges();
         }
 
         #endregion

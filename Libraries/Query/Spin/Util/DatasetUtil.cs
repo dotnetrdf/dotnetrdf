@@ -42,6 +42,7 @@ namespace VDS.RDF.Query.Spin.Util
     /// <summary>
     /// This class contains extensions for the SpinWrappedDataset class. 
     /// These extensions are provided to handle the Dataset manipulation and updates made while processing queries and SPIN Rules/Constraints.
+    /// TODO Should we create additional EntailmentGraph for each graph in the dataset ?
     /// </summary>
     internal static class DatasetUtil
     {
@@ -52,12 +53,9 @@ namespace VDS.RDF.Query.Spin.Util
 
         static DatasetUtil()
         {
-            isSystemGraphQuery = new SparqlParameterizedString("ASK { @graph a ?type . FILTER ( ?type IN (@dataset,@transaction,@execution,@evaluation,@inference)) }");
+            isSystemGraphQuery = new SparqlParameterizedString("ASK { @graph a ?type . FILTER ( ?type IN (@dataset,@updateControlledDataset) ) }");
             isSystemGraphQuery.SetParameter("dataset", SD.ClassDataset);
-            isSystemGraphQuery.SetParameter("transaction", SPINRuntime.ClassUpdateControlledDataset);
-            isSystemGraphQuery.SetParameter("execution", SPINRuntime.ClassExecutionGraph);
-            isSystemGraphQuery.SetParameter("evaluation", SPINRuntime.ClassFunctionEvalResultSet);
-            isSystemGraphQuery.SetParameter("inference", SPINRuntime.ClassInferenceGraph);
+            isSystemGraphQuery.SetParameter("updateControlledDataset", SPINRuntime.ClassUpdateControlledDataset);
 
             isSPINLibraryQuery = new SparqlParameterizedString("ASK { @graph a @library }");
             isSPINLibraryQuery.SetParameter("library", SPIN.ClassLibraryOntology);
@@ -65,9 +63,8 @@ namespace VDS.RDF.Query.Spin.Util
 
         #region Datasets creation and loading
 
-        //TODO make it an extension ?
         [MethodImpl(MethodImplOptions.Synchronized)]
-        internal static IGraph ConstructDataset(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null)
+        private static IGraph ConstructDataset(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null)
         {
             IGraph dataset = new Graph();
             lock (datasets)
@@ -85,13 +82,16 @@ namespace VDS.RDF.Query.Spin.Util
 
                 foreach (Uri graphUri in graphsUri)
                 {
+                    // TODO check whether the graph is registered somewhere as a LibraryOntology
+                    dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph);
+                    /*
                     isSystemGraphQuery.SetUri("graph", graphUri);
                     if (!((SparqlResultSet)storage.Query(isSystemGraphQuery.ToString())).Result)
                     {
                         isSPINLibraryQuery.SetUri("graph", graphUri);
                         if (!((SparqlResultSet)storage.Query(isSPINLibraryQuery.ToString())).Result)
                         {
-                            dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph);
+                            
 
                         }
                         else
@@ -99,6 +99,7 @@ namespace VDS.RDF.Query.Spin.Util
                             dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SPIN.ClassLibraryOntology);
                         }
                     }
+                    */ 
                 }
                 if (!dataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassInferenceGraph).Any())
                 {
@@ -108,18 +109,32 @@ namespace VDS.RDF.Query.Spin.Util
                 }
 
                 datasets[dataset.BaseUri] = dataset;
+                storage.SaveGraph(dataset);
             }
             return dataset;
         }
 
-        //TODO make it an extension ?
         internal static IGraph LoadDataset(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null)
         {
             IGraph dataset;
             if (datasetUri == null)
             {
-                datasetUri = UriFactory.Create(SPINRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
+                SparqlResultSet datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <"+ SD.ClassDataset.Uri.ToString() +">}");
+                int datasetCount = datasetDiscovery.Results.Count;
+                if (datasetCount > 1)
+                {
+                    throw new Exception("Multiple datasets found in the current storage provider. Please specify which to use through the datasetUri parameter.");
+                }
+                else if (datasetCount == 1)
+                {
+                    datasetUri = ((IUriNode)datasetDiscovery.Results.FirstOrDefault().Value("dataset")).Uri;
+                }
+                else
+                {
+                    datasetUri = UriFactory.Create(SPINRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
+                }
             }
+            /* Do not cache yet
             if (datasets.ContainsKey(datasetUri))
             {
                 dataset = datasets[datasetUri];
@@ -128,15 +143,18 @@ namespace VDS.RDF.Query.Spin.Util
                     return dataset;
                 }
             }
+            */
             dataset = new Graph();
             dataset.BaseUri = datasetUri;
             storage.LoadGraph(dataset, datasetUri);
 
-            if (!dataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph).Any())
+            if (dataset.IsEmpty)
             {
                 dataset = ConstructDataset(storage, datasetUri, graphsUri);
             }
+            /* Do not cache yet
             datasets[datasetUri] = dataset;
+            */ 
             return dataset;
         }
 
@@ -153,7 +171,6 @@ namespace VDS.RDF.Query.Spin.Util
 
         #region Dataset updates management
 
-        //TODO make it an extension ?
         internal static IGraph CreateUpdateControlledDataset(this SpinWrappedDataset queryModel)
         {
             IGraph dataset = queryModel._underlyingRDFDataset;
@@ -164,31 +181,56 @@ namespace VDS.RDF.Query.Spin.Util
                 throw new Exception("Invalid dataset to operate on : " + dataset.BaseUri.ToString());
             }
 
-            // TODO See wehther we should nest "transactions" or not currently not
+            // TODO ?See whether we should nest "transactions" or not? Currently not
             if (dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.type, SPINRuntime.ClassUpdateControlledDataset)))
             {
                 return dataset;
             }
 
-            // creates the transaction
-            IGraph transactionDataset = new Graph();
-            transactionDataset.BaseUri = UriFactory.Create(SPINRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
-            transactionDataset.Assert(dataset.Triples);
+            // creates the work Dataset
+            IGraph workingset = new Graph();
+            workingset.BaseUri = UriFactory.Create(SPINRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
+            workingset.Assert(dataset.Triples);
 
             INode datasetNode = RDFUtil.CreateUriNode(dataset.BaseUri);
-            INode transactionNode = RDFUtil.CreateUriNode(transactionDataset.BaseUri);
+            INode workingsetNode = RDFUtil.CreateUriNode(workingset.BaseUri);
 
-            // adds transaction metadata
-            transactionDataset.Retract(dataset.GetTriplesWithSubject(datasetNode));
-            transactionDataset.Assert(transactionNode, SPINRuntime.PropertyUpdatesGraph, transactionNode);
-            transactionDataset.Assert(transactionNode, RDF.type, SPINRuntime.ClassUpdateControlledDataset);
-            transactionDataset.Assert(transactionNode, SPINRuntime.PropertyUpdatesDataset, datasetNode);
-            transactionDataset.Assert(transactionNode, DCTerms.PropertyCreated, DateTime.Now.ToLiteral(RDFUtil.nodeFactory));
+            // adds workingset metadata
+            workingset.Retract(dataset.GetTriplesWithSubject(datasetNode));
+            workingset.Assert(workingsetNode, SPINRuntime.PropertyUpdatesGraph, workingsetNode);
+            workingset.Assert(workingsetNode, RDF.type, SPINRuntime.ClassUpdateControlledDataset);
+            workingset.Assert(workingsetNode, SPINRuntime.PropertyUpdatesDataset, datasetNode);
+            workingset.Assert(workingsetNode, DCTerms.PropertyCreated, DateTime.Now.ToLiteral(RDFUtil.nodeFactory));
 
-            queryModel._underlyingRDFDataset = transactionDataset;
+            queryModel._underlyingRDFDataset = workingset;
             queryModel.Initialise();
-            return transactionDataset;
+            return workingset;
         }
+
+        internal static void ApplyChanges(this SpinWrappedDataset queryModel)
+        {
+            // TODO should we use native transactions if the storage is ITransactionalStorage or IAsyncTransactionalStorage ?
+            // TODO check whether any ConstraintViolation has been raised. If none continue otherwise throw an exception.
+            // TODO merge/replace UpdateControlledGraphs from the dataset into their corresponding source graph and remove them from ste storage
+            // TODO update the original dataset with any dataset changes recorded during the SPIN session
+            queryModel.DisposeUpdateControlledDataset();
+        }
+
+        internal static void DiscardChanges(this SpinWrappedDataset queryModel)
+        {
+            queryModel.DisposeUpdateControlledDataset();
+        }
+
+        internal static void DisposeUpdateControlledDataset(this SpinWrappedDataset queryModel)
+        {
+
+            throw new NotImplementedException("TODO");
+        }
+
+
+        #endregion
+
+        #region Graph Updates management
 
         internal static IResource GetUpdateControlledGraph(this SpinWrappedDataset queryModel, IResource graphNode)
         {
@@ -200,9 +242,8 @@ namespace VDS.RDF.Query.Spin.Util
             return Resource.Get(ucg, queryModel.spinProcessor);
         }
 
-        internal static IResource CreateUpdateControlledGraph(this SpinWrappedDataset queryModel, IResource graphNode)
+        internal static IResource CreateUpdateControlledGraph(this SpinWrappedDataset queryModel, IResource graphNode, INode mode = null)
         {
-            // TODO should we always do this or should we provide another CreateUpdate
             IGraph currentDataset = queryModel.CreateUpdateControlledDataset();
 
             if (RDFUtil.sameTerm(graphNode, queryModel._datasetNode))
@@ -211,31 +252,64 @@ namespace VDS.RDF.Query.Spin.Util
             }
 
             INode updatedGraph = null;
-            if (!currentDataset.ContainsTriple(new Triple(graphNode, RDF.type, SPINRuntime.ClassReadOnlyGraph)))
+            if (currentDataset.ContainsTriple(new Triple(graphNode, RDF.type, SPINRuntime.ClassReadOnlyGraph)))
             {
                 throw new SpinException("The graph " + graphNode.Uri().ToString() + " is marked as Readonly for the current dataset");
             }
-            if (!currentDataset.ContainsTriple(new Triple(graphNode, RDF.type, SD.ClassGraph)))
+            if (!currentDataset.ContainsTriple(new Triple(graphNode.getSource(), RDF.type, SD.ClassGraph)))
             {
-                currentDataset.Assert(graphNode, Tools.CopyNode(RDF.type, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
+                currentDataset.Assert(graphNode.getSource(), Tools.CopyNode(RDF.type, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
+                currentDataset.Assert(graphNode.getSource(), Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
             }
             updatedGraph = queryModel.GetUpdateControlledGraph(graphNode);
             if (updatedGraph == null)
             {
+                if (mode == null)
+                {
+                    mode = SPINRuntime.PropertyUpdatesGraph;
+                }
+                currentDataset.Retract(currentDataset.GetTriplesWithObject(graphNode.getSource()).ToList());
+
                 updatedGraph = currentDataset.CreateUriNode(UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString()));
                 currentDataset.Assert(updatedGraph, Tools.CopyNode(RDF.type, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
-                currentDataset.Assert(updatedGraph, Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), Tools.CopyNode(graphNode, currentDataset));
+                currentDataset.Assert(updatedGraph, Tools.CopyNode(mode, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
                 // addition to simplify additional graph mapping constraints patterns
                 currentDataset.Assert(updatedGraph, Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), updatedGraph);
             }
-            return Resource.Get(updatedGraph == null ? graphNode : updatedGraph, queryModel.spinProcessor);
+            else if (!RDFUtil.sameTerm(graphNode, updatedGraph))
+            {
+                updatedGraph = ((IResource)updatedGraph).getSource();
+                currentDataset.Retract(graphNode.getSource(), Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
+                currentDataset.Assert(updatedGraph, Tools.CopyNode(mode, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
+            }
+            return Resource.Get(updatedGraph, queryModel.spinProcessor);
         }
 
+        /// <summary>
+        /// Execution Graph is meant to capture SPIN specific triples on update queries i.e. new RDF.type triples or ConstraintViolations related triples
+        /// </summary>
+        /// <param name="queryModel"></param>
+        /// <returns></returns>
         internal static IResource CreateExecutionGraph(this SpinWrappedDataset queryModel)
         {
             IGraph _underlyingRDFDataset = queryModel.CreateUpdateControlledDataset();
-            INode executionGraph = _underlyingRDFDataset.CreateUriNode(UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString()));
-            _underlyingRDFDataset.Assert(executionGraph, Tools.CopyNode(RDF.type, _underlyingRDFDataset), Tools.CopyNode(SPINRuntime.ClassExecutionGraph, _underlyingRDFDataset));
+            INode executionGraph = queryModel.GetExecutionGraph();
+            if (executionGraph == null)
+            {
+                _underlyingRDFDataset.CreateUriNode(UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString()));
+                _underlyingRDFDataset.Assert(executionGraph, Tools.CopyNode(RDF.type, _underlyingRDFDataset), Tools.CopyNode(SPINRuntime.ClassExecutionGraph, _underlyingRDFDataset));
+            }
+            else
+            {
+                queryModel._storage.Query("CLEAR GRAPH <" + ((IResource)executionGraph).Uri().ToString() + ">");
+            }
+            return Resource.Get(executionGraph, queryModel.spinProcessor);
+        }
+
+        internal static IResource GetExecutionGraph(this SpinWrappedDataset queryModel)
+        {
+            IGraph dataset = queryModel.CreateUpdateControlledDataset();
+            INode executionGraph = dataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassExecutionGraph).Select(t => t.Subject).FirstOrDefault();
             return Resource.Get(executionGraph, queryModel.spinProcessor);
         }
 
