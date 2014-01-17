@@ -34,7 +34,7 @@ namespace org.topbraid.spin.model.impl
             {
                 ITriplePattern firstPattern = (ITriplePattern)elements[i];
                 ITriplePattern secondPattern = (ITriplePattern)elements[i + 1];
-                if (RDFUtil.sameTerm(RDF.first,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.rest,secondPattern.getPredicate()))
+                if (RDFUtil.sameTerm(RDF.PropertyFirst,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.PropertyRest,secondPattern.getPredicate()))
                 {
                     IResource firstSubject = firstPattern.getSubject();
                     IResource secondSubject = secondPattern.getSubject();
@@ -47,7 +47,7 @@ namespace org.topbraid.spin.model.impl
                             members.Add(firstPattern.getObject());
                             IResource secondObject = secondPattern.getObject();
                             i++;
-                            if (RDFUtil.sameTerm(RDF.nil, secondObject))
+                            if (RDFUtil.sameTerm(RDF.Nil, secondObject))
                             {
                                 return i + 1;
                             }
@@ -103,8 +103,8 @@ namespace org.topbraid.spin.model.impl
                     IResource lastSubject = lastPattern.getSubject();
                     if (nextSubject is IVariable &&
                        lastSubject is IVariable &&
-                            RDFUtil.sameTerm(RDF.first, nextPattern.getPredicate()) &&
-                            RDFUtil.sameTerm(RDF.rest, lastPattern.getPredicate()))
+                            RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
+                            RDFUtil.sameTerm(RDF.PropertyRest, lastPattern.getPredicate()))
                     {
                         IVariable nextVar = (IVariable)nextSubject;
                         if (mainVar.getName().Equals(nextVar.getName()))
@@ -183,7 +183,7 @@ namespace org.topbraid.spin.model.impl
             p.print(" ");
 
             // Print predicate
-            if (RDFUtil.sameTerm(RDF.type, main.getPredicate()))
+            if (RDFUtil.sameTerm(RDF.PropertyType, main.getPredicate()))
             {
                 p.print("a");
             }

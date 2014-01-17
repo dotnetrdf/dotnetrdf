@@ -149,7 +149,7 @@ namespace org.topbraid.spin.model.impl
 
         public ITemplate getTemplate()
         {
-            IResource s = getResource(RDF.type);
+            IResource s = getResource(RDF.PropertyType);
             if (s != null && s.isUri())
             {
                 return SPINModuleRegistry.getTemplate(s.Uri(), s.getModel());

@@ -87,7 +87,7 @@ namespace org.topbraid.spin.model.impl
             while (it.MoveNext())
             {
                 Triple s = it.Current;
-                if (!RDFUtil.sameTerm(RDF.type, s.Predicate))
+                if (!RDFUtil.sameTerm(RDF.PropertyType, s.Predicate))
                 {
                     values[Resource.Get(s.Predicate, getModel())] = Resource.Get(s.Object, getModel());
                 }
@@ -103,7 +103,7 @@ namespace org.topbraid.spin.model.impl
             // Return the most specific type, i.e. the one that does not have
             // any subclasses
             IResource type = null;
-            IEnumerator<Triple> it = listProperties(RDF.type).GetEnumerator();
+            IEnumerator<Triple> it = listProperties(RDF.PropertyType).GetEnumerator();
             while (it.MoveNext())
             {
                 Triple s = it.Current;
@@ -114,7 +114,7 @@ namespace org.topbraid.spin.model.impl
                     {
                         type = candidate;
                     }
-                    else if (!candidate.getModel().ContainsTriple(null, RDFS.subClassOf, candidate))
+                    else if (!candidate.getModel().ContainsTriple(null, RDFS.PropertySubClassOf, candidate))
                     {
                         type = candidate;
                     }
@@ -123,7 +123,7 @@ namespace org.topbraid.spin.model.impl
 
             if (type != null)
             {
-                if (type.hasProperty(RDFS.subClassOf, SPIN.ClassFunction))
+                if (type.hasProperty(RDFS.PropertySubClassOf, SPIN.ClassFunction))
                 {
                     return type;
                 }

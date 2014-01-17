@@ -66,7 +66,7 @@ namespace org.topbraid.spin.util
                             {
                                 IResource resource = value;
                                 //JenaUtil.hasIndirectType has been wrongly intrepreted
-                                if (resource.hasProperty(RDF.type, argType))
+                                if (resource.hasProperty(RDF.PropertyType, argType))
                                 {
                                     results[argProperty] = resource;
                                 }
@@ -88,7 +88,7 @@ namespace org.topbraid.spin.util
 
         private static IResource getSuperClassesBody(IResource module, HashSet<IResource> reached)
         {
-            IEnumerator<Triple> it = module.listProperties(RDFS.subClassOf).GetEnumerator();
+            IEnumerator<Triple> it = module.listProperties(RDFS.PropertySubClassOf).GetEnumerator();
             while (it.MoveNext())
             {
                 Triple next = it.Current;

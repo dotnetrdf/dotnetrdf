@@ -166,7 +166,7 @@ namespace org.topbraid.spin.core
                 while (nodes.MoveNext())
                 {
                     IResource node = nodes.Current;
-                    if (node.hasProperty(RDF.type, SP.ClassNamedGraph))
+                    if (node.hasProperty(RDF.PropertyType, SP.ClassNamedGraph))
                     {
                         INamedGraph namedGraph = (INamedGraph)node.As(typeof(NamedGraphImpl));
                         foreach (IElement element in namedGraph.getElements())

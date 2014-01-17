@@ -84,7 +84,7 @@ namespace org.topbraid.spin.system
             if (model != null)
             {
                 function = (IFunction)Resource.Get(RDFUtil.CreateUriNode(uri), model).As(typeof(FunctionImpl));
-                if (function.hasProperty(RDF.type, SPIN.ClassFunction))
+                if (function.hasProperty(RDF.PropertyType, SPIN.ClassFunction))
                 {
                     return function;
                 }
@@ -143,7 +143,7 @@ namespace org.topbraid.spin.system
             if (model != null)
             {
                 IResource r = Resource.Get(RDFUtil.CreateUriNode(uri), model);
-                if (r.hasProperty(RDF.type, SPIN.ClassTemplate))
+                if (r.hasProperty(RDF.PropertyType, SPIN.ClassTemplate))
                 {
                     return (ITemplate)r.As(typeof(TemplateImpl));
                 }

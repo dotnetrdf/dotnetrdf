@@ -75,7 +75,7 @@ namespace org.topbraid.spin.model.impl
             }
             else
             {
-                IResource typeS = path.getResource(RDF.type);
+                IResource typeS = path.getResource(RDF.PropertyType);
                 if (typeS != null && typeS.isUri())
                 {
                     INode type = typeS;

@@ -155,11 +155,11 @@ namespace VDS.RDF.Query.Spin
             switch (query.QueryType)
             {
                 case SparqlQueryType.Ask:
-                    g.Assert(root, RDF.type, SP.ClassAsk);
+                    g.Assert(root, RDF.PropertyType, SP.ClassAsk);
                     break;
 
                 case SparqlQueryType.Construct:
-                    g.Assert(root, RDF.type, SP.ClassConstruct);
+                    g.Assert(root, RDF.PropertyType, SP.ClassConstruct);
                     break;
 
                 case SparqlQueryType.Describe:
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Spin
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    g.Assert(root, RDF.type, SP.ClassSelect);
+                    g.Assert(root, RDF.PropertyType, SP.ClassSelect);
                     break;
                 case SparqlQueryType.Unknown:
                     throw new SpinException("Unknown query types cannot be represented in SPIN RDF Syntax");
@@ -200,11 +200,11 @@ namespace VDS.RDF.Query.Spin
                         {
                             SparqlVariable v = vs[i];
                             INode var = varTable[v.Name];
-                            g.Assert(vars, RDF.first, var);
+                            g.Assert(vars, RDF.PropertyFirst, var);
                             if (i < vs.Count - 1)
                             {
                                 INode temp = g.CreateBlankNode();
-                                g.Assert(vars, RDF.rest, temp);
+                                g.Assert(vars, RDF.PropertyRest, temp);
                                 vars = temp;
                             }
                             // TODO check that was commented before modifications
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.Spin
                                 g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
                             }
                         }
-                        g.Assert(vars, RDF.rest, RDF.nil);
+                        g.Assert(vars, RDF.PropertyRest, RDF.Nil);
 
                         break;
                 }
@@ -296,7 +296,7 @@ namespace VDS.RDF.Query.Spin
             switch (query.CommandType)
             {
                 case SparqlUpdateCommandType.Add:
-                    g.Assert(root, RDF.type, SP.ClassAdd);
+                    g.Assert(root, RDF.PropertyType, SP.ClassAdd);
                     AddCommand add = (AddCommand)query;
                     if (add.SourceUri == null)
                     {
@@ -316,7 +316,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     break;
                 case SparqlUpdateCommandType.Clear:
-                    g.Assert(root, RDF.type, SP.ClassClear);
+                    g.Assert(root, RDF.PropertyType, SP.ClassClear);
                     if (((ClearCommand)query).TargetUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -327,7 +327,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     break;
                 case SparqlUpdateCommandType.Copy:
-                    g.Assert(root, RDF.type, SP.ClassCopy);
+                    g.Assert(root, RDF.PropertyType, SP.ClassCopy);
                     CopyCommand copy = (CopyCommand)query;
                     if (copy.SourceUri == null)
                     {
@@ -347,7 +347,7 @@ namespace VDS.RDF.Query.Spin
                     }                
                     break;
                 case SparqlUpdateCommandType.Create:
-                    g.Assert(root, RDF.type, SP.ClassCreate);
+                    g.Assert(root, RDF.PropertyType, SP.ClassCreate);
                     CreateCommand create = (CreateCommand)query;
                     if (create.TargetUri== null)
                     {
@@ -361,11 +361,11 @@ namespace VDS.RDF.Query.Spin
                 case SparqlUpdateCommandType.Delete:
                     return new ModifyCommand(((DeleteCommand)query).DeletePattern, null, ((DeleteCommand)query).WherePattern).ToSpinRdf(g);
                 case SparqlUpdateCommandType.DeleteData:
-                    g.Assert(root, RDF.type, SP.ClassDeleteData);
+                    g.Assert(root, RDF.PropertyType, SP.ClassDeleteData);
                     g.Assert(root, SP.PropertyData, ((DeleteDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
                     break;
                 case SparqlUpdateCommandType.Drop:
-                    g.Assert(root, RDF.type, SP.ClassDrop);
+                    g.Assert(root, RDF.PropertyType, SP.ClassDrop);
                     DropCommand drop = (DropCommand)query;
                     if (drop.TargetUri == null)
                     {
@@ -380,11 +380,11 @@ namespace VDS.RDF.Query.Spin
                 case SparqlUpdateCommandType.Insert:
                     return new ModifyCommand(null, ((InsertCommand)query).InsertPattern, ((DeleteCommand)query).WherePattern).ToSpinRdf(g);
                 case SparqlUpdateCommandType.InsertData:
-                    g.Assert(root, RDF.type, SP.ClassInsertData);
+                    g.Assert(root, RDF.PropertyType, SP.ClassInsertData);
                     g.Assert(root, SP.PropertyData, ((InsertDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
                     break;
                 case SparqlUpdateCommandType.Load:
-                    g.Assert(root, RDF.type, SP.ClassLoad);
+                    g.Assert(root, RDF.PropertyType, SP.ClassLoad);
                     LoadCommand load = (LoadCommand)query;
                     if (load.SourceUri == null)
                     {
@@ -404,7 +404,7 @@ namespace VDS.RDF.Query.Spin
                     }                
                     break;
                 case SparqlUpdateCommandType.Modify:
-                    g.Assert(root, RDF.type, SP.ClassModify);
+                    g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     ModifyCommand modify = (ModifyCommand)query;
                     if (modify.GraphUri != null)
                     {
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Spin
                     g.Assert(root, SP.PropertyWhere, modify.WherePattern.ToSpinRdf(g, varTable));
                     break;
                 case SparqlUpdateCommandType.Move:
-                    g.Assert(root, RDF.type, SP.ClassMove);
+                    g.Assert(root, RDF.PropertyType, SP.ClassMove);
                     MoveCommand move = (MoveCommand)query;
                     if (move.SourceUri == null)
                     {
@@ -454,13 +454,13 @@ namespace VDS.RDF.Query.Spin
 
             if (pattern.IsExists)
             {
-                g.Assert(p, RDF.type, SP.ClassExists);
+                g.Assert(p, RDF.PropertyType, SP.ClassExists);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsGraph)
             {
-                g.Assert(p, RDF.type, SP.ClassNamedGraph);
+                g.Assert(p, RDF.PropertyType, SP.ClassNamedGraph);
                 INode gSpec = pattern.GraphSpecifier.ToSpinRdf(g, varTable);
                 //g.Assert(p, SP.named, gSpec); // TODO check which is right
                 g.Assert(p, SP.PropertyGraphNameNode, gSpec); // TODO check which is right
@@ -473,38 +473,38 @@ namespace VDS.RDF.Query.Spin
             }
             else if (pattern.IsMinus)
             {
-                g.Assert(p, RDF.type, SP.ClassMinus);
+                g.Assert(p, RDF.PropertyType, SP.ClassMinus);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsNotExists)
             {
-                g.Assert(p, RDF.type, SP.ClassNotExists);
+                g.Assert(p, RDF.PropertyType, SP.ClassNotExists);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsOptional)
             {
-                g.Assert(p, RDF.type, SP.ClassOptional);
+                g.Assert(p, RDF.PropertyType, SP.ClassOptional);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsService)
             {
-                g.Assert(p, RDF.type, SP.ClassService);
+                g.Assert(p, RDF.PropertyType, SP.ClassService);
                 g.Assert(p, SP.PropertyServiceURI, pattern.GraphSpecifier.ToSpinRdf(g, varTable));
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
             else if (pattern.IsSubQuery)
             {
-                g.Assert(p, RDF.type, SP.ClassSubQuery);
+                g.Assert(p, RDF.PropertyType, SP.ClassSubQuery);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyQuery, ps);
             }
             else if (pattern.IsUnion)
             {
-                g.Assert(p, RDF.type, SP.ClassUnion);
+                g.Assert(p, RDF.PropertyType, SP.ClassUnion);
                 ps = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyElements, ps);
             }
@@ -517,20 +517,20 @@ namespace VDS.RDF.Query.Spin
                     INode current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                     if (i == 0)
                     {
-                        g.Assert(ps, RDF.first, current);
+                        g.Assert(ps, RDF.PropertyFirst, current);
                     }
                     else
                     {
                         INode temp = g.CreateBlankNode();
-                        g.Assert(ps, RDF.rest, temp);
-                        g.Assert(temp, RDF.first, current);
+                        g.Assert(ps, RDF.PropertyRest, temp);
+                        g.Assert(temp, RDF.PropertyFirst, current);
                         ps = temp;
                     }
                 }
 
                 if (!pattern.HasChildGraphPatterns)
                 {
-                    g.Assert(ps, RDF.rest, RDF.nil);
+                    g.Assert(ps, RDF.PropertyRest, RDF.Nil);
                 }
             }
 
@@ -542,17 +542,17 @@ namespace VDS.RDF.Query.Spin
                     INode current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
                     if (pattern.TriplePatterns.Count == 0 && i == 0)
                     {
-                        g.Assert(ps, RDF.first, current);
+                        g.Assert(ps, RDF.PropertyFirst, current);
                     }
                     else
                     {
                         INode temp = g.CreateBlankNode();
-                        g.Assert(ps, RDF.rest, temp);
-                        g.Assert(temp, RDF.first, current);
+                        g.Assert(ps, RDF.PropertyRest, temp);
+                        g.Assert(temp, RDF.PropertyFirst, current);
                         ps = temp;
                     }
                 }
-                g.Assert(ps, RDF.rest, RDF.nil);
+                g.Assert(ps, RDF.PropertyRest, RDF.Nil);
             }
 
             return p;
@@ -565,32 +565,32 @@ namespace VDS.RDF.Query.Spin
             if (pattern is TriplePattern)
             {
                 TriplePattern tp = (TriplePattern)pattern;
-                g.Assert(p, RDF.type, SP.ClassTriplePattern);
+                g.Assert(p, RDF.PropertyType, SP.ClassTriplePattern);
                 g.Assert(p, SP.PropertySubject, tp.Subject.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyPredicate, tp.Predicate.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyObject, tp.Object.ToSpinRdf(g, varTable));
             }
             else if (pattern is SubQueryPattern)
             {
-                g.Assert(p, RDF.type, SP.ClassSubQuery);
+                g.Assert(p, RDF.PropertyType, SP.ClassSubQuery);
                 g.Assert(p, SP.PropertyQuery, ((SubQueryPattern)pattern).SubQuery.ToSpinRdf(g));
             }
             else if (pattern is FilterPattern)
             {
-                g.Assert(p, RDF.type, SP.ClassFilter);
+                g.Assert(p, RDF.PropertyType, SP.ClassFilter);
                 g.Assert(p, SP.PropertyExpression, ((FilterPattern)pattern).Filter.Expression.ToSpinRdf(g, varTable));
             }
             else if (pattern is PropertyPathPattern)
             {
                 PropertyPathPattern pp = (PropertyPathPattern)pattern;
-                g.Assert(p, RDF.type, SP.ClassTriplePath);
+                g.Assert(p, RDF.PropertyType, SP.ClassTriplePath);
                 g.Assert(p, SP.PropertySubject, pp.Subject.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyPath, pp.Path.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyObject, pp.Object.ToSpinRdf(g, varTable));
             }
             else if (pattern is LetPattern)
             {
-                g.Assert(p, RDF.type, SP.ClassLet);
+                g.Assert(p, RDF.PropertyType, SP.ClassLet);
                 INode var = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyVariable, var);
                 g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.string_.Uri));
@@ -640,23 +640,23 @@ namespace VDS.RDF.Query.Spin
 
             if (aggregate is AverageAggregate)
             {
-                g.Assert(a, RDF.type, SP.ClassAvg);
+                g.Assert(a, RDF.PropertyType, SP.ClassAvg);
             }
             else if (aggregate is CountAggregate)
             {
-                g.Assert(a, RDF.type, SP.ClassCount);
+                g.Assert(a, RDF.PropertyType, SP.ClassCount);
             }
             else if (aggregate is MaxAggregate)
             {
-                g.Assert(a, RDF.type, SP.ClassMax);
+                g.Assert(a, RDF.PropertyType, SP.ClassMax);
             }
             else if (aggregate is MinAggregate)
             {
-                g.Assert(a, RDF.type, SP.ClassMin);
+                g.Assert(a, RDF.PropertyType, SP.ClassMin);
             }
             else if (aggregate is SumAggregate)
             {
-                g.Assert(a, RDF.type, SP.ClassSum);
+                g.Assert(a, RDF.PropertyType, SP.ClassSum);
             }
             else if (aggregate is GroupConcatAggregate)
             {
@@ -693,11 +693,11 @@ namespace VDS.RDF.Query.Spin
                 else
                 {
                     INode temp = g.CreateBlankNode();
-                    g.Assert(o, RDF.rest, temp);
+                    g.Assert(o, RDF.PropertyRest, temp);
                     item = temp;
                     ordering = ordering.Child;
                 }
-                g.Assert(o, RDF.first, item);
+                g.Assert(o, RDF.PropertyFirst, item);
                 //TODO: Convert Expression
                 //g.Assert(o, SP.expression, ordering.E
             } while (ordering.Child != null);

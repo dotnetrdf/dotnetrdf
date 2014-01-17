@@ -82,7 +82,7 @@ namespace org.topbraid.spin.model.impl
             if (constraint.Object is IBlankNode)
             {
                 // Optimized case to avoid walking up class hierarchy
-                IEnumerator<Triple> types = Resource.Get(constraint.Object, getModel()).listProperties(RDF.type).GetEnumerator();
+                IEnumerator<Triple> types = Resource.Get(constraint.Object, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
                 while (types.MoveNext())
                 {
                     Triple typeS = types.Current;
@@ -94,7 +94,7 @@ namespace org.topbraid.spin.model.impl
                         }
                         else if (!RDFUtil.sameTerm(SPL.ClassAttribute,typeS.Object))
                         {
-                            if (Resource.Get(typeS.Object, getModel()).hasProperty(RDFS.subClassOf, SPL.ClassArgument))
+                            if (Resource.Get(typeS.Object, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
                             {
                                 results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, getModel())));
                             }
@@ -102,7 +102,7 @@ namespace org.topbraid.spin.model.impl
                     }
                 }
             }
-            else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, getModel()).hasProperty(RDFS.subClassOf, SPL.ClassArgument))
+            else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
             {
                 results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, getModel())));
             }
@@ -140,7 +140,7 @@ namespace org.topbraid.spin.model.impl
 
         public String getComment()
         {
-            return getString(RDFS.comment);
+            return getString(RDFS.PropertyComment);
         }
 
 

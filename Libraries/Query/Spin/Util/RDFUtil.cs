@@ -76,57 +76,57 @@ namespace VDS.RDF.Query.Spin.Util
         private static bool isFullyInitialized = false;
         private static void Initialize() {
             if (isFullyInitialized) return;
-            numericDatatypeURIs.Add(XSD.decimal_.Uri);
-            numericDatatypeURIs.Add(XSD.duration.Uri);
-            numericDatatypeURIs.Add(XSD.gDay.Uri);
-            numericDatatypeURIs.Add(XSD.gMonth.Uri);
-            numericDatatypeURIs.Add(XSD.gMonthDay.Uri);
-            numericDatatypeURIs.Add(XSD.gYear.Uri);
-            numericDatatypeURIs.Add(XSD.gYearMonth.Uri);
-            numericDatatypeURIs.Add(XSD.integer.Uri);
-            numericDatatypeURIs.Add(XSD.negativeInteger.Uri);
-            numericDatatypeURIs.Add(XSD.nonNegativeInteger.Uri);
-            numericDatatypeURIs.Add(XSD.nonPositiveInteger.Uri);
-            numericDatatypeURIs.Add(XSD.positiveInteger.Uri);
-            numericDatatypeURIs.Add(XSD.unsignedByte.Uri);
-            numericDatatypeURIs.Add(XSD.unsignedInt.Uri);
-            numericDatatypeURIs.Add(XSD.unsignedLong.Uri);
-            numericDatatypeURIs.Add(XSD.unsignedShort.Uri);
-            numericDatatypeURIs.Add(XSD.byte_.Uri);
-            numericDatatypeURIs.Add(XSD.double_.Uri);
-            numericDatatypeURIs.Add(XSD.float_.Uri);
-            numericDatatypeURIs.Add(XSD.int_.Uri);
-            numericDatatypeURIs.Add(XSD.long_.Uri);
-            numericDatatypeURIs.Add(XSD.short_.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeDecimal.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeDuration.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeGDay.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeGMonth.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeGMonthDay.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeGYear.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeGYearMonth.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeInteger.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeNegativeInteger.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeNonNegativeInteger.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeNonPositiveInteger.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypePositiveInteger.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeUnsignedByte.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeUnsignedInt.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeUnsignedLong.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeUnsignedShort.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeByte.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeDouble.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeFloat.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeInt.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeLong.Uri);
+            numericDatatypeURIs.Add(XSD.DatatypeShort.Uri);
 
-            otherDatatypeURIs.Add(XSD.anySimpleType.Uri);
-            otherDatatypeURIs.Add(XSD.anyURI.Uri);
-            otherDatatypeURIs.Add(XSD.base64Binary.Uri);
-            otherDatatypeURIs.Add(XSD.date.Uri);
-            otherDatatypeURIs.Add(XSD.dateTime.Uri);
-            otherDatatypeURIs.Add(XSD.ENTITY.Uri);
-            otherDatatypeURIs.Add(XSD.hexBinary.Uri);
-            otherDatatypeURIs.Add(XSD.ID.Uri);
-            otherDatatypeURIs.Add(XSD.IDREF.Uri);
-            otherDatatypeURIs.Add(XSD.language.Uri);
-            otherDatatypeURIs.Add(XSD.Name.Uri);
-            otherDatatypeURIs.Add(XSD.NCName.Uri);
-            otherDatatypeURIs.Add(XSD.NMTOKEN.Uri);
-            otherDatatypeURIs.Add(XSD.normalizedString.Uri);
-            otherDatatypeURIs.Add(XSD.NOTATION.Uri);
-            otherDatatypeURIs.Add(XSD.QName.Uri);
-            otherDatatypeURIs.Add(XSD.time.Uri);
-            otherDatatypeURIs.Add(XSD.token.Uri);
-            otherDatatypeURIs.Add(XSD.boolean.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeAnySimpleType.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeAnyURI.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeBase64Binary.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeDate.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeDateTime.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeENTITY.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeHexBinary.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeID.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeIDREF.Uri);
+            otherDatatypeURIs.Add(XSD.PropertyLanguage.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeName.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeNCName.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeNMTOKEN.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeNormalizedString.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeNOTATION.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeQName.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeTime.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeToken.Uri);
+            otherDatatypeURIs.Add(XSD.DatatypeBoolean.Uri);
             otherDatatypeURIs.Add(XSD.string_.Uri);
-            otherDatatypeURIs.Add(RDF.XMLLiteral.Uri);
+            otherDatatypeURIs.Add(RDF.ClassXMLLiteral.Uri);
 
             isFullyInitialized = true;
         }
 
         internal static ILiteralNode createInteger(int value)
         {
-            return CreateLiteralNode("" + value, XSD.integer.Uri);
+            return CreateLiteralNode("" + value, XSD.DatatypeInteger.Uri);
         }
 
 

@@ -35,7 +35,7 @@ namespace org.topbraid.spin.model.impl
 
         public String getComment()
         {
-            return getString(RDFS.comment);
+            return getString(RDFS.PropertyComment);
         }
 
 
@@ -89,7 +89,7 @@ namespace org.topbraid.spin.model.impl
 
         public static bool hasRDFType(INode node, IGraph graph, INode type)
         {
-            return graph.ContainsTriple(new Triple(node, RDF.type, type));
+            return graph.ContainsTriple(new Triple(node, RDF.PropertyType, type));
         }
 
         protected void printComment(IContextualSparqlPrinter context)

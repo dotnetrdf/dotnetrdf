@@ -43,7 +43,7 @@ namespace org.topbraid.spin.model.impl
 
         public String getComment()
         {
-            return getString(RDFS.comment);
+            return getString(RDFS.PropertyComment);
         }
 
         public bool IsOptional()

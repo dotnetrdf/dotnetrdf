@@ -31,11 +31,11 @@ namespace VDS.RDF.Query.Spin.Core
         static Aggregations()
         {
             IGraph model = SP.GetModel();
-            IEnumerator<INode> it = model.GetTriplesWithPredicateObject(RDFS.subClassOf, SP.ClassAggregation).Select(t => t.Subject).GetEnumerator();
+            IEnumerator<INode> it = model.GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, SP.ClassAggregation).Select(t => t.Subject).GetEnumerator();
             while (it.MoveNext())
             {
                 INode aggType = it.Current;
-                Triple labelTriple = model.GetTriplesWithSubjectPredicate(aggType, RDFS.label).FirstOrDefault();
+                Triple labelTriple = model.GetTriplesWithSubjectPredicate(aggType, RDFS.PropertyLabel).FirstOrDefault();
                 if (labelTriple != null) {
                     String name = ((ILiteralNode)labelTriple.Object).Value;
                     register(aggType, name);

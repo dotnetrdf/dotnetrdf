@@ -42,7 +42,7 @@ namespace org.topbraid.spin.model
         public static IAggregation asAggregation(IResource resource)
         {
             if (resource == null) return null;
-            IEnumerator<IResource> it = resource.getObjects(RDF.type).GetEnumerator();
+            IEnumerator<IResource> it = resource.getObjects(RDF.PropertyType).GetEnumerator();
             //JenaUtil.setGraphReadOptimization(true);
             try
             {
@@ -234,7 +234,7 @@ namespace org.topbraid.spin.model
             if (resource == null) return null;
             if (resource is IBlankNode)
             {
-                IResource t = resource.getResource(RDF.type);
+                IResource t = resource.getResource(RDF.PropertyType);
                 if (t != null && !RDFUtil.sameTerm(SP.ClassVariable,t))
                 {
                     return (IFunctionCall)resource.As(typeof(FunctionCallImpl));
@@ -300,7 +300,7 @@ namespace org.topbraid.spin.model
             if (resource == null) return null;
             if (!resource.isLiteral())
             {
-                IResource t= resource.getResource(RDF.type);
+                IResource t= resource.getResource(RDF.PropertyType);
                 if (t!=null && t.isUri())
                 {
                     ITemplate template = SPINModuleRegistry.getTemplate(t.Uri(), t.getModel());
@@ -461,11 +461,11 @@ namespace org.topbraid.spin.model
             }
             if (minCount != null)
             {
-                a.AddProperty(SPL.PropertyMinCount, RDFUtil.CreateLiteralNode(minCount.ToString(), XSD.int_.Uri));
+                a.AddProperty(SPL.PropertyMinCount, RDFUtil.CreateLiteralNode(minCount.ToString(), XSD.DatatypeInt.Uri));
             }
             if (maxCount != null)
             {
-                a.AddProperty(SPL.PropertyMaxCount, RDFUtil.CreateLiteralNode(maxCount.ToString(), XSD.int_.Uri));
+                a.AddProperty(SPL.PropertyMaxCount, RDFUtil.CreateLiteralNode(maxCount.ToString(), XSD.DatatypeInt.Uri));
             }
             return a;
         }
@@ -521,7 +521,7 @@ namespace org.topbraid.spin.model
             }
             else
             {
-                return (IElementList)Resource.Get(RDF.nil, model).As(typeof(ElementListImpl));
+                return (IElementList)Resource.Get(RDF.Nil, model).As(typeof(ElementListImpl));
             }
         }
 
@@ -541,7 +541,7 @@ namespace org.topbraid.spin.model
             }
             else
             {
-                return (IElementList)Resource.Get(RDF.nil, model).As(typeof(ElementListImpl));
+                return (IElementList)Resource.Get(RDF.Nil, model).As(typeof(ElementListImpl));
             }
         }
 
@@ -808,7 +808,7 @@ namespace org.topbraid.spin.model
             while (it.MoveNext())
             {
                 IResource obj = Resource.Get(it.Current.Object, cls.getModel());
-                if (obj is INode && ((IResource)obj).hasProperty(RDF.type, SPL.ClassAttribute))
+                if (obj is INode && ((IResource)obj).hasProperty(RDF.PropertyType, SPL.ClassAttribute))
                 {
                     IAttribute a = (IAttribute)obj.As(typeof(AttributeImpl));
                     if (RDFUtil.sameTerm(property, a.getPredicate()))
@@ -848,7 +848,7 @@ namespace org.topbraid.spin.model
             }
             else
             {
-                throw new ArgumentException("Unsupported Command type: " + SPINLabels.getLabel(command.getResource(RDF.type)));
+                throw new ArgumentException("Unsupported Command type: " + SPINLabels.getLabel(command.getResource(RDF.PropertyType)));
             }
         }
 
@@ -874,13 +874,13 @@ namespace org.topbraid.spin.model
          */
         public static bool isElementList(IResource resource)
         {
-            if (resource.isUri() && RDFUtil.sameTerm(RDF.nil, resource))
+            if (resource.isUri() && RDFUtil.sameTerm(RDF.Nil, resource))
             {
                 return true;
             }
             else
             {
-                return resource.hasProperty(RDF.first);
+                return resource.hasProperty(RDF.PropertyFirst);
                 /*
                 ITriple firstS = Model.getProperty(Model, resource, RDF.first);
                 if (firstS != null && !(firstS.Object is ILiteralNode))
@@ -905,9 +905,9 @@ namespace org.topbraid.spin.model
          */
         public static bool isModuleInstance(IResource resource)
         {
-            foreach (IResource type in resource.getObjects(RDF.type))
+            foreach (IResource type in resource.getObjects(RDF.PropertyType))
             {
-                if (type.hasProperty(RDFS.subClassOf, SPIN.ClassModule))
+                if (type.hasProperty(RDFS.PropertySubClassOf, SPIN.ClassModule))
                 {
                     return true;
                 }
@@ -923,7 +923,7 @@ namespace org.topbraid.spin.model
          */
         public static bool isQueryProperty(IResource predicate)
         {
-            return RDFUtil.sameTerm(SPIN.PropertyQuery,predicate) || predicate.hasProperty(RDFS.subPropertyOf, SPIN.PropertyQuery);
+            return RDFUtil.sameTerm(SPIN.PropertyQuery,predicate) || predicate.hasProperty(RDFS.PropertySubPropertyOf, SPIN.PropertyQuery);
         }
 
 

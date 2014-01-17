@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         public bool canAs(INode cls)
         {
-            return _model.ContainsTriple(_source, RDF.type, cls);
+            return _model.ContainsTriple(_source, RDF.PropertyType, cls);
         }
 
         // A constructor cache to optimize half of the reflection work
@@ -120,17 +120,17 @@ namespace VDS.RDF.Query.Spin.Util
         {
             List<IResource> result = new List<IResource>();
             INode listRoot = this;
-            Triple step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.first).FirstOrDefault();
+            Triple step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
             while (step != null)
             {
-                if (!RDFUtil.sameTerm(RDF.nil, step.Object))
+                if (!RDFUtil.sameTerm(RDF.Nil, step.Object))
                 {
                     result.Add(Resource.Get(step.Object, _model));
                 }
-                step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.rest).FirstOrDefault();
+                step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyRest).FirstOrDefault();
                 if (step != null)
                 {
-                    if (RDFUtil.sameTerm(RDF.nil, step.Object))
+                    if (RDFUtil.sameTerm(RDF.Nil, step.Object))
                     {
                         break;
                     }

@@ -30,7 +30,7 @@ namespace org.topbraid.spin.system
          */
         public static String getCustomizedLabel(IResource resource)
         {
-            String label = resource.getString(RDFS.label);
+            String label = resource.getString(RDFS.PropertyLabel);
             if (label != null)
             {
                 return label;

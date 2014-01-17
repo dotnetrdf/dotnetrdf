@@ -77,8 +77,8 @@ namespace VDS.RDF.Query.Spin
 
         internal void Initialise()
         {
-            _datasetNode = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassDataset)
-                .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassUpdateControlledDataset))
+            _datasetNode = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassDataset)
+                .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset))
                 .Select(t => t.Subject).FirstOrDefault();
             HasDatasetChanged = true;
             _underlyingRDFDataset.Changed += OnDatasetChanged;
@@ -160,8 +160,8 @@ namespace VDS.RDF.Query.Spin
         {
             get
             {
-                return _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph)
-                    .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SPIN.ClassLibraryOntology))
+                return _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
+                    .Union(_underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
                     .Select(t => t.Subject)
                     .Where(g =>
                         !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, g)
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Spin
         {
             get
             {
-                List<Resource> graphs = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph)
+                List<Resource> graphs = _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
                     .Select(t => t.Subject)
                     .Where(g =>
                         !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, g)
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public bool HasGraph(Uri graphUri)
         {
-            return _underlyingRDFDataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph)) && !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, RDFUtil.CreateUriNode(graphUri)).Any();
+            return _underlyingRDFDataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(graphUri), RDF.PropertyType, SD.ClassGraph)) && !_underlyingRDFDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, RDFUtil.CreateUriNode(graphUri)).Any();
         }
 
         public IEnumerable<IGraph> Graphs
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query.Spin
         {
             get
             {
-                return _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph).Select(t => ((IUriNode)t.Subject).Uri);
+                return _underlyingRDFDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph).Select(t => ((IUriNode)t.Subject).Uri);
             }
         }
 
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Spin
             // TODO add handlers to monitor changes to the graph;
             if (!HasGraph(graphUri))
             {
-                _underlyingRDFDataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph);
+                _underlyingRDFDataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.PropertyType, SD.ClassGraph);
             }
             return graph;
         }

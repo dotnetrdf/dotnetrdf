@@ -331,7 +331,7 @@ namespace org.topbraid.spin.util
                 else
                 {
                     INode ontology = graph.CreateUriNode(UriFactory.Create(baseURI.ToString()));
-                    return graph.ContainsTriple(new Triple(ontology, RDF.type, SPIN.ClassLibraryOntology));
+                    return graph.ContainsTriple(new Triple(ontology, RDF.PropertyType, SPIN.ClassLibraryOntology));
                 }
             }
             else
@@ -343,7 +343,7 @@ namespace org.topbraid.spin.util
 
         public static bool isRootClass(IResource cls)
         {
-            return RDFUtil.sameTerm(RDFS.Resource, cls) || RDFUtil.sameTerm(OWL.Thing, cls);
+            return RDFUtil.sameTerm(RDFS.ClassResource, cls) || RDFUtil.sameTerm(OWL.Thing, cls);
         }
 
 

@@ -317,7 +317,7 @@ namespace org.topbraid.spin.vocabulary
         {
             return model != null &&
                 model.NamespaceMap.GetPrefix(UriFactory.Create(SP.NS_URI)) != null &&
-                model.GetTriplesWithSubjectPredicate(SP.ClassQuery, RDF.type).Any();
+                model.GetTriplesWithSubjectPredicate(SP.ClassQuery, RDF.PropertyType).Any();
         }
 
         public static int? getArgPropertyIndex(String varName)

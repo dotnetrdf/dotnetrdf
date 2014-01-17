@@ -29,7 +29,7 @@ namespace org.topbraid.spin.model.impl
 
         public bool isMagicProperty()
         {
-            return hasProperty(RDF.type, SPIN.ClassMagicProperty);
+            return hasProperty(RDF.PropertyType, SPIN.ClassMagicProperty);
         }
 
 

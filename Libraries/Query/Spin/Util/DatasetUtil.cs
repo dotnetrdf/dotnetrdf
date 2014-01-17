@@ -43,6 +43,7 @@ namespace VDS.RDF.Query.Spin.Util
     /// This class contains extensions for the SpinWrappedDataset class. 
     /// These extensions are provided to handle the Dataset manipulation and updates made while processing queries and SPIN Rules/Constraints.
     /// TODO Should we create additional EntailmentGraph for each graph in the dataset ?
+    /// TODO add a specific graph for constructors logging and constraints checking ?
     /// </summary>
     internal static class DatasetUtil
     {
@@ -73,7 +74,7 @@ namespace VDS.RDF.Query.Spin.Util
 
                 IUriNode datasetNode = RDFUtil.CreateUriNode(dataset.BaseUri);
 
-                dataset.Assert(datasetNode, RDF.type, SD.ClassDataset);
+                dataset.Assert(datasetNode, RDF.PropertyType, SD.ClassDataset);
 
                 if (graphsUri == null)
                 {
@@ -83,7 +84,7 @@ namespace VDS.RDF.Query.Spin.Util
                 foreach (Uri graphUri in graphsUri)
                 {
                     // TODO check whether the graph is registered somewhere as a LibraryOntology
-                    dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SD.ClassGraph);
+                    dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.PropertyType, SD.ClassGraph);
                     /*
                     isSystemGraphQuery.SetUri("graph", graphUri);
                     if (!((SparqlResultSet)storage.Query(isSystemGraphQuery.ToString())).Result)
@@ -99,13 +100,13 @@ namespace VDS.RDF.Query.Spin.Util
                             dataset.Assert(RDFUtil.CreateUriNode(graphUri), RDF.type, SPIN.ClassLibraryOntology);
                         }
                     }
-                    */ 
+                    */
                 }
-                if (!dataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassInferenceGraph).Any())
+                if (!dataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassInferenceGraph).Any())
                 {
                     Uri inferenceGraph = UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString());
-                    dataset.Assert(RDFUtil.CreateUriNode(inferenceGraph), RDF.type, SD.ClassGraph);
-                    dataset.Assert(RDFUtil.CreateUriNode(inferenceGraph), RDF.type, SPINRuntime.ClassInferenceGraph);
+                    dataset.Assert(RDFUtil.CreateUriNode(inferenceGraph), RDF.PropertyType, SD.ClassGraph);
+                    dataset.Assert(RDFUtil.CreateUriNode(inferenceGraph), RDF.PropertyType, SPINRuntime.ClassInferenceGraph);
                 }
 
                 datasets[dataset.BaseUri] = dataset;
@@ -119,7 +120,7 @@ namespace VDS.RDF.Query.Spin.Util
             IGraph dataset;
             if (datasetUri == null)
             {
-                SparqlResultSet datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <"+ SD.ClassDataset.Uri.ToString() +">}");
+                SparqlResultSet datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <" + SD.ClassDataset.Uri.ToString() + ">}");
                 int datasetCount = datasetDiscovery.Results.Count;
                 if (datasetCount > 1)
                 {
@@ -154,7 +155,7 @@ namespace VDS.RDF.Query.Spin.Util
             }
             /* Do not cache yet
             datasets[datasetUri] = dataset;
-            */ 
+            */
             return dataset;
         }
 
@@ -176,13 +177,13 @@ namespace VDS.RDF.Query.Spin.Util
             IGraph dataset = queryModel._underlyingRDFDataset;
             IUpdateableStorage storage = queryModel.UnderlyingStorage;
 
-            if (!dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.type, SD.ClassDataset)) && !dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.type, SPINRuntime.ClassUpdateControlledDataset)))
+            if (!dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.PropertyType, SD.ClassDataset)) && !dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset)))
             {
                 throw new Exception("Invalid dataset to operate on : " + dataset.BaseUri.ToString());
             }
 
             // TODO ?See whether we should nest "transactions" or not? Currently not
-            if (dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.type, SPINRuntime.ClassUpdateControlledDataset)))
+            if (dataset.ContainsTriple(new Triple(RDFUtil.CreateUriNode(dataset.BaseUri), RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset)))
             {
                 return dataset;
             }
@@ -198,7 +199,7 @@ namespace VDS.RDF.Query.Spin.Util
             // adds workingset metadata
             workingset.Retract(dataset.GetTriplesWithSubject(datasetNode));
             workingset.Assert(workingsetNode, SPINRuntime.PropertyUpdatesGraph, workingsetNode);
-            workingset.Assert(workingsetNode, RDF.type, SPINRuntime.ClassUpdateControlledDataset);
+            workingset.Assert(workingsetNode, RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset);
             workingset.Assert(workingsetNode, SPINRuntime.PropertyUpdatesDataset, datasetNode);
             workingset.Assert(workingsetNode, DCTerms.PropertyCreated, DateTime.Now.ToLiteral(RDFUtil.nodeFactory));
 
@@ -207,12 +208,55 @@ namespace VDS.RDF.Query.Spin.Util
             return workingset;
         }
 
+        // TODO synchronise this 
         internal static void ApplyChanges(this SpinWrappedDataset queryModel)
         {
-            // TODO should we use native transactions if the storage is ITransactionalStorage or IAsyncTransactionalStorage ?
-            // TODO check whether any ConstraintViolation has been raised. If none continue otherwise throw an exception.
-            // TODO merge/replace UpdateControlledGraphs from the dataset into their corresponding source graph and remove them from ste storage
-            // TODO update the original dataset with any dataset changes recorded during the SPIN session
+            IGraph currentDataset = queryModel._underlyingRDFDataset;
+            if (!currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset).Any())
+            {
+                return;
+            }
+            // TODO check whether transactions are supported by the storage provider
+            // Loads the original dataset will will flush into
+            IGraph targetDataset = new Graph();
+            targetDataset.BaseUri = ((IUriNode)currentDataset.GetTriplesWithSubjectPredicate(queryModel._datasetNode, SPINRuntime.PropertyUpdatesDataset).First().Object).Uri;
+            queryModel._storage.LoadGraph(targetDataset, targetDataset.BaseUri);
+
+            if (currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassConstraintViolation).Any())
+            {
+                throw new SpinException("Unable to flush the dataset while constraints are not satisfied");
+            }
+            // Flush pending changes to the graphs
+            foreach (Triple t in currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph))
+            {
+                IUriNode targetGraph = (IUriNode)t.Subject;
+                if (currentDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyRemovesGraph, targetGraph).Any())
+                {
+                    targetDataset.Retract(currentDataset.GetTriplesWithObject(t.Object).Union(currentDataset.GetTriplesWithSubject(targetGraph)));
+                }
+                else
+                {
+                    Triple ucgTriple = currentDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyUpdatesGraph, targetGraph)
+                        .Union(currentDataset.GetTriplesWithPredicateObject(SPINRuntime.PropertyReplacesGraph, targetGraph))
+                        .FirstOrDefault();
+                    if (ucgTriple != null)
+                    {
+                        IUriNode updateControlledGraph = (IUriNode)ucgTriple.Subject;
+                        if (RDFUtil.sameTerm(ucgTriple.Predicate, SPINRuntime.PropertyReplacesGraph))
+                        {
+                            queryModel._storage.Update("WITH <" + updateControlledGraph.Uri.ToString() + "> DELETE { ?s <" + SPINRuntime.PropertyResets.Uri.ToString() + "> ?p } WHERE { ?s <" + SPINRuntime.PropertyResets.Uri.ToString() + "> ?p }"); // For safety only
+                            queryModel._storage.Update("MOVE GRAPH <" + updateControlledGraph.Uri.ToString() + "> TO <" + targetGraph.Uri.ToString() + ">");
+                        }
+                        else
+                        {
+                            // TODO check wheter SPARQL updates expect the targetGraph in the USING clause
+                            queryModel._storage.Update("DELETE { GRAPH <" + updateControlledGraph.Uri.ToString() + "> { ?s <" + SPINRuntime.PropertyResets.Uri.ToString() + "> ?p } . GRAPH <" + targetGraph.Uri.ToString() + "> { ?s ?p ?o } } USING <" + updateControlledGraph.Uri.ToString() + "> WHERE { ?s <" + SPINRuntime.PropertyResets.Uri.ToString() + "> ?p }");
+                            queryModel._storage.Update("ADD GRAPH <" + updateControlledGraph.Uri.ToString() + "> TO <" + targetGraph.Uri.ToString() + ">");
+                        }
+                    }
+                }
+            }
+            queryModel._storage.SaveGraph(targetDataset);
             queryModel.DisposeUpdateControlledDataset();
         }
 
@@ -223,8 +267,17 @@ namespace VDS.RDF.Query.Spin.Util
 
         internal static void DisposeUpdateControlledDataset(this SpinWrappedDataset queryModel)
         {
-
-            throw new NotImplementedException("TODO");
+            IGraph currentDataset = queryModel._underlyingRDFDataset;
+            IEnumerable<String> disposableGraphs = currentDataset.GetTriplesWithPredicate(SPINRuntime.PropertyUpdatesGraph)
+                        .Union(currentDataset.GetTriplesWithPredicate(SPINRuntime.PropertyReplacesGraph))
+                        .Union(currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassExecutionGraph))
+                        .Union(currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassFunctionEvalResultSet))
+                        .Union(currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassUpdateControlledGraph))
+                        .Union(currentDataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassUpdateControlledDataset))
+                        .Select(t => ((IUriNode)t.Subject).Uri.ToString());
+            foreach (String graphUri in disposableGraphs) {
+                queryModel._storage.DeleteGraph(graphUri);
+            }
         }
 
 
@@ -252,13 +305,13 @@ namespace VDS.RDF.Query.Spin.Util
             }
 
             INode updatedGraph = null;
-            if (currentDataset.ContainsTriple(new Triple(graphNode, RDF.type, SPINRuntime.ClassReadOnlyGraph)))
+            if (currentDataset.ContainsTriple(new Triple(graphNode, RDF.PropertyType, SPINRuntime.ClassReadOnlyGraph)))
             {
                 throw new SpinException("The graph " + graphNode.Uri().ToString() + " is marked as Readonly for the current dataset");
             }
-            if (!currentDataset.ContainsTriple(new Triple(graphNode.getSource(), RDF.type, SD.ClassGraph)))
+            if (!currentDataset.ContainsTriple(new Triple(graphNode.getSource(), RDF.PropertyType, SD.ClassGraph)))
             {
-                currentDataset.Assert(graphNode.getSource(), Tools.CopyNode(RDF.type, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
+                currentDataset.Assert(graphNode.getSource(), Tools.CopyNode(RDF.PropertyType, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
                 currentDataset.Assert(graphNode.getSource(), Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
             }
             updatedGraph = queryModel.GetUpdateControlledGraph(graphNode);
@@ -271,7 +324,7 @@ namespace VDS.RDF.Query.Spin.Util
                 currentDataset.Retract(currentDataset.GetTriplesWithObject(graphNode.getSource()).ToList());
 
                 updatedGraph = currentDataset.CreateUriNode(UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString()));
-                currentDataset.Assert(updatedGraph, Tools.CopyNode(RDF.type, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
+                currentDataset.Assert(updatedGraph, Tools.CopyNode(RDF.PropertyType, currentDataset), Tools.CopyNode(SD.ClassGraph, currentDataset));
                 currentDataset.Assert(updatedGraph, Tools.CopyNode(mode, currentDataset), Tools.CopyNode(graphNode.getSource(), currentDataset));
                 // addition to simplify additional graph mapping constraints patterns
                 currentDataset.Assert(updatedGraph, Tools.CopyNode(SPINRuntime.PropertyUpdatesGraph, currentDataset), updatedGraph);
@@ -297,7 +350,7 @@ namespace VDS.RDF.Query.Spin.Util
             if (executionGraph == null)
             {
                 _underlyingRDFDataset.CreateUriNode(UriFactory.Create(SPINRuntime.GRAPH_NS_URI + Guid.NewGuid().ToString()));
-                _underlyingRDFDataset.Assert(executionGraph, Tools.CopyNode(RDF.type, _underlyingRDFDataset), Tools.CopyNode(SPINRuntime.ClassExecutionGraph, _underlyingRDFDataset));
+                _underlyingRDFDataset.Assert(executionGraph, Tools.CopyNode(RDF.PropertyType, _underlyingRDFDataset), Tools.CopyNode(SPINRuntime.ClassExecutionGraph, _underlyingRDFDataset));
             }
             else
             {
@@ -309,7 +362,7 @@ namespace VDS.RDF.Query.Spin.Util
         internal static IResource GetExecutionGraph(this SpinWrappedDataset queryModel)
         {
             IGraph dataset = queryModel.CreateUpdateControlledDataset();
-            INode executionGraph = dataset.GetTriplesWithPredicateObject(RDF.type, SPINRuntime.ClassExecutionGraph).Select(t => t.Subject).FirstOrDefault();
+            INode executionGraph = dataset.GetTriplesWithPredicateObject(RDF.PropertyType, SPINRuntime.ClassExecutionGraph).Select(t => t.Subject).FirstOrDefault();
             return Resource.Get(executionGraph, queryModel.spinProcessor);
         }
 
@@ -335,61 +388,61 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 ((IPrintable)SPINFactory.asVariable(node)).print(new StringContextualSparqlPrinter(model, sb));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyNot))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyNot))
             {
                 sb.Append("!(");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append(")");
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyOr))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyOr))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append(" || ");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyAnd))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyAnd))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append(" && ");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyEq))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyEq))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append("=");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyNeq))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyNeq))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append("!=");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyLt))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyLt))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append("<");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyLeq))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyLeq))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append("<=");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyGt))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyGt))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append(">");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyGeq))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyGeq))
             {
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
                 sb.Append(">=");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg2), pm));
             }
-            else if (RDFUtil.sameTerm(node.getResource(RDF.type), SP.PropertyBound))
+            else if (RDFUtil.sameTerm(node.getResource(RDF.PropertyType), SP.PropertyBound))
             {
                 sb.Append("bound(");
                 sb.Append(StringForNode(node.getObject(SP.PropertyArg1), pm));
@@ -407,7 +460,7 @@ namespace VDS.RDF.Query.Spin.Util
             }
             else
             {
-                throw new Exception("Missing translation for expression " + node.getResource(RDF.type).Uri().ToString());
+                throw new Exception("Missing translation for expression " + node.getResource(RDF.PropertyType).Uri().ToString());
             }
             return sb.ToString();
         }

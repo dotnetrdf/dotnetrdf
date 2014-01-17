@@ -96,7 +96,7 @@ namespace org.topbraid.spin.model.impl
             // TODO find the good tests ?????
             if (!node.isLiteral())
             {
-                if (abbrevRDFType && RDFUtil.sameTerm(RDF.type, node))
+                if (abbrevRDFType && RDFUtil.sameTerm(RDF.PropertyType, node))
                 {
                     p.print("a");
                 }

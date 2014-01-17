@@ -57,7 +57,7 @@ namespace org.topbraid.spin.model.impl
                 p.print("(");
             }
 
-            INode aggType = this.getObject(RDF.type);
+            INode aggType = this.getObject(RDF.PropertyType);
             String aggName = Aggregations.getName(aggType);
             p.printKeyword(aggName);
             p.print("(");

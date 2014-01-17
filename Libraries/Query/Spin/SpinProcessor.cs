@@ -59,11 +59,11 @@ namespace VDS.RDF.Query.Spin
             {
                 _spinConfiguration.RemoveGraph(spinGraph.BaseUri);
             }
-            String ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.imports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
+            String ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
             IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
 
             // Explore for subsequent imports
-            foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.type, SPIN.ClassLibraryOntology))
+            foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
             {
                 Uri importUri = ((IUriNode)t.Subject).Uri;
                 if (!_spinConfiguration.GraphUris.Contains(importUri) && !RDFUtil.sameTerm(importUri, spinGraph.BaseUri))
@@ -83,20 +83,20 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllInstances(INode cls)
         {
-            List<Resource> classList = GetTriplesWithPredicateObject(RDF.type, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
+            List<Resource> classList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
             return classList;
         }
 
         internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
         {
-            List<Resource> classList = GetTriplesWithPredicateObject(RDFS.subClassOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            List<Resource> classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
             if (includeRoot)
             {
                 classList.Add(Resource.Get(root, this));
             }
             classList.Sort(delegate(Resource x, Resource y)
             {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.subClassOf, y.getSource())))
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
                 {
                     return 1;
                 }
@@ -107,14 +107,14 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperClasses(INode root, bool includeRoot = false)
         {
-            List<Resource> classList = GetTriplesWithSubjectPredicate(root, RDFS.subClassOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            List<Resource> classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, this)).ToList();
             if (includeRoot)
             {
                 classList.Add(Resource.Get(root, this));
             }
             classList.Sort(delegate(Resource x, Resource y)
             {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.subClassOf, y.getSource())))
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
                 {
                     return 1;
                 }
@@ -125,14 +125,14 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSubProperties(INode root, bool includeRoot = false)
         {
-            List<Resource> propertyList = GetTriplesWithPredicateObject(RDFS.subPropertyOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            List<Resource> propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
             if (includeRoot)
             {
                 propertyList.Add(Resource.Get(root, this));
             }
             propertyList.Sort(delegate(Resource x, Resource y)
             {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.subPropertyOf, y.getSource())))
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
                 {
                     return 1;
                 }
@@ -143,14 +143,14 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperProperties(INode root, bool includeRoot = false)
         {
-            List<Resource> propertyList = GetTriplesWithSubjectPredicate(root, RDFS.subPropertyOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            List<Resource> propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, this)).ToList();
             if (includeRoot)
             {
                 propertyList.Add(Resource.Get(root, this));
             }
             propertyList.Sort(delegate(Resource x, Resource y)
             {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.subPropertyOf, y.getSource())))
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
                 {
                     return 1;
                 }
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Spin
             INode resource = _currentSparqlGraph.CreateBlankNode();
             if (rdfType != null)
             {
-                _currentSparqlGraph.Assert(resource, Tools.CopyNode(RDF.type, _currentSparqlGraph), Tools.CopyNode(rdfType, _currentSparqlGraph));
+                _currentSparqlGraph.Assert(resource, Tools.CopyNode(RDF.PropertyType, _currentSparqlGraph), Tools.CopyNode(rdfType, _currentSparqlGraph));
             }
             return Resource.Get(resource, this);
         }
@@ -190,17 +190,17 @@ namespace VDS.RDF.Query.Spin
             IResource root = first;
             if (!elements.MoveNext())
             {
-                first.AddProperty(RDF.first, RDF.nil);
+                first.AddProperty(RDF.PropertyFirst, RDF.Nil);
                 return first;
             }
             do
             {
-                first.AddProperty(RDF.first, elements.Current);
+                first.AddProperty(RDF.PropertyFirst, elements.Current);
                 IResource rest = CreateResource();
-                first.AddProperty(RDF.rest, rest);
+                first.AddProperty(RDF.PropertyRest, rest);
                 first = rest;
             } while (elements.MoveNext());
-            first.AddProperty(RDF.rest, RDF.nil);
+            first.AddProperty(RDF.PropertyRest, RDF.Nil);
             return root;
         }
 

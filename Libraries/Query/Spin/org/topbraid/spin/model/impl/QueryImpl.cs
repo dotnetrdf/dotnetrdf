@@ -169,7 +169,7 @@ namespace org.topbraid.spin.model.impl
                 {
                     if (!node.isLiteral())
                     {
-                        if (node.hasProperty(RDF.type, SP.ClassAsc))
+                        if (node.hasProperty(RDF.PropertyType, SP.ClassAsc))
                         {
                             context.print(" ");
                             context.printKeyword("ASC");
@@ -177,7 +177,7 @@ namespace org.topbraid.spin.model.impl
                             IResource expression = node.getResource(SP.PropertyExpression);
                             printOrderByExpression(context, expression);
                         }
-                        else if (node.hasProperty(RDF.type, SP.ClassDesc))
+                        else if (node.hasProperty(RDF.PropertyType, SP.ClassDesc))
                         {
                             context.print(" ");
                             context.printKeyword("DESC");
