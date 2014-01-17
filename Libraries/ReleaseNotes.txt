@@ -184,7 +184,7 @@ NB - Dates are given UK style as dd/mm/yyyy
 
 14/11/2013 - Release of Version 1.0.2 (Build 1.0.2.2880)
 
-17/1/2014 - Release of Version 1.0.3 (Build 1.0.3.?)
+17/1/2014 - Release of Version 1.0.3 (Build 1.0.3.3065)
 
 Acknowledgements
 ----------------
