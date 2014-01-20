@@ -38,8 +38,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class CountTriplesTask
         : CancellableTask<TaskValueResult<int>>
     {
-        private IStorageProvider _manager;
-        private String _graphUri;
+        private readonly IStorageProvider _manager;
+        private readonly String _graphUri;
         private CancellableHandler _canceller;
         private CountHandler _counter;
 

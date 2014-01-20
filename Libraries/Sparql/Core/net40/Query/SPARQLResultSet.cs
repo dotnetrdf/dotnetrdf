@@ -116,6 +116,21 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Creates a Sparql Result Set for the collection of results
+        /// </summary>
+        /// <param name="results">Results</param>
+        public SparqlResultSet(IEnumerable<SparqlResult> results)
+        {
+            _type = SparqlResultsType.VariableBindings;
+            _results = results.ToList();
+ 
+            if (_results.Any())
+            {
+                _variables = _results.First().Variables.ToList();
+            }
+        }
+ 
+        /// <summary>
         /// Creates a SPARQL Result Set for the Results of a Query with the Leviathan Engine
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context</param>

@@ -72,7 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Utilities\storemanager\CrossThreadForm.cs">
+    <Compile Include="..\..\Utilities\storemanager\Forms\CrossThreadForm.cs">
       <Link>CrossThreadForm.cs</Link>
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +171,14 @@
     <Compile Include="Test\TestSuite.cs" />
   </ItemGroup>
   <ItemGroup>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>

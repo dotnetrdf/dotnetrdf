@@ -82,10 +82,29 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
             }
-            else
-            {
-                return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password);
-            }
+            return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            SesameConnectionDefinition definition = new SesameConnectionDefinition();
+            definition.Server = this.Server;
+            definition.StoreID = this.StoreID;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[Sesame] Store '" + this.StoreID.ToSafeString() + "' on Server '" + this.Server.ToSafeString() + "'";
         }
     }
 }

@@ -590,7 +590,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Query Execution Timeout in Milliseconds
+        /// Gets/Sets the Query Execution Timeout in milliseconds
         /// </summary>
         /// <remarks>
         /// <para>
@@ -638,14 +638,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._executionTime == null)
+                if (!this._executionTime.HasValue)
                 {
                     throw new InvalidOperationException("Cannot inspect the Query Time as the Query has not yet been processed");
                 }
-                else
-                {
-                    return this._executionTime;
-                }
+                return this._executionTime;
             }
             set
             {

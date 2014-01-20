@@ -24,10 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
@@ -39,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ImportFileTask 
         : BaseImportTask
     {
-        private String _file;
+        private readonly String _file;
 
         /// <summary>
         /// Creates a new Import File task
@@ -81,7 +77,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ImportUriTask
         : BaseImportTask
     {
-        private Uri _u;
+        private readonly Uri _u;
 
         /// <summary>
         /// Creates a new Import URI Task

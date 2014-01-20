@@ -109,6 +109,60 @@ namespace VDS.RDF.Storage
         }
 
         [Test]
+        public void StorageSparqlUniformHttpProtocolSaveGraph2()
+        {
+            try
+            {
+                SetUriLoaderCaching(false);
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "resources\\Turtle.ttl");
+                g.BaseUri = new Uri("http://example.org/sparql#test");
+
+                //Save Graph to SPARQL Uniform Protocol
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
+                sparql.SaveGraph(g);
+                Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
+
+                //Now retrieve Graph from SPARQL Uniform Protocol
+                Graph h = new Graph();
+                sparql.LoadGraph(h, "http://example.org/sparql#test");
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                GraphDiffReport diff = g.Difference(h);
+                if (!diff.AreEqual)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
+                    Console.WriteLine("Added Triples");
+                    foreach (Triple t in diff.AddedTriples)
+                    {
+                        Console.WriteLine(t.ToString(this._formatter));
+                    }
+                    Console.WriteLine("Removed Triples");
+                    foreach (Triple t in diff.RemovedTriples)
+                    {
+                        Console.WriteLine(t.ToString(this._formatter));
+                    }
+
+                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
+                    Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                }
+            }
+            finally
+            {
+                SetUriLoaderCaching(true);
+            }
+        }
+
+        [Test]
         public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try

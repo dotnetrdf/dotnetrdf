@@ -194,37 +194,39 @@ namespace VDS.RDF.Query.Algebra
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr));
                     return partitionedSet;
                 }
-                else
-                {
 #endif
-                    //Do a serial Left Join Product
+                //Do a serial Left Join Product
 
-                    //Calculate a Product filtering as we go
-                    foreach (ISet x in this.Sets)
+                //Calculate a Product filtering as we go
+                foreach (ISet x in this.Sets)
+                {
+                    bool standalone = false;
+                    bool matched = false;
+                    foreach (ISet y in other.Sets)
                     {
-                        bool standalone = false;
-                        foreach (ISet y in other.Sets)
+                        ISet z = x.Join(y);
+                        try
                         {
-                            ISet z = x.Join(y);
-                            try
-                            {
-                                joinedSet.Add(z);
-                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
-                                {
-                                    joinedSet.Remove(z.ID);
-                                    standalone = true;
-                                }
-                            }
-                            catch
+                            joinedSet.Add(z);
+                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;
                             }
+                            else
+                            {
+                                matched = true;
+                            }
                         }
-                        if (standalone) joinedSet.Add(x.Copy());
+                        catch
+                        {
+                            joinedSet.Remove(z.ID);
+                            standalone = true;
+                        }
                     }
-#if NET40 && !SILVERLIGHT
+                    if (standalone && !matched) joinedSet.Add(x.Copy());
                 }
+#if NET40 && !SILVERLIGHT
 #endif
             }
             else
@@ -294,7 +296,7 @@ namespace VDS.RDF.Query.Algebra
         {
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);
             SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
-            bool standalone = false;
+            bool standalone = false, matched = false;
 
             int id = partitionedSet.GetNextBaseID();
             foreach (ISet y in other.Sets)
@@ -310,6 +312,10 @@ namespace VDS.RDF.Query.Algebra
                         partitionedSet.Remove(z.ID);
                         standalone = true;
                     }
+                    else
+                    {
+                        matched = true;
+                    }
                 }
                 catch
                 {
@@ -317,8 +323,7 @@ namespace VDS.RDF.Query.Algebra
                     standalone = true;
                 }
             }
-            if (standalone)
-            {
+            if (standalone && !matched) {
                 id++;
                 ISet z = x.Copy();
                 z.ID = id;

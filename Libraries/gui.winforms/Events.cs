@@ -35,8 +35,10 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VDS.RDF.GUI.WinForms.Controls;
 
 namespace VDS.RDF.GUI.WinForms
 {
@@ -46,4 +48,23 @@ namespace VDS.RDF.GUI.WinForms
     /// <param name="sender">Originator of the event</param>
     /// <param name="u">URI that was clicked</param>
     public delegate void UriClickedEventHandler(Object sender, Uri u);
+
+    /// <summary>
+    /// Event that occurs when the formatter is changed
+    /// </summary>
+    /// <param name="sender">Originator of the event</param>
+    /// <param name="formatter">Formatter that is now selected</param>
+    public delegate void FormatterChanged(Object sender, Formatter formatter);
+
+    /// <summary>
+    /// Event that occurs when result are requested to be closed
+    /// </summary>
+    /// <param name="sender">Originator of the event</param>
+    public delegate void ResultCloseRequested(Object sender);
+
+    /// <summary>
+    /// Event that occurs when results are requested to be detached
+    /// </summary>
+    /// <param name="sender">Originator of the event</param>
+    public delegate void ResultDetachRequested(Object sender);
 }

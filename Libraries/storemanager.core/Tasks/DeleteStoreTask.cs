@@ -39,8 +39,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class DeleteStoreTask
         : NonCancellableTask<TaskResult>
     {
-        private IStorageServer _server;
-        private String _id;
+        private readonly IStorageServer _server;
+        private readonly String _id;
 
         /// <summary>
         /// Gets a Store

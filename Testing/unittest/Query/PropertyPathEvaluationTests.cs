@@ -510,5 +510,52 @@ WHERE
                 Options.RigorousEvaluation = false;
             }
         }
+
+#if !NO_FILE
+        [Test]
+        public void SparqlPropertyPathEvaluationCore395ExactQuery()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources/pp.rdf");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources/pp.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(query);
+            Assert.NotNull(results);
+            TestTools.ShowResults(results);
+
+            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            SparqlResultSet rset = (SparqlResultSet) results;
+            Assert.AreEqual(3, rset.Count);
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore395ListQuery()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources/pp.rdf");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            SparqlQuery query = new SparqlQueryParser().ParseFromString(@"
+prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> 
+prefix owl:   <http://www.w3.org/2002/07/owl#> 
+prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+
+select ?superclass where {
+  ?s owl:intersectionOf/rdf:rest*/rdf:first ?superclass .
+  filter(!isBlank(?superclass))
+}
+");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(query);
+            Assert.NotNull(results);
+            TestTools.ShowResults(results);
+
+            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            SparqlResultSet rset = (SparqlResultSet)results;
+            Assert.AreEqual(2, rset.Count);
+        }
+#endif
     }
 }
