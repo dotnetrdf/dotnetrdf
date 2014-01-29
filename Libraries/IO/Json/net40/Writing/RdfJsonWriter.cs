@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
@@ -42,7 +44,8 @@ namespace VDS.RDF.Writing
     /// </p>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class RdfJsonWriter : IRdfWriter, IPrettyPrintingWriter
+    public class RdfJsonWriter 
+        : BaseGraphWriter, IPrettyPrintingWriter
     {
         private bool _prettyprint = true;
 
@@ -61,25 +64,12 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves a Graph in RDF/Json syntax to the given File
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">Filename to save to</param>
-        public void Save(IGraph g, string filename)
-        {
-            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(IOOptions.UseBomForUtf8));
-            this.Save(g, output);
-        }
-#endif
-
         /// <summary>
         /// Saves a Graph to an arbitrary output stream
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="output">Stream to save to</param>
-        public void Save(IGraph g, TextWriter output)
+        public override void Save(IGraph g, TextWriter output)
         {
             try
             {
@@ -133,8 +123,8 @@ namespace VDS.RDF.Writing
             ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
             //Variables we need to track our writing
-            INode lastSubj, lastPred;
-            lastSubj = lastPred = null;
+            INode lastPred;
+            INode lastSubj = lastPred = null;
 
             for (int i = 0; i < ts.Count; i++)
             {
@@ -173,7 +163,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Remap Blank Node IDs as appropriate
-                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID((t.Subject).AnonID));
+                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputId((t.Subject).AnonID));
                     }
 
                     //Start an Object for the Subject
@@ -246,7 +236,7 @@ namespace VDS.RDF.Writing
                 {
                     case NodeType.Blank:
                         //Remap Blank Node IDs as appropriate
-                        writer.WriteValue("_:" + bnodeMapper.GetOutputID((obj).AnonID));
+                        writer.WriteValue("_:" + bnodeMapper.GetOutputId((obj).AnonID));
                         writer.WritePropertyName("type");
                         writer.WriteValue("bnode");
                         break;
@@ -255,24 +245,23 @@ namespace VDS.RDF.Writing
                         throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/JSON"));
 
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)obj;
-                        writer.WriteValue(lit.Value);
+                        writer.WriteValue(obj.Value);
 
-                        if (!lit.Language.Equals(String.Empty))
+                        if (obj.HasLanguage)
                         {
                             writer.WritePropertyName("lang");
-                            writer.WriteValue(lit.Language);
+                            writer.WriteValue(obj.Language);
                         }
-                        else if (lit.DataType != null)
+                        else if (obj.HasDataType)
                         {
                             writer.WritePropertyName("datatype");
-                            writer.WriteValue(lit.DataType.AbsoluteUri);
+                            writer.WriteValue(obj.DataType.AbsoluteUri);
                         }
                         writer.WritePropertyName("type");
                         writer.WriteValue("literal");
                         break;
                     case NodeType.Uri:
-                        writer.WriteValue(obj.ToString());
+                        writer.WriteValue(obj.Uri.AbsoluteUri);
                         writer.WritePropertyName("type");
                         writer.WriteValue("uri");
                         break;

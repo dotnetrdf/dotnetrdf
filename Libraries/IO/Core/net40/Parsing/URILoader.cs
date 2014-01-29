@@ -48,6 +48,7 @@ namespace VDS.RDF.Parsing
         private static String _userAgent;
 
         #region URI Caching
+
 #if !NO_URICACHE
         private static IUriLoaderCache _cache = new UriLoaderCache();
 
@@ -56,14 +57,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public static String CacheDirectory
         {
-            get
-            {
-                return _cache.CacheDirectory;
-            }
-            set
-            {
-                _cache.CacheDirectory = value;
-            }
+            get { return _cache.CacheDirectory; }
+            set { _cache.CacheDirectory = value; }
         }
 
         /// <summary>
@@ -74,14 +69,8 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static TimeSpan CacheDuration
         {
-            get
-            {
-                return _cache.CacheDuration;
-            }
-            set
-            {
-                _cache.CacheDuration = value;
-            }
+            get { return _cache.CacheDuration; }
+            set { _cache.CacheDuration = value; }
         }
 
         /// <summary>
@@ -92,10 +81,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static IUriLoaderCache Cache
         {
-            get
-            {
-                return _cache;
-            }
+            get { return _cache; }
             set
             {
                 if (value != null)
@@ -121,6 +107,7 @@ namespace VDS.RDF.Parsing
             return _cache.HasLocalCopy(temp, false);
         }
 #endif
+
         #endregion
 
         /// <summary>
@@ -128,14 +115,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public static String UserAgent
         {
-            get
-            {
-                return _userAgent;
-            }
-            set
-            {
-                _userAgent = value;
-            }
+            get { return _userAgent; }
+            set { _userAgent = value; }
         }
 
 #if !SILVERLIGHT
@@ -232,7 +213,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IRdfHandler handler, Uri u)
         {
-            UriLoader.Load(handler, u, (IRdfReader)null);
+            UriLoader.Load(handler, u, (IRdfReader) null);
         }
 
         /// <summary>
@@ -323,7 +304,7 @@ namespace VDS.RDF.Parsing
 
                 //Set-up the Request
                 HttpWebRequest httpRequest;
-                httpRequest = (HttpWebRequest)WebRequest.Create(u);
+                httpRequest = (HttpWebRequest) WebRequest.Create(u);
 
                 //Want to ask for RDF formats
                 if (parser != null)
@@ -358,7 +339,7 @@ namespace VDS.RDF.Parsing
 
                 Tools.HttpDebugRequest(httpRequest);
 
-                using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
+                using (HttpWebResponse httpResponse = (HttpWebResponse) httpRequest.GetResponse())
                 {
                     Tools.HttpDebugResponse(httpResponse);
 
@@ -411,10 +392,10 @@ namespace VDS.RDF.Parsing
                     parser.Warning += RaiseWarning;
 #if !NO_URICACHE
                     //To do caching we ask the cache to give us a handler and then we tie it to
-if (Options.UriLoaderCaching)
+                    if (IOOptions.UriLoaderCaching)
 
                     {
- IRdfHandler cacheHandler = _cache.ToCache(u, UriFactory.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                        IRdfHandler cacheHandler = _cache.ToCache(u, UriFactory.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
 
                         if (cacheHandler != null)
                         {
@@ -440,14 +421,13 @@ if (Options.UriLoaderCaching)
                     catch
                     {
                         //If we were trying to cache the response and something went wrong discard the cached copy
-                        if (Options.UriLoaderCaching)
+                        if (IOOptions.UriLoaderCaching)
                         {
                             _cache.RemoveETag(u);
- _cache.RemoveETag(UriFactory.StripUriFragment(httpResponse.ResponseUri));
+                            _cache.RemoveETag(UriFactory.StripUriFragment(httpResponse.ResponseUri));
 
                             _cache.RemoveLocalCopy(u);
- _cache.RemoveLocalCopy(UriFactory.StripUriFragment(httpResponse.ResponseUri));
-
+                            _cache.RemoveLocalCopy(UriFactory.StripUriFragment(httpResponse.ResponseUri));
                         }
                         throw;
                     }
@@ -463,11 +443,11 @@ if (Options.UriLoaderCaching)
             {
                 if (webEx.Response != null)
                 {
-                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    Tools.HttpDebugResponse((HttpWebResponse) webEx.Response);
                 }
 
 #if !NO_URICACHE
-                if (Options.UriLoaderCaching)
+                if (IOOptions.UriLoaderCaching)
                 {
                     if (webEx.Response != null)
                     {
@@ -551,7 +531,7 @@ if (Options.UriLoaderCaching)
         /// Raises warning messages
         /// </summary>
         /// <param name="message">Warning Message</param>
-        static void RaiseWarning(String message)
+        private static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

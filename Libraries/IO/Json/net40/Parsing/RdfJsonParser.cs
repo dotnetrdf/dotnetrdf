@@ -27,6 +27,8 @@ using System;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 
@@ -219,15 +221,7 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         String subjValue = context.Input.Value.ToString();
-                        INode subjNode;
-                        if (subjValue.StartsWith("_:"))
-                        {
-                            subjNode = context.Handler.CreateBlankNode(subjValue.Substring(subjValue.IndexOf(':') + 1));
-                        }
-                        else
-                        {
-                            subjNode = context.Handler.CreateUriNode(UriFactory.Create(subjValue));
-                        }
+                        INode subjNode = subjValue.StartsWith("_:") ? context.BlankNodeGenerator.CreateBlankNode(subjValue.Substring(subjValue.IndexOf(':') + 1)) : context.Handler.CreateUriNode(UriFactory.Create(subjValue));
 
                         this.ParsePredicateObjectList(context, subjNode);
                     }
@@ -412,7 +406,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (nodeType.Equals("bnode"))
                     {
-                        obj = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
+                        obj = context.BlankNodeGenerator.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
                     }
                     else if (nodeType.Equals("literal"))
                     {

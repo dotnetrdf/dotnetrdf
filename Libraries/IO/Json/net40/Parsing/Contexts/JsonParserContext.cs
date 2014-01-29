@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using Newtonsoft.Json;
+using VDS.RDF.Graphs;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Contexts
 {
@@ -32,7 +34,7 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class JsonParserContext : BaseParserContext
     {
-        private JsonTextReader _input;
+        private readonly JsonTextReader _input;
 
         /// <summary>
         /// Creates a new JSON Parser Context
@@ -40,10 +42,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="g">Graph to parse into</param>
         /// <param name="input">JSON Text Reader to read from</param>
         public JsonParserContext(IGraph g, JsonTextReader input)
-            : base(g)
-        {
-            this._input = input;
-        }
+            : this(new GraphHandler(g), input) { }
 
         /// <summary>
         /// Creates a new JSON Parser Context
