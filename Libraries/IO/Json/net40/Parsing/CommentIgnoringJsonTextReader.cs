@@ -23,10 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -53,25 +49,20 @@ namespace VDS.RDF.Parsing
             //Read next token
             bool result = base.Read();
 
-            if (result)
-            {
-                //Keep reading next Token while Token is a Comment
-                while (base.TokenType == JsonToken.Comment)
-                {
-                    result = base.Read();
+            //Couldn't read to start with as already at end of stream
+            if (!result) return false;
 
-                    //If we hit end of stream return false
-                    if (!result) return false;
-                }
-
-                //If we get here we've read a Token which isn't a comment
-                return true;
-            }
-            else
+            //Keep reading next Token while Token is a Comment
+            while (base.TokenType == JsonToken.Comment)
             {
-                //Couldn't read to start with as already at end of stream
-                return false;
+                result = base.Read();
+
+                //If we hit end of stream return false
+                if (!result) return false;
             }
+
+            //If we get here we've read a Token which isn't a comment
+            return true;
         }
     }
 }

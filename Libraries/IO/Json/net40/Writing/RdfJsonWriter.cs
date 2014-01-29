@@ -26,12 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
 {
@@ -106,14 +104,7 @@ namespace VDS.RDF.Writing
 
             //Get the Writer and Configure Options
             JsonTextWriter writer = new JsonTextWriter(output);
-            if (this._prettyprint)
-            {
-                writer.Formatting = Newtonsoft.Json.Formatting.Indented;
-            }
-            else
-            {
-                writer.Formatting = Newtonsoft.Json.Formatting.None;
-            }
+            writer.Formatting = this._prettyprint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
 
             //Start the overall Object which represents the Graph
             writer.WriteStartObject();
@@ -274,23 +265,6 @@ namespace VDS.RDF.Writing
             //Terminate the Object which represents the Graph
             writer.WriteEndObject();
         }
-
-        /// <summary>
-        /// Internal Helper method for raising the Warning event
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        private void RaiseWarning(String message)
-        {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being output
-        /// </summary>
-        public event RdfWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces

@@ -38,7 +38,8 @@ namespace VDS.RDF.Parsing
     /// Parser for RDF/JSON Syntax
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
-    public class RdfJsonParser : IRdfReader 
+    public class RdfJsonParser 
+        : IRdfReader 
     {
         /// <summary>
         /// Read RDF/JSON Syntax from some Stream into a Graph
@@ -63,20 +64,6 @@ namespace VDS.RDF.Parsing
 
             this.Load(new GraphHandler(g), input);
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Read RDF/Json Syntax from some File into a Graph
-        /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(new GraphHandler(g), filename);
-        }
-#endif
 
         /// <summary>
         /// Read RDF/JSON Syntax from some Stream using a RDF Handler
@@ -115,10 +102,6 @@ namespace VDS.RDF.Parsing
             {
                 this.Parse(handler, input);
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 try
@@ -133,20 +116,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Read RDF/JSON Syntax from a file using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
         /// <summary>
         /// Internal top level Parse method which parses the Json
         /// </summary>
@@ -155,7 +124,6 @@ namespace VDS.RDF.Parsing
         private void Parse(IRdfHandler handler, TextReader input)
         {
             JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
-
             try
             {
                 context.Handler.StartRdf();
@@ -321,8 +289,8 @@ namespace VDS.RDF.Parsing
         /// <param name="pred">Predicate of Triples which comes form the Grandparent Json Object</param>
         private void ParseObject(JsonParserContext context, INode subj, INode pred)
         {
-            String token, nodeValue, nodeType, nodeLang, nodeDatatype;
-            nodeValue = nodeType = nodeLang = nodeDatatype = null;
+            String nodeType, nodeLang, nodeDatatype;
+            string nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
             PositionInfo startPos = context.CurrentPosition;
 
@@ -335,7 +303,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (context.Input.TokenType == JsonToken.PropertyName)
                         {
-                            token = context.Input.Value.ToString().ToLower();
+                            String token = context.Input.Value.ToString().ToLower();
 
                             //Check that we get a Property Value as a String
                             context.Input.Read();
@@ -463,7 +431,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Error Message</param>
         /// <param name="startPos">Start Position</param>
         /// <returns></returns>
-        private RdfParseException Error(JsonParserContext context, String message, PositionInfo startPos)
+        private static RdfParseException Error(JsonParserContext context, String message, PositionInfo startPos)
         {
             PositionInfo info = context.GetPositionRange(startPos);
             StringBuilder error = new StringBuilder();
