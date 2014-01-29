@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\RdfIOAttribute.cs" />
     <Compile Include="Compatibility\SilverlightIOCompatibility.cs" />
     <Compile Include="IOCallbacks.cs" />
     <Compile Include="IOExceptions.cs" />
