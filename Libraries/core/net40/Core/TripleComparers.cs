@@ -131,7 +131,7 @@ namespace VDS.RDF
     /// Abstract base class for Triple Comparers which provide for comparisons using different node comparers
     /// </summary>
     public abstract class BaseTripleComparer
-        : IComparer<Triple>
+        : IComparer<Triple>, IEqualityComparer<Triple>
     {
         /// <summary>
         /// Node Comparer
@@ -161,6 +161,22 @@ namespace VDS.RDF
         /// <param name="y">Triple</param>
         /// <returns></returns>
         public abstract int Compare(Triple x, Triple y);
+
+        /// <summary>
+        /// Returns whether two Triples are equal
+        /// </summary>
+        /// <param name="x">Triple</param>
+        /// <param name="y">Triple</param>
+        /// <returns></returns>
+        public virtual bool Equals(Triple x, Triple y)
+        {
+            return this._nodeComparer.Compare(x.Subject, y.Subject) == 0 && this._nodeComparer.Compare(x.Predicate, y.Predicate) == 0 && this._nodeComparer.Compare(x.Object, y.Object) == 0;
+        }
+
+        public virtual int GetHashCode(Triple t)
+        {
+            return t.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -201,6 +217,7 @@ namespace VDS.RDF
             }
             return c;
         }
+
     }
 
     /// <summary>
