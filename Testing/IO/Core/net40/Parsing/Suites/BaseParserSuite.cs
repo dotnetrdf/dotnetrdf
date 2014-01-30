@@ -158,6 +158,10 @@ namespace VDS.RDF.Parsing.Suites
                 Assert.Fail("Failed to load Manifest " + file);
             }
 
+            manifest.Namespaces.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
+            manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+
             const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> 
 prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
@@ -171,21 +175,26 @@ WHERE
   OPTIONAL { ?test mf:result ?result }
 }";
 
-            SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
-            if (tests == null) Assert.Fail("Failed to find tests in the Manifest");
-
-            foreach (SparqlResult test in tests)
+            foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {
-                INode nameNode, commentNode, resultNode;
-                String name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
-                INode inputNode = test["input"];
-                String input = this.GetFile(inputNode);
-                String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+                Triple nameTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:name")).FirstOrDefault();
+                String name = nameTriple != null && nameTriple.Object.NodeType == NodeType.Literal ? nameTriple.Object.Value : null;
+
+                Triple inputTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Object, manifest.CreateUriNode("qt:data")).FirstOrDefault();
+                if (inputTriple == null) continue;
+                String input = this.GetFile(inputTriple.Object);
+
+                Triple commentTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("rdfs:comment")).FirstOrDefault();
+                String comment = commentTriple != null && commentTriple.Object.NodeType == NodeType.Literal ? commentTriple.Object.Value : null;
+
+                Triple resultsTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:result")).FirstOrDefault();
+                String results = resultsTriple != null && resultsTriple.Object.NodeType == NodeType.Literal ? this.GetFile(resultsTriple.Object) : null;
 
                 this.RunTest(name, comment, input, results, shouldParse);
             }
-        }/// <summary>
+        }
+        
+        /// <summary>
         /// Runs all tests found in the manifest, determines whether a test should pass/fail based on the test information
         /// </summary>
         /// <param name="file">Manifest file</param>
@@ -212,6 +221,9 @@ WHERE
                 Assert.Fail("Failed to load Manifest " + file);
             }
             manifest.Namespaces.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            manifest.Namespaces.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
+            manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
 
             const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
@@ -229,42 +241,51 @@ WHERE
   OPTIONAL { ?test rdfs:comment ?comment }
   OPTIONAL { ?test mf:result ?result }
 }";
-
-            SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
-            if (tests == null) Assert.Fail("Failed to find tests in the Manifest");
-
-            foreach (SparqlResult test in tests)
+            foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {
-                INode nameNode, inputNode, commentNode, resultNode;
-                String name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
-                inputNode = test["input"];
-                String input = this.GetFile(inputNode);
-                String comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                String results = test.TryGetBoundValue("result", out resultNode) ? this.GetFile(resultNode) : null;
+                Triple nameTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:name")).FirstOrDefault();
+                String name = nameTriple != null && nameTriple.Object.NodeType == NodeType.Literal ? nameTriple.Object.Value : null;
 
-                //Determine expected outcome
-                //Evaluation tests will have results and should always parse succesfully
+                String input;
+                if (testTriple.Object.NodeType == NodeType.Blank)
+                {
+                    Triple inputTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Object, manifest.CreateUriNode("qt:data")).FirstOrDefault();
+                    if (inputTriple == null) continue;
+                    input = this.GetFile(inputTriple.Object);
+                }
+                else
+                {
+                    input = this.GetFile(testTriple.Object);
+                }
+
+                Triple commentTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("rdfs:comment")).FirstOrDefault();
+                String comment = commentTriple != null && commentTriple.Object.NodeType == NodeType.Literal ? commentTriple.Object.Value : null;
+
+                Triple resultsTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:result")).FirstOrDefault();
+                String results = resultsTriple != null && resultsTriple.Object.NodeType == NodeType.Literal ? this.GetFile(resultsTriple.Object) : null;
+
                 bool? shouldParse = results != null ? true : false;
                 if (!shouldParse.Value)
                 {
                     //No results declared so may be a positive/negative syntax test
                     //Inspect returned type to determine, if no type assume test should fail
-                    INode type;
-                    if (test.TryGetBoundValue("type", out type))
+                    Triple typeTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("rdf:type")).FirstOrDefault();
+                    if (typeTriple == null)
                     {
-                        if (positiveSyntaxTests.Contains(type))
-                        {
-                            shouldParse = true;
-                        }
-                        else if (negativeSyntaxTests.Contains(type))
-                        {
-                            shouldParse = false;
-                        }
-                        else
-                        {
-                            //Unable to determine what the expected result is
-                            shouldParse = null;
-                        }
+                        shouldParse = null;
+                    }
+                    else if (positiveSyntaxTests.Contains(typeTriple.Object))
+                    {
+                        shouldParse = true;
+                    }
+                    else if (negativeSyntaxTests.Contains(typeTriple.Object))
+                    {
+                        shouldParse = false;
+                    }
+                    else
+                    {
+                        //Unable to determine what the expected result is
+                        shouldParse = null;
                     }
                 }
 

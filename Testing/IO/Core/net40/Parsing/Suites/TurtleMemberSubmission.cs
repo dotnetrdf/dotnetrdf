@@ -29,8 +29,10 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
@@ -58,92 +60,86 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
         }
 
+        // TODO Use a handler that captures Base URI for checking
+
         [Test]
         public void ParsingTurtleOriginalBaseTurtleStyle1()
         {
             //Dot required
-            String graph = "@base <http://example.org/> .";
+            const string graph = "@base <http://example.org/> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseTurtleStyle2()
         {
             //Missing dot
-            String graph = "@base <http://example.org/>";
+            const string graph = "@base <http://example.org/>";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test,ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseSparqlStyle1()
         {
             //Forbidden in Original Turtle
-            String graph = "BASE <http://example.org/> .";
+            const string graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalBaseSparqlStyle2()
         {
             //Forbidden in Original Turtle
-            String graph = "BASE <http://example.org/>";
+            const string graph = "BASE <http://example.org/>";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
         [Test]
         public void ParsingTurtleOriginalPrefixTurtleStyle1()
         {
             //Dot required
-            String graph = "@prefix ex: <http://example.org/> .";
+            const string graph = "@prefix ex: <http://example.org/> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixTurtleStyle2()
         {
             //Missing dot
-            String graph = "@prefix ex: <http://example.org/>";
+            const string graph = "@prefix ex: <http://example.org/>";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixSparqlStyle1()
         {
             //Forbidden in Original Turtle
-            String graph = "PREFIX ex: <http://example.org/> .";
+            const string graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingTurtleOriginalPrefixSparqlStyle2()
         {
             //Forbidden in Original Turtle
-            String graph = "PREFIX ex: <http://example.org/>";
+            const string graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
             this.Parser.Load(g, new StringReader(graph));
 
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+            Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
         }
 
         [Test]

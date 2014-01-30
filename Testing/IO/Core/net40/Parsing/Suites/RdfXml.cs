@@ -29,6 +29,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -63,10 +64,9 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [Test]
-        public void ParsingRdfXmlIDsDOM()
+        public void ParsingRdfXmlIdsDom()
         {
             IGraph g = new Graph();
-            g.BaseUri = BaseRdfParserSuite.BaseUri;
             this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
@@ -117,7 +117,6 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingRdfXmlIDsStreaming()
         {
             IGraph g = new Graph();
-            g.BaseUri = BaseRdfParserSuite.BaseUri;
             this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }

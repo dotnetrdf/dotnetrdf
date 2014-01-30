@@ -51,7 +51,6 @@
     <Compile Include="Parsing\Suites\BaseRdfParserSuite.cs" />
     <Compile Include="Parsing\Suites\N3.cs" />
     <Compile Include="Parsing\Suites\NTriples.cs" />
-    <Compile Include="Parsing\Suites\RdfA.cs" />
     <Compile Include="Parsing\Suites\RdfXml.cs" />
     <Compile Include="Parsing\Suites\TriG.cs" />
     <Compile Include="Parsing\Suites\TriX.cs" />
