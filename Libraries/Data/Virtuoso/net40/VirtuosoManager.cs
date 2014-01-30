@@ -774,7 +774,7 @@ namespace VDS.RDF.Storage
                 if (resultsHandler != null) resultsHandler.StartResults();
 
                 DataTable results = new DataTable();
-                results.Columns.CollectionChanged += new System.ComponentModel.CollectionChangeEventHandler(Columns_CollectionChanged);
+                results.Columns.CollectionChanged += Columns_CollectionChanged;
 
                 //See if the query can be parsed into a SparqlQuery object
                 //It might not since the user might use Virtuoso's extensions to Sparql in their query
@@ -838,7 +838,7 @@ namespace VDS.RDF.Storage
                                 //Expect a DataTable containing a single row and column which contains a boolean
 
                                 //Ensure Results Handler is not null
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean Result with a null SPARQL Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean Result with a null SPARQL Results Handler");
 
                                 if (results.Rows.Count == 1 && results.Columns.Count == 1)
                                 {
@@ -851,14 +851,7 @@ namespace VDS.RDF.Storage
                                     }
                                     else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
                                     {
-                                        if (r == 1)
-                                        {
-                                            resultsHandler.HandleBooleanResult(true);
-                                        }
-                                        else
-                                        {
-                                            resultsHandler.HandleBooleanResult(false);
-                                        }
+                                        resultsHandler.HandleBooleanResult(r == 1);
                                     }
                                     else
                                     {
@@ -879,7 +872,7 @@ namespace VDS.RDF.Storage
                                 //That string will be a Turtle serialization of the Graph
 
                                 //Ensure that RDF Handler is not null
-                                if (rdfHandler == null) throw new ArgumentNullException("Cannot handle a Graph result with a null RDF Handler");
+                                if (rdfHandler == null) throw new ArgumentNullException("rdfHandler","Cannot handle a Graph result with a null RDF Handler");
 
                                 if (results.Rows.Count == 1 && results.Columns.Count == 1)
                                 {
@@ -895,9 +888,29 @@ namespace VDS.RDF.Storage
                                         throw new RdfQueryException("Expected a valid Turtle serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but the result failed to parse", parseEx);
                                     }
                                 }
+                                else if (results.Columns.Count == 3)
+                                {
+                                    rdfHandler.StartRdf();
+                                    try
+                                    {
+                                        foreach (DataRow row in results.Rows)
+                                        {
+                                            INode s = this.LoadNode(rdfHandler, row[0]);
+                                            INode p = this.LoadNode(rdfHandler, row[1]);
+                                            INode o = this.LoadNode(rdfHandler, row[2]);
+                                            if (!rdfHandler.HandleTriple(new Triple(s, p, o))) break;
+                                        }
+                                        rdfHandler.EndRdf(true);
+                                    }
+                                    catch
+                                    {
+                                        rdfHandler.EndRdf(false);
+                                        throw;
+                                    }
+                                }
                                 else
                                 {
-                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count + "column(s)");
+                                    throw new RdfQueryException("Unexpected results data received for a CONSTRUCT/DESCRIBE query (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count + " column(s)");
                                 }
                                 break;
 
@@ -908,7 +921,7 @@ namespace VDS.RDF.Storage
                             case SparqlQueryType.SelectDistinct:
                             case SparqlQueryType.SelectReduced:
                                 //Ensure Results Handler is not null
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL Results with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
                                 //Get Result Variables
                                 List<SparqlVariable> resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
@@ -969,10 +982,9 @@ namespace VDS.RDF.Storage
                         //Try to detect the return type based on the DataTable configuration
                         if (results.Rows.Count == 0 && results.Columns.Count > 0)
                         {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL Results with a null Results Handler");
+                            if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
                             //No Rows but some columns implies empty SELECT results
-                            SparqlResultSet rset = new SparqlResultSet();
                             foreach (DataColumn col in results.Columns)
                             {
                                 if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
@@ -996,12 +1008,12 @@ namespace VDS.RDF.Storage
                             else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
                             {
                                 //Parseable Boolean so ASK Results
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean result with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean result with a null Results Handler");
                                 resultsHandler.HandleBooleanResult(result);
                             }
                             else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
                             {
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                                 //Parseable Integer so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
@@ -1011,7 +1023,7 @@ namespace VDS.RDF.Storage
                             }
                             else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
                             {
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                                 //Parseable Single so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
@@ -1021,7 +1033,7 @@ namespace VDS.RDF.Storage
                             }
                             else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
                             {
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                                 //Parseable Double so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
@@ -1031,6 +1043,8 @@ namespace VDS.RDF.Storage
                             }
                             else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
                             {
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
                                 //Parseable Decimal so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 Set s = new Set();
@@ -1049,7 +1063,7 @@ namespace VDS.RDF.Storage
                                 }
                                 catch (RdfParseException)
                                 {
-                                    if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                                    if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                                     //If it failed to parse then it might be the result of one of the aggregate
                                     //functions that Virtuoso extends Sparql with
@@ -1066,7 +1080,7 @@ namespace VDS.RDF.Storage
                             //Any other number of rows/columns we have to assume that it's normal SELECT results
                             //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
 
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                             //Get Result Variables
                             List<String> vars = new List<string>();
@@ -1115,7 +1129,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
+        static void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
         {
             Type reqType = typeof(Object);
             if (e.Action != System.ComponentModel.CollectionChangeAction.Add) return;
