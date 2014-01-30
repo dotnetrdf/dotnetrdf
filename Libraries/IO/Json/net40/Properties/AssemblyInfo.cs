@@ -1,7 +1,10 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using VDS.RDF.Attributes;
+using VDS.RDF.Parsing;
+using VDS.RDF.Writing;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -36,4 +39,5 @@ using VDS.RDF.Attributes;
 [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyFileVersion("1.9.0.0")]
 
-[assembly: RdfIO(SyntaxName = "RDF/JSON", Encoding = "utf-8", CanonicalMimeType = "application/rdf+json", CanonicalFileExtension = ".rj")]
+[assembly: RdfIO(SyntaxName = "RDF/JSON", Encoding = "utf-8", CanonicalMimeType = "application/rdf+json", MimeTypes = new string[]{ "application/json", "text/json" }, CanonicalFileExtension = ".rj", ParserType = typeof(RdfJsonParser), WriterType = typeof(RdfJsonWriter))]
+[assembly: RdfIO(SyntaxName = "GZipped RDF/JSON", Encoding = "utf-8", CanonicalMimeType = "application/rdf+json", MimeTypes = new string[] { "application/json", "text/json" }, CanonicalFileExtension = ".rj.gz", ParserType = typeof(GZippedRdfJsonParser), WriterType = typeof(GZippedRdfJsonWriter))]

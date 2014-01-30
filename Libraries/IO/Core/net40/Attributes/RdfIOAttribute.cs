@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace VDS.RDF.Attributes
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
-    public abstract class RdfIOAttribute
+    public class RdfIOAttribute
         : Attribute
     {
         public String SyntaxName { get; set; }
@@ -13,11 +14,11 @@ namespace VDS.RDF.Attributes
 
         public String Encoding { get; set; }
 
-        public IEnumerable<String> FileExtensions { get; set; }
+        public String[] FileExtensions { get; set; }
 
         public String CanonicalFileExtension { get; set; }
 
-        public IEnumerable<String> MimeTypes { get; set; }
+        public String[] MimeTypes { get; set; }
 
         public String CanonicalMimeType { get; set; }
 
@@ -33,7 +34,11 @@ namespace VDS.RDF.Attributes
             List<String> fileExts = new List<string>();
             if (!ReferenceEquals(this.CanonicalFileExtension, null)) fileExts.Add(this.CanonicalFileExtension);
             if (!ReferenceEquals(this.FileExtensions, null)) fileExts.AddRange(this.FileExtensions);
-            return new MimeTypeDefinition(this.SyntaxName, this.FormatUri, mimeTypes, fileExts, this.ParserType, this.WriterType);
+            MimeTypeDefinition definition = new MimeTypeDefinition(this.SyntaxName, this.FormatUri, mimeTypes, fileExts, this.ParserType, this.WriterType);
+            definition.CanonicalFileExtension = this.CanonicalFileExtension;
+            definition.CanonicalMimeType = this.CanonicalMimeType;
+            definition.Encoding = System.Text.Encoding.GetEncoding(this.Encoding);
+            return definition;
         }
     }
 }

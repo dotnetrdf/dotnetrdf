@@ -357,7 +357,7 @@ namespace VDS.RDF
             {
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    foreach (RdfIOAttribute attribute in assembly.GetCustomAttributes(false).OfType<RdfIOAttribute>())
+                    foreach (RdfIOAttribute attribute in assembly.GetCustomAttributes(typeof(RdfIOAttribute), true))
                     {
                         _mimeTypes.Add(attribute.GetDefinition());
                     }
