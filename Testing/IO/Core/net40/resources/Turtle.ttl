@@ -1,0 +1,32 @@
+﻿@base <http://example.org/>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://example.org/>.
+
+:one a rdfs:Class;
+     rdfs:label "Example Literal";
+     rdfs:label """Example
+     
+Long Literal""".
+
+:two :age 23;
+	 :age "23.6"^^xsd:decimal.
+	 
+:three :name "Name";
+	   :name "Nom"@fr.
+	   
+:four :male false;
+	  :female true .
+	  
+:five :property :value.
+
+:six :property "value"^^:customDataType;
+	 :property "2009-08-25T13:15:00+01:00"^^xsd:dateTime.
+
+[] a :BlankNode.
+
+[:property :value; :property :otherValue] a :BlankNodeCollection.
+
+(:item1 :item2 :item3) a :Collection.

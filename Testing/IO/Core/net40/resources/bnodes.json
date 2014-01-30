@@ -1,0 +1,17 @@
+﻿
+{ "head": 
+  { 
+	"link": [], 
+	"vars": ["s"] 
+  },
+  "results": 
+  {
+   "distinct": false, "ordered": true, "bindings": 
+     [
+		{ "s": { "type": "bnode", "value": "nodeID://bnode" } }	,
+		{ "s": { "type": "bnode", "value": "_:bnode" } } ,
+		{ "s": { "type": "bnode", "value": "someurischeme:somesubdivision:bnode" } } ,
+		{ "s": { "type": "bnode", "value": "bnode" } }
+     ] 
+  } 
+}

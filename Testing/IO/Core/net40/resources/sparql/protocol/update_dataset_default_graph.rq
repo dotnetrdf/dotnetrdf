@@ -1,0 +1,5 @@
+ASK {
+    GRAPH <http://example.org/protocol-update-dataset-test/> {
+        <http://kasei.us/2009/09/sparql/data/data1.rdf> a <http://purl.org/dc/terms/BibliographicResource>
+    }
+}

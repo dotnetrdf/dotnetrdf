@@ -1,0 +1,10 @@
+PREFIX parl:<http://data.parliament.uk/schemas/parl#>
+PREFIX dcterms:<http://purl.org/dc/terms/>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX dc:<http://purl.org/dc/terms/>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf:<http://xmlns.com/foaf/0.1/>
+PREFIX esid:<http://data.parliament.uk/schemas/esid#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select * from named <file://MCLords.rdf> where {graph <file://MCLords.rdf> {?s ?p ?o}}

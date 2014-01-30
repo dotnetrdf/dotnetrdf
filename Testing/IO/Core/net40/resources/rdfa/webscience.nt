@@ -1,0 +1,15 @@
+<http://www.webscience.org/home.html> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://webscience.org/style/site.css>.
+<http://www.webscience.org/home.html> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://webscience.org/style/reset-fonts-grids.css>.
+<http://www.webscience.org/home.html> <http://www.w3.org/1999/xhtml/vocab#stylesheet> <http://webscience.org/ldf.css>.
+<http://webscience.org/WST> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Organization>.
+<http://webscience.org/WST> <http://xmlns.com/foaf/0.1/name> "The Web Science Trust"@en.
+<http://webscience.org/WST> <http://xmlns.com/foaf/0.1/holdsAccount> <http://webscience.org/WST#twitter>.
+<http://webscience.org/WST> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://webscience.org/people.rdf>.
+<http://webscience.org/WST> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://webscience.org/news.rdf>.
+<http://webscience.org/WST> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://webscience.org/events.rdf>.
+<http://webscience.org/WST> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://webscience.org/orgs.rdf>.
+<http://webscience.org/WST> <http://xmlns.com/foaf/0.1/homepage> <http://webscience.org/>.
+<http://webscience.org/WST#twitter> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/OnlineAccount>.
+<http://webscience.org/WST#twitter> <http://xmlns.com/foaf/0.1/accountName> "websciencetrust"@en.
+<http://webscience.org/WST#twitter> <http://xmlns.com/foaf/0.1/accountServiceHomepage> <http://www.twitter.com>.
+

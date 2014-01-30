@@ -1,0 +1,4 @@
+ASK WHERE {
+	?x0 <http://purl.org/dc/elements/1.1/creator> "Fyodor Dostoevsky" .
+	?x0 <http://purl.org/dc/elements/1.1/source> <urn:isbn:0140449132> .
+}

@@ -1,0 +1,11 @@
+﻿SELECT DISTINCT ?p ?v ?g ?c WHERE 
+{  <http://Mary> ?p ?v .
+    OPTIONAL 
+    { 
+      { ?v a ?c }
+      UNION
+      { GRAPH ?g {  <http://Mary> a ?v  } } 
+      UNION
+      { GRAPH ?g {  ?v a ?c  } }
+    }
+}

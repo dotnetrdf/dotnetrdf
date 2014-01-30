@@ -29,6 +29,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using VDS.RDF.Graphs;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -67,7 +68,7 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.LoadFromFile(@"resources\\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
             Assert.IsFalse(g.IsEmpty);
-            Assert.AreEqual(1, g.Triples.Count);
+            Assert.AreEqual(1, g.Count);
         }
     }
 }

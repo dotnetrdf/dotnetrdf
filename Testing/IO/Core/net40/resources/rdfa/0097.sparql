@@ -1,0 +1,7 @@
+# This test should result in a 'NO', i.e. no triples should be generated from the XHTML+RDFa input document.
+ASK WHERE { 
+	<http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0097.xhtml> <http://xmlns.com/foaf/0.1/knows> _:a .
+	_:a <http://xmlns.com/foaf/0.1/knows> _:b .
+	_:b <http://xmlns.com/foaf/0.1/knows> _:c .
+	_:c <http://xmlns.com/foaf/0.1/name> "Ivan Herman" .
+}

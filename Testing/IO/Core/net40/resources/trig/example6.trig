@@ -1,0 +1,32 @@
+
+
+# TriG Example Document 6
+# Uses all forms of valid numberic literals
+
+@prefix ex: <http://www.example.org/vocabulary#> .
+@prefix : <http://www.example.org/exampleDocument#> .
+
+:G1 = { ex:thing ex:value 12345 , 
+							123.45 , 
+							-123.45,
+							+123.45,
+							123.4e5,
+							-123.4e5,
+							+123.4e5,
+							123.4e-5,
+							123.4e+5,
+							-123.4e+5,
+							-123.4e-5,
+							+123.4e+5,
+							+123.4e-5,
+							.4e5,
+							.4e+5,
+							.4e-5,
+							-.4e5,
+							+.4e5,
+							-.4e+5,
+							-.4e-5,
+							+.4e+5,
+							+.4e-5
+							
+		}

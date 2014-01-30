@@ -1,0 +1,16 @@
+﻿@prefix : <http://jacek.gajek.rpg/>.
+
+:north :inverseOf :south.
+:west :inverseOf :east.
+ 
+:karczma a :scene;
+	:south :trakt.
+ 
+:trakt a :scene;
+	:south :karczma. # 'south' instead of 'north'
+
+
+ :trakt :east :pole. #<- (commented out)
+ 
+:pole a :scene;
+	:west :trakt. # <- bad, because (:trakt :east :pole) is commented out
