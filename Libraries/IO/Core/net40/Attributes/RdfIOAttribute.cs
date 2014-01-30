@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Attributes
 {
@@ -26,5 +24,16 @@ namespace VDS.RDF.Attributes
         public Type ParserType { get; set; }
 
         public Type WriterType { get; set; }
+
+        public MimeTypeDefinition GetDefinition()
+        {
+            List<String> mimeTypes = new List<string>();
+            if (!ReferenceEquals(this.CanonicalMimeType, null)) mimeTypes.Add(this.CanonicalMimeType);
+            if (!ReferenceEquals(this.MimeTypes, null)) mimeTypes.AddRange(this.MimeTypes);
+            List<String> fileExts = new List<string>();
+            if (!ReferenceEquals(this.CanonicalFileExtension, null)) fileExts.Add(this.CanonicalFileExtension);
+            if (!ReferenceEquals(this.FileExtensions, null)) fileExts.AddRange(this.FileExtensions);
+            return new MimeTypeDefinition(this.SyntaxName, this.FormatUri, mimeTypes, fileExts, this.ParserType, this.WriterType);
+        }
     }
 }

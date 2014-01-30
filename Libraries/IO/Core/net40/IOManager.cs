@@ -27,7 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using VDS.RDF.Attributes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
@@ -273,80 +275,95 @@ namespace VDS.RDF
         {
             lock (_initLock)
             {
-                if (!_init)
-                {
-                    _mimeTypes = new List<MimeTypeDefinition>();
+                if (_init) return;
+                _mimeTypes = new List<MimeTypeDefinition>();
 
-                    //Define NTriples
-                    MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), typeof(NTriplesWriter));
+                //Define NTriples
+                MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), typeof(NTriplesWriter));
 #if !SILVERLIGHT
-                    ntriples.Encoding = Encoding.ASCII;
+                ntriples.Encoding = Encoding.ASCII;
 #endif
-                    _mimeTypes.Add(ntriples);
+                _mimeTypes.Add(ntriples);
 #if !NO_COMPRESSION
-                    MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), typeof(GZippedNTriplesWriter));
+                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), typeof(GZippedNTriplesWriter));
 #if !SILVERLIGHT
-                    ntriplesGZipped.Encoding = Encoding.ASCII;
+                ntriplesGZipped.Encoding = Encoding.ASCII;
 #endif
-                    _mimeTypes.Add(ntriplesGZipped);
+                _mimeTypes.Add(ntriplesGZipped);
 #endif
 
-                    //Define Turtle
-                    _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), typeof(CompressingTurtleWriter)));
+                //Define Turtle
+                _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), typeof(CompressingTurtleWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), typeof(GZippedTurtleWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), typeof(GZippedTurtleWriter)));
 #endif
 
-                    //Define Notation 3
-                    _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), typeof(Notation3Writer)));
+                //Define Notation 3
+                _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), typeof(Notation3Writer)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), typeof(GZippedNotation3Writer)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), typeof(GZippedNotation3Writer)));
 #endif
 
-                    //Define NQuads
-                    _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, typeof(NQuadsParser), typeof(NQuadsWriter)));
+                //Define NQuads
+                _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, typeof(NQuadsParser), typeof(NQuadsWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped NQuads", NQuads, new String[] { DefaultNQuadsExtension + "." + DefaultGZipExtension }, typeof(GZippedNQuadsParser), typeof(GZippedNQuadsWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped NQuads", NQuads, new String[] { DefaultNQuadsExtension + "." + DefaultGZipExtension }, typeof(GZippedNQuadsParser), typeof(GZippedNQuadsWriter)));
 #endif
 
-                    //Define TriG
-                    _mimeTypes.Add(new MimeTypeDefinition("TriG", TriG, new String[] { DefaultTriGExtension }, typeof(TriGParser), typeof(TriGWriter)));
+                //Define TriG
+                _mimeTypes.Add(new MimeTypeDefinition("TriG", TriG, new String[] { DefaultTriGExtension }, typeof(TriGParser), typeof(TriGWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped TriG", TriG, new String[] { DefaultTriGExtension + "." + DefaultGZipExtension }, typeof(GZippedTriGParser), typeof(GZippedTriGWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriG", TriG, new String[] { DefaultTriGExtension + "." + DefaultGZipExtension }, typeof(GZippedTriGParser), typeof(GZippedTriGWriter)));
 #endif
 
-                    //Define TriX
-                    _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, typeof(TriXParser), typeof(TriXWriter)));
+                //Define TriX
+                _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, typeof(TriXParser), typeof(TriXWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped TriX", TriX, new String[] { DefaultTriXExtension + "." + DefaultGZipExtension }, typeof(GZippedTriXParser), typeof(GZippedTriXWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriX", TriX, new String[] { DefaultTriXExtension + "." + DefaultGZipExtension }, typeof(GZippedTriXParser), typeof(GZippedTriXWriter)));
 #endif
-                    //Define RDF/XML
-                    _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), typeof(RdfXmlWriter)));
+                //Define RDF/XML
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), typeof(RdfXmlWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", null, RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), typeof(GZippedRdfXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", null, RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), typeof(GZippedRdfXmlWriter)));
 #endif
 
 
 
-                    //Define CSV
-                    _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, typeof(CsvWriter)));
+                //Define CSV
+                _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, typeof(CsvWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedCsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedCsvWriter)));
 #endif
 
-                    //Define TSV
-                    _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, typeof(TsvWriter)));
+                //Define TSV
+                _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, typeof(TsvWriter)));
 #if !NO_COMPRESSION
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTsvWriter)));
 #endif
 
-                    //Define GraphViz DOT
-                    _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, typeof(GraphVizWriter)));
+                //Define GraphViz DOT
+                _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, typeof(GraphVizWriter)));
 
-                    _init = true;
-                }
+                // Discover formats provided by other assemblies
+                ScanDefinitions();
+
+                _init = true;
             }
          }
+
+        public static void ScanDefinitions()
+        {
+            lock (_mimeTypes)
+            {
+                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    foreach (RdfIOAttribute attribute in assembly.GetCustomAttributes(false).OfType<RdfIOAttribute>())
+                    {
+                        _mimeTypes.Add(attribute.GetDefinition());
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
@@ -358,8 +375,9 @@ namespace VDS.RDF
         /// </remarks>
         public static void ResetDefinitions()
         {
-            if (_init)
+            lock (_initLock)
             {
+                if (!_init) return;
                 _init = false;
                 _mimeTypes.Clear();
                 Init();
