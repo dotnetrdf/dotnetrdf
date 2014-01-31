@@ -3,7 +3,6 @@
  * All rights reserved. 
  *******************************************************************************/
 using System.Collections.Generic;
-using org.topbraid.spin.util;
 using VDS.RDF;
 using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Util;

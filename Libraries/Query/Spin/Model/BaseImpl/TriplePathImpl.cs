@@ -3,14 +3,10 @@
  * All rights reserved. 
  *******************************************************************************/
 using System;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Model.visitor;
-using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Query.Paths;
-using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.SparqlUtil;
+using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -26,10 +22,10 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public void visit(IElementVisitor visitor)
-        {
-            visitor.visit(this);
-        }
+        //public void visit(IElementVisitor visitor)
+        //{
+        //    visitor.visit(this);
+        //}
 
 
         override public void print(ISparqlFactory p)

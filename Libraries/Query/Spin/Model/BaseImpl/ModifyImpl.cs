@@ -1,16 +1,11 @@
+using System.Collections.Generic;
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
  * All rights reserved. 
  *******************************************************************************/
 using System.Linq;
-using VDS.RDF;
-using System.Collections.Generic;
-using org.topbraid.spin.util;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {

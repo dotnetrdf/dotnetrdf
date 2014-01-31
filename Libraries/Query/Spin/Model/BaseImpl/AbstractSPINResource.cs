@@ -4,14 +4,10 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using org.topbraid.spin.util;
-using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.SparqlUtil;
+using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -140,45 +136,46 @@ namespace VDS.RDF.Query.Spin.Model
         protected void printNestedExpressionString(ISparqlFactory p, IResource node, bool force)
         {
             // TODO handle namespace prefixes
-            SPINExpressions.printExpressionString(p, node, true, force, new NamespaceMapper());
+            //SPINExpressions.printExpressionString(p, node, true, force, new NamespaceMapper());
         }
 
 
         protected void printPrefixes(ISparqlFactory context)
         {
-            if (context.getPrintPrefixes())
-            {
-                HashSet<IResource> uriResources = SPINUtil.getURIResources(this);
-                HashSet<Uri> namespaces = new HashSet<Uri>();
-                foreach (IResource uriResource in uriResources)
-                {
-                    // TODO gestion des prefixes
-                    //String ns = uriResource.getNameSpace();
-                    //namespaces.Add(ns);
-                }
-                INamespaceMapper prefix2Namespace = new NamespaceMapper();
-                foreach (Uri ns in namespaces)
-                {
-                    String prefix = getPrefix(ns, context);
-                    if (prefix != null)
-                    {
-                        prefix2Namespace.AddNamespace(prefix, ns);
-                    }
-                }
-                List<String> prefixes = new List<String>(prefix2Namespace.Prefixes);
-                prefixes.Sort();
-                foreach (String prefix in prefixes)
-                {
-                    context.printKeyword("PREFIX");
-                    context.print(" ");
-                    context.print(prefix);
-                    context.print(": <");
-                    String ns = prefix2Namespace.GetNamespaceUri(prefix).ToString();
-                    context.print(ns);
-                    context.print(">");
-                    context.println();
-                }
-            }
+            return;
+            //if (context.getPrintPrefixes())
+            //{
+            //    HashSet<IResource> uriResources = SPINUtil.getURIResources(this);
+            //    HashSet<Uri> namespaces = new HashSet<Uri>();
+            //    foreach (IResource uriResource in uriResources)
+            //    {
+            //        // TODO gestion des prefixes
+            //        //String ns = uriResource.getNameSpace();
+            //        //namespaces.Add(ns);
+            //    }
+            //    INamespaceMapper prefix2Namespace = new NamespaceMapper();
+            //    foreach (Uri ns in namespaces)
+            //    {
+            //        String prefix = getPrefix(ns, context);
+            //        if (prefix != null)
+            //        {
+            //            prefix2Namespace.AddNamespace(prefix, ns);
+            //        }
+            //    }
+            //    List<String> prefixes = new List<String>(prefix2Namespace.Prefixes);
+            //    prefixes.Sort();
+            //    foreach (String prefix in prefixes)
+            //    {
+            //        context.printKeyword("PREFIX");
+            //        context.print(" ");
+            //        context.print(prefix);
+            //        context.print(": <");
+            //        String ns = prefix2Namespace.GetNamespaceUri(prefix).ToString();
+            //        context.print(ns);
+            //        context.print(">");
+            //        context.println();
+            //    }
+            //}
         }
 
 

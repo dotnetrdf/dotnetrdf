@@ -3,10 +3,6 @@
  * All rights reserved. 
  *******************************************************************************/
 using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Model.visitor;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -19,10 +15,10 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void visit(IElementVisitor visitor)
-        {
-            visitor.visit(this);
-        }
+        //override public void visit(IElementVisitor visitor)
+        //{
+        //    visitor.visit(this);
+        //}
 
 
         // TODO PRINT CONTEXT SHOULD DEPEND ON THE MODEL TO AVOID ADDING RESOURCE-CONSUMMING ATTERNS WHERE NOT NEEDED

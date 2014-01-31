@@ -2,8 +2,8 @@
  * Copyright (c) 2009 TopQuadrant, Inc.
  * All rights reserved. 
  *******************************************************************************/
-using VDS.RDF.Query.Spin.Model.visitor;
 using VDS.RDF.Query.Spin.SparqlUtil;
+
 namespace VDS.RDF.Query.Spin.Model
 {
 
@@ -19,6 +19,6 @@ namespace VDS.RDF.Query.Spin.Model
          * Visits this with a given visitor.
          * @param visitor  the visitor to visit this with
          */
-        void visit(IElementVisitor visitor);
+        //void visit(IElementVisitor visitor);
     }
 }

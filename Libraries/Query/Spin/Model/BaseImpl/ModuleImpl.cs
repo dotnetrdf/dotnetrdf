@@ -4,13 +4,9 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using org.topbraid.spin.util;
 using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
+using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -126,7 +122,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public ICommand getBody()
         {
-            IResource node = ModulesUtil.getBody(this);
+            IResource node = null; //ModulesUtil.getBody(this);
             if (node is IResource)
             {
                 return SPINFactory.asCommand(node);

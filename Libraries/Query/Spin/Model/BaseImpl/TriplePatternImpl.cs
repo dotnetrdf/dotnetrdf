@@ -2,10 +2,6 @@
  * Copyright (c) 2009 TopQuadrant, Inc.
  * All rights reserved. 
  *******************************************************************************/
-using VDS.RDF.Query.Spin.Model.visitor;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -19,10 +15,9 @@ namespace VDS.RDF.Query.Spin.Model
 
         }
 
-
-        public void visit(IElementVisitor visitor)
-        {
-            visitor.visit(this);
-        }
+        //public void visit(IElementVisitor visitor)
+        //{
+        //    visitor.visit(this);
+        //}
     }
 }

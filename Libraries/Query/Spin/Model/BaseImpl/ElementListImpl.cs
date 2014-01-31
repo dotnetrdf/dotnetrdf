@@ -6,11 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Model.visitor;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -240,9 +236,9 @@ namespace VDS.RDF.Query.Spin.Model
             return sb.ToString();
         }
 
-        override public void visit(IElementVisitor visitor)
-        {
-            visitor.visit(this);
-        }
+        //override public void visit(IElementVisitor visitor)
+        //{
+        //    visitor.visit(this);
+        //}
     }
 }

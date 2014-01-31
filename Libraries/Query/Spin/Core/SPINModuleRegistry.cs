@@ -2,23 +2,11 @@
  * Copyright (c) 2009 TopQuadrant, Inc.
  * All rights reserved. 
  *******************************************************************************/
-using VDS.RDF.Query.Spin.Model;
-using org.topbraid.spin.util;
-using VDS.RDF.Query.Spin.LibraryOntology;
-
-using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF.Query.Spin.Model;
 using System;
-using VDS.RDF.Query.Spin;
 using System.Collections.Generic;
-using VDS.RDF;
-using System.Collections.ObjectModel;
-
-using org.topbraid.spin.util;
-using VDS.RDF.Query.PropertyFunctions;
-using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Core
 {

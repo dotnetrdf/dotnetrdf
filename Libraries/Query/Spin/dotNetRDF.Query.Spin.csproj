@@ -81,8 +81,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ISPINFactory.cs" />
-    <Compile Include="Core\ContainsVarChecker.cs" />
-    <Compile Include="Core\ObjectPropertiesGetter.cs" />
     <Compile Include="Model\IAbstractAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -276,28 +274,6 @@
     <Compile Include="Model\BaseImpl\ModifyImpl.cs" />
     <Compile Include="Model\BaseImpl\UpdateImpl.cs" />
     <Compile Include="Model\IUpdate.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\AbstractElementVisitor.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\AbstractExpressionVisitor.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\AbstractTriplesVisitor.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\ElementWalker.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\ElementWalkerWithDepth.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\ExpressionVisitors.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\ExpressionWalker.cs" />
-    <Compile Include="org\topbraid\spin\model\visitor\IElementVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="org\topbraid\spin\model\visitor\IExpressionVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="org\topbraid\spin\util\ModulesUtil.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="org\topbraid\spin\util\SPINExpressions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\SPINUtil.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Progress\NullProgressMonitor.cs" />
     <Compile Include="Progress\IProgressMonitor.cs" />
     <Compile Include="Progress\IRunnableWithProgress.cs" />
@@ -378,13 +354,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dotNetRDF.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="org\topbraid\spin\arq\" />
-    <Folder Include="org\topbraid\spin\constraints\" />
-    <Folder Include="org\topbraid\spin\core\" />
-    <Folder Include="org\topbraid\spin\system\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="SparqlTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
