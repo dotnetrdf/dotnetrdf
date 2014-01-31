@@ -199,7 +199,7 @@ namespace VDS.RDF.Parsing
 #if !PORTABLE
 
         [Test]
-        public void ParsingUriLoaderDBPedia()
+        public void ParsingUriLoaderDBPedia1()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
@@ -216,6 +216,66 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine(t.ToString(formatter));
                 }
                 Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia2()
+        {
+            IGraph g = new Graph();
+            UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
+
+            INodeFormatter formatter = new TurtleW3CFormatter();
+            foreach (INode p in g.Triples.Select(t => t.Predicate).Distinct())
+            {
+                Console.WriteLine("ToString() = " + p.ToString());
+                Console.WriteLine("Formatted = " + p.ToString(formatter));
+                Console.WriteLine("URI ToString() = " + ((IUriNode)p).Uri.ToString());
+            }
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingUriLoaderDBPedia3()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                // Expect this to error since DBPedia sends text/plain Content-Type but Turtle like content
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"));
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia4()
+        {
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
+                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                TestTools.ShowGraph(g);
             }
             finally
             {

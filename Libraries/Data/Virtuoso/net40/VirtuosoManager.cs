@@ -812,7 +812,7 @@ namespace VDS.RDF.Storage
                             {
                                 if (var.IsResultVariable)
                                 {
-                                    results.Columns.Add(var.Name, typeof(System.Object));
+                                    results.Columns.Add(var.Name, typeof (System.Object));
                                 }
                             }
                             break;
@@ -820,6 +820,8 @@ namespace VDS.RDF.Storage
 
                     try
                     {
+                        #region Valid SPARQL Query Handling
+
                         this.Open(false);
 
                         //Make the Query against Virtuoso
@@ -895,7 +897,7 @@ namespace VDS.RDF.Storage
                                 }
                                 else
                                 {
-                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count +  "column(s)");
+                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count + "column(s)");
                                 }
                                 break;
 
@@ -936,6 +938,8 @@ namespace VDS.RDF.Storage
                         }
 
                         this.Close(false);
+
+                        #endregion
                     }
                     catch
                     {
@@ -949,136 +953,151 @@ namespace VDS.RDF.Storage
                     //Have to attempt to detect the return type based on the DataTable that
                     //the SPASQL (Sparql+SQL) query gives back
 
-                    //Make the Query against Virtuoso
-                    VirtuosoCommand cmd = this._db.CreateCommand();
-                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-                    cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/ + sparqlQuery;
-                    VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
-                    adapter.Fill(results);
-
-                    //Try to detect the return type based on the DataTable configuration
-                    if (results.Rows.Count == 0 && results.Columns.Count > 0)
+                    try
                     {
-                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handler SPARQL Results with a null Results Handler");
+                        #region Potentially Invalid SPARQL Query Handling
 
-                        //No Rows but some columns implies empty SELECT results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        foreach (DataColumn col in results.Columns)
-                        {
-                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
-                        }
-                    }
-                    else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
-                    {
-                        //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
+                        this.Open(false);
 
-                        //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
-                        bool result;
-                        int r;
-                        decimal rdec;
-                        double rdbl;
-                        float rflt;
+                        //Make the Query against Virtuoso
+                        VirtuosoCommand cmd = this._db.CreateCommand();
+                        cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                        cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/+ sparqlQuery;
+                        VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                        adapter.Fill(results);
 
-                        if (results.Rows[0][0].ToString().Equals(String.Empty))
+                        //Try to detect the return type based on the DataTable configuration
+                        if (results.Rows.Count == 0 && results.Columns.Count > 0)
                         {
-                            //Empty Results - no need to do anything
-                        }
-                        else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
-                        {
-                            //Parseable Boolean so ASK Results
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean result with a null Results Handler");
-                            resultsHandler.HandleBooleanResult(result);
-                        }
-                        else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
-                        {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL Results with a null Results Handler");
 
-                            //Parseable Integer so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", r.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
-                        else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
-                        {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
-
-                            //Parseable Single so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rflt.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
-                        else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
-                        {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
-
-                            //Parseable Double so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rdbl.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
-                        else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
-                        {
-                            //Parseable Decimal so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rdec.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
-                        else
-                        {
-                            //String so try and parse as Turtle
-                            try
+                            //No Rows but some columns implies empty SELECT results
+                            SparqlResultSet rset = new SparqlResultSet();
+                            foreach (DataColumn col in results.Columns)
                             {
-                                //Use StringParser to parse
-                                String data = results.Rows[0][0].ToString();
-                                TurtleParser ttlparser = new TurtleParser();
-                                ttlparser.Load(rdfHandler, new StringReader(data));
+                                if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
                             }
-                            catch (RdfParseException)
+                        }
+                        else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
+                        {
+                            //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
+
+                            //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
+                            bool result;
+                            int r;
+                            decimal rdec;
+                            double rdbl;
+                            float rflt;
+
+                            if (results.Rows[0][0].ToString().Equals(String.Empty))
+                            {
+                                //Empty Results - no need to do anything
+                            }
+                            else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
+                            {
+                                //Parseable Boolean so ASK Results
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean result with a null Results Handler");
+                                resultsHandler.HandleBooleanResult(result);
+                            }
+                            else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
                             {
                                 if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
 
-                                //If it failed to parse then it might be the result of one of the aggregate
-                                //functions that Virtuoso extends Sparql with
-                                if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
+                                //Parseable Integer so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 Set s = new Set();
-                                s.Add(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
-                                //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                                s.Add("Result", r.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Single so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rflt.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Double so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rdbl.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
+                            {
+                                //Parseable Decimal so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rdec.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else
+                            {
+                                //String so try and parse as Turtle
+                                try
+                                {
+                                    //Use StringParser to parse
+                                    String data = results.Rows[0][0].ToString();
+                                    TurtleParser ttlparser = new TurtleParser();
+                                    ttlparser.Load(rdfHandler, new StringReader(data));
+                                }
+                                catch (RdfParseException)
+                                {
+                                    if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                                    //If it failed to parse then it might be the result of one of the aggregate
+                                    //functions that Virtuoso extends Sparql with
+                                    if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
+                                    Set s = new Set();
+                                    s.Add(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
+                                    //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                                    if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //Any other number of rows/columns we have to assume that it's normal SELECT results
+                            //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
+
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                            //Get Result Variables
+                            List<String> vars = new List<string>();
+                            foreach (DataColumn col in results.Columns)
+                            {
+                                vars.Add(col.ColumnName);
+                                if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
+                            }
+
+                            //Convert each solution into a SPARQLResult
+                            foreach (DataRow r in results.Rows)
+                            {
+                                Set s = new Set();
+                                foreach (String var in vars)
+                                {
+                                    if (r[var] != null)
+                                    {
+                                        s.Add(var, this.LoadNode(resultsHandler, r[var]));
+                                    }
+                                }
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
                         }
+                        this.Close(false);
+
+                        #endregion
                     }
-                    else
+                    catch
                     {
-                        //Any other number of rows/columns we have to assume that it's normal SELECT results
-                        //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
-
-                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
-
-                        //Get Result Variables
-                        List<String> vars = new List<string>();
-                        foreach (DataColumn col in results.Columns)
-                        {
-                            vars.Add(col.ColumnName);
-                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
-                        }
-
-                        //Convert each solution into a SPARQLResult
-                        foreach (DataRow r in results.Rows)
-                        {
-                            Set s = new Set();
-                            foreach (String var in vars)
-                            {
-                                if (r[var] != null)
-                                {
-                                    s.Add(var, this.LoadNode(resultsHandler, r[var]));
-                                }
-                            }
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
+                        this.Close(true, true);
+                        throw;
                     }
                 }
 
@@ -1090,6 +1109,7 @@ namespace VDS.RDF.Storage
             }
             catch
             {
+                this.Close(true);
                 if (resultsHandler != null) resultsHandler.EndResults(false);
                 throw;
             }
@@ -1147,9 +1167,16 @@ namespace VDS.RDF.Storage
                 VirtuosoCommand cmd = this._db.CreateCommand();
                 cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                 cmd.CommandText = "SPARQL " + sparqlUpdate;
-                cmd.ExecuteNonQuery();
-
-                this.Close(true);
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    this.Close(true);
+                }
+                catch
+                {
+                    this.Close(true, true);
+                    throw;
+                }
             }
             catch (SparqlUpdateException)
             {
@@ -1412,6 +1439,21 @@ namespace VDS.RDF.Storage
             return cmd.ExecuteScalar();
         }
 
+        /// <summary>
+        /// Gets whether there is an active connection to the Virtuoso database
+        /// </summary>
+        public bool HasOpenConnection
+        {
+            get { return this._db.State != ConnectionState.Broken && this._db.State != ConnectionState.Closed; }
+        }
+
+        /// <summary>
+        /// Gets whether there is any active transaction on the Virtuoso database
+        /// </summary>
+        public bool HasActiveTransaction {
+            get { return !ReferenceEquals(this._dbtrans, null); } 
+        }
+
         #endregion
 
         #region IDisposable Members
@@ -1436,10 +1478,7 @@ namespace VDS.RDF.Storage
             {
                 return "[Virtuoso] Custom Connection String";
             }
-            else
-            {
-                return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
-            }
+            return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
         }
 
         /// <summary>

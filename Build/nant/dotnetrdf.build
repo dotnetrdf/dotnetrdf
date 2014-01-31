@@ -19,7 +19,7 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.License.exclude.exts" 
-            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig,snk" />
+            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig,snk,gz" />
   <property name="dotnetrdf.License.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.License.search" value="Copyright \(c\) 20\d{2}-20\d{2} dotNetRDF Project" />
   <property name="dotnetrdf.License.replace" value="License.txt" />
@@ -30,11 +30,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="101" />
+  <property name="dotnetrdf.version" value="103" />
   <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="101" />
+  <property name="dotnetrdf.toolsversion" value="103" />
   <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.1-RC2" />
+  <property name="dotnetrdf.nuspecversion" value="1.0.3" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -626,7 +626,7 @@
 
   <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <property name="msBuild.exe" value="${string::replace(framework::get-framework-directory(framework::get-target-framework()), 'Framework64', 'Framework')}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
@@ -952,6 +952,7 @@
                    build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-windowsphone,
+                   build-core-portable,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
 

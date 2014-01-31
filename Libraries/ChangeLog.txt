@@ -1,5 +1,43 @@
-﻿Change Log
+﻿
+Change Log
 ==========
+
+1.0.3
+-----
+
+Changed
+- Bug Fixes
+ - Fix a bug in how Sesame connections load the default graph
+ - Fix a bug causing incorrect results in some cases of { } OPTIONAL { } when the LHS and RHS are disjoint i.e. no
+   common variables (CORE-386)
+ - DELETE WHERE { } shorthand syntax was permitted to have a preceding WITH clause which was invalid SPARQL syntax (CORE-389)
+ - URILoader.Load() can sometimes swallow exceptions (CORE-391)
+ - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
+ - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
+ - Fix a bug in translating and evaluating complex property paths (CORE-395)
+- Dependencies
+ - Bumped Json.Net to 5.0.8
+- Documentation
+ - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
+- Query
+ - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
+- Storage
+ - Add native SPARQL Update support to StardogV2Connector (CORE-376)
+
+1.0.2
+-----
+
+Added
+
+Changed
+- Bug Fixes
+ - Possible OOM when stream parsing large RDF/XML files (CORE-378)
+ - Fix a bug with transactions being left open in some cases when using VirtuosoManager (VIRT-382)
+- NuGet
+ - Fixed packaging to ensure the Portable Class Library builds are included
+
+Removed
+- Marked as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
 
 1.0.1
 -----
@@ -31,6 +69,9 @@ Changed
  - Upgraded Json.Net to 5.0.6
 - Query
  - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
+- Storage
+ - Add partial support for connections to Stardog 2.0 servers
+  - Native SPARQL update support for Stardog 2.0 is not yet available
 - Configuration API
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing

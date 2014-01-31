@@ -14,48 +14,47 @@
     <dependencies>
       <!-- These dependencies apply to all builds -->
       <group>
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
       </group>
 
       <!-- These only apply to non-portable builds -->
       <group targetFramework="net35-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net35">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4-wp7">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
+        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
     </dependencies>
     <releaseNotes>
-     - Include Portable Class Library builds
-     - Various bug fixes
-     - Improved performance of NTriples serializer for non-ASCII data
-     - Upgraded Json.Net dependency to 5.0.6
-     - Split source and PDBs into separate symbols package
+     - Fix several bugs with complex SPARQL evaluation
+     - Fix several bugs related to communicating with Sesame, Fuseki and SPARQL Graph Store protocol based stores
+     - Fix a bug with UriLoader swallowing exceptions resulting in unexpected empty graphs
+     - Native SPARQL Update support for Stardog 2.x connections
     </releaseNotes>
   </metadata>
 </package>

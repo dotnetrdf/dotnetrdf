@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Patterns
                 transformContext.NextID = (int)context["PathTransformID"];
             }
             ISparqlAlgebra algebra = this._path.ToAlgebra(transformContext);
-            context["PathTransformID"] = transformContext.NextID;
+            context["PathTransformID"] = transformContext.NextID + 1;
 
             //Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;

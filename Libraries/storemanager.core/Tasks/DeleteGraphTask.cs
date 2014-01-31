@@ -34,8 +34,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class DeleteGraphTask
         : NonCancellableTask<TaskResult>
     {
-        private IStorageProvider _manager;
-        private String _graphUri;
+        private readonly IStorageProvider _manager;
+        private readonly String _graphUri;
 
         /// <summary>
         /// Creates a new Delete Graph task

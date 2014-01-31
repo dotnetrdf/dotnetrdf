@@ -156,8 +156,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets the Timeout for the execution of the Updates
+        /// Gets/Sets the Timeout in milliseconds for the execution of the Updates
         /// </summary>
+        /// <remarks>Default is no timeout</remarks>
         public long Timeout
         {
             get

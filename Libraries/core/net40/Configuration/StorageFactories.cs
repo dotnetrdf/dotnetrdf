@@ -58,7 +58,11 @@ namespace VDS.RDF.Configuration
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
-                             StardogServer = "VDS.RDF.Storage.Management.StardogServer"
+                             StardogV1 = "VDS.RDF.Storage.StardogV1Connector",
+                             StardogV2 = "VDS.RDF.Storage.StardogV2Connector",
+                             StardogServer = "VDS.RDF.Storage.Management.StardogServer",
+                             StardogServerV1 = "VDS.RDF.Storage.Management.StardogV1Server",
+                             StardogServerV2 = "VDS.RDF.Storage.Management.StardogV2Server"
                              ;
 
         /// <summary>
@@ -430,6 +434,8 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case Stardog:
+                case StardogV1:
+                case StardogV2:
                     //Get the Server and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
@@ -456,11 +462,35 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
+                        switch (targetType.FullName)
+                        {
+                            case StardogV1:
+                                storageProvider = new StardogV1Connector(server, store, reasoning, user, pwd);
+                                break;
+                            case StardogV2:
+                                storageProvider = new StardogV2Connector(server, store, reasoning, user, pwd);
+                                break;
+                            case Stardog:
+                            default:
+                                storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
+                                break;
+                        }
                     }
                     else
                     {
-                        storageProvider = new StardogConnector(server, store, reasoning);
+                        switch (targetType.FullName)
+                        {
+                            case StardogV1:
+                                storageProvider = new StardogV1Connector(server, store, reasoning);
+                                break;
+                            case StardogV2:
+                                storageProvider = new StardogV2Connector(server, store, reasoning);
+                                break;
+                            case Stardog:
+                            default:
+                                storageProvider = new StardogConnector(server, store, reasoning);
+                                break;
+                        }
                     }
                     break;
 
@@ -472,11 +502,35 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        storageServer = new StardogServer(server, user, pwd);
+                        switch (targetType.FullName)
+                        {
+                            case StardogServerV1:
+                                storageServer = new StardogV1Server(server, user, pwd);
+                                break;
+                            case StardogServerV2:
+                                storageServer = new StardogV2Server(server, user, pwd);
+                                break;
+                            case StardogServer:
+                            default:
+                                storageServer = new StardogServer(server, user, pwd);
+                                break;
+                        }
                     }
                     else
                     {
-                        storageServer = new StardogServer(server);
+                        switch (targetType.FullName)
+                        {
+                            case StardogServerV1:
+                                storageServer = new StardogV1Server(server);
+                                break;
+                            case StardogServerV2:
+                                storageServer = new StardogV2Server(server);
+                                break;
+                            case StardogServer:
+                            default:
+                                storageServer = new StardogServer(server);
+                                break;
+                        }
                     }
                     break;
             }
@@ -540,7 +594,11 @@ namespace VDS.RDF.Configuration
                 case ReadWriteSparql:
                 case SparqlHttpProtocol:
                 case Stardog:
+                case StardogV1:
+                case StardogV2:
                 case StardogServer:
+                case StardogServerV1:
+                case StardogServerV2:
                     return true;
                 default:
                     return false;

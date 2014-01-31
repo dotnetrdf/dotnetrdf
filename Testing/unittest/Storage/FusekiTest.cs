@@ -42,7 +42,7 @@ namespace VDS.RDF.Storage
    [TestFixture]
     public class FusekiTest
     {
-        private NTriplesFormatter _formatter = new NTriplesFormatter();
+        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
         public static FusekiConnector GetConnection()
         {
@@ -76,6 +76,44 @@ namespace VDS.RDF.Storage
                 //Now retrieve Graph from Fuseki
                 Graph h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+#if !NO_URICACHE
+                Options.UriLoaderCaching = true;
+#endif
+            }
+        }
+
+        [Test]
+        public void StorageFusekiSaveGraph2()
+        {
+            try
+            {
+#if !NO_URICACHE
+                Options.UriLoaderCaching = false;
+#endif
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/fuseki#test");
+
+                //Save Graph to Fuseki
+                FusekiConnector fuseki = FusekiTest.GetConnection();
+                fuseki.SaveGraph(g);
+                Console.WriteLine("Graph saved to Fuseki OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                fuseki.LoadGraph(h, "http://example.org/fuseki#test");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
