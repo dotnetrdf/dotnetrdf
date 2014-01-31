@@ -6,19 +6,19 @@ using VDS.RDF.Storage;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System;
-using org.topbraid.spin.model;
+using VDS.RDF.Query.Spin.Model;
 using org.topbraid.spin.util;
 using System.Text;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF;
 using VDS.RDF.Query.Spin;
-using org.topbraid.spin.model.visitor;
+using VDS.RDF.Query.Spin.Model.visitor;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
-using org.topbraid.spin.model.update;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.Model;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Datasets;
 
 namespace org.topbraid.spin.arq

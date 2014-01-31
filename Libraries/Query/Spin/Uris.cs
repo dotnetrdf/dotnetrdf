@@ -62,12 +62,21 @@ namespace VDS.RDF.Query.Spin
         public readonly static String NS_URI = NamespaceMapper.RDF;
 
         public readonly static IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "Resource"));
-        public readonly static IUriNode PropertyType = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
+        public readonly static IUriNode ClassHTML = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "HTML"));
+        public readonly static IUriNode ClassPlainLiteral = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "PlainLiteral"));
         public readonly static IUriNode ClassXMLLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "XMLLiteral"));
 
+        public readonly static IUriNode PropertyLangString = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "langString"));
+
+        public readonly static IUriNode PropertyGraphLabel = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "graphLabel"));
+        public readonly static IUriNode PropertySubject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "subject"));
+        public readonly static IUriNode PropertyPredicate = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "predicate"));
+        public readonly static IUriNode PropertyObject = RDFUtil.CreateUriNode(UriFactory.Create(RDF.NS_URI + "object"));
+
+        public readonly static IUriNode Nil = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
         public readonly static IUriNode PropertyFirst = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "first"));
         public readonly static IUriNode PropertyRest = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "rest"));
-        public readonly static IUriNode Nil = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+        public readonly static IUriNode PropertyType = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
     }
 
     public static class RDFS

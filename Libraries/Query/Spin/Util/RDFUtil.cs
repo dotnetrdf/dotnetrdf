@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
-using org.topbraid.spin.vocabulary;
-using org.topbraid.spin.model;
+using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Util
 {
@@ -14,7 +14,7 @@ namespace VDS.RDF.Query.Spin.Util
         public readonly static UriComparer uriComparer = new UriComparer();
         public readonly static NodeFactory nodeFactory = new NodeFactory();
 
-        #region "UriComparison shortcuts"
+        #region UriComparison shortcuts
         internal static bool sameTerm(Uri uri1, Uri uri2)
         {
             return uriComparer.Equals(uri1, uri2);
@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         #endregion
 
-        #region "NodeFactory shortcuts"
+        #region NodeFactory shortcuts
 
         internal static IUriNode CreateUriNode(Uri uri)
         {
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Spin.Util
             List<Uri> list = new List<Uri>();
             list.AddRange(otherDatatypeURIs);
             list.AddRange(numericDatatypeURIs);
-            list.Add(RDFx.ClassPlainLiteral.Uri);
+            list.Add(RDF.ClassPlainLiteral.Uri);
             return list;
         }
 

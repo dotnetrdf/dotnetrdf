@@ -4,8 +4,8 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using org.topbraid.spin.model;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.Model;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Core
@@ -27,7 +27,8 @@ namespace VDS.RDF.Query.Spin.Core
         private static SPINImports _instance = new SPINImports();
 
         /* Not sure this is really needed bu we use it all the same */
-        public static SPINImports GetInstance() {
+        public static SPINImports GetInstance()
+        {
             return _instance;
         }
 
@@ -35,7 +36,6 @@ namespace VDS.RDF.Query.Spin.Core
         {
             _instance = importsManager;
         }
-
 
         /**
          * Attempts to load a graph with a given URI.
@@ -48,87 +48,26 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public virtual IGraph getImportedGraph(Uri uri)
         {
-            if (_registeredImports.ContainsKey(uri)) {
+            if (_registeredImports.ContainsKey(uri))
+            {
                 return _registeredImports[uri];
             }
             IGraph importGraph = new ThreadSafeGraph();
             importGraph.BaseUri = uri;
-            importGraph.LoadFromUri(uri);
-            _registeredImports[uri] = importGraph;
+            try
+            {
+                importGraph.LoadFromUri(uri);
+            }
+            catch (Exception any)
+            {
+            }
+            RegisterGraph(importGraph);
             return importGraph;
         }
 
-
-        // Not needed anymore : it is taken care of in the SPINReasoner class
-        /**
-         * Checks if spin:imports have been declared and adds them to a union model.
-         * Will also register any SPIN modules defined in those imports that haven't
-         * been loaded before.
-         * @param model  the base Model to operate on
-         * @return either model or the union of model and its spin:imports
-         * @ 
-         */
-        //public Model getImportsModel(Model model)
-        //{
-        //    HashSet<Uri> uris = new HashSet<Uri>(RDFUtil.uriComparer);
-        //    IEnumerator<Triple> it = model.GetTriplesWithPredicate(SPIN.imports).GetEnumerator();
-        //    while (it.MoveNext())
-        //    {
-        //        Triple s = it.Current;
-        //        if (s.Object is IUriNode)
-        //        {
-        //            uris.Add(((IUriNode)s.Object).Uri);
-        //        }
-        //    }
-        //    if (uris.Count == 0)
-        //    {
-        //        return model;
-        //    }
-        //    else
-        //    {
-        //        Graph baseGraph = model.getGraph();
-
-        //        MultiUnion union = JenaUtil.createMultiUnion();
-        //        union.addGraph(baseGraph);
-        //        union.setBaseGraph(baseGraph);
-
-        //        bool needsRegistration = false;
-        //        foreach (String uri in uris)
-        //        {
-        //            Graph graph = getImportedGraph(uri);
-        //            if (graph != null)
-        //            {
-        //                union.addGraph(graph);
-        //                if (!registeredURIs.contains(uri))
-        //                {
-        //                    registeredURIs.add(uri);
-        //                    needsRegistration = true;
-        //                }
-        //            }
-        //        }
-
-        //        // Ensure that SP, SPIN and SPL are present
-        //        ensureImported(union, SP.BASE_URI, SP.GetModel());
-        //        ensureImported(union, SPL.BASE_URI, SPL.getModel());
-        //        ensureImported(union, SPIN.BASE_URI, SPIN.GetModel());
-
-        //        Model unionModel = ModelFactory.createModelForGraph(union);
-        //        if (needsRegistration)
-        //        {
-        //            SPINModuleRegistry.get().registerAll(unionModel, null);
-        //        }
-        //        return unionModel;
-        //    }
-        //}
-
-
-        //private void ensureImported(MultiUnion union, String baseURI, Model model)
-        //{
-        //    if (!union.contains(new ITriple(NodeFactory.createURI(baseURI), RDF.type.asNode(), OWL.Ontology.asNode())))
-        //    {
-        //        union.addGraph(model.getGraph());
-        //    }
-        //}
+        internal static void RegisterGraph(IGraph g) {
+            GetInstance()._registeredImports[g.BaseUri] = g;
+        }
 
     }
 }

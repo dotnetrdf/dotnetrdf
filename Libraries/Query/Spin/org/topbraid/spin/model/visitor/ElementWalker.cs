@@ -4,7 +4,7 @@
  *******************************************************************************/
 using VDS.RDF;
 using System.Collections.Generic;
-namespace org.topbraid.spin.model.visitor
+namespace VDS.RDF.Query.Spin.Model.visitor
 {
 
 

@@ -5,8 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using org.topbraid.spin.model;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.Model;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF;
 using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Util;

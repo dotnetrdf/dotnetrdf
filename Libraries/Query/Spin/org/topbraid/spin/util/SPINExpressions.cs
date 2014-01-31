@@ -4,15 +4,15 @@ using System.Linq;
 
 using System.Text;
 using VDS.RDF;
-using org.topbraid.spin.model;
+using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query;
 
-using org.topbraid.spin.system;
-using org.topbraid.spin.model.impl;
+using VDS.RDF.Query.Spin.Core;
+using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using System.Collections.Generic;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Parsing;
@@ -219,14 +219,14 @@ namespace org.topbraid.spin.util
         }
 
 
-        public static void printExpressionString(IContextualSparqlPrinter p, IResource node, bool nested, bool force, INamespaceMapper prefixMapping)
+        public static void printExpressionString(ISparqlFactory p, IResource node, bool nested, bool force, INamespaceMapper prefixMapping)
         {
             if (SPINFactory.asVariable(node) == null)
             {
                 IAggregation aggr = SPINFactory.asAggregation(node);
                 if (aggr != null)
                 {
-                    IContextualSparqlPrinter pc = p.clone();
+                    ISparqlFactory pc = p.clone();
                     pc.setNested(nested);
                     aggr.print(pc);
                     return;
@@ -235,7 +235,7 @@ namespace org.topbraid.spin.util
                 IFunctionCall call = SPINFactory.asFunctionCall(node);
                 if (call != null)
                 {
-                    IContextualSparqlPrinter pc = p.clone();
+                    ISparqlFactory pc = p.clone();
                     pc.setNested(nested);
                     call.print(pc);
                     return;
@@ -256,7 +256,7 @@ namespace org.topbraid.spin.util
             else
             {
                 INamespaceMapper pm = p.getUsePrefixes() ? prefixMapping : emptyPrefixMapping;
-                String str = DatasetUtil.StringForNode(node, pm);
+                String str = ""; //DatasetUtil.StringForNode(node, pm);
                 p.print(str);
             }
             if (force)

@@ -8,7 +8,7 @@ using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Spin;
-using org.topbraid.spin.model;
+using VDS.RDF.Query.Spin.Model;
 using System.Reflection;
 using VDS.RDF.Query.Datasets;
 
@@ -121,21 +121,28 @@ namespace VDS.RDF.Query.Spin.Util
             List<IResource> result = new List<IResource>();
             INode listRoot = this;
             Triple step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
-            while (step != null)
+            if (step != null)
             {
-                if (!RDFUtil.sameTerm(RDF.Nil, step.Object))
+                while (step != null)
                 {
-                    result.Add(Resource.Get(step.Object, _model));
-                }
-                step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyRest).FirstOrDefault();
-                if (step != null)
-                {
-                    if (RDFUtil.sameTerm(RDF.Nil, step.Object))
+                    if (!RDFUtil.sameTerm(RDF.Nil, step.Object))
                     {
-                        break;
+                        result.Add(Resource.Get(step.Object, _model));
                     }
-                    listRoot = step.Object;
+                    step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyRest).FirstOrDefault();
+                    if (step != null)
+                    {
+                        if (RDFUtil.sameTerm(RDF.Nil, step.Object))
+                        {
+                            break;
+                        }
+                        listRoot = step.Object;
+                        step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
+                    }
                 }
+            }
+            else {
+                result.Add(this);
             }
             return result;
         }

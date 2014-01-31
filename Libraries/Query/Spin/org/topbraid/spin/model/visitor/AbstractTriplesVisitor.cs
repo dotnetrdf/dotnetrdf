@@ -5,12 +5,12 @@
 using System.Collections.Generic;
 using VDS.RDF;
 using org.topbraid.spin.util;
-using org.topbraid.spin.system;
+using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using System;
 
-namespace org.topbraid.spin.model.visitor
+namespace VDS.RDF.Query.Spin.Model.visitor
 {
 
 

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using org.topbraid.spin.model;
-using org.topbraid.spin.vocabulary;
+using VDS.RDF.Query.Spin.Model;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Parsing;
-using org.topbraid.spin.model.update;
+using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Spin
@@ -25,18 +25,13 @@ namespace VDS.RDF.Query.Spin
 
         internal InMemoryDataset _spinConfiguration;
 
-        private IGraph _inferenceGraph = new ThreadSafeGraph();
-        private IGraph _currentSparqlGraph;
+        private IGraph _currentSparqlGraph = new ThreadSafeGraph();
 
         #region "SPIN processor Initialisation"
 
         public SpinProcessor()
         {
             _spinConfiguration = new InMemoryDataset(true);
-            _inferenceGraph.BaseUri = UriFactory.Create("urn:inference");
-            _spinConfiguration.AddGraph(_inferenceGraph);
-
-            _currentSparqlGraph = _inferenceGraph;
 
             // Ensure that SP, SPIN and SPL are present
             Initialise(UriFactory.Create(SP.BASE_URI));
@@ -53,7 +48,12 @@ namespace VDS.RDF.Query.Spin
             Initialise(SPINImports.GetInstance().getImportedGraph(spinGraphUri));
         }
 
-        public void Initialise(IGraph spinGraph)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spinGraph"></param>
+        /// <returns></returns>
+        public IGraph Initialise(IGraph spinGraph)
         {
             if (_spinConfiguration.GraphUris.Contains(spinGraph.BaseUri))
             {
@@ -73,8 +73,12 @@ namespace VDS.RDF.Query.Spin
             }
             _spinConfiguration.AddGraph(spinGraph);
             _reasoner.Initialise(spinGraph);
-            _reasoner.Apply(spinGraph, _inferenceGraph);
-            _reasoner.Initialise(_inferenceGraph);
+
+            IGraph inferenceGraph = ApplyInference(spinGraph);
+            _spinConfiguration.AddGraph(inferenceGraph);
+            _reasoner.Initialise(inferenceGraph);
+
+            return inferenceGraph;
         }
 
         #endregion
@@ -237,7 +241,7 @@ namespace VDS.RDF.Query.Spin
 
         internal bool ContainsTriple(INode subj, INode pred, INode obj)
         {
-            return ContainsTriple(new Triple(Tools.CopyNode(GetSourceNode(subj), _inferenceGraph), Tools.CopyNode(GetSourceNode(pred), _inferenceGraph), Tools.CopyNode(GetSourceNode(obj), _inferenceGraph)));
+            return ContainsTriple(new Triple(Tools.CopyNode(GetSourceNode(subj), _currentSparqlGraph), Tools.CopyNode(GetSourceNode(pred), _currentSparqlGraph), Tools.CopyNode(GetSourceNode(obj), _currentSparqlGraph)));
         }
 
         internal bool ContainsTriple(Triple t)
@@ -248,6 +252,22 @@ namespace VDS.RDF.Query.Spin
         #endregion
 
         #region Dataset utilities
+
+        private Dictionary<IGraph, IGraph> _inferenceGraphs = new Dictionary<IGraph, IGraph>();
+
+        internal IGraph ApplyInference(IGraph g)
+        {
+            IGraph inferedTriples;
+            if (_inferenceGraphs.ContainsKey(g)) {
+                inferedTriples = _inferenceGraphs[g];
+                inferedTriples.Clear();
+            } else {
+                inferedTriples = new ThreadSafeGraph();
+            }
+            _reasoner.Apply(g, inferedTriples);
+            _inferenceGraphs[g] = inferedTriples;
+            return inferedTriples;
+        }
 
         /// <summary>
         /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
