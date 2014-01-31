@@ -4,14 +4,8 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.Text;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Core;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query;
-using org.topbraid.spin.arq;
-using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Spin.SparqlUtil;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -25,23 +19,6 @@ namespace VDS.RDF.Query.Spin.Model
         {
 
         }
-
-        // TODO
-        /*override*/ public SparqlQuery createQueryExecution(IEnumerable<Uri> dataset)
-        {
-            
-            IModule template = getModule();
-            IQuery query = SPINFactory.asQuery(template.getBody());
-            Dictionary<String, INode> initialBindings = new Dictionary<String, INode>();
-            Dictionary<IArgument, IResource> args = getArgumentsMap();
-            foreach (IArgument arg in args.Keys)
-            {
-                IResource value = args[arg];
-                initialBindings.Add(arg.getVarName(), value);
-            }
-            return ARQFactory.get().createQueryExecution(query, dataset, initialBindings);
-        }
-
 
         public Dictionary<IArgument, IResource> getArgumentsMap()
         {
@@ -165,6 +142,11 @@ namespace VDS.RDF.Query.Spin.Model
         {
             // TODO Auto-generated method stub
 
+        }
+
+        public SparqlQuery createQueryExecution(IEnumerable<Uri> dataset)
+        {
+            throw new NotImplementedException();
         }
     }
 }

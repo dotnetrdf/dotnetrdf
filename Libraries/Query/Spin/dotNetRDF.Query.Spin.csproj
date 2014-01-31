@@ -81,9 +81,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ISPINFactory.cs" />
-    <Compile Include="org\topbraid\spin\arq\ARQFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\ContainsVarChecker.cs" />
     <Compile Include="Core\ObjectPropertiesGetter.cs" />
     <Compile Include="Model\IAbstractAttribute.cs">
@@ -383,13 +380,10 @@
     <None Include="dotNetRDF.snk" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="org\topbraid\spin\arq\" />
     <Folder Include="org\topbraid\spin\constraints\" />
     <Folder Include="org\topbraid\spin\core\" />
-    <Folder Include="org\topbraid\spin\model\impl\" />
-    <Folder Include="org\topbraid\spin\model\print\" />
-    <Folder Include="org\topbraid\spin\model\update\impl\" />
     <Folder Include="org\topbraid\spin\system\" />
-    <Folder Include="org\topbraid\spin\vocabulary\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SparqlTemplates.resx">

@@ -15,7 +15,6 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Util;
-using org.topbraid.spin.arq;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Core
@@ -213,7 +212,7 @@ namespace VDS.RDF.Query.Spin.Core
                     }
                     else
                     {
-                        return ARQFactory.get().createCommandString(spinCommand);
+                        return "";//ARQFactory.get().createCommandString(spinCommand);
                     }
                 }
                 else
