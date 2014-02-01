@@ -952,6 +952,13 @@ namespace VDS.RDF.Query.Patterns
                         bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
                     }
                 }
+                // TODO: Does this interact correctly with VALUES?
+                if (this.IsGraph)
+                {
+                    bgp = new Algebra.Graph(bgp, this.GraphSpecifier);
+                }
+                // TODO: Are there other cases here where the algebra compilation is incorrect
+
                 //Apply Inline Data
                 if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
