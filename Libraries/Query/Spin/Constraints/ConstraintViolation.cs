@@ -3,9 +3,8 @@
  * All rights reserved. 
  *******************************************************************************/
 using System;
-using org.topbraid.spin.model;
-using VDS.RDF;
 using System.Collections.Generic;
+using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Constraints {
 

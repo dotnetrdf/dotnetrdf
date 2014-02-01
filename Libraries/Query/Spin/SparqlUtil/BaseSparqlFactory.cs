@@ -333,11 +333,11 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
             {
                 return Print(SPINFactory.asQuery(spinResource));
             }
-            else if (spinResource.canAs(SP.ClassDeleteData))
+            else if (spinResource is IDeleteData || spinResource.canAs(SP.ClassDeleteData))
             {
                 return Print((IDeleteData)spinResource.As(typeof(DeleteDataImpl)));
             }
-            else if (spinResource.canAs(SP.ClassInsertData))
+            else if (spinResource is IInsertData || spinResource.canAs(SP.ClassInsertData))
             {
                 return Print((IInsertData)spinResource.As(typeof(InsertDataImpl)));
             }

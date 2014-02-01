@@ -57,6 +57,8 @@ namespace VDS.RDF.Query.Spin.Util
         public readonly static IUriNode PropertyTypeAdded = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "typeAdded"));
         public readonly static IUriNode PropertyTypeRemoved = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "typeRemoved"));
 
+        public readonly static IUriNode PropertyExecutionRestrictedTo = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "executionRestrictedTo"));
+
         public readonly static IUriNode PropertyExecutionBinding = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "executionBinding"));
         public readonly static IUriNode PropertyExecutionBindingPattern = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "executionBindingPattern"));
 

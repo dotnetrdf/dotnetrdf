@@ -136,6 +136,10 @@ namespace VDS.RDF.Query.Spin
             {
                 return _queryExecutionMode;
             }
+            set
+            {
+                _queryExecutionMode = value;
+            }
         }
 
         /// <summary>
@@ -241,6 +245,47 @@ namespace VDS.RDF.Query.Spin
             // TODO handle the updates to the current SpinProcessor
             _configuration.ImportGraph(graphUri);
             AddGraph(graph);
+        }
+
+        private Uri _currentActiveSubsetUri = null;
+        internal Uri CurrentActiveSubsetUri
+        {
+            get
+            {
+                return _currentActiveSubsetUri;
+            }
+            private set {
+                _currentActiveSubsetUri = value;
+            }
+        }
+
+        internal void  RestrictSPINProcessingTo(IEnumerable<INode> resources)
+        {
+            Uri resourceRestrictionsUri = null;
+            if (resources != null)
+            {
+                resourceRestrictionsUri = RDFRuntime.NewTempGraphUri();
+                SparqlParameterizedString restrictionQuery;
+                IGraph resourceRestrictions = new ThreadSafeGraph();
+                resourceRestrictions.BaseUri = resourceRestrictionsUri;
+                INode inputGraphNode = RDFUtil.CreateUriNode(resourceRestrictionsUri);
+                foreach (INode resource in resources)
+                {
+                    resourceRestrictions.Assert(inputGraphNode, RDFRuntime.PropertyExecutionRestrictedTo, resource);
+                }
+                _storage.SaveGraph(resourceRestrictions);
+                restrictionQuery = new SparqlParameterizedString(SparqlTemplates.RestrictDataset);
+
+                restrictionQuery.SetUri("resourceRestriction", resourceRestrictionsUri);
+                StringBuilder sb = new StringBuilder();
+                foreach (Resource graph in DefaultGraphs)
+                {
+                    sb.AppendLine("USING <" + graph.Uri().ToString() + ">");
+                }
+                restrictionQuery.CommandText = restrictionQuery.CommandText.Replace("@USING_DEFAULT", sb.ToString());
+                _storage.Update(restrictionQuery.ToString());
+            }
+            CurrentActiveSubsetUri = resourceRestrictionsUri;
         }
 
         #endregion
@@ -457,7 +502,8 @@ namespace VDS.RDF.Query.Spin
                     _storage.Update("DELETE { GRAPH <" + updatedGraphUri.ToString() + "> { ?s <" + RDFRuntime.PropertyResets.Uri.ToString() + "> ?p } . GRAPH <" + sourceGraph.ToString() + "> { ?s ?p ?o } } USING <" + updatedGraphUri.ToString() + "> WHERE { ?s <" + RDFRuntime.PropertyResets.Uri.ToString() + "> ?p }");
                     _storage.Update("ADD GRAPH <" + updatedGraphUri.ToString() + "> TO <" + sourceGraph.ToString() + ">");
                 }
-                else {
+                else
+                {
                     updatedSourceDataset.Retract(_configuration.GetTriplesWithSubject(RDFUtil.CreateUriNode(sourceGraph)));
                 }
             }
@@ -497,19 +543,18 @@ namespace VDS.RDF.Query.Spin
 
         private HashSet<Triple> loopPreventionChecks = new HashSet<Triple>(new FullTripleComparer());
 
-        // TODO maybe we should return the outputGraph
-        internal void ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
+        internal IGraph ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
         {
             QueryMode currentQueryMode = QueryExecutionMode;
             Uri currentExecutionGraphUri = RDFRuntime.NewTempGraphUri();
+            IGraph remoteChanges = new ThreadSafeGraph();
+            remoteChanges.BaseUri = currentExecutionGraphUri;
             try
             {
                 foreach (IUpdate update in spinUpdateCommandSet)
                 {
                     UpdateInternal(update, currentExecutionGraphUri);
                 }
-                IGraph remoteChanges = new ThreadSafeGraph();
-                remoteChanges.BaseUri = currentExecutionGraphUri;
                 _storage.LoadGraph(remoteChanges, currentExecutionGraphUri);
 
                 // if remoteChanges contains an already checked RDFType triple that means we have a infinite loop case in the SPIN processing pipeline so we stop execution
@@ -517,17 +562,15 @@ namespace VDS.RDF.Query.Spin
                 {
                     if (loopPreventionChecks.Contains(t))
                     {
-                        throw new Exception("Infinite loop case detected. Execution is canceled");
+                        // TODO document better the exception causes
+                        throw new SpinException("Infinite loop encountered. Execution is canceled");
                     }
                     loopPreventionChecks.Add(t);
                 }
-
-                _queryExecutionMode = QueryMode.SpinInferencing;
-
-                // TODO do the hardcore SPIN processiong : call to the required constructors, inferencing rules and constraint checks if any from the execution Graph
-
-
+                CurrentActiveSubsetUri = currentExecutionGraphUri;
+                spinProcessor.ApplyInternal(this);
                 _queryExecutionMode = currentQueryMode;
+
                 // Resets loop prevention checks 
                 if (_queryExecutionMode == QueryMode.UserQuerying)
                 {
@@ -541,8 +584,13 @@ namespace VDS.RDF.Query.Spin
                 {
                     _storage.DeleteGraph(graphUri);
                 }
+                if (CurrentActiveSubsetUri != null)
+                {
+                    _storage.DeleteGraph(CurrentActiveSubsetUri);
+                }
                 _storage.DeleteGraph(currentExecutionGraphUri);
             }
+            return remoteChanges;
         }
 
         private void UpdateInternal(IUpdate spinQuery, Uri outputGraphUri)
@@ -568,9 +616,14 @@ namespace VDS.RDF.Query.Spin
             }
             command.CommandText = command.CommandText.Replace("@USING_DEFAULT", sb.ToString());
             sb.Clear();
-            IEnumerable<Uri> dataGraphs = spinQuery is IDeleteData ? _configuration.GetTriplesRemovalsGraphs() : _configuration.GetTriplesAdditionsGraphs();
+            HashSet<Uri> dataGraphs = new HashSet<Uri>(RDFUtil.uriComparer);
+            dataGraphs.UnionWith(spinQuery is IDeleteData ? _configuration.GetTriplesRemovalsGraphs() : _configuration.GetTriplesAdditionsGraphs());
             // TODO define a better activeGraphs filtering policy
-            foreach (Uri graphUri in dataGraphs.Union(ActiveGraphUris))
+            foreach (Uri graphUri in dataGraphs)
+            {
+                sb.AppendLine("USING NAMED <" + graphUri.ToString() + ">");
+            }
+            foreach (Uri graphUri in ActiveGraphUris)
             {
                 sb.AppendLine("USING NAMED <" + graphUri.ToString() + ">");
             }

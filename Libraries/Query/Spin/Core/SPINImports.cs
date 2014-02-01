@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Spin.Core
 {
@@ -46,7 +47,7 @@ namespace VDS.RDF.Query.Spin.Core
          * @return the Graph or null to ignore this
          * @throws IOException 
          */
-        public virtual IGraph getImportedGraph(Uri uri)
+        public virtual IGraph getImportedGraph(Uri uri, IRdfReader rdfReader = null)
         {
             if (_registeredImports.ContainsKey(uri))
             {
@@ -56,7 +57,14 @@ namespace VDS.RDF.Query.Spin.Core
             importGraph.BaseUri = uri;
             try
             {
-                importGraph.LoadFromUri(uri);
+                if (rdfReader == null)
+                {
+                    importGraph.LoadFromUri(uri);
+                }
+                else
+                {
+                    importGraph.LoadFromUri(uri, rdfReader);
+                }
             }
             catch (Exception any)
             {

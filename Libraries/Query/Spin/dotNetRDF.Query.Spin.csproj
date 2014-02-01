@@ -75,6 +75,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constraints\ConstraintViolation.cs" />
+    <Compile Include="Constraints\ObjectPropertyPath.cs" />
+    <Compile Include="Constraints\SimplePropertyPath.cs" />
+    <Compile Include="Constraints\SubjectPropertyPath.cs" />
     <Compile Include="Core\Aggregations.cs" />
     <Compile Include="Core\SPINImports.cs" />
     <Compile Include="Core\SPINLabels.cs">

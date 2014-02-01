@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
+using VDS.RDF.Query.Spin.Constraints;
 using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Parsing;
+using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Model;
+using VDS.RDF.Query.Spin.Progress;
+using VDS.RDF.Query.Spin.Statistics;
+using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Spin
 {
     // Even though the class is exposed as a Processor, the features of this class are more related to those of a Reasoner.
+    // TODO refactor the initialization process
     /// <summary>
     /// 
     /// </summary>
@@ -34,18 +37,19 @@ namespace VDS.RDF.Query.Spin
             _spinConfiguration = new InMemoryDataset(true);
 
             // Ensure that SP, SPIN and SPL are present
-            Initialise(UriFactory.Create(SP.BASE_URI));
-            Initialise(UriFactory.Create(SPIN.BASE_URI));
-            Initialise(UriFactory.Create(SPL.BASE_URI));
+            IRdfReader rdfReader = new RdfXmlParser();
+            Initialise(UriFactory.Create(SP.BASE_URI), rdfReader);
+            Initialise(UriFactory.Create(SPIN.BASE_URI), rdfReader);
+            Initialise(UriFactory.Create(SPL.BASE_URI), rdfReader);
         }
 
-        public void Initialise(Uri spinGraphUri)
+        public void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
         {
             if (_spinConfiguration.GraphUris.Contains(spinGraphUri))
             {
                 return;
             }
-            Initialise(SPINImports.GetInstance().getImportedGraph(spinGraphUri));
+            Initialise(SPINImports.GetInstance().getImportedGraph(spinGraphUri, rdfReader));
         }
 
         /// <summary>
@@ -258,10 +262,13 @@ namespace VDS.RDF.Query.Spin
         internal IGraph ApplyInference(IGraph g)
         {
             IGraph inferedTriples;
-            if (_inferenceGraphs.ContainsKey(g)) {
+            if (_inferenceGraphs.ContainsKey(g))
+            {
                 inferedTriples = _inferenceGraphs[g];
                 inferedTriples.Clear();
-            } else {
+            }
+            else
+            {
                 inferedTriples = new ThreadSafeGraph();
             }
             _reasoner.Apply(g, inferedTriples);
@@ -270,80 +277,98 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <summary>
-        /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
         /// The default implementation applies all rules then checks all constraints and returns wether the results raised constraints violations or not.
+        /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
         /// TODO this should be complemented with an ExecuteScript method that would allow to exploit SPARQLMotion scripts in the model.
         /// </summary>
         /// <param name="dataset">The Dataset to apply SPIN processing on</param>
+        /// <param name="resources">A list of resources to check constraints on</param>
         /// <returns>true if no constraint violation is raised, false otherwise</returns>
-        public virtual bool Apply(SpinWrappedDataset dataset)
+        public bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
         {
-            //ApplyRules(dataset, SPIN.Rule.Uri);
-            //IEnumerable<ConstraintViolation> vios = CheckConstraints(dataset, null);
-            //return vios.Count()==0;
-            return false;
+            dataset.RestrictSPINProcessingTo(resources);
+            return ApplyInternal(dataset);
+        }
+
+        // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
+        public bool Apply(SpinWrappedDataset dataset)
+        {
+            dataset.RestrictSPINProcessingTo(null);
+            return ApplyInternal(dataset);
+        }
+
+        // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
+        internal protected virtual bool ApplyInternal(SpinWrappedDataset dataset)
+        {
+            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinInferencing;
+
+            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinConstraintsChecking;
+            IEnumerable<ConstraintViolation> vios = new List<ConstraintViolation>(); //runConstraints(dataset, resources, null);
+            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.UserQuerying;
+            return vios.Count() == 0;
         }
 
         #endregion
 
-        //#region Constraints checking capabilities
+        #region Constraints checking API
 
-        ///// <summary>
-        ///// Checks all spin:constraints for a given Resource.
-        ///// </summary>
-        ///// <param name="dataset">the dataset containing the resource</param>
-        ///// <param name="resource">the instance to run constraint checks on</param>
-        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        //public List<ConstraintViolation> CheckConstraints(SpinWrapperDataset dataset, INode resource, IProgressMonitor monitor)
-        //{
-        //    return CheckConstraints(dataset, resource, new List<SPINStatistics>(), monitor);
-        //}
+        /// <summary>
+        /// Checks all spin:constraints for a given Resource set.
+        /// </summary>
+        /// <param name="dataset">the dataset containing the resource</param>
+        /// <param name="resource">the instance to run constraint checks on</param>
+        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IEnumerable<INode> resources, IProgressMonitor monitor)
+        {
+            return CheckConstraints(dataset, resources, new List<SPINStatistics>(), monitor);
+        }
 
-        ///// <summary>
-        ///// Checks all spin:constraints for a given Resource.
-        ///// </summary>
-        ///// <param name="dataset">the model containing the resource</param>
-        ///// <param name="resource">the instance to run constraint checks on</param>
-        ///// <param name="stats">an (optional) List to add statistics to</param>
-        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        //public List<ConstraintViolation> CheckConstraints(SpinWrapperDataset dataset, INode resource, List<SPINStatistics> stats, IProgressMonitor monitor)
-        //{
-        //    List<ConstraintViolation> results = new List<ConstraintViolation>();
-        //    //SPINConstraints.addConstraintViolations(this, results, dataset, resource, SPIN.constraint, false, stats, monitor);
-        //    return results;
-        //}
+        /// <summary>
+        /// Checks all spin:constraints for a given Resource set.
+        /// </summary>
+        /// <param name="dataset">the model containing the resource</param>
+        /// <param name="resource">the instance to run constraint checks on</param>
+        /// <param name="stats">an (optional) List to add statistics to</param>
+        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IEnumerable<INode> resources, List<SPINStatistics> stats, IProgressMonitor monitor)
+        {
+            List<ConstraintViolation> results = new List<ConstraintViolation>();
+            //SPINConstraints.addConstraintViolations(this, results, dataset, resource, SPIN.constraint, false, stats, monitor);
+            return results;
+        }
 
-        ///// <summary>
-        ///// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        ///// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        ///// </summary>
-        ///// <param name="dataset">the dataset to run constraint checks on</param>
-        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        //public List<ConstraintViolation> CheckConstraints(SpinWrapperDataset dataset, IProgressMonitor monitor)
-        //{
-        //    return CheckConstraints(dataset, (List<SPINStatistics>)null, monitor);
-        //}
+        /// <summary>
+        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
+        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
+        /// </summary>
+        /// <param name="dataset">the dataset to run constraint checks on</param>
+        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IProgressMonitor monitor)
+        {
+            return CheckConstraints(dataset, (List<SPINStatistics>)null, monitor);
+        }
 
 
-        ///// <summary>
-        ///// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        ///// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        ///// </summary>
-        ///// <param name="dataset">the dataset to run constraint checks on</param>
-        ///// <param name="stats">an (optional) List to add statistics to</param>
-        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        //public List<ConstraintViolation> CheckConstraints(SpinWrapperDataset dataset, List<SPINStatistics> stats, IProgressMonitor monitor)
-        //{
-        //    List<ConstraintViolation> results = new List<ConstraintViolation>();
-        //    //SPINConstraints.run(this, dataset, results, stats, monitor);
-        //    return results;
-        //}
+        /// <summary>
+        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
+        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
+        /// </summary>
+        /// <param name="dataset">the dataset to run constraint checks on</param>
+        /// <param name="stats">an (optional) List to add statistics to</param>
+        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, List<SPINStatistics> stats, IProgressMonitor monitor)
+        {
+            List<ConstraintViolation> results = new List<ConstraintViolation>();
+            //SPINConstraints.run(this, dataset, results, stats, monitor);
+            return results;
+        }
 
-        //#endregion
+
+        #endregion
 
         //#region SPIN rules evaluation
 

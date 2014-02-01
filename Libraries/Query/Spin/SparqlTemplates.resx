@@ -235,4 +235,25 @@ WHERE {
 	} .
 }</value>
   </data>
+  <data name="RestrictDataset" xml:space="preserve">
+    <value>PREFIX dnr:&lt;dotnetrdf-spin:&gt;
+DELETE {
+	GRAPH @resourceRestriction {
+		@resourceRestriction dnr:executionRestrictedTo ?s .
+	}
+}
+INSERT {
+	GRAPH @resourceRestriction {
+		?s a ?class .
+	}
+}
+USING @resourceRestrictions
+@USING_DEFAULT
+WHERE {
+	GRAPH @resourceRestriction {
+		@resourceRestriction dnr:executionRestrictedTo ?s .
+	} .
+	?s a ?class .
+}</value>
+  </data>
 </root>

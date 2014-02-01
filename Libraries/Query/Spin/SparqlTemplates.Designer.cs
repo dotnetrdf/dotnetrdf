@@ -131,5 +131,32 @@ namespace VDS.RDF.Query.Spin {
                 return ResourceManager.GetString("InsertData", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PREFIX dnr:&lt;dotnetrdf-spin:&gt;
+        ///DELETE {
+        ///	GRAPH @resourceRestriction {
+        ///		@resourceRestriction dnr:executionRestrictedTo ?s .
+        ///	}
+        ///}
+        ///INSERT {
+        ///	GRAPH @resourceRestriction {
+        ///		?s a ?class .
+        ///	}
+        ///}
+        ///USING @resourceRestrictions
+        ///@USING_DEFAULT
+        ///WHERE {
+        ///	GRAPH @resourceRestriction {
+        ///		@resourceRestriction dnr:executionRestrictedTo ?s .
+        ///	} .
+        ///	?s a ?class .
+        ///}.
+        /// </summary>
+        internal static string RestrictDataset {
+            get {
+                return ResourceManager.GetString("RestrictDataset", resourceCulture);
+            }
+        }
     }
 }

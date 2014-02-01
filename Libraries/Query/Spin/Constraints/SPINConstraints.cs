@@ -8,25 +8,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using org.topbraid.spin.model;
-using org.topbraid.spin.model.impl;
-using org.topbraid.spin.system;
-using org.topbraid.spin.util;
-using org.topbraid.spin.vocabulary;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin.org.topbraid.spin.util;
 using VDS.RDF.Query.Spin.Progress;
 using VDS.RDF.Query.Spin.Statistics;
 using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Constraints
 {
-    /**
-     * Performs SPIN constraint checking on one or more instances, based
-     * on the spin:constraints defined on the types of those instances.
-     * 
-     * @author Holger Knublauch
-     */
+    /// <summary>
+    /// 
+    /// </summary>
     public class SPINConstraints
     {
         private static List<ITemplateCall> NO_FIXES = new List<ITemplateCall>();
@@ -474,60 +465,60 @@ namespace VDS.RDF.Query.Spin.Constraints
 
 
 
-        /// <summary>
-        /// Checks all spin:constraints for a given Resource.
-        /// </summary>
-        /// <param name="model">the model containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public static List<ConstraintViolation> check(SpinWrapperDataset model, INode resource, IProgressMonitor monitor)
-        {
-            return check(model, resource, new List<SPINStatistics>(), monitor);
-        }
+        ///// <summary>
+        ///// Checks all spin:constraints for a given Resource.
+        ///// </summary>
+        ///// <param name="model">the model containing the resource</param>
+        ///// <param name="resource">the instance to run constraint checks on</param>
+        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        //public static List<ConstraintViolation> check(SpinWrapperDataset model, INode resource, IProgressMonitor monitor)
+        //{
+        //    return check(model, resource, new List<SPINStatistics>(), monitor);
+        //}
 
-        /// <summary>
-        /// Checks all spin:constraints for a given Resource.
-        /// </summary>
-        /// <param name="model">the model containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
-        /// <param name="stats">an (optional) List to add statistics to</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public static List<ConstraintViolation> check(SpinWrapperDataset model, INode resource, List<SPINStatistics> stats, IProgressMonitor monitor)
-        {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
-            addConstraintViolations( results, model, resource, SPIN.constraint, false, stats, monitor);
-            return results;
-        }
+        ///// <summary>
+        ///// Checks all spin:constraints for a given Resource.
+        ///// </summary>
+        ///// <param name="model">the model containing the resource</param>
+        ///// <param name="resource">the instance to run constraint checks on</param>
+        ///// <param name="stats">an (optional) List to add statistics to</param>
+        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        //public static List<ConstraintViolation> check(SpinWrapperDataset model, INode resource, List<SPINStatistics> stats, IProgressMonitor monitor)
+        //{
+        //    List<ConstraintViolation> results = new List<ConstraintViolation>();
+        //    addConstraintViolations( results, model, resource, SPIN.constraint, false, stats, monitor);
+        //    return results;
+        //}
 
-        /// <summary>
-        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        /// </summary>
-        /// <param name="model">the model to run constraint checks on</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public static List<ConstraintViolation> check(SpinWrapperDataset model, IProgressMonitor monitor)
-        {
-            return check(model, (List<SPINStatistics>)null, monitor);
-        }
+        ///// <summary>
+        ///// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
+        ///// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
+        ///// </summary>
+        ///// <param name="model">the model to run constraint checks on</param>
+        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        //public static List<ConstraintViolation> check(SpinWrapperDataset model, IProgressMonitor monitor)
+        //{
+        //    return check(model, (List<SPINStatistics>)null, monitor);
+        //}
 
 
-        /// <summary>
-        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        /// </summary>
-        /// <param name="model">the model to run constraint checks on</param>
-        /// <param name="stats">an (optional) List to add statistics to</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public static List<ConstraintViolation> check(SpinWrapperDataset model, List<SPINStatistics> stats, IProgressMonitor monitor)
-        {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
-            run(model, results, stats, monitor);
-            return results;
-        }
+        ///// <summary>
+        ///// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
+        ///// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
+        ///// </summary>
+        ///// <param name="model">the model to run constraint checks on</param>
+        ///// <param name="stats">an (optional) List to add statistics to</param>
+        ///// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
+        ///// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
+        //public static List<ConstraintViolation> check(SpinWrapperDataset model, List<SPINStatistics> stats, IProgressMonitor monitor)
+        //{
+        //    List<ConstraintViolation> results = new List<ConstraintViolation>();
+        //    run(model, results, stats, monitor);
+        //    return results;
+        //}
 
     }
 }
