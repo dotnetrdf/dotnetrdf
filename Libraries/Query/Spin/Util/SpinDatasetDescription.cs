@@ -181,6 +181,7 @@ namespace VDS.RDF.Query.Spin.Util
             IUriNode updateControlGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
             this.Retract(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
             this.Assert(sourceGraph, RDF.PropertyType, SD.ClassGraph);
+            this.Assert(updateControlGraph, RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph);
 
             if (!RDFUtil.sameTerm(sourceGraph, updateControlGraph))
             {
@@ -264,9 +265,10 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 return _additionGraphs[graphUri];
             }
-            INode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
             Uri uri = RDFRuntime.NewTempGraphUri();
             _additionGraphs[graphUri] = uri;
+            _additionGraphs[monitoredGraph.Uri] = uri;
             this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyAddTriplesTo, monitoredGraph);
             return uri;
         }
@@ -283,9 +285,10 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 return _removalGraphs[graphUri];
             }
-            INode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
             Uri uri = RDFRuntime.NewTempGraphUri();
             _removalGraphs[graphUri] = uri;
+            _removalGraphs[monitoredGraph.Uri] = uri;
             this.Assert(RDFUtil.CreateUriNode(uri), RDFRuntime.PropertyDeleteTriplesFrom, monitoredGraph);
             return uri;
         }
