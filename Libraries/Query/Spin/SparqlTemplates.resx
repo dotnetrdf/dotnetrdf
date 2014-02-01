@@ -174,13 +174,18 @@ WHERE {
 	} .
 	OPTIONAL {
 		GRAPH ?source {
+			?s ?p ?o.
+		} .
+		BIND (dnr:resets as ?resetRequired) .
+	} .
+	OPTIONAL {
+		GRAPH ?source {
 			?s ?p ?otherValues .
 			FILTER (NOT EXISTS {
 				GRAPH ?deletedTriples {
 					?s ?p ?otherValues .
 				} .
 			}) .
-			BIND ( dnr:resets as ?resetRequired) .
 		} .
 	} .
 	FILTER (NOT EXISTS { GRAPH ?g { ?s dnr:resets ?p } }) .
