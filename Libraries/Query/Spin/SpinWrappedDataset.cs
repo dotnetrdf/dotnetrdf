@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Spin.LibraryOntology;
+using System.Text;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Spin.Constructors;
+using VDS.RDF.Query.Spin.Core;
+using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Storage;
-using System.Text;
-using VDS.RDF.Query.Spin.Core;
 
 namespace VDS.RDF.Query.Spin
 {
@@ -247,19 +248,19 @@ namespace VDS.RDF.Query.Spin
             AddGraph(graph);
         }
 
-        private Uri _currentActiveSubsetUri = null;
-        internal Uri CurrentActiveSubsetUri
+        private Uri _currentExecutionContext = null;
+        internal Uri CurrentExecutionContext
         {
             get
             {
-                return _currentActiveSubsetUri;
+                return _currentExecutionContext;
             }
             private set {
-                _currentActiveSubsetUri = value;
+                _currentExecutionContext = value;
             }
         }
 
-        internal void  RestrictSPINProcessingTo(IEnumerable<INode> resources)
+        internal void  SetExecutionContext(IEnumerable<INode> resources)
         {
             Uri resourceRestrictionsUri = null;
             if (resources != null)
@@ -274,7 +275,7 @@ namespace VDS.RDF.Query.Spin
                     resourceRestrictions.Assert(inputGraphNode, RDFRuntime.PropertyExecutionRestrictedTo, resource);
                 }
                 _storage.SaveGraph(resourceRestrictions);
-                restrictionQuery = new SparqlParameterizedString(SparqlTemplates.RestrictDataset);
+                restrictionQuery = new SparqlParameterizedString(SparqlTemplates.SetExecutionContext);
 
                 restrictionQuery.SetUri("resourceRestriction", resourceRestrictionsUri);
                 StringBuilder sb = new StringBuilder();
@@ -285,7 +286,7 @@ namespace VDS.RDF.Query.Spin
                 restrictionQuery.CommandText = restrictionQuery.CommandText.Replace("@USING_DEFAULT", sb.ToString());
                 _storage.Update(restrictionQuery.ToString());
             }
-            CurrentActiveSubsetUri = resourceRestrictionsUri;
+            CurrentExecutionContext = resourceRestrictionsUri;
         }
 
         #endregion
@@ -543,6 +544,11 @@ namespace VDS.RDF.Query.Spin
 
         private HashSet<Triple> loopPreventionChecks = new HashSet<Triple>(new FullTripleComparer());
 
+        /// <summary>
+        /// TODO we perhaps should return a graph of overall changes induced by the update ?
+        /// </summary>
+        /// <param name="spinUpdateCommandSet"></param>
+        /// <returns></returns>
         internal IGraph ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
         {
             QueryMode currentQueryMode = QueryExecutionMode;
@@ -567,8 +573,10 @@ namespace VDS.RDF.Query.Spin
                     }
                     loopPreventionChecks.Add(t);
                 }
-                CurrentActiveSubsetUri = currentExecutionGraphUri;
-                spinProcessor.ApplyInternal(this);
+                CurrentExecutionContext = currentExecutionGraphUri;
+                // finally except for constructors we cannot force arbitrary rules and constraints checking at this moment
+                // so we should find a way to notify the client of the overall changes so he can decide the subsequent SPIN processing.
+                this.RunConstructors();
                 _queryExecutionMode = currentQueryMode;
 
                 // Resets loop prevention checks 
@@ -577,19 +585,27 @@ namespace VDS.RDF.Query.Spin
                     loopPreventionChecks.Clear();
                 }
             }
-            finally
-            {
+            catch (Exception any) {
                 // for cleanliness sake on exception cases
                 foreach (Uri graphUri in _configuration.GetTriplesRemovalsGraphs().Union(_configuration.GetTriplesAdditionsGraphs()))
                 {
                     _storage.DeleteGraph(graphUri);
                 }
-                if (CurrentActiveSubsetUri != null)
+                throw any;
+            }
+            finally
+            {
+                // TODO check where to really place this.
+                /*
+                if (CurrentExecutionContext != null)
                 {
-                    _storage.DeleteGraph(CurrentActiveSubsetUri);
+                    _storage.DeleteGraph(CurrentExecutionContext);
+                    CurrentExecutionContext = null;
                 }
+                */ 
                 _storage.DeleteGraph(currentExecutionGraphUri);
             }
+            // TODO append subsequent constructor-induced changes to the current changes.
             return remoteChanges;
         }
 

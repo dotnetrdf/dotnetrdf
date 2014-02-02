@@ -16,6 +16,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Spin
 {
     // Even though the class is exposed as a Processor, the features of this class are more related to those of a Reasoner.
+    // TODO make this class internal
     // TODO refactor the initialization process
     /// <summary>
     /// 
@@ -32,7 +33,7 @@ namespace VDS.RDF.Query.Spin
 
         #region "SPIN processor Initialisation"
 
-        public SpinProcessor()
+        internal SpinProcessor()
         {
             _spinConfiguration = new InMemoryDataset(true);
 
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Spin
             Initialise(UriFactory.Create(SPL.BASE_URI), rdfReader);
         }
 
-        public void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
+        internal void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
         {
             if (_spinConfiguration.GraphUris.Contains(spinGraphUri))
             {
@@ -57,7 +58,7 @@ namespace VDS.RDF.Query.Spin
         /// </summary>
         /// <param name="spinGraph"></param>
         /// <returns></returns>
-        public IGraph Initialise(IGraph spinGraph)
+        internal IGraph Initialise(IGraph spinGraph)
         {
             if (_spinConfiguration.GraphUris.Contains(spinGraph.BaseUri))
             {
@@ -89,6 +90,31 @@ namespace VDS.RDF.Query.Spin
 
         #region "Spin model utilities"
 
+
+        internal void SortClasses(List<Resource> classList)
+        {
+            classList.Sort(delegate(Resource x, Resource y)
+            {
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
+                {
+                    return 1;
+                }
+                return -1;
+            });
+        }
+
+        internal void SortProperties(List<Resource> propertyList)
+        {
+            propertyList.Sort(delegate(Resource x, Resource y)
+            {
+                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
+                {
+                    return 1;
+                }
+                return -1;
+            });
+        }
+
         internal IEnumerable<IResource> GetAllInstances(INode cls)
         {
             List<Resource> classList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
@@ -102,14 +128,7 @@ namespace VDS.RDF.Query.Spin
             {
                 classList.Add(Resource.Get(root, this));
             }
-            classList.Sort(delegate(Resource x, Resource y)
-            {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
-                {
-                    return 1;
-                }
-                return -1;
-            });
+            SortClasses(classList);
             return classList;
         }
 
@@ -120,14 +139,7 @@ namespace VDS.RDF.Query.Spin
             {
                 classList.Add(Resource.Get(root, this));
             }
-            classList.Sort(delegate(Resource x, Resource y)
-            {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
-                {
-                    return 1;
-                }
-                return -1;
-            });
+            SortClasses(classList);
             return classList;
         }
 
@@ -138,14 +150,7 @@ namespace VDS.RDF.Query.Spin
             {
                 propertyList.Add(Resource.Get(root, this));
             }
-            propertyList.Sort(delegate(Resource x, Resource y)
-            {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
-                {
-                    return 1;
-                }
-                return -1;
-            });
+            SortProperties(propertyList);
             return propertyList;
         }
 
@@ -156,14 +161,7 @@ namespace VDS.RDF.Query.Spin
             {
                 propertyList.Add(Resource.Get(root, this));
             }
-            propertyList.Sort(delegate(Resource x, Resource y)
-            {
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
-                {
-                    return 1;
-                }
-                return -1;
-            });
+            SortProperties(propertyList);
             return propertyList;
         }
 
@@ -276,6 +274,9 @@ namespace VDS.RDF.Query.Spin
             return inferedTriples;
         }
 
+        
+        // TODO the three following methods are not needed anymore. Refactor them into a SPARQLMotion API ?
+
         /// <summary>
         /// The default implementation applies all rules then checks all constraints and returns wether the results raised constraints violations or not.
         /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
@@ -284,23 +285,24 @@ namespace VDS.RDF.Query.Spin
         /// <param name="dataset">The Dataset to apply SPIN processing on</param>
         /// <param name="resources">A list of resources to check constraints on</param>
         /// <returns>true if no constraint violation is raised, false otherwise</returns>
-        public bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
+        internal bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
         {
-            dataset.RestrictSPINProcessingTo(resources);
+            dataset.SetExecutionContext(resources);
             return ApplyInternal(dataset);
         }
 
         // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
-        public bool Apply(SpinWrappedDataset dataset)
+        internal bool Apply(SpinWrappedDataset dataset)
         {
-            dataset.RestrictSPINProcessingTo(null);
+            dataset.SetExecutionContext(null);
             return ApplyInternal(dataset);
         }
 
         // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
         internal protected virtual bool ApplyInternal(SpinWrappedDataset dataset)
         {
-            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinInferencing;
+
+
 
             dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinConstraintsChecking;
             IEnumerable<ConstraintViolation> vios = new List<ConstraintViolation>(); //runConstraints(dataset, resources, null);
@@ -310,74 +312,6 @@ namespace VDS.RDF.Query.Spin
 
         #endregion
 
-        #region Constraints checking API
-
-        /// <summary>
-        /// Checks all spin:constraints for a given Resource set.
-        /// </summary>
-        /// <param name="dataset">the dataset containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IEnumerable<INode> resources, IProgressMonitor monitor)
-        {
-            return CheckConstraints(dataset, resources, new List<SPINStatistics>(), monitor);
-        }
-
-        /// <summary>
-        /// Checks all spin:constraints for a given Resource set.
-        /// </summary>
-        /// <param name="dataset">the model containing the resource</param>
-        /// <param name="resource">the instance to run constraint checks on</param>
-        /// <param name="stats">an (optional) List to add statistics to</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IEnumerable<INode> resources, List<SPINStatistics> stats, IProgressMonitor monitor)
-        {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
-            //SPINConstraints.addConstraintViolations(this, results, dataset, resource, SPIN.constraint, false, stats, monitor);
-            return results;
-        }
-
-        /// <summary>
-        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        /// </summary>
-        /// <param name="dataset">the dataset to run constraint checks on</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, IProgressMonitor monitor)
-        {
-            return CheckConstraints(dataset, (List<SPINStatistics>)null, monitor);
-        }
-
-
-        /// <summary>
-        /// Checks all instances in a given Model against all spin:constraints and returns a List of constraint violations. 
-        /// A IProgressMonitor can be provided to enable the user to get intermediate status reports and to cancel the operation.
-        /// </summary>
-        /// <param name="dataset">the dataset to run constraint checks on</param>
-        /// <param name="stats">an (optional) List to add statistics to</param>
-        /// <param name="monitor">an (optional) progress monitor (currently ignored)</param>
-        /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
-        public List<ConstraintViolation> CheckConstraints(SpinWrappedDataset dataset, List<SPINStatistics> stats, IProgressMonitor monitor)
-        {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
-            //SPINConstraints.run(this, dataset, results, stats, monitor);
-            return results;
-        }
-
-
-        #endregion
-
-        //#region SPIN rules evaluation
-
-        //public void ApplyRules(SpinWrapperDataset dataset, Uri spinRule)
-        //{
-        //}
-
-        //#endregion
-
         #region SPIN user's queries wrapping
 
         // TODO make the cache dynamic and set limits on the queryCache
@@ -385,7 +319,7 @@ namespace VDS.RDF.Query.Spin
 
         // TODO make it also work with a SparqlParameterizedString object
         // TODO ?really make SparqlQuery really parameterized by remapping parameters into variables with values => find and equivalence for sql NULL ?
-        public IQuery BuildQuery(String sparqlQuery)
+        internal IQuery BuildQuery(String sparqlQuery)
         {
             IQuery spinQuery = null;
             if (queryCache.ContainsKey(sparqlQuery))
@@ -407,7 +341,7 @@ namespace VDS.RDF.Query.Spin
             return spinQuery;
         }
 
-        public IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
+        internal IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
         {
             List<IUpdate> spinQueryList = new List<IUpdate>();
             SparqlUpdateCommandSet query = new SparqlUpdateParser().ParseFromString(sparqlQuery);

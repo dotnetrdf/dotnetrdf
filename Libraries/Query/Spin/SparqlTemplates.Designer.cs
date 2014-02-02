@@ -153,9 +153,9 @@ namespace VDS.RDF.Query.Spin {
         ///	?s a ?class .
         ///}.
         /// </summary>
-        internal static string RestrictDataset {
+        internal static string SetExecutionContext {
             get {
-                return ResourceManager.GetString("RestrictDataset", resourceCulture);
+                return ResourceManager.GetString("SetExecutionContext", resourceCulture);
             }
         }
     }

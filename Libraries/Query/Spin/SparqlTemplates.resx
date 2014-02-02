@@ -240,7 +240,7 @@ WHERE {
 	} .
 }</value>
   </data>
-  <data name="RestrictDataset" xml:space="preserve">
+  <data name="SetExecutionContext" xml:space="preserve">
     <value>PREFIX dnr:&lt;dotnetrdf-spin:&gt;
 DELETE {
 	GRAPH @resourceRestriction {
