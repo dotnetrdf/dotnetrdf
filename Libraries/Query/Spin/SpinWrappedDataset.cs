@@ -576,14 +576,7 @@ namespace VDS.RDF.Query.Spin
                 CurrentExecutionContext = currentExecutionGraphUri;
                 // finally except for constructors we cannot force arbitrary rules and constraints checking at this moment
                 // so we should find a way to notify the client of the overall changes so he can decide the subsequent SPIN processing.
-                this.RunConstructors();
-                _queryExecutionMode = currentQueryMode;
-
-                // Resets loop prevention checks 
-                if (_queryExecutionMode == QueryMode.UserQuerying)
-                {
-                    loopPreventionChecks.Clear();
-                }
+                this.RunConstructors(); // TODO is this right ? called this way the RunConstructors calls will be nested.
             }
             catch (Exception any) {
                 // for cleanliness sake on exception cases
@@ -604,6 +597,13 @@ namespace VDS.RDF.Query.Spin
                 }
                 */ 
                 _storage.DeleteGraph(currentExecutionGraphUri);
+
+                _queryExecutionMode = currentQueryMode;
+                // Resets loop prevention checks 
+                if (_queryExecutionMode == QueryMode.UserQuerying)
+                {
+                    loopPreventionChecks.Clear();
+                }
             }
             // TODO append subsequent constructor-induced changes to the current changes.
             return remoteChanges;
