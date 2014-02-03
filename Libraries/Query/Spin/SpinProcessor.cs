@@ -95,6 +95,7 @@ namespace VDS.RDF.Query.Spin
         {
             classList.Sort(delegate(Resource x, Resource y)
             {
+                if (RDFUtil.sameTerm(x, y)) return 0;
                 if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
                 {
                     return 1;
@@ -107,6 +108,7 @@ namespace VDS.RDF.Query.Spin
         {
             propertyList.Sort(delegate(Resource x, Resource y)
             {
+                if (RDFUtil.sameTerm(x, y)) return 0;
                 if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
                 {
                     return 1;
@@ -274,9 +276,10 @@ namespace VDS.RDF.Query.Spin
             return inferedTriples;
         }
 
-        
+
         // TODO the three following methods are not needed anymore. Refactor them into a SPARQLMotion API ?
 
+        /*
         /// <summary>
         /// The default implementation applies all rules then checks all constraints and returns wether the results raised constraints violations or not.
         /// Allow any subclass to define how SPIN processing would be applied when a dataset is flushed. 
@@ -287,14 +290,14 @@ namespace VDS.RDF.Query.Spin
         /// <returns>true if no constraint violation is raised, false otherwise</returns>
         internal bool Apply(SpinWrappedDataset dataset, IEnumerable<INode> resources)
         {
-            dataset.SetExecutionContext(resources);
+            dataset.CreateExecutionContext(resources);
             return ApplyInternal(dataset);
         }
 
         // TODO perhaps use the null uri to avoid creating a graph with all rdftype triples ?
         internal bool Apply(SpinWrappedDataset dataset)
         {
-            dataset.SetExecutionContext(null);
+            dataset.CreateExecutionContext(null);
             return ApplyInternal(dataset);
         }
 
@@ -309,7 +312,7 @@ namespace VDS.RDF.Query.Spin
             dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.UserQuerying;
             return vios.Count() == 0;
         }
-
+        */
         #endregion
 
         #region SPIN user's queries wrapping
