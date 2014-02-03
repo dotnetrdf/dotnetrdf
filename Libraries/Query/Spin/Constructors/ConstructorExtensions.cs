@@ -3,32 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Constructors
 {
     internal static class ConstructorExtensions
     {
-        internal static void RunConstructors(this SpinWrappedDataset dataset)
+        
+        internal static IGraph RunConstructors(this SpinWrappedDataset dataset)
         {
-            SpinWrappedDataset.QueryMode currentExecutionMode = dataset.QueryExecutionMode;
-
-            String commandText = "SELECT DISTINCT ?class @FROM WHERE { ?s a ?class };";
-            if (dataset.CurrentExecutionContext == null)
-            {
-                commandText = commandText.Replace("@FROM", "");
-            }
-            else
-            {
-                commandText = commandText.Replace("@FROM", "FROM <" + dataset.CurrentExecutionContext.ToString() + ">");
-            }
-
+            String commandText = "SELECT DISTINCT ?class FROM <" + dataset.CurrentExecutionContext.ToString() + "> WHERE { ?s a ?class . }";
+            IGraph outputGraph = new ThreadSafeGraph();
             List<Resource> usedClasses = new List<Resource>();
             usedClasses.AddRange(((SparqlResultSet)dataset._storage.Query(commandText)).Results.Select(r => Resource.Get(r.Value("class"), dataset.spinProcessor)).Distinct());
-            dataset.spinProcessor.SortClasses(usedClasses);
+            if (usedClasses.Count > 0)
+            {
+                dataset.spinProcessor.SortClasses(usedClasses);
 
-            dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinInferencing;
-            // TODO evaluate the constructors 
-            dataset.QueryExecutionMode = currentExecutionMode;
+                SpinWrappedDataset.QueryMode currentExecutionMode = dataset.QueryExecutionMode;
+                dataset.QueryExecutionMode = SpinWrappedDataset.QueryMode.SpinInferencing;
+                foreach (Resource classResource in usedClasses)
+                {
+                    IEnumerable<IUpdate> constructors = dataset.spinProcessor.GetConstructorsForClass(classResource);
+                    if (constructors.Count() > 0)
+                    {
+                        outputGraph.Assert(dataset.ExecuteUpdate(constructors).Triples);
+                    }
+                }
+                dataset.QueryExecutionMode = currentExecutionMode;
+            }
+            return outputGraph;
         }
+
+
     }
 }

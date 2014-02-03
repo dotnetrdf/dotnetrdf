@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Spin {
         ///		?s a ?subC .
         ///	} .
         ///	GRAPH @outputGraph {
-        ///		?s dnr:typeAdded ?subC .
+        ///		?s a ?subC .
         ///	} .
         ///}
         ///INSERT {
@@ -84,11 +84,11 @@ namespace VDS.RDF.Query.Spin {
         ///	} .
         ///	GRAPH @outputGraph {
         ///		?s ?resetRequired ?p .
-        ///		?s dnr:typeRemoved ?subC .
+        ///		@outputGraph dnr:hasChanged  ?s .
         ///	} .
         ///}
         ///@USING_NAMED
-        ///USING NAMED @da [rest of string was truncated]&quot;;.
+        ///USING NAMED @dataset [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DeleteData {
             get {
@@ -101,11 +101,6 @@ namespace VDS.RDF.Query.Spin {
         ///PREFIX sd:&lt;http://www.w3.org/ns/sparql-service-description#&gt;
         ///PREFIX dnr:&lt;dotnetrdf-spin:&gt;
         ///
-        ///DELETE {
-        ///	GRAPH @outputGraph {
-        ///		?s dnr:typeRemoved ?newSupC .
-        ///	} .
-        ///}
         ///INSERT {
         ///	GRAPH ?g {
         ///		?s ?p ?o .
@@ -115,7 +110,8 @@ namespace VDS.RDF.Query.Spin {
         ///		?s a ?supC .
         ///	} .
         ///	GRAPH @outputGraph {
-        ///		?s dnr:typeAdded ?newSupC .
+        ///		?s a ?newSupC .
+        ///		@outputGraph dnr:hasChanged  ?s .
         ///	} .
         ///}
         ///@USING_DEFAULT
@@ -124,7 +120,9 @@ namespace VDS.RDF.Query.Spin {
         ///USING NAMED @outputGraph
         ///WHERE {
         ///	GRAPH @datasetUri {
-        ///	    ? [rest of string was truncated]&quot;;.
+        ///	    ?addedTriples dnr:addTriplesTo ?g .
+        ///		OPTIONAL {
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InsertData {
             get {

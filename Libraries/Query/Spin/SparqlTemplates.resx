@@ -131,7 +131,7 @@ DELETE {
 		?s a ?subC .
 	} .
 	GRAPH @outputGraph {
-		?s dnr:typeAdded ?subC .
+		?s a ?subC .
 	} .
 }
 INSERT {
@@ -141,7 +141,7 @@ INSERT {
 	} .
 	GRAPH @outputGraph {
 		?s ?resetRequired ?p .
-		?s dnr:typeRemoved ?subC .
+		@outputGraph dnr:hasChanged  ?s .
 	} .
 }
 @USING_NAMED
@@ -196,11 +196,6 @@ WHERE {
 PREFIX sd:&lt;http://www.w3.org/ns/sparql-service-description#&gt;
 PREFIX dnr:&lt;dotnetrdf-spin:&gt;
 
-DELETE {
-	GRAPH @outputGraph {
-		?s dnr:typeRemoved ?newSupC .
-	} .
-}
 INSERT {
 	GRAPH ?g {
 		?s ?p ?o .
@@ -210,7 +205,8 @@ INSERT {
 		?s a ?supC .
 	} .
 	GRAPH @outputGraph {
-		?s dnr:typeAdded ?newSupC .
+		?s a ?newSupC .
+		@outputGraph dnr:hasChanged  ?s .
 	} .
 }
 @USING_DEFAULT

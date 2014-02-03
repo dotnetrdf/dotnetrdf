@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Spin
     /// <summary>
     /// Provides SPIN capabilities for a Dataset over any SPIN-unaware IUpdateableStorage (including the InMemoryManager).
     /// TODO decide how to handle the default unnamed graph case
-    /// TODO design a concurrency maagement policy
+    /// TODO design a concurrency management policy
     /// </summary>
     public class SpinWrappedDataset : ISparqlDataset
     {
@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Spin
             SpinConstraintsChecking = 2
         }
 
-        internal bool _datasetChanged;
+        internal bool _datasetDescriptionChanged;
 
         internal SpinDatasetDescription _configuration;
 
@@ -37,6 +37,10 @@ namespace VDS.RDF.Query.Spin
         private SpinProcessor _spinProcessor = new SpinProcessor();
 
         private QueryMode _queryExecutionMode = QueryMode.UserQuerying;
+
+        private HashSet<IGraph> _synchronizedGraphs = new HashSet<IGraph>();
+
+        private HashSet<INode> _changedResources = new HashSet<INode>();
 
         #region Initialisation
 
@@ -95,7 +99,7 @@ namespace VDS.RDF.Query.Spin
                 }
             }
             // TODO explore the dataset to add spin:import triples
-            _configuration.Changed += OnDatasetChanged;
+            _configuration.Changed += OnDatasetDescriptionChanged;
         }
 
         #endregion
@@ -122,9 +126,9 @@ namespace VDS.RDF.Query.Spin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        protected void OnDatasetChanged(object sender, GraphEventArgs args)
+        protected void OnDatasetDescriptionChanged(object sender, GraphEventArgs args)
         {
-            _datasetChanged = true;
+            _datasetDescriptionChanged = true;
         }
 
         /// <summary>
@@ -202,8 +206,8 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <summary>
-        /// Returns the dataset Uri
-        /// TODO should we send the original Uri or the real Uri of the dataset ?
+        /// Returns the current dataset Uri.
+        /// If the dataset has been updated use SourceUri to get the orignal dataset Uri
         /// </summary>
         public Uri Uri
         {
@@ -211,17 +215,26 @@ namespace VDS.RDF.Query.Spin
             {
                 return _configuration.BaseUri;
             }
-            private set { }
+        }
+
+        /// <summary>
+        /// Returns the original dataset Uri
+        /// </summary>
+        public Uri SourceUri
+        {
+            get
+            {
+                return _configuration.SourceUri;
+            }
         }
 
         internal void SaveConfiguration()
         {
-            if (_datasetChanged)
+            if (_datasetDescriptionChanged)
             {
                 _storage.SaveGraph(_configuration);
-                _datasetChanged = false;
+                _datasetDescriptionChanged = false;
             }
-            // TODO handle pending graph changes
         }
 
         /// <summary>
@@ -255,21 +268,26 @@ namespace VDS.RDF.Query.Spin
             {
                 return _currentExecutionContext;
             }
-            private set {
+            private set
+            {
                 _currentExecutionContext = value;
             }
         }
 
-        internal void  SetExecutionContext(IEnumerable<INode> resources)
+        /// <summary>
+        /// Builds a graph of rdf:type triples to restrict subsequent SPIN Constructors, Rules or Constraint checks evaluations
+        /// </summary>
+        /// <param name="resources"></param>
+        internal Uri CreateExecutionContext(IEnumerable<INode> resources)
         {
-            Uri resourceRestrictionsUri = null;
+            Uri executionContextUri = null;
             if (resources != null)
             {
-                resourceRestrictionsUri = RDFRuntime.NewTempGraphUri();
+                executionContextUri = RDFRuntime.NewTempGraphUri();
                 SparqlParameterizedString restrictionQuery;
                 IGraph resourceRestrictions = new ThreadSafeGraph();
-                resourceRestrictions.BaseUri = resourceRestrictionsUri;
-                INode inputGraphNode = RDFUtil.CreateUriNode(resourceRestrictionsUri);
+                resourceRestrictions.BaseUri = executionContextUri;
+                INode inputGraphNode = RDFUtil.CreateUriNode(executionContextUri);
                 foreach (INode resource in resources)
                 {
                     resourceRestrictions.Assert(inputGraphNode, RDFRuntime.PropertyExecutionRestrictedTo, resource);
@@ -277,7 +295,7 @@ namespace VDS.RDF.Query.Spin
                 _storage.SaveGraph(resourceRestrictions);
                 restrictionQuery = new SparqlParameterizedString(SparqlTemplates.SetExecutionContext);
 
-                restrictionQuery.SetUri("resourceRestriction", resourceRestrictionsUri);
+                restrictionQuery.SetUri("resourceRestriction", executionContextUri);
                 StringBuilder sb = new StringBuilder();
                 foreach (Resource graph in DefaultGraphs)
                 {
@@ -286,7 +304,26 @@ namespace VDS.RDF.Query.Spin
                 restrictionQuery.CommandText = restrictionQuery.CommandText.Replace("@USING_DEFAULT", sb.ToString());
                 _storage.Update(restrictionQuery.ToString());
             }
-            CurrentExecutionContext = resourceRestrictionsUri;
+            return executionContextUri;
+        }
+
+        private IGraph _updatesMonitorGraph;
+        private Uri _updatesMonitorGraphUri;
+        /// <summary>
+        /// Gets/sets a graph to monitor global changes to the dataset.
+        /// Responsibility for the management of this graph is left to the caller.
+        /// Changes will be notified only at the end of the update process to avoid inducing too much I/O with each partial result.
+        /// </summary>
+        public IGraph UpdatesMonitor
+        {
+            get
+            {
+                return _updatesMonitorGraph;
+            }
+            set
+            {
+                _updatesMonitorGraph = value;
+            }
         }
 
         #endregion
@@ -367,6 +404,9 @@ namespace VDS.RDF.Query.Spin
             g.Changed += OnMonitoredGraphChanged;
             g.ClearRequested += OnMonitoredGraphClearRequested;
             g.Cleared += OnMonitoredGraphCleared;
+
+            // Add the graph to the synchronized collection so remote updates are reflected locally on updates completion
+            _synchronizedGraphs.Add(g);
 
             graph.Assert(g.Triples);
             ExecuteUpdate();
@@ -524,6 +564,14 @@ namespace VDS.RDF.Query.Spin
 
         #region Internal query and commands processing implementation
 
+        internal void ResetLoopPreventionChecks() {
+            // Resets loop prevention checks 
+            if (_queryExecutionMode == QueryMode.UserQuerying)
+            {
+                _loopPreventionChecks.Clear();
+            }
+        }
+
         internal object ExecuteQuery(IQuery spinQuery)
         {
             ExecuteUpdate();
@@ -537,18 +585,16 @@ namespace VDS.RDF.Query.Spin
             return _storage.Query(commandText.ToString());
         }
 
-
         internal void ExecuteUpdate(IConstruct spinUpdateCommandSet)
         {
         }
 
-        private HashSet<Triple> loopPreventionChecks = new HashSet<Triple>(new FullTripleComparer());
+        private HashSet<Triple> _loopPreventionChecks = new HashSet<Triple>(new FullTripleComparer());
 
         /// <summary>
-        /// TODO we perhaps should return a graph of overall changes induced by the update ?
+        /// TODO find a way to compile the global changes so ExecutionContexts can be set globally for Rules processing or Constraints checking.
         /// </summary>
         /// <param name="spinUpdateCommandSet"></param>
-        /// <returns></returns>
         internal IGraph ExecuteUpdate(IEnumerable<IUpdate> spinUpdateCommandSet)
         {
             QueryMode currentQueryMode = QueryExecutionMode;
@@ -563,22 +609,34 @@ namespace VDS.RDF.Query.Spin
                 }
                 _storage.LoadGraph(remoteChanges, currentExecutionGraphUri);
 
-                // if remoteChanges contains an already checked RDFType triple that means we have a infinite loop case in the SPIN processing pipeline so we stop execution
-                foreach (Triple t in remoteChanges.GetTriplesWithPredicate(RDFRuntime.PropertyTypeAdded))
+                // if remoteChanges contains an already checked rdf:type triple that means we have a infinite loop case in the SPIN processing pipeline so we stop execution
+                foreach (Triple t in remoteChanges.Triples)
                 {
-                    if (loopPreventionChecks.Contains(t))
+                    if (RDFUtil.sameTerm(RDF.PropertyType, t.Predicate))
                     {
-                        // TODO document better the exception causes
-                        throw new SpinException("Infinite loop encountered. Execution is canceled");
+                        if (_loopPreventionChecks.Contains(t))
+                        {
+                            // TODO document better the exception causes
+                            throw new SpinException("Infinite loop encountered. Execution is canceled");
+                        }
+                        _loopPreventionChecks.Add(t);
                     }
-                    loopPreventionChecks.Add(t);
+                    else if (RDFUtil.sameTerm(RDFRuntime.PropertyHasChanged, t.Predicate)) 
+                    {
+                        // mark the resource as updated for the next global CheckConstraints or Apply rules
+                        _changedResources.Add(t.Object);
+                    }
+                    else if (RDFUtil.sameTerm(RDFRuntime.PropertyResets, t.Predicate))
+                    {
+                        // TODO log the property resets for filtering pattern extensions in the subsequent SPARQL execution
+                    }
                 }
                 CurrentExecutionContext = currentExecutionGraphUri;
-                // finally except for constructors we cannot force arbitrary rules and constraints checking at this moment
-                // so we should find a way to notify the client of the overall changes so he can decide the subsequent SPIN processing.
-                this.RunConstructors(); // TODO is this right ? called this way the RunConstructors calls will be nested.
+                // Except for constructors we cannot force arbitrary SPIN processing at this moment
+                remoteChanges.Assert(this.RunConstructors().Triples); 
             }
-            catch (Exception any) {
+            catch (Exception any)
+            {
                 // for cleanliness sake on exception cases
                 foreach (Uri graphUri in _configuration.GetTriplesRemovalsGraphs().Union(_configuration.GetTriplesAdditionsGraphs()))
                 {
@@ -588,6 +646,8 @@ namespace VDS.RDF.Query.Spin
             }
             finally
             {
+                _storage.DeleteGraph(currentExecutionGraphUri);
+
                 // TODO check where to really place this.
                 /*
                 if (CurrentExecutionContext != null)
@@ -595,24 +655,17 @@ namespace VDS.RDF.Query.Spin
                     _storage.DeleteGraph(CurrentExecutionContext);
                     CurrentExecutionContext = null;
                 }
-                */ 
-                _storage.DeleteGraph(currentExecutionGraphUri);
-
+                */
                 _queryExecutionMode = currentQueryMode;
-                // Resets loop prevention checks 
-                if (_queryExecutionMode == QueryMode.UserQuerying)
-                {
-                    loopPreventionChecks.Clear();
-                }
+                ResetLoopPreventionChecks();
             }
-            // TODO append subsequent constructor-induced changes to the current changes.
             return remoteChanges;
         }
 
         private void UpdateInternal(IUpdate spinQuery, Uri outputGraphUri)
         {
             ISparqlFactory sparqlFactory = new BaseSparqlFactory(this);
-            // queries should be reworked to output QuadEvents
+            // Triples(Added|Removed)MonitorGraphsUri creation will be handled on spinQuery printing
             SparqlParameterizedString command = sparqlFactory.Print(spinQuery);
             this.SaveConfiguration();
             if (!(spinQuery is IInsertData || spinQuery is IDeleteData))
@@ -647,6 +700,22 @@ namespace VDS.RDF.Query.Spin
             try
             {
                 _storage.Update(command.ToString());
+                _ignoreMonitoredChangeEvents = true;
+                // TODO if needed : postpone this until full update execution is done to alleviate I/O 
+                foreach (IGraph synced in _synchronizedGraphs)
+                {
+                    Uri changesGraphUri = spinQuery is IDeleteData ? _configuration.GetTripleRemovalsMonitorUri(synced.BaseUri) : _configuration.GetTripleAdditionsMonitorUri(synced.BaseUri);
+                    IGraph changes = new ThreadSafeGraph();
+                    _storage.LoadGraph(changes, changesGraphUri);
+                    if (spinQuery is IDeleteData)
+                    {
+                        synced.Retract(changes.Triples);
+                    }
+                    else {
+                        synced.Assert(changes.Triples);
+                    }
+                }
+                _ignoreMonitoredChangeEvents = false;
             }
             finally
             {
@@ -693,11 +762,11 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
-        private bool _ignoreChangeEvents = false;
+        private bool _ignoreMonitoredChangeEvents = false;
 
         internal void OnMonitoredGraphChanged(object sender, GraphEventArgs e)
         {
-            if (_ignoreChangeEvents) return;
+            if (_ignoreMonitoredChangeEvents) return;
             Uri graphUri = e.Graph.BaseUri;
             SpinWrappedGraph g = (SpinWrappedGraph)GetModifiableGraph(graphUri);
             if (e.TripleEvent != null)
@@ -715,15 +784,15 @@ namespace VDS.RDF.Query.Spin
 
         internal void OnMonitoredGraphClearRequested(object sender, GraphEventArgs e)
         {
-            _ignoreChangeEvents = true;
+            _ignoreMonitoredChangeEvents = true;
         }
 
         internal void OnMonitoredGraphCleared(object sender, GraphEventArgs e)
         {
             SpinWrappedGraph g = (SpinWrappedGraph)GetModifiableGraph(e.Graph.BaseUri);
             g.Clear();
-            // TODO handle the underlying storage changes
-            _ignoreChangeEvents = false;
+            _storage.DeleteGraph(g.BaseUri);
+            _ignoreMonitoredChangeEvents = false;
         }
 
         // TODO simplify this
@@ -741,7 +810,7 @@ namespace VDS.RDF.Query.Spin
             {
                 _storage.DeleteGraph(graphUri);
             }
-            _configuration.Changed -= OnDatasetChanged;
+            _configuration.Changed -= OnDatasetDescriptionChanged;
             _storage.DeleteGraph(_configuration.BaseUri);
         }
 

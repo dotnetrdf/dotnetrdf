@@ -53,6 +53,7 @@ namespace VDS.RDF.Query.Spin.Util
         public readonly static IUriNode PropertyAddTriplesTo = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "addTriplesTo"));
         public readonly static IUriNode PropertyDeleteTriplesFrom = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "deleteTriplesFrom"));
 
+        public readonly static IUriNode PropertyHasChanged = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "hasChanged"));
         public readonly static IUriNode PropertyResets = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "resets"));
         public readonly static IUriNode PropertyTypeAdded = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "typeAdded"));
         public readonly static IUriNode PropertyTypeRemoved = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "typeRemoved"));

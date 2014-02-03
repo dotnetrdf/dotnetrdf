@@ -117,10 +117,16 @@ namespace VDS.RDF.Query.Spin
             });
         }
 
+        internal IEnumerable<IUpdate> GetConstructorsForClass(INode cls)
+        {
+            List<IUpdate> constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, this))).ToList();
+            return constructors;
+        }
+
         internal IEnumerable<IResource> GetAllInstances(INode cls)
         {
-            List<Resource> classList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
-            return classList;
+            List<Resource> resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
+            return resourceList;
         }
 
         internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
