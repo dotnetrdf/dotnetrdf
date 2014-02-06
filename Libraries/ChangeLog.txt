@@ -23,6 +23,7 @@ Changed
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
 - Storage
  - Add native SPARQL Update support to StardogV2Connector (CORE-376)
+ - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
 
 1.0.2
 -----
