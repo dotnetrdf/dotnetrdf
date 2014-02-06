@@ -57,5 +57,64 @@ namespace VDS.RDF.Query.Algebra
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsInstanceOf(typeof(Service), algebra);
         }
+
+        [Test]
+        public void SparqlGraphPatternToAlgebra4()
+        {
+            GraphPattern up = new GraphPattern();
+            up.IsUnion = true;
+
+            GraphPattern gp = new GraphPattern();
+            gp.IsService = true;
+            gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
+            up.AddGraphPattern(gp);
+
+            GraphPattern empty = new GraphPattern();
+            up.AddGraphPattern(empty);
+
+            ISparqlAlgebra algebra = up.ToAlgebra();
+            Assert.IsInstanceOf(typeof(Union), algebra);
+            Union u = (Union)algebra;
+
+            Assert.IsInstanceOf(typeof(Service), u.Lhs);
+
+            Assert.IsInstanceOf(typeof(IBgp), u.Rhs);
+        }
+
+        [Test]
+        public void SparqlGraphPatternToAlgebra5()
+        {
+            GraphPattern gp = new GraphPattern();
+            gp.IsGraph = true;
+            gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
+            gp.AddInlineData(new BindingsPattern());
+
+            ISparqlAlgebra algebra = gp.ToAlgebra();
+            Assert.IsInstanceOf(typeof(IJoin), algebra);
+
+            IJoin join = (IJoin) algebra;
+
+            Assert.IsInstanceOf(typeof(Graph), join.Lhs);
+            Graph g = (Graph)join.Lhs;
+            Assert.IsInstanceOf(typeof(IBgp), g.InnerAlgebra);
+
+            Assert.IsInstanceOf(typeof(Bindings), join.Rhs);
+        }
+
+        [Test]
+        public void SparqlGraphPatternToAlgebra6()
+        {
+            GraphPattern gp = new GraphPattern();
+            gp.IsService = true;
+            gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
+            gp.AddInlineData(new BindingsPattern());
+
+            ISparqlAlgebra algebra = gp.ToAlgebra();
+            Assert.IsInstanceOf(typeof(IJoin), algebra);
+
+            IJoin join = (IJoin)algebra;
+            Assert.IsInstanceOf(typeof(Service), join.Lhs);
+            Assert.IsInstanceOf(typeof(Bindings), join.Rhs);
+        }
     }
 }

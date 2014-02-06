@@ -64,7 +64,6 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         internal GraphPattern()
         {
-
         }
 
         /// <summary>
@@ -299,14 +298,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsOptional
         {
-            get
-            {
-                return this._isOptional;
-            }
-            internal set
-            {
-                this._isOptional = value;
-            }
+            get { return this._isOptional; }
+            internal set { this._isOptional = value; }
         }
 
         /// <summary>
@@ -314,14 +307,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsFiltered
         {
-            get
-            {
-                return this._isFiltered;
-            }
-            internal set
-            {
-                this._isFiltered = value;
-            }
+            get { return this._isFiltered; }
+            internal set { this._isFiltered = value; }
         }
 
         /// <summary>
@@ -329,14 +316,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsUnion
         {
-            get
-            {
-                return this._isUnion;
-            }
-            internal set
-            {
-                this._isUnion = value;
-            }
+            get { return this._isUnion; }
+            internal set { this._isUnion = value; }
         }
 
         /// <summary>
@@ -344,14 +325,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsGraph
         {
-            get
-            {
-                return this._isGraph;
-            }
-            internal set
-            {
-                this._isGraph = value;
-            }
+            get { return this._isGraph; }
+            internal set { this._isGraph = value; }
         }
 
         /// <summary>
@@ -359,10 +334,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsEmpty
         {
-            get
-            {
-                return (this._triplePatterns.Count == 0 && this._graphPatterns.Count == 0 && !this._isFiltered && !this._isOptional && !this._isUnion && this._unplacedFilters.Count == 0 && this._unplacedAssignments.Count == 0);
-            }
+            get { return (this._triplePatterns.Count == 0 && this._graphPatterns.Count == 0 && !this._isFiltered && !this._isOptional && !this._isUnion && this._unplacedFilters.Count == 0 && this._unplacedAssignments.Count == 0); }
         }
 
         /// <summary>
@@ -370,10 +342,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsExists
         {
-            get
-            {
-                return this._isExists;
-            }
+            get { return this._isExists; }
             internal set
             {
                 if (value && this._isNotExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
@@ -387,10 +356,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsNotExists
         {
-            get
-            {
-                return this._isNotExists;
-            }
+            get { return this._isNotExists; }
             internal set
             {
                 if (value && this._isExists) throw new RdfQueryException("A Graph Pattern cannot be both an EXISTS and a NOT EXISTS");
@@ -404,14 +370,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsMinus
         {
-            get
-            {
-                return this._isMinus;
-            }
-            internal set
-            {
-                this._isMinus = value;
-            }
+            get { return this._isMinus; }
+            internal set { this._isMinus = value; }
         }
 
         /// <summary>
@@ -419,14 +379,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsService
         {
-            get
-            {
-                return this._isService;
-            }
-            internal set
-            {
-                this._isService = value;
-            }
+            get { return this._isService; }
+            internal set { this._isService = value; }
         }
 
         /// <summary>
@@ -437,10 +391,7 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public bool IsOptimised
         {
-            get
-            {
-                return this._isOptimised;
-            }
+            get { return this._isOptimised; }
         }
 
         /// <summary>
@@ -448,14 +399,8 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsSilent
         {
-            get
-            {
-                return this._isSilent;
-            }
-            internal set
-            {
-                this._isSilent = value;
-            }
+            get { return this._isSilent; }
+            internal set { this._isSilent = value; }
         }
 
         /// <summary>
@@ -463,10 +408,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasInlineData
         {
-            get
-            {
-                return this._data != null;
-            }
+            get { return this._data != null; }
         }
 
         /// <summary>
@@ -474,10 +416,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasModifier
         {
-            get
-            {
-                return (this.IsExists || this.IsGraph || this.IsMinus || this.IsNotExists || this.IsOptional || this.IsService || this.IsSubQuery);
-            }
+            get { return (this.IsExists || this.IsGraph || this.IsMinus || this.IsNotExists || this.IsOptional || this.IsService || this.IsSubQuery); }
         }
 
         /// <summary>
@@ -513,7 +452,7 @@ namespace VDS.RDF.Query.Patterns
                 else if (this._filter is ChainFilter)
                 {
                     //Add to the Filter Chain
-                    ((ChainFilter)this._filter).Add(value);
+                    ((ChainFilter) this._filter).Add(value);
                 }
                 else
                 {
@@ -531,14 +470,8 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public IToken GraphSpecifier
         {
-            get
-            {
-                return this._graphSpecifier;
-            }
-            internal set
-            {
-                this._graphSpecifier = value;
-            }
+            get { return this._graphSpecifier; }
+            internal set { this._graphSpecifier = value; }
         }
 
         /// <summary>
@@ -546,10 +479,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool HasChildGraphPatterns
         {
-            get
-            {
-                return (this._graphPatterns.Count > 0);
-            }
+            get { return (this._graphPatterns.Count > 0); }
         }
 
         /// <summary>
@@ -567,10 +497,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public List<GraphPattern> ChildGraphPatterns
         {
-            get
-            {
-                return this._graphPatterns;
-            }
+            get { return this._graphPatterns; }
         }
 
         /// <summary>
@@ -578,10 +505,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public List<ITriplePattern> TriplePatterns
         {
-            get
-            {
-                return this._triplePatterns;
-            }
+            get { return this._triplePatterns; }
         }
 
         /// <summary>
@@ -589,10 +513,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         internal bool IsSimplifiable
         {
-            get
-            {
-                return (this._graphPatterns.Count == 1 && this._triplePatterns.Count == 0 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._unplacedAssignments.Count == 0);
-            }
+            get { return (this._graphPatterns.Count == 1 && this._triplePatterns.Count == 0 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._unplacedAssignments.Count == 0); }
         }
 
         /// <summary>
@@ -600,10 +521,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public bool IsSubQuery
         {
-            get
-            {
-                return (this._graphPatterns.Count == 0 && this._triplePatterns.Count == 1 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._triplePatterns[0].PatternType == TriplePatternType.SubQuery);
-            }
+            get { return (this._graphPatterns.Count == 0 && this._triplePatterns.Count == 1 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._triplePatterns[0].PatternType == TriplePatternType.SubQuery); }
         }
 
         /// <summary>
@@ -628,10 +546,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<ISparqlFilter> UnplacedFilters
         {
-            get
-            {
-                return this._unplacedFilters;
-            }
+            get { return this._unplacedFilters; }
         }
 
         /// <summary>
@@ -639,10 +554,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public IEnumerable<IAssignmentPattern> UnplacedAssignments
         {
-            get
-            {
-                return this._unplacedAssignments;
-            }
+            get { return this._unplacedAssignments; }
         }
 
         /// <summary>
@@ -665,10 +577,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public BindingsPattern InlineData
         {
-            get
-            {
-                return this._data;
-            }
+            get { return this._data; }
         }
 
         #endregion
@@ -935,12 +844,11 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return new Filter(union, this.Filter);
                 }
-                else
-                {
-                    return union;
-                }
+                return union;
             }
-            else if (this._graphPatterns.Count == 0)
+
+            // Terminal graph pattern
+            if (this._graphPatterns.Count == 0)
             {
                 //If there are no Child Graph Patterns then this is a BGP
                 ISparqlAlgebra bgp = new Bgp(this._triplePatterns);
@@ -952,7 +860,6 @@ namespace VDS.RDF.Query.Patterns
                         bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
                     }
                 }
-                // TODO: Does this interact correctly with VALUES?
                 if (this.IsGraph)
                 {
                     bgp = new Algebra.Graph(bgp, this.GraphSpecifier);
@@ -961,7 +868,6 @@ namespace VDS.RDF.Query.Patterns
                 {
                     bgp = new Service(this.GraphSpecifier, this, this.IsSilent);
                 }
-                // TODO: Are there other cases here where the algebra compilation is incorrect
 
                 //Apply Inline Data
                 if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
@@ -973,117 +879,108 @@ namespace VDS.RDF.Query.Patterns
                         //applies over the LEFT JOIN and will have been added elsewhere in the Algebra transform
                         return bgp;
                     }
+
+                    //If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
+                    //applies here
+                    return new Filter(bgp, this.Filter);
+                }
+                //We're not filtered (or all FILTERs were placed in the BGP) so we're just a BGP
+                return bgp;
+            }
+
+            //Create a basic BGP to start with
+            ISparqlAlgebra complex = new Bgp();
+            if (this._triplePatterns.Count > 0)
+            {
+                complex = new Bgp(this._triplePatterns);
+            }
+
+            //Apply Inline Data
+            //If this Graph Pattern had child patterns before this Graph Pattern then we would
+            //have broken the BGP and not added the Inline Data here so it's always safe to apply this here
+            if (this.HasInlineData) complex = Join.CreateJoin(complex, new Bindings(this._data));
+
+            //Then Join each of the Graph Patterns as appropriate
+            foreach (GraphPattern gp in this._graphPatterns)
+            {
+                if (gp.IsGraph)
+                {
+                    //A GRAPH clause means a Join of the current pattern to a Graph clause
+                    complex = Join.CreateJoin(complex, new Algebra.Graph(gp.ToAlgebra(), gp.GraphSpecifier));
+                }
+                else if (gp.IsOptional)
+                {
+                    if (gp.IsExists || gp.IsNotExists)
+                    {
+                        //An EXISTS/NOT EXISTS means an Exists Join of the current pattern to the EXISTS/NOT EXISTS clause
+                        complex = new ExistsJoin(complex, gp.ToAlgebra(), gp.IsExists);
+                    }
                     else
                     {
-                        ISparqlAlgebra complex = bgp;
-
-                        //If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
-                        //applies here
-                        return new Filter(bgp, this.Filter);
+                        //An OPTIONAL means a Left Join of the current pattern to the OPTIONAL clause
+                        //with a possible FILTER applied over the LeftJoin
+                        if (gp.IsFiltered && gp.Filter != null)
+                        {
+                            //If the OPTIONAL clause has an unplaced FILTER it applies over the Left Join
+                            complex = new LeftJoin(complex, gp.ToAlgebra(), gp.Filter);
+                        }
+                        else
+                        {
+                            complex = new LeftJoin(complex, gp.ToAlgebra());
+                        }
                     }
+                }
+                else if (gp.IsMinus)
+                {
+                    //Always introduce a Minus here even if the Minus is disjoint since during evaluation we'll choose
+                    //not to execute it if it's disjoint
+                    complex = new Minus(complex, gp.ToAlgebra());
+                }
+                else if (gp.IsService)
+                {
+                    complex = Join.CreateJoin(complex, new Service(gp.GraphSpecifier, gp, gp.IsSilent));
                 }
                 else
                 {
-                    //We're not filtered (or all FILTERs were placed in the BGP) so we're just a BGP
-                    return bgp;
+                    //Otherwise we just join the pattern to the existing pattern
+                    complex = Join.CreateJoin(complex, gp.ToAlgebra());
+                }
+            }
+            if (this._unplacedAssignments.Count > 0)
+            {
+                //Unplaced assignments get Extended over the algebra so far here
+                //complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                foreach (IAssignmentPattern p in this._unplacedAssignments)
+                {
+                    complex = new Extend(complex, p.AssignExpression, p.VariableName);
+                }
+            }
+            if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
+            {
+                if (this._isOptional && !(this._isExists || this._isNotExists))
+                {
+                    //If there's an unplaced FILTER and we're an OPTIONAL then the FILTER will
+                    //apply over the LeftJoin and is applied elsewhere in the Algebra transform
+                    return complex;
+                }
+                else
+                {
+                    if (this._filter != null || this._unplacedFilters.Count > 0)
+                    {
+                        //If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
+                        //the FILTER here
+                        return new Filter(complex, this.Filter);
+                    }
+                    else
+                    {
+                        return complex;
+                    }
                 }
             }
             else
             {
-                //Create a basic BGP to start with
-                ISparqlAlgebra complex = new Bgp();
-                if (this._triplePatterns.Count > 0)
-                {
-                    complex = new Bgp(this._triplePatterns);
-                }
-
-                //Apply Inline Data
-                //If this Graph Pattern had child patterns before this Graph Pattern then we would
-                //have broken the BGP and not added the Inline Data here so it's always safe to apply this here
-                if (this.HasInlineData) complex = Join.CreateJoin(complex, new Bindings(this._data));
-
-                //Then Join each of the Graph Patterns as appropriate
-                foreach (GraphPattern gp in this._graphPatterns)
-                {
-                    if (gp.IsGraph)
-                    {
-                        //A GRAPH clause means a Join of the current pattern to a Graph clause
-                        complex = Join.CreateJoin(complex, new Algebra.Graph(gp.ToAlgebra(), gp.GraphSpecifier));
-                    }
-                    else if (gp.IsOptional)
-                    {
-                        if (gp.IsExists || gp.IsNotExists)
-                        {
-                            //An EXISTS/NOT EXISTS means an Exists Join of the current pattern to the EXISTS/NOT EXISTS clause
-                            complex = new ExistsJoin(complex, gp.ToAlgebra(), gp.IsExists);
-                        }
-                        else
-                        {
-                            //An OPTIONAL means a Left Join of the current pattern to the OPTIONAL clause
-                            //with a possible FILTER applied over the LeftJoin
-                            if (gp.IsFiltered && gp.Filter != null)
-                            {
-                                //If the OPTIONAL clause has an unplaced FILTER it applies over the Left Join
-                                complex = new LeftJoin(complex, gp.ToAlgebra(), gp.Filter);
-                            }
-                            else
-                            {
-                                complex = new LeftJoin(complex, gp.ToAlgebra());
-                            }
-                        }
-                    }
-                    else if (gp.IsMinus)
-                    {
-                        //Always introduce a Minus here even if the Minus is disjoint since during evaluation we'll choose
-                        //not to execute it if it's disjoint
-                        complex = new Minus(complex, gp.ToAlgebra());
-                    }
-                    else if (gp.IsService)
-                    {
-                        complex = Join.CreateJoin(complex, new Service(gp.GraphSpecifier, gp, gp.IsSilent));
-                    }
-                    else
-                    {
-                        //Otherwise we just join the pattern to the existing pattern
-                        complex = Join.CreateJoin(complex, gp.ToAlgebra());
-                    }
-                }
-                if (this._unplacedAssignments.Count > 0)
-                {
-                    //Unplaced assignments get Extended over the algebra so far here
-                    //complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
-                    foreach (IAssignmentPattern p in this._unplacedAssignments)
-                    {
-                        complex = new Extend(complex, p.AssignExpression, p.VariableName);
-                    }
-                }
-                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
-                {
-                    if (this._isOptional && !(this._isExists || this._isNotExists))
-                    {
-                        //If there's an unplaced FILTER and we're an OPTIONAL then the FILTER will
-                        //apply over the LeftJoin and is applied elsewhere in the Algebra transform
-                        return complex;
-                    }
-                    else
-                    {
-                        if (this._filter != null || this._unplacedFilters.Count > 0)
-                        {
-                            //If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
-                            //the FILTER here
-                            return new Filter(complex, this.Filter);
-                        }
-                        else
-                        {
-                            return complex;
-                        }
-                    }
-                }
-                else
-                {
-                    //If no FILTER just return the transform
-                    return complex;
-                }
+                //If no FILTER just return the transform
+                return complex;
             }
         }
 
