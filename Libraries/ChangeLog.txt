@@ -15,6 +15,7 @@ Changed
  - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
  - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
  - Fix a bug in translating and evaluating complex property paths (CORE-395)
+ - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
 - Dependencies
  - Bumped Json.Net to 5.0.8
 - Documentation
@@ -23,6 +24,7 @@ Changed
  - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
 - Storage
  - Add native SPARQL Update support to StardogV2Connector (CORE-376)
+ - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
 
 1.0.2
 -----

@@ -281,7 +281,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToAlgebra().ToString() + ")";
+            return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToString() + ")";
         }
 
         /// <summary>

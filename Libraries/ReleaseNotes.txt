@@ -109,6 +109,9 @@ Parsing
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
+
+Storage
+- More recent versions of Virtuoso may not permit deleting blank nodes due to an apparent Virtuoso bug
  
 Change History
 --------------
