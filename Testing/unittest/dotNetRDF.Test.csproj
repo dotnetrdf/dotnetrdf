@@ -2853,6 +2853,9 @@
     <Content Include="resources\pp.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\cogapp.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
