@@ -957,6 +957,10 @@ namespace VDS.RDF.Query.Patterns
                 {
                     bgp = new Algebra.Graph(bgp, this.GraphSpecifier);
                 }
+                else if (this.IsService)
+                {
+                    bgp = new Service(this.GraphSpecifier, this, this.IsSilent);
+                }
                 // TODO: Are there other cases here where the algebra compilation is incorrect
 
                 //Apply Inline Data
