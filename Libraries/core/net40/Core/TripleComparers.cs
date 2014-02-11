@@ -133,13 +133,7 @@ namespace VDS.RDF
 
         public int GetHashCode(INode obj)
         {
-            if (obj is ILiteralNode)
-            {
-                return ((ILiteralNode)obj).ToSafeString().GetHashCode();
-            }
-            else {
-                return obj.ToString().GetHashCode();
-            }
+            return obj.GetHashCode();
         }
     }
 
@@ -165,7 +159,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int GetHashCode(Triple t)
         {
-            return t.Subject.GetHashCode() * 31 ^ 2 + t.Predicate.GetHashCode() * 31 + t.Object.ToString().GetHashCode();
+            return t.Subject.GetHashCode() * 31 ^ 2 + t.Predicate.GetHashCode() * 31 + t.Object.GetHashCode();
         }
     }
 
