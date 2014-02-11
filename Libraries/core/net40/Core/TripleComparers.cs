@@ -34,7 +34,7 @@ namespace VDS.RDF
     /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons
     /// </summary>
     public class FastNodeComparer
-        : IComparer<INode>
+        : IComparer<INode>, IEqualityComparer<INode>
     {
         /// <summary>
         /// Compares two Nodes
@@ -125,13 +125,55 @@ namespace VDS.RDF
                 return x.CompareTo(y);
             }
         }
+
+        public bool Equals(INode x, INode y)
+        {
+            return Compare(x,y)==0;
+        }
+
+        public int GetHashCode(INode obj)
+        {
+            if (obj is ILiteralNode)
+            {
+                return ((ILiteralNode)obj).ToSafeString().GetHashCode();
+            }
+            else {
+                return obj.ToString().GetHashCode();
+            }
+        }
+    }
+
+    public class TripleEqualityComparer : IEqualityComparer<Triple>
+    { 
+
+        /// <summary>
+        /// Returns whether two Triples are equal
+        /// </summary>
+        /// <param name="x">Triple</param>
+        /// <param name="y">Triple</param>
+        /// <returns></returns>
+        public bool Equals(Triple x, Triple y)
+        {
+            return x.Subject.Equals(y.Subject) && x.Predicate.Equals(y.Predicate) && x.Object.Equals(y.Object);
+        }
+
+        /// <summary>
+        /// Returns a predictable HashCode for the triple based on its components'
+        /// </summary>
+        /// <param name="x">Triple</param>
+        /// <param name="y">Triple</param>
+        /// <returns></returns>
+        public int GetHashCode(Triple t)
+        {
+            return t.Subject.GetHashCode() * 31 ^ 2 + t.Predicate.GetHashCode() * 31 + t.Object.ToString().GetHashCode();
+        }
     }
 
     /// <summary>
     /// Abstract base class for Triple Comparers which provide for comparisons using different node comparers
     /// </summary>
     public abstract class BaseTripleComparer
-        : IComparer<Triple>, IEqualityComparer<Triple>
+        : IComparer<Triple>
     {
         /// <summary>
         /// Node Comparer
@@ -162,21 +204,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public abstract int Compare(Triple x, Triple y);
 
-        /// <summary>
-        /// Returns whether two Triples are equal
-        /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
-        /// <returns></returns>
-        public virtual bool Equals(Triple x, Triple y)
-        {
-            return this._nodeComparer.Compare(x.Subject, y.Subject) == 0 && this._nodeComparer.Compare(x.Predicate, y.Predicate) == 0 && this._nodeComparer.Compare(x.Object, y.Object) == 0;
-        }
-
-        public virtual int GetHashCode(Triple t)
-        {
-            return t.GetHashCode();
-        }
     }
 
     /// <summary>

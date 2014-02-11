@@ -101,7 +101,7 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriples(INode n)
         {
             return (from g in this._graphs
-                    from t in g.GetTriplesWithObject(n).Union(g.GetTriplesWithPredicate(n)).Union(g.GetTriplesWithSubject(n))
+                    from t in g.GetTriples(n)
                     select t);
         }
 
@@ -235,7 +235,7 @@ namespace VDS.RDF
         {
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
-                                     from t in g.GetTriplesWithObject(n).Union(g.GetTriplesWithPredicate(n)).Union(g.GetTriplesWithSubject(n))
+                                     from t in g.GetTriples(n)
                                      select t;
 
             return ts;
