@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Spin.Model
                     IResource p2 = o2.getPredicate();
                     if (p1 != null && p2 != null)
                     {
-                        return RDFUtil.uriComparer.Compare(p1.Uri(), p2.Uri());
+                        return RDFUtil.uriComparer.Compare(p1.Uri, p2.Uri);
                     }
                     else
                     {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IResource property = argument.getPredicate();
                 if (property != null)
                 {
-                    results[property.Uri().ToString().Replace(SP.BASE_URI, "")] = argument;
+                    results[property.Uri.ToString().Replace(SP.BASE_URI, "")] = argument;
                 }
             }
             return results;
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
         }

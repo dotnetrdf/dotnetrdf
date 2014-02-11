@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             p.printKeyword("VALUES");
             p.print(" ");

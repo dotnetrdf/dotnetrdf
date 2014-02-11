@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             List<IElement> elements = getElements();
 
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Spin.Model
                     p.print("{");
                     p.println();
                     p.setIndentation(p.getIndentation() + 1);
-                    element.print(p);
+                    element.Print(p);
                     p.setIndentation(p.getIndentation() - 1);
                     p.printIndentation(p.getIndentation());
                     p.print("} ");
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Spin.Model
                     }
                     else
                     {
-                        element.print(p);
+                        element.Print(p);
                     }
                 }
                 if (!(element is IElementList) || ((IElementList)element).getElements().Count > 1)
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Spin.Model
 
 
         // Special treatment of nested rdf:Lists
-        private int printTriplePattern(List<IElement> elements, int i, ISparqlFactory p)
+        private int printTriplePattern(List<IElement> elements, int i, ISparqlPrinter p)
         {
             ITriplePattern main = (ITriplePattern)elements[i];
 
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printRDFList(ISparqlFactory p, List<IResource> members)
+        private void printRDFList(ISparqlPrinter p, List<IResource> members)
         {
             p.print("(");
             foreach (IResource node in members)

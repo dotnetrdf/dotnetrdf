@@ -12,6 +12,9 @@ namespace VDS.RDF.Query.Spin.Util
     {
 
         public readonly static UriComparer uriComparer = new UriComparer();
+
+        public readonly static IEqualityComparer<Triple> tripleEqualityComparer = new TripleEqualityComparer();
+
         public readonly static NodeFactory nodeFactory = new NodeFactory();
 
         #region UriComparison shortcuts

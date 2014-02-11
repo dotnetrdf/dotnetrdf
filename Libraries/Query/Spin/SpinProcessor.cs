@@ -4,27 +4,23 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
-using VDS.RDF.Query.Spin.Constraints;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Spin.Progress;
-using VDS.RDF.Query.Spin.Statistics;
 using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Spin
 {
-    // Even though the class is exposed as a Processor, the features of this class are more related to those of a Reasoner.
-    // TODO make this class internal
-    // TODO refactor the initialization process
     /// <summary>
-    /// 
+    /// TODO make this class internal
+    /// TODO refactor the initialization process to allow for dynamic SPIN configuration updates through the dataset API.
+    /// TODO avoid multiple query transformations (ie String => SparqlQuery => SPIN Resources => String) by using the native dotNetRDF algebra classes instead of IResource
     /// </summary>
     public class SpinProcessor //: IInferenceEngine
     {
 
-        // TODO allow for an OWL Reasoner
+        // TODO change support to OWL ?
         private IInferenceEngine _reasoner = new StaticRdfsReasoner();
 
         internal InMemoryDataset _spinConfiguration;
@@ -96,7 +92,7 @@ namespace VDS.RDF.Query.Spin
             classList.Sort(delegate(Resource x, Resource y)
             {
                 if (RDFUtil.sameTerm(x, y)) return 0;
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubClassOf, y.getSource())))
+                if (ContainsTriple(x, RDFS.PropertySubClassOf, y))
                 {
                     return 1;
                 }
@@ -109,7 +105,7 @@ namespace VDS.RDF.Query.Spin
             propertyList.Sort(delegate(Resource x, Resource y)
             {
                 if (RDFUtil.sameTerm(x, y)) return 0;
-                if (_spinConfiguration.ContainsTriple(new Triple(x.getSource(), RDFS.PropertySubPropertyOf, y.getSource())))
+                if (ContainsTriple(x, RDFS.PropertySubPropertyOf, y))
                 {
                     return 1;
                 }
@@ -326,8 +322,6 @@ namespace VDS.RDF.Query.Spin
         // TODO make the cache dynamic and set limits on the queryCache
         private Dictionary<String, ICommand> queryCache = new Dictionary<String, ICommand>();
 
-        // TODO make it also work with a SparqlParameterizedString object
-        // TODO ?really make SparqlQuery really parameterized by remapping parameters into variables with values => find and equivalence for sql NULL ?
         internal IQuery BuildQuery(String sparqlQuery)
         {
             IQuery spinQuery = null;

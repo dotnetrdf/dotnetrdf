@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void printSPINRDF(ISparqlFactory p)
+        override public void printSPINRDF(ISparqlPrinter p)
         {
             p.printKeyword("DROP");
             p.print(" ");

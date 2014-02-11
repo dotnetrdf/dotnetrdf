@@ -15,7 +15,7 @@ public class LoadImpl : UpdateImpl, ILoad {
 	}
 
 	
-	override public void printSPINRDF(ISparqlFactory p) {
+	override public void printSPINRDF(ISparqlPrinter p) {
 		p.printKeyword("LOAD");
 		p.print(" ");
 		printSilent(p);

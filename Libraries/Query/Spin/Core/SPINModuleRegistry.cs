@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static void register(IFunction function, Object source, bool addARQFunction)
         {
-            functions[function.Uri()] = function;
+            functions[function.Uri] = function;
             if (source != null)
             {
                 sources[function] = source;
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static void register(ITemplate template)
         {
-            templates[template.Uri()] = template;
+            templates[template.Uri] = template;
         }
 
 
@@ -247,13 +247,13 @@ namespace VDS.RDF.Query.Spin.Core
         protected static void registerARQFunction(IFunction spinFunction)
         {
             //TODO
-            //FunctionFactory oldFF = FunctionRegistry.get().get(spinFunction.Uri());
+            //FunctionFactory oldFF = FunctionRegistry.get().get(spinFunction.Uri);
             //if (oldFF == null || oldFF is SPINFunctionFactory)
             //{ // Never overwrite native Java functions
             //    SPINFunctionFactory newFF = SPINFunctionDrivers.get().create(spinFunction);
             //    if (newFF != null)
             //    {
-            //        FunctionRegistry.get().put(spinFunction.Uri(), newFF);
+            //        FunctionRegistry.get().put(spinFunction.Uri, newFF);
             //    }
             //}
         }
@@ -271,11 +271,11 @@ namespace VDS.RDF.Query.Spin.Core
             //TODO
             if (function.hasProperty(SPIN.PropertyBody))
             {
-                //PropertyFunctionFactory old = PropertyFunctionRegistry.get().get(function.Uri());
+                //PropertyFunctionFactory old = PropertyFunctionRegistry.get().get(function.Uri);
                 //if (old == null || old is SPINARQPFunction)
                 //{
                 //    SPINARQPFunction arqFunction = new SPINARQPFunction(function);
-                //    PropertyFunctionRegistry.get().put(function.Uri(), arqFunction);
+                //    PropertyFunctionRegistry.get().put(function.Uri, arqFunction);
                 //}
             }
         }

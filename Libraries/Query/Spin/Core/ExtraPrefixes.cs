@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Spin.Core
             if (!resource.isUri() || resource.getSource().Graph == null) return;
             INamespaceMapper mapper = resource.getSource().Graph.NamespaceMap;
             String prefix;
-            if (mapper.ReduceToQName(resource.Uri().ToString(), out prefix))
+            if (mapper.ReduceToQName(resource.Uri.ToString(), out prefix))
             {
                 prefix = prefix.Split(':')[0];
                 map.AddNamespace(prefix, mapper.GetNamespaceUri(prefix));

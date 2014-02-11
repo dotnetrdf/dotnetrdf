@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             List<IElement> elements = getElements();
             for (IEnumerator<IElement> it = elements.GetEnumerator(); it.MoveNext(); )
@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Spin.Model
                 p.print("{");
                 p.println();
                 p.setIndentation(p.getIndentation() + 1);
-                element.print(p);
+                element.Print(p);
                 p.setIndentation(p.getIndentation() - 1);
                 p.printIndentation(p.getIndentation());
                 p.print("}");

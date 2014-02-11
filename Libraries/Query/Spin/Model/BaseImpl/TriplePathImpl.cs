@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Spin.Model
         //}
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             print(getSubject(), p);
             p.print(" ");
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Spin.Model
             print(getObject(), p);
         }
 
-        private void printPath(IResource path, ISparqlFactory p)
+        private void printPath(IResource path, ISparqlPrinter p)
         {
             ISparqlPath arqPath = createPath(path);
             if (p.getUsePrefixes())

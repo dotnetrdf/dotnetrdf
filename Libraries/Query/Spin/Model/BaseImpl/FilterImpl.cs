@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory context)
+        override public void Print(ISparqlPrinter context)
         {
             context.printKeyword("FILTER");
             context.print(" ");

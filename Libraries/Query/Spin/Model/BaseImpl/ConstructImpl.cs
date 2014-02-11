@@ -33,12 +33,12 @@ namespace VDS.RDF.Query.Spin.Model
             return results;
         }
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
         }
 
-        override public void printSPINRDF(ISparqlFactory context)
+        override public void printSPINRDF(ISparqlPrinter context)
         {
             printComment(context);
             printPrefixes(context);
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Spin.Model
             foreach (ITripleTemplate template in getTemplates())
             {
                 context.printIndentation(context.getIndentation() + 1);
-                template.print(context);
+                template.Print(context);
                 context.print(" .");
                 context.println();
             }

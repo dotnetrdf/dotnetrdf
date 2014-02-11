@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             p.print("{");
             p.println();
@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Spin.Model
             if (query != null)
             {
                 p.setIndentation(p.getIndentation() + 1);
-                query.print(p);
+                query.Print(p);
                 p.setIndentation(p.getIndentation() - 1);
             }
             else

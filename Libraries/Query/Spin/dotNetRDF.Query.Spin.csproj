@@ -249,12 +249,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SparqlTemplates.resx</DependentUpon>
     </Compile>
-    <Compile Include="SparqlUtil\ISparqlFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SparqlUtil\BaseSparqlFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Model\QueryOrTemplateCall.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -285,6 +279,8 @@
     <Compile Include="Progress\IProgressMonitor.cs" />
     <Compile Include="Progress\IRunnableWithProgress.cs" />
     <Compile Include="Progress\SimpleProgressMonitor.cs" />
+    <Compile Include="SparqlUtil\BaseSparqlPrinter.cs" />
+    <Compile Include="SparqlUtil\ISparqlPrinter.cs" />
     <Compile Include="SpinWrappedDataset.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Spin.Model
             return hasProperty(SP.PropertyDistinct, RDFUtil.TRUE);
         }
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
 
             IVariable asVar = getAs();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IResource expr = SPINFactory.asExpression(r);
                 if (expr is IPrintable)
                 {
-                    ((IPrintable)expr).print(p);
+                    ((IPrintable)expr).Print(p);
                 }
                 else
                 {

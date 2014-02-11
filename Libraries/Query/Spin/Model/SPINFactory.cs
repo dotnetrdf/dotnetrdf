@@ -105,55 +105,55 @@ namespace VDS.RDF.Query.Spin.Model
             }
             else if (resource.canAs(SP.ClassTriplePath))
             {
-                return (IElement)resource.As(typeof(TriplePathImpl));
+                return (ITriplePath)resource.As(typeof(TriplePathImpl));
             }
             else if (resource.canAs(SP.ClassFilter))
             {
-                return (IElement)resource.As(typeof(FilterImpl));
+                return (IFilter)resource.As(typeof(FilterImpl));
             }
             else if (resource.canAs(SP.ClassBind))
             {
-                return (IElement)resource.As(typeof(BindImpl));
+                return (IBind)resource.As(typeof(BindImpl));
             }
             else if (resource.canAs(SP.ClassOptional))
             {
-                return (IElement)resource.As(typeof(OptionalImpl));
+                return (IOptional)resource.As(typeof(OptionalImpl));
             }
             else if (resource.canAs(SP.ClassNamedGraph))
             {
-                return (IElement)resource.As(typeof(NamedGraphImpl));
+                return (INamedGraph)resource.As(typeof(NamedGraphImpl));
             }
             else if (resource.canAs(SP.ClassMinus))
             {
-                return (IElement)resource.As(typeof(MinusImpl));
+                return (IMinus)resource.As(typeof(MinusImpl));
             }
             else if (resource.canAs(SP.ClassExists))
             {
-                return (IElement)resource.As(typeof(ExistsImpl));
+                return (IExists)resource.As(typeof(ExistsImpl));
             }
             else if (resource.canAs(SP.ClassNotExists))
             {
-                return (IElement)resource.As(typeof(NotExistsImpl));
+                return (INotExists)resource.As(typeof(NotExistsImpl));
             }
             else if (resource.canAs(SP.ClassService))
             {
-                return (IElement)resource.As(typeof(ServiceImpl));
+                return (IService)resource.As(typeof(ServiceImpl));
             }
             else if (resource.canAs(SP.ClassSubQuery))
             {
-                return (IElement)resource.As(typeof(SubQueryImpl));
+                return (ISubQuery)resource.As(typeof(SubQueryImpl));
             }
             else if (resource.canAs(SP.ClassUnion))
             {
-                return (IElement)resource.As(typeof(UnionImpl));
+                return (IUnion)resource.As(typeof(UnionImpl));
             }
             else if (resource.canAs(SP.ClassValues))
             {
-                return (IElement)resource.As(typeof(ValuesImpl));
+                return (IValues)resource.As(typeof(ValuesImpl));
             }
             else if (isElementList(resource))
             {
-                return (IElement)resource.As(typeof(ElementListImpl));
+                return (IElementList)resource.As(typeof(ElementListImpl));
             }
             else
             {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IResource t= resource.getResource(RDF.PropertyType);
                 if (t!=null && t.isUri())
                 {
-                    ITemplate template = SPINModuleRegistry.getTemplate(t.Uri(), t.getModel());
+                    ITemplate template = SPINModuleRegistry.getTemplate(t.Uri, t.getModel());
                     if (template != null)
                     {
                         return (ITemplateCall)resource.As(typeof(TemplateCallImpl));
@@ -339,43 +339,43 @@ namespace VDS.RDF.Query.Spin.Model
             if (resource == null) return null;
             if (resource.canAs(SP.ClassModify))
             {
-                return (IUpdate)resource.As(typeof(ModifyImpl));
+                return (IModify)resource.As(typeof(ModifyImpl));
             }
             else if (resource.canAs(SP.ClassClear))
             {
-                return (IUpdate)resource.As(typeof(ClearImpl));
+                return (IClear)resource.As(typeof(ClearImpl));
             }
             else if (resource.canAs(SP.ClassCreate))
             {
-                return (IUpdate)resource.As(typeof(CreateImpl));
+                return (ICreate)resource.As(typeof(CreateImpl));
             }
             else if (resource.canAs(SP.ClassDeleteData))
             {
-                return (IUpdate)resource.As(typeof(DeleteDataImpl));
+                return (IDeleteData)resource.As(typeof(DeleteDataImpl));
             }
             else if (resource.canAs(SP.ClassDeleteWhere))
             {
-                return (IUpdate)resource.As(typeof(DeleteWhereImpl));
+                return (IDeleteWhere)resource.As(typeof(DeleteWhereImpl));
             }
             else if (resource.canAs(SP.ClassDrop))
             {
-                return (IUpdate)resource.As(typeof(DropImpl));
+                return (IDrop)resource.As(typeof(DropImpl));
             }
             else if (resource.canAs(SP.ClassInsertData))
             {
-                return (IUpdate)resource.As(typeof(InsertDataImpl));
+                return (IInsertData)resource.As(typeof(InsertDataImpl));
             }
             else if (resource.canAs(SP.ClassLoad))
             {
-                return (IUpdate)resource.As(typeof(LoadImpl));
+                return (ILoad)resource.As(typeof(LoadImpl));
             }
             else if (resource.canAs(SP.ClassDelete))
             {
-                return (IUpdate)resource.As(typeof(DeleteImpl));
+                return (IDelete)resource.As(typeof(DeleteImpl));
             }
             else if (resource.canAs(SP.ClassInsert))
             {
-                return (IUpdate)resource.As(typeof(InsertImpl));
+                return (IInsert)resource.As(typeof(InsertImpl));
             }
             else
             {

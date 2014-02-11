@@ -16,9 +16,9 @@ namespace VDS.RDF.Query.Spin.Util
 
         internal static Dictionary<Uri, IGraph> datasets = new Dictionary<Uri, IGraph>(RDFUtil.uriComparer);
 
-        private Dictionary<Uri, SpinWrappedGraph> _modificableGraphs = new Dictionary<Uri, SpinWrappedGraph>(RDFUtil.uriComparer);
+        private Uri _sourceUri;
 
-        private bool _isDirty = false;
+        private Dictionary<Uri, SpinWrappedGraph> _modificableGraphs = new Dictionary<Uri, SpinWrappedGraph>(RDFUtil.uriComparer);
 
         #region Static methods
 
@@ -42,31 +42,27 @@ namespace VDS.RDF.Query.Spin.Util
                     datasetUri = UriFactory.Create(RDFRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
                 }
             }
-            /* Do not cache yet
-            if (datasets.ContainsKey(datasetUri))
-            {
-                dataset = datasets[datasetUri];
-                if (dataset.GetTriplesWithPredicateObject(RDF.type, SD.ClassGraph).Any())
-                {
-                    return dataset;
-                }
-            }
-            */
-            dataset = new SpinDatasetDescription();
-            dataset.BaseUri = datasetUri;
+            dataset = new SpinDatasetDescription(datasetUri);
             storage.LoadGraph(dataset, datasetUri);
-            dataset.Assert(RDFUtil.CreateUriNode(datasetUri), RDF.PropertyType, SD.ClassDataset);
-
-            /* Do not cache yet
-            datasets[datasetUri] = dataset;
-            */
+            dataset.BaseUri = datasetUri;
+            Triple isUpdateControlledDataset = dataset.GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).FirstOrDefault();
+            if (isUpdateControlledDataset!=null)
+            {
+                dataset._sourceUri = ((IUriNode)isUpdateControlledDataset.Object).Uri;
+            }
+            else
+            {
+                dataset.Assert(RDFUtil.CreateUriNode(datasetUri), RDF.PropertyType, SD.ClassDataset);
+            }
             return dataset;
         }
 
         #endregion
 
-        internal SpinDatasetDescription()
+        internal SpinDatasetDescription(Uri datasetUri)
         {
+            BaseUri = datasetUri;
+            _sourceUri = datasetUri;
         }
 
         #region Public methods
@@ -129,15 +125,13 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 return !RDFUtil.sameTerm(BaseUri, SourceUri);
             }
-            private set { }
         }
 
         public Uri SourceUri
         {
             get
             {
-                IUriNode sourceDataset = GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).Select(t => (IUriNode)t.Object).FirstOrDefault();
-                return sourceDataset == null ? BaseUri : sourceDataset.Uri;
+                return _sourceUri;
             }
         }
 
@@ -146,22 +140,26 @@ namespace VDS.RDF.Query.Spin.Util
         #region Internal implementation
 
         // TODO change the name into something sensible
-        private void MakeWritable()
+        internal void EnableUpdateControl()
         {
-            if (!GetTriplesWithPredicate(RDFRuntime.PropertyUpdatesDataset).Any())
+            if (!IsChanged)
             {
-                IUriNode sourceDataset = RDFUtil.CreateUriNode(BaseUri);
+                IUriNode sourceDataset = RDFUtil.CreateUriNode(_sourceUri);
                 BaseUri = RDFRuntime.NewTempDatasetUri();
                 this.Retract(sourceDataset, RDF.PropertyType, SD.ClassDataset);
                 this.Assert(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyUpdatesDataset, sourceDataset);
             }
         }
 
-        // TODO change the name into something sensible
-        internal void MakeReadOnly()
-        {
-            IUriNode sourceDataset = GetTriplesWithSubjectPredicate(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyUpdatesDataset).Select(t => (IUriNode)t.Object).FirstOrDefault();
-            BaseUri = sourceDataset.Uri;
+        internal void DisableUpdateControl() {
+            BaseUri = _sourceUri;
+            _additionGraphs.Clear();
+            _removalGraphs.Clear();
+            foreach (SpinWrappedGraph g in _modificableGraphs.Values) {
+                g.Changed -= OnModificableGraphChange;
+                g.Cleared -= OnModificableGraphCleared;
+            }
+            _modificableGraphs.Clear();
         }
 
         private IGraph GetModifiableGraph(Uri graphUri, INode modificationMode)
@@ -175,10 +173,8 @@ namespace VDS.RDF.Query.Spin.Util
                 throw new SpinException("The graph " + graphUri.ToString() + " is marked as Readonly for the current dataset");
             }
 
-            MakeWritable();
-
             IUriNode sourceGraph = RDFUtil.CreateUriNode(graphUri);
-            IUriNode updateControlGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            IUriNode updateControlGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri, true));
             this.Retract(RDFUtil.CreateUriNode(BaseUri), RDFRuntime.PropertyRemovesGraph, sourceGraph);
             this.Assert(sourceGraph, RDF.PropertyType, SD.ClassGraph);
             this.Assert(updateControlGraph, RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph);
@@ -239,14 +235,14 @@ namespace VDS.RDF.Query.Spin.Util
             this.Assert(graphNode, RDFRuntime.PropertyReplacesGraph, sourceGraph);
         }
 
-        internal Uri GetUpdateControlUri(Uri graphUri)
+        internal Uri GetUpdateControlUri(Uri graphUri, bool create=true)
         {
 
             Uri uri = GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, RDFUtil.CreateUriNode(graphUri))
                 .Union(GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(graphUri)))
                 .Select(t => ((IUriNode)t.Subject).Uri)
                 .FirstOrDefault();
-            if (uri == null)
+            if (uri == null && create)
             {
                 uri = RDFRuntime.NewUpdateControlGraphUri();
             }
@@ -265,7 +261,7 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 return _additionGraphs[graphUri];
             }
-            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
             Uri uri = RDFRuntime.NewTempGraphUri();
             _additionGraphs[graphUri] = uri;
             _additionGraphs[monitoredGraph.Uri] = uri;
@@ -281,11 +277,12 @@ namespace VDS.RDF.Query.Spin.Util
         private Dictionary<Uri, Uri> _removalGraphs = new Dictionary<Uri, Uri>(RDFUtil.uriComparer);
         internal Uri GetTripleRemovalsMonitorUri(Uri graphUri)
         {
+            EnableUpdateControl();
             if (_removalGraphs.ContainsKey(graphUri))
             {
                 return _removalGraphs[graphUri];
             }
-            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(graphUri));
+            IUriNode monitoredGraph = RDFUtil.CreateUriNode(GetUpdateControlUri(GetModifiableGraph(graphUri).BaseUri));
             Uri uri = RDFRuntime.NewTempGraphUri();
             _removalGraphs[graphUri] = uri;
             _removalGraphs[monitoredGraph.Uri] = uri;
@@ -301,6 +298,11 @@ namespace VDS.RDF.Query.Spin.Util
         internal bool IsGraphUpdated(Uri sourceGraph)
         {
             return GetTriplesWithPredicateObject(RDFRuntime.PropertyUpdatesGraph, RDFUtil.CreateUriNode(sourceGraph)).Any();
+        }
+
+        internal bool IsGraphModified(Uri sourceGraph)
+        {
+            return IsGraphUpdated(sourceGraph) || IsGraphReplaced(sourceGraph);
         }
 
         #endregion

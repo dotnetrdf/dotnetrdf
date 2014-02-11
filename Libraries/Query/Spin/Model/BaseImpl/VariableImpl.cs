@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             String name = getName();
             if (name.StartsWith("?"))
@@ -78,5 +78,7 @@ namespace VDS.RDF.Query.Spin.Model
                 p.printVariable(name);
             }
         }
+
+
     }
 }

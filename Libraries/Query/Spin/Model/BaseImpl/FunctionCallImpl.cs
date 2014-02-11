@@ -48,9 +48,9 @@ namespace VDS.RDF.Query.Spin.Model
             List<IResource> others = new List<IResource>();
             foreach (IResource p in values.Keys)
             {
-                if (p.Uri().ToString().StartsWith(SP_ARG) && !RDFUtil.sameTerm(p, SP.PropertyArg))
+                if (p.Uri.ToString().StartsWith(SP_ARG) && !RDFUtil.sameTerm(p, SP.PropertyArg))
                 {
-                    int index = int.Parse(p.Uri().ToString().Substring(SP_ARG.Length));
+                    int index = int.Parse(p.Uri.ToString().Substring(SP_ARG.Length));
                     ps[index - 1] = p;
                 }
                 else
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Spin.Model
                 others.Sort(delegate(IResource arg0, IResource arg1)
                 {
                     //TODO is that OK ?
-                    return RDFUtil.uriComparer.Compare(arg0.Uri(), arg1.Uri());
+                    return RDFUtil.uriComparer.Compare(arg0.Uri, arg1.Uri);
                 }
                 );
                 IEnumerator<IResource> it = others.GetEnumerator();
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Spin.Model
                 }
                 else
                 {
-                    IResource global = SPINModuleRegistry.getFunction(type.Uri(), null);
+                    IResource global = SPINModuleRegistry.getFunction(type.Uri, null);
                     if (global != null)
                     {
                         return global;
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             IResource function = getFunction();
             List<IResource> args = getArguments();
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        void printOperator(ISparqlFactory p, String op, List<IResource> args)
+        void printOperator(ISparqlPrinter p, String op, List<IResource> args)
         {
             if (p.isNested())
             {
@@ -242,14 +242,14 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        void printExistsOrNotExists(ISparqlFactory p, String symbol)
+        void printExistsOrNotExists(ISparqlPrinter p, String symbol)
         {
             p.print(symbol);
             printNestedElementList(p, SP.PropertyElements);
         }
 
 
-        void printFunction(ISparqlFactory p, IResource function, List<IResource> args)
+        void printFunction(ISparqlPrinter p, IResource function, List<IResource> args)
         {
             printFunctionQName(p, function);
             p.print("(");
@@ -267,7 +267,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printFunctionQName(ISparqlFactory p, IResource function)
+        private void printFunctionQName(ISparqlPrinter p, IResource function)
         {
             String symbol = getSymbol(function);
             if (symbol != null)

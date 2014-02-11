@@ -27,7 +27,11 @@ namespace VDS.RDF.Query.Spin.Model
         bool isUri();
         bool isBlank();
         bool isLiteral();
-        Uri Uri();
+
+        Uri Uri
+        {
+            get;
+        }
 
         bool canAs(INode cls);
         IResource As(Type cls);

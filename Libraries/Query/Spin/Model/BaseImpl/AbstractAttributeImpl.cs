@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Spin.Model
             return (bool)getBoolean(SPL.PropertyOptional);
         }
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
         }

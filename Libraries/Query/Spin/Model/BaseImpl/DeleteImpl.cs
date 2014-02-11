@@ -23,7 +23,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public override void printSPINRDF(ISparqlFactory p)
+        public override void printSPINRDF(ISparqlPrinter p)
         {
             printComment(p);
             printPrefixes(p);

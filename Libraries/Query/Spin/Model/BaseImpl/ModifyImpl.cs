@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public override void printSPINRDF(ISparqlFactory p)
+        public override void printSPINRDF(ISparqlPrinter p)
         {
             printComment(p);
             printPrefixes(p);
@@ -48,7 +48,6 @@ namespace VDS.RDF.Query.Spin.Model
                 p.println();
             }
 
-            p.CurrentSparqlContext = SparqlContext.TemplateContext;
             // TODO add a INSERT/CONSTRUCT pattern before the delete is effective
             if (printTemplates(p, SP.PropertyDeletePattern, "DELETE", hasProperty(SP.PropertyDeletePattern), iri))
             {
@@ -90,6 +89,10 @@ namespace VDS.RDF.Query.Spin.Model
             printWhere(p);
         }
 
+        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+        {
+            p.PrintEnhancedSPARQL(this);
+        }
 
     }
 }

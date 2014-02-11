@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Spin.Model
             return hasProperty(SP.PropertyReduced, RDFUtil.TRUE);
         }
 
-        override public void printSPINRDF(ISparqlFactory p)
+        override public void printSPINRDF(ISparqlPrinter p)
         {
             printComment(p);
             printPrefixes(p);
@@ -80,17 +80,17 @@ namespace VDS.RDF.Query.Spin.Model
                         }
                         else
                         {
-                            ((IVariable)var).print(p);
+                            ((IVariable)var).Print(p);
                         }
                     }
                     else if (var is IAggregation)
                     {
-                        ((IPrintable)var).print(p);
+                        ((IPrintable)var).Print(p);
                     }
                     else
                     {
                         p.print("(");
-                        ((IPrintable)var).print(p);
+                        ((IPrintable)var).Print(p);
                         p.print(")");
                     }
                     if (vit.MoveNext())
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printGroupBy(ISparqlFactory p)
+        private void printGroupBy(ISparqlPrinter p)
         {
             List<IResource> groupBy = getList(SP.PropertyGroupBy);
             if (groupBy.Count > 0)
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printHaving(ISparqlFactory p)
+        private void printHaving(ISparqlPrinter p)
         {
             List<IResource> havings = getList(SP.PropertyHaving);
             if (havings.Count > 0)
@@ -146,12 +146,12 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printProjectExpression(ISparqlFactory p, IVariable var)
+        private void printProjectExpression(ISparqlPrinter p, IVariable var)
         {
             p.print("((");
             IResource expr = var.getResource(SP.PropertyExpression);
             IPrintable expression = (IPrintable)SPINFactory.asExpression(expr);
-            expression.print(p);
+            expression.Print(p);
             p.print(") ");
             p.printKeyword("AS");
             p.print(" ");

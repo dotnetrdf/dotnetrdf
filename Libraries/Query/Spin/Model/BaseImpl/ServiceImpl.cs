@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IVariable variable = SPINFactory.asVariable(s);
                 if (variable == null)
                 {
-                    return s.Uri();
+                    return s.Uri;
                 }
             }
             return null;
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             p.printKeyword("SERVICE");
             IVariable var = getServiceVariable();

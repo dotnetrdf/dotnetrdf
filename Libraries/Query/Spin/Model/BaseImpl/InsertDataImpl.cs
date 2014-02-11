@@ -18,12 +18,18 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void printSPINRDF(ISparqlFactory p)
+        override public void printSPINRDF(ISparqlPrinter p)
         {
             p.printKeyword("INSERT");
             p.print(" ");
             p.printKeyword("DATA");
             printTemplates(p, SP.PropertyData, null, true, null);
         }
+
+        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+        {
+            p.PrintEnhancedSPARQL(this);
+        }
+
     }
 }

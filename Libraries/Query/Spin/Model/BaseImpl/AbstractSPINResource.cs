@@ -27,7 +27,11 @@ namespace VDS.RDF.Query.Spin.Model
         {
         }
 
-        public abstract void print(ISparqlFactory p);
+        public abstract void Print(ISparqlPrinter p);
+
+        public virtual void PrintEnhancedSPARQL(ISparqlPrinter p) {
+            Print(p);
+        }
 
         public String getComment()
         {
@@ -64,7 +68,7 @@ namespace VDS.RDF.Query.Spin.Model
             return new List<IResource>();
         }
 
-        private String getPrefix(Uri ns, ISparqlFactory context)
+        private String getPrefix(Uri ns, ISparqlPrinter context)
         {
             String prefix = getSource().Graph.NamespaceMap.GetPrefix(ns);
             if (prefix == null && context.getUseExtraPrefixes())
@@ -88,7 +92,7 @@ namespace VDS.RDF.Query.Spin.Model
             return graph.ContainsTriple(new Triple(node, RDF.PropertyType, type));
         }
 
-        protected void printComment(ISparqlFactory context)
+        protected void printComment(ISparqlPrinter context)
         {
             String str = getComment();
             if (str != null)
@@ -104,13 +108,13 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printNestedElementList(ISparqlFactory p)
+        protected void printNestedElementList(ISparqlPrinter p)
         {
             printNestedElementList(p, SP.PropertyElements);
         }
 
 
-        protected void printNestedElementList(ISparqlFactory p, INode predicate)
+        protected void printNestedElementList(ISparqlPrinter p, INode predicate)
         {
             p.print(" {");
             p.println();
@@ -119,7 +123,7 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 IElementList elements = (IElementList)elementsRaw.As(typeof(ElementListImpl));
                 p.setIndentation(p.getIndentation() + 1);
-                elements.print(p);
+                elements.Print(p);
                 p.setIndentation(p.getIndentation() - 1);
             }
             p.printIndentation(p.getIndentation());
@@ -127,20 +131,20 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printNestedExpressionString(ISparqlFactory context, IResource node)
+        protected void printNestedExpressionString(ISparqlPrinter context, IResource node)
         {
             printNestedExpressionString(context, node, false);
         }
 
 
-        protected void printNestedExpressionString(ISparqlFactory p, IResource node, bool force)
+        protected void printNestedExpressionString(ISparqlPrinter p, IResource node, bool force)
         {
             // TODO handle namespace prefixes
             //SPINExpressions.printExpressionString(p, node, true, force, new NamespaceMapper());
         }
 
 
-        protected void printPrefixes(ISparqlFactory context)
+        protected void printPrefixes(ISparqlPrinter context)
         {
             return;
             //if (context.getPrintPrefixes())
@@ -188,12 +192,12 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public static void printVarOrResource(ISparqlFactory p, IResource resource)
+        public static void printVarOrResource(ISparqlPrinter p, IResource resource)
         {
             IVariable variable = SPINFactory.asVariable(resource);
             if (variable != null)
             {
-                variable.print(p);
+                variable.Print(p);
             }
             else if (resource.isUri())
             {

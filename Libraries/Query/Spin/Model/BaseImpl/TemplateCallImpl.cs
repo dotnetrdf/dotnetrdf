@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Spin.Model
             IResource s = getResource(RDF.PropertyType);
             if (s != null && s.isUri())
             {
-                return SPINModuleRegistry.getTemplate(s.Uri(), s.getModel());
+                return SPINModuleRegistry.getTemplate(s.Uri, s.getModel());
             }
             else
             {
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
 

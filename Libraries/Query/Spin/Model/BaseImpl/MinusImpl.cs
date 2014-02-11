@@ -22,7 +22,7 @@ namespace VDS.RDF.Query.Spin.Model
 
 
         // TODO PRINT CONTEXT SHOULD DEPEND ON THE MODEL TO AVOID ADDING RESOURCE-CONSUMMING ATTERNS WHERE NOT NEEDED
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             p.printKeyword("MINUS");
             printNestedElementList(p);

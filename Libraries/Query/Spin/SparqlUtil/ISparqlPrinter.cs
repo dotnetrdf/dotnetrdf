@@ -11,16 +11,18 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
     public enum SparqlContext
     {
         QueryContext = 0,
-        TemplateContext = 1
+        DeleteTemplateContext = 1,
+        InsertTemplateContext = 2
     }
 
+    #region Printing utility interface
     /// <summary>
     /// A status object responsible for converting SPIN expressions to SPARQL queries 
     /// TODO relocate each IPrintable.print method into a single design-handling ISparqlFactory class
     /// </summary>
     /// <author>Holger Knublauch</author>
     /// <author>Max Bronnimann</author>
-    public interface ISparqlFactory
+    public interface ISparqlPrinter
     {
 
         /**
@@ -42,7 +44,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
          * Creates a clone of this PrintContext so that it can be used recursively.
          * @return a clone
          */
-        ISparqlFactory clone();
+        ISparqlPrinter clone();
 
 
         /**
@@ -212,12 +214,25 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
          */
         void setUsePrefixes(bool value);
 
+#endregion 
+
         /// <summary>
         /// Convert a SPIN resource into it's SPARQL representation
         /// </summary>
         /// <param name="spinResource"></param>
         /// <returns></returns>
-        SparqlParameterizedString Print(IResource spinResource);
+        SparqlParameterizedString GetCommandText(ICommand spinResource);
 
+        void PrintEnhancedSPARQL(IResource command);
+
+        void PrintEnhancedSPARQL(IDeleteData command);
+
+        void PrintEnhancedSPARQL(IInsertData command);
+
+        void PrintEnhancedSPARQL(IModify command);
+
+        void PrintEnhancedSPARQL(INamedGraph pattern);
+
+        void PrintEnhancedSPARQL(TripleImpl pattern);
     }
 }

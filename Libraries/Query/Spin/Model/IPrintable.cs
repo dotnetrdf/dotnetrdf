@@ -20,7 +20,10 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
          * Implementations need to use the provided functions of p.
          * @param p  the context
          */
-        void print(ISparqlFactory p);
+        void Print(ISparqlPrinter p);
+
+        void PrintEnhancedSPARQL(ISparqlPrinter p);
+
     }
 
 }

@@ -230,10 +230,8 @@ WHERE {
 		FILTER (sameTerm(rdf:type, ?p)) .
 		?o rdfs:subClassOf+ ?supC .
 	} .
-	OPTIONAL { # for new rdf:type triples monitoring
-		FILTER (sameTerm(rdf:type, ?p) &amp;&amp; NOT EXISTS { ?s a ?newSupC . }) .
-		?o rdfs:subClassOf+ ?newSupC .
-	} .
+	#Should change ?__unbound__ to UNDEF when properly supported by all storage engines
+	BIND (IF(NOT EXISTS { ?s a ?supC . }, ?supC, ?__unbound__) as ?newSupC) .
 }</value>
   </data>
   <data name="SetExecutionContext" xml:space="preserve">

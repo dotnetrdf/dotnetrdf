@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             String text = getString(SP.PropertyText);
             if (text != null)
@@ -53,10 +53,10 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public abstract void printSPINRDF(ISparqlFactory p);
+        public abstract void printSPINRDF(ISparqlPrinter p);
 
 
-        protected void printGraphDefaultNamedOrAll(ISparqlFactory p)
+        protected void printGraphDefaultNamedOrAll(ISparqlPrinter p)
         {
             IResource graph = this.getResource(SP.PropertyGraphIRI);
             if (graph != null)
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printGraphIRIs(ISparqlFactory p, String keyword)
+        protected void printGraphIRIs(ISparqlPrinter p, String keyword)
         {
             List<String> graphIRIs = new List<String>();
             {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printSilent(ISparqlFactory p)
+        protected void printSilent(ISparqlPrinter p)
         {
             if (isSilent())
             {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected bool printTemplates(ISparqlFactory p, INode predicate, String keyword, bool force, IResource graphIRI)
+        protected bool printTemplates(ISparqlPrinter p, INode predicate, String keyword, bool force, IResource graphIRI)
         {
             IResource resource = getResource(predicate);
             if (resource == null) return false;
@@ -150,14 +150,14 @@ namespace VDS.RDF.Query.Spin.Model
                         INamedGraph namedGraph = (INamedGraph)node.As(typeof(NamedGraphImpl));
                         p.setIndentation(p.getIndentation() + 1);
                         p.setNamedBNodeMode(true);
-                        namedGraph.print(p);
+                        namedGraph.Print(p);
                         p.setNamedBNodeMode(false);
                         p.setIndentation(p.getIndentation() - 1);
                     }
                     else
                     {
                         ITripleTemplate template = (ITripleTemplate)node.As(typeof(TripleTemplateImpl));
-                        template.print(p);
+                        template.Print(p);
                     }
                     p.print(" .");
                     p.println();
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printWhere(ISparqlFactory p)
+        protected void printWhere(ISparqlPrinter p)
         {
             p.printIndentation(p.getIndentation());
             p.printKeyword("WHERE");

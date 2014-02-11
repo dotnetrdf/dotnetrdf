@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             String text = getString(SP.PropertyText);
             if (text != null)
@@ -127,10 +127,10 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public abstract void printSPINRDF(ISparqlFactory p);
+        public abstract void printSPINRDF(ISparqlPrinter p);
 
 
-        protected void printStringFrom(ISparqlFactory context)
+        protected void printStringFrom(ISparqlPrinter context)
         {
             IEnumerable<INode> froms = getFrom();
             if (froms.Count() == 0)
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printSolutionModifiers(ISparqlFactory context)
+        protected void printSolutionModifiers(ISparqlPrinter context)
         {
             List<IResource> orderBy = getList(SP.PropertyOrderBy);
             if (orderBy.Count > 0)
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        private void printOrderByExpression(ISparqlFactory sb, IResource node)
+        private void printOrderByExpression(ISparqlPrinter sb, IResource node)
         {
             // TODO check for real test
             if (node is INode)
@@ -222,9 +222,9 @@ namespace VDS.RDF.Query.Spin.Model
                 if (call != null)
                 {
                     sb.print("(");
-                    ISparqlFactory pc = sb.clone();
+                    ISparqlPrinter pc = sb.clone();
                     pc.setNested(true);
-                    call.print(pc);
+                    call.Print(pc);
                     sb.print(")");
                     return;
                 }
@@ -234,18 +234,18 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void printValues(ISparqlFactory p)
+        protected void printValues(ISparqlPrinter p)
         {
             IValues values = getValues();
             if (values != null)
             {
                 p.println();
-                values.print(p);
+                values.Print(p);
             }
         }
 
 
-        protected void printWhere(ISparqlFactory p)
+        protected void printWhere(ISparqlPrinter p)
         {
             p.printIndentation(p.getIndentation());
             p.printKeyword("WHERE");

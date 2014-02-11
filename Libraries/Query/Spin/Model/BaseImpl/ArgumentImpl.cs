@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin.Model
             IResource argProperty = getPredicate();
             if (argProperty != null)
             {
-                return argProperty.Uri().ToString().Replace(SP.BASE_URI, "");
+                return argProperty.Uri.ToString().Replace(SP.BASE_URI, "");
             }
             else
             {

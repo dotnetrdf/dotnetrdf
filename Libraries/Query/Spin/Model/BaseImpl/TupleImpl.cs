@@ -69,25 +69,25 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        protected void print(IResource node, ISparqlFactory p)
+        internal void print(IResource node, ISparqlPrinter p)
         {
             TupleImpl.print(getModel(), node, p);
         }
 
 
-        protected void print(IResource node, ISparqlFactory p, bool abbrevRDFType)
+        internal void print(IResource node, ISparqlPrinter p, bool abbrevRDFType)
         {
             TupleImpl.print(getModel(), node, p, abbrevRDFType);
         }
 
 
-        public static void print(SpinProcessor model, IResource node, ISparqlFactory p)
+        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p)
         {
             print(model, node, p, false);
         }
 
 
-        public static void print(SpinProcessor model, IResource node, ISparqlFactory p, bool abbrevRDFType)
+        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
         {
             // TODO find the good tests ?????
             if (!node.isLiteral())

@@ -27,7 +27,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             print(getSubject(), p);
             p.print(" ");
@@ -35,5 +35,11 @@ namespace VDS.RDF.Query.Spin.Model
             p.print(" ");
             print(getObject(), p);
         }
+
+        override public void PrintEnhancedSPARQL(ISparqlPrinter p)
+        {
+            p.PrintEnhancedSPARQL(this);
+        }
+
     }
 }

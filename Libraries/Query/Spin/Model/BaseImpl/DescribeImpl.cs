@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        override public void printSPINRDF(ISparqlFactory context)
+        override public void printSPINRDF(ISparqlPrinter context)
         {
             printComment(context);
             printPrefixes(context);
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Spin.Model
             printValues(context);
         }
 
-        override public void print(ISparqlFactory p)
+        override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
         }

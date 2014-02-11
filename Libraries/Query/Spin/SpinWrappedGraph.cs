@@ -17,11 +17,9 @@ namespace VDS.RDF.Query.Spin
 
         private Uri _baseUri;
 
-        private SpinDatasetDescription _source;
+        internal HashSet<Triple> additions = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
 
-        internal HashSet<Triple> additions = new HashSet<Triple>(new FullTripleComparer());
-
-        internal HashSet<Triple> removals = new HashSet<Triple>(new FullTripleComparer());
+        internal HashSet<Triple> removals = new HashSet<Triple>(RDFUtil.tripleEqualityComparer);
 
         internal bool _readonly = true;
 

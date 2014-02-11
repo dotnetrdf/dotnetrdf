@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Spin.Util
         internal static Resource Get(INode node, SpinProcessor spinModel)
         {
             if (node == null) return null;
-            if (node is Resource && ((IResource)node).getModel()==spinModel)
+            if (node is Resource && ((IResource)node).getModel() == spinModel)
             {
                 return (Resource)node;
             }
@@ -70,13 +70,16 @@ namespace VDS.RDF.Query.Spin.Util
             return _source is ILiteralNode;
         }
 
-        public Uri Uri()
+        public Uri Uri
         {
-            if (isUri())
+            get
             {
-                return ((IUriNode)_source).Uri;
+                if (isUri())
+                {
+                    return ((IUriNode)_source).Uri;
+                }
+                return null;
             }
-            return null;
         }
 
         public INode getSource()
@@ -141,7 +144,8 @@ namespace VDS.RDF.Query.Spin.Util
                     }
                 }
             }
-            else {
+            else
+            {
                 result.Add(this);
             }
             return result;
