@@ -19,6 +19,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -dProductName="dotNetRDF Toolkit" -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -26,7 +27,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
-    <Compile Include="CoreFiles.wxs" />
+    <Compile Include="rdfEditor.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
@@ -43,9 +44,8 @@
     <MSBuild Projects="CopyBinaries.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration)" />
   </Target>
   <Target Name="HeatPackage" DependsOnTargets="CopyBinaries">
-    <HeatDirectory ToolPath="$(WixToolPath)" OutputFile="CoreFiles.wxs" Directory="$(PackageDir)" ComponentGroupName="coreFilesComponentGroup" GenerateGuidsNow="true" SuppressCom="true" SuppressRegistry="true" SuppressRootDirectory="true" DirectoryRefId="INSTALLFOLDER" PreprocessorVariable="var.CoreFiles" />
+    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
   </Target>
-  
   <ItemGroup>
     <BootstrapperFile Include=".NETFramework,Version=v4.0">
       <ProductName>.NET Framework 4.0</ProductName>
@@ -54,22 +54,18 @@
       <ProductName>Windows Installer 4.5</ProductName>
     </BootstrapperFile>
   </ItemGroup>
-  
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
-  
+  <ItemGroup>
+    <Content Include="CopyBinaries.proj" />
+    <Content Include="EULA.rtf" />
+    <Content Include="Heat.proj" />
+  </ItemGroup>
   <Target Name="AfterBuild">
-    <GenerateBootstrapper ApplicationFile="DotNetRdf-Toolkit.msi" 
-        ApplicationRequiresElevation="true" 
-        ApplicationName="dotNetRDF Toolkit Installer" 
-        BootstrapperItems="@(BootstrapperFile)" 
-        ComponentsLocation="HomeSite" 
-        CopyComponents="true" 
-        OutputPath="$(OutputPath)" 
-        Path="$(SDKPath)\Bootstrapper" />
+    <GenerateBootstrapper ApplicationFile="DotNetRdf-Toolkit.msi" ApplicationRequiresElevation="true" ApplicationName="dotNetRDF Toolkit Installer" BootstrapperItems="@(BootstrapperFile)" ComponentsLocation="HomeSite" CopyComponents="true" OutputPath="$(OutputPath)" Path="$(SDKPath)\Bootstrapper" />
   </Target>
 </Project>
