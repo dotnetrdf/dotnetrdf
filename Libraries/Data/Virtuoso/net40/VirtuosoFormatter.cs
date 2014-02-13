@@ -38,15 +38,17 @@ namespace VDS.RDF.Storage
         : SparqlFormatter
     {
         /// <summary>
-        /// Formats a Blank Node by using the <strong>bif:rdf_make_iid_of_qname()</strong> function
+        /// Formats a Blank Node by using the <strong>sql:rdf_make_iid_of_qname()</strong> function
         /// </summary>
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            //Use the bif:rdf_make_iid_of_qname('nodeID://bnode') function
-            return "`bif:rdf_make_iid_of_qname('nodeID://" + b.InternalID + "')`";
+            //Use the sql:rdf_make_iid_of_qname('nodeID://bnode') function
+            // VIRT-399 - Previously we used the bif: prefix but more recent Virtuoso releases don't support that
+            // According to Virtuoso support using the sql: prefix is both forwards and backwards compatible
+            return "`sql:rdf_make_iid_of_qname('nodeID://" + b.InternalID + "')`";
         }
     }
 }
