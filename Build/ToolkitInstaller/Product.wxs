@@ -14,18 +14,26 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
-    <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1">
-      <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="1">
-        <ComponentGroupRef Id="guiToolsComponentGroup"/>
+    <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1000" TypicalDefault="install" InstallDefault="local">
+      <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="3" TypicalDefault="install" InstallDefault="followParent">
+        <Feature Id="rdfEditorFeature" Title="rdfEditor" Level="3" TypicalDefault="install" InstallDefault="followParent">
+          <ComponentGroupRef Id="rdfEditorComponent"/>
+        </Feature>
+      </Feature>
+      <Feature Id="CliToolsFeature" Title="Command Line Tools" Level="1000" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="rdfConvert" Title="rdfConvert" Level="3" TypicalDefault="install" InstallDefault="followParent">
+          <ComponentGroupRef Id="rdfConvertComponent"/>
+        </Feature>
+        <Feature Id="rdfWebDeploy" Title="rdfWebDeploy" Level="1000" TypicalDefault="advertise" InstallDefault="followParent">
+          <ComponentGroupRef Id="rdfWebDeployComponent"/>
+        </Feature>
       </Feature>
     </Feature>
 
     <WixVariable Id='WixUILicenseRtf' Value='EULA.rtf' />
     <Property Id='WIXUI_INSTALLDIR' Value='INSTALLFOLDER' />
-    <UIRef Id="WixUI_InstallDir" />
-
+    <UIRef Id="WixUI_Mondo" />
   </Product>
-
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -33,6 +41,8 @@
         <Directory Id="DotNetRdfProjectFolder" Name="dotNetRDF Project">
           <Directory Id="INSTALLFOLDER" Name="dotNetRDF Toolkit">
             <Directory Id="rdfEditorFolder" Name="rdfEditor.Wpf" />
+            <Directory Id="rdfConvertFolder" Name="rdfConvert" />
+            <Directory Id="rdfWebDeployFolder" Name="rdfWebDeploy" />
           </Directory>
         </Directory>
       </Directory>
@@ -40,11 +50,15 @@
   </Fragment>
 
   <Fragment>
-    <ComponentGroup Id="guiToolsComponentGroup" Directory="INSTALLFOLDER">
-      <ComponentGroupRef Id="rdfEditorComponent" />
-    </ComponentGroup>
     <ComponentGroup Id="rdfEditorComponent" Directory="rdfEditorFolder">
       <ComponentGroupRef Id="rdfEditorComponentGroup" />    
     </ComponentGroup>
+    <ComponentGroup Id="rdfConvertComponent" Directory="rdfConvertFolder">
+      <ComponentGroupRef Id="rdfConvertComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfWebDeployComponent" Directory="rdfWebDeployFolder">
+      <ComponentGroupRef Id="rdfWebDeployComponentGroup"/>
+    </ComponentGroup>
+
   </Fragment>
 </Wix>

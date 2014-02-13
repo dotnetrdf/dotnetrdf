@@ -20,5 +20,29 @@
       SuppressRootDirectory="true"
       DirectoryRefId="rdfEditorFolder"
       PreprocessorVariable="var.rdfEditorFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfConvert.wxs"
+      Directory="$(PackageDir)\rdfConvert"
+      ComponentGroupName="rdfConvertComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      DirectoryRefId="rdfConvertFolder"
+      PreprocessorVariable="var.rdfConvertFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfWebDeploy.wxs"
+      Directory="$(PackageDir)\rdfWebDeploy"
+      ComponentGroupName="rdfWebDeployComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      DirectoryRefId="rdfWebDeployFolder"
+      PreprocessorVariable="var.rdfWebDeployFiles" />
   </Target>
 </Project>
