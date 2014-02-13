@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 Uri u = new Uri(this.txtEndpoint.Text);
                 String defGraph = this.txtDefaultGraph.Text;
                 SparqlRemoteEndpoint endpoint;
-                if (defGraph.Equals(String.Empty))
+                if (String.IsNullOrEmpty(defGraph))
                 {
                     endpoint = new SparqlRemoteEndpoint(u);
                 }
@@ -75,9 +75,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 {
                     endpoint = new SparqlRemoteEndpoint(u, defGraph);
                 }
+                String[] accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader.Split(',');
+                if (!String.IsNullOrEmpty(this.txtAcceptHeader.Text))
+                {
+                    accept = this.txtAcceptHeader.Text.Split(',');
+                }
 
                 String data;
-                using (HttpWebResponse response = endpoint.QueryRaw(this._editor.DocumentManager.ActiveDocument.Text))
+                using (HttpWebResponse response = endpoint.QueryRaw(this._editor.DocumentManager.ActiveDocument.Text, accept))
                 {
                     data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     try

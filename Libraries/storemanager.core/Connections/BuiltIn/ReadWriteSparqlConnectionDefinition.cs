@@ -92,6 +92,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         }
 
         /// <summary>
+        /// Gets/Sets whether local parsing of queries should be skipped
+        /// </summary>
+        [Connection(DisplayName = "Skip Local Query and Update Parsing?", DisplayOrder = 4, Type = ConnectionSettingType.Boolean, PopulateFrom = ConfigurationLoader.PropertySkipParsing),
+         DefaultValue(false)]
+        public bool SkipLocalParsing { get; set; }
+
+        /// <summary>
         /// Opens the connection
         /// </summary>
         /// <returns></returns>
@@ -105,7 +112,32 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
                 endpoint.Proxy = proxy;
                 updateEndpoint.Proxy = proxy;
             }
-            return new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
+            ReadWriteSparqlConnector connector = new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
+            connector.SkipLocalParsing = this.SkipLocalParsing;
+            return connector;
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            ReadWriteSparqlConnectionDefinition definition = new ReadWriteSparqlConnectionDefinition();
+            definition.QueryEndpointUri = this.QueryEndpointUri;
+            definition.QueryDefaultGraphUri = this.QueryDefaultGraphUri;
+            definition.UpdateEndpointUri = this.UpdateEndpointUri;
+            definition.LoadMode = this.LoadMode;
+            definition.SkipLocalParsing = this.SkipLocalParsing;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[SPARQL Query & Update] Query: " + this.QueryEndpointUri.ToSafeString() + " Update: " + this.UpdateEndpointUri.ToSafeString();
         }
     }
 }

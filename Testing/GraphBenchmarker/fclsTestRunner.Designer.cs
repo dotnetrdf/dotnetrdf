@@ -1,4 +1,5 @@
 ﻿using VDS.RDF.Utilities.StoreManager;
+using VDS.RDF.Utilities.StoreManager.Forms;
 
 namespace VDS.RDF.Utilities.GraphBenchmarker
 {

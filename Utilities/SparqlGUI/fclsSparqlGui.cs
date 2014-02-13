@@ -34,6 +34,7 @@ using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
+using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -338,7 +339,7 @@ namespace VDS.RDF.Utilities.Sparql
 
                     if (this.chkViewResultsInApp.Checked)
                     {
-                        ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results, "SPARQL GUI", query.NamespaceMap);
+                        ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results,query.NamespaceMap, "SPARQL GUI");
                         resultSetViewer.Show();
                     }
                     else

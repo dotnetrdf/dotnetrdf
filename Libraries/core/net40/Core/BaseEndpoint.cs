@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
@@ -113,7 +111,10 @@ namespace VDS.RDF
         /// Defaults to 30 Seconds (i.e. the default value is 30,000)
         /// </para>
         /// <para>
-        /// Not supported under Silverlight
+        /// It is important to understand that this timeout only applies to the HTTP request portions of any operation performed and that the timeout may apply more than once if a POST operation is used since the timeout applies separately to obtaining the request stream to POST the request and obtaining the response stream.  Also the timeout does not in any way apply to subsequent work that may be carried out before the operation can return so if you need a hard timeout you should manage that yourself.
+        /// </para>
+        /// <para>
+        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds
         /// </para>
         /// </remarks>
         public int Timeout
@@ -124,10 +125,14 @@ namespace VDS.RDF
             }
             set
             {
+#if !SILVERLIGHT
                 if (value >= 0)
                 {
                     this._timeout = value;
                 }
+#else
+                throw new PlatformNotSupportedException("HTTP request timeouts are not supported on your platform");
+#endif
             }
         }
 
@@ -279,16 +284,9 @@ namespace VDS.RDF
         /// </summary>
         public ICredentials ProxyCredentials
         {
-            get 
+            get
             {
-                if (this._proxy != null)
-                {
-                    return this._proxy.Credentials;
-                }
-                else
-                {
-                    return null;
-                }
+                return this._proxy != null ? this._proxy.Credentials : null;
             }
             set
             {
@@ -372,6 +370,51 @@ namespace VDS.RDF
                 }
 #endif
             }            
+        }
+
+        /// <summary>
+        /// Applies generic request options (timeout, authorization and proxy server) to a request
+        /// </summary>
+        /// <param name="httpRequest">HTTP Request</param>
+        protected void ApplyRequestOptions(HttpWebRequest httpRequest)
+        {
+#if !SILVERLIGHT
+            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
+#endif
+
+            //Apply Credentials to request if necessary
+            if (this.Credentials != null)
+            {
+                if (Options.ForceHttpBasicAuth)
+                {
+                    //Forcibly include a HTTP basic authentication header
+#if !SILVERLIGHT
+                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers["Authorization"] = "Basic " + credentials;
+#endif
+                }
+                else
+                {
+                    //Leave .Net to handle the HTTP auth challenge response itself
+                    httpRequest.Credentials = this.Credentials;
+#if !SILVERLIGHT
+                    httpRequest.PreAuthenticate = true;
+#endif
+                }
+            }
+
+#if !NO_PROXY
+            //Use a Proxy if required
+            if (this.Proxy == null) return;
+            httpRequest.Proxy = this.Proxy;
+            if (this.UseCredentialsForProxy)
+            {
+                httpRequest.Proxy.Credentials = this.Credentials;
+            }
+#endif
         }
     }
 }

@@ -515,15 +515,23 @@ namespace VDS.RDF
             {
                 //Output the actual Response
                 Stream data = httpResponse.GetResponseStream();
-                StreamReader reader = new StreamReader(data);
-                while (!reader.EndOfStream)
+                if (data != null)
                 {
-                    Console.Error.WriteLine(reader.ReadLine());
-                }
-                Console.Error.WriteLine();
+                    StreamReader reader = new StreamReader(data);
+                    while (!reader.EndOfStream)
+                    {
+                        Console.Error.WriteLine(reader.ReadLine());
+                    }
+                    Console.Error.WriteLine();
 
-                if (data.CanSeek) {
-                    data.Seek(0, SeekOrigin.Begin);
+                    if (data.CanSeek)
+                    {
+                        data.Seek(0, SeekOrigin.Begin);
+                    }
+                    else
+                    {
+                        throw new RdfException("Full HTTP Debugging is enabled and the HTTP response stream has been consumed and written to the standard error stream, the stream is no longer available for calling code to consume");
+                    }
                 }
             }
 

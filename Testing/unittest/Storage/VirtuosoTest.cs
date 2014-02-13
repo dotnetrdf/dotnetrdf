@@ -394,7 +394,7 @@ namespace VDS.RDF.Storage
         }
 
         [Test]
-        public void StorageVirtuosoNativeQuery()
+        public void StorageVirtuosoNativeQueryAndUpdate()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -443,9 +443,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Now we'll delete a Triple");
 
                 //Try a DELETE DATA
-                result = manager.Query("DELETE DATA FROM <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
-                CheckQueryResult(result, true);
-
+                manager.Update("DELETE DATA { GRAPH <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".} }");
                 Console.WriteLine("Triple with subject <http://example.org/seven> should be missing - ASKing for it...");
 
                 //Try a SELECT query
@@ -455,9 +453,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Now we'll add the Triple back again");
 
                 //Try a INSERT DATA
-                result = manager.Query("INSERT DATA INTO <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
-                CheckQueryResult(result, true);
-
+                manager.Update("INSERT DATA INTO <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
                 Console.WriteLine("Triple with subject <http://example.org/seven> should be restored - ASKing for it again...");
 
                 //Try a SELECT query
@@ -516,6 +512,28 @@ namespace VDS.RDF.Storage
                 result = manager.Query("ASK { ?s ?p ?o . ?o bif:contains 'example' }");
                 CheckQueryResult(result, true);
 
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoNativeQueryBifContains2()
+        {
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                Object result = null;
+
+                //Try a CONSTRUCT query
+                result = manager.Query("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . ?o bif:contains 'example' }");
+                CheckQueryResult(result, false);
             }
             finally
             {
@@ -895,7 +913,7 @@ namespace VDS.RDF.Storage
             {
                 if (expectResultSet)
                 {
-                    Console.WriteLine("Got a SPARQLResultSet as expected");
+                    Console.WriteLine("Got a SPARQL Result Set as expected");
 
                     SparqlResultSet rset = (SparqlResultSet)results;
                     Console.WriteLine("Result = " + rset.Result);
@@ -907,7 +925,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Expected a SPARQLResultSet but got a '" + results.GetType().ToString() + "'");
+                    Assert.Fail("Expected a Graph but got a '" + results.GetType().ToString() + "'");
                 }
             }
             else if (results is Graph)
@@ -925,7 +943,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Expected a Graph but got a '" + results.GetType().ToString() + "'");
+                    Assert.Fail("Expected a Result Set but got a '" + results.GetType().ToString() + "'");
                 }
             }
         }

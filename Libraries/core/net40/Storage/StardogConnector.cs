@@ -2113,6 +2113,9 @@ namespace VDS.RDF.Storage
                 case StardogReasoningMode.RDFS:
                     mode = " (RDFS Reasoning)";
                     break;
+                case StardogReasoningMode.SL:
+                    mode = " (SL Reasoning)";
+                    break;
             }
             return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'" + mode;
         }

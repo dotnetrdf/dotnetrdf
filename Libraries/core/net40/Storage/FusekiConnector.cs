@@ -55,9 +55,9 @@ namespace VDS.RDF.Storage
         , IUpdateableStorage
 #endif
     {
-        private SparqlFormatter _formatter = new SparqlFormatter();
-        private String _updateUri;
-        private String _queryUri;
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly String _updateUri;
+        private readonly String _queryUri;
 
         private const String FusekiDefaultGraphUri = "?default";
 

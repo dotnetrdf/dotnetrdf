@@ -298,18 +298,35 @@ namespace VDS.RDF
             }
         }
 
-        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action Test)
+        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
         {
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
 
             try
             {
-                Test();
+                test();
             }
             finally
             {
                 Thread.CurrentThread.CurrentCulture = currentCulture;
+            }
+        }
+
+        /// <summary>
+        /// Runs a test at a specified recursive depth
+        /// </summary>
+        /// <param name="i">Recursive depth</param>
+        /// <param name="test">Test</param>
+        public static void RunAtDepth(int i, Action test)
+        {
+            if (i > 0)
+            {
+                RunAtDepth(i - 1, test);
+            }
+            else
+            {
+                test();
             }
         }
     }

@@ -16,7 +16,7 @@
       <dependency id="OpenLink.Data.Virtuoso" version="6.2.3128.1" />
     </dependencies>
     <releaseNotes>
-      - Fix a bug with transactions left in open state in some circumstances
+
     </releaseNotes>
   </metadata>
 </package>

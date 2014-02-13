@@ -39,8 +39,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class GetStoreTask
         : NonCancellableTask<IStorageProvider>
     {
-        private IStorageServer _server;
-        private String _id;
+        private readonly IStorageServer _server;
+        private readonly String _id;
 
         /// <summary>
         /// Creates a task for retrieving a Store

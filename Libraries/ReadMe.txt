@@ -34,7 +34,7 @@ for the following .Net profiles:
 
 Please see the Release Notes for usage details and Known Issues
 
-dotNetRDF Project 2009-13
+dotNetRDF Project 2009-14
 dotnetrdf-develop@lists.sf.net
 
 See Acknowledgements.txt for full list of developers and contributors

@@ -24,12 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
@@ -41,8 +39,8 @@ namespace VDS.RDF.Query
     [TestFixture]
     public class PropertyPathTransformationTests
     {
-        private NodeFactory _factory = new NodeFactory();
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly NodeFactory _factory = new NodeFactory();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
         private void RunTest(ISparqlPath path, IEnumerable<String> expectedOperators)
         {
@@ -70,11 +68,9 @@ namespace VDS.RDF.Query
 
             foreach (String op in expectedOperators)
             {
-                if (!result.Contains(op))
-                {
-                    Console.WriteLine("Expected Operator '" + op + "' missing");
-                    Assert.Fail("Expected Operator '" + op + "' missing");
-                }
+                if (result.Contains(op)) continue;
+                Console.WriteLine("Expected Operator '" + op + "' missing");
+                Assert.Fail("Expected Operator '" + op + "' missing");
             }
         }
 
@@ -198,7 +194,7 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlPropertyPathTransformationNegatedPropertySet()
         {
-            VDS.RDF.Query.Paths.NegatedSet path = new VDS.RDF.Query.Paths.NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            NegatedSet path = new NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
             this.RunTest(path, new String[] { "NegatedPropertySet" });
         }
 

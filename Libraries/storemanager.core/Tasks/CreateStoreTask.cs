@@ -39,8 +39,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class CreateStoreTask
         : NonCancellableTask<TaskValueResult<bool>>
     {
-        private IStorageServer _server;
-        private IStoreTemplate _template;
+        private readonly IStorageServer _server;
+        private readonly IStoreTemplate _template;
 
         /// <summary>
         /// Creates a task for creating a Store

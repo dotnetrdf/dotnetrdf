@@ -39,7 +39,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ListGraphsTask 
         : NonCancellableTask<IEnumerable<Uri>>
     {
-        private IStorageProvider _manager;
+        private readonly IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new List Graphs task
@@ -71,10 +71,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 return this._manager.ListGraphs();
             }
-            else if (this._manager is IQueryableStorage)
+            if (this._manager is IQueryableStorage)
             {
                 List<Uri> uris = new List<Uri>();
-                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { } }");
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
@@ -87,15 +87,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     }
                     return uris;
                 }
-                else
-                {
-                    throw new RdfStorageException("Store failed to list graphs");
-                }
+                throw new RdfStorageException("Store failed to list graphs");
             }
-            else
-            {
-                throw new RdfStorageException("Store does not provide a means to list graphs");
-            }
+            throw new RdfStorageException("Store does not provide a means to list graphs");
         }
     }
 }
