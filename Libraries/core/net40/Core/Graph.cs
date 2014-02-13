@@ -254,11 +254,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriples(INode n)
         {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where t.Involves(n)
-                                     select t;
-
-            return ts;
+            return this.GetTriplesWithSubject(n).Union(this.GetTriplesWithPredicate(n)).Union(this.GetTriplesWithObject(n));
         }
 
         /// <summary>
