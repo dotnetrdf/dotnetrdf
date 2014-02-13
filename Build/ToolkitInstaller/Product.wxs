@@ -32,6 +32,8 @@
 
     <WixVariable Id='WixUILicenseRtf' Value='EULA.rtf' />
     <Property Id='WIXUI_INSTALLDIR' Value='INSTALLFOLDER' />
+    
+    <!-- TODO Customize per http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html to include InstallDirDiag and InstallScopeDiag -->
     <UIRef Id="WixUI_Mondo" />
   </Product>
 
