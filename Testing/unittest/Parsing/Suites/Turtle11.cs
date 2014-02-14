@@ -351,17 +351,6 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [Test]
-        public void ShouldSuccessfullyParseValidSparqlStyleW3CPrefix()
-        {
-            //No dot required
-            String graph = "PREFIX ex: <http://example.org/>";
-            Graph g = new Graph();
-            this.Parser.Load(g, new StringReader(graph));
-
-            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
-        }
-
-        [Test]
         public void ParsingTurtleW3CPrefixSparqlStyle3()
         {
             //No dot required and case insensitive
@@ -370,6 +359,38 @@ namespace VDS.RDF.Parsing.Suites
             this.Parser.Load(g, new StringReader(graph));
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [Test]
+        public void ParsingTurtlePrefixDeclarations1()
+        {
+            // No white space between prefix and URI
+            const String graph = "@prefix pre:<http://example.org> .";
+            Graph g = new Graph();
+            this.Parser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
+        }
+
+        [Test]
+        public void ParsingTurtlePrefixDeclarations2()
+        {
+            const String graph = "@prefix pre: <http://example.org> .";
+            Graph g = new Graph();
+            this.Parser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtlePrefixDeclarations3()
+        {
+            // Multiple : are not supported
+            const String graph = "@prefix pre:pre: <http://example.org> .";
+            Graph g = new Graph();
+            this.Parser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
     }
 }
