@@ -10,7 +10,8 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <DotNetRdfVersion>1.0.2.0</DotNetRdfVersion>
+    <SDKPath Condition=" '$(SDKPath)' == '' ">C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A</SDKPath>
+    <DotNetRdfVersion>1.0.4.0</DotNetRdfVersion>
     <PackageDir>$(IntermediateOutputPath)packages</PackageDir>
     <CompilerAdditionalOptions>-dCoreFiles=$(PackageDir) -dProductName="dotNetRDF Toolkit" -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
   </PropertyGroup>
@@ -18,14 +19,24 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -drdfQueryFiles=$(PackageDir)\rdfQuery -drdfServerFiles=$(PackageDir)\rdfServer -drdfOptStatsFiles=$(PackageDir)\rdfOptStats -dsohFiles=$(PackageDir)\soh -dsparqlGuiFiles=$(PackageDir)\sparqlGui -dstoreManagerFiles=$(PackageDir)\storeManager -dinfoFiles=$(PackageDir)\info -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Info.wxs" />
     <Compile Include="Product.wxs" />
-    <Compile Include="CoreFiles.wxs" />
+    <Compile Include="rdfConvert.wxs" />
+    <Compile Include="rdfEditor.wxs" />
+    <Compile Include="rdfOptStats.wxs" />
+    <Compile Include="rdfQuery.wxs" />
+    <Compile Include="rdfServer.wxs" />
+    <Compile Include="rdfWebDeploy.wxs" />
+    <Compile Include="soh.wxs" />
+    <Compile Include="sparqlGui.wxs" />
+    <Compile Include="storeManager.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
@@ -42,9 +53,8 @@
     <MSBuild Projects="CopyBinaries.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration)" />
   </Target>
   <Target Name="HeatPackage" DependsOnTargets="CopyBinaries">
-    <HeatDirectory ToolPath="$(WixToolPath)" OutputFile="CoreFiles.wxs" Directory="$(PackageDir)" ComponentGroupName="coreFilesComponentGroup" GenerateGuidsNow="true" SuppressCom="true" SuppressRegistry="true" SuppressRootDirectory="true" DirectoryRefId="INSTALLFOLDER" PreprocessorVariable="var.CoreFiles" />
+    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
   </Target>
-  
   <ItemGroup>
     <BootstrapperFile Include=".NETFramework,Version=v4.0">
       <ProductName>.NET Framework 4.0</ProductName>
@@ -53,26 +63,18 @@
       <ProductName>Windows Installer 4.5</ProductName>
     </BootstrapperFile>
   </ItemGroup>
-  
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
-  
+  <ItemGroup>
+    <Content Include="CopyBinaries.proj" />
+    <Content Include="EULA.rtf" />
+    <Content Include="Heat.proj" />
+  </ItemGroup>
   <Target Name="AfterBuild">
-    <GetFrameworkSdkPath>
-      <Output TaskParameter="Path" PropertyName="WindowsSdkPath" />
-    </GetFrameworkSdkPath>
-
-    <GenerateBootstrapper ApplicationFile="DotNetRdf-Toolkit.msi" 
-        ApplicationRequiresElevation="true" 
-        ApplicationName="DotNetRDF Toolkit" 
-        BootstrapperItems="@(BootstrapperFile)" 
-        ComponentsLocation="HomeSite" 
-        CopyComponents="true" 
-        OutputPath="$(OutputPath)" 
-        Path="$(WindowsSdkPath)\Bootstrapper" />
+    <GenerateBootstrapper ApplicationFile="DotNetRdf-Toolkit.msi" ApplicationRequiresElevation="true" ApplicationName="dotNetRDF Toolkit Installer" BootstrapperItems="@(BootstrapperFile)" ComponentsLocation="HomeSite" CopyComponents="true" OutputPath="$(OutputPath)" Path="$(SDKPath)\Bootstrapper" />
   </Target>
 </Project>

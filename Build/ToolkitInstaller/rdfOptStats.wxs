@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="rdfOptStatsFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="rdfOptStatsComponentGroup">
+            <Component Id="cmp6A553CDF44267A9270E61EA44279C4D7" Directory="rdfOptStatsFolder" Guid="{D7B6DF21-8D81-4F0E-83ED-C285AA37BC95}">
+                <File Id="filC73CE024A1ED09B44936300495CB0A84" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\dotNetRDF.dll" />
+            </Component>
+            <Component Id="cmpA2CDF45EF012A1DDDF8839AB1B03F339" Directory="rdfOptStatsFolder" Guid="{45F635CE-7FE4-456D-ACA8-5A1C25E17024}">
+                <File Id="filAF6CB7291CDB89008EC5C832327398D7" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\HtmlAgilityPack.dll" />
+            </Component>
+            <Component Id="cmp042191C19E4EA776E42514DC813FCC4A" Directory="rdfOptStatsFolder" Guid="{FC56C30D-4DD5-4A23-9987-40C332DA8CC0}">
+                <File Id="fil514DF5BC8EE2970E533B76E2A30A6A15" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmp9F5EEE0B46396823D14C753BBD181376" Directory="rdfOptStatsFolder" Guid="{D296F7EB-C673-4C04-B403-6E671140EE32}">
+                <File Id="fil686FCBAF62B02312B6AA3215C6EFB5EA" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe" />
+            </Component>
+            <Component Id="cmp51C87FBC965524147F854C3884755EC5" Directory="rdfOptStatsFolder" Guid="{A4147C32-397C-4675-A731-1302D17C80D7}">
+                <File Id="fil9A1381414E96F6FA53BC33B754CC33F3" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe.config" />
+            </Component>
+            <Component Id="cmpEAC126D6ECB793AA1C777FA8E19E901B" Directory="rdfOptStatsFolder" Guid="{665F019F-0AB1-4909-B8A1-98B9879ECAB4}">
+                <File Id="fil5B587D88F89E16884F4B3D1D22D37766" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\VDS.Common.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
