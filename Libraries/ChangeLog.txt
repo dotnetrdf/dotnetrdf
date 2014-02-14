@@ -16,6 +16,7 @@ Changed
  - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
  - Fix a bug in translating and evaluating complex property paths (CORE-395)
  - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
+ - Fix a bug with overly greedly tokenization when parsing prefix declarations in Turtle, N3 and SPARQL
 - Dependencies
  - Bumped Json.Net to 5.0.8
 - Documentation
