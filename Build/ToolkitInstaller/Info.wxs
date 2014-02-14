@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="infoComponentGroup">
+            <Component Id="cmpD84FC6DF707D9EBCFAAE6A68F16784BE" Directory="INSTALLFOLDER" Guid="{51A282EF-035D-4317-AE8C-6A462EBE8BCF}">
+                <File Id="filA90DD75D66E780FDCC4F9DE9495B0466" KeyPath="yes" Source="$(var.infoFiles)\Acknowledgments.txt" />
+            </Component>
+            <Component Id="cmp91E48083DCCC2F8DD30BFC004072D081" Directory="INSTALLFOLDER" Guid="{823BA6FA-27E1-4D9B-AF93-502F2E843369}">
+                <File Id="filD34DC0F461E6D1167294523BCE0B5D5F" KeyPath="yes" Source="$(var.infoFiles)\ChangeLog.txt" />
+            </Component>
+            <Component Id="cmp8E24F363C6996AB33372BEAACBD8324C" Directory="INSTALLFOLDER" Guid="{B0BFC5C1-2D08-43EB-892F-001F0D1C6173}">
+                <File Id="fil4E17902A59ACB163351CB54725DDA810" KeyPath="yes" Source="$(var.infoFiles)\License.txt" />
+            </Component>
+            <Component Id="cmpA0F75245F73DDC41EA13EE77C8171B6B" Directory="INSTALLFOLDER" Guid="{C51CA7FE-B330-4886-8E7B-3FE1069C22FE}">
+                <File Id="fil11F7955CD12BC94AE47EA69335947FA6" KeyPath="yes" Source="$(var.infoFiles)\ReadMe.txt" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

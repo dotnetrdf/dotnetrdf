@@ -61,7 +61,7 @@
         <Copy SourceFiles="@(SparqlGui)" DestinationFolder="$(PackageDir)\sparqlGui" />
         <Copy SourceFiles="@(StoreManager)" DestinationFolder="$(PackageDir)\storeManager" />
         <Copy SourceFiles="@(StoreManagerPlugins)" DestinationFolder="$(PackageDir)\storeManager\plugins\" />
-        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(PackageDir)" />
+        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(PackageDir)\info" />
     </Target>
     
 </Project>

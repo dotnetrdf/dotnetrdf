@@ -15,6 +15,9 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
     <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1" TypicalDefault="install" InstallDefault="local" Display="expand">
+      <Feature Id="InfoFeature" Title="Information" Display="hidden" Level="1" TypicalDefault="install" InstallDefault="local">
+        <ComponentGroupRef Id="infoComponent"/>
+      </Feature>
       <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="1" TypicalDefault="install" InstallDefault="followParent" Display="expand">
         <Feature Id="rdfEditorFeature" Title="rdfEditor" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A multi-tabbed notepad style editor with syntax highlighting and validation for most RDF and SPARQL formats">
           <ComponentGroupRef Id="rdfEditorComponent"/>
@@ -79,6 +82,9 @@
   </Fragment>
 
   <Fragment>
+    <ComponentGroup Id="infoComponent" Directory="INSTALLFOLDER">
+      <ComponentGroupRef Id="infoComponentGroup"/>
+    </ComponentGroup>
     <ComponentGroup Id="rdfConvertComponent" Directory="rdfConvertFolder">
       <ComponentGroupRef Id="rdfConvertComponentGroup" />
     </ComponentGroup>

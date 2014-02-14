@@ -9,6 +9,19 @@
   <Import Project="$(WixTargetsPath)" />
 
   <Target Name="Build">
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="Info.wxs"
+      Directory="$(PackageDir)\info"
+      ComponentGroupName="infoComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      DirectoryRefId="INSTALLFOLDER"
+      PreprocessorVariable="var.infoFiles" />
+    
     <HeatDirectory
       ToolPath="$(WixToolPath)"
       OutputFile="rdfConvert.wxs"
