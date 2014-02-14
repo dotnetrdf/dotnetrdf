@@ -19,7 +19,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
-    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -dProductName="dotNetRDF Toolkit" -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -drdfQueryFiles=$(PackageDir)\rdfQuery -drdfServerFiles=$(PackageDir)\rdfServer -drdfOptStatsFiles=$(PackageDir)\rdfOptStats -dsohFiles=$(PackageDir)\soh -dsparqlGuiFiles=$(PackageDir)\sparqlGui -dstoreManagerFiles=$(PackageDir)\storeManager -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -29,7 +29,13 @@
     <Compile Include="Product.wxs" />
     <Compile Include="rdfConvert.wxs" />
     <Compile Include="rdfEditor.wxs" />
+    <Compile Include="rdfOptStats.wxs" />
+    <Compile Include="rdfQuery.wxs" />
+    <Compile Include="rdfServer.wxs" />
     <Compile Include="rdfWebDeploy.wxs" />
+    <Compile Include="soh.wxs" />
+    <Compile Include="sparqlGui.wxs" />
+    <Compile Include="storeManager.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

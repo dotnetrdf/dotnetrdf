@@ -2,7 +2,7 @@
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*"
-           Name="$(var.ProductName)"
+           Name="dotNetRDF Toolkit"
            Language="1033"
            Version="$(var.BuildNumber)"
            Manufacturer="dotNetRDF Project"
@@ -14,18 +14,39 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
-    <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1000" TypicalDefault="install" InstallDefault="local">
-      <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="3" TypicalDefault="install" InstallDefault="followParent">
-        <Feature Id="rdfEditorFeature" Title="rdfEditor" Level="3" TypicalDefault="install" InstallDefault="followParent">
+    <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1" TypicalDefault="install" InstallDefault="local" Display="expand">
+      <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="1" TypicalDefault="install" InstallDefault="followParent" Display="expand">
+        <Feature Id="rdfEditorFeature" Title="rdfEditor" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A multi-tabbed notepad style editor with syntax highlighting and validation for most RDF and SPARQL formats">
           <ComponentGroupRef Id="rdfEditorComponent"/>
         </Feature>
+        <Feature Id="rdfServerGuiFeature" Title="rdfServer" Level="1000" TypicalDefault="advertise" InstallDefault="followParent" Description="A simple GUI and command line for running a basic SPARQL server">
+          <ComponentGroupRef Id="rdfServerComponent" Primary="yes"/>
+        </Feature>
+        <Feature Id="sparqlGuiFeature" Title="Sparql GUI" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A simple GUI for experimenting with dotNetRDF's SPARQL query engine">
+          <ComponentGroupRef Id="sparqlGuiComponent"/>
+        </Feature>
+        <Feature Id="storeManagerFeature" Title="Store Manager" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A powerful GUI tool for interacting with and managing various kinds of RDF store">
+          <ComponentGroupRef Id="storeManagerComponent"/>
+        </Feature>
       </Feature>
-      <Feature Id="CliToolsFeature" Title="Command Line Tools" Level="1000" TypicalDefault="install" InstallDefault="local">
-        <Feature Id="rdfConvert" Title="rdfConvert" Level="3" TypicalDefault="install" InstallDefault="followParent">
+      <Feature Id="CliToolsFeature" Title="Command Line Tools" Level="1" TypicalDefault="install" InstallDefault="local" Display="expand">
+        <Feature Id="rdfConvertFeature" Title="rdfConvert" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A command line tool for converting between RDF formats">
           <ComponentGroupRef Id="rdfConvertComponent"/>
         </Feature>
-        <Feature Id="rdfWebDeploy" Title="rdfWebDeploy" Level="1000" TypicalDefault="advertise" InstallDefault="followParent">
+        <Feature Id="rdfOptStatsFeature" Title="rdfOptStats" Level="1000" TypicalDefault="advertise" InstallDefault="followParent" Description="A command line tool for generating data statistics for use with dotNetRDF's statistic based optimizer">
+          <ComponentGroupRef Id="rdfOptStatsComponent"/>
+        </Feature>
+        <Feature Id="rdfQueryFeature" Title="rdfQuery" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A command line tool for experimenting with SPARQL queries">
+          <ComponentGroupRef Id="rdfQueryComponent"/>
+        </Feature>
+        <Feature Id="rdfServerCliFeature" Title="rdfServer" Level="1000" TypicalDefault="advertise" InstallDefault="followParent" Description="A command line tool for running a basic SPARQL server">
+          <ComponentGroupRef Id="rdfServerComponent" Primary="no"/>
+        </Feature>
+        <Feature Id="rdfWebDeployFeature" Title="rdfWebDeploy" Level="1000" TypicalDefault="advertise" InstallDefault="followParent" Description="A command line tool that helps deploying dotNetRDF's ASP.Net support into your web applications">
           <ComponentGroupRef Id="rdfWebDeployComponent"/>
+        </Feature>
+        <Feature Id="sohFeature" Title="soh" Level="1" TypicalDefault="install" InstallDefault="followParent" Description="A command line tool for interacting with remote SPARQL servers that support the SPARQL Graph Store Protocol">
+          <ComponentGroupRef Id="sohComponent"/>
         </Feature>
       </Feature>
     </Feature>
@@ -42,9 +63,15 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="DotNetRdfProjectFolder" Name="dotNetRDF Project">
           <Directory Id="INSTALLFOLDER" Name="dotNetRDF Toolkit">
-            <Directory Id="rdfEditorFolder" Name="rdfEditor.Wpf" />
             <Directory Id="rdfConvertFolder" Name="rdfConvert" />
+            <Directory Id="rdfEditorFolder" Name="rdfEditor.Wpf" />
+            <Directory Id="rdfOptStatsFolder" Name="rdfOptStats" />
+            <Directory Id="rdfQueryFolder" Name="rdfQuery" />
+            <Directory Id="rdfServerFolder" Name="rdfServer" />
             <Directory Id="rdfWebDeployFolder" Name="rdfWebDeploy" />
+            <Directory Id="sohFolder" Name="sohFolder" />
+            <Directory Id="sparqlGuiFolder" Name="sparqlGuiFolder" />
+            <Directory Id="storeManagerFolder" Name="storeManager" />
           </Directory>
         </Directory>
       </Directory>
@@ -52,15 +79,32 @@
   </Fragment>
 
   <Fragment>
+    <ComponentGroup Id="rdfConvertComponent" Directory="rdfConvertFolder">
+      <ComponentGroupRef Id="rdfConvertComponentGroup" />
+    </ComponentGroup>
     <ComponentGroup Id="rdfEditorComponent" Directory="rdfEditorFolder">
       <ComponentGroupRef Id="rdfEditorComponentGroup" />    
     </ComponentGroup>
-    <ComponentGroup Id="rdfConvertComponent" Directory="rdfConvertFolder">
-      <ComponentGroupRef Id="rdfConvertComponentGroup" />
+    <ComponentGroup Id="rdfOptStatsComponent" Directory="rdfOptStatsFolder">
+      <ComponentGroupRef Id="rdfOptStatsComponentGroup"/>
+    </ComponentGroup>
+    <ComponentGroup Id="rdfQueryComponent" Directory="rdfQueryFolder">
+      <ComponentGroupRef Id="rdfQueryComponentGroup"/>
+    </ComponentGroup>
+    <ComponentGroup Id="rdfServerComponent" Directory="rdfServerFolder">
+      <ComponentGroupRef Id="rdfServerComponentGroup"/>
     </ComponentGroup>
     <ComponentGroup Id="rdfWebDeployComponent" Directory="rdfWebDeployFolder">
       <ComponentGroupRef Id="rdfWebDeployComponentGroup"/>
     </ComponentGroup>
-
+    <ComponentGroup Id="sohComponent" Directory="sohFolder">
+      <ComponentGroupRef Id="sohComponentGroup"/>
+    </ComponentGroup>
+    <ComponentGroup Id="sparqlGuiComponent" Directory="sparqlGuiFolder">
+      <ComponentGroupRef Id="sparqlGuiComponentGroup"/>
+    </ComponentGroup>
+    <ComponentGroup Id="storeManagerComponent" Directory="storeManagerFolder">
+      <ComponentGroupRef Id="storeManagerComponentGroup"/>
+    </ComponentGroup>
   </Fragment>
 </Wix>

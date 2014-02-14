@@ -33,6 +33,9 @@
         <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.exe.config" />
         <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.ico" />
         <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.rq" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe.config" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.dll" />
         <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.dll" />
         <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe" />
         <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe.config" />
@@ -54,6 +57,7 @@
         <Copy SourceFiles="@(RdfQuery)" DestinationFolder="$(PackageDir)\rdfQuery" />
         <Copy SourceFiles="@(RdfServer)" DestinationFolder="$(PackageDir)\rdfServer" />
         <Copy SourceFiles="@(RdfWebDeploy)" DestinationFolder="$(PackageDir)\rdfWebDeploy" />
+        <Copy SourceFiles="@(Soh)" DestinationFolder="$(PackageDir)\soh" />
         <Copy SourceFiles="@(SparqlGui)" DestinationFolder="$(PackageDir)\sparqlGui" />
         <Copy SourceFiles="@(StoreManager)" DestinationFolder="$(PackageDir)\storeManager" />
         <Copy SourceFiles="@(StoreManagerPlugins)" DestinationFolder="$(PackageDir)\storeManager\plugins\" />
