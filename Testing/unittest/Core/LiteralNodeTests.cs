@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using VDS.RDF.Nodes;
@@ -178,6 +179,42 @@ namespace VDS.RDF
             TimeSpan diff = now - now2;
             Console.WriteLine("Difference: " + diff.ToString());
             Assert.IsTrue(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
+        }
+
+        [Test]
+        public void NodeLiteralLanguageSpecifierCase1()
+        {
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
+            ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
+
+            Assert.IsTrue(EqualityHelper.AreLiteralsEqual(lcase, ucase));
+        }
+
+        [Test]
+        public void NodeLiteralLanguageSpecifierCase2()
+        {
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
+            ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
+
+            Assert.AreEqual(0, ComparisonHelper.CompareLiterals(lcase, ucase));
+        }
+
+        [Test]
+        public void NodeLiteralLanguageSpecifierCase3()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lcase = g.CreateLiteralNode("example", "en-gb");
+            ILiteralNode ucase = g.CreateLiteralNode("example", "en-GB");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lcase);
+            g.Assert(s, p, ucase);
+
+            Assert.AreEqual(2, g.GetTriplesWithObject(lcase).Count(), "Lower case search failed to find both solutions");
+            Assert.AreEqual(2, g.GetTriplesWithObject(ucase).Count(), "Upper case search failed to find both solutions");
         }
     }
 }

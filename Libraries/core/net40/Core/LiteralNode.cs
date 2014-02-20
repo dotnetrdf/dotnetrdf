@@ -121,7 +121,7 @@ namespace VDS.RDF
             {
                 this._value = literal;
             }
-            this._language = langspec;
+            this._language = langspec;//.ToLowerInvariant();
             this._datatype = null;
 
             //Compute Hash Code
