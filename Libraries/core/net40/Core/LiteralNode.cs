@@ -121,11 +121,11 @@ namespace VDS.RDF
             {
                 this._value = literal;
             }
-            this._language = langspec;//.ToLowerInvariant();
+            this._language = langspec;// != null ? langspec.ToLowerInvariant() : String.Empty;
             this._datatype = null;
 
             //Compute Hash Code
-            if (langspec.Equals(String.Empty))
+            if (this._language.Equals(String.Empty))
             {
                 //Empty Language Specifier equivalent to a Plain Literal
                 this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();

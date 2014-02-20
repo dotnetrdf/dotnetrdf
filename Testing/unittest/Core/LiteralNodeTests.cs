@@ -213,8 +213,9 @@ namespace VDS.RDF
             g.Assert(s, p, lcase);
             g.Assert(s, p, ucase);
 
-            Assert.AreEqual(2, g.GetTriplesWithObject(lcase).Count(), "Lower case search failed to find both solutions");
-            Assert.AreEqual(2, g.GetTriplesWithObject(ucase).Count(), "Upper case search failed to find both solutions");
+            Assert.AreEqual(1, g.Triples.Count, "Triples should be treated as equivalent");
+            Assert.AreEqual(1, g.GetTriplesWithObject(lcase).Count(), "Lower case search failed");
+            Assert.AreEqual(1, g.GetTriplesWithObject(ucase).Count(), "Upper case search failed");
         }
     }
 }
