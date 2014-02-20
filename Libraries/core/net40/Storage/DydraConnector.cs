@@ -1071,7 +1071,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            return base.GetProxiedRequest(request);
+            return base.ApplyRequestOptions(request);
         }
 
         private String GetCredentialedUri()
@@ -1128,7 +1128,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
 
         /// <summary>

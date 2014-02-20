@@ -580,7 +580,7 @@ namespace VDS.RDF.Storage.Management
                 }
             }
 
-            return base.GetProxiedRequest(request);
+            return base.ApplyRequestOptions(request);
         }
 
         /// <summary>
@@ -632,7 +632,7 @@ namespace VDS.RDF.Storage.Management
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 }

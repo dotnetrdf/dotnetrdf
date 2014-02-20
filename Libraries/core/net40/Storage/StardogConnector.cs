@@ -1667,7 +1667,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             //Add the special Stardog Headers
             this.AddStardogHeaders(request);
@@ -2154,7 +2154,7 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 
