@@ -43,6 +43,23 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         protected List<int> _orderedIDs = null;
 
+
+        private int _virtualCount = -1;
+        /// <summary>
+        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member
+        /// </summary>
+        public int VirtualCount
+        {
+            get
+            {
+                return (_virtualCount==-1 ? this.Count : this._virtualCount);
+            }
+            internal set
+            {
+                this._virtualCount = value;
+            }
+        }
+
         /// <summary>
         /// Joins this Multiset to another Multiset
         /// </summary>
@@ -291,7 +308,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
 #if NET40 && !SILVERLIGHT
-        
+
         private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
         {
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);

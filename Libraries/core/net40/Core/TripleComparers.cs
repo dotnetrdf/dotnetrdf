@@ -34,7 +34,7 @@ namespace VDS.RDF
     /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons
     /// </summary>
     public class FastNodeComparer
-        : IComparer<INode>
+        : IComparer<INode>, IEqualityComparer<INode>
     {
         /// <summary>
         /// Compares two Nodes
@@ -125,6 +125,42 @@ namespace VDS.RDF
                 return x.CompareTo(y);
             }
         }
+
+        public bool Equals(INode x, INode y)
+        {
+            return Compare(x,y)==0;
+        }
+
+        public int GetHashCode(INode obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
+    public class TripleEqualityComparer : IEqualityComparer<Triple>
+    { 
+
+        /// <summary>
+        /// Returns whether two Triples are equal
+        /// </summary>
+        /// <param name="x">Triple</param>
+        /// <param name="y">Triple</param>
+        /// <returns></returns>
+        public bool Equals(Triple x, Triple y)
+        {
+            return x.Subject.Equals(y.Subject) && x.Predicate.Equals(y.Predicate) && x.Object.Equals(y.Object);
+        }
+
+        /// <summary>
+        /// Returns a predictable HashCode for the triple based on its components'
+        /// </summary>
+        /// <param name="x">Triple</param>
+        /// <param name="y">Triple</param>
+        /// <returns></returns>
+        public int GetHashCode(Triple t)
+        {
+            return t.Subject.GetHashCode() * 31 ^ 2 + t.Predicate.GetHashCode() * 31 + t.Object.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -161,6 +197,7 @@ namespace VDS.RDF
         /// <param name="y">Triple</param>
         /// <returns></returns>
         public abstract int Compare(Triple x, Triple y);
+
     }
 
     /// <summary>
@@ -201,6 +238,7 @@ namespace VDS.RDF
             }
             return c;
         }
+
     }
 
     /// <summary>

@@ -114,6 +114,7 @@ namespace VDS.RDF.Query
                     {
                         if (!handler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                     }
+                    q.VirtualCount = context.OutputMultiset.VirtualCount;
                 }
 
                 handler.EndResults(true);
