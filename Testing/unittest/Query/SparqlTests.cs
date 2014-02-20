@@ -578,5 +578,79 @@ WHERE
             SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
             Object results = store.ExecuteQuery(query);
         }
+
+        private readonly String[] _langSpecCaseQueries = new string[]
+                {
+                    @"SELECT * WHERE { ?s ?p 'example'@en-gb }",
+                    @"SELECT * WHERE { ?s ?p 'example'@en-GB }",
+                    @"SELECT * WHERE { ?s ?p 'example'@EN-GB }",
+                    @"SELECT * WHERE { ?s ?p 'example'@EN-gb }",
+                    @"SELECT * WHERE { ?s ?p 'example'@en-GB }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en-gb')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en-GB')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN-GB')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN-gb')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANG(?o) = 'en-gb')) }"
+                };
+
+        private void TestLanguageSpecifierCase(IGraph g)
+        {
+            foreach (String query in this._langSpecCaseQueries)
+            {
+                SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                Assert.AreEqual(1, results.Count, "Failed to get a result for query:\n" + query);
+            }
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase1()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "en-gb");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase2()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "en-GB");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase3()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "EN-gb");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase4()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "EN-GB");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
     }
 }
