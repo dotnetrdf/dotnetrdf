@@ -1967,9 +1967,6 @@
     <Compile Include="..\net40\Storage\BaseHttpConnector.cs">
       <Link>Storage\BaseHttpConnector.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Storage\DydraConnector.cs">
-      <Link>Storage\DydraConnector.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Storage\IOBehaviour.cs">
       <Link>Storage\IOBehaviour.cs</Link>
     </Compile>

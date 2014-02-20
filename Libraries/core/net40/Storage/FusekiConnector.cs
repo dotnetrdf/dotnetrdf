@@ -234,7 +234,7 @@ namespace VDS.RDF.Storage
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                     request.Method = "POST";
                     request.ContentType = "application/sparql-update";
-                    request = base.GetProxiedRequest(request);
+                    request = base.ApplyRequestOptions(request);
 
                     Tools.HttpDebugRequest(request);
 
@@ -310,14 +310,14 @@ namespace VDS.RDF.Storage
                     request = (HttpWebRequest)WebRequest.Create(queryUri);
                     request.Method = "GET";
                     request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = base.GetProxiedRequest(request);
+                    request = base.ApplyRequestOptions(request);
                 }
                 else
                 {
                     request = (HttpWebRequest)WebRequest.Create(queryUri);
                     request.Method = "POST";
                     request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = base.GetProxiedRequest(request);
+                    request = base.ApplyRequestOptions(request);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -376,7 +376,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 StreamWriter writer = new StreamWriter(request.GetRequestStream());
                 writer.Write(sparqlUpdate);
@@ -443,7 +443,7 @@ namespace VDS.RDF.Storage
                 request = (HttpWebRequest)WebRequest.Create(queryUri);
                 request.Method = "POST";
                 request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 //Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -536,7 +536,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 request.BeginGetRequestStream(r =>
                     {
