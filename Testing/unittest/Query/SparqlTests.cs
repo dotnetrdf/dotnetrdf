@@ -573,7 +573,7 @@ WHERE
         {
             TripleStore store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
-            string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
+            const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
             SparqlQueryParser sparqlParser = new SparqlQueryParser();
             SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
             Object results = store.ExecuteQuery(query);
