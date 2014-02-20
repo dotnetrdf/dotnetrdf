@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage
         public int Timeout { get; set; }
 
         /// <summary>
-        /// Helper method which applies standard request options to the 
+        /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout
         /// </summary>
         /// <param name="request">HTTP Web Request</param>
         /// <returns>HTTP Web Request with standard options applied</returns>

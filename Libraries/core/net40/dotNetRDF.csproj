@@ -756,7 +756,6 @@
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Storage\BaseHttpConnector.cs" />
-    <Compile Include="Storage\DydraConnector.cs" />
     <Compile Include="Storage\IOBehaviour.cs" />
     <Compile Include="Storage\StardogConnector.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
