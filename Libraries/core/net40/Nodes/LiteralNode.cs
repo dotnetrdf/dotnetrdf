@@ -105,7 +105,7 @@ namespace VDS.RDF.Nodes
             {
                 this.Value = literal;
             }
-            this.Language = String.IsNullOrEmpty(langspec) ? null : langspec;
+            this.Language = String.IsNullOrEmpty(langspec) ? null : langspec.ToLowerInvariant();
             // TODO: This should be set to rdf:langString for RDF 1.1 compliance
             this.DataType = null;
 
