@@ -370,25 +370,25 @@ namespace VDS.RDF.Parsing
             bool baseChanged = false;
             String oldLang = lang;
             bool langChanged = false;
-            String baseUri = (evalContext.BaseUri == null) ? String.Empty : evalContext.BaseUri.AbsoluteUri;
+            Uri baseUri = evalContext.BaseUri;
 
             #region Steps 2-5 of the RDFa Processing Rules
 
             //Locate namespaces and other relevant attributes
             foreach (HtmlAttribute attr in currElement.Attributes)
             {
-                String uri;
+                Uri uri;
                 if (attr.Name.StartsWith("xmlns:"))
                 {
-                    uri = Tools.ResolveUri(attr.Value, baseUri);
-                    if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
+                    uri = UriFactory.ResolveUri(attr.Value, baseUri);
+                    if (!(uri.AbsoluteUri.EndsWith("/") || uri.AbsoluteUri.EndsWith("#"))) uri = UriFactory.ResolveUri("#", uri);
                     String prefix = attr.Name.Substring(attr.Name.IndexOf(':') + 1);
                     if (evalContext.NamespaceMap.HasNamespace(prefix))
                     {
                         if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                         hiddenPrefixes.Add(prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix));
                     }
-                    evalContext.NamespaceMap.AddNamespace(prefix, UriFactory.Create(uri));
+                    evalContext.NamespaceMap.AddNamespace(prefix, uri);
                     inScopePrefixes.Add(prefix);
                 }
                 else
@@ -409,23 +409,23 @@ namespace VDS.RDF.Parsing
                             //@xml:base may be permitted in some cases
                             if (context.XmlBaseAllowed)
                             {
-                                baseUri = Tools.ResolveUri(attr.Value, baseUri);
-                                if (!(baseUri.EndsWith("/") || baseUri.EndsWith("#"))) baseUri += "#";
+                                baseUri = UriFactory.ResolveUri(attr.Value, baseUri);
+                                if (!(baseUri.AbsoluteUri.EndsWith("/") || baseUri.AbsoluteUri.EndsWith("#"))) baseUri = UriFactory.ResolveUri("#", baseUri);
                                 oldBase = evalContext.BaseUri;
                                 baseChanged = true;
-                                evalContext.BaseUri = UriFactory.Create(baseUri);
+                                evalContext.BaseUri = baseUri;
                             }
                             break;
                         case "xmlns":
                             //Can use @xmlns to override the default namespace
-                            uri = attr.Value;
-                            if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
+                            uri = UriFactory.ResolveUri(attr.Value, baseUri);
+                            if (!(uri.AbsoluteUri.EndsWith("/") || uri.AbsoluteUri.EndsWith("#"))) uri = UriFactory.ResolveUri("#", uri);
                             if (evalContext.NamespaceMap.HasNamespace(String.Empty))
                             {
                                 if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                                 hiddenPrefixes.Add(String.Empty, evalContext.NamespaceMap.GetNamespaceUri(String.Empty));
                             }
-                            evalContext.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create(uri));
+                            evalContext.NamespaceMap.AddNamespace(String.Empty, uri);
                             inScopePrefixes.Add(String.Empty);
                             noDefaultNamespace = true;
                             break;
@@ -481,14 +481,14 @@ namespace VDS.RDF.Parsing
                                 {
                                     foreach (KeyValuePair<String, String> ns in evalContext.LocalVocabulary.Namespaces)
                                     {
-                                        uri = Tools.ResolveUri(ns.Value, baseUri);
-                                        if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
+                                        uri = UriFactory.ResolveUri(ns.Value, baseUri);
+                                        if (!(uri.AbsoluteUri.EndsWith("/") || uri.AbsoluteUri.EndsWith("#"))) uri = UriFactory.ResolveUri("#", uri);
                                         if (evalContext.NamespaceMap.HasNamespace(ns.Key))
                                         {
                                             if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                                             hiddenPrefixes.Add(ns.Key, evalContext.NamespaceMap.GetNamespaceUri(ns.Key));
                                         }
-                                        evalContext.NamespaceMap.AddNamespace(ns.Key, UriFactory.Create(uri));
+                                        evalContext.NamespaceMap.AddNamespace(ns.Key, uri);
                                         inScopePrefixes.Add(ns.Key);
                                     }
                                 }
@@ -519,7 +519,7 @@ namespace VDS.RDF.Parsing
 
             //If we hit an invalid CURIE/URI at any point then ResolveUriOrCurie will return a null and 
             //later processing steps will be skipped for this element
-            //Calls to Tools.ResolveUri which error will still cause the parser to halt
+            //Calls to UriFactory.ResolveUri which error will still cause the parser to halt
             if (!rel && !rev)
             {
                  //No @rel or @rev attributes
@@ -531,7 +531,7 @@ namespace VDS.RDF.Parsing
                 else if (src)
                 {
                     //New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(currElement.Attributes["src"].Value, baseUri)));
+                    newSubj = context.Handler.CreateUriNode(UriFactory.ResolveUri(currElement.Attributes["src"].Value, baseUri));
                 }
                 else if (resource && !currElement.Attributes["resource"].Value.Equals("[]"))
                 {
@@ -541,18 +541,18 @@ namespace VDS.RDF.Parsing
                 else if (href)
                 {
                     //New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(currElement.Attributes["href"].Value, baseUri)));
+                    newSubj = context.Handler.CreateUriNode(UriFactory.ResolveUri(currElement.Attributes["href"].Value, baseUri));
                 }
                 else if (currElement.Name.Equals("head") || currElement.Name.Equals("body"))
                 {
                     //New Subject is the Base URI
                     try
                     {
-                        newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(String.Empty, baseUri)));
+                        newSubj = context.Handler.CreateUriNode(UriFactory.ResolveUri(String.Empty, baseUri));
                     }
                     catch (RdfException)
                     {
-                        if (baseUri.Equals(String.Empty))
+                        if (baseUri == null)
                         {
                             this.OnWarning("Unable to generate a valid Subject for a Triple since the Base URI should be used but there is no in-scope Base URI");
                             newSubj = null;
@@ -588,14 +588,14 @@ namespace VDS.RDF.Parsing
                 else if (src)
                 {
                     //New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(currElement.Attributes["src"].Value, baseUri)));
+                    newSubj = context.Handler.CreateUriNode(UriFactory.ResolveUri(currElement.Attributes["src"].Value, baseUri)));
                 }
                 else if (currElement.Name.Equals("head") || currElement.Name.Equals("body"))
                 {
                     //New Subject is the Base URI
                     try
                     {
-                        newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(String.Empty, baseUri)));
+                        newSubj = context.Handler.CreateUriNode(UriFactory.ResolveUri(String.Empty, baseUri)));
                     }
                     catch (RdfException)
                     {
@@ -630,7 +630,7 @@ namespace VDS.RDF.Parsing
                 else if (href)
                 {
                     //New Object is the URI
-                    currObj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(currElement.Attributes["href"].Value, baseUri)));
+                    currObj = context.Handler.CreateUriNode(UriFactory.ResolveUri(currElement.Attributes["href"].Value, baseUri));
                 }
             }
 
@@ -641,7 +641,7 @@ namespace VDS.RDF.Parsing
             //If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
             if (newSubj != null)
             {
-                INode rdfType = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Handler.CreateUriNode(RdfSpecsHelper.RdfType));
                 if (type)
                 {
                     foreach (INode dtObj in this.ParseComplexAttribute(context, evalContext, currElement.Attributes["typeof"].Value))
@@ -803,7 +803,7 @@ namespace VDS.RDF.Parsing
                         {
                             this.ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
-                        currLiteral = context.Handler.CreateLiteralNode(currElement.InnerHtml, UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
+                        currLiteral = context.Handler.CreateLiteralNode(currElement.InnerHtml, RdfSpecsHelper.RdfXmlLiteral));
                     }
                 }
 
@@ -855,17 +855,10 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        Uri newBase = (baseUri.Equals(String.Empty)) ? null : UriFactory.Create(baseUri);
+                        Uri newBase = baseUri;
                         newEvalContext = new RdfAEvaluationContext(newBase, evalContext.NamespaceMap);
                         //Set the Parent Subject for the new Context
-                        if (newSubj != null)
-                        {
-                            newEvalContext.ParentSubject = newSubj;
-                        }
-                        else
-                        {
-                            newEvalContext.ParentSubject = evalContext.ParentSubject;
-                        }
+                        newEvalContext.ParentSubject = newSubj ?? evalContext.ParentSubject;
                         //Set the Parent Object for the new Context
                         if (currObj != null)
                         {
@@ -958,7 +951,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (curie.Contains(":"))
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                        return context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(curie, evalContext.NamespaceMap, evalContext.BaseUri));
                     }
                     else
                     {
@@ -968,7 +961,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //RDFa 1.1
-                    return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                    return context.Handler.CreateUriNode(UriFactory.ResolvePrefixedName(curie, evalContext.NamespaceMap, evalContext.BaseUri));
                 }
             }
         }
@@ -998,7 +991,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //URI
-                    return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref, evalContext.BaseUri.ToSafeString())));
+                    return context.Handler.CreateUriNode(UriFactory.ResolveUri(uriref, evalContext.BaseUri));
                 }
             }
             catch (RdfException)
@@ -1111,7 +1104,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
+                return context.Handler.CreateUriNode(UriFactory.ResolveUri(value, evalContext.BaseUri));
             }
         }
 
@@ -1194,7 +1187,7 @@ namespace VDS.RDF.Parsing
             return nodes;
         }
 
-        private void ParsePrefixAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, HtmlAttribute attr, String baseUri, Dictionary<string,Uri> hiddenPrefixes, List<String> inScopePrefixes)
+        private void ParsePrefixAttribute(RdfAParserContext context, RdfAEvaluationContext evalContext, HtmlAttribute attr, Uri baseUri, Dictionary<string,Uri> hiddenPrefixes, List<String> inScopePrefixes)
         {
             //Do nothing if the @prefix attribute is empty
             if (attr.Value.Equals(String.Empty)) return;
@@ -1239,10 +1232,7 @@ namespace VDS.RDF.Parsing
                         this.OnWarning("Aborted parsing a prefix attribute since reached the end of the attribute without finding a URI to go with the prefix '" + prefixData.ToString() + ":'");
                         return;
                     }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
+                    next = (char)reader.Peek();
                 }
 
                 //Grab the URI - characters up to the next whitespace or end of string
@@ -1264,15 +1254,15 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Now resolve the URI and apply it
-                String uri = Tools.ResolveUri(uriData.ToString(), baseUri);
+                Uri uri = UriFactory.ResolveUri(uriData.ToString(), baseUri);
                 if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
                 String prefix = prefixData.ToString();
                 if (evalContext.NamespaceMap.HasNamespace(prefix))
                 {
                     if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
-                    hiddenPrefixes.Add(prefix, UriFactory.Create(uri));
+                    hiddenPrefixes.Add(prefix, uri);
                 }
-                evalContext.NamespaceMap.AddNamespace(prefix, UriFactory.Create(uri));
+                evalContext.NamespaceMap.AddNamespace(prefix, uri);
                 inScopePrefixes.Add(prefix);
             } while (!canExit);
         }
@@ -1289,8 +1279,8 @@ namespace VDS.RDF.Parsing
                 profiles = new String[] { attr.Value };
             }
 
-            String prefixQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
-            String termQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?term) AS ?Term SAMPLE(?uri) AS ?URI WHERE {?s rdfa:term ?term ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?term) = 1 && COUNT(?uri) = 1)";
+            const string prefixQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
+            const string termQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?term) AS ?Term SAMPLE(?uri) AS ?URI WHERE {?s rdfa:term ?term ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?term) = 1 && COUNT(?uri) = 1)";
 
             foreach (String profile in profiles)
             {
