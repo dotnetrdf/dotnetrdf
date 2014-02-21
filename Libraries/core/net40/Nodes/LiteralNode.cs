@@ -28,6 +28,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Nodes
 {
@@ -106,8 +107,7 @@ namespace VDS.RDF.Nodes
                 this.Value = literal;
             }
             this.Language = String.IsNullOrEmpty(langspec) ? null : langspec.ToLowerInvariant();
-            // TODO: This should be set to rdf:langString for RDF 1.1 compliance
-            this.DataType = null;
+            this.DataType = Options.Rdf11 ? UriFactory.Create(RdfSpecsHelper.RdfLangString) : null;
 
             //Compute Hash Code
             this._hashcode = Tools.CreateHashCode(this);
@@ -203,13 +203,19 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gives the alnguage specifier for the literal (if it exists) or null
+        /// Gives the language specifier for the literal (if it exists) or null
         /// </summary>
+        /// <remarks>
+        /// Note that with RDF 1.1 both this and <see cref="HasDataType"/> may return true, you should always test for this before testing for <see cref="HasDataType"/>
+        /// </remarks>
         public override String Language { get; protected set; }
 
         /// <summary>
         /// Gets whether the literal has a data type URI
         /// </summary>
+        /// <remarks>
+        /// Note that with RDF 1.1 both this and <see cref="HasLanguage"/> may return true, you should always test for <see cref="HasLanguage"/> before testing for this.
+        /// </remarks>
         public override bool HasDataType
         {
             get { return !ReferenceEquals(this.DataType, null); }
@@ -335,22 +341,19 @@ namespace VDS.RDF.Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
+            if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
             {
                 //Literal Nodes are greater than Blank, Variable and Uri Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Literal)
+            if (other.NodeType == NodeType.Literal)
             {
                 return ComparisonHelper.CompareLiterals(this, other);
             }
-            else
-            {
-                //Anything else is considered greater than a Literal Node
-                //Return -1 to indicate this
-                return -1;
-            }
+            //Anything else is considered greater than a Literal Node
+            //Return -1 to indicate this
+            return -1;
         }
 
         /// <summary>

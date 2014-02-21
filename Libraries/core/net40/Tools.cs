@@ -24,18 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Net;
-using System.Diagnostics;
 using VDS.RDF.Graphs;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
 {
@@ -143,7 +136,7 @@ namespace VDS.RDF
         /// <param name="target">Graph to Copy into</param>
         /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Node being copied</param>
         /// <returns></returns>
-        [Obsolete("Copying Nodes is no longer required", true)]
+        [Obsolete("Copying Nodes is no longer required due to API improvements", true)]
         public static INode CopyNode(INode original, IGraph target, bool keepOriginalGraphUri)
         {
             throw new NotSupportedException();
@@ -160,7 +153,7 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Graphs is done
         /// </para>
         /// </remarks>
-        [Obsolete("Copying Nodes is no longer required", true)]
+        [Obsolete("Copying Nodes is no longer required due to API improvements", true)]
         public static INode CopyNode(INode original, IGraph target)
         {
             throw new NotSupportedException();
@@ -177,7 +170,7 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done
         /// </para>
         /// </remarks>
-        [Obsolete("Copying Nodes is no longer required", true)]
+        [Obsolete("Copying Nodes is no longer required due to API improvements", true)]
         public static INode CopyNode(INode original, INodeFactory target)
         {
             throw new NotSupportedException();
@@ -189,7 +182,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to copy</param>
         /// <param name="target">Graph to copy to</param>
         /// <returns></returns>
-        [Obsolete("Copying Triples is no longer required", true)]
+        [Obsolete("Copying Triples is no longer required due to API improvements", true)]
         public static Triple CopyTriple(Triple t, IGraph target)
         {
             throw new NotSupportedException();
@@ -202,7 +195,7 @@ namespace VDS.RDF
         /// <param name="target">Graph to copy to</param>
         /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Nodes being copied</param>
         /// <returns></returns>
-        [Obsolete("Copying Triples is no longer required", true)]
+        [Obsolete("Copying Triples is no longer required due to API improvements", true)]
         public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
         {
             throw new NotSupportedException();

@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace VDS.RDF.Specifications
@@ -85,7 +82,7 @@ namespace VDS.RDF.Specifications
         /// <summary>
         /// Regular Expression for Valid Language Specifiers
         /// </summary>
-        private static Regex _validLangSpecifier = new Regex(ValidLangSpecifiersPattern);
+        private static readonly Regex _validLangSpecifier = new Regex(ValidLangSpecifiersPattern);
 
         /// <summary>
         /// Determines whether a given String is a valid Language Specifier

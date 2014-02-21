@@ -74,6 +74,7 @@ namespace VDS.RDF
     {
         static Options()
         {
+            Rdf11 = true;
             InternUris = true;
             LiteralEqualityMode = LiteralEqualityMode.Strict;
             FullTripleIndexing = true;
@@ -87,21 +88,38 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets/Sets whether RDF 1.1 mode is enabled (defaults to enabled)
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// RDF 1.1 is the family of updated RDF specifications formally published as W3C recommendations in/around late 2013.  They may some changes to the semantics of RDF which have user noticeable effects, the most visible of these is that all literals are now implicitly typed i.e. there are no untyped literals in RDF 1.1
+        /// </para>
+        /// <para>
+        /// With RDF 1.1 mode enabled there are a number of behavioural differences:
+        /// </para>
+        /// <ul>
+        /// <li>All literals are implicitly typed, literals with no type/language specifier are typed as <code>xsd:string</code> while those with language specifiers are typed as <code>rdf:langString</code></li>
+        /// 
+        /// </ul>
+        /// </remarks>
+        public static bool Rdf11 { get; set; }
+
+        /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
         /// </summary>
         public static LiteralEqualityMode LiteralEqualityMode { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether Literal Values should be normalized
+        /// Gets/Sets whether Literal Values should be normalized (defaults to disabled)
         /// </summary>
         public static bool LiteralValueNormalization { get; set; }
 
         /// <summary>
-        /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it
+        /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it (defaults to enabled)
         /// </summary>
         /// <remarks>
         /// <para>
-        /// By default indexes triple collections creates indexes on Triples based upon Subjects, Predicates and Objects alone.  When full indexing is enabled it also creates indexes based on Subject-Predicate, Predicate-Object and Subject-Object pairs which may improve query speed but will use additional memory.
+        /// An indexed triple collections typically creates indexes at least based upon Subjects, Predicates and Objects.  When full indexing is enabled it may also create indexes based on Subject-Predicate, Predicate-Object and Subject-Object pairs which may improve query speed but will use additional memory.  Actual implementations may create more/less indexes depending on their underlying data structures but they should respect this setting when deciding how many indexes to create.
         /// </para>
         /// <para>
         /// Default setting for Full Indexing is enabled, enabling/disabling it only has an effect on indexed triple collection instances instantiated after full indexing was enabled/disabled i.e. existing Graphs in memory using the indexed triple collections continue to use the full indexing setting that was present when they were instantiated.
@@ -110,7 +128,7 @@ namespace VDS.RDF
         public static bool FullTripleIndexing { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether IRIs are validated by parsers which support this functionality
+        /// Gets/Sets whether IRIs are validated by parsers which support this functionality (defaults to disabled)
         /// </summary>
         /// <remarks>
         /// When enabled certain parsers will validate all IRIs they see to ensure that they are valid and throw a parser error if they are not.  Since there is a performance penalty associated with this and many older RDF standards were written pre-IRIs (thus enforcing IRI validity would reject data considered valid by those specifications) this feature is disabled by default.
@@ -118,8 +136,7 @@ namespace VDS.RDF
         public static bool ValidateIris { get; set; }
 
         /// <summary>
-        /// <summary>
-        /// Gets/Sets whether Basic HTTP authentication should be forced
+        /// Gets/Sets whether Basic HTTP authentication should be forced (defaults to disabled)
         /// </summary>
         /// <remarks>
         /// <para>
@@ -132,17 +149,22 @@ namespace VDS.RDF
         public static bool ForceHttpBasicAuth { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage
+        /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage (defaults to enabled)
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Interning URIs trades off memory usage for performance, by interning URIs so the same URI strings are represented by the same <see cref="Uri"/> instances we make a lot of equality checks reference equality checks which can substantially boost performance of some operations.
+        /// </para>
+        /// </remarks>
         public static bool InternUris { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes
+        /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes (defaults to disabled)
         /// </summary>
         public static bool HttpDebugging { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes
+        /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes (defaults to disabled)
         /// </summary>
         public static bool HttpFullDebugging { get; set; }
 
