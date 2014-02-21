@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -66,18 +67,9 @@
     <Compile Include="Configuration\ConfigurationLoader.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
     <Compile Include="Configuration\DataFactories.cs" />
-    <Compile Include="Configuration\EndpointFactories.cs" />
-    <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
     <Compile Include="Configuration\ObjectFactoryFactory.cs" />
-    <Compile Include="Configuration\OperatorFactory.cs" />
-    <Compile Include="Configuration\OptimiserFactory.cs" />
-    <Compile Include="Configuration\ParserFactory.cs" />
     <Compile Include="Configuration\PermissionFactories.cs" />
-    <Compile Include="Configuration\ProcessorFactories.cs" />
-    <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\ProxyFactory.cs" />
-    <Compile Include="Configuration\ReasonerFactory.cs" />
-    <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Configuration\Permissions\Permission.cs" />
     <Compile Include="Configuration\Permissions\UserGroup.cs" />
   </ItemGroup>

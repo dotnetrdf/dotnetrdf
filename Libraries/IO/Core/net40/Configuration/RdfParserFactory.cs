@@ -26,21 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using System.Reflection;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
     /// Object Factory used by the Configuration API to load parsers from configuration graphs
     /// </summary>
-    public class ParserFactory 
+    public class RdfParserFactory 
         : IObjectFactory
     {
-        private Type[] _parserTypes = new Type[]
-        {
-            typeof(IRdfReader),
-            typeof(IStoreReader),
-            typeof(ISparqlResultsReader)
-        };
+        private readonly Type _rdfParserType = typeof (IRdfReader);
 
         /// <summary>
         /// Tries to load a Parser based on information from the Configuration Graph
@@ -73,76 +70,10 @@ namespace VDS.RDF.Configuration
         public bool CanLoadObject(Type t)
         {
             //We can load any object which implements any parser interface and has a public unparameterized constructor
-            if (t.GetInterfaces().Any(i => this._parserTypes.Contains(i)))
+            if (t.GetInterfaces().Any(i => this._rdfParserType.Equals(i)))
             {
                 ConstructorInfo c = t.GetConstructor(new Type[0]);
-                if (c != null)
-                {
-                    return c.IsPublic;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Object Factory used by the Configuration API to load writers from configuration graphs
-    /// </summary>
-    public class WriterFactory : IObjectFactory
-    {
-        private Type[] _writerTypes = new Type[]
-        {
-            typeof(IRdfWriter),
-            typeof(IStoreWriter),
-            typeof(ISparqlResultsWriter)
-        };
-
-        /// <summary>
-        /// Tries to load a Writer based on information from the Configuration Graph
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
-        {
-            obj = null;
-            try
-            {
-                obj = Activator.CreateInstance(targetType);
-                return true;
-            }
-            catch
-            {
-                //Any error means this loader can't load this type
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
-        /// </summary>
-        /// <param name="t">Type</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
-        {
-            //We can load any object which implements any writer interface and has a public unparameterized constructor
-            if (t.GetInterfaces().Any(i => this._writerTypes.Contains(i)))
-            {
-                ConstructorInfo c = t.GetConstructor(new Type[0]);
-                if (c != null)
-                {
-                    return c.IsPublic;
-                }
-                else
-                {
-                    return false;
-                }
+                return c != null && c.IsPublic;
             }
             return false;
         }

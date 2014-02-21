@@ -37,6 +37,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
+    <Compile Include="Configuration\OperatorFactory.cs" />
+    <Compile Include="Configuration\OptimiserFactory.cs" />
+    <Compile Include="Configuration\ProcessorFactories.cs" />
+    <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />

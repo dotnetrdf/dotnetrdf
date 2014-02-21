@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using VDS.RDF.Configuration.Permissions;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
@@ -62,7 +64,7 @@ namespace VDS.RDF.Configuration
                 case PermissionSet:
                     IEnumerable<String> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyAction)))
                                                   where n.NodeType == NodeType.Literal
-                                                  select ((ILiteralNode)n).Value;
+                                                  select n.Value;
                     result = new PermissionSet(actions);
                     break;
             }

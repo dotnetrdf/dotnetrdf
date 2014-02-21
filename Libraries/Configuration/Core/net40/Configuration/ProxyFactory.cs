@@ -26,10 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_PROXY
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
