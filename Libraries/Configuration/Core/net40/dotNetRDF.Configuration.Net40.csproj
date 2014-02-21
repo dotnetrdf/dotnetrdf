@@ -8,8 +8,8 @@
     <ProjectGuid>{9B5A8014-FA95-436A-A78E-2C5D19148B0E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Configuration</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\dotNetRDF.Configuration.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,14 +34,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
+    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
+      <Name>dotNetRDF.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
+      <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
+      <Name>dotNetRDF.IO.Net40</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -55,14 +61,12 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="Configuration\CachedObjectKey.cs" />
     <Compile Include="Configuration\CollectionFactory.cs" />
     <Compile Include="Configuration\ConfigurationInterfaces.cs" />
     <Compile Include="Configuration\ConfigurationLoader.cs" />
     <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
     <Compile Include="Configuration\DataFactories.cs" />
-    <Compile Include="Configuration\DatasetFactory.cs" />
     <Compile Include="Configuration\EndpointFactories.cs" />
     <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
     <Compile Include="Configuration\ObjectFactoryFactory.cs" />
@@ -77,5 +81,11 @@
     <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Configuration\Permissions\Permission.cs" />
     <Compile Include="Configuration\Permissions\UserGroup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\IConfigurationLoader.cs" />
   </ItemGroup>
 </Project>

@@ -50,7 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
+      <Name>dotNetRDF.Net40</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
       <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>

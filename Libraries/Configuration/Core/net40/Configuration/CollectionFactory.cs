@@ -24,9 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
@@ -36,8 +37,9 @@ namespace VDS.RDF.Configuration
     public class CollectionFactory
         : IObjectFactory
     {
-        private Type _tripleCollectionType = typeof(BaseTripleCollection),
-                     _graphCollectionType = typeof(BaseGraphCollection);
+        private readonly Type _tripleCollectionType = typeof(BaseTripleCollection);
+
+        private readonly Type _graphCollectionType = typeof(BaseGraphCollection);
 
         /// <summary>
         /// Tries to load a triple/graph collection which is specified in the given configuration graph

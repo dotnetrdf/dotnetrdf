@@ -29,10 +29,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query.Operators;
 #if !NO_SYSTEMCONFIGURATION
+using VDS.RDF.Parsing;
 using SysConfig = System.Configuration;
 #endif
 
@@ -223,12 +223,12 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Cache for loaded objects
         /// </summary>
-        private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
+        private static readonly Dictionary<INode, Object> _cache = new Dictionary<INode, object>();
 
         /// <summary>
         /// Set of built-in object factories that are automatically registered and used
         /// </summary>
-        private static List<IObjectFactory> _factories = new List<IObjectFactory>()
+        private static readonly List<IObjectFactory> _factories = new List<IObjectFactory>()
         {
             //Default Data Factories
             new GraphFactory(),

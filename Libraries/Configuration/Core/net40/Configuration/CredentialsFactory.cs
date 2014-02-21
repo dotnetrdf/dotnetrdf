@@ -24,10 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
@@ -68,7 +67,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            return t.Equals(typeof(NetworkCredential));
+            return t == typeof(NetworkCredential);
         }
     }
 }

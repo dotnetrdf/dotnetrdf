@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
@@ -79,10 +82,9 @@ namespace VDS.RDF.Configuration
 
             //Now we want to find out where the data for the Graph is coming from
             //Data Source loading order is Graphs, Files, Strings, Databases, Stores, URIs
-            IEnumerable<INode> sources;
 
             //Load from Graphs
-            sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromGraph)));
+            IEnumerable<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromGraph)));
             foreach (INode source in sources)
             {
                 ConfigurationLoader.CheckCircularReference(objNode, source, "dnr:fromGraph");
@@ -104,7 +106,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    EmbeddedResourceLoader.Load(output, ((ILiteralNode)source).Value);
+                    EmbeddedResourceLoader.Load(output, source.Value);
                 }
                 else
                 {
@@ -119,7 +121,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    FileLoader.Load(output, ConfigurationLoader.ResolvePath(((ILiteralNode)source).Value));
+                    FileLoader.Load(output, ConfigurationLoader.ResolvePath(source.Value));
                 }
                 else
                 {
@@ -134,7 +136,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    StringParser.Parse(output, ((ILiteralNode)source).Value);
+                    StringParser.Parse(output, source.Value);
                 }
                 else
                 {
@@ -228,7 +230,7 @@ namespace VDS.RDF.Configuration
                 if (source.NodeType == NodeType.Uri)
                 {
 #if !SILVERLIGHT
-                    UriLoader.Load(output, ((IUriNode)source).Uri);
+                    UriLoader.Load(output, source.Uri);
 #else
                     throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
 #endif
@@ -236,7 +238,7 @@ namespace VDS.RDF.Configuration
                 else if (source.NodeType == NodeType.Literal)
                 {
 #if !SILVERLIGHT
-                    UriLoader.Load(output, UriFactory.Create(((ILiteralNode)source).Value));
+                    UriLoader.Load(output, UriFactory.Create(source.Value));
 #else
                     throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
 #endif
@@ -246,39 +248,22 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from a URI for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromUri property is not a URI/Literal Node as required");
                 }
             }
-            
-            //Then are we assigning a Base URI to this Graph which overrides any existing Base URI?
-            INode baseUri = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
-            if (baseUri != null)
-            {
-                if (baseUri.NodeType == NodeType.Uri)
-                {
-                    output.BaseUri = ((IUriNode)baseUri).Uri;
-                }
-                else if (baseUri.NodeType == NodeType.Literal)
-                {
-                    output.BaseUri = UriFactory.Create(((ILiteralNode)baseUri).Value);
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Unable to assign a new Base URI for the Graph identified by the Node '" + objNode.ToString() + "' as the value for the dnr:assignUri property is not a URI/Literal Node as required");
-                }
-            }
 
             //Finally we'll apply any reasoners
-            IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
-            foreach (INode reasoner in reasoners)
-            {
-                Object temp = ConfigurationLoader.LoadObject(g, reasoner);
-                if (temp is IInferenceEngine)
-                {
-                    ((IInferenceEngine)temp).Apply(output);
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Unable to apply a reasoner for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:reasoner property points to an Object which cannot be loaded as an object which implements the IInferenceEngine interface");
-                }
-            }
+            // TODO Wire in reasoning once a 2.0 reasoning API is designed
+            //IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
+            //foreach (INode reasoner in reasoners)
+            //{
+            //    Object temp = ConfigurationLoader.LoadObject(g, reasoner);
+            //    if (temp is IInferenceEngine)
+            //    {
+            //        ((IInferenceEngine)temp).Apply(output);
+            //    }
+            //    else
+            //    {
+            //        throw new DotNetRdfConfigurationException("Unable to apply a reasoner for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:reasoner property points to an Object which cannot be loaded as an object which implements the IInferenceEngine interface");
+            //    }
+            //}
 
             obj = output;
             return true;

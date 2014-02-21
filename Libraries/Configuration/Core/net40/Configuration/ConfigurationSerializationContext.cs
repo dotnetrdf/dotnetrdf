@@ -23,7 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Configuration
 {
@@ -45,7 +46,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationSerializationContext()
         {
             this._g = new Graph();
-            this._g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            this._g.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
         }
 
         /// <summary>
