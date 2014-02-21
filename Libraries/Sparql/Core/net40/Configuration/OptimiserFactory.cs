@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case QueryOptimiserWeighted:
-                    INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                    INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyUsingGraph)));
                     if (statsObj != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, statsObj);

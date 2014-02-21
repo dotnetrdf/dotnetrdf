@@ -49,160 +49,10 @@ namespace VDS.RDF.Configuration
         #region Constants
 
         /// <summary>
-        /// Configuration Namespace URI
-        /// </summary>
-        public const String ConfigurationNamespace = "http://www.dotnetrdf.org/configuration#";
-
-        /// <summary>
         /// Constants for URI Schemes with special meaning within the Configuration API
         /// </summary>
         public const String UriSchemeAppSettings = "appsetting",
                             UriSchemeConfigureOptions = "dotnetrdf-configure";
-
-        /// <summary>
-        /// URI Constants for configuration properties
-        /// </summary>
-        public const String PropertyType = ConfigurationNamespace + "type",
-                            PropertyImports = ConfigurationNamespace + "imports",
-                            PropertyConfigure = ConfigurationNamespace  + "configure",
-                            PropertyEnabled = ConfigurationNamespace + "enabled",
-                            PropertyUser = ConfigurationNamespace + "user",
-                            PropertyPassword = ConfigurationNamespace + "password",
-                            PropertyCredentials = ConfigurationNamespace + "credentials",
-                            PropertyUseCredentialsForProxy = ConfigurationNamespace + "useCredentialsForProxy",
-                            //Manager connection properties
-                            PropertyServer = ConfigurationNamespace + "server",
-                            PropertyPort = ConfigurationNamespace + "port",
-                            PropertyDatabase = ConfigurationNamespace + "database",
-                            PropertyCatalog = ConfigurationNamespace + "catalogID",
-                            PropertyStore = ConfigurationNamespace + "storeID",
-                            PropertyQueryPath = ConfigurationNamespace + "queryPath",
-                            PropertyUpdatePath = ConfigurationNamespace + "updatePath",
-                            //Manager connection options
-                            PropertyReadOnly = ConfigurationNamespace + "readOnly",
-                            PropertyEnableUpdates = ConfigurationNamespace + "enableUpdates",
-                            PropertyAsync = ConfigurationNamespace + "async",
-                            PropertyLoadMode = ConfigurationNamespace + "loadMode",
-                            PropertyEncryptConnection = ConfigurationNamespace + "encryptConnection",
-                            PropertySkipParsing = ConfigurationNamespace + "skipParsing",
-                            //Properties for associating Managers with other things
-                            PropertyStorageProvider = ConfigurationNamespace + "storageProvider",
-                            //Properties for associating Processors with other things
-                            PropertyQueryProcessor = ConfigurationNamespace + "queryProcessor",
-                            PropertyUpdateProcessor = ConfigurationNamespace + "updateProcessor",
-                            PropertyProtocolProcessor = ConfigurationNamespace + "protocolProcessor",
-                            PropertyUsingDataset = ConfigurationNamespace + "usingDataset",
-                            //Properties for associating Stores and Graphs with other things
-                            PropertyUsingStore = ConfigurationNamespace + "usingStore",
-                            PropertyUsingGraph = ConfigurationNamespace + "usingGraph",
-                            //Properties for setting low level storage for Triple Stores and Graphs
-                            PropertyUsingTripleCollection = ConfigurationNamespace + "usingTripleCollection",
-                            PropertyUsingGraphCollection = ConfigurationNamespace + "usingGraphCollection",
-                            //Properties for defining where data comes from
-                            PropertyFromFile = ConfigurationNamespace + "fromFile",
-                            PropertyFromEmbedded = ConfigurationNamespace + "fromEmbedded",
-                            PropertyFromUri = ConfigurationNamespace + "fromUri",
-                            PropertyFromString = ConfigurationNamespace + "fromString",
-                            PropertyFromDataset = ConfigurationNamespace + "fromDataset",
-                            PropertyFromStore = ConfigurationNamespace + "fromStore",
-                            PropertyFromGraph = ConfigurationNamespace + "fromGraph",
-                            PropertyWithUri = ConfigurationNamespace + "withUri",
-                            PropertyAssignUri = ConfigurationNamespace + "assignUri",
-                            //Properties for Endpoints
-                            PropertyEndpoint = ConfigurationNamespace + "endpoint",
-                            PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
-                            PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
-                            PropertyUpdateEndpointUri = ConfigurationNamespace + "updateEndpointUri",
-                            PropertyQueryEndpoint = ConfigurationNamespace + "queryEndpoint",
-                            PropertyUpdateEndpoint = ConfigurationNamespace + "updateEndpoint",
-                            PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
-                            PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
-                            PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
-                            PropertyProxy = ConfigurationNamespace + "proxy",
-                            //Properties for reasoners
-                            PropertyReasoner = ConfigurationNamespace + "reasoner",
-                            PropertyOwlReasoner = ConfigurationNamespace + "owlReasoner",
-                            //Properties for permissions
-                            PropertyUserGroup = ConfigurationNamespace + "userGroup",
-                            PropertyMember = ConfigurationNamespace + "member",
-                            PropertyRequiresAuthentication = ConfigurationNamespace + "requiresAuthentication",
-                            PropertyPermissionModel = ConfigurationNamespace + "permissionModel",
-                            PropertyAllow = ConfigurationNamespace + "allow",
-                            PropertyDeny = ConfigurationNamespace + "deny",
-                            PropertyAction = ConfigurationNamespace + "action",
-                            //Properties for HTTP Handler configuration primarily around SPARQL endpoint configuration
-                            PropertyEnableCors = ConfigurationNamespace + "enableCors",
-                            PropertySyntax = ConfigurationNamespace + "syntax",
-                            PropertyTimeout = ConfigurationNamespace + "timeout",
-                            PropertyPartialResults = ConfigurationNamespace + "partialResults",
-                            PropertyShowErrors = ConfigurationNamespace + "showErrors",
-                            PropertyHaltOnError = ConfigurationNamespace + "haltOnError",
-                            PropertyShowQueryForm = ConfigurationNamespace + "showQueryForm",
-                            PropertyShowUpdateForm = ConfigurationNamespace + "showUpdateForm",
-                            PropertyDefaultQueryFile = ConfigurationNamespace + "defaultQueryFile",
-                            PropertyDefaultUpdateFile = ConfigurationNamespace + "defaultUpdateFile",
-                            PropertyIntroFile = ConfigurationNamespace + "introText",
-                            PropertyStylesheet = ConfigurationNamespace + "stylesheet",
-                            PropertyCacheDuration = ConfigurationNamespace + "cacheDuration",
-                            PropertyCacheSliding = ConfigurationNamespace + "cacheSliding",
-                            PropertyExpressionFactory = ConfigurationNamespace + "expressionFactory",
-                            PropertyFunctionFactory = ConfigurationNamespace + "propertyFunctionFactory",
-                            PropertyDescribeAlgorithm = ConfigurationNamespace + "describeAlgorithm",
-                            PropertyServiceDescription = ConfigurationNamespace + "serviceDescription",
-                            PropertyQueryOptimiser = ConfigurationNamespace + "queryOptimiser",
-                            PropertyAlgebraOptimiser = ConfigurationNamespace + "algebraOptimiser",
-                            //Properties for writers
-                            PropertyCompressionLevel = ConfigurationNamespace + "compressionLevel",
-                            PropertyPrettyPrinting = ConfigurationNamespace + "prettyPrinting",
-                            PropertyHighSpeedWriting = ConfigurationNamespace + "highSpeedWriting",
-                            PropertyDtdWriting = ConfigurationNamespace + "dtdWriting",
-                            PropertyAttributeWriting = ConfigurationNamespace + "attributeWriting",
-                            PropertyMultiThreadedWriting = ConfigurationNamespace + "multiThreadedWriting",
-                            PropertyImportNamespacesFrom = ConfigurationNamespace + "importNamespacesFrom"
-                            ;
-
-        /// <summary>
-        /// URI Constants for configuration classes
-        /// </summary>
-        public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
-                            //Classes for Triple Stores and Graphs and their associated low level storage
-                            ClassTripleStore = ConfigurationNamespace + "TripleStore",
-                            ClassGraphCollection = ConfigurationNamespace + "GraphCollection",
-                            ClassGraph = ConfigurationNamespace + "Graph",
-                            ClassTripleCollection = ConfigurationNamespace + "TripleCollection",
-                            //Classes for Storage Providers and Servers
-                            ClassStorageServer = ConfigurationNamespace + "StorageServer",
-                            ClassStorageProvider = ConfigurationNamespace + "StorageProvider",
-                            //Classes for ASP.Net integration
-                            ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
-                            //Classes for SPARQL features
-                            ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
-                            ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
-                            ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
-                            ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
-                            ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
-                            ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
-                            ClassSparqlExpressionFactory = ConfigurationNamespace + "SparqlExpressionFactory",
-                            ClassSparqlPropertyFunctionFactory = ConfigurationNamespace + "SparqlPropertyFunctionFactory",
-                            ClassSparqlDataset = ConfigurationNamespace + "SparqlDataset",
-                            ClassQueryOptimiser = ConfigurationNamespace + "QueryOptimiser",
-                            ClassAlgebraOptimiser = ConfigurationNamespace + "AlgebraOptimiser",
-                            ClassSparqlOperator = ConfigurationNamespace + "SparqlOperator",
-                            //Classes for reasoners
-                            ClassReasoner = ConfigurationNamespace + "Reasoner",
-                            ClassOwlReasoner = ConfigurationNamespace + "OwlReasoner",
-                            ClassProxy = ConfigurationNamespace + "Proxy",
-                            //Classes for Users and permissions
-                            ClassUserGroup = ConfigurationNamespace + "UserGroup",
-                            ClassUser = ConfigurationNamespace + "User",
-                            ClassPermission = ConfigurationNamespace + "Permission",
-                            //Classes for Parsers and Serializers
-                            ClassRdfParser = ConfigurationNamespace + "RdfParser",
-                            ClassDatasetParser = ConfigurationNamespace + "DatasetParser",
-                            ClassSparqlResultsParser = ConfigurationNamespace + "SparqlResultsParser",
-                            ClassRdfWriter = ConfigurationNamespace + "RdfWriter",
-                            ClassDatasetWriter = ConfigurationNamespace + "DatasetWriter",
-                            ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
 
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
@@ -236,7 +86,6 @@ namespace VDS.RDF.Configuration
             new CollectionFactory(),
             //Default Manager Factories
             new StorageFactory(),
-            new DatasetFactory(),
             //Endpoint Factories
             new SparqlEndpointFactory(),
             //Processor Factories
@@ -392,7 +241,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Find initial imports
-            INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
+            INode imports = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyImports));
             Queue<INode> importQueue = new Queue<INode>();
             foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
             {
@@ -463,7 +312,7 @@ namespace VDS.RDF.Configuration
         public static void AutoConfigureObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode objLoader = g.CreateUriNode(UriFactory.Create(ClassObjectFactory));
+            INode objLoader = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassObjectFactory));
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
             {
@@ -496,7 +345,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void AutoConfigureStaticOptions(IGraph g)
         {
-            IUriNode dnrConfigure = g.CreateUriNode(UriFactory.Create(PropertyConfigure));
+            IUriNode dnrConfigure = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyConfigure));
 
             foreach (Triple t in g.GetTriplesWithPredicate(dnrConfigure))
             {
@@ -582,7 +431,7 @@ namespace VDS.RDF.Configuration
         public static void AutoConfigureReadersAndWriters(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
+            INode desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassRdfParser));
             INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
             INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
             Object temp;
@@ -609,7 +458,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load Dataset parsers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetParser));
+            desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassDatasetParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -630,7 +479,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load SPARQL Result parsers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassSparqlResultsParser));
+            desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassSparqlResultsParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -651,7 +500,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load RDF Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfWriter));
+            desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassRdfWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -672,7 +521,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load Dataset Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
+            desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -693,7 +542,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load SPARQL Result Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
+            desiredType = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -721,8 +570,8 @@ namespace VDS.RDF.Configuration
         public static void AutoConfigureSparqlOperators(IGraph g)
         {
             INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
-                  operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator)),
-                  enabled = g.CreateUriNode(UriFactory.Create(PropertyEnabled));
+                  operatorClass = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.ClassSparqlOperator)),
+                  enabled = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyEnabled));
 
             foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
             {
@@ -1211,15 +1060,15 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out String user, out String pwd)
         {
-            INode propUser = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser)),
-                  propPwd = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+            INode propUser = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyUser)),
+                  propPwd = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyPassword));
 
             user = ConfigurationLoader.GetConfigurationString(g, objNode, propUser);
             pwd = ConfigurationLoader.GetConfigurationString(g, objNode, propPwd);
             if ((user == null || pwd == null) && allowCredentials)
             {
                 //Have they been specified as credentials instead?
-                INode propCredentials = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCredentials));
+                INode propCredentials = g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyCredentials));
                 INode credObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
                 {
@@ -1340,7 +1189,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static Object LoadObject(IGraph g, INode objNode)
         {
-            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
+            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(Configuration.ConfigurationVocabulary.PropertyType)));
             if (typeName == null)
             {
                 typeName = GetDefaultType(g, objNode);
@@ -1378,7 +1227,7 @@ namespace VDS.RDF.Configuration
             if (declaredType.NodeType == NodeType.Uri)
             {
                 String typeUri = declaredType.ToString();
-                if (typeUri.StartsWith(ConfigurationNamespace))
+                if (typeUri.StartsWith(Configuration.ConfigurationVocabulary.ConfigurationNamespace))
                 {
                     return ConfigurationLoader.GetDefaultType(typeUri);
                 }
@@ -1402,26 +1251,26 @@ namespace VDS.RDF.Configuration
         {
             switch (typeUri)
             {
-                case ClassGraph:
+                case Configuration.ConfigurationVocabulary.ClassGraph:
                     return DefaultTypeGraph;
-                case ClassGraphCollection:
+                case Configuration.ConfigurationVocabulary.ClassGraphCollection:
                     return DefaultTypeGraphCollection;
-                case ClassSparqlHttpProtocolProcessor:
+                case Configuration.ConfigurationVocabulary.ClassSparqlHttpProtocolProcessor:
                     return DefaultTypeSparqlHttpProtocolProcessor;
-                case ClassSparqlQueryProcessor:
+                case Configuration.ConfigurationVocabulary.ClassSparqlQueryProcessor:
                     return DefaultTypeSparqlQueryProcessor;
-                case ClassSparqlUpdateProcessor:
+                case Configuration.ConfigurationVocabulary.ClassSparqlUpdateProcessor:
                     return DefaultTypeSparqlUpdateProcessor;
-                case ClassTripleCollection:
+                case Configuration.ConfigurationVocabulary.ClassTripleCollection:
                     return DefaultTypeTripleCollection;
-                case ClassTripleStore:
+                case Configuration.ConfigurationVocabulary.ClassTripleStore:
                     return DefaultTypeTripleStore;
-                case ClassUser:
+                case Configuration.ConfigurationVocabulary.ClassUser:
                     return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
-                case ClassUserGroup:
+                case Configuration.ConfigurationVocabulary.ClassUserGroup:
                     return DefaultTypeUserGroup;
 #if !NO_PROXY
-                case ClassProxy:
+                case Configuration.ConfigurationVocabulary.ClassProxy:
                     return typeof(System.Net.WebProxy).AssemblyQualifiedName;
 #endif
                 default:
@@ -1472,6 +1321,7 @@ namespace VDS.RDF.Configuration
         #region Instance methods
 
         private readonly IGraph _configGraph;
+        private readonly ConfigurationVocabulary _configurationVocabulary;
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
@@ -1480,6 +1330,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationLoader(IGraph configGraph)
             : this(configGraph, true)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
         }
 
         /// <summary>
@@ -1488,6 +1339,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         public ConfigurationLoader(IGraph configGraph, bool autoConfigure)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
             if (autoConfigure)
             {
                 AutoConfigure(configGraph);
@@ -1503,6 +1355,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationLoader(string file)
             : this(file, true)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
         }
 
         /// <summary>
@@ -1511,6 +1364,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         public ConfigurationLoader(string file, bool autoConfigure)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
 #endif
@@ -1524,6 +1378,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationLoader(Uri graphUri)
             : this(graphUri, true)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
         }
 
         /// <summary>
@@ -1532,6 +1387,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         public ConfigurationLoader(Uri graphUri, bool autoConfigure)
         {
+            _configurationVocabulary = new ConfigurationVocabulary();
             _configGraph = LoadConfiguration(graphUri, autoConfigure);
         }
 #endif
@@ -1614,12 +1470,17 @@ namespace VDS.RDF.Configuration
         {
             get
             {
-                return _resolver;
+                return ConfigurationLoader._resolver;
             }
             set
             {
-                _resolver = value;
+                ConfigurationLoader._resolver = value;
             }
+        }
+
+        public ConfigurationVocabulary ConfigurationVocabulary
+        {
+            get { return _configurationVocabulary; }
         }
 
         /// <summary>

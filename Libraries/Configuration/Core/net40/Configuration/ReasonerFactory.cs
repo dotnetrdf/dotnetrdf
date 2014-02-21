@@ -58,9 +58,9 @@ namespace VDS.RDF.Configuration
             {
 #if !SILVERLIGHT
                 case PelletReasonerType:
-                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
+                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyServer)));
                     if (server == null) return false;
-                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
+                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyStore)));
                     if (kb == null) return false;
 
                     output = new PelletReasoner(UriFactory.Create(server), kb);
@@ -68,7 +68,7 @@ namespace VDS.RDF.Configuration
 #endif
 
                 case OwlReasonerWrapperType:
-                    INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
+                    INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyOwlReasoner)));
                     if (reasonerNode == null) return false;
                     Object reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
                     if (reasoner is IOwlReasoner)
@@ -100,7 +100,7 @@ namespace VDS.RDF.Configuration
                 if (output is IInferenceEngine)
                 {
                     //Now initialise with any specified Graphs
-                    IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                    IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyUsingGraph)));
                     foreach (INode rulesGraph in rulesGraphs)
                     {
                         Object temp = ConfigurationLoader.LoadObject(g, rulesGraph);

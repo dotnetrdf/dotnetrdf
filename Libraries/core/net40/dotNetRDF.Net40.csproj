@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ConfigurationObjectFactory.cs" />
     <Compile Include="Collections\IGraphCollection.cs" />
     <Compile Include="Collections\IRdfCollection.cs" />
     <Compile Include="Collections\IRdfDictionary.cs" />
@@ -89,6 +90,9 @@
     <Compile Include="Collections\TreeIndexedTripleCollection.cs" />
     <Compile Include="Collections\WrapperGraphCollection.cs" />
     <Compile Include="Collections\WrapperTripleCollection.cs" />
+    <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
+    <Compile Include="Configuration\ConfigurationVocabulary.cs" />
+    <Compile Include="Configuration\IObjectFactory.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\DateNode.cs" />
     <Compile Include="Nodes\FastNodeComparer.cs" />
@@ -173,8 +177,7 @@
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
@@ -253,4 +256,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Configuration\IConfigurationSerializable.cs" />
+  </ItemGroup>
 </Project>

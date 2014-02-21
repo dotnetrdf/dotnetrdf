@@ -62,9 +62,8 @@
   -->
   <ItemGroup>
     <Compile Include="Configuration\CollectionFactory.cs" />
-    <Compile Include="Configuration\ConfigurationInterfaces.cs" />
+    <Compile Include="Configuration\IPathResolver.cs" />
     <Compile Include="Configuration\ConfigurationLoader.cs" />
-    <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
     <Compile Include="Configuration\DataFactories.cs" />
     <Compile Include="Configuration\EndpointFactories.cs" />
@@ -82,10 +81,9 @@
     <Compile Include="Configuration\Permissions\Permission.cs" />
     <Compile Include="Configuration\Permissions\UserGroup.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Configuration\IConfigurationLoader.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

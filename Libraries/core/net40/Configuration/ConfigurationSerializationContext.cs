@@ -33,11 +33,6 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class ConfigurationSerializationContext
     {
-        /// <summary>
-        /// Configuration Graph being written to
-        /// </summary>
-        protected IGraph _g;
-
         private INode _nextSubj = null;
 
         /// <summary>
@@ -45,8 +40,8 @@ namespace VDS.RDF.Configuration
         /// </summary>
         public ConfigurationSerializationContext()
         {
-            this._g = new Graph();
-            this._g.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            this.Graph = new Graph();
+            this.Graph.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationVocabulary.ConfigurationNamespace));
         }
 
         /// <summary>
@@ -55,19 +50,13 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Base Configuration Graph</param>
         public ConfigurationSerializationContext(IGraph g)
         {
-            this._g = g;
+            this.Graph = g;
         }
 
         /// <summary>
         /// Gets the Graph to which Configuration information should be written
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return this._g;
-            }
-        }
+        public IGraph Graph { get; protected set; }
 
         /// <summary>
         /// Gets/Sets the next subject to be used
@@ -88,11 +77,11 @@ namespace VDS.RDF.Configuration
                 if (temp == null)
                 {
                     //When not set generate a new blank node
-                    temp = this._g.CreateBlankNode();
+                    temp = this.Graph.CreateBlankNode();
                 }
                 else
                 {
-                    //When retrieving a set subject null it so it isn't reused
+                    //When retrieving a set subject make sure to null it so it isn't reused
                     this._nextSubj = null;
                 }
                 return temp;
