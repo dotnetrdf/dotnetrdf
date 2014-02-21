@@ -36,11 +36,13 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
+    <Compile Include="Parsing\SPARQLJSONParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Writing\SparqlJsonWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Parsing\" />
-    <Folder Include="Writing\" />
+    <Folder Include="Writing\Contexts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

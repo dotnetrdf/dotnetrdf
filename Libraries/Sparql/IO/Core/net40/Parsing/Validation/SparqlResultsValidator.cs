@@ -33,7 +33,7 @@ namespace VDS.RDF.Parsing.Validation
     /// </summary>
     public class SparqlResultsValidator : ISyntaxValidator
     {
-        private ISparqlResultsReader _parser;
+        private readonly ISparqlResultsReader _parser;
 
         /// <summary>
         /// Creates a new SPARQL Results Format validator that uses the given parser

@@ -37,11 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parsing\Handlers\SparqlHandlerExtensions.cs" />
-    <Compile Include="Parsing\StringResultsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SparqlIOManager.cs" />
-    <Compile Include="SparqlMimeTypeDefinition.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
@@ -71,10 +67,8 @@
   <ItemGroup>
     <Compile Include="Query\BindingClasses.cs" />
     <Compile Include="Query\ExplainQueryProcessor.cs" />
-    <Compile Include="Query\FederatedSparqlRemoteEndpoint.cs" />
     <Compile Include="Query\ISparqlQueryProcessor.cs" />
     <Compile Include="Query\LeviathanQueryProcessor.cs" />
-    <Compile Include="Query\PelletQueryProcessor.cs" />
     <Compile Include="Query\QueryExtensions.cs" />
     <Compile Include="Query\QueryProcessors.cs" />
     <Compile Include="Query\SparqlEvaluationContext.cs" />
@@ -83,7 +77,6 @@
     <Compile Include="Query\SparqlParameterizedString.cs" />
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SPARQLQuery.cs" />
-    <Compile Include="Query\SPARQLRemoteEndpoint.cs" />
     <Compile Include="Query\SPARQLResult.cs" />
     <Compile Include="Query\SPARQLResultBinder.cs" />
     <Compile Include="Query\SPARQLResultSet.cs" />
@@ -338,31 +331,6 @@
     <Compile Include="Query\Filters\SparqlFilterClasses.cs" />
     <Compile Include="Query\Grouping\ISparqlGroupBy.cs" />
     <Compile Include="Query\Grouping\SparqlGroupByClasses.cs" />
-    <Compile Include="Query\Inference\IInferenceEngine.cs" />
-    <Compile Include="Query\Inference\InferenceHelper.cs" />
-    <Compile Include="Query\Inference\IOwlReasoner.cs" />
-    <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
-    <Compile Include="Query\Inference\PelletReasoner.cs" />
-    <Compile Include="Query\Inference\RDFSReasoner.cs" />
-    <Compile Include="Query\Inference\SimpleN3RulesReasoner.cs" />
-    <Compile Include="Query\Inference\SKOSReasoner.cs" />
-    <Compile Include="Query\Inference\Pellet\KnowledgeBase.cs" />
-    <Compile Include="Query\Inference\Pellet\PelletHelper.cs" />
-    <Compile Include="Query\Inference\Pellet\PelletServer.cs" />
-    <Compile Include="Query\Inference\Pellet\PelletService.cs" />
-    <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\ClassifyService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\ClusterService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\ConsistencyService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\ExplainServices.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\PredictService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\QueryService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\RealizeService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\SearchService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\SimilarityService.cs" />
-    <Compile Include="Query\Inference\Pellet\Services\UnsupportedService.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\ISparqlOperator.cs" />
     <Compile Include="Query\Operators\SparqlOperator.cs" />
@@ -437,9 +405,7 @@
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />
     <Compile Include="Update\LeviathanUpdateProcessor.cs" />
-    <Compile Include="Update\RemoteUpdateProcessor.cs" />
     <Compile Include="Update\SimpleUpdateProcessor.cs" />
-    <Compile Include="Update\SparqlRemoteUpdateEndpoint.cs" />
     <Compile Include="Update\SparqlUpdateCommand.cs" />
     <Compile Include="Update\SparqlUpdateCommandSet.cs" />
     <Compile Include="Update\SparqlUpdateEvaluationContext.cs" />
@@ -464,9 +430,6 @@
     <Compile Include="Update\Protocol\LeviathanProtocolProcessor.cs" />
     <Compile Include="Update\Protocol\ProtocolToUpdateProcessor.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Parsing\SparqlQueryParser.cs" />
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Writing\Formatting\BaseResultFormatter.cs" />
@@ -478,11 +441,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="QueryableGraph.cs" />
-    <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
-    <Compile Include="Writing\Formatting\SparqlXmlFormatter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BaseEndpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
@@ -537,46 +495,5 @@
     <Compile Include="ISparqlResultsHandler.cs" />
     <Compile Include="ISparqlResultsReader.cs" />
     <Compile Include="ISparqlResultsWriter.cs" />
-    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
-    <Compile Include="Parsing\SPARQLBooleanParser.cs" />
-    <Compile Include="Parsing\SparqlCsvParser.cs" />
-    <Compile Include="Parsing\SPARQLJSONParser.cs" />
-    <Compile Include="Parsing\SparqlRdfParser.cs" />
-    <Compile Include="Parsing\SparqlTsvParser.cs" />
-    <Compile Include="Parsing\SparqlUpdateParser.cs" />
-    <Compile Include="Parsing\SPARQLXMLParser.cs" />
-    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
-    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
-    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
-    <Compile Include="Parsing\Handlers\BaseResultsHandler.cs" />
-    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
-    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
-    <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
-    <Compile Include="Parsing\Tokens\SparqlTokens.cs" />
-    <Compile Include="Parsing\Tokens\SparqlUpdateTokens.cs" />
-    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
-    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
-    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
-    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
-    <Compile Include="Writing\SparqlCsvWriter.cs" />
-    <Compile Include="Writing\SPARQLHTMLWriter.cs" />
-    <Compile Include="Writing\SPARQLJSONWriter.cs" />
-    <Compile Include="Writing\SparqlRdfWriter.cs" />
-    <Compile Include="Writing\SparqlTsvWriter.cs" />
-    <Compile Include="Writing\SPARQLXMLWriter.cs" />
-    <Compile Include="Writing\SparqlXsltWriter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
-    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
-    <Compile Include="Parsing\Handlers\ResultWriteThroughHandler.cs" />
-    <Compile Include="Parsing\Tokens\PathToken.cs" />
-    <Compile Include="Writing\HtmlSchemaWriter.cs" />
-    <Compile Include="Writing\HtmlWriter.cs" />
-    <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
   </ItemGroup>
 </Project>
