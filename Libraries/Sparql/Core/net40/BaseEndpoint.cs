@@ -114,6 +114,9 @@ namespace VDS.RDF
         /// It is important to understand that this timeout only applies to the HTTP request portions of any operation performed and that the timeout may apply more than once if a POST operation is used since the timeout applies separately to obtaining the request stream to POST the request and obtaining the response stream.  Also the timeout does not in any way apply to subsequent work that may be carried out before the operation can return so if you need a hard timeout you should manage that yourself.
         /// </para>
         /// <para>
+        /// When set to a zero/negative value then the standard .Net timeout of 100 seconds will apply, use <see cref="int.MaxValue"/> if you want the maximum possible timeout i.e. if you expect to launch extremely long running operations.
+        /// </para>
+        /// <para>
         /// Not supported under Silverlight, Windows Phone and Portable Class Library builds
         /// </para>
         /// </remarks>

@@ -24,23 +24,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
     [TestFixture]
     public class NegationTests
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
 
-        private ISparqlDataset GetTestData()
+        private static ISparqlDataset GetTestData()
         {
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
@@ -61,7 +58,7 @@ namespace VDS.RDF.Query
             query.Namespaces = negQuery.Namespaces;
             query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -75,7 +72,7 @@ namespace VDS.RDF.Query
             query.Namespaces = negQuery.Namespaces;
             query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed ; ex:PassengerCapacity ?passengers} FILTER(!BOUND(?speed)) }";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -89,7 +86,7 @@ namespace VDS.RDF.Query
             query.Namespaces = negQuery.Namespaces;
             query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed OPTIONAL { ?s ex:PassengerCapacity ?passengers} FILTER(!BOUND(?passengers)) } FILTER(!BOUND(?speed)) }";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -98,7 +95,7 @@ namespace VDS.RDF.Query
             String query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o }";
             String negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o MINUS { ?x ?y ?z }}";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -106,7 +103,7 @@ namespace VDS.RDF.Query
         {
             String negQuery = "SELECT ?s ?p ?o WHERE { ?s ?p ?o FILTER(NOT EXISTS { ?x ?y ?z }) }";
 
-            this.TestNegation(this.GetTestData(), negQuery);
+            this.TestNegation(GetTestData(), negQuery);
         }
 
         [Test]
@@ -120,7 +117,7 @@ namespace VDS.RDF.Query
             query.Namespaces = negQuery.Namespaces;
             query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -134,7 +131,7 @@ namespace VDS.RDF.Query
             query.Namespaces = negQuery.Namespaces;
             query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(BOUND(?speed)) }";
 
-            this.TestNegation(this.GetTestData(), negQuery, query);
+            this.TestNegation(GetTestData(), negQuery, query);
         }
 
         [Test]
@@ -213,6 +210,99 @@ namespace VDS.RDF.Query
             Console.WriteLine();
 
             Assert.IsTrue(negResults.IsEmpty, "Result Set should be empty");
+        }
+
+        private const string TestData = @"<http://r> <http://r> <http://r> .";
+
+        private const string MinusQuery = @"
+SELECT *
+WHERE
+{
+    { ?s ?p ?o }
+    MINUS
+    { ?s ?p ?o }
+}
+";
+
+        private const string UnionQuery = @"
+SELECT *
+WHERE
+{
+    { ?s ?p ?o }
+    UNION
+    {
+        { ?s ?p ?o }
+        MINUS
+        { ?s ?p ?o }
+    }
+}
+";
+
+        private const string MinusNamedGraphQuery = @"
+SELECT *
+WHERE
+{
+    { GRAPH <http://g> { ?s ?p ?o } }
+    MINUS
+    { GRAPH <http://g> { ?s ?p ?o } }
+}
+";
+
+        private const string UnionNamedGraphQuery = @"
+SELECT *
+WHERE
+{
+    { GRAPH <http://g> { ?s ?p ?o } }
+    UNION
+    {
+        { GRAPH <http://g> { ?s ?p ?o } }
+        MINUS
+        { GRAPH <http://g> { ?s ?p ?o } }
+    }
+}
+";
+
+        [Test]
+        public void SparqlNegationSimpleMinus()
+        {
+            Test(MinusQuery, false, 0);
+        }
+
+        [Test]
+        public void SparqlNegationSimpleMinusAndUnion()
+        {
+            Test(UnionQuery, false, 1);
+        }
+
+        [Test]
+        public void SparqlNegationMinusWithNamedGraph()
+        {
+            Test(MinusNamedGraphQuery, true, 0);
+        }
+
+        [Test]
+        public void SparqlNegationMinusAndUnionWithNamedGraph()
+        {
+            Test(UnionNamedGraphQuery, true, 1);
+        }
+
+        private static void Test(string query, bool isNamedGraph, int expectedCount)
+        {
+            IGraph graph = new Graph();
+            if (isNamedGraph)
+            {
+                graph.BaseUri = new Uri("http://g");
+            }
+            new TurtleParser().Load(graph, new StringReader(TestData));
+
+            IInMemoryQueryableStore store = new TripleStore();
+            store.Add(graph);
+            IQueryableStorage storage = new InMemoryManager(store);
+
+            using (SparqlResultSet resultSet = (SparqlResultSet)storage.Query(query))
+            {
+                Assert.AreEqual(expectedCount, resultSet.Count);
+            }
         }
     }
 }

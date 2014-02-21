@@ -36,7 +36,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.3.0")]
 
 //TODO: Remove once finished
-[assembly: InternalsVisibleTo("spin-tests")]
+//[assembly: InternalsVisibleTo("spin-tests")]
 
 
 

@@ -352,4 +352,7 @@
       <Link>UriFactory.cs</Link>
     </Compile>
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

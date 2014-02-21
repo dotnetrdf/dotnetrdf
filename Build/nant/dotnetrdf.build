@@ -30,11 +30,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="103" />
+  <property name="dotnetrdf.version" value="104" />
   <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="103" />
+  <property name="dotnetrdf.toolsversion" value="104" />
   <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.3" />
+  <property name="dotnetrdf.nuspecversion" value="1.0.4" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -596,6 +596,12 @@
                    compile-util-server-cmd,compile-util-server-gui,
                    compile-util-webdeploy,
                    compile-util-storemanager">
+    
+  </target>
+
+  <target name="compile-utils-installer" description="Compiles the dotNetRDF Toolkit and the Toolkit Installer" unless="${dotnetrdf.nocompile}"
+          depends="compile-utils,
+                   compile-util-installer">
 
   </target>
           
@@ -925,11 +931,13 @@
     </exec>
   </target>
 
-  <target name="compile-utils-installer" description="Compile the Toolkit Installer" depends="compile-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-installer" description="Compiles the dotNetRDF Toolkit Installer" unless="${dotnetrdf.nocompile}" depends="compile-utils">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/ToolkitInstaller/ToolkitInstaller.vdproj" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Build/ToolkitInstaller/ToolkitInstaller.wixproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>

@@ -2,6 +2,23 @@
 Change Log
 ==========
 
+1.0.4
+-----
+
+Changed
+- Bug Fixes
+ - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
+ - Fix a bug with overly greedly tokenization when parsing prefix declarations in Turtle, N3 and SPARQL
+ - Fix a bug with language specifiers not being consistently normalized to lower case internally
+   leading to unexpected behaviour trying to query for triples by language tag (CORE-401)
+- Storage
+ - Add Timeout property to all HTTP based storage providers which is used for all HTTP requests (CORE-400)
+ - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
+ - Fix handling of inserting/deleting blank nodes with more recent Virtuoso versions (VIRT-399)
+
+ Removed
+ - Removed obsolete unusable DydraConnector
+
 1.0.3
 -----
 

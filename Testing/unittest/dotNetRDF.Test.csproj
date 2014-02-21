@@ -149,6 +149,7 @@
     <Compile Include="Query\Aggregates\GroupConcatTests.cs" />
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
     <Compile Include="Query\Algebra\JoinTests.cs" />
+    <Compile Include="Query\Algebra\PatternToAlgebraTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BindTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
@@ -2850,6 +2851,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\pp.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\cogapp.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">

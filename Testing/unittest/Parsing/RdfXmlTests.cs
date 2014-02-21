@@ -26,9 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
@@ -268,5 +266,34 @@ namespace VDS.RDF.Parsing
         }
 
 #endif
+
+        [Test]
+        public void ParsingRdfXmlStackOverflow1()
+        {
+            IGraph g = new Graph();
+            RdfXmlParser parser = new RdfXmlParser();
+            parser.Load(g, @"resources\cogapp.rdf");
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(9358, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingRdfXmlStackOverflow2()
+        {
+            TestTools.RunAtDepth(100, this.ParsingRdfXmlStackOverflow1);
+        }
+
+        [Test]
+        public void ParsingRdfXmlStackOverflow3()
+        {
+            TestTools.RunAtDepth(1000, this.ParsingRdfXmlStackOverflow1);
+        }
+
+        [Test]
+        public void ParsingRdfXmlStackOverflow4()
+        {
+            TestTools.RunAtDepth(5000, this.ParsingRdfXmlStackOverflow1);
+        }
 	}
 }

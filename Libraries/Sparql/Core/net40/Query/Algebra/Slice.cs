@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
 
                 //Firstly evaluate the inner algebra
                 context.InputMultiset = context.Evaluate(this._pattern);
-
+                context.InputMultiset.VirtualCount = context.InputMultiset.Count;
                 //Then apply the offset
                 if (offset > 0)
                 {

@@ -600,7 +600,7 @@ namespace VDS.RDF.Storage.Management
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             //Add the special Stardog Headers
 #if !SILVERLIGHT
@@ -671,7 +671,7 @@ namespace VDS.RDF.Storage.Management
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
 
         /// <summary>

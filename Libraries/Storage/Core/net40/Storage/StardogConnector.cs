@@ -121,7 +121,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
+        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public BaseStardogConnector(String baseUri, String kbID)
+        protected BaseStardogConnector(String baseUri, String kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
@@ -143,7 +143,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public BaseStardogConnector(String baseUri, String kbID, String username, String password)
+        protected BaseStardogConnector(String baseUri, String kbID, String username, String password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
@@ -156,8 +156,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
-            : base()
+        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
@@ -186,7 +185,7 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
@@ -200,7 +199,7 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, reasoning, username, password)
         {
             this.Proxy = proxy;
@@ -212,7 +211,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogConnector(String baseUri, String kbID, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, WebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
@@ -225,7 +224,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="proxy">Proxy Server</param>
-        public BaseStardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+        protected BaseStardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
@@ -543,16 +542,14 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans == null)
+                if (this._activeTrans != null) return;
+                try
                 {
-                    try
-                    {
-                        this.CommitTransaction(tID);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
-                    }
+                    this.CommitTransaction(tID);
+                }
+                catch (Exception ex)
+                {
+                    throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
                 }
             }
             catch (WebException webEx)
@@ -591,16 +588,14 @@ namespace VDS.RDF.Storage
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             //If there are no adds or deletes, just return and avoid creating empty transaction
-            bool anyData = false;
-            if (removals != null && removals.Any()) anyData = true;
-            if (additions != null && additions.Any()) anyData = true;
+            bool anyData = (removals != null && removals.Any()) || (additions != null && additions.Any());
             if (!anyData) return;
 
             String tID = null;
             try
             {
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
+                tID = this._activeTrans ?? this.BeginTransaction();
 
                 //First do the Removals
                 if (removals != null)
@@ -649,16 +644,14 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans == null)
+                if (this._activeTrans != null) return;
+                try
                 {
-                    try
-                    {
-                        this.CommitTransaction(tID);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
-                    }
+                    this.CommitTransaction(tID);
+                }
+                catch (Exception ex)
+                {
+                    throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
                 }
             }
             catch (WebException webEx)
@@ -722,7 +715,7 @@ namespace VDS.RDF.Storage
             try
             {
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
+                tID = this._activeTrans ?? this.BeginTransaction();
 
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
@@ -745,16 +738,14 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans == null)
+                if (this._activeTrans != null) return;
+                try
                 {
-                    try
-                    {
-                        this.CommitTransaction(tID);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
-                    }
+                    this.CommitTransaction(tID);
+                }
+                catch (Exception ex)
+                {
+                    throw new RdfStorageException("Stardog failed to commit a Transaction", ex);
                 }
             }
             catch (WebException webEx)
@@ -1667,7 +1658,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request = base.GetProxiedRequest(request);
+            request = ApplyRequestOptions(request);
 
             //Add the special Stardog Headers
             this.AddStardogHeaders(request);
@@ -2154,7 +2145,7 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 
@@ -2481,51 +2472,51 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
 
                 request.BeginGetRequestStream(r =>
-                {
-                    try
                     {
-                        Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                        try
                         {
-                            writer.Write(sparqlUpdates);
-                            writer.Close();
-                        }
-
-                        Tools.HttpDebugRequest(request);
-
-                        //Get the Response and process based on the Content Type
-                        request.BeginGetResponse(r2 =>
-                        {
-                            try
+                            Stream stream = request.EndGetRequestStream(r);
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
-                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2))
+                                writer.Write(sparqlUpdates);
+                                writer.Close();
+                            }
+
+                            Tools.HttpDebugRequest(request);
+
+                            //Get the Response and process based on the Content Type
+                            request.BeginGetResponse(r2 =>
                                 {
-                                    Tools.HttpDebugResponse(response);
-                                    // If we get here the update completed OK
-                                    response.Close();
-                                }
+                                    try
+                                    {
+                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2))
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                            // If we get here the update completed OK
+                                            response.Close();
+                                        }
 
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state);
-                            }
-                            catch (WebException webEx)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
-                            }
-                            catch (Exception ex)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
-                            }
-                        }, state);
-                    }
-                    catch (WebException webEx)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
-                    }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
-                    }
-                }, state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state);
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
+                                    }
+                                }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleHttpError(webEx, "executing a SPARQL update against")), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, StorageHelper.HandleError(ex, "executing a SPARQL update against")), state);
+                        }
+                    }, state);
             }
             catch (WebException webEx)
             {
