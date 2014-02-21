@@ -56,24 +56,7 @@ namespace VDS.RDF.Nodes
         /// <param name="literal">String value of the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
         protected internal BaseLiteralNode(String literal, bool normalize)
-            : base(NodeType.Literal)
-        {
-            if (normalize)
-            {
-#if !NO_NORM
-            this.Value = literal.Normalize();
-#else
-            this.Value = literal;
-#endif
-            } 
-            else 
-            {
-                this.Value = literal;
-            }
-
-            //Compute Hash Code
-            this._hashcode = Tools.CreateHashCode(this);
-        }
+            : this(literal, null, null, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -92,26 +75,7 @@ namespace VDS.RDF.Nodes
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
         protected internal BaseLiteralNode(String literal, String langspec, bool normalize)
-            : base(NodeType.Literal)
-        {
-            if (normalize)
-            {
-#if !NO_NORM
-                this.Value = literal.Normalize();
-#else
-            this.Value = literal;
-#endif
-            }
-            else
-            {
-                this.Value = literal;
-            }
-            this.Language = String.IsNullOrEmpty(langspec) ? null : langspec.ToLowerInvariant();
-            this.DataType = Options.Rdf11 ? UriFactory.Create(RdfSpecsHelper.RdfLangString) : null;
-
-            //Compute Hash Code
-            this._hashcode = Tools.CreateHashCode(this);
-        }
+            : this(literal, langspec, null, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -120,31 +84,46 @@ namespace VDS.RDF.Nodes
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         protected internal BaseLiteralNode(String literal, Uri datatype)
-            : this(literal, datatype, Options.LiteralValueNormalization) { }
+            : this(literal, null, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
+        /// <param name="langspec">Language specifier for the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal BaseLiteralNode(String literal, Uri datatype, bool normalize)
+        protected internal BaseLiteralNode(String literal, String langspec, Uri datatype, bool normalize)
             : base(NodeType.Literal)
         {
+            // Normalize value if appropriate
             if (normalize)
             {
 #if !NO_NORM
-                this.Value = literal.Normalize();
+                this.Value = literal != null ? literal.Normalize() : String.Empty;
 #else
-            this.Value = literal;
+                this.Value = literal != null ? literal : String.Empty;
 #endif
             }
             else
             {
-                this.Value = literal;
+                this.Value = literal ?? String.Empty;
             }
-            this.DataType = datatype;
+
+            // Remember to lower case language specifiers
+            this.Language = String.IsNullOrEmpty(langspec) ? null : langspec.ToLowerInvariant();
+
+            if (Options.Rdf11)
+            {
+                // If RDF 1.1 use rdf:langString/xsd:string or explicit type whichever is most appropriate based on the other arguments
+                this.DataType = this.HasLanguage ? UriFactory.Create(RdfSpecsHelper.RdfLangString) : (datatype ?? UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            }
+            else
+            {
+                // Otherwise just use datatype given
+                this.DataType = datatype;
+            }
 
             //Compute Hash Code
             this._hashcode = Tools.CreateHashCode(this);
@@ -170,12 +149,14 @@ namespace VDS.RDF.Nodes
             switch (mode)
             {
                 case 0:
-                    //Nothing more to do - plain literal
+                    // If RDF 1.1 then implictly typed as xsd:string
+                    this.DataType = Options.Rdf11 ? UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString) : null;
                     break;
                 case 1:
-                    //Get the Language
+                    // Get the Language, if RDF 1.1 then implicitly typed as rdf:langString
                     this.Language = info.GetString("lang");
                     if (this.Language.Equals(String.Empty)) this.Language = null;
+                    this.DataType = Options.Rdf11 ? UriFactory.Create(RdfSpecsHelper.RdfLangString) : null;
                     break;
                 case 2:
                     //Get the Datatype
@@ -242,19 +223,15 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (obj == null) return false;
-
+            if (ReferenceEquals(obj, null)) return false;
             if (ReferenceEquals(this, obj)) return true;
 
             if (obj is INode)
             {
                 return this.Equals((INode)obj);
             }
-            else
-            {
-                //Can only be equal to other Nodes
-                return false;
-            }
+            //Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -273,19 +250,10 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
-
+            if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            if (other.NodeType == NodeType.Literal)
-            {
-                return this.Equals((INode)other);
-            }
-            else
-            {
-                //Can only be equal to a LiteralNode
-                return false;
-            }
+            return other.NodeType == NodeType.Literal && this.Equals((INode)other);
         }
 
         /// <summary>
@@ -335,7 +303,7 @@ namespace VDS.RDF.Nodes
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            if (other == null)
+            if (ReferenceEquals(other, null))
             {
                 //Everything is greater than a null
                 //Return a 1 to indicate this
@@ -511,7 +479,7 @@ namespace VDS.RDF.Nodes
         /// <param name="datatype">Uri for the Literals Data Type</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
         public LiteralNode(String literal, Uri datatype, bool normalize)
-            : base(literal, datatype, normalize) { }
+            : base(literal, null, datatype, normalize) { }
 
 #if !SILVERLIGHT
         /// <summary>
