@@ -180,15 +180,9 @@ namespace VDS.RDF.Writing.Contexts
                     {
                         return (IUriFormatter) this._formatter;
                     }
-                    else
-                    {
-                        return null;
-                    }
+                    return null;
                 }
-                else
-                {
-                    return this._uriFormatter;
-                }
+                return this._uriFormatter;
             }
             set { this._uriFormatter = value; }
         }

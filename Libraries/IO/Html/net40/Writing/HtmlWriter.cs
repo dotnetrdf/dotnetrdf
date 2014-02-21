@@ -31,7 +31,12 @@ using System.IO;
 #if !NO_WEB
 using System.Web.UI;
 #endif
+using VDS.RDF.Collections;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing
@@ -67,19 +72,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-#if !NO_FILE
-        /// <summary>
-        /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
-        public void Save(IGraph g, String filename)
-        {
-            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
-            this.Save(g, output);
-        }
-#endif
-
         /// <summary>
         /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa
         /// </summary>
@@ -89,8 +81,8 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                g.NamespaceMap.Import(this._defaultNamespaces);
-                HtmlWriterContext context = new HtmlWriterContext(g, output);
+                g.Namespaces.Import(this._defaultNamespaces);
+                HtmlGraphWriterContext context = new HtmlGraphWriterContext(g, output);
                 this.GenerateOutput(context);
                 output.Close();
             }
@@ -108,11 +100,21 @@ namespace VDS.RDF.Writing
             }
         }
 
+        public void Save(IGraphStore graphStore, TextWriter output)
+        {
+            if (graphStore == null) throw new ArgumentNullException("graphStore", "Cannot write RDF from a null graph store");
+            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
+
+            // Grab the default graph (if any) and write it out
+            IGraph g = graphStore.HasGraph(Quad.DefaultGraphNode) ? graphStore[Quad.DefaultGraphNode] : new Graph();
+            this.Save(g, output);
+        }
+
         /// <summary>
         /// Internal method which generates the HTML Output for the Graph
         /// </summary>
         /// <param name="context">Writer Context</param>
-        private void GenerateOutput(HtmlWriterContext context)
+        private void GenerateOutput(HtmlGraphWriterContext context)
         {
             //Page Header
             context.HtmlWriter.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">");
@@ -121,10 +123,11 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Head);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Title);
             context.HtmlWriter.WriteEncodedText("RDF Graph");
-            if (context.Graph.BaseUri != null)
-            {
-                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
-            }
+            // TODO Support a mechanism to pass Base URI to writers
+            //if (context.BaseUri != null)
+            //{
+            //    context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
+            //}
             context.HtmlWriter.RenderEndTag();
             if (!this.Stylesheet.Equals(String.Empty))
             {
@@ -146,10 +149,11 @@ namespace VDS.RDF.Writing
             //Title
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("RDF Graph");
-            if (context.Graph.BaseUri != null)
-            {
-                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
-            }
+            // TODO Support a mechanism to pass Base URI to writers
+            //if (context.Graph.BaseUri != null)
+            //{
+            //    context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
+            //}
             context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
             context.HtmlWriter.WriteLine();
@@ -181,7 +185,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
             TripleCollection triplesDone = new TripleCollection();
-            foreach (INode subj in context.Graph.Triples.SubjectNodes)
+            foreach (INode subj in context.Graph.Triples.Select(t => t.Subject))
             {
                 IEnumerable<Triple> ts = context.Graph.GetTriplesWithSubject(subj);
 
@@ -200,7 +204,7 @@ namespace VDS.RDF.Writing
                 if (subj.NodeType == NodeType.Uri)
                 {
                     String qname;
-                    if (context.QNameMapper.ReduceToQName(subj.ToString(), out qname))
+                    if (context.QNameMapper.ReduceToPrefixedName(subj.ToString(), out qname))
                     {
                         if (!qname.EndsWith(":"))
                         {
@@ -304,7 +308,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="context">Writer Context</param>
         /// <param name="n">Node</param>
-        private void GenerateNodeOutput(HtmlWriterContext context, INode n)
+        private void GenerateNodeOutput(HtmlGraphWriterContext context, INode n)
         {
             this.GenerateNodeOutput(context, n, null);
         }
@@ -315,7 +319,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="n">Node</param>
         /// <param name="t">Triple being written</param>
-        private void GenerateNodeOutput(HtmlWriterContext context, INode n, Triple t)
+        private void GenerateNodeOutput(HtmlGraphWriterContext context, INode n, Triple t)
         {
             //Embed RDFa on the Node Output
             bool rdfASerializable = false;
@@ -345,7 +349,7 @@ namespace VDS.RDF.Writing
                         //Get the CURIE for the Predicate
                         String curie;
                         String tempNamespace;
-                        if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
+                        if (context.QNameMapper.ReduceToPrefixedName(t.Predicate.ToString(), out curie, out tempNamespace))
                         {
                             //Extract the Namespace and make sure it's registered on this Attribute
                             String ns = curie.Substring(0, curie.IndexOf(':'));
@@ -402,14 +406,36 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
+                    if (n.HasLanguage || !n.HasDataType)
+                    {
+                        if (rdfASerializable)
+                        {
+                            if (n.HasLanguage)
+                            {
+                                //Need to add the language as an xml:lang attribute
+                                context.HtmlWriter.AddAttribute("xml:lang", n.Language);
+                            }
+                        }
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
+                        context.HtmlWriter.WriteEncodedText(n.Value);
+                        context.HtmlWriter.RenderEndTag();
+                        if (n.HasLanguage)
+                        {
+                            context.HtmlWriter.WriteEncodedText("@");
+                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
+                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
+                            context.HtmlWriter.WriteEncodedText(n.Language);
+                            context.HtmlWriter.RenderEndTag();
+                        }
+                    }
+                    else
                     {
                         if (rdfASerializable)
                         {
                             //Need to embed the datatype in the @datatype attribute
                             String dtcurie, dtnamespace;
-                            if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
+                            if (context.QNameMapper.ReduceToPrefixedName(n.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
                                 //Extract the Namespace and make sure it's registered on this Attribute
                                 String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
@@ -420,53 +446,30 @@ namespace VDS.RDF.Writing
 
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                        if (lit.DataType.AbsoluteUri.Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
+                        if (n.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
-                            context.HtmlWriter.Write(lit.Value);
+                            context.HtmlWriter.Write(n.Value);
                         }
                         else
                         {
-                            context.HtmlWriter.WriteEncodedText(lit.Value);
+                            context.HtmlWriter.WriteEncodedText(n.Value);
                         }
                         context.HtmlWriter.RenderEndTag();
 
                         //Output the Datatype
                         context.HtmlWriter.WriteEncodedText("^^");
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.AbsoluteUri);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, n.DataType.AbsoluteUri);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                        if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out qname))
+                        if (context.QNameMapper.ReduceToPrefixedName(n.DataType.AbsoluteUri, out qname))
                         {
                             context.HtmlWriter.WriteEncodedText(qname);
                         }
                         else
                         {
-                            context.HtmlWriter.WriteEncodedText(lit.DataType.AbsoluteUri);
+                            context.HtmlWriter.WriteEncodedText(n.DataType.AbsoluteUri);
                         }
                         context.HtmlWriter.RenderEndTag();
-                    }
-                    else
-                    {
-                        if (rdfASerializable)
-                        {
-                            if (!lit.Language.Equals(String.Empty))
-                            {
-                                //Need to add the language as an xml:lang attribute
-                                context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
-                            }
-                        }
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
-                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                        context.HtmlWriter.WriteEncodedText(lit.Value);
-                        context.HtmlWriter.RenderEndTag();
-                        if (!lit.Language.Equals(String.Empty))
-                        {
-                            context.HtmlWriter.WriteEncodedText("@");
-                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
-                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                            context.HtmlWriter.WriteEncodedText(lit.Language);
-                            context.HtmlWriter.RenderEndTag();
-                        }
                     }
                     break;
 
@@ -485,7 +488,7 @@ namespace VDS.RDF.Writing
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.UriPrefix + n.ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                    if (context.QNameMapper.ReduceToQName(n.ToString(), out qname))
+                    if (context.QNameMapper.ReduceToPrefixedName(n.ToString(), out qname))
                     {
                         context.HtmlWriter.WriteEncodedText(qname);
                     }

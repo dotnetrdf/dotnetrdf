@@ -29,6 +29,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
+using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Parsing.Contexts
 {
