@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Spin
         public readonly static IUriNode PropertyIsDefinedBy = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyIsDefinedBy));
         public readonly static IUriNode PropertyLabel = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyLabel));
         public readonly static IUriNode ClassLiteral = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Literal"));
-        public readonly static IUriNode ClassProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsProperty));
+        public readonly static IUriNode ClassProperty = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty));
         public readonly static IUriNode PropertyRange = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyRange));
         public readonly static IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "Resource"));
         public readonly static IUriNode PropertySeeAlso = RDFUtil.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySeeAlso));

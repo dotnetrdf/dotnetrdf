@@ -894,36 +894,6 @@ namespace VDS.RDF
             //Create a Triple in Second Graph
             h.Assert(h.CreateBlankNode(), h.CreateUriNode("rdf:type"), h.CreateUriNode("ex:Triple"));
             Assert.AreEqual(1, h.Triples.Count, "Should have 1 Triple in the Graph");
-
-            //Create a Triple with Nodes from different Graphs (should fail)
-            try
-            {
-                g.Assert(g.CreateBlankNode(), h.CreateBlankNode("rdf:type"), g.CreateBlankNode("ex:Triple"));
-                Assert.Fail("Should have thrown an error when Triple was instantiated as Nodes are from different Graphs");
-            }
-            catch (RdfException)
-            {
-                Console.WriteLine("Error thrown as expected - Triples must be instantiated with Nodes from the same Graph");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-            //Create a Triple with Nodes from different Graphs (should fail)
-            try
-            {
-                h.Assert(g.CreateBlankNode(), h.CreateBlankNode("rdf:type"), g.CreateBlankNode("ex:Triple"));
-                Assert.Fail("Should have thrown an error when Triple was instantiated as Nodes are from different Graphs");
-            }
-            catch (RdfException)
-            {
-                Console.WriteLine("Error thrown as expected - Triples must be instantiated with Nodes from the same Graph");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
 #if PORTABLE
