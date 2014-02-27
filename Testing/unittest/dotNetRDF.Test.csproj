@@ -376,6 +376,219 @@
     <Content Include="resources\n3\trailing-semicolon.n3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\ntriples11\comment_following_triple.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\langtagged_string.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\lantag_with_subtag.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_all_controls.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_all_punctuation.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_ascii_boundaries.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_false.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_true.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_2_dquotes.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_2_squotes.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_BACKSPACE.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_CARRIAGE_RETURN.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_CHARACTER_TABULATION.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_dquote.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_FORM_FEED.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_LINE_FEED.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_numeric_escape4.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_numeric_escape8.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_REVERSE_SOLIDUS.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_REVERSE_SOLIDUS2.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_squote.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\literal_with_UTF8_boundaries.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\manifest.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\minimal_whitespace.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-base-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-esc-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-esc-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-esc-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-lang-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-num-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-num-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-num-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-prefix-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-04.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-05.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-06.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-string-07.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-struct-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-struct-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-04.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-05.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-06.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-07.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-08.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bad-uri-09.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bnode-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bnode-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-bnode-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-datatypes-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-datatypes-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-file-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-file-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-file-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-str-esc-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-str-esc-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-str-esc-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-string-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-string-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-string-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-subm-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-uri-01.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-uri-02.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-uri-03.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples11\nt-syntax-uri-04.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\ntriples\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
