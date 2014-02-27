@@ -72,6 +72,7 @@ namespace VDS.RDF.Parsing.Suites
             : base(new NTriplesParser(), new NTriplesParser(), @"ntriples11\")
         {
             this.CheckResults = false;
+            this.Parser.Warning += TestTools.WarningPrinter;
         }
 
         [Test]

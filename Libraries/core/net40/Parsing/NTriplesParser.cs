@@ -157,13 +157,25 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
-            //Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
+            // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
+            // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
+            StreamReader input;
+            switch (this.Syntax)
+            {
+                case NTriplesSyntax.Original:
+                    // Original NTriples uses ASCII encoding
 #if !SILVERLIGHT
-            StreamReader input = new StreamReader(filename, Encoding.ASCII);
+                    input = new StreamReader(filename, Encoding.ASCII);
 #else
-            StreamReader input = new StreamReader(filename);
+            input = new StreamReader(filename);
             this.RaiseWarning("NTriples files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
 #endif
+                    break;
+                default:
+                    // RDF 1.1 NTriples uses UTF-8 encoding
+                    input = new StreamReader(filename, Encoding.UTF8);
+                    break;
+            }
             this.Load(g, input);
         }
 #endif
@@ -178,13 +190,25 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
-#if !SILVERLIGHT
-            //Issue a Warning if the Encoding of the Stream is not ASCII
-            if (!input.CurrentEncoding.Equals(Encoding.ASCII))
+            // Check for incorrect stream encoding and issue warning if appropriate
+            switch (this.Syntax)
             {
-                this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-            }
+                case NTriplesSyntax.Original:
+#if !SILVERLIGHT
+                    //Issue a Warning if the Encoding of the Stream is not ASCII
+                    if (!input.CurrentEncoding.Equals(Encoding.ASCII))
+                    {
+                        this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                    }
 #endif
+                    break;
+                default:
+                    if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+                    {
+                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                    }
+                    break;
+            }
 
             this.Load(handler, (TextReader) input);
         }
