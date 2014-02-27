@@ -134,11 +134,9 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-#if !SILVERLIGHT
-            this.Load(store, new StreamReader(filename, Encoding.ASCII));
-#else
-            this.Load(store, new StreamReader(filename));
-#endif
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+
+            this.Load(new StoreHandler(store), filename);
         }
 #endif
 
@@ -163,11 +161,28 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+
+            // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
+            // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
+            StreamReader input;
+            switch (this.Syntax)
+            {
+                case NQuadsSyntax.Original:
+                    // Original NQuads uses ASCII encoding
 #if !SILVERLIGHT
-            this.Load(handler, new StreamReader(filename, Encoding.ASCII));
+                    input = new StreamReader(filename, Encoding.ASCII);
 #else
-            this.Load(handler, new StreamReader(filename));
+            input = new StreamReader(filename);
+            this.RaiseWarning("NQuads files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
 #endif
+                    break;
+                default:
+                    // RDF 1.1 NQuads uses UTF-8 encoding
+                    input = new StreamReader(filename, Encoding.UTF8);
+                    break;
+            }
+
+            this.Load(handler, input);
         }
 #endif
 
@@ -180,6 +195,29 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+
+            // Check for incorrect stream encoding and issue warning if appropriate
+            if (input is StreamReader)
+            {
+                switch (this.Syntax)
+                {
+                    case NQuadsSyntax.Original:
+#if !SILVERLIGHT
+                        //Issue a Warning if the Encoding of the Stream is not ASCII
+                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
+                        {
+                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        }
+#endif
+                        break;
+                    default:
+                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.UTF8))
+                        {
+                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        }
+                        break;
+                }
+            }
 
             try
             {
