@@ -131,6 +131,7 @@
     <Compile Include="Parsing\Suites\BaseRdfParserSuite.cs" />
     <Compile Include="Parsing\Suites\BaseResultsParserSuite.cs" />
     <Compile Include="Parsing\Suites\N3.cs" />
+    <Compile Include="Parsing\Suites\NQuads.cs" />
     <Compile Include="Parsing\Suites\NTriples.cs" />
     <Compile Include="Parsing\Suites\RdfA.cs" />
     <Compile Include="Parsing\Suites\RdfXml.cs" />
@@ -376,94 +377,270 @@
     <Content Include="resources\n3\trailing-semicolon.n3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\nquads11\comment_following_triple.nq" />
-    <Content Include="resources\nquads11\langtagged_string.nq" />
-    <Content Include="resources\nquads11\lantag_with_subtag.nq" />
-    <Content Include="resources\nquads11\literal.nq" />
-    <Content Include="resources\nquads11\literal_all_controls.nq" />
-    <Content Include="resources\nquads11\literal_all_punctuation.nq" />
-    <Content Include="resources\nquads11\literal_ascii_boundaries.nq" />
-    <Content Include="resources\nquads11\literal_false.nq" />
-    <Content Include="resources\nquads11\literal_true.nq" />
-    <Content Include="resources\nquads11\literal_with_2_dquotes.nq" />
-    <Content Include="resources\nquads11\literal_with_2_squotes.nq" />
-    <Content Include="resources\nquads11\literal_with_BACKSPACE.nq" />
-    <Content Include="resources\nquads11\literal_with_CARRIAGE_RETURN.nq" />
-    <Content Include="resources\nquads11\literal_with_CHARACTER_TABULATION.nq" />
-    <Content Include="resources\nquads11\literal_with_dquote.nq" />
-    <Content Include="resources\nquads11\literal_with_FORM_FEED.nq" />
-    <Content Include="resources\nquads11\literal_with_LINE_FEED.nq" />
-    <Content Include="resources\nquads11\literal_with_numeric_escape4.nq" />
-    <Content Include="resources\nquads11\literal_with_numeric_escape8.nq" />
-    <Content Include="resources\nquads11\literal_with_REVERSE_SOLIDUS.nq" />
-    <Content Include="resources\nquads11\literal_with_REVERSE_SOLIDUS2.nq" />
-    <Content Include="resources\nquads11\literal_with_squote.nq" />
-    <Content Include="resources\nquads11\literal_with_UTF8_boundaries.nq" />
-    <Content Include="resources\nquads11\manifest.ttl" />
-    <Content Include="resources\nquads11\minimal_whitespace.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bad-literal-01.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bad-literal-02.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bad-literal-03.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bad-quint-01.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bad-uri-01.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-01.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-02.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-03.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-04.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-05.nq" />
-    <Content Include="resources\nquads11\nq-syntax-bnode-06.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-01.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-02.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-03.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-04.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-05.nq" />
-    <Content Include="resources\nquads11\nq-syntax-uri-06.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-base-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-esc-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-esc-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-esc-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-lang-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-num-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-num-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-num-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-prefix-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-04.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-05.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-06.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-string-07.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-struct-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-struct-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-04.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-05.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-06.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-07.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-08.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bad-uri-09.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bnode-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bnode-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-bnode-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-datatypes-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-datatypes-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-file-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-file-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-file-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-str-esc-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-str-esc-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-str-esc-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-string-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-string-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-string-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-subm-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-uri-01.nq" />
-    <Content Include="resources\nquads11\nt-syntax-uri-02.nq" />
-    <Content Include="resources\nquads11\nt-syntax-uri-03.nq" />
-    <Content Include="resources\nquads11\nt-syntax-uri-04.nq" />
+    <Content Include="resources\nquads11\comment_following_triple.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\langtagged_string.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\lantag_with_subtag.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_all_controls.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_all_punctuation.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_ascii_boundaries.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_false.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_true.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_2_dquotes.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_2_squotes.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_BACKSPACE.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_CARRIAGE_RETURN.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_CHARACTER_TABULATION.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_dquote.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_FORM_FEED.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_LINE_FEED.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_numeric_escape4.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_numeric_escape8.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_REVERSE_SOLIDUS.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_REVERSE_SOLIDUS2.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_squote.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\literal_with_UTF8_boundaries.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\manifest.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\minimal_whitespace.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bad-literal-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bad-literal-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bad-literal-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bad-quint-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bad-uri-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-04.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-05.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-bnode-06.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-04.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-05.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nq-syntax-uri-06.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-base-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-esc-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-esc-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-esc-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-lang-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-num-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-num-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-num-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-prefix-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-04.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-05.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-06.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-string-07.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-struct-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-struct-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-04.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-05.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-06.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-07.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-08.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bad-uri-09.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bnode-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bnode-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-bnode-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-datatypes-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-datatypes-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-file-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-file-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-file-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-str-esc-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-str-esc-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-str-esc-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-string-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-string-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-string-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-subm-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-uri-01.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-uri-02.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-uri-03.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\nquads11\nt-syntax-uri-04.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\ntriples11\comment_following_triple.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
