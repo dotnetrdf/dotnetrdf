@@ -204,10 +204,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     this.StartNewToken();
                                     return this.TryGetDataType();
                                 }
-                                else
-                                {
-                                    throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
-                                }
+                                throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
 
                                 #endregion
 
@@ -305,7 +302,7 @@ namespace VDS.RDF.Parsing.Tokens
                 //Watch out for escapes
                 if (next == '\\')
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.PermissiveUri);
+                    this.HandleEscapes(this.Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
                 }
                 else
                 {
