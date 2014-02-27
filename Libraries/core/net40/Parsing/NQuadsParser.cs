@@ -363,6 +363,8 @@ namespace VDS.RDF.Parsing
                     context = TryParseUri(handler, next.Value);
                     break;
                 case Token.LITERAL:
+                    if (this.Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
+
                     //Check for Datatype/Language
                     IToken temp = tokens.Peek();
                     switch (temp.TokenType)
@@ -373,7 +375,7 @@ namespace VDS.RDF.Parsing
                             break;
                         case Token.DATATYPE:
                             tokens.Dequeue();
-                            context = handler.CreateLiteralNode(next.Value, ((IUriNode)TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2))).Uri);
+                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2))).Uri);
                             break;
                         default:
                             context = handler.CreateLiteralNode(next.Value);
@@ -445,7 +447,7 @@ namespace VDS.RDF.Parsing
                     break;
                 case Token.LITERALWITHDT:
                     String dtUri = ((LiteralWithDataTypeToken) o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode)TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2))).Uri);
+                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2))).Uri);
                     break;
                 case Token.LITERALWITHLANG:
                     obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken) o).Language);
