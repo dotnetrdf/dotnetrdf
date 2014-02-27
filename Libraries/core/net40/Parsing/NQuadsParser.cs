@@ -263,7 +263,7 @@ namespace VDS.RDF.Parsing
                     s = this.TryParseSubject(tokens);
                     p = this.TryParsePredicate(tokens);
                     o = this.TryParseObject(tokens);
-                    Uri context = this.TryParseContext(tokens);
+                    Uri context = this.TryParseContext(handler, tokens);
 
                     this.TryParseTriple(handler, s, p, o, context);
 

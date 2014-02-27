@@ -24,7 +24,7 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
             INode posSyntaxTest = g.CreateUriNode("rdft:TestNQuadsPositiveSyntax");
-            INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadssNegativeSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 
             //Run manifests
             this.RunManifest(@"resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
