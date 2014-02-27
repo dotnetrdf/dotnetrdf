@@ -41,6 +41,7 @@ namespace VDS.RDF.Parsing
         /// The original NTriples syntax as specified in the original RDF specification <a href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/">test cases</a> specification
         /// </summary>
         Original,
+
         /// <summary>
         /// Standardized NTriples as specified in the <a href="http://www.w3.org/TR/n-triples/">RDF 1.1 NTriples</a> specification
         /// </summary>
@@ -60,7 +61,9 @@ namespace VDS.RDF.Parsing
         /// Creates a new instance of the parser
         /// </summary>
         public NTriplesParser()
-            : this(NTriplesSyntax.Rdf11) { }
+            : this(NTriplesSyntax.Rdf11)
+        {
+        }
 
         /// <summary>
         /// Creates a new instance of the parser
@@ -289,7 +292,7 @@ namespace VDS.RDF.Parsing
             INode obj = this.TryParseObject(context);
 
             //Ensure we're terminated by a DOT
-            this.TryParseLineTerminator(context);
+            TryParseLineTerminator(context);
 
             //Assert the Triple
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
@@ -312,7 +315,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(subjToken.Value));
+                    return TryParseUri(context, subjToken.Value);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -338,8 +341,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     throw Error("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(predToken.Value));
-                    //return this.ConvertToNode(g, predToken);
+                    return TryParseUri(context, predToken.Value);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -352,7 +354,6 @@ namespace VDS.RDF.Parsing
         private INode TryParseObject(TokenisingParserContext context)
         {
             IToken objToken = context.Tokens.Dequeue();
-            String dt;
 
             //Discard Comments
             while (objToken.TokenType == Token.COMMENT)
@@ -367,29 +368,26 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.Handler.CreateBlankNode(objToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(objToken.Value));
+                    return TryParseUri(context, objToken.Value);
                 case Token.LITERALWITHDT:
-                    dt = ((LiteralWithDataTypeToken) objToken).DataType;
+                    String dt = ((LiteralWithDataTypeToken) objToken).DataType;
                     dt = dt.Substring(1, dt.Length - 2);
-                    return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(dt));
+                    return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, dt)).Uri);
                 case Token.LITERALWITHLANG:
                     return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken) objToken).Language);
                 case Token.LITERAL:
                     IToken next = context.Tokens.Peek();
                     //Is there a Language Specifier or Data Type?
-                    if (next.TokenType == Token.LANGSPEC)
+                    switch (next.TokenType)
                     {
-                        context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
-                    }
-                    else if (next.TokenType == Token.URI)
-                    {
-                        context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri)));
-                    }
-                    else
-                    {
-                        return context.Handler.CreateLiteralNode(objToken.Value);
+                        case Token.LANGSPEC:
+                            context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
+                        case Token.URI:
+                            context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
+                        default:
+                            return context.Handler.CreateLiteralNode(objToken.Value);
                     }
 
                 default:
@@ -397,7 +395,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseLineTerminator(TokenisingParserContext context)
+        private static void TryParseLineTerminator(TokenisingParserContext context)
         {
             IToken next = context.Tokens.Dequeue();
 
@@ -415,12 +413,33 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Tries to parse a URI
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="uri">URI</param>
+        /// <returns>URI Node if parsed successfully</returns>
+        private static INode TryParseUri(TokenisingParserContext context, String uri)
+        {
+            try
+            {
+                IUriNode n = context.Handler.CreateUriNode(UriFactory.Create(uri));
+                if (!n.Uri.IsAbsoluteUri)
+                    throw new RdfParseException("NTriples does not permit relative URIs");
+                return n;
+            }
+            catch (UriFormatException uriEx)
+            {
+                throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
+            }
+        }
+
+        /// <summary>
         /// Helper method for raising informative standardised Parser Errors
         /// </summary>
         /// <param name="msg">The Error Message</param>
         /// <param name="t">The Token that is the cause of the Error</param>
         /// <returns></returns>
-        private RdfParseException Error(String msg, IToken t)
+        private static RdfParseException Error(String msg, IToken t)
         {
             StringBuilder output = new StringBuilder();
             output.Append("[");
@@ -445,11 +464,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning == null)
-            {
-                //Do Nothing
-            }
-            else
+            if (this.Warning != null)
             {
                 //Raise Event
                 this.Warning(message);

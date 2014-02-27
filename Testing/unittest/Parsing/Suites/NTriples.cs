@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"resources\\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
+            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Suites
         : BaseRdfParserSuite
     {
         public NTriples11()
-            : base(new NTriplesParser(), null, @"ntriples11\")
+            : base(new NTriplesParser(), new NTriplesParser(), @"ntriples11\")
         {
             this.CheckResults = false;
         }
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
             //Run manifests
-            this.RunManifest(@"ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            this.RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
