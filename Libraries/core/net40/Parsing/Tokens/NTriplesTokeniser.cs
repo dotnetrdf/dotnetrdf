@@ -304,6 +304,10 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     this.HandleEscapes(this.Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
                 }
+                else if (this.Syntax == NTriplesSyntax.Rdf11 && next == ' ')
+                {
+                    throw new RdfParseException("Spaces are not valid in URIs");
+                }
                 else
                 {
                     this.ConsumeCharacter();
