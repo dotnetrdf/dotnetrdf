@@ -5,6 +5,12 @@ Change Log
 1.0.4
 -----
 
+Added
+- Parsing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+- Writing
+
+
 Changed
 - Bug Fixes
  - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
