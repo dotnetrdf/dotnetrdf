@@ -10,6 +10,8 @@ Added
  - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
  - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
 - Writing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+ - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
 
 
 Changed

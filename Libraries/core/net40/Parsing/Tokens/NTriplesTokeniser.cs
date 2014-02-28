@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace VDS.RDF.Parsing.Tokens
@@ -206,6 +203,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                             default:
                                 //Unexpected Character
+                                if (this.Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                                 throw this.UnexpectedCharacter(next, String.Empty);
                         }
                     }
@@ -234,6 +232,7 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
             while (next != '\n' && next != '\r')
             {
+                if (this.Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                 if (this.ConsumeCharacter(true)) break;
                 next = this.Peek();
             }
@@ -254,6 +253,7 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
             while (Char.IsLetterOrDigit(next) || next == '-')
             {
+                if (this.Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                 this.ConsumeCharacter();
                 next = this.Peek();
             }
@@ -265,10 +265,7 @@ namespace VDS.RDF.Parsing.Tokens
                 this.LastTokenType = Token.LANGSPEC;
                 return new LanguageSpecifierToken(output, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else
-            {
-                throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
-            }
+            throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
         }
 
         private IToken TryGetUri()
@@ -281,6 +278,8 @@ namespace VDS.RDF.Parsing.Tokens
             do
             {
                 next = this.Peek();
+
+                if (this.Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
 
                 //Watch out for escapes
                 if (next == '\\')
@@ -323,6 +322,7 @@ namespace VDS.RDF.Parsing.Tokens
                     // Original NTriples only allows very simple Node IDs
                     while (Char.IsLetterOrDigit(next))
                     {
+                        if (next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                         this.ConsumeCharacter();
                         next = this.Peek();
                     }
@@ -383,6 +383,8 @@ namespace VDS.RDF.Parsing.Tokens
                     next = this.Peek();
                     continue;
                 }
+
+                if (this.Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
 
                 //Add character to output buffer
                 this.ConsumeCharacter();

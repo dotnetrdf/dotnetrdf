@@ -256,10 +256,17 @@ namespace VDS.RDF
 
         public static void TestInMTAThread(ThreadStart info)
         {
+            try
+            {
                 Thread t = new Thread(info);
                 t.SetApartmentState(ApartmentState.MTA);
                 t.Start();
                 t.Join();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public static void PrintEnumerable<T>(IEnumerable<T> items, String sep)

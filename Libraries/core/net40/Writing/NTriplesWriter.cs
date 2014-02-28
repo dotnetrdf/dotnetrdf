@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -41,6 +42,21 @@ namespace VDS.RDF.Writing
         : IRdfWriter, IFormatterBasedWriter
     {
         private bool _sort = false;
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        /// <param name="syntax">NTriples Syntax Mode</param>
+        public NTriplesWriter(NTriplesSyntax syntax)
+        {
+            this.Syntax = syntax;
+        }
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        public NTriplesWriter()
+            : this(NTriplesSyntax.Original) { }
 
         /// <summary>
         /// Gets/Sets whether Triples are sorted before being Output
@@ -67,6 +83,11 @@ namespace VDS.RDF.Writing
                 return typeof(NTriplesFormatter);
             }
         }
+
+        /// <summary>
+        /// Gets/Sets the NTriples syntax mode
+        /// </summary>
+        public NTriplesSyntax Syntax { get; set; }
 
 #if !NO_FILE
         /// <summary>
@@ -95,7 +116,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                NTriplesWriterContext context = new NTriplesWriterContext(g, output);
+                NTriplesWriterContext context = new NTriplesWriterContext(g, output, this.Syntax);
                 List<Triple> ts = g.Triples.ToList();
                 if (this._sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
@@ -197,7 +218,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "NTriples";
+            return this.Syntax == NTriplesSyntax.Original ? "NTriples" : "NTriples (RDF 1.1)";
         }
     }
 }
