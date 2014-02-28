@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// Constructor for the BaseTokeniser which takes in a TextReader that the Tokeniser will generate Tokens from
         /// </summary>
         /// <param name="reader">TextReader to generator Tokens from</param>
-        public BaseTokeniser(TextReader reader)
+        protected BaseTokeniser(TextReader reader)
         {
             this._reader = reader;
         }
@@ -312,21 +312,12 @@ namespace VDS.RDF.Parsing.Tokens
                 this.ConsumeCharacter();
                 return false;
             }
-            else
-            {
-                int temp = this._reader.Read();
-                if (temp > -1)
-                {
-                    this._output.Append((char)temp);
-                    this._currpos++;
-                    this._endpos++;
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
+            int temp = this._reader.Read();
+            if (temp <= -1) return true;
+            this._output.Append((char) temp);
+            this._currpos++;
+            this._endpos++;
+            return false;
         }
 
         /// <summary>
