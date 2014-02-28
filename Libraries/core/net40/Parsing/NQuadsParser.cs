@@ -270,7 +270,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="syntax">NQuads Syntax</param>
         /// <returns></returns>
-        private static NTriplesSyntax AsNTriplesSyntax(NQuadsSyntax syntax)
+        internal static NTriplesSyntax AsNTriplesSyntax(NQuadsSyntax syntax)
         {
             switch (syntax)
             {

@@ -90,6 +90,11 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the NQuads syntax mode
+        /// </summary>
+        public NQuadsSyntax Syntax { get; set; }
+
 #if !NO_FILE
         /// <summary>
         /// Saves a Store in NQuads format
@@ -166,7 +171,7 @@ namespace VDS.RDF.Writing
                 {
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output, NTriplesSyntax.Original);
+                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(this.Syntax));
                         foreach (Triple t in g.Triples)
                         {
                             context.Output.WriteLine(this.TripleToNQuads(graphContext, t));
@@ -280,7 +285,7 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
-                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NTriplesSyntax.Original, globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
                     {
