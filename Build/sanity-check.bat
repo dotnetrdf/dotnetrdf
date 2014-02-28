@@ -29,5 +29,10 @@ if %SIZE% gtr 0 (
 :: Clean up working files
 del %FOUND%
 
+:: Try a quick build
+cd Build\nant\
+nant compile
+cd ..\..\
+
 :: Exit
 exit /b %EXIT%
