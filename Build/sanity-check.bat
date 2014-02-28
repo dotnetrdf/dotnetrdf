@@ -29,5 +29,16 @@ if %SIZE% gtr 0 (
 :: Clean up working files
 del %FOUND%
 
+:: Try a quick build
+cd Build\nant\
+nant compile
+if ERRORLEVEL 1 (
+  echo Comilation errors occurred
+  set EXIT=1
+) else (
+  echo Code compiled successfully, OK to proceed
+)
+cd ..\..\
+
 :: Exit
 exit /b %EXIT%

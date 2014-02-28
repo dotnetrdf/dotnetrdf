@@ -392,5 +392,50 @@ namespace VDS.RDF.Parsing.Suites
 
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("pre"));
         }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleLiteralEscapes1()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original));
+        }
+
+        [Test]
+        public void ParsingTurtleLiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original));
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingTurtleW3CLiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingTurtleW3CLiteralEscapes3()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
     }
 }

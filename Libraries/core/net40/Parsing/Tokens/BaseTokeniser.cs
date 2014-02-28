@@ -45,13 +45,17 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         PermissiveUri,
         /// <summary>
-        /// Escaping for Quoted Literals (every escape but \&lt; is valid)
+        /// Escaping for Quoted Literals (every escape but \&lt; and \' is valid)
         /// </summary>
         QuotedLiterals,
         /// <summary>
-        /// Escaping for single Quoted Literals (every escape but \&lt; is valid)
+        /// Escaping for single Quoted Literals (every escape but \&lt; and \" is valid)
         /// </summary>
         QuotedLiteralsAlternate,
+        /// <summary>
+        /// Escaping for Quoted Literals (every escape but \&lt; is valid), this differs from <see cref="QuotedLiterals"/> and <see cref="QuotedLiteralsAlternate"/> in that it allows both \' and \"
+        /// </summary>
+        QuotedLiteralsBoth,
         /// <summary>
         /// Escaping for QNames (only Unicode espaces are valid)
         /// </summary>
@@ -64,7 +68,7 @@ namespace VDS.RDF.Parsing.Tokens
     public abstract class BaseTokeniser 
         : ITokeniser
     {
-        private TextReader _reader;
+        private readonly TextReader _reader;
         private StringBuilder _output;
         private int _startline = 1;
         private int _endline = 1;
@@ -473,7 +477,7 @@ namespace VDS.RDF.Parsing.Tokens
             //Stuff for Unicode escapes
             StringBuilder localOutput;
 
-            bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate);
+            bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth);
 
             next = this.Peek();
             switch (next)
@@ -486,34 +490,25 @@ namespace VDS.RDF.Parsing.Tokens
                         this.ConsumeCharacter();
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
                 case '"':
                     //Quote escape (only valid in Quoted Literals)
-                    if (mode == TokeniserEscapeMode.QuotedLiterals)
+                    if (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
                         //Consume and return
                         this.ConsumeCharacter();
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
                 case '\'':
                     //Single Quote Escape (only valid in Alternate Quoted Literals)
-                    if (mode == TokeniserEscapeMode.QuotedLiteralsAlternate)
+                    if (mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth)
                     {
                         //Consume and return
                         this.ConsumeCharacter();
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
                 case '>':
                     //End Uri Escape (only valid in URIs)
                     if (mode == TokeniserEscapeMode.Uri)
@@ -522,12 +517,7 @@ namespace VDS.RDF.Parsing.Tokens
                         this.ConsumeCharacter();
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
-
-                #region White Space Escapes
+                    goto default;
 
                 case 'n':
                     //New Line Escape
@@ -538,10 +528,8 @@ namespace VDS.RDF.Parsing.Tokens
                         this._output.Append('\n');
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
+
                 case 'r':
                     //New Line Escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
@@ -551,10 +539,8 @@ namespace VDS.RDF.Parsing.Tokens
                         this._output.Append('\r');
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
+
                 case 't':
                     //Tab Escape
                     if (isLiteral || mode == TokeniserEscapeMode.PermissiveUri)
@@ -564,10 +550,8 @@ namespace VDS.RDF.Parsing.Tokens
                         this._output.Append('\t');
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
+
                 case 'b':
                     //Backspace Escape
                     if (isLiteral)
@@ -577,10 +561,8 @@ namespace VDS.RDF.Parsing.Tokens
                         this._output.Append('\b');
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
+                    goto default;
+
                 case 'f':
                     //Form Feed Escape
                     if (isLiteral)
@@ -590,14 +572,7 @@ namespace VDS.RDF.Parsing.Tokens
                         this._output.Append('\f');
                         return;
                     }
-                    else
-                    {
-                        goto default;
-                    }
-
-                #endregion
-
-                #region Unicode Escapes
+                    goto default;
 
                 case 'u':
                     //Need to consume the u first
@@ -619,11 +594,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
-                    else
-                    {
-                        this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
-                    }
-
+                    this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
                     return;
 
                 case 'U':
@@ -646,13 +617,8 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
                     }
-                    else
-                    {
-                        this._output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
-                    }
+                    this._output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
                     return;
-
-                #endregion
 
                 default:
                     //Not an escape character
@@ -673,7 +639,6 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.SkipCharacter();
 
             //Stuff for Unicode/Hex escapes
-            StringBuilder localOutput;
 
             if (next == '\\')
             {
@@ -714,41 +679,35 @@ namespace VDS.RDF.Parsing.Tokens
                         throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.!$&'()*+,;=/?#@%) in Local Names");
                 }
             }
-            else if (next == '%')
-            {
-                localOutput = new StringBuilder();
-                localOutput.Append(next);
-
-                next = this.Peek();
-                while (localOutput.Length < 3 && this.IsHexDigit(next))
-                {
-                    localOutput.Append(next);
-                    this.SkipCharacter();
-                    next = this.Peek();
-                }
-
-                //Did we get % followed by two hex digits
-                if (localOutput.Length != 3)
-                {
-                    throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");
-                }
-#if !SILVERLIGHT
-                else if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
-#else
-                else if (SilverlightExtensions.IsHexEncoding(localOutput.ToString(), 0))
-#endif
-                {
-                    throw Error("Invalid % encoded character encountered");
-                }
-                else
-                {
-                    this._output.Append(localOutput.ToString());
-                }
-            }
-            else
+            if (next != '%')
             {
                 throw Error("HandleComplexLocalNameEscapes() was called but the next character is not a % or \\ as expected");
             }
+            StringBuilder localOutput = new StringBuilder();
+            localOutput.Append(next);
+
+            next = this.Peek();
+            while (localOutput.Length < 3 && this.IsHexDigit(next))
+            {
+                localOutput.Append(next);
+                this.SkipCharacter();
+                next = this.Peek();
+            }
+
+            //Did we get % followed by two hex digits
+            if (localOutput.Length != 3)
+            {
+                throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");
+            }
+#if !SILVERLIGHT
+            if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
+#else
+            if (SilverlightExtensions.IsHexEncoding(localOutput.ToString(), 0))
+#endif
+            {
+                throw Error("Invalid % encoded character encountered");
+            }
+            this._output.Append(localOutput.ToString());
         }
 
 
