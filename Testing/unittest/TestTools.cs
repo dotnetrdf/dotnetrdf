@@ -110,11 +110,11 @@ namespace VDS.RDF
         {
             if (results is IGraph)
             {
-                ShowGraph((IGraph)results);
+                ShowGraph((IGraph) results);
             }
             else if (results is SparqlResultSet)
             {
-                SparqlResultSet resultSet = (SparqlResultSet)results;
+                SparqlResultSet resultSet = (SparqlResultSet) results;
                 Console.WriteLine("Result: " + resultSet.Result);
                 Console.WriteLine(resultSet.Results.Count + " Results");
                 foreach (SparqlResult r in resultSet.Results)
@@ -254,18 +254,32 @@ namespace VDS.RDF
             Console.WriteLine(message);
         }
 
-        public static void TestInMTAThread(ThreadStart info)
+        public static void TestInMTAThread(Action action)
         {
+            Exception ex = null;
+            Thread t = new Thread(() => ThreadExecute(action, out ex));
+            t.SetApartmentState(ApartmentState.MTA);
+            t.Start();
+            t.Join();
+            if (ex != null) throw ex;
+        }
+
+        /// <summary>
+        /// Taken from StackOverflow: http://stackoverflow.com/questions/5983779/catch-exception-that-is-thrown-in-different-thread
+        /// </summary>
+        /// <param name="test">Test action</param>
+        /// <param name="exception">Exception if thrown</param>
+        private static void ThreadExecute(Action test, out Exception exception)
+        {
+            exception = null;
+
             try
             {
-                Thread t = new Thread(info);
-                t.SetApartmentState(ApartmentState.MTA);
-                t.Start();
-                t.Join();
+                test();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                exception = ex;
             }
         }
 

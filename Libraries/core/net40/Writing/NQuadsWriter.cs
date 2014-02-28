@@ -43,8 +43,23 @@ namespace VDS.RDF.Writing
         : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
-        private bool _prettyPrint = true;
-        private bool _multiThreaded = Options.AllowMultiThreadedWriting;
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        public NQuadsWriter()
+            : this(NQuadsSyntax.Original) { }
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        /// <param name="syntax">NQuads Syntax mode to use</param>
+        public NQuadsWriter(NQuadsSyntax syntax)
+        {
+            PrettyPrintMode = true;
+            UseMultiThreadedWriting = Options.AllowMultiThreadedWriting;
+            this.Syntax = syntax;
+        }
 
         /// <summary>
         /// Controls whether Pretty Printing is used
@@ -52,32 +67,12 @@ namespace VDS.RDF.Writing
         /// <remarks>
         /// For NQuads this simply means that Graphs in the output are separated with Whitespace and comments used before each Graph
         /// </remarks>
-        public bool PrettyPrintMode
-        {
-            get
-            {
-                return this._prettyPrint;
-            }
-            set
-            {
-                this._prettyPrint = value;
-            }
-        }
+        public bool PrettyPrintMode { get; set; }
 
         /// <summary>
         /// Gets/Sets whether Multi-Threaded Writing
         /// </summary>
-        public bool UseMultiThreadedWriting
-        {
-            get
-            {
-                return this._multiThreaded;
-            }
-            set
-            {
-                this._multiThreaded = value;
-            }
-        }
+        public bool UseMultiThreadedWriting { get; set; }
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer
@@ -122,7 +117,7 @@ namespace VDS.RDF.Writing
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this._prettyPrint, false);
+            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this.PrettyPrintMode, false);
             //Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
@@ -132,7 +127,7 @@ namespace VDS.RDF.Writing
 
             try
             {
-                if (this._multiThreaded)
+                if (this.UseMultiThreadedWriting)
                 {
                     //Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
