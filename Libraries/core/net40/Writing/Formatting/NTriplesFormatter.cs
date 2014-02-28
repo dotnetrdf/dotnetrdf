@@ -71,11 +71,17 @@ namespace VDS.RDF.Writing.Formatting
             }
         }
 
+                /// <summary>
+        /// Creates a new NTriples Formatter
+        /// </summary>
+        public NTriplesFormatter(NTriplesSyntax syntax)
+            : this(syntax, GetName(syntax)) { }
+
         /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
         public NTriplesFormatter()
-            : this(NTriplesSyntax.Original, "NTriples") { }
+            : this(NTriplesSyntax.Original, GetName()) { }
 
         /// <summary>
         /// Creates a new NTriples Formatter
@@ -83,6 +89,22 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="formatName">Format Name</param>
         protected NTriplesFormatter(String formatName)
             : this(NTriplesSyntax.Original, formatName) { }
+
+        private static String GetName()
+        {
+            return GetName(NTriplesSyntax.Original);
+        }
+
+        private static string GetName(NTriplesSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NTriplesSyntax.Original:
+                    return "NTriples";
+                default:
+                    return "NTriples (RDF 1.1)";
+            }
+        }
 
         /// <summary>
         /// Gets the NTriples syntax being used

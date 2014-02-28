@@ -77,7 +77,8 @@ namespace VDS.RDF.Writing
 
                 List<ITripleFormatter> formatters = new List<ITripleFormatter>()
                 {
-                    new NTriplesFormatter(),
+                    new NTriplesFormatter(NTriplesSyntax.Original),
+                    new NTriplesFormatter(NTriplesSyntax.Rdf11),
                     new UncompressedTurtleFormatter(),
                     new UncompressedNotation3Formatter(),
                     new TurtleFormatter(g),
@@ -113,17 +114,7 @@ namespace VDS.RDF.Writing
                     objUnknown,
                     objXmlLiteral
                 };
-                List<Triple> testTriples = new List<Triple>();
-                foreach (INode s in subjects)
-                {
-                    foreach (INode p in predicates)
-                    {
-                        foreach (INode o in objects)
-                        {
-                            testTriples.Add(new Triple(s, p, o));
-                        }
-                    }
-                }
+                List<Triple> testTriples = (from s in subjects from p in predicates from o in objects select new Triple(s, p, o)).ToList();
 
                 foreach (Triple t in testTriples)
                 {

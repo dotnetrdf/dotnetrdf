@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -165,7 +166,7 @@ namespace VDS.RDF.Writing
                 {
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output);
+                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output, NTriplesSyntax.Original);
                         foreach (Triple t in g.Triples)
                         {
                             context.Output.WriteLine(this.TripleToNQuads(graphContext, t));
@@ -279,7 +280,7 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
-                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NTriplesSyntax.Original, globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
                     {
