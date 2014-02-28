@@ -147,7 +147,7 @@ namespace VDS.RDF.Writing.Formatting
             if (c <= 127)
             {
                 //ASCII
-                return c.ToString(CultureInfo.InvariantCulture);
+                return c.ToString();
             }
             //Small Unicode Escape required
             return "\\u" + ((int)c).ToString("X4");

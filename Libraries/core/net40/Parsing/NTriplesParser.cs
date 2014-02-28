@@ -205,7 +205,11 @@ namespace VDS.RDF.Parsing
                 default:
                     if (!input.CurrentEncoding.Equals(Encoding.UTF8))
                     {
+#if SILVERLIGHT
+                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#else
                         this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#endif
                     }
                     break;
             }
@@ -451,7 +455,11 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("NTriples does not permit relative URIs");
                 return n;
             }
+#if SILVERLIGHT
+            catch (FormatException uriEx)
+#else
             catch (UriFormatException uriEx)
+#endif
             {
                 throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
             }
