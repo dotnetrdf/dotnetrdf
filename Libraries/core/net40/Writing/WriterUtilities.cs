@@ -402,7 +402,7 @@ namespace VDS.RDF.Writing
             {
                 //All characters must be alphanumeric and not start with a digit in NTriples
                 char[] cs = id.ToCharArray();
-                return Char.IsLetter(cs[0]) && cs.All(c => Char.IsLetterOrDigit(c));
+                return Char.IsLetter(cs[0]) && cs.All(c => Char.IsLetterOrDigit(c) && c <= 127);
             }
         }
 

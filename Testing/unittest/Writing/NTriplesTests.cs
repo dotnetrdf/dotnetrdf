@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -344,6 +344,64 @@ namespace VDS.RDF.Writing
 
             // Compare Speed
             Assert.IsTrue(turtleTime.CompareTo(ntriplesTime) == -1);
+        }
+
+        private void TestBNodeFormatting(IBlankNode b, INodeFormatter formatter, String expected)
+        {
+            String actual = formatter.Format(b);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void WritingNTriplesBlankNodeIDs1()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Original);
+            Graph g = new Graph();
+
+            // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
+            IBlankNode b = g.CreateBlankNode("simple");
+            this.TestBNodeFormatting(b, formatter, "_:simple");
+            b = g.CreateBlankNode("simple1234");
+            this.TestBNodeFormatting(b, formatter, "_:simple1234");
+
+            // Complex IDs which are only valid in RDF 1.1 NTriples
+            // When using Original syntax these should be rewritten
+            b = g.CreateBlankNode("complex-dash");
+            this.TestBNodeFormatting(b, formatter, "_:autos1");
+            b = g.CreateBlankNode("complex_underscore");
+            this.TestBNodeFormatting(b, formatter, "_:autos2");
+            b = g.CreateBlankNode("complex.dot");
+            this.TestBNodeFormatting(b, formatter, "_:autos3");
+            b = g.CreateBlankNode("complex-dash_underscore.dot");
+            this.TestBNodeFormatting(b, formatter, "_:autos4");
+            b = g.CreateBlankNode("комплекс");
+            this.TestBNodeFormatting(b, formatter, "_:autos5");
+        }
+
+        [Test]
+        public void WritingNTriplesBlankNodeIDs2()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            Graph g = new Graph();
+
+            // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
+            IBlankNode b = g.CreateBlankNode("simple");
+            this.TestBNodeFormatting(b, formatter, "_:simple");
+            b = g.CreateBlankNode("simple1234");
+            this.TestBNodeFormatting(b, formatter, "_:simple1234");
+
+            // Complex IDs which are only valid in RDF 1.1 NTriples
+            // When using RDF 1.1 syntax these will be left as-is
+            b = g.CreateBlankNode("complex-dash");
+            this.TestBNodeFormatting(b, formatter, "_:complex-dash");
+            b = g.CreateBlankNode("complex_underscore");
+            this.TestBNodeFormatting(b, formatter, "_:complex_underscore");
+            b = g.CreateBlankNode("complex.dot");
+            this.TestBNodeFormatting(b, formatter, "_:complex.dot");
+            b = g.CreateBlankNode("complex-dash_underscore.dot");
+            this.TestBNodeFormatting(b, formatter, "_:complex-dash_underscore.dot");
+            b = g.CreateBlankNode("комплекс");
+            this.TestBNodeFormatting(b, formatter, "_:комплекс");
         }
     }
 }
