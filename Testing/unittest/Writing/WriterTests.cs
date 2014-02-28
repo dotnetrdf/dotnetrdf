@@ -209,13 +209,15 @@ namespace VDS.RDF.Writing
             NTriplesFormatter formatter = new NTriplesFormatter();
             List<IRdfWriter> writers = new List<IRdfWriter>()
             {
-                new CompressingTurtleWriter(),
+                new CompressingTurtleWriter(TurtleSyntax.Original),
+                new CompressingTurtleWriter(TurtleSyntax.W3C),
                 new PrettyRdfXmlWriter(),
 #if !NO_HTMLAGILITYPACK
                 new HtmlWriter(),
 #endif
                 new Notation3Writer(),
-                new NTriplesWriter(),
+                new NTriplesWriter(NTriplesSyntax.Original),
+                new NTriplesWriter(NTriplesSyntax.Rdf11),
                 new PrettyRdfXmlWriter(),
                 new RdfJsonWriter(),
                 new RdfXmlWriter(),
@@ -223,18 +225,22 @@ namespace VDS.RDF.Writing
             };
             List<IRdfReader> parsers = new List<IRdfReader>()
             {
-                new TurtleParser(),
+                new TurtleParser(TurtleSyntax.Original),
+                new TurtleParser(TurtleSyntax.W3C),
                 new RdfXmlParser(),
 #if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
 #endif
                 new Notation3Parser(),
-                new NTriplesParser(),
+                new NTriplesParser(NTriplesSyntax.Original),
+                new NTriplesParser(NTriplesSyntax.Rdf11),
                 new RdfXmlParser(),
                 new RdfJsonParser(),
                 new RdfXmlParser(),
                 new TurtleParser()
             };
+
+            Assert.AreEqual(parsers.Count, writers.Count);
 
             Console.WriteLine("Input Data:");
             foreach (Triple t in g.Triples)
