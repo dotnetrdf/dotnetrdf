@@ -23,11 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
@@ -53,10 +48,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return base.Format(t);
             }
-            else
-            {
-                return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
-            }
+            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
         }
     }
 }

@@ -129,19 +129,16 @@ namespace VDS.RDF.Parsing.Tokens
                     this.StartNewToken();
 
                     //Check for EOF
-                    if (this._in.EndOfStream)
+                    if (this._in.EndOfStream && !this.HasBacktracked)
                     {
                         if (this.Length == 0)
                         {
                             //We're at the End of the Stream and not part-way through reading a Token
                             return new EOFToken(this.CurrentLine, this.CurrentPosition);
                         }
-                        else
-                        {
-                            //We're at the End of the Stream and part-way through reading a Token
-                            //Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
+                        //We're at the End of the Stream and part-way through reading a Token
+                        //Raise an error
+                        throw UnexpectedEndOfInput("Token");
                     }
 
                     char next = this.Peek();
@@ -154,12 +151,9 @@ namespace VDS.RDF.Parsing.Tokens
                             //We're at the End of the Stream and not part-way through reading a Token
                             return new EOFToken(this.CurrentLine, this.CurrentPosition);
                         }
-                        else
-                        {
-                            //We're at the End of the Stream and part-way through reading a Token
-                            //Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
+                        //We're at the End of the Stream and part-way through reading a Token
+                        //Raise an error
+                        throw UnexpectedEndOfInput("Token");
                     }
 
                     if (Char.IsWhiteSpace(next))
@@ -179,15 +173,13 @@ namespace VDS.RDF.Parsing.Tokens
                                 //Start of a Keyword or Language Specifier
                                 return this.TryGetLangSpec();
 
-                                #region URIs, QNames and Literals
-
                             case '<':
                                 //Start of a Uri
                                 return this.TryGetUri();
 
                             case '_':
-                                //Start of a  QName
-                                return this.TryGetQName();
+                                //Start of a  Blank Node ID
+                                return this.TryGetBlankNode();
 
                             case '"':
                                 //Start of a Literal
@@ -206,17 +198,11 @@ namespace VDS.RDF.Parsing.Tokens
                                 }
                                 throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
 
-                                #endregion
-
-                                #region Line Terminators
-
                             case '.':
                                 //Dot Terminator
                                 this.ConsumeCharacter();
                                 this.LastTokenType = Token.DOT;
                                 return new DotToken(this.CurrentLine, this.StartPosition);
-
-                                #endregion
 
                             default:
                                 //Unexpected Character
@@ -234,11 +220,8 @@ namespace VDS.RDF.Parsing.Tokens
                     //At End of Stream so produce the EOFToken
                     return new EOFToken(this.CurrentLine, this.CurrentPosition);
                 }
-                else
-                {
-                    //Some other Error so throw
-                    throw;
-                }
+                //Some other Error so throw
+                throw;
             }
         }
 
@@ -320,24 +303,49 @@ namespace VDS.RDF.Parsing.Tokens
             return new UriToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
         }
 
-        private IToken TryGetQName()
+        private IToken TryGetBlankNode()
         {
             bool colonoccurred = false;
 
-            char next = this.Peek();
-            while (Char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == ':')
-            {
-                this.ConsumeCharacter();
-                if (next == ':')
-                {
-                    if (colonoccurred)
-                    {
-                        throw Error("Unexpected Colon encountered in input '" + this.Value + "', a Colon may only occur once in a QName");
-                    }
-                    colonoccurred = true;
-                }
+            // Consume the opening underscore
+            this.ConsumeCharacter();
 
-                next = this.Peek();
+            // Then expect a :
+            char next = this.Peek();
+            if (next != ':') throw Error("Expected a colon after a _ to start a Blank Node ID but got a " + next + " (code " + (int) next + ")");
+            this.ConsumeCharacter();
+            next = this.Peek();
+
+            // Consume remainder of the Node ID
+            switch (this.Syntax)
+            {
+                case NTriplesSyntax.Original:
+                    // Original NTriples only allows very simple Node IDs
+                    while (Char.IsLetterOrDigit(next))
+                    {
+                        this.ConsumeCharacter();
+                        next = this.Peek();
+                    }
+                    break;
+                default:
+                    // RDF 1.1 Triples allows much more complex Node IDs more similar to Turtle
+                    while (Char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '.')
+                    {
+                        this.ConsumeCharacter();
+                        if (next == ':')
+                        {
+                            if (colonoccurred)
+                            {
+                                throw Error("Unexpected Colon encountered in input '" + this.Value + "', a Colon may only occur once in a QName");
+                            }
+                            colonoccurred = true;
+                        }
+
+                        next = this.Peek();
+                    }
+                    // We may consume the trailing dot which does not form part of the name
+                    if (this.Value.EndsWith(".")) this.Backtrack();
+                    break;
             }
 
             //Validate the QName
@@ -347,11 +355,7 @@ namespace VDS.RDF.Parsing.Tokens
                 this.LastTokenType = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else
-            {
-                throw Error("The input '" + this.Value + "' is not a valid Blank Node Name in {0}");
-            }
-
+            throw Error("The input '" + this.Value + "' is not a valid Blank Node Name in {0}");
         }
 
         private IToken TryGetLiteral()

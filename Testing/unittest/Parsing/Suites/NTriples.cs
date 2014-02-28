@@ -58,9 +58,19 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
+            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", this.Parser);
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingNTriplesComplexBNodeIDs()
+        {
+            const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
+<http://s> <http://p> _:node.id.";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
         }
     }
 
@@ -94,6 +104,18 @@ namespace VDS.RDF.Parsing.Suites
 
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [Test]
+        public void ParsingNTriples11ComplexBNodeIDs()
+        {
+            const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
+<http://s> <http://p> _:node.id.";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(2, g.Triples.Count);
         }
     }
 }
