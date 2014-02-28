@@ -72,6 +72,27 @@ namespace VDS.RDF.Parsing.Suites
             Graph g = new Graph();
             g.LoadFromString(data, this.Parser);
         }
+
+        [Test, ExpectedException(typeof (RdfParseException))]
+        public void ParsingNTriplesLiteralEscapes1()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+        }
+
+        [Test]
+        public void ParsingNTriplesLiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
     }
 
     [TestFixture]
@@ -116,6 +137,30 @@ namespace VDS.RDF.Parsing.Suites
             g.LoadFromString(data, this.Parser);
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(2, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingNTriples11LiteralEscapes1()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingNTriples11LiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
         }
     }
 }

@@ -672,7 +672,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                         if (rightangleallowed)
                                         {
-                                            this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                                            this.HandleEscapes(this._syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
                                         }
                                         else
                                         {

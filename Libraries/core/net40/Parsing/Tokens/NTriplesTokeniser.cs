@@ -360,37 +360,26 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetLiteral()
         {
-            bool longliteral = false;
-
             //Consume first character which must have been a "
             this.ConsumeCharacter();
 
-            //Check if this is a long literal
+            //Check if this is an empty literal
             char next = this.Peek();
             if (next == '"')
             {
                 this.ConsumeCharacter();
-                next = this.Peek();
-
-                if (next == '"')
-                {
-                    //Long Literal
-                    longliteral = true;
-                }
-                else
-                {
-                    //Empty Literal
-                    this.LastTokenType = Token.LITERAL;
-                    return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-                }
+                // Empty Literal
+                this.LastTokenType = Token.LITERAL;
+                return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
 
+            // Otherwise grab the contents of the literal
             while (true)
             {
                 //Handle Escapes
                 if (next == '\\') 
                 {
-                    this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                    this.HandleEscapes(this.Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
                     next = this.Peek();
                     continue;
                 }
@@ -401,38 +390,9 @@ namespace VDS.RDF.Parsing.Tokens
                 //Check for end of Literal
                 if (next == '"')
                 {
-                    if (longliteral)
-                    {
-                        next = this.Peek();
-                        if (next == '"')
-                        {
-                            //Got two quotes so far
-                            this.ConsumeCharacter();
-                            next = this.Peek();
-                            if (next == '"')
-                            {
-                                //Triple quote - end of literal
-                                this.LastTokenType = Token.LONGLITERAL;
-                                return new LongLiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
-                            }
-                            else
-                            {
-                                //Not a triple quote so continue
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            //Not a Triple quote so continue
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        //End of Literal
-                        this.LastTokenType = Token.LITERAL;
-                        return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-                    }
+                    //End of Literal
+                    this.LastTokenType = Token.LITERAL;
+                    return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
                 }
 
                 //Continue Reading
@@ -447,20 +407,9 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 //Uri for Data Type
                 IToken temp = this.TryGetUri();
-                if (this.NQuadsMode)
-                {
-                    //Wrap in a DataType token
-                    return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
-                }
-                else
-                {
-                    return temp;
-                }
+                return this.NQuadsMode ? new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1) : temp;
             }
-            else
-            {
-                throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
-            }
+            throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
         }
     }
 }
