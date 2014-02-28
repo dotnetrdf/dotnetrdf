@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
+            Assert.AreEqual("pl-pl", ((dynamic)pattern.Object).Node.Language);
         }
 
         [Test]
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
+            Assert.AreEqual("pl-pl", ((dynamic)pattern.Object).Node.Language);
         }
 
         [Test]

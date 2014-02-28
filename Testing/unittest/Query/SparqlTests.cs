@@ -592,16 +592,18 @@ WHERE
                     @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN-gb')) }",
                     @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en')) }",
                     @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN')) }",
-                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANG(?o) = 'en-gb')) }"
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANG(?o) = 'en-gb') }"
                 };
 
         private void TestLanguageSpecifierCase(IGraph g)
         {
             foreach (String query in this._langSpecCaseQueries)
             {
+                Console.WriteLine("Checking query:\n" + query);
                 SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
                 Assert.IsNotNull(results);
-                Assert.AreEqual(1, results.Count, "Failed to get a result for query:\n" + query);
+                Assert.AreEqual(1, results.Count, "Failed to get a result");
+                Console.WriteLine();
             }
         }
 
