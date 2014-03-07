@@ -124,5 +124,71 @@ namespace VDS.RDF.Query
             Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
             Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
         }
+
+        [Test]
+        public void SparqlFormattingUnion3()
+        {
+            const string query = "SELECT * WHERE { { MINUS { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion4()
+        {
+            const string query = "SELECT * WHERE { { OPTIONAL { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion5()
+        {
+            const string query = "SELECT * WHERE { { SERVICE <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
     }
 }

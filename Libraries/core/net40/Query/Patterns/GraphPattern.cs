@@ -650,32 +650,30 @@ namespace VDS.RDF.Query.Patterns
                 indent = new String(' ', 2);
                 for (int i = 0; i < this._graphPatterns.Count; i++)
                 {
+                    GraphPattern gp = this._graphPatterns[i];
+
                     if (i > 0) output.Append(indent);
-                    String temp = this._graphPatterns[i].ToString();
+                    String temp = gp.ToString();
                     if (!temp.Contains('\n'))
                     {
+                        if (gp.HasModifier) temp = "{ " + temp + " }";
                         output.Append(temp + " ");
                     }
                     else
                     {
-                        String[] lines = temp.Split('\n');
-                        for (int j = 0; j < lines.Length; j++)
-                        {
-                            if (j > 0) output.Append(indent);
-                            output.Append(lines[j]);
-                            if (j < lines.Length - 1) output.AppendLine();
-                        }
+                        if (gp.HasModifier) temp = "{\n" + temp + "\n}";
+                        output.AppendLineIndented(temp, 2);
                     }
-                    output.AppendLine();
                     if (i < this._graphPatterns.Count - 1)
                     {
+                        output.AppendLine();
                         output.Append(indent);
-                        output.AppendLine(" UNION ");
+                        output.AppendLine("UNION");
                     }
                 }
                 return output.ToString();
             }
-            else if (this._isGraph || this._isService)
+            if (this._isGraph || this._isService)
             {
                 if (this._isGraph)
                 {
