@@ -295,10 +295,28 @@ namespace VDS.RDF.Writing.Formatting
             {
                 for (int i = 0; i < gp.ChildGraphPatterns.Count; i++)
                 {
-                    output.Append(this.Format(gp.ChildGraphPatterns[i]));
+                    GraphPattern cgp = gp.ChildGraphPatterns[i];
+                    if (cgp.HasModifier)
+                    {
+                        String formatted = this.Format(cgp);
+                        formatted = formatted.TrimEnd(new char[] { '\n', '\r' });
+                        if (formatted.Contains("\n"))
+                        {
+                            output.AppendLine("{");
+                            output.AppendLineIndented(formatted, 2);
+                            output.AppendLine("}");
+                        }
+                        else
+                        {
+                            output.AppendLine("{ " + formatted + "}");
+                        }
+                    }
+                    else
+                    {
+                        output.AppendLine(this.Format(cgp));
+                    }
                     if (i < gp.ChildGraphPatterns.Count - 1)
                     {
-                        output.AppendLine();
                         output.AppendLine("UNION");
                     }
                 }
