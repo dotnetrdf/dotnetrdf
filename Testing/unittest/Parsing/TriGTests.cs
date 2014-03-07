@@ -221,5 +221,21 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, store.Graphs.Count);
             Assert.AreEqual(17, store.Triples.Count());
         }
+
+        [Test]
+        public void ParsingTriGCollectionSyntax4()
+        {
+            const String data = @"@prefix : <http://example/> .
+:graph
+{
+    :resource :predicate1 ( true 1 12.3 123e4 ).
+}";
+            TriGParser parser = new TriGParser();
+            TripleStore store = new TripleStore();
+            parser.Load(store, new StringReader(data));
+
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(9, store.Triples.Count());
+        }
     }
 }
