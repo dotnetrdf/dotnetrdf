@@ -180,5 +180,46 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, store.Graphs.Count);
             Assert.AreEqual(14, store.Triples.Count());
         }
+
+        [Test]
+        public void ParsingTriGCollectionSyntax2()
+        {
+            const String data = @"@prefix : <http://example/> .
+:graph
+{
+    :resource :predicate1 ( ""a"" ""b""@en ""c""^^:datatype ).
+    :resource :predicate2 ( :a :b :c ).
+}";
+            TriGParser parser = new TriGParser();
+            TripleStore store = new TripleStore();
+            parser.Load(store, new StringReader(data));
+
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(14, store.Triples.Count());
+        }
+
+        [Test]
+        public void ParsingTriGCollectionSyntax3()
+        {
+            const String data = @"@prefix : <http://example/> .
+:graph
+{
+    :resource :predicate1 ( 
+                            ( ""a"" ) # 2 triples
+                            [] 
+                            _:blank 
+                            (
+                                ""b""@en-us
+                                ( ""c""^^:datatype ) # 2 triples
+                            ) # 4 triples
+                          ) . # 8 triples
+}";
+            TriGParser parser = new TriGParser();
+            TripleStore store = new TripleStore();
+            parser.Load(store, new StringReader(data));
+
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(17, store.Triples.Count());
+        }
     }
 }

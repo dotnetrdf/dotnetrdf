@@ -866,6 +866,10 @@ namespace VDS.RDF.Parsing
                         }
                         break;
 
+                    case Token.BLANKNODEWITHID:
+                        item = context.Handler.CreateBlankNode(next.Value);
+                        break;
+
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected End of File while trying to parse a Collection", next);
 
