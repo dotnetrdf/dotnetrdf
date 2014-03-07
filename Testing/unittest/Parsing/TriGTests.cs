@@ -24,20 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
     [TestFixture]
     public class TriGTests
     {
-        private ITripleStore TestParsing(String data, TriGSyntax syntax, bool shouldParse)
+        private static ITripleStore TestParsing(String data, TriGSyntax syntax, bool shouldParse)
         {
             TriGParser parser = new TriGParser(syntax);
             ITripleStore store = new TripleStore();
@@ -60,112 +56,129 @@ namespace VDS.RDF.Parsing
         public void ParsingTriGBaseDeclaration1()
         {
             String fragment = "@base <http://example.org/base/> .";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTriGBaseDeclaration2()
         {
             String fragment = "{ @base <http://example.org/base/> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTriGBaseDeclaration3()
         {
             String fragment = "<http://graph> { @base <http://example.org/base/> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTriGPrefixDeclaration1()
         {
             String fragment = "@prefix ex: <http://example.org/> .";
-            this.TestParsing(fragment, TriGSyntax.Original, true);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, true);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTriGPrefixDeclaration2()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTriGPrefixDeclaration3()
         {
             String fragment = "<http://graph> { @prefix ex: <http://example.org/> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTrigBaseScope1()
         {
             String fragment = "@base <http://example.org/base/> . { <subj> <pred> <obj> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTrigBaseScope2()
         {
             String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTrigBaseScope3()
         {
             String fragment = "{ @base <http://example.org/base/> . } <http://graph> { <subj> <pred> <obj> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
         [Test]
         public void ParsingTrigBaseScope4()
         {
             String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . } <http://graph> { <subj> <pred> <obj> . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
         [Test]
         public void ParsingTrigPrefixScope1()
         {
             String fragment = "@prefix ex: <http://example.org/> . { ex:subj ex:pred ex:obj . }";
-            this.TestParsing(fragment, TriGSyntax.Original, true);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, true);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTrigPrefixScope2()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, true);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
 
         [Test]
         public void ParsingTrigPrefixScope3()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . } <http://graph> { ex:subj ex:pred ex:obj . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
 
         [Test]
         public void ParsingTrigPrefixScope4()
         {
             String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . } <http://graph> { ex:subj ex:pred ex:obj . }";
-            this.TestParsing(fragment, TriGSyntax.Original, false);
-            this.TestParsing(fragment, TriGSyntax.MemberSubmission, false);
+            TestParsing(fragment, TriGSyntax.Original, false);
+            TestParsing(fragment, TriGSyntax.MemberSubmission, false);
+        }
+
+        [Test]
+        public void ParsingTriGCollectionSyntax1()
+        {
+            const String data = @"@prefix : <http://example/> .
+:graph
+{
+    :resource :predicate1 ( ""a"" ""b"" ""c"" ).
+    :resource :predicate2 ( :a :b :c ).
+}";
+            TriGParser parser = new TriGParser();
+            TripleStore store = new TripleStore();
+            parser.Load(store, new StringReader(data));
+
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(14, store.Triples.Count());
         }
     }
 }
