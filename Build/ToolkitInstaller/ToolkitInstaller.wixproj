@@ -24,6 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -drdfQueryFiles=$(PackageDir)\rdfQuery -drdfServerFiles=$(PackageDir)\rdfServer -drdfOptStatsFiles=$(PackageDir)\rdfOptStats -dsohFiles=$(PackageDir)\soh -dsparqlGuiFiles=$(PackageDir)\sparqlGui -dstoreManagerFiles=$(PackageDir)\storeManager -dinfoFiles=$(PackageDir)\info -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Info.wxs" />

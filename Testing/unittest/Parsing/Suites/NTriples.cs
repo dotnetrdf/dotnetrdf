@@ -24,24 +24,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
-   
     [TestFixture]
     public class NTriples
         : BaseRdfParserSuite
     {
         public NTriples()
-            : base(new NTriplesParser(), new NTriplesParser(), "ntriples\\")
+            : base(new NTriplesParser(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original), @"ntriples\")
         {
             this.CheckResults = false;
         }
@@ -55,7 +48,7 @@ namespace VDS.RDF.Parsing.Suites
             if (this.Count == 0) Assert.Fail("No tests found");
 
             Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            Console.WriteLine((((double) this.Passed/(double) this.Count)*100) + "% Passed");
 
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
@@ -65,7 +58,107 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingNTriplesUnicodeEscapes1()
         {
             Graph g = new Graph();
-            g.LoadFromFile(@"resources\\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt");
+            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", this.Parser);
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingNTriplesComplexBNodeIDs()
+        {
+            const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
+<http://s> <http://p> _:node.id.";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+        }
+
+        [Test, ExpectedException(typeof (RdfParseException))]
+        public void ParsingNTriplesLiteralEscapes1()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+        }
+
+        [Test]
+        public void ParsingNTriplesLiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+    }
+
+    [TestFixture]
+    public class NTriples11
+        : BaseRdfParserSuite
+    {
+        public NTriples11()
+            : base(new NTriplesParser(), new NTriplesParser(), @"ntriples11\")
+        {
+            this.CheckResults = false;
+            this.Parser.Warning += TestTools.WarningPrinter;
+        }
+
+        [Test]
+        public void ParsingSuiteNTriples11()
+        {
+            //Nodes for positive and negative tests
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
+
+            //Run manifests
+            this.RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+
+            if (this.Count == 0) Assert.Fail("No tests found");
+
+            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
+            Console.WriteLine((((double) this.Passed/(double) this.Count)*100) + "% Passed");
+
+            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [Test]
+        public void ParsingNTriples11ComplexBNodeIDs()
+        {
+            const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
+<http://s> <http://p> _:node.id.";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(2, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingNTriples11LiteralEscapes1()
+        {
+            const String data = @"<http://s> <http://p> ""literal\'quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+        }
+
+        [Test]
+        public void ParsingNTriples11LiteralEscapes2()
+        {
+            const String data = @"<http://s> <http://p> ""literal\""quote"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, this.Parser);
+
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }

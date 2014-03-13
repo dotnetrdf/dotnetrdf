@@ -827,7 +827,8 @@ namespace VDS.RDF
                 String[] lines = line.Split('\n');
                 foreach (String l in lines)
                 {
-                    if (!l.Equals(String.Empty)) builder.AppendLine(new String(' ', indent) + l);
+                    if (String.IsNullOrEmpty(l) || l.ToCharArray().All(c => Char.IsWhiteSpace(c))) continue;
+                    builder.AppendLine(new String(' ', indent) + l);
                 }
             }
             else

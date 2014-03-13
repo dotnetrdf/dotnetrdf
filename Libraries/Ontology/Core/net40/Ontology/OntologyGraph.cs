@@ -221,7 +221,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsProperty)));
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfProperty)));
             }
         }
 

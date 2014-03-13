@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using VDS.RDF.Graphs;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
@@ -33,19 +34,44 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
     /// </summary>
-    public class NQuadsWriter 
+    public class NQuadsWriter
         : IRdfWriter, IFormatterBasedWriter
     {
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        public NQuadsWriter()
+            : this(NQuadsSyntax.Original)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        /// <param name="syntax">NQuads Syntax mode to use</param>
+        public NQuadsWriter(NQuadsSyntax syntax)
+        {
+            PrettyPrintMode = true;
+            this.Syntax = syntax;
+        }
+
+        /// <summary>
+        /// Gets/Sets whether pretty print mode is enabled
+        /// </summary>
+        public bool PrettyPrintMode { get; set; }
+
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer
         /// </summary>
         public Type TripleFormatterType
         {
-            get
-            {
-                return typeof(NQuadsFormatter);
-            }
+            get { return typeof (NQuadsFormatter); }
         }
+
+        /// <summary>
+        /// Gets/Sets the NQuads syntax mode
+        /// </summary>
+        public NQuadsSyntax Syntax { get; set; }
 
         /// <summary>
         /// Saves a graph in NQuads format

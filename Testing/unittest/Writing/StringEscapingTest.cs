@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing
     [TestFixture]
     public class StringEscapingTest
     {
-        private List<String> _values = new List<string>()
+        private readonly List<String> _values = new List<string>()
         {
             "Not escapes - nrt" ,
             @"An example with a \ in it should get escaped", 
@@ -100,9 +100,15 @@ new line",
         }
 
         [Test]
-        public void WritingStringBackslashEscapingNTriples()
+        public void WritingStringBackslashEscapingNTriples1()
         {
-            this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(), new NTriplesParser());
+            this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
+        }
+
+        [Test]
+        public void WritingStringBackslashEscapingNTriples2()
+        {
+            this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
         }
 
         [Test]
@@ -115,6 +121,12 @@ new line",
         public void WritingStringBackslashEscapingTurtle2()
         {
             this.TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
+        }
+
+        [Test]
+        public void WritingStringBackslashEscapingTurtle3()
+        {
+            this.TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
         }
 
         [Test]

@@ -58,4 +58,398 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="..\net40\Attributes\RdfIOAttribute.cs">
+      <Link>Attributes\RdfIOAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\SilverlightIOCompatibility.cs">
+      <Link>Compatibility\SilverlightIOCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\RdfParserFactory.cs">
+      <Link>Configuration\RdfParserFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\RdfWriterFactory.cs">
+      <Link>Configuration\RdfWriterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IOCallbacks.cs">
+      <Link>IOCallbacks.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IOExceptions.cs">
+      <Link>IOExceptions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IOExtensions.cs">
+      <Link>IOExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IOManager.cs">
+      <Link>IOManager.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IOOptions.cs">
+      <Link>IOOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IRdfReader.cs">
+      <Link>IRdfReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IRdfWriter.cs">
+      <Link>IRdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\MimeTypeDefinition.cs">
+      <Link>MimeTypeDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\MappedBlankNodeGenerator.cs">
+      <Link>Nodes\MappedBlankNodeGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\RandomDerivedBlankNodeGenerator.cs">
+      <Link>Nodes\RandomDerivedBlankNodeGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\IBlankNodeGenerator.cs">
+      <Link>Nodes\IBlankNodeGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BaseGZipParser.cs">
+      <Link>Parsing\BaseGZipParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BlockingStreamReader.cs">
+      <Link>Parsing\BlockingStreamReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BlockingTextReader.cs">
+      <Link>Parsing\BlockingTextReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\BaseParserContext.cs">
+      <Link>Parsing\Contexts\BaseParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IEventParserContext.cs">
+      <Link>Parsing\Contexts\IEventParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IParserContext.cs">
+      <Link>Parsing\Contexts\IParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\Notation3ParserContext.cs">
+      <Link>Parsing\Contexts\Notation3ParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\RdfXmlParserContext.cs">
+      <Link>Parsing\Contexts\RdfXmlParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\TriGParserContext.cs">
+      <Link>Parsing\Contexts\TriGParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\TriXParserContext.cs">
+      <Link>Parsing\Contexts\TriXParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\TurtleParserContext.cs">
+      <Link>Parsing\Contexts\TurtleParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\DataUriLoader.cs">
+      <Link>Parsing\DataUriLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\EmbeddedResourceLoader.cs">
+      <Link>Parsing\EmbeddedResourceLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\BaseEvent.cs">
+      <Link>Parsing\Events\BaseEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\DualEventQueue.cs">
+      <Link>Parsing\Events\DualEventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\EventQueue.cs">
+      <Link>Parsing\Events\EventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEvent.cs">
+      <Link>Parsing\Events\IEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEventGenerator.cs">
+      <Link>Parsing\Events\IEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEventQueue.cs">
+      <Link>Parsing\Events\IEventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IRDFXMLEvent.cs">
+      <Link>Parsing\Events\IRDFXMLEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\DomBasedEventGenerator.cs">
+      <Link>Parsing\Events\RdfXml\DomBasedEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\StreamingEventGenerator.cs">
+      <Link>Parsing\Events\RdfXml\StreamingEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\XMLEvents.cs">
+      <Link>Parsing\Events\RdfXml\XMLEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\FileLoader.cs">
+      <Link>Parsing\FileLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\AnyHandler.cs">
+      <Link>Parsing\Handlers\AnyHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\BaseHandler.cs">
+      <Link>Parsing\Handlers\BaseHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\CancellableHandler.cs">
+      <Link>Parsing\Handlers\CancellableHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\ChainedHandler.cs">
+      <Link>Parsing\Handlers\ChainedHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\CountHandler.cs">
+      <Link>Parsing\Handlers\CountHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\GraphHandler.cs">
+      <Link>Parsing\Handlers\GraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\GraphStoreHandler.cs">
+      <Link>Parsing\Handlers\GraphStoreHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\GraphUriRewriteHandler.cs">
+      <Link>Parsing\Handlers\GraphUriRewriteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\HandlerExtensions.cs">
+      <Link>Parsing\Handlers\HandlerExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\MultiHandler.cs">
+      <Link>Parsing\Handlers\MultiHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\NullHandler.cs">
+      <Link>Parsing\Handlers\NullHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\PagingHandler.cs">
+      <Link>Parsing\Handlers\PagingHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\UniqueBlankNodesHandler.cs">
+      <Link>Parsing\Handlers\UniqueBlankNodesHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\WriteThroughHandler.cs">
+      <Link>Parsing\Handlers\WriteThroughHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\IriSpecsHelper.cs">
+      <Link>Parsing\IriSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\IUriLoaderCache.cs">
+      <Link>Parsing\IUriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Notation3Parser.cs">
+      <Link>Parsing\Notation3Parser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\NQuadsParser.cs">
+      <Link>Parsing\NQuadsParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\NTriplesParser.cs">
+      <Link>Parsing\NTriplesParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ParserHelper.cs">
+      <Link>Parsing\ParserHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\PositionInfo.cs">
+      <Link>Parsing\PositionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RDFXMLParser.cs">
+      <Link>Parsing\RDFXMLParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\StringParser.cs">
+      <Link>Parsing\StringParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BaseToken.cs">
+      <Link>Parsing\Tokens\BaseToken.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BaseTokeniser.cs">
+      <Link>Parsing\Tokens\BaseTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BufferedTokenQueue.cs">
+      <Link>Parsing\Tokens\BufferedTokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\CsvTokeniser.cs">
+      <Link>Parsing\Tokens\CsvTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\IToken.cs">
+      <Link>Parsing\Tokens\IToken.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\ITokeniser.cs">
+      <Link>Parsing\Tokens\ITokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\ITokenQueue.cs">
+      <Link>Parsing\Tokens\ITokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
+      <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\NTriplesTokeniser.cs">
+      <Link>Parsing\Tokens\NTriplesTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Token.cs">
+      <Link>Parsing\Tokens\Token.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Tokens.cs">
+      <Link>Parsing\Tokens\Tokens.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TriGTokeniser.cs">
+      <Link>Parsing\Tokens\TriGTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TsvTokeniser.cs">
+      <Link>Parsing\Tokens\TsvTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TurtleTokeniser.cs">
+      <Link>Parsing\Tokens\TurtleTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TriGParser.cs">
+      <Link>Parsing\TriGParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TriXParser.cs">
+      <Link>Parsing\TriXParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TurtleParser.cs">
+      <Link>Parsing\TurtleParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\URILoader.cs">
+      <Link>Parsing\URILoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UriLoaderAsync.cs">
+      <Link>Parsing\UriLoaderAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UriLoaderCache.cs">
+      <Link>Parsing\UriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\ISyntaxValidator.cs">
+      <Link>Parsing\Validation\ISyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\RdfSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\SyntaxValidationResults.cs">
+      <Link>Parsing\Validation\SyntaxValidationResults.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Specifications\TurtleSpecsHelper.cs">
+      <Link>Specifications\TurtleSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Specifications\UnicodeSpecsHelper.cs">
+      <Link>Specifications\UnicodeSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGraphStoreWriter.cs">
+      <Link>Writing\BaseGraphStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGraphWriter.cs">
+      <Link>Writing\BaseGraphWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGZipWriter.cs">
+      <Link>Writing\BaseGZipWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\CompressingTurtleWriter.cs">
+      <Link>Writing\CompressingTurtleWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\CompressionHelper.cs">
+      <Link>Writing\CompressionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\BaseWriterContexts.cs">
+      <Link>Writing\Contexts\BaseWriterContexts.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\ICollectionCompressingWriterContext.cs">
+      <Link>Writing\Contexts\ICollectionCompressingWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\IGraphWriterContext.cs">
+      <Link>Writing\Contexts\IGraphWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\IGraphStoreWriterContext.cs">
+      <Link>Writing\Contexts\IGraphStoreWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\IWriterContext.cs">
+      <Link>Writing\Contexts\IWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\NTriplesWriterContext.cs">
+      <Link>Writing\Contexts\NTriplesWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\RdfXmlWriterContext.cs">
+      <Link>Writing\Contexts\RdfXmlWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\TriGWriterContext.cs">
+      <Link>Writing\Contexts\TriGWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\TriXWriterContext.cs">
+      <Link>Writing\Contexts\TriXWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\TurtleWriterContext.cs">
+      <Link>Writing\Contexts\TurtleWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\CsvWriter.cs">
+      <Link>Writing\CsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\BaseFormatter.cs">
+      <Link>Writing\Formatting\BaseFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\CsvFormatter.cs">
+      <Link>Writing\Formatting\CsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\DeliminatedLineFormatter.cs">
+      <Link>Writing\Formatting\DeliminatedLineFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\Notation3Formatter.cs">
+      <Link>Writing\Formatting\Notation3Formatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\NQuadsFormatter.cs">
+      <Link>Writing\Formatting\NQuadsFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\NTriplesFormatter.cs">
+      <Link>Writing\Formatting\NTriplesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\QNameFormatter.cs">
+      <Link>Writing\Formatting\QNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\RdfXmlFormatter.cs">
+      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\TsvFormatter.cs">
+      <Link>Writing\Formatting\TsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\TurtleFormatter.cs">
+      <Link>Writing\Formatting\TurtleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\GraphVizGenerator.cs">
+      <Link>Writing\GraphVizGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\GraphVizWriter.cs">
+      <Link>Writing\GraphVizWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Notation3Writer.cs">
+      <Link>Writing\Notation3Writer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\NQuadsWriter.cs">
+      <Link>Writing\NQuadsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\NTriplesWriter.cs">
+      <Link>Writing\NTriplesWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\PrettyRdfXmlWriter.cs">
+      <Link>Writing\PrettyRdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\RdfXmlWriter.cs">
+      <Link>Writing\RdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\StringWriter.cs">
+      <Link>Writing\StringWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TriGWriter.cs">
+      <Link>Writing\TriGWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TriXWriter.cs">
+      <Link>Writing\TriXWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TsvWriter.cs">
+      <Link>Writing\TsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IObjectParser.cs">
+      <Link>IObjectParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\IRdfHandler.cs">
+      <Link>IRdfHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Collections\BaseDemandGraphCollection.cs">
+      <Link>Collections\BaseDemandGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\MockNodeFactory.cs">
+      <Link>Nodes\MockNodeFactory.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\net40\Parsing\trix-1.0.xsd">
+      <Link>Parsing\trix-1.0.xsd</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\net40\Parsing\trix-1.0.dtd">
+      <Link>Parsing\trix-1.0.dtd</Link>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

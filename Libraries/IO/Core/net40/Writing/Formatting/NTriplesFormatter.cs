@@ -25,9 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -52,17 +52,55 @@ namespace VDS.RDF.Writing.Formatting
         };
 
         /// <summary>
+        /// Creates a new NTriples formatter
+        /// </summary>
+        /// <param name="syntax">NTriples syntax to output</param>
+        /// <param name="formatName">Format Name</param>
+        public NTriplesFormatter(NTriplesSyntax syntax, String formatName)
+            : base(formatName)
+        {
+            this.Syntax = syntax;
+        }
+
+                /// <summary>
+        /// Creates a new NTriples Formatter
+        /// </summary>
+        public NTriplesFormatter(NTriplesSyntax syntax)
+            : this(syntax, GetName(syntax)) { }
+
+        /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
         public NTriplesFormatter()
-            : base("NTriples") { }
+            : this(NTriplesSyntax.Original, GetName()) { }
 
         /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
         protected NTriplesFormatter(String formatName)
-            : base(formatName) { }
+            : this(NTriplesSyntax.Original, formatName) { }
+
+        private static String GetName()
+        {
+            return GetName(NTriplesSyntax.Original);
+        }
+
+        private static string GetName(NTriplesSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NTriplesSyntax.Original:
+                    return "NTriples";
+                default:
+                    return "NTriples (RDF 1.1)";
+            }
+        }
+
+        /// <summary>
+        /// Gets the NTriples syntax being used
+        /// </summary>
+        public NTriplesSyntax Syntax { get; private set; }
 
         /// <summary>
         /// Formats a URI Node
@@ -127,6 +165,8 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns>String</returns>
         public override string FormatChar(char[] cs)
         {
+            if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
+
             StringBuilder builder = new StringBuilder();
             int start = 0, length = 0;
             for (int i = 0; i < cs.Length; i++)
@@ -149,11 +189,8 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return new string(cs);
             }
-            else
-            {
-                if (length > 0) builder.Append(cs, start, length);
-                return builder.ToString();
-            }
+            if (length > 0) builder.Append(cs, start, length);
+            return builder.ToString();
         }
 
         /// <summary>

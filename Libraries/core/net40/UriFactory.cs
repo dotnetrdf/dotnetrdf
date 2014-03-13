@@ -148,21 +148,15 @@ namespace VDS.RDF
             {
                 return u;
             }
-            else
+            if (u.IsAbsoluteUri)
             {
-                if (u.IsAbsoluteUri)
-                {
-                    // TODO: Rewrite to just use Uri constructor to copy relevant portions
-                    String temp = u.AbsoluteUri;
-                    temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                    return UriFactory.Create(temp);
-                }
-                else
-                {
-                    // TODO: Support stripping fragments from relative URIs
-                    throw new RdfException("Stripping Fragments from relative URIs is not currently supported");
-                }
+                // TODO: Rewrite to just use Uri constructor to copy relevant portions
+                String temp = u.AbsoluteUri;
+                temp = temp.Substring(0, temp.Length - u.Fragment.Length);
+                return UriFactory.Create(temp);
             }
+            // TODO: Support stripping fragments from relative URIs
+            throw new RdfException("Stripping Fragments from relative URIs is not currently supported");
         }
 
         /// <summary>

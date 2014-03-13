@@ -24,13 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -38,14 +34,14 @@ namespace VDS.RDF.Query
     [TestFixture]
     public class QueryFormattingTests
     {
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
 
         [Test]
         public void SparqlFormattingFilter1()
         {
-            String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
             String toString = q.ToString();
@@ -62,9 +58,8 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlFormattingFilter2()
         {
-            String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
             String toString = q.ToString();
@@ -78,6 +73,122 @@ namespace VDS.RDF.Query
             Assert.IsTrue(toString.Contains("i"), "ToString() form should contain i option");
             Assert.IsTrue(formatted.Contains("FILTER"), "Format() form should contain FILTER");
             Assert.IsTrue(toString.Contains("i"), "Format() form should contain i option");
+        }
+
+        private int CountOccurrences(String value, char c)
+        {
+            char[] cs = value.ToCharArray();
+            return cs.Count(x => x == c);
+        }
+
+        [Test]
+        public void SparqlFormattingUnion1()
+        {
+            const string query = "SELECT * WHERE { { ?s a ?type } UNION { ?s ?p ?o } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(3, CountOccurrences(toString, '{'), "ToString() form should contain three opening braces");
+            Assert.AreEqual(3, CountOccurrences(toString, '}'), "ToString() form should contain three closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(3, CountOccurrences(formatted, '{'), "Formatted form should contain three opening braces");
+            Assert.AreEqual(3, CountOccurrences(formatted, '}'), "Formatted form should contain three closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion2()
+        {
+            const string query = "SELECT * WHERE { { GRAPH <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion3()
+        {
+            const string query = "SELECT * WHERE { { MINUS { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion4()
+        {
+            const string query = "SELECT * WHERE { { OPTIONAL { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
+        }
+
+        [Test]
+        public void SparqlFormattingUnion5()
+        {
+            const string query = "SELECT * WHERE { { SERVICE <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("UNION"), "ToString() form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(toString, '{'), "ToString() form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(toString, '}'), "ToString() form should contain five closing braces");
+            Assert.IsTrue(formatted.Contains("UNION"), "Formatted form should contain UNION");
+            Assert.AreEqual(5, CountOccurrences(formatted, '{'), "Formatted form should contain five opening braces");
+            Assert.AreEqual(5, CountOccurrences(formatted, '}'), "Formatted form should contain five closing braces");
         }
     }
 }

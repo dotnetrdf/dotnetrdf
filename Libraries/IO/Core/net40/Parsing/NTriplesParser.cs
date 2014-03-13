@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Graphs;
@@ -37,79 +35,92 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for NTriples syntax which is designed specifically for NTriples
+    /// Possible NTriples syntax modes
     /// </summary>
-    /// <remarks>The <see cref="NTriplesParser">NTriplesParser</see> class can also be used which is a wrapper to a <see cref="TurtleParser">TurtleParser</see> which can be restricted to only parse NTriples syntax.  This Native Parser should be faster since it uses a NTriples only Tokeniser as opposed to the Turtle Tokeniser which will Tokenise syntax which is invalid in NTriples.  The NTriples specific Tokeniser is able to reject this syntax at the Tokeniser stage whereas the Turtle based parser has to reject at the Parser stage which is potentially slower.</remarks>
+    public enum NTriplesSyntax
+    {
+        /// <summary>
+        /// The original NTriples syntax as specified in the original RDF specification <a href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/">test cases</a> specification
+        /// </summary>
+        Original,
+
+        /// <summary>
+        /// Standardized NTriples as specified in the <a href="http://www.w3.org/TR/n-triples/">RDF 1.1 NTriples</a> specification
+        /// </summary>
+        Rdf11
+    }
+
+    /// <summary>
+    /// Parser for NTriples syntax
+    /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
     public class NTriplesParser
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
         #region Initialisation, Variables and Properties
 
-        private bool _tracetokeniser = false;
-        private bool _traceparsing = false;
         private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
-
         /// <summary>
-        /// Creates a new Instance of the Parser
+        /// Creates a new instance of the parser
         /// </summary>
         public NTriplesParser()
+            : this(NTriplesSyntax.Rdf11)
         {
         }
 
         /// <summary>
-        /// Creates a new Instance of the Parser using the given Token Queue Mode
+        /// Creates a new instance of the parser
+        /// </summary>
+        /// <param name="syntax">NTriples syntax to parse</param>
+        public NTriplesParser(NTriplesSyntax syntax)
+        {
+            TokenQueueMode = IOOptions.DefaultTokenQueueMode;
+            TraceParsing = false;
+            TraceTokeniser = false;
+            this.Syntax = syntax;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the parser using the given token queue mode
         /// </summary>
         /// <param name="qmode">Token Queue Mode</param>
         public NTriplesParser(TokenQueueMode qmode)
+            : this()
         {
-            this._queueMode = qmode;
+            this.TokenQueueMode = qmode;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the parser using the given syntax and token queue mode
+        /// </summary>
+        /// 
+        /// <param name="qmode">Token Queue Mode</param>
+        /// <param name="syntax">NTriples syntax to parse</param>
+        public NTriplesParser(NTriplesSyntax syntax, TokenQueueMode qmode)
+            : this(syntax)
+        {
+            this.TokenQueueMode = qmode;
         }
 
         /// <summary>
         /// Controls whether Tokeniser progress will be traced by writing output to the Console
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return this._tracetokeniser;
-            }
-            set
-            {
-                this._tracetokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; }
 
         /// <summary>
         /// Controls whether Parser progress will be traced by writing output to the Console
         /// </summary>
-        public bool TraceParsing
-        {
-            get
-            {
-                return this._traceparsing;
-            }
-            set
-            {
-                this._traceparsing = value;
-            }
-        }
+        public bool TraceParsing { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return this._queueMode;
-            }
-            set
-            {
-                this._queueMode = value;
-            }
-        }
+        public TokenQueueMode TokenQueueMode { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the desired NTriples syntax
+        /// </summary>
+        public NTriplesSyntax Syntax { get; set; }
 
         #endregion
 
@@ -147,15 +158,7 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
-#if !SILVERLIGHT
-            //Issue a Warning if the Encoding of the Stream is not ASCII
-            if (!input.CurrentEncoding.Equals(Encoding.ASCII))
-            {
-                this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-            }
-#endif
-
-            this.Load(handler, (TextReader)input);
+            this.Load(handler, (TextReader) input);
         }
 
         /// <summary>
@@ -168,14 +171,38 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
 
+            if (input is StreamReader)
+            {
+                StreamReader streamInput = (StreamReader) input;
+                // Check for incorrect stream encoding and issue warning if appropriate
+                switch (this.Syntax)
+                {
+                    case NTriplesSyntax.Original:
+#if !SILVERLIGHT
+                        //Issue a Warning if the Encoding of the Stream is not ASCII
+                        if (!streamInput.CurrentEncoding.Equals(Encoding.ASCII))
+                        {
+                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        }
+#endif
+                        break;
+                    default:
+                        if (!streamInput.CurrentEncoding.Equals(Encoding.UTF8))
+                        {
+#if SILVERLIGHT
+                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#else
+                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#endif
+                        }
+                        break;
+                }
+            }
+
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this._queueMode, this._traceparsing, this._tracetokeniser);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -247,7 +274,7 @@ namespace VDS.RDF.Parsing
             INode obj = this.TryParseObject(context);
 
             //Ensure we're terminated by a DOT
-            this.TryParseLineTerminator(context);
+            TryParseLineTerminator(context);
 
             //Assert the Triple
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
@@ -270,7 +297,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(subjToken.Value));
+                    return TryParseUri(context, subjToken.Value);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -296,8 +323,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     throw Error("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(predToken.Value));
-                    //return this.ConvertToNode(g, predToken);
+                    return TryParseUri(context, predToken.Value);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -310,7 +336,6 @@ namespace VDS.RDF.Parsing
         private INode TryParseObject(TokenisingParserContext context)
         {
             IToken objToken = context.Tokens.Dequeue();
-            String dt;
 
             //Discard Comments
             while (objToken.TokenType == Token.COMMENT)
@@ -325,37 +350,34 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(UriFactory.Create(objToken.Value));
+                    return TryParseUri(context, objToken.Value);
                 case Token.LITERALWITHDT:
-                    dt = ((LiteralWithDataTypeToken)objToken).DataType;
-                    dt = dt.Substring(1,dt.Length-2);
-                    return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(dt));
+                    String dt = ((LiteralWithDataTypeToken) objToken).DataType;
+                    dt = dt.Substring(1, dt.Length - 2);
+                    return context.Handler.CreateLiteralNode(objToken.Value, TryParseUri(context, dt).Uri);
                 case Token.LITERALWITHLANG:
-                    return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken)objToken).Language);
+                    return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken) objToken).Language);
                 case Token.LITERAL:
                     IToken next = context.Tokens.Peek();
                     //Is there a Language Specifier or Data Type?
-                    if (next.TokenType == Token.LANGSPEC)
+                    switch (next.TokenType)
                     {
-                        context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
+                        case Token.LANGSPEC:
+                            context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
+                        case Token.URI:
+                            context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(objToken.Value, TryParseUri(context, next.Value).Uri);
+                        default:
+                            return context.Handler.CreateLiteralNode(objToken.Value);
                     }
-                    else if (next.TokenType == Token.URI)
-                    {
-                        context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, ParserHelper.TryResolveUri(context, next).Uri);
-                    }
-                    else
-                    {
-                        return context.Handler.CreateLiteralNode(objToken.Value);
-                    }
-                    
+
                 default:
                     throw Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered, expected a Blank Node, Literal or URI for the Object of a Triple", objToken);
             }
         }
 
-        private void TryParseLineTerminator(TokenisingParserContext context)
+        private static void TryParseLineTerminator(TokenisingParserContext context)
         {
             IToken next = context.Tokens.Dequeue();
 
@@ -373,12 +395,37 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Tries to parse a URI
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="uri">URI</param>
+        /// <returns>URI Node if parsed successfully</returns>
+        private static INode TryParseUri(TokenisingParserContext context, String uri)
+        {
+            try
+            {
+                INode n = context.Handler.CreateUriNode(UriFactory.Create(uri));
+                if (!n.Uri.IsAbsoluteUri)
+                    throw new RdfParseException("NTriples does not permit relative URIs");
+                return n;
+            }
+#if SILVERLIGHT
+            catch (FormatException uriEx)
+#else
+            catch (UriFormatException uriEx)
+#endif
+            {
+                throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
+            }
+        }
+
+        /// <summary>
         /// Helper method for raising informative standardised Parser Errors
         /// </summary>
         /// <param name="msg">The Error Message</param>
         /// <param name="t">The Token that is the cause of the Error</param>
         /// <returns></returns>
-        private RdfParseException Error(String msg, IToken t)
+        private static RdfParseException Error(String msg, IToken t)
         {
             StringBuilder output = new StringBuilder();
             output.Append("[");
@@ -403,11 +450,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message</param>
         private void RaiseWarning(String message)
         {
-            if (this.Warning == null)
-            {
-                //Do Nothing
-            }
-            else
+            if (this.Warning != null)
             {
                 //Raise Event
                 this.Warning(message);

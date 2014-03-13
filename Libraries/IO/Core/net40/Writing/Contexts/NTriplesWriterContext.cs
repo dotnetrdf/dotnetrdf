@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.IO;
 using VDS.RDF.Graphs;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
@@ -40,25 +41,29 @@ namespace VDS.RDF.Writing.Contexts
         /// </summary>
         /// <param name="g">Graph to write</param>
         /// <param name="output">TextWriter to write to</param>
-        public NTriplesWriterContext(IGraph g, TextWriter output)
-            : base(g, output) 
-        {
-            this._formatter = new NTriplesFormatter();
-            this._uriFormatter = (IUriFormatter)this._formatter;
-        }
+        /// <param name="syntax">NTriples Syntax mode</param>
+        public NTriplesWriterContext(IGraph g, TextWriter output, NTriplesSyntax syntax)
+            : this(g, output, syntax, false, true) { }
 
         /// <summary>
         /// Creates a new NTriples Writer Context with custom settings
         /// </summary>
         /// <param name="g">Graph to write</param>
         /// <param name="output">TextWriter to write to</param>
+        /// <param name="syntax">NTriples Syntax mode</param>
         /// <param name="prettyPrint">Pretty Print Mode</param>
         /// <param name="hiSpeed">High Speed Mode</param>
-        public NTriplesWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed) 
+        public NTriplesWriterContext(IGraph g, TextWriter output, NTriplesSyntax syntax, bool prettyPrint, bool hiSpeed)
+            : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed)
         {
-            this._formatter = new NTriplesFormatter();
+            this.Syntax = syntax;
+            this._formatter = new NTriplesFormatter(this.Syntax);
             this._uriFormatter = (IUriFormatter)this._formatter;
         }
+
+        /// <summary>
+        /// Gets the NTriples syntax mode
+        /// </summary>
+        public NTriplesSyntax Syntax { get; private set; }
     }
 }

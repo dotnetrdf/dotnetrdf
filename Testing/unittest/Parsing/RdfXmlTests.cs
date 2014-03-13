@@ -289,8 +289,8 @@ namespace VDS.RDF.Parsing
         {
             TestTools.RunAtDepth(1000, this.ParsingRdfXmlStackOverflow1);
         }
-
-        [Test]
+// Ignore potentially risky test
+        [Test,Ignore]
         public void ParsingRdfXmlStackOverflow4()
         {
             TestTools.RunAtDepth(5000, this.ParsingRdfXmlStackOverflow1);

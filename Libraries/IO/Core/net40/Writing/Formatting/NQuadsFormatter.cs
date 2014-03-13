@@ -24,20 +24,54 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.Graphs;
+using System;
+using VDS.RDF.Parsing;
+
 
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
     /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple
     /// </summary>
-    public class NQuadsFormatter 
+    public class NQuadsFormatter
         : NTriplesFormatter, IQuadFormatter
     {
         /// <summary>
         /// Creates a new NQuads Formatter
         /// </summary>
         public NQuadsFormatter()
-            : base("NQuads") { }
+            : this(NQuadsSyntax.Original, GetName()) { }
+
+        /// <summary>
+        /// Creates a new NQuads formatter
+        /// </summary>
+        /// <param name="syntax">NQuads syntax to output</param>
+        public NQuadsFormatter(NQuadsSyntax syntax)
+            : this(syntax, GetName(syntax)) { }
+
+        /// <summary>
+        /// Creates a new NQuads formatter
+        /// </summary>
+        /// <param name="syntax">NQuads syntax to output</param>
+        /// <param name="formatName">Format Name</param>
+        public NQuadsFormatter(NQuadsSyntax syntax, String formatName)
+            : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
+
+        private static String GetName()
+        {
+            return GetName(NQuadsSyntax.Original);
+        }
+
+        private static string GetName(NQuadsSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NQuadsSyntax.Original:
+                    return "NQuads";
+                default:
+                    return "NQuads (RDF 1.1)";
+            }
+        }
 
         /// <summary>
         /// Formats a quad

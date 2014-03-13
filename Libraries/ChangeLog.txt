@@ -2,45 +2,6 @@
 Change Log
 ==========
 
-1.0.4
------
-
-Changed
-- Bug Fixes
- - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
- - Fix a bug with overly greedly tokenization when parsing prefix declarations in Turtle, N3 and SPARQL
- - Fix a bug with language specifiers not being consistently normalized to lower case internally
-   leading to unexpected behaviour trying to query for triples by language tag (CORE-401)
-- Storage
- - Add Timeout property to all HTTP based storage providers which is used for all HTTP requests (CORE-400)
- - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
- - Fix handling of inserting/deleting blank nodes with more recent Virtuoso versions (VIRT-399)
-
- Removed
- - Removed obsolete unusable DydraConnector
-
-1.0.3
------
-
-Changed
-- Bug Fixes
- - Fix a bug in how Sesame connections load the default graph
- - Fix a bug causing incorrect results in some cases of { } OPTIONAL { } when the LHS and RHS are disjoint i.e. no
-   common variables (CORE-386)
- - DELETE WHERE { } shorthand syntax was permitted to have a preceding WITH clause which was invalid SPARQL syntax (CORE-389)
- - URILoader.Load() can sometimes swallow exceptions (CORE-391)
- - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
- - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
- - Fix a bug in translating and evaluating complex property paths (CORE-395)
-- Dependencies
- - Bumped Json.Net to 5.0.8
-- Documentation
- - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
-- Query
- - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
-- Storage
- - Add native SPARQL Update support to StardogV2Connector (CORE-376)
-
 1.9.0
 -----
 
@@ -76,6 +37,56 @@ Changed
  Removed
  - ITripleStore was removed, use IGraphStore instead
  - ITripleContext was removed
+
+1.0.4
+-----
+
+Added
+- Parsing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+ - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
+- Writing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+ - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
+
+
+Changed
+- Bug Fixes
+ - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
+ - Fix a bug with overly greedly tokenization when parsing prefix declarations in Turtle, N3 and SPARQL
+ - Fix a bug with language specifiers not being consistently normalized to lower case internally
+   leading to unexpected behaviour trying to query for triples by language tag (CORE-401)
+ - Fix a bug in re-serializing queries containing UNION clauses (CORE-402)
+ - Fix a bug in parsing collections from TriG syntax (CORE-403)
+- Storage
+ - Add Timeout property to all HTTP based storage providers which is used for all HTTP requests (CORE-400)
+ - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
+ - Fix handling of inserting/deleting blank nodes with more recent Virtuoso versions (VIRT-399)
+
+ Removed
+ - Removed obsolete unusable DydraConnector
+
+1.0.3
+-----
+
+Changed
+- Bug Fixes
+ - Fix a bug in how Sesame connections load the default graph
+ - Fix a bug causing incorrect results in some cases of { } OPTIONAL { } when the LHS and RHS are disjoint i.e. no
+   common variables (CORE-386)
+ - DELETE WHERE { } shorthand syntax was permitted to have a preceding WITH clause which was invalid SPARQL syntax (CORE-389)
+ - URILoader.Load() can sometimes swallow exceptions (CORE-391)
+ - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
+ - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
+ - Fix a bug in translating and evaluating complex property paths (CORE-395)
+- Dependencies
+ - Bumped Json.Net to 5.0.8
+- Documentation
+ - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
+- Query
+ - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
+- Storage
+ - Add native SPARQL Update support to StardogV2Connector (CORE-376)
 
 1.0.2
 -----

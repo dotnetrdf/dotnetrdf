@@ -447,4 +447,12 @@
       <Link>Parsing\trix-1.0.dtd</Link>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Configuration\RdfParserFactory.cs">
+      <Link>Configuration\RdfParserFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\RdfWriterFactory.cs">
+      <Link>Configuration\RdfWriterFactory.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

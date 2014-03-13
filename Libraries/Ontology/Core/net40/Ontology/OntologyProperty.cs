@@ -54,7 +54,7 @@ namespace VDS.RDF.Ontology
         {
             //Q: Assert that this resource is a property?
             //UriNode rdfType = graph.CreateUriNode(new Uri(OntologyHelper.PropertyType));
-            //graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfsProperty))));
+            //graph.Assert(new Triple(resource, rdfType, graph.CreateUriNode(new Uri(OntologyHelper.RdfProperty))));
 
             this.IntialiseProperty(OntologyHelper.PropertyDomain, false);
             this.IntialiseProperty(OntologyHelper.PropertyRange, false);

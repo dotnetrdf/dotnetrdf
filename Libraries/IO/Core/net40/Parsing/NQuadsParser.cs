@@ -35,6 +35,22 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
+    /// Possible NQuads Syntax modes
+    /// </summary>
+    public enum NQuadsSyntax
+    {
+        /// <summary>
+        /// The original <a href="http://sw.deri.org/2008/07/n-quads/">NQuads specification</a>
+        /// </summary>
+        Original,
+
+        /// <summary>
+        /// Standardized NQuads as specified in the <a href="http://www.w3.org/TR/n-quads/">RDF 1.1 NQuads</a> specification
+        /// </summary>
+        Rdf11
+    }
+
+    /// <summary>
     /// Parser for parsing NQuads (NTriples with an additional Context i.e. Named Graphs)
     /// </summary>
     /// <remarks>
@@ -54,14 +70,24 @@ namespace VDS.RDF.Parsing
     /// In these URIs the numbers are the libraries hash codes for the node used as the Context.
     /// </para>
     /// </remarks>
-    public class NQuadsParser 
+    public class NQuadsParser
         : IRdfReader, ITraceableTokeniser, ITokenisingParser
     {
         /// <summary>
         /// Creates a new NQuads parser
         /// </summary>
         public NQuadsParser()
+            : this(NQuadsSyntax.Rdf11)
         {
+        }
+
+        /// <summary>
+        /// Creates a new NQuads parser
+        /// </summary>
+        /// <param name="syntax">NQuads syntax mode</param>
+        public NQuadsParser(NQuadsSyntax syntax)
+        {
+            this.Syntax = syntax;
             TokenQueueMode = IOOptions.DefaultTokenQueueMode;
             TraceTokeniser = false;
         }
@@ -71,8 +97,19 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Token Queue Mode</param>
         public NQuadsParser(TokenQueueMode queueMode)
+            : this(NQuadsSyntax.Rdf11)
         {
-            TraceTokeniser = false;
+            this.TokenQueueMode = queueMode;
+        }
+
+        /// <summary>
+        /// Creates a new NQuads parser
+        /// </summary>
+        /// <param name="queueMode">Token Queue Mode</param>
+        /// <param name="syntax">NQuads syntax mode</param>
+        public NQuadsParser(NQuadsSyntax syntax, TokenQueueMode queueMode)
+            : this(syntax)
+        {
             this.TokenQueueMode = queueMode;
         }
 
@@ -86,20 +123,14 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public TokenQueueMode TokenQueueMode { get; set; }
 
+        /// <summary>
+        /// Gets/Sets the NQuads syntax mode
+        /// </summary>
+        public NQuadsSyntax Syntax { get; set; }
+
         public void Load(IRdfHandler handler, StreamReader input)
         {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-#if !SILVERLIGHT
-            //Issue a Warning if the Encoding of the Stream is not ASCII
-            if (!input.CurrentEncoding.Equals(Encoding.ASCII))
-            {
-                this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-            }
-#endif
-
-            this.Load(handler, (TextReader)input);
+            this.Load(handler, (TextReader) input);
         }
 
         /// <summary>
@@ -112,14 +143,38 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
 
+            // Check for incorrect stream encoding and issue warning if appropriate
+            if (input is StreamReader)
+            {
+                StreamReader streamInput = (StreamReader) input;
+                switch (this.Syntax)
+                {
+                    case NQuadsSyntax.Original:
+#if !SILVERLIGHT
+                        //Issue a Warning if the Encoding of the Stream is not ASCII
+                        if (!streamInput.CurrentEncoding.Equals(Encoding.ASCII))
+                        {
+                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                        }
+#endif
+                        break;
+                    default:
+                        if (!streamInput.CurrentEncoding.Equals(Encoding.UTF8))
+                        {
+#if SILVERLIGHT
+                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#else
+                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#endif
+                        }
+                        break;
+                }
+            }
+
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this.TokenQueueMode, false, this.TraceTokeniser); 
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax)), this.TokenQueueMode, false, this.TraceTokeniser);
                 this.Parse(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -131,6 +186,22 @@ namespace VDS.RDF.Parsing
                 {
                     //No catch actions - just cleaning up
                 }
+            }
+        }
+
+        /// <summary>
+        /// Converts syntax enumeration values from NQuads to NTriples
+        /// </summary>
+        /// <param name="syntax">NQuads Syntax</param>
+        /// <returns></returns>
+        internal static NTriplesSyntax AsNTriplesSyntax(NQuadsSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NQuadsSyntax.Original:
+                    return NTriplesSyntax.Original;
+                default:
+                    return NTriplesSyntax.Rdf11;
             }
         }
 
@@ -223,17 +294,14 @@ namespace VDS.RDF.Parsing
                     if (temp.TokenType == Token.DATATYPE)
                     {
                         context.Tokens.Dequeue();
-                        return new LiteralWithDataTypeToken(next, (DataTypeToken)temp);
+                        return new LiteralWithDataTypeToken(next, (DataTypeToken) temp);
                     }
-                    else if (temp.TokenType == Token.LANGSPEC)
+                    if (temp.TokenType == Token.LANGSPEC)
                     {
                         context.Tokens.Dequeue();
-                        return new LiteralWithLanguageSpecifierToken(next, (LanguageSpecifierToken)temp);
+                        return new LiteralWithLanguageSpecifierToken(next, (LanguageSpecifierToken) temp);
                     }
-                    else
-                    {
-                        return next;
-                    }
+                    return next;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", next);
             }
@@ -246,48 +314,47 @@ namespace VDS.RDF.Parsing
             {
                 return Quad.DefaultGraphNode;
             }
-            else
+            INode graph;
+            switch (next.TokenType)
             {
-                INode graph;
-                switch (next.TokenType)
-                {
-                    case Token.BLANKNODEWITHID:
-                        graph = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
-                        break;
-                    case Token.URI:
-                        graph = context.Handler.CreateUriNode(UriFactory.Create(next.Value));
-                        break;
-                    case Token.LITERAL:
-                        //Check for Datatype/Language
-                        IToken temp = context.Tokens.Peek();
-                        if (temp.TokenType == Token.LANGSPEC)
-                        {
-                            context.Tokens.Dequeue();
-                            graph = new LiteralNode(next.Value, temp.Value);
-                        }
-                        else if (temp.TokenType == Token.DATATYPE)
-                        {
-                            context.Tokens.Dequeue();
-                            graph = new LiteralNode(next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
-                        }
-                        else
-                        {
-                            graph = new LiteralNode(next.Value);
-                        }
-                        break;
-                    default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Graph Name for the Quad", next);
-                }
+                case Token.BLANKNODEWITHID:
+                    graph = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
+                    break;
+                case Token.URI:
+                    graph = context.Handler.CreateUriNode(UriFactory.Create(next.Value));
+                    break;
+                case Token.LITERAL:
+                    if (this.Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
 
-                //Ensure we then see a . to terminate the Quad
-                next = context.Tokens.Dequeue();
-                if (next.TokenType != Token.DOT)
-                {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Quad", next);
-                }
-
-                return graph;
+                    //Check for Datatype/Language
+                    IToken temp = context.Tokens.Peek();
+                    switch (temp.TokenType)
+                    {
+                        case Token.LANGSPEC:
+                            context.Tokens.Dequeue();
+                            graph = context.Handler.CreateLiteralNode(next.Value, temp.Value);
+                            break;
+                        case Token.DATATYPE:
+                            context.Tokens.Dequeue();
+                            graph = context.Handler.CreateLiteralNode(next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
+                            break;
+                        default:
+                            graph = context.Handler.CreateLiteralNode(next.Value);
+                            break;
+                    }
+                    break;
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Graph Name for the Quad", next);
             }
+
+            //Ensure we then see a . to terminate the Quad
+            next = context.Tokens.Dequeue();
+            if (next.TokenType != Token.DOT)
+            {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Quad", next);
+            }
+
+            return graph;
         }
 
         private void TryParseQuad(TokenisingParserContext context, IToken s, IToken p, IToken o, INode graphName)
@@ -300,7 +367,7 @@ namespace VDS.RDF.Parsing
                     subj = context.BlankNodeGenerator.CreateBlankNode(s.Value.Substring(2));
                     break;
                 case Token.URI:
-                    subj = ParserHelper.TryResolveUri(context, s);
+                    subj = TryParseUri(context, s.Value);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
@@ -324,20 +391,45 @@ namespace VDS.RDF.Parsing
                     obj = context.Handler.CreateLiteralNode(o.Value);
                     break;
                 case Token.LITERALWITHDT:
-                    String dtUri = ((LiteralWithDataTypeToken)o).DataType;
-                    obj = context.Handler.CreateLiteralNode(o.Value, UriFactory.Create(dtUri.Substring(1, dtUri.Length - 2)));
+                    String dtUri = ((LiteralWithDataTypeToken) o).DataType;
+                    obj = context.Handler.CreateLiteralNode(o.Value, TryParseUri(context, dtUri.Substring(1, dtUri.Length - 2)).Uri);
                     break;
                 case Token.LITERALWITHLANG:
-                    obj = context.Handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken)o).Language);
+                    obj = context.Handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken) o).Language);
                     break;
                 case Token.URI:
-                    obj = ParserHelper.TryResolveUri(context, o);
+                    obj = TryParseUri(context, o.Value);
                     break;
                 default:
-                        throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
+                    throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
             }
 
             if (!context.Handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop();
+        }
+
+        /// <summary>
+        /// Tries to parse a URI
+        /// </summary>
+        /// <param name="context">Parser context</param>
+        /// <param name="uri">URI</param>
+        /// <returns>URI Node if parsed successfully</returns>
+        private static INode TryParseUri(TokenisingParserContext context, String uri)
+        {
+            try
+            {
+                INode n = context.Handler.CreateUriNode(UriFactory.Create(uri));
+                if (!n.Uri.IsAbsoluteUri)
+                    throw new RdfParseException("NQuads does not permit relative URIs");
+                return n;
+            }
+#if SILVERLIGHT
+            catch (FormatException uriEx)
+#else
+            catch (UriFormatException uriEx)
+#endif
+            {
+                throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
+            }
         }
 
         /// <summary>

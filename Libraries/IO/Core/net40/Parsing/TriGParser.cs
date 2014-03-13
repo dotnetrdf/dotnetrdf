@@ -778,7 +778,31 @@ namespace VDS.RDF.Parsing
 
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
-
+                        IToken obj = next;
+                        next = context.Tokens.Peek();
+                        switch (next.TokenType)
+                        {
+                            case Token.LANGSPEC:
+                                context.Tokens.Dequeue();
+                                item = context.Handler.CreateLiteralNode(obj.Value, next.Value);
+                                break;
+                            case Token.HATHAT:
+                                context.Tokens.Dequeue();
+                                next = context.Tokens.Dequeue();
+                                if (next.TokenType == Token.URI)
+                                {
+                                    Uri dt = UriFactory.ResolveUri(next.Value, context.BaseUri);
+                                    item = context.Handler.CreateLiteralNode(obj.Value, dt);
+                                }
+                                else
+                                {
+                                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
+                                }
+                                break;
+                            default:
+                                item = context.Handler.CreateLiteralNode(obj.Value);
+                                break;
+                        }
                         break;
                     case Token.PLAINLITERAL:
                         Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)next, TurtleSyntax.Original);
@@ -817,6 +841,10 @@ namespace VDS.RDF.Parsing
                             item = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, graphName, item);
                         }
+                        break;
+
+                    case Token.BLANKNODEWITHID:
+                        item = context.BlankNodeGenerator.CreateBlankNode(next.Value);
                         break;
 
                     case Token.EOF:

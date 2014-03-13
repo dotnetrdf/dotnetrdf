@@ -362,4 +362,21 @@
       <Link>UriFactory.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Attributes\ConfigurationObjectFactory.cs">
+      <Link>Attributes\ConfigurationObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationSerializationContext.cs">
+      <Link>Configuration\ConfigurationSerializationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationVocabulary.cs">
+      <Link>Configuration\ConfigurationVocabulary.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\IObjectFactory.cs">
+      <Link>Configuration\IObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\IConfigurationSerializable.cs">
+      <Link>Configuration\IConfigurationSerializable.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
