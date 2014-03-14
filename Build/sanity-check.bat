@@ -31,7 +31,7 @@ del %FOUND%
 
 :: Try a quick build
 cd Build\nant\
-nant compile
+nant compile-libs
 if ERRORLEVEL 1 (
   echo Comilation errors occurred
   set EXIT=1
