@@ -85,4 +85,17 @@ namespace VDS.RDF.Writing.Formatting
             return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
         }
     }
+
+    /// <summary>
+    /// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification
+    /// </summary>
+    public class NQuads11Formatter
+        : NQuadsFormatter
+    {
+        /// <summary>
+        /// Creates a new formatter
+        /// </summary>
+        public NQuads11Formatter()
+            : base(NQuadsSyntax.Rdf11) { }
+    }
 }
