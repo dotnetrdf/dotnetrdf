@@ -7,79 +7,79 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfEditorComponentGroup">
-            <Component Id="cmpEB09B60958858212801BF9C223EE0499" Directory="rdfEditorFolder" Guid="{307D9760-5D36-4DF7-BFB3-ADF9AA70A032}">
+            <Component Id="cmpEB09B60958858212801BF9C223EE0499" Directory="rdfEditorFolder" Guid="{2C62A44E-C853-4D8C-8A83-8AFB5050F895}">
                 <File Id="fil6BAE4DF38B5C47AD2CC1AE49FBFFC6A9" KeyPath="yes" Source="$(var.rdfEditorFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmp8F62E99957A839A6CFF44D37964E6409" Directory="rdfEditorFolder" Guid="{D23E7387-2A91-4454-A977-760100B71C00}">
+            <Component Id="cmp8F62E99957A839A6CFF44D37964E6409" Directory="rdfEditorFolder" Guid="{793DA381-5DA0-4221-83A4-0DEE6F32A719}">
                 <File Id="filCCA67088B46697D9601AE37920F22AF9" KeyPath="yes" Source="$(var.rdfEditorFiles)\FileAssociation.dll" />
             </Component>
-            <Component Id="cmp20EAB739CF34DB31BF1C8C4080D5A9CF" Directory="rdfEditorFolder" Guid="{0C4A0515-F25E-49A6-BBA3-5636E2D67F72}">
+            <Component Id="cmp20EAB739CF34DB31BF1C8C4080D5A9CF" Directory="rdfEditorFolder" Guid="{8498C00A-D3E8-414C-9090-7270AE34C461}">
                 <File Id="fil9B688CDBF3B933723A6D2C1B20202A46" KeyPath="yes" Source="$(var.rdfEditorFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmp1B865EF94D245C57A70CEC476C6A4CEE" Directory="rdfEditorFolder" Guid="{2DC571E3-9DCA-425C-B5FC-E49F15799D46}">
+            <Component Id="cmp1B865EF94D245C57A70CEC476C6A4CEE" Directory="rdfEditorFolder" Guid="{F9C4B2B9-B984-42C8-B150-F8C0D631830C}">
                 <File Id="filE96D6E518DC109338D5E15FB9C348568" KeyPath="yes" Source="$(var.rdfEditorFiles)\ICSharpCode.AvalonEdit.dll" />
             </Component>
-            <Component Id="cmp31E899F073E17B953D1ADA485233EBE4" Directory="rdfEditorFolder" Guid="{E23D5E59-8077-4A52-BB29-81E38125B5EB}">
+            <Component Id="cmp31E899F073E17B953D1ADA485233EBE4" Directory="rdfEditorFolder" Guid="{7751023C-E475-4079-A289-2ACB749C9611}">
                 <File Id="fil3F8E985D859B9755FCF808506691629C" KeyPath="yes" Source="$(var.rdfEditorFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp796B1E687ACD2EBB45869CDD89889103" Directory="rdfEditorFolder" Guid="{34415398-8BE0-4E20-A8C8-6802F8A55181}">
+            <Component Id="cmp796B1E687ACD2EBB45869CDD89889103" Directory="rdfEditorFolder" Guid="{0F992455-FF0F-4050-96A1-9B398E64748C}">
                 <File Id="filB64C42330232FBE4FAE43F9ED9E0E976" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.Core.dll" />
             </Component>
-            <Component Id="cmpE952EF530CF00FEEF72246B8BA92214D" Directory="rdfEditorFolder" Guid="{A0DCD6FE-295F-43C4-A247-F69F8A57A931}">
+            <Component Id="cmpE952EF530CF00FEEF72246B8BA92214D" Directory="rdfEditorFolder" Guid="{59C5D4E6-B367-49CA-803A-37B3A1C54A3A}">
                 <File Id="fil8979C8C467D97E3701830952656BF267" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.Core.Wpf.dll" />
             </Component>
-            <Component Id="cmpA1FC6E1F2805E2E0F0DE935C8215438E" Directory="rdfEditorFolder" Guid="{D65ABBE1-7873-478F-8E0F-C2ECDE82D79C}">
+            <Component Id="cmpA1FC6E1F2805E2E0F0DE935C8215438E" Directory="rdfEditorFolder" Guid="{B0B94EA7-91FC-40C4-910F-8718B9EC72BF}">
                 <File Id="filBA0031A9E0A4E87AF35A8B08DDCC3129" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.exe" />
             </Component>
-            <Component Id="cmp2F134F1CA1CCEB35C0A9C07F550A69C6" Directory="rdfEditorFolder" Guid="{04CDE2C9-B880-442F-8C9C-664D9440852A}">
+            <Component Id="cmp2F134F1CA1CCEB35C0A9C07F550A69C6" Directory="rdfEditorFolder" Guid="{6717046E-3124-4DA3-9060-3E4D0419BDD3}">
                 <File Id="fil057D5DD97E728679813121A911747211" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.exe.config" />
             </Component>
-            <Component Id="cmpE70E2132FF6E6AFAABDE2E15B8C2B7AC" Directory="rdfEditorFolder" Guid="{F7A86DDB-A877-4986-B513-D17091C86266}">
+            <Component Id="cmpE70E2132FF6E6AFAABDE2E15B8C2B7AC" Directory="rdfEditorFolder" Guid="{262AE6BE-7B52-4F9C-9A69-1092CF8CC844}">
                 <File Id="fil501777681C1D18FDB3ED5DA28C481C90" KeyPath="yes" Source="$(var.rdfEditorFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="cmp51571E2F6B3BB0D8999F671DB30D011B" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{AD89DCC4-386B-4211-8294-6E2ADB25417F}">
+            <Component Id="cmp51571E2F6B3BB0D8999F671DB30D011B" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{7F97B4DD-7DD1-46E1-B23E-8385F0FB4D5C}">
                 <File Id="filCC65CDA64FEB6E6B542EA9B0816A24C9" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\n3.xshd" />
             </Component>
-            <Component Id="cmpA5B7D36FBF6A82F988D1B5ECE916D304" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{39253F77-667A-4515-8506-CCC9E4D816A6}">
+            <Component Id="cmpA5B7D36FBF6A82F988D1B5ECE916D304" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{8513435E-9780-4BF9-B4E8-2FBF6A0684AB}">
                 <File Id="filD866F923981476D894087D21AB56B22C" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\nquads.xshd" />
             </Component>
-            <Component Id="cmp7C5B1AF2428ABFC3E82A648A079DCD70" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{51101CA5-1DFE-41A5-9671-4B9493D9697E}">
+            <Component Id="cmp7C5B1AF2428ABFC3E82A648A079DCD70" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{9FFEE9F1-56D7-40D4-9BA3-BDA6FE07B800}">
                 <File Id="fil6D0D631B6D70A8067D45FC7C8A142466" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\ntriples.xshd" />
             </Component>
-            <Component Id="cmpE4125B5A3ABDAAD326DBDBF6EBF04DEB" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{E695107A-8DC0-4A87-9F78-75A52EB1D87F}">
+            <Component Id="cmpE4125B5A3ABDAAD326DBDBF6EBF04DEB" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{9722156F-2D6E-462B-8EDF-F6B571239C89}">
                 <File Id="fil03AE394052369FB8139AE458FEC365AA" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\rdfjson.xshd" />
             </Component>
-            <Component Id="cmpA3E9C168C9E99435829AFC6C3A769B81" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{9E306D21-A60C-43D7-8741-07E7654EC922}">
+            <Component Id="cmpA3E9C168C9E99435829AFC6C3A769B81" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{514BF67B-91DD-40A9-8646-65F3523D1B38}">
                 <File Id="fil399254E1C9E51E3633AE999A51425850" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\rdfxml.xshd" />
             </Component>
-            <Component Id="cmpE5F9A2B76276C31448C982914BE05F2D" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{2B39273A-FC9C-48C2-8C29-F38AA1CF27CA}">
+            <Component Id="cmpE5F9A2B76276C31448C982914BE05F2D" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{538B1691-01A1-43AA-BA65-45B41BF12DC7}">
                 <File Id="filBBBC09582BA3A5CF12919DF5D51E1F11" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-query-11.xshd" />
             </Component>
-            <Component Id="cmp94C4B550FA389B2D6ED4C4B887228ADD" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{1887DEEF-C743-4E0A-ACAC-38CEC452CC73}">
+            <Component Id="cmp94C4B550FA389B2D6ED4C4B887228ADD" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{69BB5106-3C3E-457F-B684-183FE78CD600}">
                 <File Id="fil918BC485407AD5371E99C8613081C643" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-query.xshd" />
             </Component>
-            <Component Id="cmpF309EA00841F96408D8364F4BD5E3720" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{07282E6C-78EF-4070-BEDB-0526ACABC92F}">
+            <Component Id="cmpF309EA00841F96408D8364F4BD5E3720" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{5C9C8756-2A3E-4526-BAD1-A11236A9ADDB}">
                 <File Id="filF3D149A1CF670A02CC94C9EB0479E7F8" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-results-json.xshd" />
             </Component>
-            <Component Id="cmpB6D7B01978669D906C282CCD390590E2" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{90C56CA8-5A7E-42DE-9B45-88E9A0A17E98}">
+            <Component Id="cmpB6D7B01978669D906C282CCD390590E2" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{F547526E-C955-42DC-B645-74B25A2F4910}">
                 <File Id="fil442C6E4F1B39E07AEC4F90D8162924DF" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-results-xml.xshd" />
             </Component>
-            <Component Id="cmp984C52A7B6DAB0BB58744AD2596D6FAA" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{92C2444D-02B5-484E-BDAE-410EE765FEAE}">
+            <Component Id="cmp984C52A7B6DAB0BB58744AD2596D6FAA" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{75484F3C-68B2-4418-A5DE-338B70F2B065}">
                 <File Id="fil59AA2CB492C6EADC683E82D0C74A8EEF" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-update.xshd" />
             </Component>
-            <Component Id="cmp82FA054FE92B6296A54E4C82DB47A295" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{998A1A93-9B21-4DF6-9819-2FF63D82913F}">
+            <Component Id="cmp82FA054FE92B6296A54E4C82DB47A295" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{F47F3D59-C81C-4A3B-B309-9395BD110468}">
                 <File Id="fil473B5D6F91E992C0036C96080F6B3CBB" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\trig.xshd" />
             </Component>
-            <Component Id="cmpF4C462680F4793C2DC98102778AA7840" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{4CEA1970-A748-488B-B4FB-1AD7B55EFF8D}">
+            <Component Id="cmpF4C462680F4793C2DC98102778AA7840" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{14F32E31-6D96-47A6-99CA-B3D92AA25E8D}">
                 <File Id="fil9015CEBB503986FFD44F5054866BE4B3" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\trix.xshd" />
             </Component>
-            <Component Id="cmp6CD57022C29BFA1B0525E7B40B4631AA" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{4FA9EE83-14E9-4DB8-BFC3-73E1C6232058}">
+            <Component Id="cmp6CD57022C29BFA1B0525E7B40B4631AA" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{35465BFD-46CC-4B5E-997D-BB8DBBA61A59}">
                 <File Id="filDA8D6B3191D9D1275E756F300B84C96D" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\turtle.xshd" />
             </Component>
-            <Component Id="cmp8C9AD5CBFA4D3AA9B7F57F214E2F8BF4" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{73102B85-2108-46BC-988C-DFBEB2CDE899}">
+            <Component Id="cmp8C9AD5CBFA4D3AA9B7F57F214E2F8BF4" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{1C7B9CF2-DB98-464C-B6E6-A3342F7F4826}">
                 <File Id="filD7E5CBB77F089CD2AAF1F84CECE082EB" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\turtle11.xshd" />
             </Component>
-            <Component Id="cmp44CA9B2B1B9F5385F0A2EB202EC51E67" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{B2A11862-0235-4851-97B7-4CAF90F04C09}">
+            <Component Id="cmp44CA9B2B1B9F5385F0A2EB202EC51E67" Directory="dirED51925540BD2F9EDD3C48FE52DE6C8F" Guid="{55D12B3F-9A52-4AA4-A74D-ECA7C1F3CAC0}">
                 <File Id="fil06E85F1B3DB988DFE8385D421460ECB6" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\xhtml-rdfa.xshd" />
             </Component>
         </ComponentGroup>

@@ -51,10 +51,10 @@
       </group>
     </dependencies>
     <releaseNotes>
-     - Fix several bugs with complex SPARQL evaluation
-     - Fix several bugs related to communicating with Sesame, Fuseki and SPARQL Graph Store protocol based stores
-     - Fix a bug with UriLoader swallowing exceptions resulting in unexpected empty graphs
-     - Native SPARQL Update support for Stardog 2.x connections
+     - Fix several bugs related to SPARQL evaluation
+     - Add support for RDF 1.1 NTriples and NQuads specifications
+     - Improved Timeout support across Storage API
+     - Enforce normalization to lower case on language tags
     </releaseNotes>
   </metadata>
 </package>

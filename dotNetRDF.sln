@@ -55,11 +55,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI Libraries", "GUI Librar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{99E6AA95-7905-4997-A593-F21E11BDD2DB}"
 	ProjectSection(SolutionItems) = preProject
+		Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec = Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec
+		Build\nuget\Core\dotNetRDF.nuspec = Build\nuget\Core\dotNetRDF.nuspec
+		Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec = Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec
 		Build\nuget\Core\readme.txt = Build\nuget\Core\readme.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4}"
 	ProjectSection(SolutionItems) = preProject
+		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 		Build\nant\patch-nuspec.xsl = Build\nant\patch-nuspec.xsl
 	EndProjectSection
 EndProject

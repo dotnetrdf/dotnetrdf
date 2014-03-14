@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.3
+Version 1.0.4
 
 dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
@@ -19,13 +19,17 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
+- Support for RDF 1.1 NTriples and NQuads as input formats (CORE-355,CORE-356)
+- Fix for TriG parsing (CORE-403)
 
 rdfEditor (Not available under Mono)
+- Support for RDF 1.1 NTriples and NQuads as input formats (CORE-355,CORE-356)
+- Fix for TriG parsing (CORE-403)
 
 rdfOptStats
    
 rdfQuery
-- Several SPARQL query bugs fixed (CORE-386, CORE-393, CORE-395)
+- Several SPARQL query bugs fixed (CORE-398, CORE-401, CORE-402)
 
 rdfServer
 
@@ -36,20 +40,7 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Several SPARQL query bugs fixed (CORE-386, CORE-393, CORE-395)
+- Several SPARQL query bugs fixed (CORE-398, CORE-401, CORE-402)
 
 StoreManager
-- Assorted user interface improvements (TOOLS-390)
- - Limited query syntax highlighting
- - Query word wrapping
- - Query reformatting
- - Better management of multiple query results
- - Entity Query Generation tool
- - New Options dialogue
-- Split Stardog connection definitions into 1.x and 2.x
-- Support native Update for Stardog 2.x connections (CORE-376)
-- Improved how Recent and Favourite Connections are managed (TOOLS-377)
-- Ensure that the New Connection window does not clip some options (TOOLS-377)
-- Support saving and restoring active connections between sessions (TOOLS-377)
-- Allow disabling of Local Parsing for SPARQL connections (TOOLS-392)
-- Bug fixes to Fuseki and Sesame support (CORE-394)
+- Several Virtuoso bug fixes (VIRT-397, VIRT-399)
