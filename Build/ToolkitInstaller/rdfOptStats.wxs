@@ -5,22 +5,22 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfOptStatsComponentGroup">
-            <Component Id="cmp6A553CDF44267A9270E61EA44279C4D7" Directory="rdfOptStatsFolder" Guid="{3B8D1C25-D636-4CA0-BCFF-CEF69B21C377}">
+            <Component Id="cmp6A553CDF44267A9270E61EA44279C4D7" Directory="rdfOptStatsFolder" Guid="{638716BF-348F-45E8-899C-70EB4A104930}">
                 <File Id="filC73CE024A1ED09B44936300495CB0A84" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmpA2CDF45EF012A1DDDF8839AB1B03F339" Directory="rdfOptStatsFolder" Guid="{1F6FF4F7-4301-4F29-9940-D36C23DCB332}">
+            <Component Id="cmpA2CDF45EF012A1DDDF8839AB1B03F339" Directory="rdfOptStatsFolder" Guid="{4A48BF1E-EAA6-4ACB-9A7B-51E507AACDBF}">
                 <File Id="filAF6CB7291CDB89008EC5C832327398D7" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmp042191C19E4EA776E42514DC813FCC4A" Directory="rdfOptStatsFolder" Guid="{374B4DCB-F95B-4AC8-B46F-476ED3E171B4}">
+            <Component Id="cmp042191C19E4EA776E42514DC813FCC4A" Directory="rdfOptStatsFolder" Guid="{FAD50317-ED20-4884-A053-6EEEF9C8170D}">
                 <File Id="fil514DF5BC8EE2970E533B76E2A30A6A15" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp9F5EEE0B46396823D14C753BBD181376" Directory="rdfOptStatsFolder" Guid="{80DE9638-29F7-4DDB-933B-6F2452C31076}">
+            <Component Id="cmp9F5EEE0B46396823D14C753BBD181376" Directory="rdfOptStatsFolder" Guid="{8E7FE10D-807D-4436-9AED-25511C090A57}">
                 <File Id="fil686FCBAF62B02312B6AA3215C6EFB5EA" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe" />
             </Component>
-            <Component Id="cmp51C87FBC965524147F854C3884755EC5" Directory="rdfOptStatsFolder" Guid="{B0807C72-6FFE-48F4-B484-8C32DE95F685}">
+            <Component Id="cmp51C87FBC965524147F854C3884755EC5" Directory="rdfOptStatsFolder" Guid="{6CD0D9F5-A4D8-4AB3-99E2-D04B2295F213}">
                 <File Id="fil9A1381414E96F6FA53BC33B754CC33F3" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe.config" />
             </Component>
-            <Component Id="cmpEAC126D6ECB793AA1C777FA8E19E901B" Directory="rdfOptStatsFolder" Guid="{B523E04B-4FA8-4A19-839A-C2CDF4E4160E}">
+            <Component Id="cmpEAC126D6ECB793AA1C777FA8E19E901B" Directory="rdfOptStatsFolder" Guid="{642BEFDC-F979-4F07-9DD4-C75435A343FA}">
                 <File Id="fil5B587D88F89E16884F4B3D1D22D37766" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>

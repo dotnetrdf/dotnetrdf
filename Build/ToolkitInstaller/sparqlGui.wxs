@@ -5,43 +5,43 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="sparqlGuiComponentGroup">
-            <Component Id="cmp7C39AF90D728EEBF5F709B2289AB8D4C" Directory="sparqlGuiFolder" Guid="{730A85AE-7553-456A-BE3F-E72DFC9C4AC8}">
+            <Component Id="cmp7C39AF90D728EEBF5F709B2289AB8D4C" Directory="sparqlGuiFolder" Guid="{1159C640-5925-47E0-8A64-6934FA806320}">
                 <File Id="filD2B621C87D78EFA0617ED58B1D2BE2BB" KeyPath="yes" Source="$(var.sparqlGuiFiles)\database.ico" />
             </Component>
-            <Component Id="cmp5108B6BFFFDE4EEB3C6BFD9C9D924BD9" Directory="sparqlGuiFolder" Guid="{C4896036-2D83-4D01-BAAF-2CA9DE6E2773}">
+            <Component Id="cmp5108B6BFFFDE4EEB3C6BFD9C9D924BD9" Directory="sparqlGuiFolder" Guid="{3E79907A-38F4-4492-87D6-7ECFA5E3C07A}">
                 <File Id="fil059828435C172B92E8F7F62954DE15C7" KeyPath="yes" Source="$(var.sparqlGuiFiles)\database_table.ico" />
             </Component>
-            <Component Id="cmp315F8A6794B180680DE05A4330E053B2" Directory="sparqlGuiFolder" Guid="{86D54F2D-3BE3-46C8-96AC-0B3F098A7A0B}">
+            <Component Id="cmp315F8A6794B180680DE05A4330E053B2" Directory="sparqlGuiFolder" Guid="{BE86B22A-3949-479B-9F59-788C0ECE57DF}">
                 <File Id="filFCCE92A2E57D24326943D269C4348771" KeyPath="yes" Source="$(var.sparqlGuiFiles)\default.rq" />
             </Component>
-            <Component Id="cmp05C3853067E5219F612EBAE3022EF431" Directory="sparqlGuiFolder" Guid="{B4F84EA2-060A-4263-9585-D9DAB19CD419}">
+            <Component Id="cmp05C3853067E5219F612EBAE3022EF431" Directory="sparqlGuiFolder" Guid="{2A9E3918-0F8A-456C-BD8C-5563CD56722B}">
                 <File Id="filF816633FCA035CBD1B3AA86BAA98B0F6" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmp19D11FE5F585260A41F542102907F831" Directory="sparqlGuiFolder" Guid="{36A68D93-19EB-4DCC-8DE8-653C4ECBE17E}">
+            <Component Id="cmp19D11FE5F585260A41F542102907F831" Directory="sparqlGuiFolder" Guid="{39043442-0705-4683-95F9-E022993CD925}">
                 <File Id="fil545288B887B14A6A7A11486636D8C2D6" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="cmp60E8CED8BDEB98E0047B71AE4571B813" Directory="sparqlGuiFolder" Guid="{D39D6B68-6BF3-4014-90BA-905DEBEE385B}">
+            <Component Id="cmp60E8CED8BDEB98E0047B71AE4571B813" Directory="sparqlGuiFolder" Guid="{0649FD14-EC84-45FA-ABA0-F4553440BCB4}">
                 <File Id="filAF94F39E3D0DCA11C2EA1095C3B961EC" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.WinForms.dll" />
             </Component>
-            <Component Id="cmpC0A462AAF6F153F7512D395B1A208F78" Directory="sparqlGuiFolder" Guid="{EE77937A-2907-4098-ADCB-BD0251BB80A8}">
+            <Component Id="cmpC0A462AAF6F153F7512D395B1A208F78" Directory="sparqlGuiFolder" Guid="{9BFF01DD-1BA2-439D-AF02-460BD927102C}">
                 <File Id="filCBF2972B900DBD25E3575C400389DEA5" KeyPath="yes" Source="$(var.sparqlGuiFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmp89642EA417583152829BFAA9A1137CFF" Directory="sparqlGuiFolder" Guid="{100776F4-A5D3-4946-ABAF-44E106044CC8}">
+            <Component Id="cmp89642EA417583152829BFAA9A1137CFF" Directory="sparqlGuiFolder" Guid="{4BEC9A7F-F5A7-4C49-B891-27476E6BC8F7}">
                 <File Id="fil8A0B3BC6F020784DD08908B8163A25CD" KeyPath="yes" Source="$(var.sparqlGuiFiles)\ICSharpCode.SharpZipLib.dll" />
             </Component>
-            <Component Id="cmp4A14EB580BC86EAABB11EA64CDBBB029" Directory="sparqlGuiFolder" Guid="{65219CB3-E38F-40CB-BFAA-A56A2780C0CC}">
+            <Component Id="cmp4A14EB580BC86EAABB11EA64CDBBB029" Directory="sparqlGuiFolder" Guid="{9761DD9F-85DA-4DBD-82AC-DDFE5CCFA080}">
                 <File Id="fil899D1A98B38D4508926CFC4E7F8E8613" KeyPath="yes" Source="$(var.sparqlGuiFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="cmpD3ACF2F005B3C8E34965E8345F3E88B1" Directory="sparqlGuiFolder" Guid="{557B61A0-CFEB-42DE-B3D4-5D2A6F59C9D0}">
+            <Component Id="cmpD3ACF2F005B3C8E34965E8345F3E88B1" Directory="sparqlGuiFolder" Guid="{D4C750B0-D21B-4EFF-80DA-C8C9F4ADDE75}">
                 <File Id="filA294570B5AF4AE347FE5B30B8C349536" KeyPath="yes" Source="$(var.sparqlGuiFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmpB46CE483C5BADA524A04B7B9321FA7D9" Directory="sparqlGuiFolder" Guid="{547D1034-A77D-4EF9-A855-9B9DC5F06529}">
+            <Component Id="cmpB46CE483C5BADA524A04B7B9321FA7D9" Directory="sparqlGuiFolder" Guid="{37A44A3D-43C7-4BD5-805F-2932FDE610CC}">
                 <File Id="fil74568287B655C8C92D8E77869C9CF745" KeyPath="yes" Source="$(var.sparqlGuiFiles)\SparqlGUI.exe" />
             </Component>
-            <Component Id="cmp3809B77C8680AEF824E48EAEFDD66C98" Directory="sparqlGuiFolder" Guid="{DE226513-B290-4DCA-8F31-63B4FAB716C3}">
+            <Component Id="cmp3809B77C8680AEF824E48EAEFDD66C98" Directory="sparqlGuiFolder" Guid="{8E74DC70-CD98-4727-AD07-DA42F6E174FF}">
                 <File Id="fil75FB2A0970B0ACC112D6C75E8AF78093" KeyPath="yes" Source="$(var.sparqlGuiFiles)\SparqlGUI.exe.config" />
             </Component>
-            <Component Id="cmp169F3C9A358B93FCDB3CB8066B19418E" Directory="sparqlGuiFolder" Guid="{685A4A49-212B-43E6-A088-AF9F357E1FFD}">
+            <Component Id="cmp169F3C9A358B93FCDB3CB8066B19418E" Directory="sparqlGuiFolder" Guid="{833A1084-A968-40E0-A555-F1DDC44FB5FE}">
                 <File Id="fil7741834ED55D0A96239DBF1D0A9D9FDC" KeyPath="yes" Source="$(var.sparqlGuiFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>

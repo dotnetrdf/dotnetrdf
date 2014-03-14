@@ -5,37 +5,37 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfServerComponentGroup">
-            <Component Id="cmp956E7423D5FD4FCCAF43B4C43E400D78" Directory="rdfServerFolder" Guid="{D7934F2D-0BBB-469D-8939-3C0706EAFA24}">
+            <Component Id="cmp956E7423D5FD4FCCAF43B4C43E400D78" Directory="rdfServerFolder" Guid="{784DA17E-CFAF-46FA-8B89-80746BF23D6F}">
                 <File Id="fil72DF8F6B8F163994513493E074998F46" KeyPath="yes" Source="$(var.rdfServerFiles)\default.ttl" />
             </Component>
-            <Component Id="cmp989360D4A1361B8EDEEBC9893BBCF51B" Directory="rdfServerFolder" Guid="{451D650F-6ACB-4380-806A-8A2F6546050D}">
+            <Component Id="cmp989360D4A1361B8EDEEBC9893BBCF51B" Directory="rdfServerFolder" Guid="{3C960D17-974C-4D9C-8A2F-220F230B3DE7}">
                 <File Id="fil59066A0DC277ADDE47AA924A4789A1E1" KeyPath="yes" Source="$(var.rdfServerFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmp866ACF3287CBDD58BE2102FEE3B425D5" Directory="rdfServerFolder" Guid="{B7553DE2-8C7C-4581-A08C-D06AF0878924}">
+            <Component Id="cmp866ACF3287CBDD58BE2102FEE3B425D5" Directory="rdfServerFolder" Guid="{81F1FB65-C868-461A-AE30-52DFD78EA4D7}">
                 <File Id="fil6AB2517C11AA7172FB646E73A3064255" KeyPath="yes" Source="$(var.rdfServerFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmp51C52537DAC6F7B4D9347FD9561DF681" Directory="rdfServerFolder" Guid="{A746291D-9D57-4128-B46E-26A9AC67A92C}">
+            <Component Id="cmp51C52537DAC6F7B4D9347FD9561DF681" Directory="rdfServerFolder" Guid="{55987028-684B-41C8-92CD-8D00E5D150E6}">
                 <File Id="fil502BFFBF61CBBAD8C6E2C8292844F0E9" KeyPath="yes" Source="$(var.rdfServerFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp122BEE974215C8102F2D994BC033308B" Directory="rdfServerFolder" Guid="{A78EDD06-4E12-45DD-8267-68CE7EC41DE1}">
+            <Component Id="cmp122BEE974215C8102F2D994BC033308B" Directory="rdfServerFolder" Guid="{048C0E28-9C15-40E8-B656-F2B11FB9DA31}">
                 <File Id="fil6B47547DB43B7D072C0D0E4706F56B8F" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.exe" />
             </Component>
-            <Component Id="cmpEC523C15A6F87A92DC52A3E552BF457F" Directory="rdfServerFolder" Guid="{4B7584AF-097C-4E92-8825-16BF824CC96C}">
+            <Component Id="cmpEC523C15A6F87A92DC52A3E552BF457F" Directory="rdfServerFolder" Guid="{D3456B0B-9C8E-43B2-8D94-95D2703F4EEC}">
                 <File Id="fil2315B35077C5FF78DDEAD2DF4B1B8576" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.exe.config" />
             </Component>
-            <Component Id="cmpC1F434E99E6A22177B7590EB6AA2ECCF" Directory="rdfServerFolder" Guid="{7437060D-9EB2-4036-BAE7-66C67FAAFC4F}">
+            <Component Id="cmpC1F434E99E6A22177B7590EB6AA2ECCF" Directory="rdfServerFolder" Guid="{2935A4E0-5512-49CC-A21B-364009AC915B}">
                 <File Id="fil8D7830BA51CBAFB0E8D4C8E74CCB00CD" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.exe" />
             </Component>
-            <Component Id="cmp65C9D22D44EE24DF54FE012ED9CC0EC9" Directory="rdfServerFolder" Guid="{EEA57A41-0C49-4908-800A-4C3243C8FCC0}">
+            <Component Id="cmp65C9D22D44EE24DF54FE012ED9CC0EC9" Directory="rdfServerFolder" Guid="{C2F7C7CE-D7EE-40CB-AE11-63705D56644A}">
                 <File Id="filD94A98DFAA38B889BCCAC74BB85D36C0" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.exe.config" />
             </Component>
-            <Component Id="cmp81499EC54CF68422538F3A6FEF8AECE5" Directory="rdfServerFolder" Guid="{F86173B8-5AD7-412D-B994-6526DC081204}">
+            <Component Id="cmp81499EC54CF68422538F3A6FEF8AECE5" Directory="rdfServerFolder" Guid="{07FB473E-33EC-494B-94B6-85A26E3275B2}">
                 <File Id="filAED65C3D6DCD30F2A4AAC38593A6E110" KeyPath="yes" Source="$(var.rdfServerFiles)\servercontrol.html" />
             </Component>
-            <Component Id="cmpCE0ED394A51FF1291B8CC27CA3D29FDA" Directory="rdfServerFolder" Guid="{01D04051-EAD7-47A0-ADD4-A7294F9777BE}">
+            <Component Id="cmpCE0ED394A51FF1291B8CC27CA3D29FDA" Directory="rdfServerFolder" Guid="{E6B45C4C-1483-4572-A224-23A182005117}">
                 <File Id="filD1D13930E67EE64B5DF202B4C8EFF03E" KeyPath="yes" Source="$(var.rdfServerFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="cmp9C0ECF4A649E78BB32C05C1AC7ED8E9F" Directory="rdfServerFolder" Guid="{CDF8964E-2FE4-4388-9B80-6679AA907737}">
+            <Component Id="cmp9C0ECF4A649E78BB32C05C1AC7ED8E9F" Directory="rdfServerFolder" Guid="{F90EC219-B591-4045-847C-DA9016A3CDEA}">
                 <File Id="fil080B61700A791F929B6CCC0EC2A210A6" KeyPath="yes" Source="$(var.rdfServerFiles)\VDS.Web.Server.dll" />
             </Component>
         </ComponentGroup>
