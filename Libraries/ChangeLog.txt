@@ -22,10 +22,15 @@ Changed
    leading to unexpected behaviour trying to query for triples by language tag (CORE-401)
  - Fix a bug in re-serializing queries containing UNION clauses (CORE-402)
  - Fix a bug in parsing collections from TriG syntax (CORE-403)
+- Core API
+ - Content negotiation for NTriples and NQuads updated to favour officialy specified MIME types (CORE-355,CORE-356)
 - Storage
  - Add Timeout property to all HTTP based storage providers which is used for all HTTP requests (CORE-400)
  - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
  - Fix handling of inserting/deleting blank nodes with more recent Virtuoso versions (VIRT-399)
+- Formatting
+ - NTriplesFormatter and NQuadsFormatter now take a syntax argument (CORE-355,CORE-356)
+ - NTriples11Formatter and NQuadsFormatter11 added as convinient shortcuts to providing explicit syntax (CORE-355,CORE-356)
 
  Removed
  - Removed obsolete unusable DydraConnector
