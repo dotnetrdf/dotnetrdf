@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.4
+Version 1.0.5
 
 dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
@@ -19,17 +19,12 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
-- Support for RDF 1.1 NTriples and NQuads as input formats (CORE-355,CORE-356)
-- Fix for TriG parsing (CORE-403)
 
 rdfEditor (Not available under Mono)
-- Support for RDF 1.1 NTriples and NQuads as input formats (CORE-355,CORE-356)
-- Fix for TriG parsing (CORE-403)
 
 rdfOptStats
    
 rdfQuery
-- Several SPARQL query bugs fixed (CORE-398, CORE-401, CORE-402)
 
 rdfServer
 
@@ -40,7 +35,5 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Several SPARQL query bugs fixed (CORE-398, CORE-401, CORE-402)
 
 StoreManager
-- Several Virtuoso bug fixes (VIRT-397, VIRT-399)
