@@ -38,6 +38,7 @@ namespace VDS.RDF
     /// </summary>
     public class MimeTypeDefinition
     {
+        protected double _quality = 1d;
         protected String _canonicalType, _canonicalExt;
         protected Encoding _encoding = Encoding.UTF8;
         protected Type _rdfParserType, _rdfWriterType;
@@ -46,85 +47,45 @@ namespace VDS.RDF
         protected Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
 
         /// <summary>
-        /// Creates a new MIME Type Definition
-        /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-            : this(syntaxName, null, mimeTypes, fileExtensions)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new MIME Type Definition
-        /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-            : this(syntaxName, formatUri, mimeTypes, fileExtensions, null, null)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new MIME Type Definition
-        /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
-            : this(syntaxName, null, mimeTypes, fileExtensions, rdfParserType, rdfWriterType)
-        {
-        }
-
-        /// <summary>
-        /// Creates a new MIME Type Definition
-        /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="formatUri">Format URI</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
-        {
-            if (mimeTypes == null) throw new ArgumentNullException("mimeTypes", "MIME Types enumeration cannot be null");
-            this.FormatUri = formatUri;
-            this.SyntaxName = syntaxName;
-            this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
-
-            foreach (String ext in fileExtensions)
-            {
-                this._fileExtensions.Add(CheckFileExtension(ext));
-            }
-            this.RdfParserType = rdfParserType;
-            this.RdfWriterType = rdfWriterType;
-        }
-
-        /// <summary>
         /// Gets the name of the Syntax to which this MIME Type Definition relates
         /// </summary>
-        public string SyntaxName { get; protected set; }
+        public string SyntaxName { get; set; }
 
         /// <summary>
         /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable)
         /// </summary>
-        public string FormatUri { get; protected set; }
+        public string FormatUri { get; set; }
 
         /// <summary>
         /// Gets the Encoding that should be used for reading and writing this Syntax
         /// </summary>
         public Encoding Encoding
         {
-            get
-            {
-                return this._encoding ?? Encoding.UTF8;
-            }
+            get { return this._encoding ?? Encoding.UTF8; }
             set { this._encoding = value; }
+        }
+
+        /// <summary>
+        /// Gets/Sets the desired quality for this MIME type
+        /// </summary>
+        public double Quality
+        {
+            get { return this._quality; }
+            set
+            {
+                if (value < 0d)
+                {
+                    this._quality = 0d;
+                }
+                else if (value > 1d)
+                {
+                    this._quality = 1d;
+                }
+                else
+                {
+                    this._quality = value;
+                }
+            }
         }
 
         #region MIME Type Management
@@ -135,13 +96,19 @@ namespace VDS.RDF
         public IEnumerable<String> MimeTypes
         {
             get { return this._mimeTypes; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value", "MIME Types enumeration cannot be null");
+                this._mimeTypes.Clear();
+                this._mimeTypes.AddRange(value.Select(t => CheckValidMimeType(t)));
+            }
         }
 
         /// <summary>
         /// Checks that MIME Types are valid
         /// </summary>
         /// <param name="type">Type</param>
-        public String CheckValidMimeType(String type)
+        public static String CheckValidMimeType(String type)
         {
             type = type.Trim().ToLowerInvariant();
             if (!IOManager.IsValidMimeType(type))
@@ -157,9 +124,9 @@ namespace VDS.RDF
         /// <param name="type">MIME Type</param>
         public void AddMimeType(String type)
         {
-            if (!this._mimeTypes.Contains(this.CheckValidMimeType(type)))
+            if (!this._mimeTypes.Contains(CheckValidMimeType(type)))
             {
-                this._mimeTypes.Add(this.CheckValidMimeType(type));
+                this._mimeTypes.Add(CheckValidMimeType(type));
             }
         }
 
@@ -223,6 +190,12 @@ namespace VDS.RDF
         public IEnumerable<String> FileExtensions
         {
             get { return this._fileExtensions; }
+            set
+            {
+                if (value == null) return;
+                this._fileExtensions.Clear();
+                this._fileExtensions.AddRange(value.Select(e => CheckFileExtension(e)));
+            }
         }
 
         /// <summary>
@@ -479,6 +452,33 @@ namespace VDS.RDF
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return ToHttpHeader();
+        }
+
+        /// <summary>
+        /// Gets the MIME types in HTTP Header format
+        /// </summary>
+        /// <returns>HTTP header format</returns>
+        public String ToHttpHeader()
+        {
+            StringBuilder output = new StringBuilder();
+            String canonicalType = this.CanonicalMimeType;
+            output.Append(canonicalType);
+            String quality = this.Quality < 1d ? ";q=" + this.Quality.ToString("g3") : String.Empty;
+            output.Append(quality);
+            // TODO Should we explicitly declare our desired character set here?
+            foreach (String type in this.MimeTypes)
+            {
+                if (ReferenceEquals(canonicalType, type)) continue;
+                output.Append(",");
+                output.Append(type);
+                output.Append(quality);
+            }
+            return output.ToString();
+        }
     }
 
     /// <summary>

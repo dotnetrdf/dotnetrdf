@@ -31,8 +31,6 @@ using System.Reflection;
 using System.Text;
 using VDS.RDF.Attributes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF
@@ -80,57 +78,60 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for Turtle
         /// </summary>
-        public static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+// ReSharper disable InconsistentNaming
+        public static string[] Turtle = {"text/turtle", "application/x-turtle", "application/turtle"};
 
         /// <summary>
         /// MIME Types for RDF/XML
         /// </summary>
-        public static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+        public static string[] RdfXml = {"application/rdf+xml", "text/xml", "application/xml"};
 
         /// <summary>
         /// MIME Types for Notation 3
         /// </summary>
-        public static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+        public static string[] Notation3 = {"text/n3", "text/rdf+n3"};
 
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        public static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
+        public static string[] NTriples = {"text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples"};
 
         /// <summary>
         /// MIME Types for NQuads
         /// </summary>
-        public static string[] NQuads = { "text/x-nquads" };
+        public static string[] NQuads = {"text/x-nquads"};
 
         /// <summary>
         /// MIME Types for TriG
         /// </summary>
-        public static string[] TriG = { "application/x-trig" };
+        public static string[] TriG = {"application/x-trig"};
 
         /// <summary>
         /// MIME Types for TriX
         /// </summary>
-        public static string[] TriX = { "application/trix" };
+        public static string[] TriX = {"application/trix"};
 
         /// <summary>
         /// MIME Types for RDF/JSON
         /// </summary>
-        public static string[] Json = { "application/json", "text/json", "application/rdf+json" };
+        public static string[] Json = {"application/json", "text/json", "application/rdf+json"};
 
         /// <summary>
         /// MIME Types for CSV
         /// </summary>
-        public static string[] Csv = { "text/csv", "text/comma-separated-values" };
+        public static string[] Csv = {"text/csv", "text/comma-separated-values"};
 
         /// <summary>
         /// MIME Types for TSV
         /// </summary>
-        public static string[] Tsv = { "text/tab-separated-values" };
+        public static string[] Tsv = {"text/tab-separated-values"};
 
         /// <summary>
         /// MIME Types for HTML
         /// </summary>
-        public static string[] Html = { "text/html", "application/xhtml+xml" };
+        public static string[] Html = {"text/html", "application/xhtml+xml"};
+
+        // ReSharper restore InconsistentNaming
 
         /// <summary>
         /// MIME Type for SPARQL Queries
@@ -146,50 +147,62 @@ namespace VDS.RDF
         /// Default File Extension for Turtle Files
         /// </summary>
         public const String DefaultTurtleExtension = "ttl";
+
         /// <summary>
         /// Default File Extension for RDF/XML
         /// </summary>
         public const String DefaultRdfXmlExtension = "rdf";
+
         /// <summary>
         /// Default File Extension for Notation 3
         /// </summary>
         public const String DefaultNotation3Extension = "n3";
+
         /// <summary>
         /// Default File Extension for NTriples
         /// </summary>
         public const String DefaultNTriplesExtension = "nt";
+
         /// <summary>
         /// Default File Extension for Json formats
         /// </summary>
         public const String DefaultJsonExtension = "json";
+
         /// <summary>
         /// Default File Extension for RDF/JSON
         /// </summary>
         public const String DefaultRdfJsonExtension = "rj";
+
         /// <summary>
         /// Default File Extension for TriG
         /// </summary>
         public const String DefaultTriGExtension = "trig";
+
         /// <summary>
         /// Default File Extension for NQuads
         /// </summary>
         public const String DefaultNQuadsExtension = "nq";
+
         /// <summary>
         /// Default File Extension for TriX
         /// </summary>
         public const String DefaultTriXExtension = "xml";
+
         /// <summary>
         /// Default File Extension for CSV
         /// </summary>
         public const String DefaultCsvExtension = "csv";
+
         /// <summary>
         /// Default File Extension for TSV
         /// </summary>
         public const String DefaultTsvExtension = "tsv";
+
         /// <summary>
         /// Default File Extension for HTML
         /// </summary>
         public const String DefaultHtmlExtension = "html";
+
         /// <summary>
         /// Default File Extension for XHTML
         /// </summary>
@@ -200,13 +213,21 @@ namespace VDS.RDF
         /// </summary>
         public const String DefaultGZipExtension = "gz";
 
+        // ReSharper disable FieldCanBeMadeReadOnly.Local
+        // ReSharper disable InconsistentNaming
+
+        // Not made readonly since we want this to be extensible in future
+
         /// <summary>
         /// Extensions which are considered stackable
         /// </summary>
-        private static String[] AllowedStackableExtensions = new String[] 
-        {
-            DefaultGZipExtension
-        };
+        private static String[] AllowedStackableExtensions = new String[]
+                                                                 {
+                                                                     DefaultGZipExtension
+                                                                 };
+
+        // ReSharper restore InconsistentNaming
+        // ReSharper restore FieldCanBeMadeReadOnly.Local
 
         /// <summary>
         /// Charset constants
@@ -214,16 +235,18 @@ namespace VDS.RDF
         public const String CharsetUtf8 = "utf-8",
                             CharsetUtf16 = "utf-16";
 
-        #endregion 
+        #endregion
 
         /// <summary>
         /// List of MIME Type Definition
         /// </summary>
         private static List<MimeTypeDefinition> _mimeTypes;
+
         /// <summary>
         /// Whether MIME Type Definitions have been initialised
         /// </summary>
-        private static bool _init = false;
+        private static bool _init;
+
         private static readonly Object _initLock = new Object();
 
         /// <summary>
@@ -245,7 +268,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static bool IsValidMimeTypePart(String part)
         {
-            foreach (char c in part.ToCharArray())
+            foreach (char c in part)
             {
                 if (c <= 31) return false;
                 if (c == 127) return false;
@@ -287,13 +310,13 @@ namespace VDS.RDF
                 _mimeTypes = new List<MimeTypeDefinition>();
 
                 //Define NTriples
-                MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), typeof(NTriplesWriter));
+                MimeTypeDefinition ntriples = new MimeTypeDefinition {SyntaxName = "NTriples", FormatUri = W3CFormatsNamespace + "N-Triples", MimeTypes = NTriples, FileExtensions = new String[] {DefaultNTriplesExtension}, RdfParserType = typeof (NTriplesParser), RdfWriterType = typeof (NTriplesWriter), Quality = 0.8};
 #if !SILVERLIGHT
                 ntriples.Encoding = Encoding.ASCII;
 #endif
                 _mimeTypes.Add(ntriples);
 #if !NO_COMPRESSION
-                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), typeof(GZippedNTriplesWriter));
+                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition {SyntaxName = "GZipped NTriples", MimeTypes = NTriples, FileExtensions = new String[] {DefaultNTriplesExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedNTriplesParser), RdfWriterType = typeof (GZippedNTriplesWriter), Quality = 0.7};
 #if !SILVERLIGHT
                 ntriplesGZipped.Encoding = Encoding.ASCII;
 #endif
@@ -301,63 +324,62 @@ namespace VDS.RDF
 #endif
 
                 //Define Turtle
-                _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), typeof(CompressingTurtleWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "Turtle", FormatUri = W3CFormatsNamespace + "Turtle", MimeTypes = Turtle, FileExtensions = new String[] {DefaultTurtleExtension}, RdfParserType = typeof (TurtleParser), RdfWriterType = typeof (CompressingTurtleWriter)});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), typeof(GZippedTurtleWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped Turtle", MimeTypes = Turtle, FileExtensions = new String[] {DefaultTurtleExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedTurtleParser), RdfWriterType = typeof (GZippedTurtleWriter), Quality = 0.7});
 #endif
 
                 //Define Notation 3
-                _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), typeof(Notation3Writer)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "Notation 3", FormatUri = W3CFormatsNamespace + "N3", MimeTypes = Notation3, FileExtensions = new String[] {DefaultNotation3Extension}, RdfParserType = typeof (Notation3Parser), RdfWriterType = typeof (Notation3Writer), Quality = 0.5});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), typeof(GZippedNotation3Writer)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped Notation 3", MimeTypes = Notation3, FileExtensions = new String[] {DefaultNotation3Extension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedNotation3Parser), RdfWriterType = typeof (GZippedNotation3Writer), Quality = 0.4});
 #endif
 
                 //Define NQuads
-                _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, typeof(NQuadsParser), typeof(NQuadsWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "NQuads", MimeTypes = NQuads, FileExtensions = new String[] {DefaultNQuadsExtension}, RdfParserType = typeof (NQuadsParser), RdfWriterType = typeof (NQuadsWriter), Quality = 0.8});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped NQuads", NQuads, new String[] { DefaultNQuadsExtension + "." + DefaultGZipExtension }, typeof(GZippedNQuadsParser), typeof(GZippedNQuadsWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped NQuads", MimeTypes = NQuads, FileExtensions = new String[] {DefaultNQuadsExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedNQuadsParser), RdfWriterType = typeof (GZippedNQuadsWriter), Quality = 0.7});
 #endif
 
                 //Define TriG
-                _mimeTypes.Add(new MimeTypeDefinition("TriG", TriG, new String[] { DefaultTriGExtension }, typeof(TriGParser), typeof(TriGWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "TriG", MimeTypes = TriG, FileExtensions = new String[] {DefaultTriGExtension}, RdfParserType = typeof (TriGParser), RdfWriterType = typeof (TriGWriter)});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriG", TriG, new String[] { DefaultTriGExtension + "." + DefaultGZipExtension }, typeof(GZippedTriGParser), typeof(GZippedTriGWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped TriG", MimeTypes = TriG, FileExtensions = new String[] {DefaultTriGExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedTriGParser), RdfWriterType = typeof (GZippedTriGWriter)});
 #endif
 
                 //Define TriX
-                _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, typeof(TriXParser), typeof(TriXWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "TriX", MimeTypes = TriX, FileExtensions = new String[] {DefaultTriXExtension}, RdfParserType = typeof (TriXParser), RdfWriterType = typeof (TriXWriter), Quality = 0.3});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriX", TriX, new String[] { DefaultTriXExtension + "." + DefaultGZipExtension }, typeof(GZippedTriXParser), typeof(GZippedTriXWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped TriX", MimeTypes = TriX, FileExtensions = new String[] {DefaultTriXExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedTriXParser), RdfWriterType = typeof (GZippedTriXWriter), Quality = 0.2});
 #endif
                 //Define RDF/XML
-                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), typeof(RdfXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "RDF/XML", FormatUri = W3CFormatsNamespace + "RDF_XML", MimeTypes = RdfXml, FileExtensions = new String[] {DefaultRdfXmlExtension, "owl"}, RdfParserType = typeof (RdfXmlParser), RdfWriterType = typeof (RdfXmlWriter), Quality = 0.3});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", null, RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), typeof(GZippedRdfXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped RDF/XML", MimeTypes = RdfXml, FileExtensions = new String[] {DefaultRdfXmlExtension + "." + DefaultGZipExtension}, RdfParserType = typeof (GZippedRdfXmlParser), RdfWriterType = typeof (GZippedRdfXmlWriter), Quality = 0.2});
 #endif
-
 
 
                 //Define CSV
-                _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, typeof(CsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "CSV", MimeTypes = Csv, FileExtensions = new String[] {DefaultCsvExtension}, RdfWriterType = typeof (CsvWriter), Quality = 0.1});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedCsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped CSV", MimeTypes = Csv, FileExtensions = new String[] {DefaultCsvExtension + "." + DefaultGZipExtension}, RdfWriterType = typeof (GZippedCsvWriter), Quality = 0.1});
 #endif
 
                 //Define TSV
-                _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, typeof(TsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "TSV", MimeTypes = Tsv, FileExtensions = new String[] {DefaultTsvExtension}, RdfWriterType = typeof (TsvWriter), Quality = 0.2});
 #if !NO_COMPRESSION
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GZipped TSV", MimeTypes = Tsv, FileExtensions = new String[] {DefaultTsvExtension + "." + DefaultGZipExtension}, RdfWriterType = typeof (GZippedTsvWriter), Quality = 0.2});
 #endif
 
                 //Define GraphViz DOT
-                _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, typeof(GraphVizWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition {SyntaxName = "GraphViz DOT", MimeTypes = new String[] {"text/vnd.graphviz"}, FileExtensions = new String[] {".gv", ".dot"}, RdfWriterType = typeof (GraphVizWriter), Quality = 0d});
 
                 // Discover formats provided by other assemblies
                 ScanDefinitions();
 
                 _init = true;
             }
-         }
+        }
 
         /// <summary>
         /// Scans for definitions for RDF input/output formats in any assembly in the current app domain
@@ -371,7 +393,7 @@ namespace VDS.RDF
             {
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    foreach (RdfIOAttribute attribute in assembly.GetCustomAttributes(typeof(RdfIOAttribute), true))
+                    foreach (RdfIOAttribute attribute in assembly.GetCustomAttributes(typeof (RdfIOAttribute), true))
                     {
                         _mimeTypes.Add(attribute.GetDefinition());
                     }
@@ -432,15 +454,15 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            string[] enumerable = mimeTypes as string[] ?? mimeTypes.ToArray();
-            if (!enumerable.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
+            string[] types = mimeTypes as string[] ?? mimeTypes.ToArray();
+            if (!types.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
             //Get any existing defintions that are to be altered
-            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(enumerable);
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(types);
             string[] extensions = fileExtensions as string[] ?? fileExtensions.ToArray();
             foreach (MimeTypeDefinition def in existing)
             {
-                foreach (String type in enumerable)
+                foreach (String type in types)
                 {
                     def.AddMimeType(type);
                 }
@@ -452,13 +474,10 @@ namespace VDS.RDF
             }
 
             //Create any new defintions
-            IEnumerable<String> newTypes = enumerable.Where(t => !GetDefinitions(t).Any());
-            if (newTypes.Any())
-            {
-                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, extensions);
-                newDef.RdfParserType = parser.GetType();
-                AddDefinition(newDef);
-            }
+            String[] newTypes = types.Where(t => !GetDefinitions(t).Any()).ToArray();
+            if (!newTypes.Any()) return;
+            MimeTypeDefinition newDef = new MimeTypeDefinition {MimeTypes = newTypes, FileExtensions = extensions, RdfParserType = parser.GetType()};
+            AddDefinition(newDef);
         }
 
         /// <summary>
@@ -471,17 +490,19 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
+            String[] types = mimeTypes as string[] ?? mimeTypes.ToArray();
+            if (!types.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
             //Get any existing defintions that are to be altered
-            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(types);
+            String[] extensions = fileExtensions as string[] ?? fileExtensions.ToArray();
             foreach (MimeTypeDefinition def in existing)
             {
-                foreach (String type in mimeTypes)
+                foreach (String type in types)
                 {
                     def.AddMimeType(type);
                 }
-                foreach (String ext in fileExtensions)
+                foreach (String ext in extensions)
                 {
                     def.AddFileExtension(ext);
                 }
@@ -489,17 +510,18 @@ namespace VDS.RDF
             }
 
             //Create any new defintions
-            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            if (newTypes.Any())
-            {
-                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
-                newDef.RdfWriterType = writer.GetType();
-                AddDefinition(newDef);
-            }
+            String[] newTypes = types.Where(t => !GetDefinitions(t).Any()).ToArray();
+            if (!newTypes.Any()) return;
+            MimeTypeDefinition newDef = new MimeTypeDefinition
+                                            {
+                                                MimeTypes = newTypes, FileExtensions = extensions
+                                                , RdfWriterType = writer.GetType()
+                                            };
+            AddDefinition(newDef);
         }
 
         /// <summary>
-        /// Gets all MIME Type definitions which support the given MIME Type
+        /// Gets all MIME Type definitions which support the given MIME type
         /// </summary>
         /// <param name="mimeType">MIME Type</param>
         /// <returns></returns>
@@ -510,7 +532,7 @@ namespace VDS.RDF
             if (!_init) Init();
 
             MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
-            return (from definition in IOManager.Definitions
+            return (from definition in Definitions
                     where definition.SupportsMimeType(selector)
                     select definition);
         }
@@ -528,7 +550,7 @@ namespace VDS.RDF
 
             IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
             return (from selector in selectors
-                    from definition in IOManager.Definitions
+                    from definition in Definitions
                     where definition.SupportsMimeType(selector)
                     select definition).Distinct();
         }
@@ -544,7 +566,7 @@ namespace VDS.RDF
 
             if (!_init) Init();
 
-            return (from def in IOManager.Definitions
+            return (from def in Definitions
                     where def.SupportsFileExtension(fileExt)
                     select def).Distinct();
         }
@@ -561,16 +583,14 @@ namespace VDS.RDF
 
                 StringBuilder output = new StringBuilder();
 
-                foreach (MimeTypeDefinition definition in IOManager.Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
-                    if (definition.CanParseRdf)
-                    {
-                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
-                        output.Append(',');
-                    }
+                    if (!definition.CanParseRdf) continue;
+                    output.Append(definition.ToHttpHeader());
+                    output.Append(',');
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*;q=0.5");
+                output.Append(",*/*;q=0.1");
 
                 return output.ToString();
             }
@@ -632,14 +652,14 @@ namespace VDS.RDF
             if (!_init) Init();
 
             Type requiredType = parser.GetType();
-            foreach (MimeTypeDefinition definition in IOManager.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
-                if (requiredType.Equals(definition.RdfParserType))
+                if (requiredType == definition.RdfParserType)
                 {
-                    return String.Join(",", definition.MimeTypes.ToArray());
+                    return definition.ToHttpHeader();
                 }
             }
-            return IOManager.HttpAcceptHeader;
+            throw new ArgumentException("There are no MIME type definitions associated with the given parser type", "parser");
         }
 
         /// <summary>
@@ -651,7 +671,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                return (from definition in IOManager.Definitions
+                return (from definition in Definitions
                         where definition.CanParseRdf
                         from mimeType in definition.MimeTypes
                         select mimeType);
@@ -664,29 +684,26 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetFilenameFilter()
         {
-            return IOManager.GetFilenameFilter(true, true);
+            return GetFilenameFilter(true);
         }
 
         /// <summary>
-        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of
+        /// Generates a Filename Filter that can be used with any .Net application and includes all the RDF formats that dotNetRDF is aware of
         /// </summary>
-        /// <param name="rdf">Allow RDF formats (e.g. Turtle)</param>
-        /// <param name="allFiles">Allow All Files (i.e. */*)</param>
+        /// <param name="allFiles">Whether to also allow all files (i.e. */*)</param>
         /// <returns></returns>
-        public static String GetFilenameFilter(bool rdf, bool allFiles)
+        public static string GetFilenameFilter(bool allFiles)
         {
             if (!_init) Init();
 
             String filter = String.Empty;
             List<String> exts = new List<string>();
 
-            foreach (MimeTypeDefinition def in IOManager.Definitions)
+            foreach (MimeTypeDefinition def in Definitions)
             {
-                if ((rdf && (def.CanParseRdf || def.CanWriteRdf)))
-                {
-                    exts.AddRange(def.FileExtensions);
-                    filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
-                }
+                if ((!def.CanParseRdf && !def.CanWriteRdf)) continue;
+                exts.AddRange(def.FileExtensions);
+                filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
             }
             //Add an All Supported Formats option as first option
             filter = "All Supported Files|*." + String.Join(";*.", exts.ToArray()) + "|" + filter;
@@ -711,11 +728,11 @@ namespace VDS.RDF
         {
             if (writer is ICompressingWriter)
             {
-                ((ICompressingWriter)writer).CompressionLevel = IOOptions.DefaultCompressionLevel;
+                ((ICompressingWriter) writer).CompressionLevel = IOOptions.DefaultCompressionLevel;
             }
             if (writer is IDtdWriter)
             {
-                ((IDtdWriter)writer).UseDtd = IOOptions.UseDtd;
+                ((IDtdWriter) writer).UseDtd = IOOptions.UseDtd;
             }
         }
 
@@ -727,7 +744,7 @@ namespace VDS.RDF
         {
             if (parser is ITokenisingParser)
             {
-                ((ITokenisingParser)parser).TokenQueueMode = IOOptions.DefaultTokenQueueMode;
+                ((ITokenisingParser) parser).TokenQueueMode = IOOptions.DefaultTokenQueueMode;
             }
         }
 
@@ -769,23 +786,21 @@ namespace VDS.RDF
             if (ctypes != null)
             {
                 //See if there are any MIME Type Definitions for the given MIME Types
-                foreach (MimeTypeDefinition definition in IOManager.GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
                 {
                     //If so return the Writer from the first match found
-                    if (definition.CanWriteRdf)
-                    {
-                        IRdfWriter writer = definition.GetRdfWriter();
-                        IOManager.ApplyWriterOptions(writer);
-                        contentType = definition.CanonicalMimeType;
-                        return writer;
-                    }
+                    if (!definition.CanWriteRdf) continue;
+                    IRdfWriter writer = definition.GetRdfWriter();
+                    ApplyWriterOptions(writer);
+                    contentType = definition.CanonicalMimeType;
+                    return writer;
                 }
             }
 
             //Default to Turtle
-            contentType = IOManager.Turtle[0];
+            contentType = Turtle[0];
             IRdfWriter defaultWriter = new CompressingTurtleWriter();
-            IOManager.ApplyWriterOptions(defaultWriter);
+            ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }
 
@@ -811,18 +826,11 @@ namespace VDS.RDF
             if (acceptHeader != null)
             {
                 acceptHeader = acceptHeader.Trim();
-                if (acceptHeader.Contains(","))
-                {
-                    ctypes = acceptHeader.Split(',');
-                }
-                else
-                {
-                    ctypes = new String[] { acceptHeader };
-                }
+                ctypes = acceptHeader.Contains(",") ? acceptHeader.Split(',') : new String[] {acceptHeader};
             }
             else
             {
-                ctypes = new String[] { };
+                ctypes = new String[] {};
             }
 
             return GetWriter(ctypes, out contentType);
@@ -861,7 +869,7 @@ namespace VDS.RDF
         public static IRdfWriter GetWriterByFileExtension(String fileExt)
         {
             String temp;
-            return IOManager.GetWriterByFileExtension(fileExt, out temp);
+            return GetWriterByFileExtension(fileExt, out temp);
         }
 
         /// <summary>
@@ -881,16 +889,14 @@ namespace VDS.RDF
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
 
             //See if there are any MIME Type Definition for the file extension
-            foreach (MimeTypeDefinition definition in IOManager.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition definition in GetDefinitionsByFileExtension(fileExt))
             {
                 //If so return the Writer from the first match found
-                if (definition.CanWriteRdf)
-                {
-                    IRdfWriter writer = definition.GetRdfWriter();
-                    IOManager.ApplyWriterOptions(writer);
-                    contentType = definition.CanonicalMimeType;
-                    return writer;
-                }
+                if (!definition.CanWriteRdf) continue;
+                IRdfWriter writer = definition.GetRdfWriter();
+                ApplyWriterOptions(writer);
+                contentType = definition.CanonicalMimeType;
+                return writer;
             }
 
             //Error if unable to select
@@ -905,20 +911,19 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParser(IEnumerable<String> ctypes)
         {
+            String[] mimeTypes = ctypes as string[] ?? ctypes.ToArray();
             if (ctypes != null)
             {
-                foreach (MimeTypeDefinition definition in IOManager.GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(mimeTypes))
                 {
-                    if (definition.CanParseRdf)
-                    {
-                        IRdfReader parser = definition.GetRdfParser();
-                        IOManager.ApplyParserOptions(parser);
-                        return parser;
-                    }
+                    if (!definition.CanParseRdf) continue;
+                    IRdfReader parser = definition.GetRdfParser();
+                    ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
-            String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+            String types = (ctypes == null) ? String.Empty : String.Join(",", mimeTypes.ToArray());
             throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs in any of the following MIME Types: " + types);
         }
 
@@ -929,7 +934,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParser(String contentType)
         {
-            return IOManager.GetParser(contentType.AsEnumerable());
+            return GetParser(contentType.AsEnumerable());
         }
 
         /// <summary>
@@ -941,14 +946,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
 
-            foreach (MimeTypeDefinition def in IOManager.GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
-                if (def.CanParseRdf)
-                {
-                    IRdfReader parser = def.GetRdfParser();
-                    IOManager.ApplyParserOptions(parser);
-                    return parser;
-                }
+                if (!def.CanParseRdf) continue;
+                IRdfReader parser = def.GetRdfParser();
+                ApplyParserOptions(parser);
+                return parser;
             }
 
             throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs associated with the File Extension '" + fileExt + "'");
@@ -957,8 +960,8 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the true file extension for a filename
         /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
+        /// <param name="filename">Filename</param>
+        /// <returns>True extension</returns>
         /// <remarks>
         /// <para>
         /// This is an alternative to using <see cref="System.IO.Path.GetExtension(String)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example <strong>.gz</strong>
@@ -967,12 +970,13 @@ namespace VDS.RDF
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
         /// </para>
         /// <para>
-        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevan to the library
+        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevant to the library.  Acceptable double extensions are currently defined by the <see cref="AllowedStackableExtensions"/> array.
         /// </para>
         /// </remarks>
         public static String GetTrueFileExtension(String filename)
         {
             String actualFilename = Path.GetFileName(filename);
+            if (actualFilename == null) throw new ArgumentException("Path.GetFileName() failed to get a file name for the given file name", "filename");
             int extIndex = actualFilename.IndexOf('.');
 
             //If no extension(s) return standard method
@@ -980,6 +984,7 @@ namespace VDS.RDF
 
             //Otherwise get the detected extension and then check for double extensions
             String stdExt = Path.GetExtension(actualFilename);
+            if (stdExt == null) throw new ArgumentException("Path.GetExtension() failed to get an extension for the given file name", "filename");
 
             //Only proceed to do double extension checking if the extension is known to be stackable
             if (!AllowedStackableExtensions.Contains(stdExt.Substring(1))) return stdExt;
@@ -1004,7 +1009,7 @@ namespace VDS.RDF
         public static String GetTrueResourceExtension(String resource)
         {
             int extIndex = resource.IndexOf('.');
-            
+
             //if no extensions(s) return empty
             if (extIndex == -1) return String.Empty;
 
@@ -1035,7 +1040,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
-            foreach (MimeTypeDefinition definition in IOManager.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsMimeType(selector))
                 {
@@ -1055,15 +1060,15 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             Type requiredType = writer.GetType();
-            foreach (MimeTypeDefinition definition in IOManager.Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
-                if (requiredType.Equals(definition.RdfWriterType))
+                if (requiredType == definition.RdfWriterType)
                 {
                     return definition.CanonicalFileExtension;
                 }
             }
 
-            throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType().ToString() + "'");
+            throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType() + "'");
         }
-   }
+    }
 }

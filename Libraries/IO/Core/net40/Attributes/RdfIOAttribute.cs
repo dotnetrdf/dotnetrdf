@@ -95,10 +95,18 @@ namespace VDS.RDF.Attributes
             List<String> fileExts = new List<string>();
             if (!ReferenceEquals(this.CanonicalFileExtension, null)) fileExts.Add(this.CanonicalFileExtension);
             if (!ReferenceEquals(this.FileExtensions, null)) fileExts.AddRange(this.FileExtensions);
-            MimeTypeDefinition definition = new MimeTypeDefinition(this.SyntaxName, this.FormatUri, mimeTypes, fileExts, this.ParserType, this.WriterType);
-            definition.CanonicalFileExtension = this.CanonicalFileExtension;
-            definition.CanonicalMimeType = this.CanonicalMimeType;
-            definition.Encoding = System.Text.Encoding.GetEncoding(this.Encoding);
+            MimeTypeDefinition definition = new MimeTypeDefinition
+                                                {
+                                                    SyntaxName = this.SyntaxName,
+                                                    FormatUri = this.FormatUri,
+                                                    MimeTypes = mimeTypes,
+                                                    FileExtensions = fileExts,
+                                                    RdfParserType = this.ParserType,
+                                                    RdfWriterType = this.WriterType,
+                                                    CanonicalFileExtension = this.CanonicalFileExtension,
+                                                    CanonicalMimeType = this.CanonicalMimeType,
+                                                    Encoding = System.Text.Encoding.GetEncoding(this.Encoding)
+                                                };
             return definition;
         }
     }

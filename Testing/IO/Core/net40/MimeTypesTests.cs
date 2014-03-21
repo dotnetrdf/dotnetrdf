@@ -50,6 +50,28 @@ namespace VDS.RDF
         }
 
         [Test]
+        public void MimeTypesQuality()
+        {
+            foreach (MimeTypeDefinition definition in IOManager.Definitions)
+            {
+                String httpHeader = definition.ToHttpHeader();
+                if (definition.MimeTypes.Count() > 1)
+                {
+                    Assert.IsTrue(httpHeader.Contains(","), "Expected header to contain multiple types");
+                }
+                if (definition.Quality < 1d)
+                {
+                    String quality = definition.Quality.ToString("g3");
+                    Assert.IsTrue(httpHeader.Contains("q=" + quality), "Expected q=" + quality + " in header");
+                }
+                foreach (String mimeType in definition.MimeTypes)
+                {
+                    Assert.IsTrue(httpHeader.Contains(mimeType), "Expected MIME type " + mimeType + " in header");
+                }
+            }
+        }
+
+        [Test]
         public void MimeTypesGetDefinitionsAll()
         {
             int count = IOManager.Definitions.Count();
@@ -57,7 +79,7 @@ namespace VDS.RDF
 #if PORTABLE
             Assert.AreEqual(16, count);
 #else
-            Assert.AreEqual(30, count);
+            Assert.AreEqual(19, count);
 #endif
         }
 
@@ -69,7 +91,7 @@ namespace VDS.RDF
 #if PORTABLE
             Assert.AreEqual(16, count);
 #else
-            Assert.AreEqual(30, count);
+            Assert.AreEqual(19, count);
 #endif
         }
 
