@@ -33,8 +33,10 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+#if !PORTABLE
 using System.Windows;
 using System.Windows.Resources;
+#endif
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -159,6 +161,8 @@ namespace VDS.RDF
             return -1;
         }
 
+#if !PORTABLE
+
         /// <summary>
         /// Gets the assemblies loaded in the current application
         /// </summary>
@@ -186,6 +190,8 @@ namespace VDS.RDF
             }
             return assemblies.ToArray();
         }
+
+#endif
     }
 }
 

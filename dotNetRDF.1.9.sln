@@ -72,9 +72,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B91DD4CE-9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Net35", "Libraries\core\net35\dotNetRDF.Net35.csproj", "{C834D5A0-18DA-4206-BE86-C1CA59837DA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.ClientProfile.Net35", "Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj", "{5B3596B5-DB36-45B6-AC58-1B505E78FB86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Net35.ClientProfile", "Libraries\core\net35-client\dotNetRDF.Net35.ClientProfile.csproj", "{5B3596B5-DB36-45B6-AC58-1B505E78FB86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.ClientProfile.Net40", "Libraries\core\net40-client\dotNetRDF.ClientProfile.Net40.csproj", "{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Net40.ClientProfile", "Libraries\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj", "{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Silverlight4", "Libraries\core\sl4\dotNetRDF.Silverlight4.csproj", "{854A789B-BA35-4A1B-9449-CAD40953F0E5}"
 EndProject
@@ -152,11 +152,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1A8AFABE-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zip", "Zip", "{1796DBD0-D37B-485E-AEEC-072B1AEB507E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.ClientProfile.Net40", "Libraries\IO\Core\net40-client\dotNetRDF.IO.ClientProfile.Net40.csproj", "{BE68B7AE-F1FE-474F-95DB-817A9032CC98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Net40.ClientProfile", "Libraries\IO\Core\net40-client\dotNetRDF.IO.Net40.ClientProfile.csproj", "{BE68B7AE-F1FE-474F-95DB-817A9032CC98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Net35", "Libraries\IO\Core\net35\dotNetRDF.IO.Net35.csproj", "{56322982-E744-4B3D-8EC3-CADBDEC8374B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.ClientProfile.Net35", "Libraries\IO\Core\net35-client\dotNetRDF.IO.ClientProfile.Net35.csproj", "{01D626BD-6846-4F46-9F28-F170E75EE4E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Net35.ClientProfile", "Libraries\IO\Core\net35-client\dotNetRDF.IO.Net35.ClientProfile.csproj", "{01D626BD-6846-4F46-9F28-F170E75EE4E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Html.Net40", "Libraries\IO\Html\net40\dotNetRDF.IO.Html.Net40.csproj", "{B8E1D2A0-842F-4DD9-AB37-1EAB4FA8D0BF}"
 EndProject
@@ -185,6 +185,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Silverlight4", "Libraries\IO\Core\sl4\dotNetRDF.IO.Silverlight4.csproj", "{208F8732-DA36-4A74-9B4B-1397E99F770E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.WindowsPhone7", "Libraries\IO\Core\sl4-wp\dotNetRDF.IO.WindowsPhone7.csproj", "{524211D4-56A9-4925-8DC1-866204B920FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Json.Net40.ClientProfile", "Libraries\IO\Json\net40-client\dotNetRDF.IO.Json.Net40.ClientProfile.csproj", "{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Json.Net35", "Libraries\IO\Json\net35\dotNetRDF.IO.Json.Net35.csproj", "{A6DB188C-65A3-4721-B393-C12476E6175E}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -621,6 +625,30 @@ Global
 		{524211D4-56A9-4925-8DC1-866204B920FC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{524211D4-56A9-4925-8DC1-866204B920FC}.Release|x64.ActiveCfg = Release|Any CPU
 		{524211D4-56A9-4925-8DC1-866204B920FC}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|x64.ActiveCfg = Release|Any CPU
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D}.Release|x86.ActiveCfg = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A6DB188C-65A3-4721-B393-C12476E6175E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -677,6 +705,8 @@ Global
 		{208F8732-DA36-4A74-9B4B-1397E99F770E} = {83B0A7DE-1541-4E2D-8274-0361C9CBE657}
 		{524211D4-56A9-4925-8DC1-866204B920FC} = {83B0A7DE-1541-4E2D-8274-0361C9CBE657}
 		{63EAB21F-9F9B-495B-9649-48C58914377F} = {28037582-EC90-4EFA-96D5-F790DCF8DD51}
+		{8C8DFA6A-46EF-470A-BA17-B52916ACF69D} = {28037582-EC90-4EFA-96D5-F790DCF8DD51}
+		{A6DB188C-65A3-4721-B393-C12476E6175E} = {28037582-EC90-4EFA-96D5-F790DCF8DD51}
 		{B8E1D2A0-842F-4DD9-AB37-1EAB4FA8D0BF} = {B53B8567-F52B-4171-829F-8EFE7C154632}
 		{B472DC0E-A41B-413F-9AFB-CCB997D82CD2} = {C69E46CD-863A-4A46-A9AE-40156CBE864A}
 		{96822486-474D-4ACA-AEFA-A392F7B2BAF2} = {C69E46CD-863A-4A46-A9AE-40156CBE864A}

@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml;
 #if !NO_XSL
 using System.Xml.Xsl;
