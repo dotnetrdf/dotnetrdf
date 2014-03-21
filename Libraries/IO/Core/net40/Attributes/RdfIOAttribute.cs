@@ -13,6 +13,8 @@ namespace VDS.RDF.Attributes
     public class RdfIOAttribute
         : Attribute
     {
+        private double _quality = 1.0;
+
         /// <summary>
         /// Gets/Sets the friendly syntax name
         /// </summary>
@@ -47,6 +49,29 @@ namespace VDS.RDF.Attributes
         /// Gets/Sets the canonical MIME type for the syntax
         /// </summary>
         public String CanonicalMimeType { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the desired quality for the MIME type
+        /// </summary>
+        public double Quality
+        {
+            get { return this._quality; }
+            set
+            {
+                if (value < 0d)
+                {
+                    this._quality = 0d;
+                } 
+                else if (value > 1d)
+                {
+                    this._quality = 1.0d;
+                }
+                else
+                {
+                    this._quality = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets/Sets a parser type for the syntax, the type must implement <see cref="IRdfReader"/> for the attribute to be successfully used

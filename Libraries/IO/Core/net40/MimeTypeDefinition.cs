@@ -27,9 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
@@ -40,7 +38,7 @@ namespace VDS.RDF
     /// </summary>
     public class MimeTypeDefinition
     {
-        protected String _canonicalType, _canonicalExt, _formatUri;
+        protected String _canonicalType, _canonicalExt;
         protected Encoding _encoding = Encoding.UTF8;
         protected Type _rdfParserType, _rdfWriterType;
         protected List<String> _mimeTypes = new List<string>();
@@ -54,7 +52,9 @@ namespace VDS.RDF
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-            : this(syntaxName, null, mimeTypes, fileExtensions) { }
+            : this(syntaxName, null, mimeTypes, fileExtensions)
+        {
+        }
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -64,7 +64,9 @@ namespace VDS.RDF
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
-            : this(syntaxName, formatUri, mimeTypes, fileExtensions, null, null) { }
+            : this(syntaxName, formatUri, mimeTypes, fileExtensions, null, null)
+        {
+        }
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -75,7 +77,9 @@ namespace VDS.RDF
         /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
-            : this(syntaxName, null, mimeTypes, fileExtensions, rdfParserType, rdfWriterType) { }
+            : this(syntaxName, null, mimeTypes, fileExtensions, rdfParserType, rdfWriterType)
+        {
+        }
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -89,13 +93,13 @@ namespace VDS.RDF
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfWriterType)
         {
             if (mimeTypes == null) throw new ArgumentNullException("mimeTypes", "MIME Types enumeration cannot be null");
-            this._formatUri = formatUri;
+            this.FormatUri = formatUri;
             this.SyntaxName = syntaxName;
             this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
 
             foreach (String ext in fileExtensions)
             {
-                this._fileExtensions.Add(this.CheckFileExtension(ext));
+                this._fileExtensions.Add(CheckFileExtension(ext));
             }
             this.RdfParserType = rdfParserType;
             this.RdfWriterType = rdfWriterType;
@@ -109,13 +113,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable)
         /// </summary>
-        public String FormatUri
-        {
-            get
-            {
-                return this._formatUri;
-            }
-        }
+        public string FormatUri { get; protected set; }
 
         /// <summary>
         /// Gets the Encoding that should be used for reading and writing this Syntax
@@ -124,19 +122,9 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._encoding != null)
-                {
-                    return this._encoding;
-                }
-                else
-                {
-                    return Encoding.UTF8;
-                }
+                return this._encoding ?? Encoding.UTF8;
             }
-            set
-            {
-                this._encoding = value;
-            }
+            set { this._encoding = value; }
         }
 
         #region MIME Type Management
@@ -146,10 +134,7 @@ namespace VDS.RDF
         /// </summary>
         public IEnumerable<String> MimeTypes
         {
-            get
-            {
-                return this._mimeTypes;
-            }
+            get { return this._mimeTypes; }
         }
 
         /// <summary>
@@ -189,20 +174,17 @@ namespace VDS.RDF
                 {
                     return this._canonicalType;
                 }
-                else if (this._mimeTypes.Count > 0)
+                if (this._mimeTypes.Count > 0)
                 {
                     return this._mimeTypes.First();
                 }
-                else
-                {
-                    throw new RdfException("No MIME Types are defined for " + this.SyntaxName);
-                }
+                throw new RdfException("No MIME Types are defined for " + this.SyntaxName);
             }
             set
             {
                 if (value == null)
                 {
-                    this._canonicalType = value;
+                    this._canonicalType = null;
                 }
                 else if (this._mimeTypes.Contains(value))
                 {
@@ -224,15 +206,11 @@ namespace VDS.RDF
         {
             if (selector.IsInvalid) return false;
             if (selector.IsAny) return true;
-            if (selector.IsRange)
-            {
-                if (selector.RangeType == null) return false;
-                return this._mimeTypes.Any(type => type.StartsWith(selector.RangeType));
-            }
-            else
+            if (!selector.IsRange)
             {
                 return this._mimeTypes.Contains(selector.Type);
             }
+            return selector.RangeType != null && this._mimeTypes.Any(type => type.StartsWith(selector.RangeType));
         }
 
         #endregion
@@ -244,10 +222,7 @@ namespace VDS.RDF
         /// </summary>
         public IEnumerable<String> FileExtensions
         {
-            get
-            {
-                return this._fileExtensions;
-            }
+            get { return this._fileExtensions; }
         }
 
         /// <summary>
@@ -256,16 +231,15 @@ namespace VDS.RDF
         /// <param name="ext">File Extension</param>
         public void AddFileExtension(String ext)
         {
-            if (!this._fileExtensions.Contains(this.CheckFileExtension(ext)))
+            if (!this._fileExtensions.Contains(CheckFileExtension(ext)))
             {
-                this._fileExtensions.Add(this.CheckFileExtension(ext));
+                this._fileExtensions.Add(CheckFileExtension(ext));
             }
         }
 
-        private String CheckFileExtension(String ext)
+        private static String CheckFileExtension(String ext)
         {
-            if (ext.StartsWith(".")) return ext.Substring(1);
-            return ext.ToLowerInvariant();
+            return ext.StartsWith(".") ? ext.Substring(1) : ext.ToLowerInvariant();
         }
 
         /// <summary>
@@ -273,10 +247,7 @@ namespace VDS.RDF
         /// </summary>
         public bool HasFileExtensions
         {
-            get
-            {
-                return this._canonicalExt != null || this._fileExtensions.Count > 0;
-            }
+            get { return this._canonicalExt != null || this._fileExtensions.Count > 0; }
         }
 
         /// <summary>
@@ -290,26 +261,23 @@ namespace VDS.RDF
                 {
                     return this._canonicalExt;
                 }
-                else if (this._fileExtensions.Count > 0)
+                if (this._fileExtensions.Count > 0)
                 {
                     return this._fileExtensions.First();
                 }
-                else
-                {
-                    throw new RdfException("No File Extensions are defined for " + this.SyntaxName);
-                }
+                throw new RdfException("No File Extensions are defined for " + this.SyntaxName);
             }
             set
             {
                 if (value == null)
                 {
-                    this._canonicalExt = value;
+                    this._canonicalExt = null;
                 }
-                else if (this._fileExtensions.Contains(this.CheckFileExtension(value)))
+                else if (this._fileExtensions.Contains(CheckFileExtension(value)))
                 {
-                    this._fileExtensions.Add(this.CheckFileExtension(value));
-                } 
-                else 
+                    this._fileExtensions.Add(CheckFileExtension(value));
+                }
+                else
                 {
                     throw new RdfException("Cannot set the Canonical File Extension for " + this.SyntaxName + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
                 }
@@ -338,37 +306,23 @@ namespace VDS.RDF
         /// <param name="property">Property to which we are assigning</param>
         /// <param name="t">Type</param>
         /// <param name="interfaceType">Required Interface Type</param>
-        private bool EnsureInterface(String property, Type t, Type interfaceType)
+        private static bool EnsureInterface(String property, Type t, Type interfaceType)
         {
-            if (!t.GetInterfaces().Any(itype => itype.Equals(interfaceType)))
+            if (t.GetInterfaces().All(itype => itype != interfaceType))
             {
                 throw new RdfException("Cannot use Type " + t.FullName + " for the " + property + " Type as it does not implement the required interface " + interfaceType.FullName);
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         private bool EnsureObjectParserInterface(Type t, Type obj)
         {
-            bool ok = false;
-            foreach (Type i in t.GetInterfaces())
-            {
-                if (i.IsGenericType)
-                {
-                    if (i.GetGenericArguments().First().Equals(obj))
-                    {
-                        ok = true;
-                        break;
-                    }
-                }
-            }
+            bool ok = t.GetInterfaces().Where(i => i.IsGenericType).Any(i => i.GetGenericArguments().First() == obj);
             if (!ok)
             {
                 throw new RdfException("Cannot use Type " + t.FullName + " as an Object Parser for the Type " + obj.FullName + " as it does not implement the required interface IObjectParser<" + obj.Name + ">");
             }
-            return ok;
+            return true;
         }
 
         /// <summary>
@@ -376,22 +330,16 @@ namespace VDS.RDF
         /// </summary>
         public Type RdfParserType
         {
-            get
-            {
-                return this._rdfParserType;
-            }
+            get { return this._rdfParserType; }
             set
             {
                 if (value == null)
                 {
-                    this._rdfParserType = value;
+                    this._rdfParserType = null;
                 }
-                else
+                else if (EnsureInterface("RDF Parser", value, typeof (IRdfReader)))
                 {
-                    if (EnsureInterface("RDF Parser", value, typeof(IRdfReader)))
-                    {
-                        this._rdfParserType = value;
-                    }
+                    this._rdfParserType = value;
                 }
             }
         }
@@ -401,22 +349,16 @@ namespace VDS.RDF
         /// </summary>
         public Type RdfWriterType
         {
-            get
-            {
-                return this._rdfWriterType;
-            }
+            get { return this._rdfWriterType; }
             set
             {
                 if (value == null)
                 {
-                    this._rdfWriterType = value;
+                    this._rdfWriterType = null;
                 }
-                else
+                else if (EnsureInterface("RDF Writer", value, typeof (IRdfWriter)))
                 {
-                    if (EnsureInterface("RDF Writer", value, typeof(IRdfWriter)))
-                    {
-                        this._rdfWriterType = value;
-                    }
+                    this._rdfWriterType = value;
                 }
             }
         }
@@ -426,10 +368,7 @@ namespace VDS.RDF
         /// </summary>
         public bool CanParseRdf
         {
-            get
-            {
-                return (this._rdfParserType != null);
-            }
+            get { return (this._rdfParserType != null); }
         }
 
         /// <summary>
@@ -437,10 +376,7 @@ namespace VDS.RDF
         /// </summary>
         public bool CanWriteRdf
         {
-            get
-            {
-                return (this._rdfWriterType != null);
-            }
+            get { return (this._rdfWriterType != null); }
         }
 
         /// <summary>
@@ -451,12 +387,9 @@ namespace VDS.RDF
         {
             if (this._rdfParserType != null)
             {
-                return (IRdfReader)Activator.CreateInstance(this._rdfParserType);
+                return (IRdfReader) Activator.CreateInstance(this._rdfParserType);
             }
-            else
-            {
-                throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + this.SyntaxName);
-            }
+            throw new RdfParserSelectionException("There is no RDF Parser available for the Syntax " + this.SyntaxName);
         }
 
         /// <summary>
@@ -467,12 +400,9 @@ namespace VDS.RDF
         {
             if (this._rdfWriterType != null)
             {
-                return (IRdfWriter)Activator.CreateInstance(this._rdfWriterType);
+                return (IRdfWriter) Activator.CreateInstance(this._rdfWriterType);
             }
-            else
-            {
-                throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this.SyntaxName);
-            }
+            throw new RdfWriterSelectionException("There is no RDF Writer available for the Syntax " + this.SyntaxName);
         }
 
         /// <summary>
@@ -482,7 +412,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool CanParseObject<T>()
         {
-            return this._objectParserTypes.ContainsKey(typeof(T));
+            return this._objectParserTypes.ContainsKey(typeof (T));
         }
 
         /// <summary>
@@ -492,16 +422,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public Type GetObjectParserType<T>()
         {
-            Type t = typeof(T);
+            Type t = typeof (T);
             Type result;
-            if (this._objectParserTypes.TryGetValue(t, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
+            return this._objectParserTypes.TryGetValue(t, out result) ? result : null;
         }
 
         /// <summary>
@@ -511,19 +434,16 @@ namespace VDS.RDF
         /// <param name="parserType">Parser Type</param>
         public void SetObjectParserType<T>(Type parserType)
         {
-            Type t = typeof(T);
+            Type t = typeof (T);
             if (this._objectParserTypes.ContainsKey(t))
             {
                 if (parserType == null)
                 {
                     this._objectParserTypes.Remove(t);
                 }
-                else
+                else if (this.EnsureObjectParserInterface(parserType, t))
                 {
-                    if (this.EnsureObjectParserInterface(parserType, t))
-                    {
-                        this._objectParserTypes[t] = parserType;
-                    }
+                    this._objectParserTypes[t] = parserType;
                 }
             }
             else if (parserType != null)
@@ -542,15 +462,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public IObjectParser<T> GetObjectParser<T>()
         {
-            if (this._objectParserTypes.ContainsKey(typeof(T)))
+            if (!this._objectParserTypes.ContainsKey(typeof (T)))
             {
-                Type parserType = this._objectParserTypes[typeof(T)];
-                return (IObjectParser<T>)Activator.CreateInstance(parserType);
+                throw new RdfParserSelectionException("There is no Object Parser available for the Type " + typeof (T).FullName);
             }
-            else
-            {
-                throw new RdfParserSelectionException("There is no Object Parser available for the Type " + typeof(T).FullName);
-            }
+            Type parserType = this._objectParserTypes[typeof (T)];
+            return (IObjectParser<T>) Activator.CreateInstance(parserType);
         }
 
         /// <summary>
@@ -558,14 +475,10 @@ namespace VDS.RDF
         /// </summary>
         public IEnumerable<KeyValuePair<Type, Type>> ObjectParserTypes
         {
-            get
-            {
-                return this._objectParserTypes;
-            }
+            get { return this._objectParserTypes; }
         }
 
         #endregion
-
     }
 
     /// <summary>
@@ -574,11 +487,6 @@ namespace VDS.RDF
     public sealed class MimeTypeSelector
         : IComparable<MimeTypeSelector>
     {
-        private readonly String _type, _rangeType, _charset;
-        private readonly double _quality = 1.0d;
-        private readonly int _order;
-        private readonly bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
-
         /// <summary>
         /// Creates a MIME Type selector
         /// </summary>
@@ -587,37 +495,34 @@ namespace VDS.RDF
         /// <returns></returns>
         public static MimeTypeSelector Create(String contentType, int order)
         {
-            if (contentType.Contains(';'))
-            {
-                String[] parts = contentType.Split(';');
-                String type = parts[0].Trim().ToLowerInvariant();
-
-                double quality = 1.0d;
-                String charset = null;
-                for (int i = 1; i < parts.Length; i++)
-                {
-                    String[] data = parts[i].Split('=');
-                    if (data.Length == 1) continue;
-                    switch (data[0].Trim().ToLowerInvariant())
-                    {
-                        case "charset":
-                            charset = data[1].Trim();
-                            break;
-                        case "q":
-                            if (!Double.TryParse(data[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out quality))
-                            {
-                                quality = 1.0d;
-                            }
-                            break;
-                    }
-                }
-
-                return new MimeTypeSelector(type, charset, quality, order);
-            }
-            else
+            if (!contentType.Contains(';'))
             {
                 return new MimeTypeSelector(contentType.Trim().ToLowerInvariant(), null, 1.0d, order);
             }
+            String[] parts = contentType.Split(';');
+            String type = parts[0].Trim().ToLowerInvariant();
+
+            double quality = 1.0d;
+            String charset = null;
+            for (int i = 1; i < parts.Length; i++)
+            {
+                String[] data = parts[i].Split('=');
+                if (data.Length == 1) continue;
+                switch (data[0].Trim().ToLowerInvariant())
+                {
+                    case "charset":
+                        charset = data[1].Trim();
+                        break;
+                    case "q":
+                        if (!Double.TryParse(data[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out quality))
+                        {
+                            quality = 1.0d;
+                        }
+                        break;
+                }
+            }
+
+            return new MimeTypeSelector(type, charset, quality, order);
         }
 
         /// <summary>
@@ -635,7 +540,7 @@ namespace VDS.RDF
                 int order = 1;
                 foreach (String type in ctypes)
                 {
-                    selectors.Add(MimeTypeSelector.Create(type, order));
+                    selectors.Add(Create(type, order));
                     order++;
                 }
             }
@@ -663,43 +568,48 @@ namespace VDS.RDF
         /// <param name="order">Order of appearance (used as precendence tiebreaker where necessary)</param>
         public MimeTypeSelector(String type, String charset, double quality, int order)
         {
+            IsSpecific = false;
+            IsInvalid = false;
+            IsRange = false;
+            IsAny = false;
+            Quality = 1.0d;
             if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
-            this._type = type.Trim().ToLowerInvariant();
-            this._charset = charset != null ? charset.Trim() : null;
-            this._quality = quality;
-            this._order = order;
+            this.Type = type.Trim().ToLowerInvariant();
+            this.Charset = charset != null ? charset.Trim() : null;
+            this.Quality = quality;
+            this.Order = order;
 
             //Validate parameters
-            if (this._quality < 0) this._quality = 0;
-            if (this._quality > 1) this._quality = 1;
-            if (this._order < 1) this._order = 1;
+            if (this.Quality < 0) this.Quality = 0;
+            if (this.Quality > 1) this.Quality = 1;
+            if (this.Order < 1) this.Order = 1;
 
             //Check what type of selector this is
-            if (!IOManager.IsValidMimeType(this._type))
+            if (!IOManager.IsValidMimeType(this.Type))
             {
                 //Invalid
-                this._isInvalid = true;
+                this.IsInvalid = true;
             }
-            else if (this._type.Equals(IOManager.Any))
+            else if (this.Type.Equals(IOManager.Any))
             {
                 //Is a */* any
-                this._isAny = true;
+                this.IsAny = true;
             }
-            else if (this._type.EndsWith("/*"))
+            else if (this.Type.EndsWith("/*"))
             {
                 //Is a blah/* range
-                this._isRange = true;
-                this._rangeType = this._type.Substring(0, this._type.Length - 1);
+                this.IsRange = true;
+                this.RangeType = this.Type.Substring(0, this.Type.Length - 1);
             }
-            else if (this._type.Contains('*'))
+            else if (this.Type.Contains('*'))
             {
                 //If it contains a * and is not */* or blah/* it is invalid
-                this._isInvalid = true;
+                this.IsInvalid = true;
             }
             else
             {
                 //Must be a specific type
-                this._isSpecific = true;
+                this.IsSpecific = true;
             }
         }
 
@@ -707,102 +617,48 @@ namespace VDS.RDF
         /// Gets the selected type
         /// </summary>
         /// <returns>A type string of the form <strong>type/subtype</strong> assuming the type if valid</returns>
-        public String Type
-        {
-            get
-            {
-                return this._type;
-            }
-        }
+        public string Type { get; private set; }
 
         /// <summary>
         /// Gets the range type if this is a range selector
         /// </summary>
         /// <returns>A type string of the form <strong>type/</strong> if this is a range selector, otherwise null</returns>
-        public String RangeType
-        {
-            get
-            {
-                return this._rangeType;
-            }
-        }
+        public string RangeType { get; private set; }
 
         /// <summary>
         /// Gets the Charset for the selector (may be null if none specified)
         /// </summary>
-        public String Charset
-        {
-            get
-            {
-                return this._charset;
-            }
-        }
+        public string Charset { get; private set; }
 
         /// <summary>
         /// Gets the quality for the selector (range of 0.0-1.0)
         /// </summary>
-        public double Quality
-        {
-            get
-            {
-                return this._quality;
-            }
-        }
+        public double Quality { get; private set; }
 
         /// <summary>
         /// Gets the order of apperance for the selector (used as precedence tiebreaker where necessary)
         /// </summary>
-        public int Order
-        {
-            get
-            {
-                return this._order;
-            }
-        }
+        public int Order { get; private set; }
 
         /// <summary>
         /// Gets whether the selector if for a */* pattern i.e. accept any
         /// </summary>
-        public bool IsAny
-        {
-            get
-            {
-                return this._isAny;
-            }
-        }
+        public bool IsAny { get; private set; }
 
         /// <summary>
         /// Gets whether the selector is for a type/* pattern i.e. accept any sub-type of the given type
         /// </summary>
-        public bool IsRange
-        {
-            get
-            {
-                return this._isRange;
-            }
-        }
+        public bool IsRange { get; private set; }
 
         /// <summary>
         /// Gets whether the selector is invalid
         /// </summary>
-        public bool IsInvalid
-        {
-            get
-            {
-                return this._isInvalid;
-            }
-        }
+        public bool IsInvalid { get; private set; }
 
         /// <summary>
         /// Gets whether the selector is for a specific MIME type e.g. type/sub-type
         /// </summary>
-        public bool IsSpecific
-        {
-            get
-            {
-                return this._isSpecific;
-            }
-        }
+        public bool IsSpecific { get; private set; }
 
         /// <summary>
         /// Sorts the selector in precedence order according to the content negotiation rules from the relevant RFCs
@@ -817,31 +673,23 @@ namespace VDS.RDF
                 return -1;
             }
 
-            if (this._isInvalid)
+            if (this.IsInvalid)
             {
-                if (other.IsInvalid)
-                {
-                    //If both invalid use order
-                    return this.Order.CompareTo(other.Order);
-                }
-                else
-                {
-                    //Invalid types are less than valid types
-                    return 1;
-                }
+                return other.IsInvalid ? this.Order.CompareTo(other.Order) : 1;
             }
-            else if (other.IsInvalid)
+            if (other.IsInvalid)
             {
                 //Valid types are greater than invalid types
                 return -1;
             }
 
-            if (this._isAny)
+            int c;
+            if (this.IsAny)
             {
                 if (other.IsAny)
                 {
                     //If both Any use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    c = -1*this.Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         //If same quality use order
@@ -849,23 +697,20 @@ namespace VDS.RDF
                     }
                     return c;
                 }
-                else
-                {
-                    //Any is less than range/specific type
-                    return 1;
-                }
+                //Any is less than range/specific type
+                return 1;
             }
-            else if (this._isRange)
+            if (this.IsRange)
             {
                 if (other.IsAny)
                 {
                     //Range types are greater than Any
                     return -1;
                 }
-                else if (other.IsRange)
+                if (other.IsRange)
                 {
                     //If both Range use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    c = -1*this.Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         //If same quality use order
@@ -873,31 +718,22 @@ namespace VDS.RDF
                     }
                     return c;
                 }
-                else
-                {
-                    //Range is less that specific type
-                    return 1;
-                }
+                //Range is less that specific type
+                return 1;
             }
-            else
+            if (other.IsAny || other.IsRange)
             {
-                if (other.IsAny || other.IsRange)
-                {
-                    //Specific types are greater than Any/Range
-                    return -1;
-                }
-                else
-                {
-                    //Both specific so use quality
-                    int c = -1 * this.Quality.CompareTo(other.Quality);
-                    if (c == 0)
-                    {
-                        //If same quality use order
-                        c = this.Order.CompareTo(other.Order);
-                    }
-                    return c;
-                }
+                //Specific types are greater than Any/Range
+                return -1;
             }
+            //Both specific so use quality
+            c = -1*this.Quality.CompareTo(other.Quality);
+            if (c == 0)
+            {
+                //If same quality use order
+                c = this.Order.CompareTo(other.Order);
+            }
+            return c;
         }
 
         /// <summary>
@@ -910,14 +746,14 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(this._type);
-            if (this._quality != 1.0d)
+            builder.Append(this.Type);
+            if (this.Quality < 1.0d)
             {
-                builder.Append("; q=" + this._quality.ToString("g3"));
+                builder.Append("; q=" + this.Quality.ToString("g3"));
             }
-            if (this._charset != null)
+            if (this.Charset != null)
             {
-                builder.Append("; charset=" + this._charset);
+                builder.Append("; charset=" + this.Charset);
             }
             return builder.ToString();
         }

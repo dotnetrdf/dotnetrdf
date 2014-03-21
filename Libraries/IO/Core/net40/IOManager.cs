@@ -38,8 +38,16 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
+    /// Manager for RDF IO operations
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Part of this classes duties is to maintain the registry of supported input and output formats along with their associated <see cref="IRdfReader"/> and <see cref="IRdfWriter"/> implementations.  Formats provided directly by this assembly are automatically registered, formats in other assemblies are either auto-detected from the <see cref="RdfIOAttribute"/> declarations in those assemblies or may be manually registered via various static methods of this class.
+    /// </para>
+    /// <para>
+    /// The registry is lazily initialized so until you actually use a method that requires the registry it will not be populated, the initial population may be slow so it may be sensible to enumerate the available definitions via the <see cref="Definitions"/> property in order to force an initialization.
+    /// </para>
+    /// </remarks>
     public static class IOManager
     {
         #region Constants
@@ -351,6 +359,12 @@ namespace VDS.RDF
             }
          }
 
+        /// <summary>
+        /// Scans for definitions for RDF input/output formats in any assembly in the current app domain
+        /// </summary>
+        /// <remarks>
+        /// Formats are declared via the <see cref="RdfIOAttribute"/> at the assembly level
+        /// </remarks>
         public static void ScanDefinitions()
         {
             lock (_mimeTypes)
@@ -418,17 +432,19 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
+            string[] enumerable = mimeTypes as string[] ?? mimeTypes.ToArray();
+            if (!enumerable.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
             //Get any existing defintions that are to be altered
-            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(enumerable);
+            string[] extensions = fileExtensions as string[] ?? fileExtensions.ToArray();
             foreach (MimeTypeDefinition def in existing)
             {
-                foreach (String type in mimeTypes)
+                foreach (String type in enumerable)
                 {
                     def.AddMimeType(type);
                 }
-                foreach (String ext in fileExtensions)
+                foreach (String ext in extensions)
                 {
                     def.AddFileExtension(ext);
                 }
@@ -436,10 +452,10 @@ namespace VDS.RDF
             }
 
             //Create any new defintions
-            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<String> newTypes = enumerable.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
-                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, extensions);
                 newDef.RdfParserType = parser.GetType();
                 AddDefinition(newDef);
             }
