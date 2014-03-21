@@ -39,9 +39,9 @@ namespace VDS.RDF.Parsing.Handlers
     /// </para>
     /// </remarks>
     public class MultiHandler 
-        : BaseRdfHandler, IWrappingRdfHandler
+        : BaseRdfHandler
     {
-        private List<IRdfHandler> _handlers = new List<IRdfHandler>();
+        private readonly List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
         /// <summary>
         /// Creates a new Multi Handler
@@ -50,9 +50,9 @@ namespace VDS.RDF.Parsing.Handlers
         public MultiHandler(IEnumerable<IRdfHandler> handlers)
         {
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the MultiHandler");
-            if (!handlers.Any()) throw new ArgumentException("Must be at least 1 Handler for use by the MultiHandler", "handlers");
 
             this._handlers.AddRange(handlers);
+            if (this._handlers.Count == 0) throw new ArgumentException("Must be at least 1 Handler for use by the MultiHandler", "handlers");
 
             //Check there are no identical handlers in the List
             for (int i = 0; i < this._handlers.Count; i++)

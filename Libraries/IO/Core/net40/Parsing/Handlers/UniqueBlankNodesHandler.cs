@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
@@ -44,7 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// </para>
     /// </remarks>
     public class UniqueBlankNodesHandler
-        : BaseRdfHandler, IWrappingRdfHandler
+        : BaseRdfHandler
     {
         private readonly IRdfHandler _handler;
 
@@ -56,17 +53,6 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (handler == null) throw new ArgumentNullException("handler");
             this._handler = handler;
-        }
-
-        /// <summary>
-        /// Gets the inner handler
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return this._handler.AsEnumerable();
-            }
         }
 
         /// <summary>

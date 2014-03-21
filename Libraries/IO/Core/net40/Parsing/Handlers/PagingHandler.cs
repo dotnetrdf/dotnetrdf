@@ -39,12 +39,12 @@ namespace VDS.RDF.Parsing.Handlers
     /// <li>If there are fewer triples than the chunk size or if the chunk exceeds the bounds of the data then you will only receive the triples that fall within the chunk (if any)</li>
     /// </ol>
     /// </remarks>
-    public class PagingHandler 
-        : BaseRdfHandler, IWrappingRdfHandler
+    public class PagingHandler
+        : BaseRdfHandler
     {
         private readonly IRdfHandler _handler;
-private readonly long _limit = 0, _offset = 0;
-        private long _counter = 0;
+        private readonly long _limit, _offset;
+        private long _counter;
 
         /// <summary>
         /// Creates a new Paging Handler
@@ -70,18 +70,7 @@ private readonly long _limit = 0, _offset = 0;
         /// <param name="handler">Inner Handler to use</param>
         /// <param name="limit">Limit</param>
         public PagingHandler(IRdfHandler handler, long limit)
-            : this(handler, limit, 0) { }
-
-        /// <summary>
-        /// Gets the Inner Handler wrapped by this Handler
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return this._handler.AsEnumerable();
-            }
-        }
+            : this(handler, limit, 0) {}
 
         /// <summary>
         /// Starts RDF Handler
@@ -209,10 +198,7 @@ private readonly long _limit = 0, _offset = 0;
         /// </summary>
         public override bool AcceptsAll
         {
-            get 
-            {
-                return this._limit < 0;
-            }
+            get { return this._limit < 0; }
         }
     }
 }

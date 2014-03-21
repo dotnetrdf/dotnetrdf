@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -40,9 +39,9 @@ namespace VDS.RDF.Parsing.Handlers
     /// </para>
     /// </remarks>
     public class ChainedHandler 
-        : BaseRdfHandler, IWrappingRdfHandler
+        : BaseRdfHandler
     {
-        private List<IRdfHandler> _handlers = new List<IRdfHandler>();
+        private readonly List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
         /// <summary>
         /// Creates a new Chained Handler
@@ -51,9 +50,9 @@ namespace VDS.RDF.Parsing.Handlers
         public ChainedHandler(IEnumerable<IRdfHandler> handlers)
         {
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the ChainedHandler");
-            if (!handlers.Any()) throw new ArgumentException("Must be at least 1 Handler for use by the ChainedHandler", "handlers");
 
             this._handlers.AddRange(handlers);
+            if (this._handlers.Count == 0) throw new ArgumentException("Must be at least 1 Handler for use by the ChainedHandler", "handlers");
 
             //Check there are no identical handlers in the List
             for (int i = 0; i < this._handlers.Count; i++)
@@ -62,17 +61,6 @@ namespace VDS.RDF.Parsing.Handlers
                 {
                     if (ReferenceEquals(this._handlers[i], this._handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the Inner Handlers used by this Handler
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return this._handlers;
             }
         }
 

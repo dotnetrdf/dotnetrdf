@@ -25,8 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -35,9 +33,9 @@ namespace VDS.RDF.Parsing.Handlers
     /// A RDF Handler which wraps another Handler allowing handling to be cancelled
     /// </summary>
     public class CancellableHandler 
-        : BaseRdfHandler, IWrappingRdfHandler
+        : BaseRdfHandler
     {
-        private IRdfHandler _handler;
+        private readonly IRdfHandler _handler;
         private bool _cancelled = false;
 
         /// <summary>
@@ -48,17 +46,6 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (handler == null) throw new ArgumentNullException("handler", "Inner Handler cannot be null");
             this._handler = handler;
-        }
-
-        /// <summary>
-        /// Gets the Inner Handler wrapped by this Handler
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return this._handler.AsEnumerable();
-            }
         }
 
         /// <summary>

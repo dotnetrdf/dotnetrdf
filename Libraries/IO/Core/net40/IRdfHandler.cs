@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -32,8 +31,11 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Handlers which handle the RDF produced by parsers
+    /// Interface for RDF handlers
     /// </summary>
+    /// <remarks>
+    /// While originally designed primarily as a low level parsing sink API this has proven to be much more useful and generalisable and is used throughout the API in other ways e.g. processing SPARQL CONSTRUCT results.
+    /// </remarks>
     public interface IRdfHandler 
         : INodeFactory
     {
@@ -82,21 +84,6 @@ namespace VDS.RDF
         /// Gets whether the Handler will always handle all data (i.e. won't terminate parsing early)
         /// </summary>
         bool AcceptsAll
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Handlers which wrap other Handlers
-    /// </summary>
-    public interface IWrappingRdfHandler 
-        : IRdfHandler
-    {
-        /// <summary>
-        /// Gets the Inner Handlers used by this Handler
-        /// </summary>
-        IEnumerable<IRdfHandler> InnerHandlers
         {
             get;
         }

@@ -91,12 +91,14 @@
     <Compile Include="Parsing\Handlers\PagingHandler.cs" />
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
+    <Compile Include="Parsing\IParserProfile.cs" />
     <Compile Include="Parsing\IriSpecsHelper.cs" />
     <Compile Include="Parsing\IUriLoaderCache.cs" />
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\NQuadsParser.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
+    <Compile Include="Parsing\ParserProfile.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
     <Compile Include="Parsing\StringParser.cs" />

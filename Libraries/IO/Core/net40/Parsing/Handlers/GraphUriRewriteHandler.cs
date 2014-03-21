@@ -36,7 +36,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// A RDF Handler that rewrites the Graph URIs of Triples and/or Quads before passing them to an inner handler
     /// </summary>
     public class GraphUriRewriteHandler
-        : BaseRdfHandler, IWrappingRdfHandler
+        : BaseRdfHandler
     {
         private readonly IRdfHandler _handler;
         private readonly INode _graphName;
@@ -47,21 +47,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="handler">Handler to wrap</param>
         /// <param name="graphUri">Graph URI to rewrite to</param>
         public GraphUriRewriteHandler(IRdfHandler handler, Uri graphUri)
-            : base()
         {
             this._handler = handler;
             this._graphName = this.CreateUriNode(graphUri);
-        }
-
-        /// <summary>
-        /// Gets the Inner Handler
-        /// </summary>
-        public IEnumerable<IRdfHandler> InnerHandlers
-        {
-            get
-            {
-                return this._handler.AsEnumerable();
-            }
         }
 
         /// <summary>
