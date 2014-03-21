@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing
                         if (!streamInput.CurrentEncoding.Equals(Encoding.UTF8))
                         {
 #if SILVERLIGHT
-                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
 #else
                             this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
 #endif

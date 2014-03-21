@@ -3,33 +3,28 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{208F8732-DA36-4A74-9B4B-1397E99F770E}</ProjectGuid>
-    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectGuid>{524211D4-56A9-4925-8DC1-866204B920FC}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF.IO</AssemblyName>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-  </PropertyGroup>
-  <!-- This property group is only here to support building this project using the 
-       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
-       to set the TargetFrameworkVersion to v3.5 -->
-  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG,TRACE,SILVERLIGHT,WINDOWS_PHONE,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -39,32 +34,25 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
-        <SilverlightProjectProperties />
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\IO\core\net40\dotNetRDF.IO.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
@@ -470,9 +458,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\sl4\dotNetRDF.Silverlight4.csproj">
-      <Project>{854A789B-BA35-4A1B-9449-CAD40953F0E5}</Project>
-      <Name>dotNetRDF.Silverlight4</Name>
+    <ProjectReference Include="..\..\..\core\sl4-wp\dotNetRDF.WindowsPhone7.csproj">
+      <Project>{1809BF65-1837-4D4C-A65C-0B7C1D111548}</Project>
+      <Name>dotNetRDF.WindowsPhone7</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

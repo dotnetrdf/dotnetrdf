@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Compatibility
 {
@@ -11,7 +9,7 @@ namespace VDS.RDF.Compatibility
         public static bool IsHexEncoding(String value, int index)
         {
             if (index + 2 >= value.Length) return false;
-            return value[0] == '%' && SparqlSpecsHelper.IsHex(value[1]) && SparqlSpecsHelper.IsHex(value[2]);
+            return value[0] == '%' && TurtleSpecsHelper.IsHex(value[1]) && TurtleSpecsHelper.IsHex(value[2]);
         }
 
         public static char HexUnescape(String value, ref int index)

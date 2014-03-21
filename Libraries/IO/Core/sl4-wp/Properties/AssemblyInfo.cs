@@ -1,16 +1,16 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.IO")]
-[assembly: AssemblyDescription("Core IO APIs for dotNetRDF (Silverlight 4)")]
+[assembly: AssemblyDescription("Core IO APIs for dotNetRDF (Windows Phone 7)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.IO.Core")]
-[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2014")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("db5200bc-8951-4fa2-993e-2ccf7d3e7117")]
+[assembly: Guid("a65fb412-9b52-4ac0-ab80-7870acd167b4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,3 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyFileVersion("1.9.0.0")]
+[assembly: NeutralResourcesLanguageAttribute("en-US")]

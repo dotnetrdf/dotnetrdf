@@ -30,8 +30,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Windows.Resources;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -141,11 +144,9 @@ namespace VDS.RDF
         {
             for (int i = 0; i < l.Count; i++)
             {
-                if (func(l[i]))
-                {
-                    l.RemoveAt(i);
-                    i--;
-                }
+                if (!func(l[i])) continue;
+                l.RemoveAt(i);
+                i--;
             }
         }
 
@@ -156,6 +157,34 @@ namespace VDS.RDF
                 if (match(list[i])) return i;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Gets the assemblies loaded in the current application
+        /// </summary>
+        /// <param name="domain">App Domain</param>
+        /// <returns>Loaded assemblies</returns>
+        public static Assembly[] GetAssemblies(this AppDomain domain)
+        {
+            List<Assembly> assemblies = new List<Assembly>();
+            foreach (AssemblyPart part in Deployment.Current.Parts)
+            {
+                try
+                {
+                    StreamResourceInfo resourceInfo = Application.GetResourceStream(new Uri(part.Source, UriKind.Relative));
+#if WINDOWS_PHONE
+                    continue;
+#elif SILVERLIGHT
+                    Assembly assembly = part.Load(resourceInfo.Stream);
+                    assemblies.Add(assembly);
+#endif
+                }
+                catch
+                {
+                    // Ignore and continue
+                }
+            }
+            return assemblies.ToArray();
         }
     }
 }

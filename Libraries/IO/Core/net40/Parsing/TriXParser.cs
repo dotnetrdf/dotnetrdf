@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Xml;
 #if !NO_XSL
@@ -37,8 +36,6 @@ using System.Xml.Xsl;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
-using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
@@ -77,16 +74,16 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
-            this.Load(handler, (TextReader)input);
+            this.Load(handler, (TextReader) input);
         }
 
 #if !NO_XMLDOM
 
-        /// <summary>
-        /// Loads the RDF Dataset from the TriX input using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to load from</param>
+    /// <summary>
+    /// Loads the RDF Dataset from the TriX input using a RDF Handler
+    /// </summary>
+    /// <param name="handler">RDF Handler to use</param>
+    /// <param name="input">Input to load from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -414,7 +411,7 @@ namespace VDS.RDF.Parsing
         }
 
 #else
-        private XmlReaderSettings GetSettings()
+        private static XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
 #if PORTABLE
@@ -436,102 +433,93 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
 
-            if (input != null)
+            //First try and load as XML and apply any stylesheets
+            try
             {
-                //First try and load as XML and apply any stylesheets
+                //Get the reader and start parsing
+                XmlReader reader = XmlReader.Create(input, GetSettings());
+                this.RaiseWarning("The TriX Parser is operating without XSL support, if your TriX file requires XSL then it will not be parsed successfully");
+                TriXStreamingParserContext context = new TriXStreamingParserContext(handler, reader);
+                this.TryParseGraphset(context);
+
+                input.Close();
+            }
+            catch (XmlException xmlEx)
+            {
                 try
                 {
-                    //Get the reader and start parsing
-                    XmlReader reader = XmlReader.Create(input, this.GetSettings());
-                    this.RaiseWarning("The TriX Parser is operating without XSL support, if your TriX file requires XSL then it will not be parsed successfully");
-                    this.TryParseGraphset(reader, handler);
-
                     input.Close();
-                }
-                catch (XmlException xmlEx)
-                {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions - just cleaning up
-                    }
-                    //Wrap in a RDF Parse Exception
-                    throw new RdfParseException("Unable to Parse this TriX since the XmlReader encountered an error, see the inner exception for details", xmlEx);
                 }
                 catch
                 {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions - just cleaning up
-                    }
-                    throw;
+                    //No catch actions - just cleaning up
                 }
+                //Wrap in a RDF Parse Exception
+                throw new RdfParseException("Unable to Parse this TriX since the XmlReader encountered an error, see the inner exception for details", xmlEx);
             }
-            else
+            catch
             {
-                throw new RdfStorageException("Parameters for the TriXParser must be of the type StreamParams/TextReaderParams");
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions - just cleaning up
+                }
+                throw;
             }
         }
 
-        private void TryParseGraphset(XmlReader reader, IRdfHandler handler)
+        private void TryParseGraphset(TriXStreamingParserContext context)
         {
             try
             {
-                handler.StartRdf();
+                context.Handler.StartRdf();
 
-                reader.Read();
+                context.XmlReader.Read();
 
                 //Skip XML Declaration if present
-                if (reader.NodeType == XmlNodeType.XmlDeclaration) reader.Read();
+                if (context.XmlReader.NodeType == XmlNodeType.XmlDeclaration) context.XmlReader.Read();
 
-                if (!reader.Name.Equals("TriX"))
+                if (!context.XmlReader.Name.Equals("TriX"))
                 {
-                    throw new RdfParseException("Unexpected Document Element '" + reader.Name + "' encountered, expected the Document Element of a TriX Document to be the <TriX> element");
+                    throw new RdfParseException("Unexpected Document Element '" + context.XmlReader.Name + "' encountered, expected the Document Element of a TriX Document to be the <TriX> element");
                 }
 
-                if (!reader.HasAttributes)
+                if (!context.XmlReader.HasAttributes)
                 {
                     throw new RdfParseException("<TriX> fails to define any attributes, the element must define the xmlns attribute to be the TriX namespace");
                 }
-                else
+                bool trixNsDefined = false;
+                for (int i = 0; i < context.XmlReader.AttributeCount; i++)
                 {
-                    bool trixNSDefined = false;
-                    for (int i = 0; i < reader.AttributeCount; i++)
+                    context.XmlReader.MoveToNextAttribute();
+
+                    if (context.XmlReader.Name.Equals("xmlns"))
                     {
-                        reader.MoveToNextAttribute();
-
-                        if (reader.Name.Equals("xmlns"))
-                        {
-                            //Ensure that the xmlns attribute is defined and is the TriX namespace
-                            if (trixNSDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
-                            if (!reader.Value.Equals(TriXNamespaceURI)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceURI + "'");
-                            trixNSDefined = true;
-                        }
-                        else if (reader.LocalName.Equals("xmlns"))
-                        {
-                            //Don't think we need to do anything here
-                        }
+                        //Ensure that the xmlns attribute is defined and is the TriX namespace
+                        if (trixNsDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
+                        if (!context.XmlReader.Value.Equals(TriXNamespaceUri)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceUri + "'");
+                        trixNsDefined = true;
                     }
-
-                    if (!trixNSDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
+                    else if (context.XmlReader.LocalName.Equals("xmlns"))
+                    {
+                        //Don't think we need to do anything here
+                    }
                 }
 
+                if (!trixNsDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
+
                 //Process Child Nodes
-                while (reader.Read())
+                while (context.XmlReader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
+                    if (context.XmlReader.NodeType == XmlNodeType.Element)
                     {
                         //For elements we recurse to try and parse a Graph
-                        this.TryParseGraph(reader, handler);
+                        this.TryParseGraph(context);
                     }
-                    else if (reader.NodeType == XmlNodeType.EndElement)
+                    else if (context.XmlReader.NodeType == XmlNodeType.EndElement)
                     {
                         //Stop when we hit an end element
                         break;
@@ -544,203 +532,189 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Expect the </TriX> element
-                if (reader.NodeType == XmlNodeType.EndElement)
+                if (context.XmlReader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (!reader.Name.Equals("TriX")) throw new RdfParseException("Expected </TriX> element was not found, encountered </" + reader.Name + "> instead");
+                    if (!context.XmlReader.Name.Equals("TriX")) throw new RdfParseException("Expected </TriX> element was not found, encountered </" + context.XmlReader.Name + "> instead");
                 }
                 else
                 {
-                    throw new RdfParseException("Unexpected Note Type " + reader.NodeType.ToString() + " encountered, expected a </TriX> element");
+                    throw new RdfParseException("Unexpected Note Type " + context.XmlReader.NodeType.ToString() + " encountered, expected a </TriX> element");
                 }
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
             }
             catch (RdfParsingTerminatedException)
             {
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
                 //Discard this - it justs means the Handler told us to stop
             }
             catch
             {
-                handler.EndRdf(false);
+                context.Handler.EndRdf(false);
                 throw;
             }
         }
 
-        private void TryParseGraph(XmlReader reader, IRdfHandler handler)
+        private void TryParseGraph(TriXStreamingParserContext context)
         {
             //Ensure Node Name is correct
-            if (!reader.Name.Equals("graph"))
+            if (!context.XmlReader.Name.Equals("graph"))
             {
-                throw new RdfParseException("Unexpected Element <" + reader.Name + "> encountered, only <graph> elements are permitted within a <TriX> element");
+                throw new RdfParseException("Unexpected Element <" + context.XmlReader.Name + "> encountered, only <graph> elements are permitted within a <TriX> element");
             }
 
             //Check whether this Graph is actually asserted
-            for (int i = 0; i < reader.AttributeCount; i++)
+            for (int i = 0; i < context.XmlReader.AttributeCount; i++)
             {
-                reader.MoveToNextAttribute();
-                if (reader.Name.Equals("asserted"))
-                {
-                    bool asserted = true;
-                    if (Boolean.TryParse(reader.Value, out asserted))
-                    {
-                        //Don't process this Graph further if it is not being asserted
-                        //i.e. it is only (potentially) being quoted
-                        if (!asserted)
-                        {
-                            this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
-                            return;
-                        }
-                    }
-                }
+                context.XmlReader.MoveToNextAttribute();
+                if (!context.XmlReader.Name.Equals("asserted")) continue;
+                bool asserted = true;
+                if (!Boolean.TryParse(context.XmlReader.Value, out asserted)) continue;
+                //Don't process this Graph further if it is not being asserted
+                //i.e. it is only (potentially) being quoted
+                if (asserted) continue;
+                this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
+                return;
             }
 
             //See if we get an <id>/<uri> node to name the Graph
-            reader.Read();
+            context.XmlReader.Read();
             IGraph g = null;
-            Uri graphName = null;
-            if (reader.NodeType == XmlNodeType.Element)
+            INode graphName = null;
+            if (context.XmlReader.NodeType == XmlNodeType.Element)
             {
                 //Process the name into a Graph Uri and create the Graph and add it to the Store
-                if (reader.Name.Equals("uri"))
+                if (context.XmlReader.Name.Equals("uri"))
                 {
                     //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                    graphName = new Uri(Tools.ResolveUri(reader.ReadInnerXml(), String.Empty));
+                    graphName = context.Handler.CreateUriNode(UriFactory.ResolveUri(context.XmlReader.ReadInnerXml(), null));
                 }
             }
 
             //If the next element is a </graph> then this is an empty graph and we should return
-            if (reader.NodeType == XmlNodeType.EndElement)
+            if (context.XmlReader.NodeType == XmlNodeType.EndElement)
             {
-                if (reader.Name.Equals("graph"))
+                if (context.XmlReader.Name.Equals("graph"))
                 {
                     return;
                 }
-                else
-                {
-                    throw Error("Unexpected </" + reader.Name + "> encountered, either <triple> elements or a </graph> was expected", reader);
-                }
+                throw Error("Unexpected </" + context.XmlReader.Name + "> encountered, either <triple> elements or a </graph> was expected", context.XmlReader);
             }
 
             //Process the Child Nodes of the <graph> element to yield Triples
             do
             {
                 //Remember to ignore anything that isn't an element i.e. comments and processing instructions
-                if (reader.NodeType == XmlNodeType.Element)
+                if (context.XmlReader.NodeType == XmlNodeType.Element)
                 {
-                    this.TryParseTriple(reader, handler, graphName);
+                    this.TryParseTriple(context, graphName);
                 }
 
-                reader.Read();
-            } while (reader.NodeType != XmlNodeType.EndElement);
+                context.XmlReader.Read();
+            } while (context.XmlReader.NodeType != XmlNodeType.EndElement);
 
-            if (!reader.Name.Equals("graph")) throw Error("Expected a </graph> but a </" + reader.Name + "> was encountered", reader);
+            if (!context.XmlReader.Name.Equals("graph")) throw Error("Expected a </graph> but a </" + context.XmlReader.Name + "> was encountered", context.XmlReader);
         }
 
-        private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphName)
+        private void TryParseTriple(TriXStreamingParserContext context, INode graphName)
         {
             //Verify Node Name
-            if (!reader.Name.Equals("triple"))
+            if (!context.XmlReader.Name.Equals("triple"))
             {
-                throw Error("Unexpected Element <" + reader.Name + "> encountered, only an optional <id>/<uri> element followed by zero/more <triple> elements are permitted within a <graph> element", reader);
+                throw Error("Unexpected Element <" + context.XmlReader.Name + "> encountered, only an optional <id>/<uri> element followed by zero/more <triple> elements are permitted within a <graph> element", context.XmlReader);
             }
 
             //Parse XML Nodes into RDF Nodes
-            INode subj, pred, obj;
-            subj = this.TryParseNode(reader, handler, QuadSegment.Subject);
-            pred = this.TryParseNode(reader, handler, QuadSegment.Predicate);
-            obj = this.TryParseNode(reader, handler, QuadSegment.Object);
+            INode subj = this.TryParseNode(context, QuadSegment.Subject);
+            INode pred = this.TryParseNode(context, QuadSegment.Predicate);
+            INode obj = this.TryParseNode(context, QuadSegment.Object);
 
-            if (reader.NodeType != XmlNodeType.EndElement) throw Error("Unexpected element type " + reader.NodeType.ToString() + " encountered, expected the </triple> element", reader);
-            if (!reader.Name.Equals("triple")) throw Error("Unexpected </" + reader.Name + "> encountered, expected a </triple> element", reader);
+            if (context.XmlReader.NodeType != XmlNodeType.EndElement) throw Error("Unexpected element type " + context.XmlReader.NodeType.ToString() + " encountered, expected the </triple> element", context.XmlReader);
+            if (!context.XmlReader.Name.Equals("triple")) throw Error("Unexpected </" + context.XmlReader.Name + "> encountered, expected a </triple> element", context.XmlReader);
 
             //Assert the resulting Triple
-            if (!handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop();
+            if (!context.Handler.HandleQuad(new Quad(subj, pred, obj, graphName))) ParserHelper.Stop();
         }
 
-        private INode TryParseNode(XmlReader reader, IRdfHandler handler, QuadSegment segment)
+        private INode TryParseNode(TriXStreamingParserContext context, QuadSegment segment)
         {
             //Only need to Read() if getting the Subject
             //The previous calls will have resulted in us already reading to the start element for this node
-            if (segment == QuadSegment.Subject) reader.Read();
+            if (segment == QuadSegment.Subject) context.XmlReader.Read();
 
-            if (reader.NodeType != XmlNodeType.Element)
+            if (context.XmlReader.NodeType != XmlNodeType.Element)
             {
-                if (reader.NodeType == XmlNodeType.EndElement) throw Error("Unexpected end element while trying to parse the nodes of a <triple> element", reader);
+                if (context.XmlReader.NodeType == XmlNodeType.EndElement) throw Error("Unexpected end element while trying to parse the nodes of a <triple> element", context.XmlReader);
             }
 
-            if (reader.Name.Equals("uri"))
+            if (context.XmlReader.Name.Equals("uri"))
             {
-                return handler.CreateUriNode(new Uri(reader.ReadInnerXml()));
+                return context.Handler.CreateUriNode(new Uri(context.XmlReader.ReadInnerXml()));
             }
-            else if (reader.Name.Equals("id"))
+            if (context.XmlReader.Name.Equals("id"))
             {
-                if (segment == QuadSegment.Predicate) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <uri> element as the Predicate of a Triple", reader);
+                if (segment == QuadSegment.Predicate) throw Error("Unexpected element <" + context.XmlReader.Name + "> encountered, expected a <uri> element as the Predicate of a Triple", context.XmlReader);
 
-                return handler.CreateBlankNode(reader.ReadInnerXml());
+                return context.BlankNodeGenerator.CreateBlankNode(context.XmlReader.ReadInnerXml());
             }
-            else if (reader.Name.Equals("plainLiteral"))
+            if (context.XmlReader.Name.Equals("plainLiteral"))
             {
-                if (segment == QuadSegment.Subject) throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri> element as the Subject of a Triple", reader);
+                if (segment == QuadSegment.Subject) throw Error("Unexpected element <" + context.XmlReader.Name + "> encountered, expected a <id>/<uri> element as the Subject of a Triple", context.XmlReader);
 
-                if (reader.AttributeCount > 0)
+                if (context.XmlReader.AttributeCount > 0)
                 {
                     String lang = String.Empty;
-                    for (int i = 0; i < reader.AttributeCount; i++)
+                    for (int i = 0; i < context.XmlReader.AttributeCount; i++)
                     {
-                        reader.MoveToNextAttribute();
-                        if (reader.Name.Equals("xml:lang")) lang = reader.Value;
+                        context.XmlReader.MoveToNextAttribute();
+                        if (context.XmlReader.Name.Equals("xml:lang")) lang = context.XmlReader.Value;
                     }
-                    reader.MoveToContent();
+                    context.XmlReader.MoveToContent();
                     if (!lang.Equals(String.Empty))
                     {
-                        return handler.CreateLiteralNode(reader.ReadElementContentAsString(), lang);
+                        return context.Handler.CreateLiteralNode(context.XmlReader.ReadElementContentAsString(), lang);
                     }
-                    else
-                    {
-                        return handler.CreateLiteralNode(reader.ReadElementContentAsString());
-                    }
+                    return context.Handler.CreateLiteralNode(context.XmlReader.ReadElementContentAsString());
                 }
-                else
-                {
-                    return handler.CreateLiteralNode(reader.ReadElementContentAsString());
-                }
+                return context.Handler.CreateLiteralNode(context.XmlReader.ReadElementContentAsString());
             }
-            else if (reader.Name.Equals("typedLiteral"))
+            if (!context.XmlReader.Name.Equals("typedLiteral"))
             {
-                if (reader.AttributeCount > 0)
-                {
-                    Uri dtUri = null;
-                    for (int i = 0; i < reader.AttributeCount; i++)
-                    {
-                        reader.MoveToNextAttribute();
-                        if (reader.Name.Equals("datatype")) dtUri = new Uri(reader.Value);
-                    }
-                    if (dtUri == null) throw Error("<typedLiteral> element does not have the required datatype attribute", reader);
+                throw Error("Unexpected element <" + context.XmlReader.Name + "> encountered, expected a <id>/<uri>/<plainLiteral>/<typedLiteral> element as part of a Triple", context.XmlReader);
+            }
+            if (context.XmlReader.AttributeCount <= 0)
+            {
+                throw Error("<typedLiteral> element does not have the required datatype attribute", context.XmlReader);
+            }
+            Uri dtUri = null;
+            for (int i = 0; i < context.XmlReader.AttributeCount; i++)
+            {
+                context.XmlReader.MoveToNextAttribute();
+                if (context.XmlReader.Name.Equals("datatype")) dtUri = new Uri(context.XmlReader.Value);
+            }
+            if (dtUri == null) throw Error("<typedLiteral> element does not have the required datatype attribute", context.XmlReader);
 
-                    reader.MoveToContent();
-                    return handler.CreateLiteralNode(reader.ReadInnerXml(), dtUri);
-                }
-                else
-                {
-                    throw Error("<typedLiteral> element does not have the required datatype attribute", reader);
-                }
-            }
-            else
-            {
-                throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri>/<plainLiteral>/<typedLiteral> element as part of a Triple", reader);
-            }
+            context.XmlReader.MoveToContent();
+            return context.Handler.CreateLiteralNode(context.XmlReader.ReadInnerXml(), dtUri);
         }
 
         /// <summary>
         /// Helper method for raising informative standardised Parser Errors
         /// </summary>
         /// <param name="msg">The Error Message</param>
-        /// <param name="n">The Node that is the cause of the Error</param>
+        /// <param name="reader">XML Reader</param>
         /// <returns></returns>
         private RdfParseException Error(String msg, XmlReader reader)
         {
             StringBuilder output = new StringBuilder();
-            output.AppendLine("[Source XML]");
+            if (reader is IXmlLineInfo)
+            {
+                IXmlLineInfo info = (IXmlLineInfo) reader;
+                output.AppendLine(string.Format("[Source XML - Line {0} Column {1}]", info.LineNumber, info.LinePosition));
+            }
+            else
+            {
+                output.AppendLine("[Source XML]");
+            }
             output.AppendLine(reader.Value);
             output.AppendLine();
             output.Append(msg);

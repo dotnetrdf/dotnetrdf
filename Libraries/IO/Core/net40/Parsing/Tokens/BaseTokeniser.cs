@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Compatibility;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Tokens
@@ -694,7 +695,7 @@ namespace VDS.RDF.Parsing.Tokens
 #if !SILVERLIGHT
             if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
 #else
-            if (SilverlightExtensions.IsHexEncoding(localOutput.ToString(), 0))
+            if (SilverlightIOCompatibility.IsHexEncoding(localOutput.ToString(), 0))
 #endif
             {
                 throw Error("Invalid % encoded character encountered");
