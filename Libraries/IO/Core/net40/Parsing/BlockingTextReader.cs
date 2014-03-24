@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Parsing
 {
@@ -67,15 +64,9 @@ namespace VDS.RDF.Parsing
                 {
                     return new NonBlockingTextReader(input, bufferSize);
                 }
-                else
-                {
-                    return new BlockingTextReader(input, bufferSize);
-                }
-            }
-            else
-            {
                 return new BlockingTextReader(input, bufferSize);
             }
+            return new BlockingTextReader(input, bufferSize);
         }
 
         /// <summary>
@@ -105,10 +96,7 @@ namespace VDS.RDF.Parsing
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);
             }
-            else
-            {
-                return CreateBlocking(new StreamReader(input), bufferSize);
-            }
+            return CreateBlocking(new StreamReader(input), bufferSize);
         }
 
         /// <summary>
@@ -227,8 +215,8 @@ namespace VDS.RDF.Parsing
         {
             if (count == 0) return 0;
             if (buffer == null) throw new ArgumentNullException("buffer");
-            if (index < 0) throw new ArgumentException("index", "Index must be >= 0");
-            if (count < 0) throw new ArgumentException("count", "Count must be >= 0");
+            if (index < 0) throw new ArgumentException("Index must be >= 0", "index");
+            if (count < 0) throw new ArgumentException("Count must be >= 0", "count");
             if ((buffer.Length - index) < count) throw new ArgumentException("Buffer too small");
 
             if (this._bufferAmount == -1 || this._pos >= this._bufferAmount)
@@ -252,44 +240,39 @@ namespace VDS.RDF.Parsing
                 this._pos += count;
                 return count;
             }
-            else
+            int copied = 0;
+            while (copied < count)
             {
-                int copied = 0;
-                while (copied < count)
+                int available = this._bufferAmount - this._pos;
+                if (count < copied + available)
                 {
-                    int available = this._bufferAmount - this._pos;
-                    if (count < copied + available)
-                    {
-                        //We can finish fufilling this request this round
-                        int toCopy = Math.Min(available, count - copied);
-                        Array.Copy(this._buffer, this._pos, buffer, index + copied, toCopy);
-                        copied += toCopy;
-                        this._pos += toCopy;
-                        return copied;
-                    }
-                    else
-                    {
-                        //Copy everything we currently have available
-                        Array.Copy(this._buffer, this._pos, buffer, index + copied, available);
-                        copied += available;
-                        this._pos = this._bufferAmount;
-
-                        if (!this._finished)
-                        {
-                            //If we haven't reached the end of the input refill our buffer and continue
-                            this.FillBuffer();
-                            if (this.EndOfStream) return copied;
-                            this._pos = 0;
-                        }
-                        else
-                        {
-                            //Otherwise we have reached the end of the input so just return what we've managed to copy
-                            return copied;
-                        }
-                    }
+                    //We can finish fufilling this request this round
+                    int toCopy = Math.Min(available, count - copied);
+                    Array.Copy(this._buffer, this._pos, buffer, index + copied, toCopy);
+                    copied += toCopy;
+                    this._pos += toCopy;
+                    return copied;
                 }
-                return copied;
+
+                //Copy everything we currently have available
+                Array.Copy(this._buffer, this._pos, buffer, index + copied, available);
+                copied += available;
+                this._pos = this._bufferAmount;
+
+                if (!this._finished)
+                {
+                    //If we haven't reached the end of the input refill our buffer and continue
+                    this.FillBuffer();
+                    if (this.EndOfStream) return copied;
+                    this._pos = 0;
+                }
+                else
+                {
+                    //Otherwise we have reached the end of the input so just return what we've managed to copy
+                    return copied;
+                }
             }
+            return copied;
         }
 
         /// <summary>
@@ -324,7 +307,7 @@ namespace VDS.RDF.Parsing
             }
 
             this._pos++;
-            return (int)this._buffer[this._pos];
+            return this._buffer[this._pos];
         }
 
         /// <summary>
@@ -346,7 +329,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            return (int)this._buffer[this._pos + 1];
+            return this._buffer[this._pos + 1];
         }
 
         /// <summary>
@@ -389,7 +372,7 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// The BlockingTextReader is an implementation of a <see cref="BufferedTextReader" /> designed to wrap other readers which may or may not have high latency and thus ensures that premature end of input bug is not experienced.
+    /// The BlockingTextReader is an implementation of a <see cref="BufferedTextReader" /> designed to wrap other readers which may or may not have high latency and thus ensures that premature end of input issue is not experienced.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -451,7 +434,7 @@ namespace VDS.RDF.Parsing
     /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream
     /// </summary>
     /// <remarks>
-    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option
+    /// Currently we only use this for file and memory streams, you can force this to never be used with the global static <see cref="IOOptions.ForceBlockingIO"/> option
     /// </remarks>
     public sealed class NonBlockingTextReader
         : BufferedTextReader

@@ -128,11 +128,6 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            this.Load(handler, (TextReader) input);
-        }
-
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler
         /// </summary>

@@ -90,42 +90,6 @@ namespace VDS.RDF.Parsing
         public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to read from</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Input to read from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given file
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(g, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
-        /// <summary>
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
@@ -180,20 +144,6 @@ namespace VDS.RDF.Parsing
                 throw;
             }
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
 
         /// <summary>
         /// Internal method which does the parsing of the input
