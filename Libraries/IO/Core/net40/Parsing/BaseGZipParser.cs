@@ -59,62 +59,6 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph from GZipped input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to load from</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Loads a Graph from GZipped input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Reader to load from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Loads a Graph from GZipped input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            this.Load(new GraphHandler(g), filename);
-        }
-
-        /// <summary>
-        /// Loads RDF using a RDF Handler from GZipped input
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to load from</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
-            if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
-
-            if (input.BaseStream is GZipStream)
-            {
-                this._parser.Load(handler, input, profile);
-            }
-            else
-            {
-                //Force the inner stream to be GZipped
-                input = new StreamReader(new GZipStream(input.BaseStream, CompressionMode.Decompress));
-                this._parser.Load(handler, input, profile);
-            }
-        }
-
-        /// <summary>
         /// Loads RDF using a RDF Handler from GZipped input
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
@@ -122,25 +66,28 @@ namespace VDS.RDF.Parsing
         /// <param name="profile"></param>
         public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
+            if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
+            if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
+
             if (input is StreamReader)
             {
-                this.Load(handler, (StreamReader)input);
+                StreamReader streamInput = (StreamReader) input;
+                if (streamInput.BaseStream is GZipStream)
+                {
+                    this._parser.Load(handler, input, profile);
+                }
+                else
+                {
+                    //Force the inner stream to be GZipped
+                    input = new StreamReader(new GZipStream(streamInput.BaseStream, CompressionMode.Decompress));
+                    this._parser.Load(handler, input, profile);
+                }
             }
             else
             {
-                throw new RdfParseException("GZipped input can only be parsed from StreamReader instances");
+                // Assume GZipped input
+                this._parser.Load(handler, input, profile);
             }
-        }
-
-        /// <summary>
-        /// Loads RDF using a RDF Handler from GZipped input
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        public void Load(IRdfHandler handler, string filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse RDF from a null file");
-            this.Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
         }
 
         /// <summary>

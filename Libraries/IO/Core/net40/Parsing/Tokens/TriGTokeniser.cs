@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using VDS.RDF.Specifications;
 
@@ -38,24 +35,9 @@ namespace VDS.RDF.Parsing.Tokens
     public class TriGTokeniser
         : BaseTokeniser
     {
-        private ParsingTextReader _in;
+        private readonly ParsingTextReader _in;
         private int _lasttokentype = -1;
-        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
-
-        /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        public TriGTokeniser(StreamReader input)
-            : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream using the specified syntax
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">Syntax</param>
-        public TriGTokeniser(StreamReader input, TriGSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
+        private readonly TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
@@ -107,218 +89,195 @@ namespace VDS.RDF.Parsing.Tokens
                 this._lasttokentype = Token.BOF;
                 return new BOFToken();
             }
-            else
+            //Reading has started
+            this.StartNewToken();
+
+            try
             {
-                //Reading has started
-                this.StartNewToken();
-
-                try
+                //Certain Last Tokens restrict what we expect next
+                if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
                 {
-                    //Certain Last Tokens restrict what we expect next
-                    if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
-                    {
-                        //Empty File
-                        return new EOFToken(0, 0);
-                    }
-                    else if (this._lasttokentype == Token.PREFIXDIRECTIVE)
-                    {
-                        //Discard any white space first
+                    //Empty File
+                    return new EOFToken(0, 0);
+                }
+                switch (this._lasttokentype)
+                {
+                    case Token.PREFIXDIRECTIVE:
                         this.DiscardWhiteSpace();
-
-                        //Get Prefix
                         return this.TryGetPrefix();
-                    }
-                    else if (this._lasttokentype == Token.HATHAT)
-                    {
-                        //Get DataType
+                    case Token.HATHAT:
                         return this.TryGetDataType();
+                }
+
+                do
+                {
+                    //Check for EOF
+                    if (this._in.EndOfStream)
+                    {
+                        if (this.Length == 0)
+                        {
+                            //We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                        }
+                        //We're at the End of the Stream and part-way through reading a Token
+                        //Raise an error
+                        throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
                     }
 
-                    do
+                    char next = this.Peek();
+
+                    //Always need to do a check for End of Stream after Peeking to handle empty files OK
+                    if (next == Char.MaxValue && this._in.EndOfStream)
                     {
-                        //Check for EOF
-                        if (this._in.EndOfStream)
+                        if (this.Length == 0)
                         {
-                            if (this.Length == 0)
-                            {
-                                //We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                            }
-                            else
-                            {
-                                //We're at the End of the Stream and part-way through reading a Token
-                                //Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
-                            }
+                            //We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
                         }
+                        //We're at the End of the Stream and part-way through reading a Token
+                        //Raise an error
+                        throw UnexpectedEndOfInput("Token");
+                    }
 
-                        char next = this.Peek();
+                    if (Char.IsWhiteSpace(next))
+                    {
+                        //Discard white space between Tokens
+                        this.DiscardWhiteSpace();
+                    }
+                    else if (Char.IsDigit(next) || next == '-' || next == '+')
+                    {
+                        //Start of a Numeric Plain Literal
+                        return this.TryGetNumericLiteral();
+                    }
+                    else if (Char.IsLetter(next))
+                    {
+                        //Start of a Plain Literal
+                        return this.TryGetPlainLiteralOrQName();
+                    }
+                    else
+                    {
+                        switch (next)
+                        {
+                            case '#':
+                                //Comment
+                                return this.TryGetComment();
 
-                        //Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && this._in.EndOfStream)
-                        {
-                            if (this.Length == 0)
-                            {
-                                //We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                            }
-                            else
-                            {
-                                //We're at the End of the Stream and part-way through reading a Token
-                                //Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
-                        }
+                            case '@':
+                                //Start of a Keyword or Language Specifier
+                                return this.TryGetKeywordOrLangSpec();
 
-                        if (Char.IsWhiteSpace(next))
-                        {
-                            //Discard white space between Tokens
-                            this.DiscardWhiteSpace();
-                        }
-                        else if (Char.IsDigit(next) || next == '-' || next == '+')
-                        {
-                            //Start of a Numeric Plain Literal
-                            return this.TryGetNumericLiteral();
-                        }
-                        else if (Char.IsLetter(next))
-                        {
-                            //Start of a Plain Literal
-                            return this.TryGetPlainLiteralOrQName();
-                        }
-                        else
-                        {
-                            switch (next)
-                            {
-                                case '#':
-                                    //Comment
-                                    return this.TryGetComment();
-
-                                case '@':
-                                    //Start of a Keyword or Language Specifier
-                                    return this.TryGetKeywordOrLangSpec();
-
-                                case '=':
-                                    //Equality
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.EQUALS;
-                                    return new EqualityToken(this.CurrentLine, this.StartPosition);
+                            case '=':
+                                //Equality
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.EQUALS;
+                                return new EqualityToken(this.CurrentLine, this.StartPosition);
 
                                 #region URIs, QNames and Literals
 
-                                case '<':
-                                    //Start of a Uri
-                                    return this.TryGetUri();
+                            case '<':
+                                //Start of a Uri
+                                return this.TryGetUri();
 
-                                case '_':
-                                case ':':
-                                    //Start of a  QName
-                                    return this.TryGetQName();
+                            case '_':
+                            case ':':
+                                //Start of a  QName
+                                return this.TryGetQName();
 
-                                case '"':
-                                    //Start of a Literal
-                                    return this.TryGetLiteral();
+                            case '"':
+                                //Start of a Literal
+                                return this.TryGetLiteral();
 
-                                case '^':
-                                    //Data Type Specifier
+                            case '^':
+                                //Data Type Specifier
+                                this.ConsumeCharacter();
+                                next = this.Peek();
+                                if (next == '^')
+                                {
                                     this.ConsumeCharacter();
-                                    next = this.Peek();
-                                    if (next == '^')
-                                    {
-                                        this.ConsumeCharacter();
-                                        this._lasttokentype = Token.HATHAT;
-                                        return new HatHatToken(this.CurrentLine, this.StartPosition);
-                                    }
-                                    else
-                                    {
-                                        throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered, expected the second ^ as part of a ^^ Data Type Specifier");
-                                    }
+                                    this._lasttokentype = Token.HATHAT;
+                                    return new HatHatToken(this.CurrentLine, this.StartPosition);
+                                }
+                                throw Error("Unexpected Character (Code " + (int)next + ") " + next + " was encountered, expected the second ^ as part of a ^^ Data Type Specifier");
 
                                 #endregion
 
                                 #region Line Terminators
 
-                                case '.':
-                                    //Dot Terminator
-                                    this.ConsumeCharacter();
-                                    if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
-                                    {
-                                        return this.TryGetNumericLiteral();
-                                    }
-                                    else
-                                    {
-                                        this._lasttokentype = Token.DOT;
-                                        return new DotToken(this.CurrentLine, this.StartPosition);
-                                    }
-                                case ';':
-                                    //Semicolon Terminator
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.SEMICOLON;
-                                    return new SemicolonToken(this.CurrentLine, this.StartPosition);
-                                case ',':
-                                    //Comma Terminator
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.COMMA;
-                                    return new CommaToken(this.CurrentLine, this.StartPosition);
+                            case '.':
+                                //Dot Terminator
+                                this.ConsumeCharacter();
+                                if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
+                                {
+                                    return this.TryGetNumericLiteral();
+                                }
+                                this._lasttokentype = Token.DOT;
+                                return new DotToken(this.CurrentLine, this.StartPosition);
+                            case ';':
+                                //Semicolon Terminator
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.SEMICOLON;
+                                return new SemicolonToken(this.CurrentLine, this.StartPosition);
+                            case ',':
+                                //Comma Terminator
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.COMMA;
+                                return new CommaToken(this.CurrentLine, this.StartPosition);
 
                                 #endregion
 
                                 #region Collections and Graphs
 
-                                case '[':
-                                    //Blank Node Collection
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.LEFTSQBRACKET;
-                                    return new LeftSquareBracketToken(this.CurrentLine, this.StartPosition);
-                                case ']':
-                                    //Blank Node Collection
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.RIGHTSQBRACKET;
-                                    return new RightSquareBracketToken(this.CurrentLine, this.StartPosition);
-                                case '{':
-                                    //Graph
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.LEFTCURLYBRACKET;
-                                    return new LeftCurlyBracketToken(this.CurrentLine, this.StartPosition);
-                                case '}':
-                                    //Graph
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.RIGHTCURLYBRACKET;
-                                    return new RightCurlyBracketToken(this.CurrentLine, this.StartPosition);
-                                case '(':
-                                    //Collection
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.LEFTBRACKET;
-                                    return new LeftBracketToken(this.CurrentLine, this.StartPosition);
-                                case ')':
-                                    //Collection
-                                    this.ConsumeCharacter();
-                                    this._lasttokentype = Token.RIGHTBRACKET;
-                                    return new RightBracketToken(this.CurrentLine, this.StartPosition);
+                            case '[':
+                                //Blank Node Collection
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.LEFTSQBRACKET;
+                                return new LeftSquareBracketToken(this.CurrentLine, this.StartPosition);
+                            case ']':
+                                //Blank Node Collection
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.RIGHTSQBRACKET;
+                                return new RightSquareBracketToken(this.CurrentLine, this.StartPosition);
+                            case '{':
+                                //Graph
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.LEFTCURLYBRACKET;
+                                return new LeftCurlyBracketToken(this.CurrentLine, this.StartPosition);
+                            case '}':
+                                //Graph
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.RIGHTCURLYBRACKET;
+                                return new RightCurlyBracketToken(this.CurrentLine, this.StartPosition);
+                            case '(':
+                                //Collection
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.LEFTBRACKET;
+                                return new LeftBracketToken(this.CurrentLine, this.StartPosition);
+                            case ')':
+                                //Collection
+                                this.ConsumeCharacter();
+                                this._lasttokentype = Token.RIGHTBRACKET;
+                                return new RightBracketToken(this.CurrentLine, this.StartPosition);
 
                                 #endregion
 
-                                default:
-                                    //Unexpected Character
-                                    throw this.UnexpectedCharacter(next, String.Empty);
-                            }
+                            default:
+                                //Unexpected Character
+                                throw this.UnexpectedCharacter(next, String.Empty);
                         }
-                    } while (true);
+                    }
+                } while (true);
 
-                }
-                catch (IOException)
+            }
+            catch (IOException)
+            {
+                //End Of Stream Check
+                if (this._in.EndOfStream)
                 {
-                    //End Of Stream Check
-                    if (this._in.EndOfStream)
-                    {
-                        //At End of Stream so produce the EOFToken
-                        return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                    }
-                    else
-                    {
-                        //Some other Error so throw
-                        throw;
-                    }
+                    //At End of Stream so produce the EOFToken
+                    return new EOFToken(this.CurrentLine, this.CurrentPosition);
                 }
+                //Some other Error so throw
+                throw;
             }
         }
 
@@ -386,21 +345,18 @@ namespace VDS.RDF.Parsing.Tokens
                 this._lasttokentype = Token.PREFIXDIRECTIVE;
                 return new PrefixDirectiveToken(this.CurrentLine, this.StartPosition);
             }
-            else if (output.Equals("@base"))
+            if (output.Equals("@base"))
             {
                 if (this._syntax == TriGSyntax.Original) throw new RdfParseException("The @base directive is not permitted in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser");
                 this._lasttokentype = Token.BASEDIRECTIVE;
                 return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
             }
-            else if (RdfSpecsHelper.IsValidLangSpecifier(output))
+            if (RdfSpecsHelper.IsValidLangSpecifier(output))
             {
                 this._lasttokentype = Token.LANGSPEC;
                 return new LanguageSpecifierToken(output.Substring(1), this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else
-            {
-                throw Error("Unexpected Content '" + output + "' encountered, expected an @prefix/@base keyword or a Language Specifier");
-            }
+            throw Error("Unexpected Content '" + output + "' encountered, expected an @prefix/@base keyword or a Language Specifier");
         }
 
         private IToken TryGetUri()

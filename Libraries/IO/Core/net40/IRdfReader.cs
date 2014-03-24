@@ -23,10 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.IO;
 using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
 {
@@ -36,26 +34,14 @@ namespace VDS.RDF
     public interface IRdfReader
     {
         /// <summary>
-        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
+        /// Loads RDF from some RDF format (or RDFizable format) from some input source for which a <see cref="TextReader"/> is provided
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">The reader to read input from</param>
-        /// <param name="profile"></param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        [Obsolete("This method is considered obsolete and will be deleted shortly once usages have been identified and corrected", true)]
-        void Load(IRdfHandler handler, StreamReader input, IParserProfile profile);
-
-        /// <summary>
-        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">The reader to read input from</param>
-        /// <param name="profile"></param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
+        /// <param name="profile">Parser profile to use</param>
+        /// <exception cref="RdfException">Typically thrown if the parser tries to output something that is invalid RDF, should be rare since these should normally be treated as a <see cref="RdfParseException"/> instead</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the parser cannot parse the given input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the parser encounters an IO Error while trying to access the input</exception>
         void Load(IRdfHandler handler, TextReader input, IParserProfile profile);
 
         /// <summary>
@@ -63,53 +49,4 @@ namespace VDS.RDF
         /// </summary>
         event RdfReaderWarning Warning;
     }
-}
-
-namespace VDS.RDF.Parsing
-{
-    /// <summary>
-    /// Interface for Parsers that support Tokeniser Tracing
-    /// </summary>
-    public interface ITraceableTokeniser
-    {
-        /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used
-        /// </summary>
-        bool TraceTokeniser
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Parsers that support Parser Tracing
-    /// </summary>
-    public interface ITraceableParser 
-    {
-        /// <summary>
-        /// Gets/Sets whether Parser Tracing is used
-        /// </summary>
-        bool TraceParsing
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
-    /// Interface for parsers that use token based parsing
-    /// </summary>
-    public interface ITokenisingParser
-    {
-        /// <summary>
-        /// Gets/Sets the token queue mode used
-        /// </summary>
-        TokenQueueMode TokenQueueMode
-        {
-            get;
-            set;
-        }
-    }
-
 }

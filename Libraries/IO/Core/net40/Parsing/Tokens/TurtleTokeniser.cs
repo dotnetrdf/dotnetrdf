@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using VDS.RDF.Specifications;
 
@@ -38,15 +35,8 @@ namespace VDS.RDF.Parsing.Tokens
     public class TurtleTokeniser 
         : BaseTokeniser
     {
-        private ParsingTextReader _in;
-        private TurtleSyntax _syntax = TurtleSyntax.W3C;
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        public TurtleTokeniser(StreamReader input)
-            : this(ParsingTextReader.Create(input)) { }
+        private readonly ParsingTextReader _in;
+        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -61,14 +51,6 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Input to read from</param>
         public TurtleTokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
-        /// Creates a new Turtle Tokeniser
-        /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        /// <param name="syntax">Turtle Syntax</param>
-        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser

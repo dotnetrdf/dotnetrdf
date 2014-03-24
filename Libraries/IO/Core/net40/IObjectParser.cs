@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
@@ -41,34 +40,20 @@ namespace VDS.RDF
     public interface IObjectParser<out T>
     {
         /// <summary>
-        /// Parses an Object from an Input Stream
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <returns></returns>
-        /// <remarks>While this could be omitted in favour of the <see cref="TextReader"/> based overload it is useful to have this since streams allow parsers to verify encoding whereas text readers do not</remarks>
-        T Parse(StreamReader input);
-
-        /// <summary>
-        /// Parses an Object from a Text Stream
+        /// Parses an Object from some input
         /// </summary>
         /// <param name="input">Text Stream</param>
-        /// <returns></returns>
+        /// <returns>Parsed object</returns>
         T Parse(TextReader input);
-
-#if !NO_FILE
-        /// <summary>
-        /// Parses an Object from a File
-        /// </summary>
-        /// <param name="file">Filename</param>
-        /// <returns></returns>
-        T ParseFromFile(String file);
-#endif
 
         /// <summary>
         /// Parses an Object from a String
         /// </summary>
         /// <param name="data">String</param>
-        /// <returns></returns>
+        /// <returns>Parsed object</returns>
+        /// <remarks>
+        /// In most cases the implementation of this method is likely to be purely for convinience, it will simply wrap the string in a <see cref="StringReader"/> and call the <see cref="Parse(TextReader)"/> method
+        /// </remarks>
         T ParseFromString(String data);
     }
 }

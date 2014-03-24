@@ -54,7 +54,6 @@
     <Compile Include="Nodes\RandomDerivedBlankNodeGenerator.cs" />
     <Compile Include="Nodes\IBlankNodeGenerator.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
-    <Compile Include="Parsing\BlockingStreamReader.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
     <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
@@ -93,6 +92,9 @@
     <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
     <Compile Include="Parsing\IParserProfile.cs" />
     <Compile Include="Parsing\IriSpecsHelper.cs" />
+    <Compile Include="Parsing\ITokenisingParser.cs" />
+    <Compile Include="Parsing\ITraceableParser.cs" />
+    <Compile Include="Parsing\ITraceableTokeniser.cs" />
     <Compile Include="Parsing\IUriLoaderCache.cs" />
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\NQuadsParser.cs" />

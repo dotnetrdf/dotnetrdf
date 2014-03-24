@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Specifications;
@@ -40,9 +36,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// <summary>
     /// A DOM Based event generator for RDF/XML parser that uses System.Xml DOM to parse events
     /// </summary>
-    public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
+    public class DomBasedEventGenerator
+        : IRdfXmlPreProcessingEventGenerator
     {
-        private XmlDocument _document;
+        private readonly XmlDocument _document;
 
         /// <summary>
         /// Creates a new DOM Based event generator
@@ -57,7 +54,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// Creates a new DOM Based event generator
         /// </summary>
         /// <param name="input">Input Stream</param>
-        public DomBasedEventGenerator(StreamReader input)
+        public DomBasedEventGenerator(TextReader input)
         {
             this._document = new XmlDocument();
             this._document.Load(input);
@@ -218,13 +215,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             Uri baseUri = null;
             if (parent is ElementEvent)
             {
-                baseUri = ((ElementEvent)parent).BaseUri;
+                baseUri = ((ElementEvent) parent).BaseUri;
             }
             //Create an ElementEvent for the Node
             ElementEvent element = new ElementEvent(node.LocalName, node.Prefix, baseUri, node.OuterXml);
 
             //Set the initial Language from the Parent
-            ElementEvent parentEl = (ElementEvent)parent;
+            ElementEvent parentEl = (ElementEvent) parent;
             element.Language = parentEl.Language;
 
             #region Attribute Processing
@@ -478,7 +475,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             //Iterate over Children where present
             if (evt is RootEvent)
             {
-                RootEvent root = (RootEvent)evt;
+                RootEvent root = (RootEvent) evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine("");
@@ -493,7 +490,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is ElementEvent)
             {
-                ElementEvent element = (ElementEvent)evt;
+                ElementEvent element = (ElementEvent) evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine(" " + element.Namespace + ":" + element.LocalName);
@@ -508,7 +505,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is TextEvent)
             {
-                TextEvent text = (TextEvent)evt;
+                TextEvent text = (TextEvent) evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine(" " + text.Value);
@@ -519,7 +516,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is TypedLiteralEvent)
             {
-                TypedLiteralEvent tlit = (TypedLiteralEvent)evt;
+                TypedLiteralEvent tlit = (TypedLiteralEvent) evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine();
@@ -537,7 +534,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 String endDescrip = String.Empty;
                 if (evt is ElementEvent)
                 {
-                    ElementEvent temp = (ElementEvent)evt;
+                    ElementEvent temp = (ElementEvent) evt;
                     endDescrip = " " + temp.QName;
                 }
                 Console.WriteLine(nesting + " " + end.GetType().ToString() + endDescrip);

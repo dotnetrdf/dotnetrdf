@@ -59,26 +59,11 @@ namespace VDS.RDF.Parsing.Tokens
             : this(input, NTriplesSyntax.Rdf11) { }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        public NTriplesTokeniser(StreamReader input) 
-            : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
         /// Creates a new NTriples Tokeniser which reads Tokens from the given Input
         /// </summary>
         /// <param name="input">Input to read Tokens from</param>
         public NTriplesTokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
-
-        /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
-        /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">NTriples syntax to tokenise</param>
-        public NTriplesTokeniser(StreamReader input, NTriplesSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new NTriples Tokeniser which reads Tokens from the given Input

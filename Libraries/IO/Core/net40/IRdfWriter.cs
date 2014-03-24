@@ -38,7 +38,7 @@ namespace VDS.RDF
     /// This interface provides methods for writing a single graph or a graph store, when the target syntax and the input type do not align the following behaviour is expected to be honoured:
     /// <ul>
     /// <li>If the target syntax is a graph format and a <see cref="IGraphStore"/> is given then only the unnamed default graph should be serialized, all other graphs are ignored</li>
-    /// <li>If the target syntax is a dataset format and a <see cref="IGraph"/> is given then treat the given graph as the unnamed default graph</li>
+    /// <li>If the target syntax is a dataset format and a <see cref="IGraph"/> is given then treat the given graph as the unnamed default graph and serialize only that</li>
     /// </ul>
     /// </remarks>
     public interface IRdfWriter

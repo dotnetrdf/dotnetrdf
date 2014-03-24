@@ -22,21 +22,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
-        /// </summary>
-        /// <param name="parser">RDF parser to use</param>
-        /// <param name="g">Graph to load RDF into</param>
-        /// <param name="input">The reader to read input from</param>
-        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
-        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
-        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        public static void Load(this IRdfReader parser, IGraph g, StreamReader input)
-        {
-            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
-            parser.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Input
         /// </summary>
         /// <param name="parser">RDF parser to use</param>
@@ -51,21 +36,10 @@ namespace VDS.RDF
             parser.Load(new GraphHandler(g), input);
         }
 
-        public static void Load(this IRdfReader parser, IGraphStore graphStore, StreamReader input)
-        {
-            if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
-            parser.Load(new GraphStoreHandler(graphStore), input);
-        }
-
         public static void Load(this IRdfReader parser, IGraphStore graphStore, TextReader input)
         {
             if (ReferenceEquals(parser, null)) throw new ArgumentNullException("parser");
             parser.Load(new GraphStoreHandler(graphStore), input);
-        }
-
-        public static void Load(this IRdfReader parser, IRdfHandler handler, StreamReader input)
-        {
-            parser.Load(handler, input, new ParserProfile());
         }
 
         public static void Load(this IRdfReader parser, IRdfHandler handler, TextReader input)

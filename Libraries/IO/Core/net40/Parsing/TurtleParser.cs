@@ -45,23 +45,25 @@ namespace VDS.RDF.Parsing
     public class TurtleParser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
-        private bool _traceParsing = false;
-        private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
-        private TurtleSyntax _syntax = TurtleSyntax.W3C;
-
         /// <summary>
         /// Creates a new Turtle Parser
         /// </summary>
-        public TurtleParser() { }
+        public TurtleParser()
+        {
+            TokenQueueMode = IOOptions.DefaultTokenQueueMode;
+            TraceParsing = false;
+            TraceTokeniser = false;
+            Syntax = TurtleSyntax.W3C;
+        }
 
         /// <summary>
         /// Creates a new Turtle Parser
         /// </summary>
         /// <param name="syntax">Turtle Syntax</param>
-        public TurtleParser(TurtleSyntax syntax) 
+        public TurtleParser(TurtleSyntax syntax)
+            : this()
         {
-            this._syntax = syntax;
+            this.Syntax = syntax;
         }
 
         /// <summary>
@@ -69,8 +71,9 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Queue Mode for Turtle</param>
         public TurtleParser(TokenQueueMode queueMode)
+            : this()
         {
-            this._queueMode = queueMode;
+            this.TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -81,53 +84,28 @@ namespace VDS.RDF.Parsing
         public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax)
             : this(syntax)
         {
-            this._queueMode = queueMode;
+            this.TokenQueueMode = queueMode;
         }
 
         /// <summary>
         /// Gets/Sets whether Parsing Trace is written to the Console
         /// </summary>
-        public bool TraceParsing
-        {
-            get
-            {
-                return this._traceParsing;
-            }
-            set
-            {
-                this._traceParsing = value;
-            }
-        }
+        public bool TraceParsing { get; set; }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Trace is written to the Console
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return this._traceTokeniser;
-            }
-            set
-            {
-                this._traceTokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the Turtle syntax mode to use
+        /// </summary>
+        public TurtleSyntax Syntax { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return this._queueMode;
-            }
-            set
-            {
-                this._queueMode = value;
-            }
-        }
+        public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
         /// Loads a Graph by reading Turtle syntax from the given input
@@ -188,7 +166,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this._syntax), this._syntax, this._queueMode, this._traceParsing, this._traceTokeniser);
+                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this.Syntax), this.Syntax, this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
             }
             catch
@@ -449,7 +427,7 @@ namespace VDS.RDF.Parsing
                         this.TryParsePredicateObjectList(context, subj, true);
 
                         //In W3C Turtle we are allowed to have a dot to terminate a top level blank node predicate list
-                        if (this._syntax == TurtleSyntax.W3C)
+                        if (this.Syntax == TurtleSyntax.W3C)
                         {
                             next = context.Tokens.Peek();
                             if (next.TokenType == Token.DOT)
@@ -540,7 +518,7 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected end of file while trying to parse a Predicate Object list", predToken);
 
                     case Token.SEMICOLON:
-                        if (this._syntax == TurtleSyntax.Original) goto default;
+                        if (this.Syntax == TurtleSyntax.Original) goto default;
 
                         //May get a sequence of semicolons
                         IToken next = context.Tokens.Peek();
@@ -905,7 +883,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.PLAINLITERAL:
                     //Attempt to infer Type
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, this._syntax))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, this.Syntax))
                     {
                         if (TurtleSpecsHelper.IsValidDouble(lit.Value))
                         {

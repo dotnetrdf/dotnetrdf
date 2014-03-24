@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Tokens
 {
@@ -35,7 +34,7 @@ namespace VDS.RDF.Parsing.Tokens
     public class CsvTokeniser
         : BaseTokeniser
     {
-        private ParsingTextReader _in;
+        private readonly ParsingTextReader _in;
 
         /// <summary>
         /// Creates a new CSV Tokeniser
@@ -46,13 +45,6 @@ namespace VDS.RDF.Parsing.Tokens
         {
             this._in = reader;
         }
-
-        /// <summary>
-        /// Creates a new CSV Tokeniser
-        /// </summary>
-        /// <param name="reader">Stream Reader</param>
-        public CsvTokeniser(StreamReader reader)
-            : this(ParsingTextReader.Create(reader)) { }
         
         /// <summary>
         /// Gets the next available token from the input
@@ -67,86 +59,74 @@ namespace VDS.RDF.Parsing.Tokens
                 this.LastTokenType = Token.BOF;
                 return new BOFToken();
             }
-            else
+            try
             {
-                try
+                //Reading has started
+                this.StartNewToken();
+
+                //Check for EOF
+                if (this._in.EndOfStream)
                 {
-                    //Reading has started
-                    this.StartNewToken();
-
-                    //Check for EOF
-                    if (this._in.EndOfStream)
+                    if (this.Length == 0)
                     {
-                        if (this.Length == 0)
-                        {
-                            //We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                        }
-                        else
-                        {
-                            //We're at the End of the Stream and part-way through reading a Token
-                            //Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    char next = this.Peek();
-
-                    //Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == Char.MaxValue && this._in.EndOfStream)
-                    {
-                        if (this.Length == 0)
-                        {
-                            //We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                        }
-                        else
-                        {
-                            //We're at the End of the Stream and part-way through reading a Token
-                            //Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    switch (next)
-                    {
-                        case ',':
-                            //Comma
-                            this.ConsumeCharacter();
-                            this.LastTokenType = Token.COMMA;
-                            return new CommaToken(this.StartLine, this.StartPosition);
-
-                        case '\r':
-                        case '\n':
-                            //New Line
-                            this.ConsumeNewLine(true);
-                            this.LastTokenType = Token.EOL;
-                            return new EOLToken(this.StartLine, this.StartPosition);
-
-                        case '"':
-                            //Start of a Quoted Field
-                            return this.TryGetQuotedField();
-
-                        default:
-                            //Start of an Unquoted Field
-                            return this.TryGetUnquotedField();
-                    }
-
-                }
-                catch (IOException)
-                {
-                    //End Of Stream Check
-                    if (this._in.EndOfStream)
-                    {
-                        //At End of Stream so produce the EOFToken
+                        //We're at the End of the Stream and not part-way through reading a Token
                         return new EOFToken(this.CurrentLine, this.CurrentPosition);
                     }
-                    else
-                    {
-                        //Some other Error so throw
-                        throw;
-                    }
+                    //We're at the End of the Stream and part-way through reading a Token
+                    //Raise an error
+                    throw UnexpectedEndOfInput("Token");
                 }
+
+                char next = this.Peek();
+
+                //Always need to do a check for End of Stream after Peeking to handle empty files OK
+                if (next == Char.MaxValue && this._in.EndOfStream)
+                {
+                    if (this.Length == 0)
+                    {
+                        //We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                    }
+                    //We're at the End of the Stream and part-way through reading a Token
+                    //Raise an error
+                    throw UnexpectedEndOfInput("Token");
+                }
+
+                switch (next)
+                {
+                    case ',':
+                        //Comma
+                        this.ConsumeCharacter();
+                        this.LastTokenType = Token.COMMA;
+                        return new CommaToken(this.StartLine, this.StartPosition);
+
+                    case '\r':
+                    case '\n':
+                        //New Line
+                        this.ConsumeNewLine(true);
+                        this.LastTokenType = Token.EOL;
+                        return new EOLToken(this.StartLine, this.StartPosition);
+
+                    case '"':
+                        //Start of a Quoted Field
+                        return this.TryGetQuotedField();
+
+                    default:
+                        //Start of an Unquoted Field
+                        return this.TryGetUnquotedField();
+                }
+
+            }
+            catch (IOException)
+            {
+                //End Of Stream Check
+                if (this._in.EndOfStream)
+                {
+                    //At End of Stream so produce the EOFToken
+                    return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                }
+                //Some other Error so throw
+                throw;
             }
         }
 
@@ -163,10 +143,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 return new BlankNodeWithIDToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);
             }
-            else
-            {
-                return new PlainLiteralToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);
-            }
+            return new PlainLiteralToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);
         }
 
         private IToken TryGetQuotedField()
