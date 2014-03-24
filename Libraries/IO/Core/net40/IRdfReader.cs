@@ -23,7 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.IO;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
@@ -38,20 +40,23 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">The reader to read input from</param>
+        /// <param name="profile"></param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        void Load(IRdfHandler handler, StreamReader input);
+        [Obsolete("This method is considered obsolete and will be deleted shortly once usages have been identified and corrected", true)]
+        void Load(IRdfHandler handler, StreamReader input, IParserProfile profile);
 
         /// <summary>
         /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">The reader to read input from</param>
+        /// <param name="profile"></param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
-        void Load(IRdfHandler handler, TextReader input);
+        void Load(IRdfHandler handler, TextReader input, IParserProfile profile);
 
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed

@@ -10,6 +10,12 @@ namespace VDS.RDF.Parsing
         : IParserProfile
     {
         /// <summary>
+        /// Creates a new empty parser profile, this is the default used if no explicit profile is given
+        /// </summary>
+        public ParserProfile()
+            : this(null, new NamespaceMapper(true)) { }
+
+        /// <summary>
         /// Creates a new profile
         /// </summary>
         /// <param name="baseUri">Base URI</param>
@@ -17,7 +23,7 @@ namespace VDS.RDF.Parsing
         public ParserProfile(Uri baseUri, INamespaceMapper namespaces)
         {
             this.BaseUri = baseUri;
-            this.Namespaces = namespaces;
+            this.Namespaces = namespaces ?? new NamespaceMapper(true);
         }
 
         /// <summary>

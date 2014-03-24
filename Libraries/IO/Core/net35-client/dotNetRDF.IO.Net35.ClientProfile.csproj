@@ -42,7 +42,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj">
+    <ProjectReference Include="..\..\..\core\net35-client\dotNetRDF.Net35.ClientProfile.csproj">
       <Project>{5B3596B5-DB36-45B6-AC58-1B505E78FB86}</Project>
       <Name>dotNetRDF.ClientProfile.Net35</Name>
     </ProjectReference>

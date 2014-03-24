@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
-        public void Load(IRdfHandler handler, StreamReader input)
+        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
         {
             this.Load(handler, (TextReader) input);
         }
@@ -138,7 +138,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Input to load from</param>
-        public void Load(IRdfHandler handler, TextReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");

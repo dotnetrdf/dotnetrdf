@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String TriXNamespaceUri = "http://www.w3.org/2004/03/trix/trix-1/";
 
-        public void Load(IRdfHandler handler, StreamReader input)
+        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -80,12 +80,13 @@ namespace VDS.RDF.Parsing
 
 #if !NO_XMLDOM
 
-    /// <summary>
-    /// Loads the RDF Dataset from the TriX input using a RDF Handler
-    /// </summary>
-    /// <param name="handler">RDF Handler to use</param>
-    /// <param name="input">Input to load from</param>
-        public void Load(IRdfHandler handler, TextReader input)
+        /// <summary>
+        /// Loads the RDF Dataset from the TriX input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input to load from</param>
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");

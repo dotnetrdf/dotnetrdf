@@ -50,7 +50,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            this.Load(new GraphHandler(g), input, TODO);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            this.Load(new GraphHandler(g), input);
+            this.Load(new GraphHandler(g), input, TODO);
         }
 
         /// <summary>
@@ -70,7 +70,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Stream to read from</param>
-        public void Load(IRdfHandler handler, StreamReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -85,7 +86,7 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
-            this.Load(handler, (TextReader)input);
+            this.Load(handler, (TextReader)input, TODO);
         }
 
         /// <summary>
@@ -93,7 +94,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Input to read from</param>
-        public void Load(IRdfHandler handler, TextReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");

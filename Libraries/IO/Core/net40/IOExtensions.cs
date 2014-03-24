@@ -12,6 +12,16 @@ namespace VDS.RDF
     public static class IOExtensions
     {
         /// <summary>
+        /// Ensures a parser profile is available, returns default empty profile if null is specified
+        /// </summary>
+        /// <param name="profile">Parser Profile (possibly null)</param>
+        /// <returns>Non-null parser profile</returns>
+        public static IParserProfile EnsureParserProfile(this IParserProfile profile)
+        {
+            return profile ?? new ParserProfile();
+        }
+
+        /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
         /// </summary>
         /// <param name="parser">RDF parser to use</param>
@@ -53,6 +63,16 @@ namespace VDS.RDF
             parser.Load(new GraphStoreHandler(graphStore), input);
         }
 
+        public static void Load(this IRdfReader parser, IRdfHandler handler, StreamReader input)
+        {
+            parser.Load(handler, input, new ParserProfile());
+        }
+
+        public static void Load(this IRdfReader parser, IRdfHandler handler, TextReader input)
+        {
+            parser.Load(handler, input, new ParserProfile());
+        }
+
 #if !NO_FILE
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
@@ -92,7 +112,6 @@ namespace VDS.RDF
             writer.Save(g, new StreamWriter(filename));
         }
 #endif
-
 
         /// <summary>
         /// Loads RDF data from a file into a Graph

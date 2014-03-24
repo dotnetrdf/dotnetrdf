@@ -96,20 +96,21 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Stream to load from</param>
-        public void Load(IRdfHandler handler, StreamReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
             if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
 
             if (input.BaseStream is GZipStream)
             {
-                this._parser.Load(handler, input);
+                this._parser.Load(handler, input, profile);
             }
             else
             {
                 //Force the inner stream to be GZipped
                 input = new StreamReader(new GZipStream(input.BaseStream, CompressionMode.Decompress));
-                this._parser.Load(handler, input);
+                this._parser.Load(handler, input, profile);
             }
         }
 
@@ -118,7 +119,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Reader to load from</param>
-        public void Load(IRdfHandler handler, TextReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (input is StreamReader)
             {

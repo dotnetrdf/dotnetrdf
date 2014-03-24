@@ -180,7 +180,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Input Stream</param>
-        public void Load(IRdfHandler handler, StreamReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -203,7 +204,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Input to read from</param>
-        public void Load(IRdfHandler handler, TextReader input)
+        /// <param name="profile"></param>
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
