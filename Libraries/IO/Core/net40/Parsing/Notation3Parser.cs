@@ -93,30 +93,6 @@ namespace VDS.RDF.Parsing
         /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            this.Load(handler, (TextReader)input);
-        }
-
-        /// <summary>
-        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Input to read from</param>
         /// <param name="profile"></param>
         public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
@@ -126,22 +102,16 @@ namespace VDS.RDF.Parsing
 
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+
                 Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
 
                 input.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions, just trying to clean up
-                }
-                throw;
+                input.CloseQuietly();
             }
         }
 

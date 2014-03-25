@@ -81,9 +81,10 @@
     <Compile Include="Collections\ITripleCollection.cs" />
     <Compile Include="Collections\ThreadSafeGraphCollection.cs" />
     <Compile Include="Collections\ThreadSafeTripleCollection.cs" />
-    <Compile Include="Compatability\HashSet.cs" />
-    <Compile Include="Compatability\SilverlightCompatability.cs" />
-    <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
+    <Compile Include="Compatibility\HashSet.cs" />
+    <Compile Include="Compatibility\PortableLibraryCompatibility.cs" />
+    <Compile Include="Compatibility\SilverlightCompatability.cs" />
+    <Compile Include="Compatibility\WindowsPhoneCompatibility.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
     <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
     <Compile Include="Collections\BaseTripleCollection.cs" />

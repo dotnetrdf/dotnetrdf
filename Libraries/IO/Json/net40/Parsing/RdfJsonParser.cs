@@ -30,7 +30,6 @@ using Newtonsoft.Json;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
-using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
 {
@@ -41,54 +40,6 @@ namespace VDS.RDF.Parsing
     public class RdfJsonParser 
         : IRdfReader 
     {
-        /// <summary>
-        /// Read RDF/JSON Syntax from some Stream into a Graph
-        /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="input">Stream to read from</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-            this.Load(new GraphHandler(g), input, TODO);
-        }
-
-        /// <summary>
-        /// Read RDF/JSON Syntax from some Input into a Graph
-        /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="input">Input to read from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-            this.Load(new GraphHandler(g), input, TODO);
-        }
-
-        /// <summary>
-        /// Read RDF/JSON Syntax from some Stream using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            this.Load(handler, (TextReader)input, TODO);
-        }
-
         /// <summary>
         /// Read RDF/JSON Syntax from some Input using a RDF Handler
         /// </summary>
@@ -102,19 +53,13 @@ namespace VDS.RDF.Parsing
 
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                 this.Parse(handler, input);
+                input.Close();
             }
             finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //Catch is just here in case something goes wrong with closing the stream
-                    //This error can be ignored
-                }
+                input.CloseQuietly();
             }
         }
 

@@ -36,8 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Compatability\CryptoConfig.cs" />
-    <Compile Include="Compatability\PortableLibraryCompatibility.cs" />
+    <Compile Include="Compatibility\CryptoConfig.cs" />
     <Compile Include="Crypto\CryptographicException.cs" />
     <Compile Include="Crypto\CryptographicUnexpectedOperationExcpetion.cs" />
     <Compile Include="Crypto\HashAlgorithm.cs" />
@@ -59,12 +58,6 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\HashSet.cs">
-      <Link>Compatability\HashSet.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatability\SilverlightCompatability.cs">
-      <Link>Compatability\SilverlightCompatability.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Exceptions.cs">
       <Link>Exceptions.cs</Link>
     </Compile>
@@ -161,9 +154,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
-      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
-    </Compile>
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
@@ -353,6 +343,35 @@
     </Compile>
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Attributes\ConfigurationObjectFactory.cs">
+      <Link>Attributes\ConfigurationObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\HashSet.cs">
+      <Link>Compatibility\HashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\PortableLibraryCompatibility.cs">
+      <Link>Compatibility\PortableLibraryCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\SilverlightCompatability.cs">
+      <Link>Compatibility\SilverlightCompatability.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\WindowsPhoneCompatibility.cs">
+      <Link>Compatibility\WindowsPhoneCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationSerializationContext.cs">
+      <Link>Configuration\ConfigurationSerializationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationVocabulary.cs">
+      <Link>Configuration\ConfigurationVocabulary.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\IObjectFactory.cs">
+      <Link>Configuration\IObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\IConfigurationSerializable.cs">
+      <Link>Configuration\IConfigurationSerializable.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

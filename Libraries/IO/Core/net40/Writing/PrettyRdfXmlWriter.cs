@@ -205,18 +205,9 @@ namespace VDS.RDF.Writing
                 this.GenerateOutput(g, output);
                 output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    //Close the Output Stream
-                    output.Close();
-                }
-                catch
-                {
-                    //No Catch actions here
-                }
-                throw;
+                output.CloseQuietly();
             }
         }
 

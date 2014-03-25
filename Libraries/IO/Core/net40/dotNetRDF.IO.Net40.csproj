@@ -99,6 +99,7 @@
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\NQuadsParser.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
+    <Compile Include="Parsing\NTriplesSyntax.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
     <Compile Include="Parsing\ParserProfile.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />

@@ -77,9 +77,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new NQuads parser
         /// </summary>
         public NQuadsParser()
-            : this(NQuadsSyntax.Rdf11)
-        {
-        }
+            : this(NQuadsSyntax.Rdf11) {}
 
         /// <summary>
         /// Creates a new NQuads parser
@@ -139,49 +137,27 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
 
-            // Check for incorrect stream encoding and issue warning if appropriate
-            if (input is StreamReader)
+            try
             {
-                StreamReader streamInput = (StreamReader) input;
+                // Check for incorrect stream encoding and issue warning if appropriate
                 switch (this.Syntax)
                 {
                     case NQuadsSyntax.Original:
 #if !SILVERLIGHT
-                        //Issue a Warning if the Encoding of the Stream is not ASCII
-                        if (!streamInput.CurrentEncoding.Equals(Encoding.ASCII))
-                        {
-                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-                        }
+                        input.CheckEncoding(Encoding.ASCII, this.RaiseWarning);
 #endif
                         break;
                     default:
-                        if (!streamInput.CurrentEncoding.Equals(Encoding.UTF8))
-                        {
-#if SILVERLIGHT
-                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#else
-                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#endif
-                        }
+                        input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                         break;
                 }
-            }
 
-            try
-            {
                 TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax)), this.TokenQueueMode, false, this.TraceTokeniser);
                 this.Parse(context);
             }
             finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions - just cleaning up
-                }
+                input.CloseQuietly();
             }
         }
 

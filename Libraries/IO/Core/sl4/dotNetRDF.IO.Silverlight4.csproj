@@ -124,9 +124,6 @@
     <Compile Include="..\net40\Parsing\BaseGZipParser.cs">
       <Link>Parsing\BaseGZipParser.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Parsing\BlockingStreamReader.cs">
-      <Link>Parsing\BlockingStreamReader.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Parsing\BlockingTextReader.cs">
       <Link>Parsing\BlockingTextReader.cs</Link>
     </Compile>
@@ -474,5 +471,25 @@
       <Project>{854A789B-BA35-4A1B-9449-CAD40953F0E5}</Project>
       <Name>dotNetRDF.Silverlight4</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Parsing\IParserProfile.cs">
+      <Link>Parsing\IParserProfile.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ITokenisingParser.cs">
+      <Link>Parsing\ITokenisingParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ITraceableParser.cs">
+      <Link>Parsing\ITraceableParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ITraceableTokeniser.cs">
+      <Link>Parsing\ITraceableTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\NTriplesSyntax.cs">
+      <Link>Parsing\NTriplesSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ParserProfile.cs">
+      <Link>Parsing\ParserProfile.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

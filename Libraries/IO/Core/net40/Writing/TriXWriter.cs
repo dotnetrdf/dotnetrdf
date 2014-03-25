@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -42,7 +41,7 @@ namespace VDS.RDF.Writing
     public class TriXWriter
         : BaseGraphStoreWriter
     {
-        private XmlWriterSettings GetSettings()
+        private static XmlWriterSettings GetSettings()
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.CloseOutput = true;
@@ -70,7 +69,7 @@ namespace VDS.RDF.Writing
             try
             {
                 INamespaceMapper namespaces = WriterHelper.ExtractNamespaces(store);
-                TriXWriterContext context = new TriXWriterContext(store, namespaces, output, XmlWriter.Create(output, this.GetSettings()));
+                TriXWriterContext context = new TriXWriterContext(store, namespaces, output, XmlWriter.Create(output, GetSettings()));
 
                 //Setup the XML document
                 context.XmlWriter.WriteStartDocument();
@@ -93,17 +92,9 @@ namespace VDS.RDF.Writing
                 context.XmlWriter.Close();
                 output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    //Just cleaning up
-                }
-                throw;
+                output.CloseQuietly();
             }
         }
 
@@ -191,7 +182,7 @@ namespace VDS.RDF.Writing
                     break;
                 case NodeType.Uri:
                     context.XmlWriter.WriteStartElement("uri");
-                    context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(((INode)n).Uri.AbsoluteUri));
+                    context.XmlWriter.WriteRaw(WriterHelper.EncodeForXml(n.Uri.AbsoluteUri));
                     context.XmlWriter.WriteEndElement();
                     break;
                 default:

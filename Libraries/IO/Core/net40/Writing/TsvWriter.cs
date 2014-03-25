@@ -77,17 +77,9 @@ namespace VDS.RDF.Writing
 
                 output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    //No error handling, just trying to clean up
-                }
-                throw;
+                output.CloseQuietly();
             }
         }
 
@@ -98,7 +90,7 @@ namespace VDS.RDF.Writing
                 foreach (INode graphName in graphStore.GraphNames)
                 {
                     IGraph g = graphStore[graphName];
-                    
+
                     // Write out quads for the graph
                     foreach (Quad q in g.Triples.AsQuads(graphName))
                     {
@@ -115,18 +107,11 @@ namespace VDS.RDF.Writing
                         output.WriteLine();
                     }
                 }
+                output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No error handling, just trying to clean up
-                }
-                throw;
+                output.CloseQuietly();
             }
         }
 

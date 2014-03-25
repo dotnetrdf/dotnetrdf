@@ -9,6 +9,9 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Static class containing extension methods related to IO operations
+    /// </summary>
     public static class IOExtensions
     {
         /// <summary>
@@ -19,6 +22,77 @@ namespace VDS.RDF
         public static IParserProfile EnsureParserProfile(this IParserProfile profile)
         {
             return profile ?? new ParserProfile();
+        }
+
+        /// <summary>
+        /// Checks whether a given <see cref="TextReader"/> has a desired character encoding and invokes a callback if it is not
+        /// </summary>
+        /// <param name="input">Text Reader</param>
+        /// <param name="desired">Desired encoding</param>
+        /// <param name="callback">Callback method</param>
+        public static void CheckEncoding(this TextReader input, Encoding desired, Action<String> callback)
+        {
+            // We can't detect encoding on non-StreamReader instances without touching the stream which may not be safe to do
+            if (!(input is StreamReader)) return;
+            if (callback == null) return;
+
+            // Issue a Warning if the Encoding of the Stream is not UTF-8
+            StreamReader streamInput = (StreamReader)input;
+            if (!streamInput.CurrentEncoding.Equals(desired))
+            {
+                callback(string.Format("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as {0} - Please be aware that parsing errors may occur as a result", streamInput.CurrentEncoding.GetEncodingName()));
+            }
+        }
+
+        /// <summary>
+        /// Gets the encoding name
+        /// </summary>
+        /// <param name="encoding">Encoding</param>
+        /// <returns>Encoding name</returns>
+        /// <remarks>
+        /// Required because in their infinite wisdom the people who defined the Silverlight profile omitted the <see cref="Encoding.EncodingName"/> property from the <see cref="Encoding"/> class
+        /// </remarks>
+        public static String GetEncodingName(this Encoding encoding)
+        {
+#if !SILVERLIGHT
+            return encoding.EncodingName;
+#else
+            return encoding.GetType().Name;
+#endif
+        }
+
+        /// <summary>
+        /// Closes input suppressing any errors that occur closing the input
+        /// </summary>
+        /// <param name="input">Input</param>
+        public static void CloseQuietly(this TextReader input)
+        {
+            try
+            {
+                input.Close();
+            }
+            catch
+            {
+                // No catch actions, just cleaning up
+                // TODO In the future this should ideally log somewhere
+            }
+        }
+
+        /// <summary>
+        /// Closes output suppressing any errors that occur closing the output
+        /// </summary>
+        /// <param name="output">Output</param>
+        public static void CloseQuietly(this TextWriter output)
+        {
+            try
+            {
+                output.Close();
+            }
+            catch
+            {
+                // No catch actions, just cleaning up
+                // TODO In the future this should ideally log somewhere
+            }
         }
 
         /// <summary>

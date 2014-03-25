@@ -122,18 +122,9 @@ namespace VDS.RDF.Writing
                 //Make sure to close the output
                 context.Output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    //Close the output
-                    context.Output.Close();
-                }
-                catch
-                {
-                    //No catch actions, just cleaning up the output stream
-                }
-                throw;
+                context.Output.CloseQuietly();
             }
         }
 

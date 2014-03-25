@@ -92,17 +92,9 @@ namespace VDS.RDF.Writing
                 }
                 writer.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    writer.Close();
-                }
-                catch
-                {
-                    //Just cleaning up
-                }
-                throw;
+                writer.CloseQuietly();
             }
         }
 
@@ -125,17 +117,9 @@ namespace VDS.RDF.Writing
                 }
                 writer.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    writer.Close();
-                }
-                catch
-                {
-                    //Just cleaning up
-                }
-                throw;
+                writer.CloseQuietly();
             }
         }
 

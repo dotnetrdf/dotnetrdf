@@ -29,27 +29,10 @@ using System.IO;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Contexts;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing
 {
-    /// <summary>
-    /// Possible NTriples syntax modes
-    /// </summary>
-    public enum NTriplesSyntax
-    {
-        /// <summary>
-        /// The original NTriples syntax as specified in the original RDF specification <a href="http://www.w3.org/TR/2004/REC-rdf-testcases-20040210/">test cases</a> specification
-        /// </summary>
-        Original,
-
-        /// <summary>
-        /// Standardized NTriples as specified in the <a href="http://www.w3.org/TR/n-triples/">RDF 1.1 NTriples</a> specification
-        /// </summary>
-        Rdf11
-    }
-
     /// <summary>
     /// Parser for NTriples syntax
     /// </summary>
@@ -59,14 +42,11 @@ namespace VDS.RDF.Parsing
     {
         #region Initialisation, Variables and Properties
 
-        private TokenQueueMode _queueMode = IOOptions.DefaultTokenQueueMode;
         /// <summary>
         /// Creates a new instance of the parser
         /// </summary>
         public NTriplesParser()
-            : this(NTriplesSyntax.Rdf11)
-        {
-        }
+            : this(NTriplesSyntax.Rdf11) {}
 
         /// <summary>
         /// Creates a new instance of the parser
@@ -125,44 +105,6 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Parses NTriples Syntax from the given Input Stream into Triples in the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Arbitrary Input Stream to read input from</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Parses NTriples Syntax from the given Input into Triples in the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Arbitrary Input to read input from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Parses NTriples Syntax from the given Input Stream using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input Stream to read input from</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            this.Load(handler, (TextReader) input);
-        }
-
-        /// <summary>
         /// Parses NTriples Syntax from the given Input using a RDF Handler
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
@@ -173,50 +115,27 @@ namespace VDS.RDF.Parsing
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
 
-            if (input is StreamReader)
+            try
             {
-                StreamReader streamInput = (StreamReader) input;
                 // Check for incorrect stream encoding and issue warning if appropriate
                 switch (this.Syntax)
                 {
                     case NTriplesSyntax.Original:
 #if !SILVERLIGHT
-                        //Issue a Warning if the Encoding of the Stream is not ASCII
-                        if (!streamInput.CurrentEncoding.Equals(Encoding.ASCII))
-                        {
-                            this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-                        }
+                        input.CheckEncoding(Encoding.ASCII, this.RaiseWarning);
 #endif
                         break;
                     default:
-                        if (!streamInput.CurrentEncoding.Equals(Encoding.UTF8))
-                        {
-#if SILVERLIGHT
-                        this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#else
-                            this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + streamInput.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#endif
-                        }
+                        input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                         break;
                 }
-            }
 
-            try
-            {
                 TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
             }
             finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //Catch is just here in case something goes wrong with closing the stream
-                    //This error can be ignored
-                }
+                input.CloseQuietly();
             }
         }
 

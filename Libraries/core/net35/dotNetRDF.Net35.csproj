@@ -91,12 +91,6 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Compatability\HashSet.cs">
-      <Link>Compatability\HashSet.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatability\SilverlightCompatability.cs">
-      <Link>Compatability\SilverlightCompatability.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Exceptions.cs">
       <Link>Exceptions.cs</Link>
     </Compile>
@@ -227,9 +221,6 @@
     </Compile>
     <Compile Include="..\net40\Collections\ThreadSafeTripleCollection.cs">
       <Link>Collections\ThreadSafeTripleCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatability\WindowsPhoneCompatibility.cs">
-      <Link>Compatability\WindowsPhoneCompatibility.cs</Link>
     </Compile>
     <Compile Include="..\net40\Collections\BaseGraphCollection.cs">
       <Link>Collections\BaseGraphCollection.cs</Link>
@@ -400,6 +391,20 @@
     </Compile>
     <Compile Include="..\net40\Configuration\IConfigurationSerializable.cs">
       <Link>Configuration\IConfigurationSerializable.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Compatibility\HashSet.cs">
+      <Link>Compatibility\HashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\PortableLibraryCompatibility.cs">
+      <Link>Compatibility\PortableLibraryCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\SilverlightCompatability.cs">
+      <Link>Compatibility\SilverlightCompatability.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\WindowsPhoneCompatibility.cs">
+      <Link>Compatibility\WindowsPhoneCompatibility.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

@@ -189,17 +189,11 @@ namespace VDS.RDF.Writing
                 g.Namespaces.Import(this._defaultNamespaces);
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed, this._syntax);
                 this.GenerateOutput(context);
+                output.Close();
             }
             finally
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    //No Catch actions - just trying to clean up
-                }
+                output.CloseQuietly();
             }
         }
 

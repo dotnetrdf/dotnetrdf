@@ -32,9 +32,6 @@ using System.Security.Cryptography;
 using System.Xml;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 

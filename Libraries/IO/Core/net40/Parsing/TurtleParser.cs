@@ -108,52 +108,6 @@ namespace VDS.RDF.Parsing
         public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to read from</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given input
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Input to read from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handle to use</param>
-        /// <param name="input">Stream to read from</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            this.Load(handler, (TextReader)input);
-        }
-
-        /// <summary>
         /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
         /// </summary>
         /// <param name="handler">RDF Handle to use</param>
@@ -166,24 +120,13 @@ namespace VDS.RDF.Parsing
 
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                 TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this.Syntax), this.Syntax, this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
                 this.Parse(context);
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //Catch is just here in case something goes wrong with closing the stream
-                    //This error can be ignored
-                }
+                input.CloseQuietly();
             }
         }
 

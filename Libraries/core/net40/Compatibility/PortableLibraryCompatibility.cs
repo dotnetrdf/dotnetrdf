@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if PORTABLE
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -52,36 +54,27 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Provides a default no-op implementation of XmlWriter.Close() for the Portable Class Library
+        /// Provides an implementation of XmlWriter.Close() for the Portable Class Library
         /// </summary>
-        /// <param name="writer"></param>
+        /// <param name="writer">XML writer</param>
         public static void Close(this XmlWriter writer)
         {
-            
+            writer.Dispose();
         }
 
-        public static void Close(this StreamReader reader){}
+        public static void Close(this StreamReader reader)
+        {
+            reader.Dispose();
+        }
 
         public static void Close(this TextReader reader)
         {
-        }
-
-        public static WebResponse GetResponse(this HttpWebRequest request)
-        {
-            var asyncResult = request.BeginGetResponse(ar => { }, null);
-            return request.EndGetResponse(asyncResult);
-
-        }
-
-        public static Stream GetRequestStream(this HttpWebRequest request)
-        {
-            var asyncResult = request.BeginGetRequestStream(ar => { }, null);
-            return request.EndGetRequestStream(asyncResult);
+            reader.Dispose();
         }
 
         public static void Close(this HttpWebResponse response)
         {
-            // No-op    
+            response.Dispose();  
         }
 
         public static void ForEach<T>(this List<T> theList, Action<T> action)
@@ -270,3 +263,5 @@ namespace VDS.RDF
         }
     }
 }
+
+#endif

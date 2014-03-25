@@ -111,18 +111,9 @@ namespace VDS.RDF.Writing
 
                 output.Close();
             }
-            catch
+            finally
             {
-                //Try and ensure the Stream gets closed
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    //No Catch actions
-                }
-                throw;
+                output.CloseQuietly();
             }
         }
 

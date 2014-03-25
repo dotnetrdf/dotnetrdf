@@ -60,24 +60,6 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String TriXNamespaceUri = "http://www.w3.org/2004/03/trix/trix-1/";
 
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            this.Load(handler, (TextReader) input);
-        }
-
 #if !NO_XMLDOM
 
         /// <summary>
@@ -94,6 +76,8 @@ namespace VDS.RDF.Parsing
             //First try and load as XML and apply any stylesheets
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+
                 XmlDocument doc = new XmlDocument();
                 doc.Load(input);
 
@@ -108,33 +92,30 @@ namespace VDS.RDF.Parsing
                 //Try and apply any stylesheets (which are used to extend TriX) to get basic TriX syntax
                 foreach (XmlNode child in doc.ChildNodes)
                 {
-                    if (child.NodeType == XmlNodeType.ProcessingInstruction)
+                    if (child.NodeType != XmlNodeType.ProcessingInstruction) continue;
+                    if (child.Name != "xml-stylesheet") continue;
+
+                    //Load in the XML a 2nd time so we can transform it properly if needed
+                    if (!inputReady)
                     {
-                        if (child.Name == "xml-stylesheet")
-                        {
-                            //Load in the XML a 2nd time so we can transform it properly if needed
-                            if (!inputReady)
-                            {
-                                inputDoc.LoadXml(doc.OuterXml);
-                                inputReady = true;
-                            }
-
-                            Regex getStylesheetUri = new Regex("href=\"([^\"]+)\"");
-                            String stylesheetUri = getStylesheetUri.Match(child.Value).Groups[1].Value;
-
-                            //Load the Transform
-                            XslCompiledTransform transform = new XslCompiledTransform();
-                            XsltSettings settings = new XsltSettings();
-                            transform.Load(stylesheetUri, settings, null);
-
-                            //Apply the Transform
-                            MemoryStream temp = new MemoryStream();
-                            transform.Transform(inputDoc, XmlWriter.Create(temp));
-                            temp.Flush();
-                            temp.Seek(0, SeekOrigin.Begin);
-                            inputDoc.Load(temp);
-                        }
+                        inputDoc.LoadXml(doc.OuterXml);
+                        inputReady = true;
                     }
+
+                    Regex getStylesheetUri = new Regex("href=\"([^\"]+)\"");
+                    String stylesheetUri = getStylesheetUri.Match(child.Value).Groups[1].Value;
+
+                    //Load the Transform
+                    XslCompiledTransform transform = new XslCompiledTransform();
+                    XsltSettings settings = new XsltSettings();
+                    transform.Load(stylesheetUri, settings, null);
+
+                    //Apply the Transform
+                    MemoryStream temp = new MemoryStream();
+                    transform.Transform(inputDoc, XmlWriter.Create(temp));
+                    temp.Flush();
+                    temp.Seek(0, SeekOrigin.Begin);
+                    inputDoc.Load(temp);
                 }
 #else
                 this.RaiseWarning("XSLT is not supported on your platform, if your TriX data uses the XSLT based extension mechanism it may not be parsed correctly");
@@ -149,28 +130,12 @@ namespace VDS.RDF.Parsing
             }
             catch (XmlException xmlEx)
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions - just cleaning up
-                }
                 //Wrap in a RDF Parse Exception
                 throw new RdfParseException("Unable to Parse this TriX since System.Xml was unable to parse the document into a DOM Tree, see the inner exception for details", xmlEx);
             }
-            catch
+            finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions - just cleaning up
-                }
-                throw;
+                input.CloseQuietly();
             }
         }
 
@@ -190,26 +155,24 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("<TriX> fails to define any attributes, the element must define the xmlns attribute to be the TriX namespace");
                 }
-                else
-                {
-                    bool trixNsDefined = false;
-                    foreach (XmlAttribute attr in graphsetEl.Attributes)
-                    {
-                        if (attr.Name.Equals("xmlns"))
-                        {
-                            //Ensure that the xmlns attribute is defined and is the TriX namespace
-                            if (trixNsDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
-                            if (!attr.Value.Equals(TriXNamespaceUri)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceUri + "'");
-                            trixNsDefined = true;
-                        }
-                        else if (attr.LocalName.Equals("xmlns"))
-                        {
-                            //Don't think we need to do anything here
-                        }
-                    }
 
-                    if (!trixNsDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
+                bool trixNsDefined = false;
+                foreach (XmlAttribute attr in graphsetEl.Attributes)
+                {
+                    if (attr.Name.Equals("xmlns"))
+                    {
+                        //Ensure that the xmlns attribute is defined and is the TriX namespace
+                        if (trixNsDefined) throw new RdfParseException("The xmlns attribute can only occur once on the <TriX> element");
+                        if (!attr.Value.Equals(TriXNamespaceUri)) throw new RdfParseException("The xmlns attribute of the <TriX> element must have it's value set to the TriX Namespace URI which is '" + TriXNamespaceUri + "'");
+                        trixNsDefined = true;
+                    }
+                    else if (attr.LocalName.Equals("xmlns"))
+                    {
+                        //Don't think we need to do anything here
+                    }
                 }
+
+                if (!trixNsDefined) throw new RdfParseException("The <TriX> element fails to define the required xmlns attribute defining the TriX Namespace");
 
                 //Process Child Nodes
                 foreach (XmlNode graph in graphsetEl.ChildNodes)
@@ -430,7 +393,7 @@ namespace VDS.RDF.Parsing
             return settings;
         }
 
-        public void Load(IRdfHandler handler, TextReader input)
+        public void Load(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
@@ -438,6 +401,8 @@ namespace VDS.RDF.Parsing
             //First try and load as XML and apply any stylesheets
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+
                 //Get the reader and start parsing
                 XmlReader reader = XmlReader.Create(input, GetSettings());
                 this.RaiseWarning("The TriX Parser is operating without XSL support, if your TriX file requires XSL then it will not be parsed successfully");
@@ -448,28 +413,12 @@ namespace VDS.RDF.Parsing
             }
             catch (XmlException xmlEx)
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions - just cleaning up
-                }
                 //Wrap in a RDF Parse Exception
                 throw new RdfParseException("Unable to Parse this TriX since the XmlReader encountered an error, see the inner exception for details", xmlEx);
             }
-            catch
+            finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions - just cleaning up
-                }
-                throw;
+                input.CloseQuietly();
             }
         }
 

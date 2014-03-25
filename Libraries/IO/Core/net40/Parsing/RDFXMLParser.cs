@@ -136,70 +136,6 @@ namespace VDS.RDF.Parsing
         #region Load Method Implementations
 
         /// <summary>
-        /// Reads RDF/XML syntax from some Stream into the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Input Stream</param>
-        public void Load(IGraph g, StreamReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-        /// <summary>
-        /// Reads RDF/XML syntax from some Input into the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Input to read from</param>
-        public void Load(IGraph g, TextReader input)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            this.Load(new GraphHandler(g), input);
-        }
-
-#if !NO_FILE
-        /// <summary>
-        /// Reads RDF/XML syntax from some File into the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="filename">Filename of File containg XML/RDF</param>
-        /// <remarks>Simply opens a Stream for the File then calls the other version of Load to do the actual parsing</remarks>
-        public void Load(IGraph g, string filename)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-
-            //Open a Stream for the File and call other variant of Load
-            StreamReader input = new StreamReader(filename, Encoding.UTF8);
-            this.Load(g, input);
-        }
-#endif
-
-        /// <summary>
-        /// Reads RDF/XML syntax from some Stream using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input Stream</param>
-        /// <param name="profile"></param>
-        public void Load(IRdfHandler handler, StreamReader input, IParserProfile profile)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            this.Load(handler, (TextReader)input);
-        }
-
-        /// <summary>
         /// Reads RDF/XML syntax from some Input using a RDF Handler
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
@@ -212,6 +148,8 @@ namespace VDS.RDF.Parsing
 
             try
             {
+                input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+
                 //Silverlight only supports XmlReader not the full XmlDocument API
 #if !NO_XMLDOM
                 if (this._mode == RdfXmlParserMode.DOM)
@@ -223,12 +161,14 @@ namespace VDS.RDF.Parsing
                     //Create a new Parser Context and Parse
                     RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, this._traceparsing);
                     this.Parse(context);
+                    input.Close();
                 }
                 else
                 {
 #endif
                     RdfXmlParserContext context = new RdfXmlParserContext(handler, input);
                     this.Parse(context);
+                    input.Close();
 #if !NO_XMLDOM
                 }
 #endif
@@ -243,74 +183,11 @@ namespace VDS.RDF.Parsing
                 //Wrap in a RDF Parse Exception
                 throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception, see Inner Exception for details of the IO exception that occurred", ioEx);
             }
-            catch (Exception)
-            {
-                //Throw unexpected errors upwards as-is
-                throw;
-            }
             finally
             {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //Ignore exceptions here - just trying to clean up properly
-                }
+                input.CloseQuietly();
             }
         }
-
-#if !NO_FILE
-        /// <summary>
-        /// Reads RDF/XML syntax from a file using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
-            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
-#endif
-
-#if !NO_XMLDOM
-
-        /// <summary>
-        /// Reads RDF/XML from the given XML Document
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="document">XML Document</param>
-        public void Load(IGraph g, XmlDocument document)
-        {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (document == null) throw new RdfParseException("Cannot read RDF from a null XML Document");
-
-            try 
-            {
-                //Create a new Parser Context and Parse
-                RdfXmlParserContext context = new RdfXmlParserContext(new GraphHandler(g), document, this._traceparsing);
-                this.Parse(context);
-            }
-            catch (XmlException xmlEx)
-            {
-                //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML since System.Xml was unable to parse the document into a DOM Tree", xmlEx);
-            }
-            catch (IOException ioEx)
-            {
-                //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception", ioEx);
-            }
-            catch (Exception)
-            {
-                //Throw unexpected errors upwards as-is
-                throw;
-            }
-        }
-
-#endif
 
         #endregion
 
