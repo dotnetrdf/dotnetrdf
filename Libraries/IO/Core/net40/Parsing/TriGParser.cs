@@ -124,7 +124,7 @@ namespace VDS.RDF.Parsing
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
 
                 //Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser);
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser, profile);
                 context.Syntax = this._syntax;
                 this.Parse(context);
                 input.Close();
@@ -411,7 +411,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.BLANKNODEWITHID:
                         //Blank Node with ID
-                        subjNode = context.BlankNodeGenerator.CreateBlankNode(subj.Value.Substring(2));
+                        subjNode = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subj.Value.Substring(2)));
                         break;
 
                     case Token.LEFTSQBRACKET:
@@ -654,7 +654,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.BLANKNODEWITHID:
                         //Blank Node with ID
-                        objNode = context.BlankNodeGenerator.CreateBlankNode(obj.Value.Substring(2));
+                        objNode = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(obj.Value.Substring(2)));
                         break;
 
                     case Token.LEFTSQBRACKET:
@@ -819,7 +819,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        item = context.BlankNodeGenerator.CreateBlankNode(next.Value);
+                        item = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(next.Value));
                         break;
 
                     case Token.EOF:

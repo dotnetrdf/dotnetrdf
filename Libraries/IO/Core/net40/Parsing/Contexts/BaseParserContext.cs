@@ -48,21 +48,24 @@ namespace VDS.RDF.Parsing.Contexts
         /// Creates a new Base Parser Context
         /// </summary>
         /// <param name="handler">RDF Handler</param>
-        protected BaseParserContext(IRdfHandler handler)
-            : this(handler, false) { }
+        /// <param name="profile">Parser profile</param>
+        protected BaseParserContext(IRdfHandler handler, IParserProfile profile)
+            : this(handler, false, profile) { }
 
         /// <summary>
         /// Creates a new Base Parser Context
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
-        protected BaseParserContext(IRdfHandler handler, bool traceParsing)
+        /// <param name="profile">Parser profile</param>
+        protected BaseParserContext(IRdfHandler handler, bool traceParsing, IParserProfile profile)
         {
             if (handler == null) throw new ArgumentNullException("handler");
             this.Handler = handler;
             this.TraceParsing = traceParsing;
-            // TODO Make the generator used configurable (or controlled by a global option)
-            this.BlankNodeGenerator = new RandomDerivedBlankNodeGenerator(this.Handler, this.GetHashCode());
+            this.BaseUri = profile.BaseUri;
+            this.Namespaces.Import(profile.Namespaces);
+            this.BlankNodeGenerator = profile.BlankNodeGenerator;
         }
 
         /// <summary>
@@ -70,6 +73,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         public virtual IRdfHandler Handler { get; protected set; }
 
+        /// <summary>
+        /// Gets the blank node generator
+        /// </summary>
         public virtual IBlankNodeGenerator BlankNodeGenerator { get; private set; }
 
         /// <summary>
@@ -118,8 +124,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
-        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser)
-            : base(handler)
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, IParserProfile profile)
+            : base(handler, profile)
         {
             this._queue = new BufferedTokenQueue(tokeniser);
         }
@@ -130,8 +136,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
-        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler)
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, IParserProfile profile)
+            : base(handler, profile)
         {
             switch (queueMode)
             {
@@ -155,8 +161,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser)
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : this(handler, tokeniser, profile)
         {
             this.TraceParsing = traceParsing;
             this._traceTokeniser = traceTokeniser;
@@ -171,8 +177,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, traceParsing)
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : base(handler, traceParsing, profile)
         {
             switch (queueMode)
             {

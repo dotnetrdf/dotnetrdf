@@ -39,15 +39,17 @@ namespace VDS.RDF.Parsing.Contexts
         : TokenisingParserContext
     {
         private bool _defaultGraphExists = false;
-        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Parser Context with default settings
         /// </summary>
         /// <param name="handler">Store to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser)
-            : base(handler, tokeniser) { }
+        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, IParserProfile profile)
+            : base(handler, tokeniser, profile)
+        {
+            Syntax = TriGSyntax.MemberSubmission;
+        }
 
         /// <summary>
         /// Creates a new TrigG Parser Context with custom settings
@@ -55,8 +57,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">Store to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler, tokeniser, queueMode) { }
+        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, IParserProfile profile)
+            : base(handler, tokeniser, queueMode, profile)
+        {
+            Syntax = TriGSyntax.MemberSubmission;
+        }
 
         /// <summary>
         /// Creates a new TriG Parser Context with custom settings
@@ -65,8 +70,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
+        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : this(handler, tokeniser, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser, profile) { }
 
         /// <summary>
         /// Creates a new TriG Parser Context with custom settings
@@ -76,8 +81,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, profile)
+        {
+            Syntax = TriGSyntax.MemberSubmission;
+        }
 
         /// <summary>
         /// Gets/Sets whether the Default Graph exists
@@ -100,16 +108,6 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Syntax to be used
         /// </summary>
-        public TriGSyntax Syntax
-        {
-            get
-            {
-                return this._syntax;
-            }
-            set
-            {
-                this._syntax = value;
-            }
-        }
+        public TriGSyntax Syntax { get; set; }
     }
 }

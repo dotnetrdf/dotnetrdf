@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Nodes
 {
@@ -14,29 +12,22 @@ namespace VDS.RDF.Nodes
     public class MappedBlankNodeGenerator
         : IBlankNodeGenerator
     {
-        private readonly IRdfHandler _handler;
-        private IDictionary<String, INode> _nodes = new Dictionary<string, INode>();
-
-        public MappedBlankNodeGenerator(IRdfHandler handler, int seed)
-        {
-            if (ReferenceEquals(handler, null)) throw new ArgumentNullException("handler");
-            this._handler = handler;
-        }
+        private IDictionary<String, Guid> _ids = new Dictionary<string, Guid>();
 
         /// <summary>
         /// Create a new blank node
         /// </summary>
         /// <param name="id">String ID</param>
         /// <returns>Blank Node</returns>
-        public INode CreateBlankNode(string id)
+        public Guid GetGuid(string id)
         {
-            INode n;
-            if (!this._nodes.TryGetValue(id, out n))
+            Guid guid;
+            if (!this._ids.TryGetValue(id, out guid))
             {
-                n = this._handler.CreateBlankNode();
-                this._nodes.Add(id, n);
+                guid = Guid.NewGuid();
+                this._ids.Add(id, guid);
             }
-            return n;
+            return guid;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using VDS.RDF.Namespaces;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Parsing
 {
@@ -35,5 +36,10 @@ namespace VDS.RDF.Parsing
         /// </para>
         /// </remarks>
         Uri BaseUri { get; }
+
+        /// <summary>
+        /// Gets the blank node generator to use
+        /// </summary>
+        IBlankNodeGenerator BlankNodeGenerator { get; }
     }
 }

@@ -159,14 +159,14 @@ namespace VDS.RDF.Parsing
                     doc.Load(input);
 
                     //Create a new Parser Context and Parse
-                    RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, this._traceparsing);
+                    RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, this._traceparsing, profile);
                     this.Parse(context);
                     input.Close();
                 }
                 else
                 {
 #endif
-                    RdfXmlParserContext context = new RdfXmlParserContext(handler, input);
+                    RdfXmlParserContext context = new RdfXmlParserContext(handler, input, profile);
                     this.Parse(context);
                     input.Close();
 #if !NO_XMLDOM
@@ -525,7 +525,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        subj = context.BlankNodeGenerator.CreateBlankNode(blank.Identifier);
+                        subj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(blank.Identifier));
                     }
                 }
                 else
@@ -1527,7 +1527,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     BlankNodeIDEvent blank = (BlankNodeIDEvent)res;
-                    subj = blank.Identifier.Equals(String.Empty) ? context.Handler.CreateBlankNode() : context.BlankNodeGenerator.CreateBlankNode(blank.Identifier);
+                    subj = blank.Identifier.Equals(String.Empty) ? context.Handler.CreateBlankNode() : context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(blank.Identifier));
                 }
 
                 //Validate the ID (if any)

@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
                         break;
                 }
 
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax)), this.TokenQueueMode, false, this.TraceTokeniser);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax)), this.TokenQueueMode, false, this.TraceTokeniser, profile);
                 this.Parse(context);
             }
             finally
@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing
             switch (next.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    graph = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
+                    graph = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(next.Value.Substring(2)));
                     break;
                 case Token.URI:
                     graph = context.Handler.CreateUriNode(UriFactory.Create(next.Value));
@@ -336,7 +336,7 @@ namespace VDS.RDF.Parsing
             switch (s.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    subj = context.BlankNodeGenerator.CreateBlankNode(s.Value.Substring(2));
+                    subj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(s.Value.Substring(2)));
                     break;
                 case Token.URI:
                     subj = TryParseUri(context, s.Value);
@@ -357,7 +357,7 @@ namespace VDS.RDF.Parsing
             switch (o.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    obj = context.BlankNodeGenerator.CreateBlankNode(o.Value.Substring(2));
+                    obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(o.Value.Substring(2)));
                     break;
                 case Token.LITERAL:
                     obj = context.Handler.CreateLiteralNode(o.Value);

@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
 
                 //Start parsing
                 if (!inputReady) inputDoc = doc;
-                TriXParserContext context = new TriXParserContext(handler);
+                TriXParserContext context = new TriXParserContext(handler, profile);
                 this.TryParseGraphset(inputDoc, context);
 
                 input.Close();
@@ -298,7 +298,7 @@ namespace VDS.RDF.Parsing
             }
             else if (subjEl.Name.Equals("id"))
             {
-                subj = context.BlankNodeGenerator.CreateBlankNode(subjEl.InnerText);
+                subj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subjEl.InnerText));
             }
             else
             {
@@ -320,7 +320,7 @@ namespace VDS.RDF.Parsing
             }
             else if (objEl.Name.Equals("id"))
             {
-                obj = context.BlankNodeGenerator.CreateBlankNode(objEl.InnerText);
+                obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(objEl.InnerText));
             }
             else if (objEl.Name.Equals("plainLiteral"))
             {
@@ -605,7 +605,7 @@ namespace VDS.RDF.Parsing
             {
                 if (segment == QuadSegment.Predicate) throw Error("Unexpected element <" + context.XmlReader.Name + "> encountered, expected a <uri> element as the Predicate of a Triple", context.XmlReader);
 
-                return context.BlankNodeGenerator.CreateBlankNode(context.XmlReader.ReadInnerXml());
+                return context.BlankNodeGenerator.GetGuid(context.XmlReader.ReadInnerXml());
             }
             if (context.XmlReader.Name.Equals("plainLiteral"))
             {

@@ -6,15 +6,15 @@ namespace VDS.RDF.Nodes
     /// Interface for blank node generators
     /// </summary>
     /// <remarks>
-    /// Blank node generators are used to consistently map string identifiers for blank nodes in serialized RDF into blank nodes since this functionality is only required during parsing operations.
+    /// Blank node generators are used to consistently map string identifiers for blank nodes in serialized RDF into blank nodes.  This functionality is generally only required during parsing operations.
     /// </remarks>
     public interface IBlankNodeGenerator
     {
         /// <summary>
-        /// Create a new blank node
+        /// Create a new blank node ID
         /// </summary>
         /// <param name="id">String ID</param>
-        /// <returns>Blank Node</returns>
-        INode CreateBlankNode(String id);
+        /// <returns>Blank Node ID</returns>
+        Guid GetGuid(string id);
     }
 }

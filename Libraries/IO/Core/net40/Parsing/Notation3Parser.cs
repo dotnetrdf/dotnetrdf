@@ -104,7 +104,7 @@ namespace VDS.RDF.Parsing
             {
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
 
-                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
+                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser, profile);
                 this.Parse(context);
 
                 input.Close();
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing
                 IToken next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF Token", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF Token", next);
                 }
 
                 do
@@ -388,7 +388,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.BLANKNODEWITHID:
-                    subj = context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
+                    subj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subjToken.Value.Substring(2)));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -503,7 +503,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        pred = context.BlankNodeGenerator.CreateBlankNode(predToken.Value.Substring(2));
+                        pred = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(predToken.Value.Substring(2)));
                         break;
 
                     case Token.COMMENT:
@@ -671,7 +671,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        obj = context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(objToken.Value.Substring(2)));
                         break;
 
                     case Token.COMMA:
@@ -892,7 +892,7 @@ namespace VDS.RDF.Parsing
                         obj = context.Handler.CreateBlankNode();
                         break;
                     case Token.BLANKNODEWITHID:
-                        obj = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(next.Value.Substring(2)));
                         break;
                     case Token.COMMENT:
                         //Discard and continue

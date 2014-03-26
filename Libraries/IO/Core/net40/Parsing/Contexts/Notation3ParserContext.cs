@@ -50,8 +50,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="tokeniser">Tokeniser to use</param>
-        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser)
-            : base(handler, tokeniser) { }
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, IParserProfile profile)
+            : base(handler, tokeniser, profile) { }
 
         /// <summary>
         /// Creates a new Notation 3 Parser Context with custom settings
@@ -59,8 +59,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
-        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler, tokeniser, queueMode) { }
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, IParserProfile profile)
+            : base(handler, tokeniser, queueMode, profile) { }
 
         /// <summary>
         /// Creates a new Notation 3 Parser Context with custom settings
@@ -69,8 +69,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : base(handler, tokeniser, traceParsing, traceTokeniser) { }
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : base(handler, tokeniser, traceParsing, traceTokeniser, profile) { }
 
         /// <summary>
         /// Creates a new Notation 3 Parser Context with custom settings
@@ -80,8 +80,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, profile) { }
 
         /// <summary>
         /// Gets/Sets whether Keywords Mode is in use

@@ -47,8 +47,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="syntax">Turtle Syntax</param>
-        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax)
-            : this(handler, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, false, false) { }
+        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, IParserProfile profile)
+            : this(handler, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, false, false, profile) { }
 
         /// <summary>
         /// Creates a new Turtle Parser Context with custom settings
@@ -57,8 +57,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="syntax">Turtle Syntax</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
-        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode)
-            : this(handler, tokeniser, syntax, queueMode, false, false) { }
+        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, IParserProfile profile)
+            : this(handler, tokeniser, syntax, queueMode, false, false, profile) { }
 
         /// <summary>
         /// Creates a new Turtle Parser Context with custom settings
@@ -68,8 +68,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="syntax">Turtle Syntax</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser) { }
+        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : this(handler, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, traceParsing, traceTokeniser, profile) { }
 
         /// <summary>
         /// Creates a new Turtle Parser Context with custom settings
@@ -80,8 +80,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
-        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser)
+        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IParserProfile profile)
+            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, profile)
         {
             this._syntax = syntax;
         }

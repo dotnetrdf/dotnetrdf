@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Nodes
 {
@@ -14,19 +11,31 @@ namespace VDS.RDF.Nodes
     public class RandomDerivedBlankNodeGenerator 
         : IBlankNodeGenerator
     {
-        private readonly IRdfHandler _handler;
+        private static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private readonly int _seed;
 
         /// <summary>
         /// Creates a new blank node generator
         /// </summary>
-        /// <param name="handler">Handler used to actually create node instances</param>
+        public RandomDerivedBlankNodeGenerator()
+            : this(DefaultSeed()) { }
+
+        /// <summary>
+        /// Creates a new blank node generator
+        /// </summary>
         /// <param name="seed">Seed</param>
-        public RandomDerivedBlankNodeGenerator(IRdfHandler handler, int seed)
+        public RandomDerivedBlankNodeGenerator(int seed)
         {
-            if (ReferenceEquals(handler, null)) throw new ArgumentNullException("handler");
-            this._handler = handler;
             this._seed = seed;
+        }
+
+        /// <summary>
+        /// Gets the default seeds which is the current epoch time
+        /// </summary>
+        /// <returns></returns>
+        private static int DefaultSeed()
+        {
+            return Convert.ToInt32((DateTime.UtcNow - _unixEpoch).TotalSeconds);
         }
 
         /// <summary>
@@ -34,9 +43,9 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="id">String ID</param>
         /// <returns>Blank Node</returns>
-        public INode CreateBlankNode(String id)
+        public Guid GetGuid(string id)
         {
-            return _handler.CreateBlankNode(this.MapToGuid(id));
+            return this.MapToGuid(id);
         }
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace VDS.RDF.Nodes
             int r = rnd.Next();
             short b = (short) (r >> 16);
             short c = (short) r;
-            // TODO May be worth using some bytes from the ID to avoid non-identical IDs with colliding hash codes creating identical GUIDs
+            // TODO May be worth using some bytes from the String ID to avoid non-identical String IDs with colliding hash codes creating identical GUIDs
             byte[] d = new byte[8];
             rnd.NextBytes(d);
             return new Guid(id.GetHashCode(), b, c, d);

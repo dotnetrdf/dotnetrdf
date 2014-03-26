@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         String subjValue = context.Input.Value.ToString();
-                        INode subjNode = subjValue.StartsWith("_:") ? context.BlankNodeGenerator.CreateBlankNode(subjValue.Substring(subjValue.IndexOf(':') + 1)) : context.Handler.CreateUriNode(UriFactory.Create(subjValue));
+                        INode subjNode = subjValue.StartsWith("_:") ? context.BlankNodeGenerator.GetGuid(subjValue.Substring(subjValue.IndexOf(':') + 1)) : context.Handler.CreateUriNode(UriFactory.Create(subjValue));
 
                         this.ParsePredicateObjectList(context, subjNode);
                     }
@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (nodeType.Equals("bnode"))
                     {
-                        obj = context.BlankNodeGenerator.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
+                        obj = context.BlankNodeGenerator.GetGuid(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
                     }
                     else if (nodeType.Equals("literal"))
                     {

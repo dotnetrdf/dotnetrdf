@@ -47,8 +47,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
-        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
-            : this(handler, document, false)
+        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, IParserProfile profile)
+            : this(handler, document, false, profile)
         {
         }
 
@@ -58,8 +58,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
-        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
-            : base(handler)
+        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing, IParserProfile profile)
+            : base(handler, profile)
         {
             IDs = new Dictionary<String, List<INode>>();
             this.Events = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
@@ -76,12 +76,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="stream">Stream</param>
-        public RdfXmlParserContext(IRdfHandler handler, Stream stream)
-            : base(handler)
+        public RdfXmlParserContext(IRdfHandler handler, Stream stream, IParserProfile profile)
+            : base(handler, profile)
         {
             IDs = new Dictionary<String, List<INode>>();
-            // TODO Provide a way to pass a Base URI to parsers
-            this.Events = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, null));
+            this.Events = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, profile.BaseUri));
         }
 
         /// <summary>
@@ -89,12 +88,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="input">Input</param>
-        public RdfXmlParserContext(IRdfHandler handler, TextReader input)
-            : base(handler)
+        public RdfXmlParserContext(IRdfHandler handler, TextReader input, IParserProfile profile)
+            : base(handler, profile)
         {
             IDs = new Dictionary<String, List<INode>>();
-            // TODO Provide a way to pass a Base URI to parsers
-            this.Events = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, null));
+            this.Events = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, profile.BaseUri));
         }
 
         /// <summary>

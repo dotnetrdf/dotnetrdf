@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing
                         break;
                 }
 
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser, profile);
                 this.Parse(context);
             }
             finally
@@ -216,7 +216,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODE:
                     return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
+                    return context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subjToken.Value.Substring(2)));
                 case Token.URI:
                     return TryParseUri(context, subjToken.Value);
                 case Token.LITERAL:
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODE:
                     return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
+                    return context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(objToken.Value.Substring(2)));
                 case Token.URI:
                     return TryParseUri(context, objToken.Value);
                 case Token.LITERALWITHDT:

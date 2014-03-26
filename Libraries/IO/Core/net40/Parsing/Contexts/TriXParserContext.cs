@@ -9,15 +9,15 @@ namespace VDS.RDF.Parsing.Contexts
     public class TriXParserContext
         : BaseParserContext
     {
-        public TriXParserContext(IRdfHandler handler) 
-            : base(handler, false) { }
+        public TriXParserContext(IRdfHandler handler, IParserProfile profile) 
+            : base(handler, false, profile) { }
     }
 
     public class TriXStreamingParserContext
         : TriXParserContext
     {
-        public TriXStreamingParserContext(IRdfHandler handler, XmlReader reader)
-            : base(handler)
+        public TriXStreamingParserContext(IRdfHandler handler, XmlReader reader, IParserProfile profile)
+            : base(handler, profile)
         {
             this.XmlReader = reader;
         }

@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
-                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this.Syntax), this.Syntax, this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser);
+                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this.Syntax), this.Syntax, this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser, profile);
                 this.Parse(context);
             }
             finally
@@ -335,7 +335,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.BLANKNODEWITHID:
-                    subj = context.BlankNodeGenerator.CreateBlankNode(subjToken.Value.Substring(2));
+                    subj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subjToken.Value.Substring(2)));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -524,7 +524,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        obj = context.BlankNodeGenerator.CreateBlankNode(objToken.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(objToken.Value.Substring(2)));
                         break;
 
                     case Token.COMMA:
@@ -685,7 +685,7 @@ namespace VDS.RDF.Parsing
                         obj = context.Handler.CreateBlankNode();
                         break;
                     case Token.BLANKNODEWITHID:
-                        obj = context.BlankNodeGenerator.CreateBlankNode(next.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(next.Value.Substring(2)));
                         break;
                     case Token.COMMENT:
                         //Discard and continue
