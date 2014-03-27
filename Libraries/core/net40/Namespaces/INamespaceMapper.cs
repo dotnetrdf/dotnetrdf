@@ -31,7 +31,8 @@ namespace VDS.RDF.Namespaces
     /// <summary>
     /// Interface for Namespace Maps which provide mappings between Namespace Prefixes and Namespace URIs
     /// </summary>
-    public interface INamespaceMapper : IDisposable
+    public interface INamespaceMapper 
+        : IDisposable
     {
         /// <summary>
         /// Adds a Namespace to the Namespace Map
@@ -45,6 +46,11 @@ namespace VDS.RDF.Namespaces
         /// Clears the Namespace Map
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Gets whether the map is empty
+        /// </summary>
+        bool IsEmpty { get; }
 
         /// <summary>
         /// Returns the Namespace URI associated with the given Prefix

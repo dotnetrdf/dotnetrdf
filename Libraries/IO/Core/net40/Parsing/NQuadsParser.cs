@@ -151,6 +151,7 @@ namespace VDS.RDF.Parsing
                         input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                         break;
                 }
+                profile = profile.EnsureParserProfile();
 
                 TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, AsNTriplesSyntax(this.Syntax)), this.TokenQueueMode, false, this.TraceTokeniser, profile);
                 this.Parse(context);
@@ -182,6 +183,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
+                ParserHelper.HandleInitialState(context);
 
                 //Expect a BOF token at start
                 IToken next = context.Tokens.Dequeue();

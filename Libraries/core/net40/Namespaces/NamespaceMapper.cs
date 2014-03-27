@@ -226,6 +226,14 @@ namespace VDS.RDF.Namespaces
         }
 
         /// <summary>
+        /// Gets whether the map is empty
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return this._prefixes.Count == 0 && this._uris.Count == 0; }
+        }
+
+        /// <summary>
         /// Clears the Namespace Map
         /// </summary>
         public void Clear()

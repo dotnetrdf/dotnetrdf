@@ -54,6 +54,8 @@ namespace VDS.RDF.Parsing
             try
             {
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+                profile = profile.EnsureParserProfile();
+
                 this.Parse(handler, input);
                 input.Close();
             }
@@ -74,6 +76,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
+                ParserHelper.HandleInitialState(context);
                 this.ParseGraphObject(context);
                 context.Handler.EndRdf(true);
             }

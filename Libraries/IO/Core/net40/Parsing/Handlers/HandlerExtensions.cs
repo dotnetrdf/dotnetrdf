@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Graphs;
+using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Handlers

@@ -290,5 +290,22 @@ namespace VDS.RDF.Parsing
         {
             throw new RdfParsingTerminatedException();
         }
+
+        /// <summary>
+        /// Handles the initial state of the parser context i.e. calls <see cref="IRdfHandler.HandleBaseUri"/> or <see cref="IRdfHandler.HandleNamespace"/> on the contexts handler based on the initial state of the context
+        /// </summary>
+        /// <param name="context">Context</param>
+        public static void HandleInitialState(IParserContext context)
+        {
+            if (context.BaseUri != null)
+            {
+                context.Handler.HandleBaseUri(context.BaseUri);
+            }
+            if (context.Namespaces.IsEmpty) return;
+            foreach (String prefix in context.Namespaces.Prefixes)
+            {
+                context.Handler.HandleNamespace(prefix, context.Namespaces.GetNamespaceUri(prefix));
+            }
+        }
     }
 }

@@ -122,6 +122,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+                profile = profile.EnsureParserProfile();
 
                 //Create the Parser Context and Invoke the Parser
                 TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser, profile);
@@ -140,6 +141,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
+                ParserHelper.HandleInitialState(context);
 
                 //Expect a BOF Token
                 IToken first = context.Tokens.Dequeue();

@@ -129,6 +129,7 @@ namespace VDS.RDF.Parsing
                         input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                         break;
                 }
+                profile = profile.EnsureParserProfile();
 
                 TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, this.Syntax), this.TokenQueueMode, this.TraceParsing, this.TraceTokeniser, profile);
                 this.Parse(context);
@@ -144,6 +145,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
+                ParserHelper.HandleInitialState(context);
 
                 //Initialise the Buffer
                 context.Tokens.InitialiseBuffer(10);

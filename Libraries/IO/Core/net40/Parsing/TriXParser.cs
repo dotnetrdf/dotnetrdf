@@ -77,6 +77,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
+                profile = profile.EnsureParserProfile();
 
                 XmlDocument doc = new XmlDocument();
                 doc.Load(input);
@@ -144,6 +145,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 context.Handler.StartRdf();
+                ParserHelper.HandleInitialState(context);
 
                 XmlElement graphsetEl = doc.DocumentElement;
                 if (!graphsetEl.Name.Equals("TriX"))

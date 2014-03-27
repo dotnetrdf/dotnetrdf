@@ -26,17 +26,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Namespaces
 {
     /// <summary>
     /// A Namespace Mapper which has an explicit notion of Nesting
     /// </summary>
-    public class NestedNamespaceMapper : INamespaceMapper
+    public class NestedNamespaceMapper 
+        : INamespaceMapper
     {
-        private Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
-        private Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();
+        private readonly Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
+        private readonly Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();
         private int _level = 0;
 
         /// <summary>
@@ -52,13 +52,12 @@ namespace VDS.RDF.Namespaces
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
         public NestedNamespaceMapper(bool empty)
         {
-            if (!empty)
-            {
-                //Add Standard Namespaces
-                this.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
-                this.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
-                this.AddNamespace("xsd", UriFactory.Create(NamespaceMapper.XMLSCHEMA));
-            }
+            if (empty) return;
+
+            //Add Standard Namespaces
+            this.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            this.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
+            this.AddNamespace("xsd", UriFactory.Create(NamespaceMapper.XMLSCHEMA));
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace VDS.RDF.Namespaces
         /// <param name="uri">Namespace URI</param>
         public void AddNamespace(string prefix, Uri uri)
         {
-            if (ReferenceEquals(uri, null)) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (ReferenceEquals(uri, null)) throw new ArgumentNullException("uri", "Cannot set a prefix to the null URI");
             if (!uri.IsAbsoluteUri) throw new RdfException("Namespace URIs cannot be relative URIs");
             NestedMapping mapping = new NestedMapping(prefix, uri, this._level);
             if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
@@ -105,6 +104,14 @@ namespace VDS.RDF.Namespaces
         }
 
         /// <summary>
+        /// Gets whether the map is empty
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return this._uris.Count == 0 && this._prefixes.Count == 0; }
+        }
+
+        /// <summary>
         /// Clears the Namespace Map
         /// </summary>
         public void Clear()
@@ -124,10 +131,7 @@ namespace VDS.RDF.Namespaces
             {
                 return this._uris[prefix].Last().Uri;
             }
-            else
-            {
-                throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
-            }
+            throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
         }
 
         /// <summary>
