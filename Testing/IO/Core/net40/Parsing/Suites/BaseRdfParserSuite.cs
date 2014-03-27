@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -43,7 +44,7 @@ namespace VDS.RDF.Parsing.Suites
         protected override IGraph TryParseTestInput(string file)
         {
             IGraph actual = new Graph();
-            this.Parser.Load(actual, file);
+            this.Parser.Load(new GraphHandler(actual), new StreamReader(file), new ParserProfile(BaseUri));
             return actual;
         }
 

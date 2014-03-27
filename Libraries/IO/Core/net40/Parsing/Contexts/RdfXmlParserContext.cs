@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;
