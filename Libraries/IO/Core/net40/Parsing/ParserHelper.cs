@@ -249,10 +249,34 @@ namespace VDS.RDF.Parsing
         /// Helper function which generates standardised Error Messages
         /// </summary>
         /// <param name="message">Error Message</param>
+        /// <param name="evt">Event causing the Error</param>
+        /// <param name="cause">Exception that caused this error</param>
+        /// <returns></returns>
+        public static RdfParseException Error(String message, IRdfXmlEvent evt, Exception cause)
+        {
+            return Error(message, String.Empty, evt, cause);
+        }
+
+        /// <summary>
+        /// Helper function which generates standardised Error Messages
+        /// </summary>
+        /// <param name="message">Error Message</param>
         /// <param name="production">The Production where the Error occurred</param>
         /// <param name="evt">Event causing the Error</param>
         /// <returns></returns>
         public static RdfParseException Error(String message, String production, IRdfXmlEvent evt)
+        {
+            return Error(message, production, evt, null);
+        }
+
+        /// <summary>
+        /// Helper function which generates standardised Error Messages
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="production">The Production where the Error occurred</param>
+        /// <param name="evt">Event causing the Error</param>
+        /// <returns></returns>
+        public static RdfParseException Error(String message, String production, IRdfXmlEvent evt, Exception cause)
         {
             StringBuilder output = new StringBuilder();
             if (evt.Position != null)
@@ -272,14 +296,7 @@ namespace VDS.RDF.Parsing
                 output.AppendLine(evt.SourceXml);
             }
 
-            if (evt.Position != null)
-            {
-                return new RdfParseException(output.ToString(), evt.Position);
-            }
-            else
-            {
-                return new RdfParseException(output.ToString());
-            }
+            return evt.Position != null ? new RdfParseException(output.ToString(), evt.Position, cause) : new RdfParseException(output.ToString(), cause);
         }
 
         /// <summary>

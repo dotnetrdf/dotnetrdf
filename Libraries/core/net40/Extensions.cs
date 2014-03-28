@@ -303,12 +303,12 @@ namespace VDS.RDF
         /// <param name="u">Uri to get Hash Code for</param>
         /// <returns></returns>
         /// <remarks>
-        /// The .Net <see cref="Uri">Uri</see> class Hash Code ignores the Fragment ID when computing the Hash Code which means that URIs with the same basic URI but different Fragment IDs have identical Hash Codes.  This is perfectly acceptable and sensible behaviour for normal URI usage since Fragment IDs are only relevant to the Client and not the Server.  <strong>But</strong> in the case of URIs in RDF the Fragment ID is significant and so we need in some circumstances to compute a Hash Code which includes this information.
+        /// The .Net <see cref="Uri">Uri</see> class Hash Code ignores the Fragment ID when computing the Hash Code which means that URIs with the same basic URI but different Fragment IDs have identical Hash Codes.  This is perfectly acceptable and sensible behaviour for normal URI usage since Fragment IDs are only relevant to the Client and not the Server.  <strong>But</strong> in the case of URIs in RDF the Fragment ID is significant and so we need in some circumstances to compute a Hash Code which includes this information.  However in the case on relative URIs we just use the normal hash code of the URI.
         /// </remarks>
         public static int GetEnhancedHashCode(this Uri u)
         {
-            if (u == null) throw new ArgumentNullException("Cannot calculate an Enhanced Hash Code for a null URI");
-            return u.AbsoluteUri.GetHashCode();
+            if (u == null) throw new ArgumentNullException("u", "Cannot calculate an Enhanced Hash Code for a null URI");
+            return u.IsAbsoluteUri ? u.AbsoluteUri.GetHashCode() : u.GetHashCode();
         }
 
         /// <summary>

@@ -1598,7 +1598,7 @@ namespace VDS.RDF.Parsing
             {
                 //Catch the error so we can wrap in in our own error function
                 //If it fails then we know we got an error caused by this Event
-                throw ParserHelper.Error(ex.Message, uriref);
+                throw ParserHelper.Error(ex.Message, uriref, ex);
             }
         }
 
