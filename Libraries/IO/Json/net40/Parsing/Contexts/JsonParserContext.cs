@@ -39,18 +39,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Creates a new JSON Parser Context
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="input">JSON Text Reader to read from</param>
-        public JsonParserContext(IGraph g, JsonTextReader input)
-            : this(new GraphHandler(g), input) { }
-
-        /// <summary>
-        /// Creates a new JSON Parser Context
-        /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">JSON Text Reader to read from</param>
-        public JsonParserContext(IRdfHandler handler, JsonTextReader input)
-            : base(handler)
+        /// <param name="profile">Parser profile</param>
+        public JsonParserContext(IRdfHandler handler, JsonTextReader input, IParserProfile profile)
+            : base(handler, profile)
         {
             this._input = input;
         }

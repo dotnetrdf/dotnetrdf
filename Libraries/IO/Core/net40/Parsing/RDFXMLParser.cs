@@ -265,6 +265,7 @@ namespace VDS.RDF.Parsing
                 if (setBaseUri && !ReferenceEquals(((RootEvent)first).BaseUri, null))
                 {
                     baseUri = UriFactory.ResolveUri(((RootEvent)first).BaseUri, null);
+                    CheckValidBase(baseUri, first);
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -275,6 +276,7 @@ namespace VDS.RDF.Parsing
                 if (setBaseUri && !ReferenceEquals(((ElementEvent)first).BaseUri, null))
                 {
                     baseUri = UriFactory.ResolveUri(((ElementEvent)first).BaseUri, null);
+                    CheckValidBase(baseUri, first);
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -1567,6 +1569,7 @@ namespace VDS.RDF.Parsing
             if (!ReferenceEquals(evt.BaseUri, null))
             {
                 Uri baseUri = UriFactory.ResolveUri(evt.BaseUri, context.BaseUri);
+                CheckValidBase(baseUri, evt);
                 context.BaseUri = baseUri;
                 if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
@@ -1892,6 +1895,13 @@ namespace VDS.RDF.Parsing
                 }
             }
             return true;
+        }
+
+        public static void CheckValidBase(Uri baseUri, IRdfXmlEvent evt)
+        {
+            if (baseUri == null) return;
+            if (!baseUri.IsAbsoluteUri) throw ParserHelper.Error("Relative Base URIs are not permitted", evt);
+            if (baseUri.Scheme.Equals("mailto")) throw ParserHelper.Error("mailto: is an invalid scheme for Base URIs", evt);
         }
 
         #endregion

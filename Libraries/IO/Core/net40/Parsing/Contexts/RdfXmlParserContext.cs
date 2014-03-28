@@ -46,6 +46,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
+        /// <param name="profile">Parser Profile</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, IParserProfile profile)
             : this(handler, document, false, profile)
         {
@@ -57,6 +58,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
+        /// <param name="profile">Parser Profile</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing, IParserProfile profile)
             : base(handler, profile)
         {
@@ -75,6 +77,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="stream">Stream</param>
+        /// <param name="profile">Parser Profile</param>
         public RdfXmlParserContext(IRdfHandler handler, Stream stream, IParserProfile profile)
             : base(handler, profile)
         {
@@ -87,6 +90,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="input">Input</param>
+        /// <param name="profile">Parser Profile</param>
         public RdfXmlParserContext(IRdfHandler handler, TextReader input, IParserProfile profile)
             : base(handler, profile)
         {
@@ -102,6 +106,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Mapping of in-use IDs
         /// </summary>
+// ReSharper disable InconsistentNaming
         public Dictionary<string, List<INode>> IDs { get; private set; }
+// ReSharper restore InconsistentNaming
     }
 }

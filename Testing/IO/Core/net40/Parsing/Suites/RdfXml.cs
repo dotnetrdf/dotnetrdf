@@ -31,6 +31,7 @@ using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
@@ -68,6 +69,13 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingRdfXmlIllegalBaseDom()
+        {
+            IGraph g = new Graph();
+            this.Parser.Load(new GraphHandler(g), new StreamReader("resources\\rdfxml\\xmlbase\\test014.rdf"), new ParserProfile(new Uri("mailto:illegal@base.com")));
         }
     }
 #endif
@@ -118,6 +126,13 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingRdfXmlIllegalBaseStreaming()
+        {
+            IGraph g = new Graph();
+            this.Parser.Load(new GraphHandler(g), new StreamReader("resources\\rdfxml\\xmlbase\\test014.rdf"), new ParserProfile(new Uri("mailto:illegal@base.com")));
         }
     }
 }

@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing
                 input.CheckEncoding(Encoding.UTF8, this.RaiseWarning);
                 profile = profile.EnsureParserProfile();
 
-                this.Parse(handler, input);
+                this.Parse(handler, input, profile);
                 input.Close();
             }
             finally
@@ -70,9 +70,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Stream to read from</param>
-        private void Parse(IRdfHandler handler, TextReader input)
+        /// <param name="profile">Parser profile</param>
+        private void Parse(IRdfHandler handler, TextReader input, IParserProfile profile)
         {
-            JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
+            JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input), profile);
             try
             {
                 context.Handler.StartRdf();
@@ -139,7 +140,7 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         String subjValue = context.Input.Value.ToString();
-                        INode subjNode = subjValue.StartsWith("_:") ? context.BlankNodeGenerator.GetGuid(subjValue.Substring(subjValue.IndexOf(':') + 1)) : context.Handler.CreateUriNode(UriFactory.Create(subjValue));
+                        INode subjNode = subjValue.StartsWith("_:") ? context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(subjValue.Substring(subjValue.IndexOf(':') + 1))) : context.Handler.CreateUriNode(UriFactory.Create(subjValue));
 
                         this.ParsePredicateObjectList(context, subjNode);
                     }
@@ -324,7 +325,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (nodeType.Equals("bnode"))
                     {
-                        obj = context.BlankNodeGenerator.GetGuid(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
+                        obj = context.Handler.CreateBlankNode(context.BlankNodeGenerator.GetGuid(nodeValue.Substring(nodeValue.IndexOf(':') + 1)));
                     }
                     else if (nodeType.Equals("literal"))
                     {
