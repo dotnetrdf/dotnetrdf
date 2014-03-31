@@ -30,11 +30,12 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="105" />
-  <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="105" />
-  <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.5-prerelease" />
+  <property name="dotnetrdf.version" value="105" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="105" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.5-prerelease" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.5.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -1188,11 +1189,34 @@
 
   <!-- Release Build Targets -->
 
+  <target name="validate-release" description="Validates that the release artifacts have the correct version set"
+	        depends="validate-release-libs,
+		   validate-release-utils" />
+
+  <target name="validate-release-libs" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Libraries/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
+  <target name="validate-release-utils" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Utilities/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
   <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
-          depends="build-release-libs,
+          depends="validate-release,
+                   build-release-libs,
                    build-release-utils" />
 
-  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-libs,build-libs">
     <copy todir="bin/stable/Libraries/" overwrite="true">
       <fileset basedir="bin/nightlies/Libraries">
         <include name="**/*" />
@@ -1200,7 +1224,7 @@
     </copy>
   </target>
 
-  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="build-utils">
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-utils,build-utils">
     <copy todir="bin/stable/Toolkit/" overwrite="true">
       <fileset basedir="bin/nightlies/Toolkit">
         <include name="**/*" />
