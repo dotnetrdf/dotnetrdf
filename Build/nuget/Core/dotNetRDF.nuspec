@@ -11,50 +11,48 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
-    <dependencies>
-      <!-- These dependencies apply to all builds -->
-      <group>
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-      </group>
-
-      <!-- These only apply to non-portable builds -->
+    <dependencies>       
       <group targetFramework="net35-client">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net35">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="[5.0.8]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
       </group>
       <group targetFramework="sl4-wp7">
-        <dependency id="Newtonsoft.Json" version="5.0.8" />
         <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="[5.0.8]" />
         <dependency id="HtmlAgilityPack" version="1.4.6" />
+      </group>
+      <group targetFramework="portable-win+net40+sl4+wp">
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="[5.0.8]" />
+      </group>
+      <group targetFramework="portable-windows8+net45">
+        <dependency id="VDS.Common" version="[1.2.0]" />
+        <dependency id="Newtonsoft.Json" version="[5.0.8]" />
       </group>
     </dependencies>
     <releaseNotes>
-     - Fix several bugs related to SPARQL evaluation
-     - Add support for RDF 1.1 NTriples and NQuads specifications
-     - Improved Timeout support across Storage API
-     - Enforce normalization to lower case on language tags
+     - Update Json.Net dependency to 6.0.1 where applicable
     </releaseNotes>
   </metadata>
 </package>
