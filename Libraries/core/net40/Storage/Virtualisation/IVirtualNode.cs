@@ -33,7 +33,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TNodeID">Node ID Type</typeparam>
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public interface IVirtualNode<TNodeID, TGraphID> 
-        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>
+        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>,
+        IVirtualIdComparable
     {
         /// <summary>
         /// Gets the Node ID
@@ -66,5 +67,19 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             get;
         }
+    }
+
+    /// <summary>
+    /// Interface for comparing nodes on their VirtualID property
+    /// </summary>
+    public interface IVirtualIdComparable
+    {
+        /// <summary>
+        /// Attempt to compare the VirtualID of this node with the VirtualID of the other node
+        /// </summary>
+        /// <param name="other">The other node to try to compare against</param>
+        /// <param name="comparisonResult">The result of the comparison if it could be performed</param>
+        /// <returns>True if a comparison could be performed, false otherwise.</returns>
+        bool TryCompareVirtualId(INode other, out int comparisonResult);
     }
 }

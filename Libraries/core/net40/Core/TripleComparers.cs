@@ -30,6 +30,116 @@ using System.Text;
 
 namespace VDS.RDF
 {
+
+    /// <summary>
+    /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons,
+    /// and it compares virtual nodes on their VirtualID where possible.
+    /// </summary>
+    public class FastVirtualNodeComparer
+        : IComparer<INode>, IEqualityComparer<INode>
+    {
+        /// <summary>
+        /// Compares two Nodes
+        /// </summary>
+        /// <param name="x">Node</param>
+        /// <param name="y">Node</param>
+        /// <returns></returns>
+        public int Compare(INode x, INode y)
+        {
+            if (ReferenceEquals(x, y)) return 0;
+
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else if (y == null)
+            {
+                return 1;
+            }
+
+
+            if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
+            {
+                //Use faster comparison for literals - standard comparison is valued based 
+                //and so gets slower as amount of nodes to compare gets larger
+
+                //Sort order for literals is as follows
+                //plain literals < language spec'd literals < typed literals
+                //Within a category ordering is lexical on modifier, then lexical on lexical value
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
+
+                if (a.DataType != null)
+                {
+                    if (b.DataType != null)
+                    {
+                        //Compare datatypes
+                        int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
+                        if (c == 0)
+                        {
+                            //Same datatype so compare lexical values
+                            return a.Value.CompareTo(b.Value);
+                        }
+                        //Different datatypes
+                        return c;
+                    }
+                    else
+                    {
+                        //y is untyped literal so x is greater than y
+                        return 1;
+                    }
+                }
+                else if (!a.Language.Equals(String.Empty))
+                {
+                    if (!b.Language.Equals(String.Empty))
+                    {
+                        //Compare language specifiers
+                        int c = a.Language.CompareTo(b.Language);
+                        if (c == 0)
+                        {
+                            //Same language so compare lexical values
+                            return a.Value.CompareTo(b.Value);
+                        }
+                        //Different language specifiers
+                        return c;
+                    }
+                    else
+                    {
+                        //y in plain literal so x is greater then y
+                        return 1;
+                    }
+                }
+                else
+                {
+                    //Plain literals so just compare lexical value
+                    return a.Value.CompareTo(b.Value);
+                }
+            }
+            else
+            {
+                //Non-literal nodes use their normal IComparable implementations
+                return x.CompareTo(y);
+            }
+        }
+
+        public bool Equals(INode x, INode y)
+        {
+            return Compare(x, y) == 0;
+        }
+
+        public int GetHashCode(INode obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons
     /// </summary>
