@@ -236,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Query\SampleWeightings.n3" />
+    <Content Include="lsparql.ttl" />
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -285,6 +286,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\diff_cases\case6_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-406.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\n3\anon-prop.n3">
@@ -3332,6 +3336,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\cogapp.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-406.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">
