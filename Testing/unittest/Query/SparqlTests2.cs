@@ -1300,6 +1300,8 @@ WHERE
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
 
+            TestTools.ShowResults(results);
+
             foreach (SparqlResult result in results)
             {
                 Assert.IsTrue(result.HasBoundValue("first"), "Row " + result + " failed to contain ?first binding");

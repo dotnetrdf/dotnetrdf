@@ -214,8 +214,8 @@ namespace VDS.RDF.Query.Algebra
     public class LeftJoin 
         : ILeftJoin
     {
-        private ISparqlAlgebra _lhs, _rhs;
-        private ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
+        private readonly ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
 
         /// <summary>
         /// Creates a new LeftJoin where there is no Filter over the join
@@ -235,9 +235,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         /// <param name="filter">Filter to decide which RHS solutions are valid</param>
         public LeftJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs, ISparqlFilter filter)
+            : this(lhs, rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
             this._filter = filter;
         }
 
@@ -248,8 +247,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
+            // Fix for CORE-406, where we have nested left joins do not linearize or we can get incorrect results
+            if (this._lhs is ILeftJoin)
+            {
+                context.InputMultiset = new IdentityMultiset();
+            }
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -263,7 +266,15 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 //Only execute the RHS if the LHS had some results
-                context.InputMultiset = lhsResult;
+                // Fix for CORE-406, where we have nested left joins do not linearize or we can get incorrect results
+                if (this._lhs is ILeftJoin)
+                {
+                    context.InputMultiset = new IdentityMultiset();
+                }
+                else
+                {
+                    context.InputMultiset = lhsResult;
+                }
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);
                 context.CheckTimeout();
 
