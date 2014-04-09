@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Storage.Virtualisation;
 
 namespace VDS.RDF
 {
@@ -64,6 +65,11 @@ namespace VDS.RDF
                 return 1;
             }
 
+            if (x is IVirtualIdComparable && y is IVirtualIdComparable)
+            {
+                int result;
+                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out result)) return result;
+            }
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
