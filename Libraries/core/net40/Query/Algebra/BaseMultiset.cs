@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
             foreach (String var in joinVars)
             {
                 joinedSet.AddVariable(var);
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 
