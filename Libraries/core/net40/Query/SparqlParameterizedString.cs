@@ -575,7 +575,7 @@ namespace VDS.RDF.Query
                 if (this._parameters[param] != null)
                 {
                     //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param])/*.Replace("$", "$$")*/ + "$2");
+                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]).Replace("$", "$$") + "$2");
                 }
             }
 
@@ -585,7 +585,7 @@ namespace VDS.RDF.Query
                 if (this._variables[var] != null)
                 {
                     //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]) + "$2");
+                    output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]).Replace("$", "$$") + "$2");
                 }
             }
 
