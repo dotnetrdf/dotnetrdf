@@ -34,6 +34,7 @@ using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
@@ -653,6 +654,26 @@ WHERE
 
             g.Assert(s, p, lit);
             TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlConstructEmptyWhereCore407()
+        {
+            const String queryStr = @"CONSTRUCT
+{
+<http://s> <http://p> <http://o> .
+}
+WHERE
+{}";
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+            InMemoryDataset dataset = new InMemoryDataset();
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+
+            IGraph g = processor.ProcessQuery(q) as IGraph;
+            Assert.IsNotNull(g);
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.AreEqual(1, g.Triples.Count, "Expected a single triple");
         }
     }
 }
