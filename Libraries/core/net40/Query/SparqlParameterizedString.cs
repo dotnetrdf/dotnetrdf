@@ -575,7 +575,7 @@ namespace VDS.RDF.Query
                 if (this._parameters[param] != null)
                 {
                     //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]) + "$2");
+                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param])/*.Replace("$", "$$")*/ + "$2");
                 }
             }
 
