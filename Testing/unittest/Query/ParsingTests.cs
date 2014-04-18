@@ -393,5 +393,35 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             Assert.AreEqual(String.Empty, lit.Language);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
         }
+        
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter1()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { @subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetUri("subject", uri);
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter2()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { $subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetVariable("subject", new UriNode(null, uri));
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
     }
 }
