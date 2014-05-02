@@ -7,6 +7,16 @@ Change Log
 
 Changed
 - Bug Fixes
+- Dependencies
+ - Updated Json.Net to 6.0.3
+ - Updated VDS.Common to 1.3.0
+- Builds
+ - Updated PCL build to profile 136
+
+ Removed
+ - Builds
+  - Removed SL4 and WP7 builds
+
 
 1.0.4
 -----
