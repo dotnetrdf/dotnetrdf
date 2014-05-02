@@ -5,40 +5,40 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfWebDeployComponentGroup">
-            <Component Id="cmpB55B5211127BED2B61B2EFF4F9680BE8" Directory="rdfWebDeployFolder" Guid="{B512CEBE-4BB3-4C5B-9229-E8E6BDCCD294}">
+            <Component Id="cmpB55B5211127BED2B61B2EFF4F9680BE8" Directory="rdfWebDeployFolder" Guid="{A6FC7268-1CEC-4576-ADC9-B1B3564EE0FC}">
                 <File Id="fil5E45003AD9DAA9244004F26F8927963F" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="cmp6192C8A731CC05FD93B96686A3AAF417" Directory="rdfWebDeployFolder" Guid="{FA828292-D87B-4A42-BAD7-94A2DDADA47D}">
+            <Component Id="cmp6192C8A731CC05FD93B96686A3AAF417" Directory="rdfWebDeployFolder" Guid="{D9F73AAB-45E2-4D82-86DB-B84DE5A6007F}">
                 <File Id="fil48516C1D2E52367E128CFF5BE9C4D0DA" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmp2E944E8CC0153DA4B7F9EC67F258DA54" Directory="rdfWebDeployFolder" Guid="{EE868AF7-1C01-4FE3-A2C1-F6BEC3347A3D}">
+            <Component Id="cmp2E944E8CC0153DA4B7F9EC67F258DA54" Directory="rdfWebDeployFolder" Guid="{619F84AE-897A-4DF5-864C-8E35560B8C53}">
                 <File Id="fil4A02127878A2E4C88106B74AA141D148" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="cmpA97B3533C1C316885E014907442E0E00" Directory="rdfWebDeployFolder" Guid="{C0BF2CB4-6F2D-49DE-9D00-C5E722B5966D}">
+            <Component Id="cmpA97B3533C1C316885E014907442E0E00" Directory="rdfWebDeployFolder" Guid="{67AB62E8-1DA4-4969-9CF0-39A802290E9F}">
                 <File Id="fil0CC7AB9E381E891B706A555C347353AF" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmpF59204A9560F22031E1F5ECCE28C380A" Directory="rdfWebDeployFolder" Guid="{EC15CA21-8794-4A68-B1FC-E442392B599C}">
+            <Component Id="cmpF59204A9560F22031E1F5ECCE28C380A" Directory="rdfWebDeployFolder" Guid="{B1ACA0C0-7484-45DB-A074-047C4BF34819}">
                 <File Id="filC5A1791CAF1E3F7FC2B9D0DBAE2AE668" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\ICSharpCode.SharpZipLib.dll" />
             </Component>
-            <Component Id="cmp87326435FB840CA04AAC7B10F2D52E9A" Directory="rdfWebDeployFolder" Guid="{CB941840-5ECD-408F-A469-55652066F7F0}">
+            <Component Id="cmp87326435FB840CA04AAC7B10F2D52E9A" Directory="rdfWebDeployFolder" Guid="{3483A5AB-0628-49F9-8B42-D0018EF8C757}">
                 <File Id="fil4AAC30F7D4A63A1377DFC1A2480020BC" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="cmp41DC017ABEE4661869A5E3365F815AF1" Directory="rdfWebDeployFolder" Guid="{EF3B9912-8EA0-4444-A9C8-DD0C50B9A94D}">
+            <Component Id="cmp41DC017ABEE4661869A5E3365F815AF1" Directory="rdfWebDeployFolder" Guid="{C87EAF8B-D29D-4B94-8A30-07C001F25A7F}">
                 <File Id="filB622F04AA642D6088BEB42DD89F0197C" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Microsoft.Web.Administration.dll" />
             </Component>
-            <Component Id="cmpC7715B7E77A02517E7E5EC59682ACA08" Directory="rdfWebDeployFolder" Guid="{863D8D22-CB22-46C5-A507-45F16ED30250}">
+            <Component Id="cmpC7715B7E77A02517E7E5EC59682ACA08" Directory="rdfWebDeployFolder" Guid="{5CB377DA-DA8C-4203-AF8C-86B0AC83F8F4}">
                 <File Id="filAB0EEF3FADBF4496ACBD741AE0AF0E05" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp46672DD2531CB1DF1322F0847CFE2FCB" Directory="rdfWebDeployFolder" Guid="{8D0F7F12-5D73-4FBA-A78D-6A006663ADFC}">
+            <Component Id="cmp46672DD2531CB1DF1322F0847CFE2FCB" Directory="rdfWebDeployFolder" Guid="{659F0D3C-4F94-46B0-B5DF-36F7CAA7C572}">
                 <File Id="fil785B6A204F1ED861193C17D39EEFB423" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\OpenLink.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="cmp6CDCA35D61DBDD5508FF73DD44DEE7C4" Directory="rdfWebDeployFolder" Guid="{6FD93C6C-93F9-4FFD-B6F7-97031A391F88}">
+            <Component Id="cmp6CDCA35D61DBDD5508FF73DD44DEE7C4" Directory="rdfWebDeployFolder" Guid="{BB399EFC-32E7-4D9F-8827-063086D8BEFE}">
                 <File Id="filBDF802B8ADD3629AB7FCD5C38E0D4608" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\rdfWebDeploy.exe" />
             </Component>
-            <Component Id="cmpD0D2D26F6FC64A8823B58453045905AB" Directory="rdfWebDeployFolder" Guid="{3D403083-1110-4B00-B3C6-50B9D824FA09}">
+            <Component Id="cmpD0D2D26F6FC64A8823B58453045905AB" Directory="rdfWebDeployFolder" Guid="{0D784D9E-25DE-43FC-8943-918DF9F7F193}">
                 <File Id="filD19D86BBAC0525899D27CE1214BD4078" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\rdfWebDeploy.exe.config" />
             </Component>
-            <Component Id="cmp2F887BF5F644EBFF12BF1E817EA11A42" Directory="rdfWebDeployFolder" Guid="{DDF65B73-BDBB-4A8A-9A31-DAE4A868BE13}">
+            <Component Id="cmp2F887BF5F644EBFF12BF1E817EA11A42" Directory="rdfWebDeployFolder" Guid="{3614423B-79FC-45F6-8B5E-E9C2F809FF2D}">
                 <File Id="filE0839571EA96BDFE605CB3B4727E76FF" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>
