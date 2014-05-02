@@ -38,9 +38,11 @@
       </group>
     </dependencies>
     <releaseNotes>
-     - Update Json.Net dependency to 6.0.3
-     - Update VDS.Common dependency to 1.3.0
-     - Update PCL build to profile 136 and removed SL4 and WP7 builds
+      - Update Json.Net dependency to 6.0.3
+      - Update VDS.Common dependency to 1.3.0
+      - Update PCL build to profile 136 and removed SL4 and WP7 builds
+      - Fix a bug in substituting parameter values containing $ signs into SparqlParameterizedString instances (CORE-408)
+      - Fix a corner case in evaluating CONSTRUCT queries with empty WHERE clause and concrete triples in template (CORE-407)
     </releaseNotes>
   </metadata>
 </package>
