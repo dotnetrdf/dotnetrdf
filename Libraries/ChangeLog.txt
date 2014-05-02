@@ -11,12 +11,12 @@ Changed
  - Fix a corner case in evaluating CONSTRUCT queries with empty WHERE clause and concrete triples in template (CORE-407)
 - Dependencies
  - Upgrade VDS.Common to 1.3.0 (CORE-405)
- - Upgrade Json.Net to 6.0.2 (CORE-405)
+ - Upgrade Json.Net to 6.0.3 (CORE-405)
 - Build
  - Upgrade PCL build to Profile 136 (CORE-405)
 
 Removed
-- Build
+- Builds
  - Remove SL4 and WP7 builds (CORE-405)
 
 1.0.4
