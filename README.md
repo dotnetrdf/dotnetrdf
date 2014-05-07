@@ -40,6 +40,10 @@ dotNetRDF is developed by the following people:
 
 For more information on our developers see the [Developers][30] page.  dotNetRDF also benefits from many community contributors who contribute in the form of bug reports, patches, suggestions and other feedback, please see the [Acknowledgements][31] file for a full list.
 
+## Reporting bugs and feature requests
+
+Bugs and feature requests are tracked at [http://dotnetrdf.org/tracker/Default.aspx][40] 
+
 ## Source Code
 
 The dotNetRDF Project uses Mercurial as our VCS.
@@ -89,6 +93,8 @@ was not consistent with the standard SVN layout prior to that.
 
 [30]: http://www.dotnetrdf.org/content.asp?pageID=Developers
 [31]: https://bitbucket.org/dotnetrdf/dotnetrdf/src/tip/Acknowledgments.txt?at=default
+
+[40]: http://dotnetrdf.org/tracker/Default.aspx
 
 [100]: https://bitbucket.org/dotnetrdf/dotnetrdf
 [101]: https://bitbucket.org/dotnetrdf/dotnetrdf/wiki
