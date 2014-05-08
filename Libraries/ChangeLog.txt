@@ -15,6 +15,8 @@ Changed
  - Upgrade Json.Net to 6.0.3 (CORE-405)
 - Build
  - Upgrade PCL build to Profile 136 (CORE-405)
+- Parsing
+ - Improve error message for excess triple pattern tokens (CORE-411)
 
 Removed
 - Builds
