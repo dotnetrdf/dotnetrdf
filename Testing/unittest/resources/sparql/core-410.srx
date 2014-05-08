@@ -18,5 +18,10 @@
         <literal q:qname="y" xml:lang="en">test</literal>
       </binding>
     </result>
+	<result>
+      <binding name="test">
+        <literal q:qname="y">test plain literal</literal>
+      </binding>
+    </result>
   </results>
 </sparql>

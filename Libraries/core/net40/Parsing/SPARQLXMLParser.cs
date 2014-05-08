@@ -397,29 +397,19 @@ namespace VDS.RDF.Parsing
                 }
                 else if (context.Input.AttributeCount >= 1)
                 {
-                    bool langSeen = false, datatypeSeen = false;
-                    INode lit = null;
+                    String lang = null;
+                    Uri dt = null;
                     while (context.Input.MoveToNextAttribute())
                     {
                         if (context.Input.Name.Equals("xml:lang"))
                         {
-                            if (datatypeSeen) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
-
                             //Language is specified
-                            String lang = context.Input.Value;
-                            context.Input.MoveToContent();
-                            lit = context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
-                            langSeen = true;
+                            lang = context.Input.Value;
                         }
                         else if (context.Input.Name.Equals("datatype"))
                         {
-                            if (langSeen) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
-
                             //Data Type is specified
-                            String dt = context.Input.Value;
-                            context.Input.MoveToContent();
-                            lit = context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), UriFactory.Create(dt));
-                            datatypeSeen = true;
+                            dt = UriFactory.Create(context.Input.Value);
                         }
                         else
                         {
@@ -427,11 +417,22 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    if (lit != null) return lit;
+                    if (lang != null && dt != null) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
 
-                    // Just a plain literal with lots of custom attributes
                     context.Input.MoveToContent();
-                    return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
+                    if (lang != null)
+                    {
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
+                    } 
+                    else if (dt != null)
+                    {
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), dt);
+                    }
+                    else
+                    {
+                        // Just a plain literal with lots of custom attributes
+                        return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
+                    }
                 }
                 else
                 {
