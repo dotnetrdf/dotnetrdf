@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class SubQuery : ITerminalOperator
     {
-        private SparqlQuery _subquery;
+        private readonly SparqlQuery _subquery;
 
         /// <summary>
         /// Creates a new subquery operator
@@ -118,6 +118,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._subquery.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._subquery.ToAlgebra().FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Converts the algebra back into a Query

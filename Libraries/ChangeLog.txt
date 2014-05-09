@@ -17,6 +17,8 @@ Changed
  - Upgrade PCL build to Profile 136 (CORE-405)
 - Parsing
  - Improve error message for excess triple pattern tokens (CORE-411)
+- Query
+ - Add FixedVariables and FloatingVariables properties to ISparqlAlgebra (CORE-406)
 
 Removed
 - Builds

@@ -78,6 +78,16 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public abstract IEnumerable<String> FloatingVariables { get; }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public abstract IEnumerable<String> FixedVariables { get; }
+
+        /// <summary>
         /// Compares a Triple Pattern to another Triple Pattern
         /// </summary>
         /// <param name="other">Other Triple Pattern</param>

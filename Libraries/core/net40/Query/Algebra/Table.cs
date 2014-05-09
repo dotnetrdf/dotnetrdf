@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Algebra
     public class Table
         : ITerminalOperator
     {
-        private BaseMultiset _table;
+        private readonly BaseMultiset _table;
 
         /// <summary>
         /// Creates a new fixed set of solutions
@@ -67,6 +67,30 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._table.Variables; 
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are any where there are rows with an unbound value
+                return this._table.Variables.Where(v => this._table.Sets.Any(s => s[v] == null));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are any where there are no rows with an unbound value
+                return this._table.Variables.Where(v => this._table.Sets.All(s => s[v] != null));
             }
         }
 

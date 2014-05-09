@@ -39,37 +39,28 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Path Start
         /// </summary>
-        PatternItem PathStart
-        {
-            get;
-        }
+        PatternItem PathStart { get; }
 
         /// <summary>
         /// Gets the Path End
         /// </summary>
-        PatternItem PathEnd
-        {
-            get;
-        }
+        PatternItem PathEnd { get; }
 
         /// <summary>
         /// Gets the Property Path
         /// </summary>
-        ISparqlPath Path
-        {
-            get;
-        }
+        ISparqlPath Path { get; }
     }
 
     /// <summary>
     /// Abstract Base Class for Path Operators
     /// </summary>
-    public abstract class BasePathOperator 
+    public abstract class BasePathOperator
         : IPathOperator
     {
-        private PatternItem _start, _end;
-        private ISparqlPath _path;
-        private HashSet<String> _vars = new HashSet<string>();
+        private readonly PatternItem _start, _end;
+        private readonly ISparqlPath _path;
+        private readonly HashSet<String> _vars = new HashSet<string>();
 
         /// <summary>
         /// Creates a new Path Operator
@@ -92,10 +83,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public PatternItem PathStart
         {
-            get 
-            { 
-                return this._start; 
-            }
+            get { return this._start; }
         }
 
         /// <summary>
@@ -103,10 +91,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public PatternItem PathEnd
         {
-            get 
-            { 
-                return this._end; 
-            }
+            get { return this._end; }
         }
 
         /// <summary>
@@ -114,10 +99,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlPath Path
         {
-            get 
-            { 
-                return this._path;
-            }
+            get { return this._path; }
         }
 
         /// <summary>
@@ -132,10 +114,23 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<string> Variables
         {
-            get 
-            {
-                return this._vars;
-            }
+            get { return this._vars; }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get { return this.Variables; }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get { return Enumerable.Empty<String>(); }
         }
 
         /// <summary>
@@ -175,7 +170,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="end">Path End</param>
         /// <param name="path">Property Path</param>
         public BaseArbitraryLengthPathOperator(PatternItem start, PatternItem end, ISparqlPath path)
-            : base(start, path, end) { }
+            : base(start, path, end) {}
 
         /// <summary>
         /// Determines the starting points for Path evaluation
@@ -188,7 +183,7 @@ namespace VDS.RDF.Query.Algebra
             HashSet<KeyValuePair<INode, INode>> nodes = new HashSet<KeyValuePair<INode, INode>>();
             if (this.Path is Property)
             {
-                INode predicate = ((Property)this.Path).Predicate;
+                INode predicate = ((Property) this.Path).Predicate;
                 foreach (Triple t in context.Data.GetTriplesWithPredicate(predicate))
                 {
                     if (reverse)
@@ -209,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
                 VariablePattern y = new VariablePattern("?y");
                 Bgp bgp = new Bgp(new PropertyPathPattern(x, this.Path, y));
 
-                BaseMultiset results = context.Evaluate(bgp);//bgp.Evaluate(context);
+                BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
 
                 if (!results.IsEmpty)
@@ -231,7 +226,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] { kvp.Key, kvp.Value })));
+            paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] {kvp.Key, kvp.Value})));
         }
 
         /// <summary>
@@ -246,7 +241,7 @@ namespace VDS.RDF.Query.Algebra
             if (this.Path is Property)
             {
                 HashSet<INode> nodes = new HashSet<INode>();
-                INode predicate = ((Property)this.Path).Predicate;
+                INode predicate = ((Property) this.Path).Predicate;
                 IEnumerable<Triple> ts = (reverse ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate));
                 foreach (Triple t in ts)
                 {
@@ -288,7 +283,7 @@ namespace VDS.RDF.Query.Algebra
                 context.InputMultiset = currInput;
 
                 Bgp bgp = new Bgp(new PropertyPathPattern(x, this.Path, y));
-                BaseMultiset results = context.Evaluate(bgp);//bgp.Evaluate(context);
+                BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
 
                 if (!results.IsEmpty)

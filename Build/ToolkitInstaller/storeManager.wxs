@@ -7,55 +7,55 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="storeManagerComponentGroup">
-            <Component Id="cmpC78032376596A8BCB79BB0BDD685EF57" Directory="storeManagerFolder" Guid="{0A83D08A-1B50-40DD-838A-A62707D01223}">
+            <Component Id="cmpC78032376596A8BCB79BB0BDD685EF57" Directory="storeManagerFolder" Guid="{DABF5BE4-FAF9-4235-B987-32039FC4DAE5}">
                 <File Id="filFF90531F530751193CE369F2A0AFA828" KeyPath="yes" Source="$(var.storeManagerFiles)\database_gear.ico" />
             </Component>
-            <Component Id="cmp6F4F2C6FB2A4F0C35B1C81C56725F909" Directory="storeManagerFolder" Guid="{8F65E52A-BE56-48D9-AAFF-CE47DFF87CBB}">
+            <Component Id="cmp6F4F2C6FB2A4F0C35B1C81C56725F909" Directory="storeManagerFolder" Guid="{DB28ABD2-2E27-4C0D-B3D6-607219ABCD32}">
                 <File Id="filF7E18884A8DA0880DB2833FFDA2D52F9" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="cmpE2CDB5F399E60BB04684A01AE54C13AA" Directory="storeManagerFolder" Guid="{165B6FDA-1376-4EA5-86E2-B9A8350C6AC3}">
+            <Component Id="cmpE2CDB5F399E60BB04684A01AE54C13AA" Directory="storeManagerFolder" Guid="{C0E6C541-D18A-45A3-B323-FB8553A84B28}">
                 <File Id="fil9C986A5D64FF4E5F2CCE8C85FDE8CAEF" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmp41BD85AF8681BE56332E100C9A7C4DD6" Directory="storeManagerFolder" Guid="{F9A334E0-F5FA-4072-AB8B-6ADFAE71521E}">
+            <Component Id="cmp41BD85AF8681BE56332E100C9A7C4DD6" Directory="storeManagerFolder" Guid="{0C4E49FC-2FBC-4A9D-AEA3-FEC99B76CE5E}">
                 <File Id="filF7C753630B1392B57071511667A2597A" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="cmp2E0C613B8E014C09A99340535D2F9459" Directory="storeManagerFolder" Guid="{C105B91C-5ECB-470C-87EA-10EAB70DC121}">
+            <Component Id="cmp2E0C613B8E014C09A99340535D2F9459" Directory="storeManagerFolder" Guid="{45E303B6-DA16-4ABE-9B41-4EA887D0BA54}">
                 <File Id="filEDAB750E090A2BDC93EC885009CD1846" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.WinForms.dll" />
             </Component>
-            <Component Id="cmp1156FA91A1CA04E7FED0726AE48A490D" Directory="storeManagerFolder" Guid="{F73EA058-87AE-4E2B-81A1-1B271B07F72C}">
+            <Component Id="cmp1156FA91A1CA04E7FED0726AE48A490D" Directory="storeManagerFolder" Guid="{D6321A51-516E-4CBE-B99A-F609CE1034B2}">
                 <File Id="filE29CD32B820101BF7D4E917954FB9325" KeyPath="yes" Source="$(var.storeManagerFiles)\file-manager.ico" />
             </Component>
-            <Component Id="cmp01F2F16489AB19A8C0592CCB1D851002" Directory="storeManagerFolder" Guid="{046C197D-1B97-4E46-9096-8D9AAB477EA5}">
+            <Component Id="cmp01F2F16489AB19A8C0592CCB1D851002" Directory="storeManagerFolder" Guid="{D9D793BD-B5DC-4306-9A04-334C367AB0B2}">
                 <File Id="fil480D61A356FE5CFE4F90AC7EF3D36DF8" KeyPath="yes" Source="$(var.storeManagerFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmpDF9036F9E427AAEBE5421EFB3385FA66" Directory="storeManagerFolder" Guid="{D78B4EDF-BFE4-4727-8682-701D702C70D9}">
+            <Component Id="cmpDF9036F9E427AAEBE5421EFB3385FA66" Directory="storeManagerFolder" Guid="{B067FCCC-5C99-4AAA-AFE5-632D8DB89523}">
                 <File Id="filB6F1AB4D1BE250A3ACB331185754A19F" KeyPath="yes" Source="$(var.storeManagerFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="cmpD05C98AD38CD8ADD188AA029CEFAC5F2" Directory="storeManagerFolder" Guid="{789DFD0B-5B07-4ACD-9B4C-6D429A262F71}">
+            <Component Id="cmpD05C98AD38CD8ADD188AA029CEFAC5F2" Directory="storeManagerFolder" Guid="{2BDA3959-A031-480A-B478-480C0D022785}">
                 <File Id="fil318F4147E5DAFCEC4A86FBFD0BC75347" KeyPath="yes" Source="$(var.storeManagerFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmpA6B26B6CD116ACA796FD2A20EAEC975D" Directory="storeManagerFolder" Guid="{C550D43D-6C28-4BA5-AA76-6AFA537EF84F}">
+            <Component Id="cmpA6B26B6CD116ACA796FD2A20EAEC975D" Directory="storeManagerFolder" Guid="{DA3E5E17-2A99-4813-ACD9-15250E8C12CE}">
                 <File Id="fil0788B47FE4E797A29699DA13E8DFFF89" KeyPath="yes" Source="$(var.storeManagerFiles)\OpenLink.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="cmpFF0A1F7B9BB380750FD572A1AEDCEF9C" Directory="storeManagerFolder" Guid="{EBDE16B8-FF9A-4882-AA7D-5AFC494BD9D0}">
+            <Component Id="cmpFF0A1F7B9BB380750FD572A1AEDCEF9C" Directory="storeManagerFolder" Guid="{6BD0C79B-5B20-4F7B-99F1-237EF2090C98}">
                 <File Id="fil81247EBC8A810664A6A5E22298E00FD2" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.Core.dll" />
             </Component>
-            <Component Id="cmp426E50B2B46E3F1BFFA0BE56324832D2" Directory="storeManagerFolder" Guid="{6100A39B-44CE-4838-89DA-CF0297A15D50}">
+            <Component Id="cmp426E50B2B46E3F1BFFA0BE56324832D2" Directory="storeManagerFolder" Guid="{FE7650E5-87D3-4F81-8FE5-9506D60AE2C6}">
                 <File Id="fil1A66030D17A1A3AFDF3B7D6F5231C604" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.exe" />
             </Component>
-            <Component Id="cmp6B0C3A59AA0B561CD21FF8A9F18AFF53" Directory="storeManagerFolder" Guid="{E39526A7-92CA-423A-88E1-D62FA6BCD9C3}">
+            <Component Id="cmp6B0C3A59AA0B561CD21FF8A9F18AFF53" Directory="storeManagerFolder" Guid="{E4447AE0-366D-4C06-8230-DF375E3798CF}">
                 <File Id="filAB965D35ED944E7CB7079B4FD26E2DD8" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.exe.config" />
             </Component>
-            <Component Id="cmpA43F15C15656E2032B06ADB2C823ED63" Directory="storeManagerFolder" Guid="{641E7DA5-D7C7-4E27-9B8F-72A2E38EFE1D}">
+            <Component Id="cmpA43F15C15656E2032B06ADB2C823ED63" Directory="storeManagerFolder" Guid="{7B83709F-C8C7-497D-95D1-957EBF05A670}">
                 <File Id="filC34E0B5E516A25CA000CA4DA9B9631E0" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.vshost.exe" />
             </Component>
-            <Component Id="cmpE4C246DE28B781A4CD39EAAB52FCEE5A" Directory="storeManagerFolder" Guid="{17C4FEE0-4984-4267-BA98-01ACA5E9A998}">
+            <Component Id="cmpE4C246DE28B781A4CD39EAAB52FCEE5A" Directory="storeManagerFolder" Guid="{21CD5125-C0D7-4B37-B3FC-3CF558DF7020}">
                 <File Id="fil079FDFB6EF415A5671A9E641B321AABB" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.vshost.exe.config" />
             </Component>
-            <Component Id="cmp07BE15AD5B5C9818E4D1075A6EFF85A4" Directory="storeManagerFolder" Guid="{BE271D1F-14B0-4D03-82F9-0C544E312550}">
+            <Component Id="cmp07BE15AD5B5C9818E4D1075A6EFF85A4" Directory="storeManagerFolder" Guid="{D13AB209-385E-44AA-B1C3-A21A757EC142}">
                 <File Id="filF8D39F2F2B56FA8C811A0C804EB26F76" KeyPath="yes" Source="$(var.storeManagerFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="cmp407C2242FBDD449148AADBA7726C009B" Directory="dirFAD4F38DCB12F9878CA10910414348E0" Guid="{504DFE12-FEAA-4B16-B3A7-A25016234B7A}">
+            <Component Id="cmp407C2242FBDD449148AADBA7726C009B" Directory="dirFAD4F38DCB12F9878CA10910414348E0" Guid="{81C3ED27-E337-40DA-839B-4E3DCA06D8E9}">
                 <File Id="fil394A1C4222FD075B77878F676F942194" KeyPath="yes" Source="$(var.storeManagerFiles)\plugins\Store Manager Plugins.txt" />
             </Component>
         </ComponentGroup>

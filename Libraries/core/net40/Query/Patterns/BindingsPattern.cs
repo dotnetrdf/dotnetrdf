@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class BindingsPattern
     {
-        private List<String> _vars = new List<string>();
-        private List<BindingTuple> _tuples = new List<BindingTuple>();
+        private readonly List<String> _vars = new List<string>();
+        private readonly List<BindingTuple> _tuples = new List<BindingTuple>();
 
         /// <summary>
         /// Creates a new Empty Bindings Pattern
@@ -63,6 +63,22 @@ namespace VDS.RDF.Query.Patterns
             {
                 return this._vars;
             }
+        }
+
+        /// <summary>
+        /// Get the enumeration of fixed variables i.e. those guaranteed to be bound
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get { return this._vars.Where(v => this._tuples.All(t => t.IsBound(v))); }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables i.e. those not guaranteed to be bound
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get { return this._vars.Where(v => this._tuples.Any(t => !t.IsBound(v))); }
         }
 
         /// <summary>
@@ -139,7 +155,7 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class BindingTuple
     {
-        private Dictionary<String, PatternItem> _values = new Dictionary<String, PatternItem>();
+        private readonly Dictionary<String, PatternItem> _values = new Dictionary<String, PatternItem>();
 
         /// <summary>
         /// Creates a new Binding Tuple
@@ -207,6 +223,17 @@ namespace VDS.RDF.Query.Patterns
             {
                 return this._values.Values.All(v => v != null);
             }
+        }
+
+        /// <summary>
+        /// Gets whether the given variable is bound for this tuple i.e. is not UNDEF
+        /// </summary>
+        /// <param name="var">Variable</param>
+        /// <returns>True if the variable exists in the tuple and is bound, false otherwise</returns>
+        public bool IsBound(String var)
+        {
+            PatternItem value;
+            return this._values.TryGetValue(var, out value) && value != null;
         }
 
         /// <summary>

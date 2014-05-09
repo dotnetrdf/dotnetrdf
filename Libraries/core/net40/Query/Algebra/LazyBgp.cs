@@ -47,9 +47,10 @@ namespace VDS.RDF.Query.Algebra
     /// A Lazy BGP can only contain concrete Triple Patterns and/or FILTERs and not any of other the specialised Triple Pattern classes
     /// </para>
     /// </remarks>
-    public class LazyBgp : IBgp
+    public class LazyBgp 
+        : IBgp
     {
-        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
         private int _requiredResults = -1;
 
         /// <summary>
@@ -133,6 +134,35 @@ namespace VDS.RDF.Query.Algebra
                 return (from tp in this._triplePatterns
                         from v in tp.Variables
                         select v).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<string> FixedVariables
+        {
+            get
+            {
+                return (from tp in this._triplePatterns
+                        from v in tp.FixedVariables
+                        select v).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<string> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
+                IEnumerable<String> floating = from tp in this._triplePatterns
+                                               from v in tp.FloatingVariables
+                                               select v;
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
 
@@ -631,7 +661,7 @@ namespace VDS.RDF.Query.Algebra
     /// </remarks>
     public class LazyUnion : IUnion
     {
-        private ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlAlgebra _lhs, _rhs;
         private int _requiredResults = -1;
 
         /// <summary>
@@ -698,6 +728,31 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those not fixed
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return this.Variables.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on both sides
+                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
             }
         }
 

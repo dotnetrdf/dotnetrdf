@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
     /// </remarks>
     public class AskBgp : IBgp
     {
-        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
         /// Creates a Streamed BGP containing a single Triple Pattern
@@ -112,6 +112,35 @@ namespace VDS.RDF.Query.Algebra
                 return (from tp in this._triplePatterns
                         from v in tp.Variables
                         select v).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<string> FixedVariables
+        {
+            get
+            {
+                return (from tp in this._triplePatterns
+                        from v in tp.FixedVariables
+                        select v).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<string> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
+                IEnumerable<String> floating = from tp in this._triplePatterns
+                                               from v in tp.FloatingVariables
+                                               select v;
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
 
@@ -435,6 +464,31 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those not fixed
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return this.Variables.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on both sides
+                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
             }
         }
 

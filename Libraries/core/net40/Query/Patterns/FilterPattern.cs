@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Filters;
@@ -42,7 +41,7 @@ namespace VDS.RDF.Query.Patterns
     public class FilterPattern 
         : BaseTriplePattern, IFilterPattern, IComparable<FilterPattern>
     {
-        private ISparqlFilter _filter;
+        private readonly ISparqlFilter _filter;
 
         /// <summary>
         /// Creates a new Filter Pattern with the given Filter
@@ -126,6 +125,19 @@ namespace VDS.RDF.Query.Patterns
                 return this._filter;
             }
         }
+
+        /// <summary>
+        /// Returns the empty enumerable as don't know which variables will be bound
+        /// </summary>
+        public override IEnumerable<string> FixedVariables
+        {
+            get { return Enumerable.Empty<String>(); }
+        }
+
+        /// <summary>
+        /// Returns the empty enumerable as don't know which variables will be bound
+        /// </summary>
+        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
         /// Gets whether the Pattern uses the Default Dataset
