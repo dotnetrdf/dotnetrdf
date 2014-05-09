@@ -55,6 +55,12 @@ namespace VDS.RDF.Query.Algebra
             List<String> actualFloating = algebra.FloatingVariables.ToList();
             actualFloating.Sort();
 
+            Console.WriteLine("Expected Fixed: " + String.Join(",", expectedFixed));
+            Console.WriteLine("Actual Fixed: " + String.Join(",", actualFixed));
+            Console.WriteLine("Expected Floating: " + String.Join(",", expectedFloating));
+            Console.WriteLine("Actual Floating: " + String.Join(",", actualFloating));
+            Console.WriteLine();
+
             // Check fixed and floating are correct
             Assert.AreEqual(expectedFixed, actualFixed);
             Assert.AreEqual(expectedFloating, actualFloating);
@@ -98,6 +104,35 @@ namespace VDS.RDF.Query.Algebra
             // In the left join only the LHS variables should be fixed, others should be floating
             ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
             this.TestClassification(leftJoin, new String[] { "s", "type"}, new String[] { "p", "o"});
+            leftJoin = new LeftJoin(rhs, lhs);
+            this.TestClassification(leftJoin, new String[] { "s", "p", "o" }, new String[] { "type" });
+
+            // In the union only fixed variables on both sides are fixed, others should be floating
+            IUnion union = new Union(lhs, rhs);
+            this.TestClassification(union, new String[] { "s"}, new String[] { "p", "o", "type"});
+        }
+
+        [Test]
+        public void SparqlAlgebraVariableClassification4()
+        {
+            TriplePattern tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._rdfType, this._factory.CreateVariableNode("type"));
+            IBgp lhs = new Bgp(tp);
+            tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._factory.CreateVariableNode("p"), this._factory.CreateVariableNode("o"));
+            IBgp rhs = new Bgp(tp);
+
+            // In the left join only the LHS variables should be fixed, others should be floating
+            ILeftJoin leftJoin = new LeftJoin(lhs, rhs);
+            this.TestClassification(leftJoin, new String[] { "s", "type" }, new String[] { "p", "o" });
+
+            tp = MakeTriplePattern(this._factory.CreateVariableNode("s"), this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label")), this._factory.CreateVariableNode("label"));
+            Bgp top = new Bgp(tp);
+
+            // Everything in the RHS not fixed on the LHS is floating
+            ILeftJoin parentJoin = new LeftJoin(top, leftJoin);
+            this.TestClassification(parentJoin, new String[] { "s", "label"}, new String[] { "p", "o", "type"});
+
+            parentJoin = new LeftJoin(leftJoin, top);
+            this.TestClassification(parentJoin, new String[] { "s", "type" }, new String[] { "p", "o", "label" });
         }
     }
 
