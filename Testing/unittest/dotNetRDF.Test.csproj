@@ -153,6 +153,7 @@
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
     <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\Algebra\PatternToAlgebraTests.cs" />
+    <Compile Include="Query\Algebra\VariableClassificationTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BindTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
