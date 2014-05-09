@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
@@ -263,8 +262,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            // Fix for CORE-406, where we have nested left joins do not linearize or we can get incorrect results
-            if (this._lhs is ILeftJoin)
+            // Need to be careful about whether we linearize (CORE-406)
+            if (!this.CanLinearizeLhs(context))
             {
                 context.InputMultiset = new IdentityMultiset();
             }
@@ -281,16 +280,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Only execute the RHS if the LHS had some results
-                // Fix for CORE-406, where we have nested left joins do not linearize or we can get incorrect results
-                if (this._lhs is ILeftJoin)
-                {
-                    context.InputMultiset = new IdentityMultiset();
-                }
-                else
-                {
-                    context.InputMultiset = lhsResult;
-                }
+                // Only execute the RHS if the LHS had some results
+                // Need to be careful about whether we linearize (CORE-406)
+                context.InputMultiset = CanFlowResultsToRhs(context) ? lhsResult : new IdentityMultiset();
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);
                 context.CheckTimeout();
 
@@ -300,6 +292,21 @@ namespace VDS.RDF.Query.Algebra
 
             context.InputMultiset = context.OutputMultiset;
             return context.OutputMultiset;
+        }
+
+        private bool CanLinearizeLhs(SparqlEvaluationContext context)
+        {
+            // Must be no floating variables already present in the results to be flowed
+            return this._lhs.FloatingVariables.All(v => !context.InputMultiset.ContainsVariable(v));
+        }
+
+        private bool CanFlowResultsToRhs(SparqlEvaluationContext context)
+        {
+            return false;
+            HashSet<String> lhsFixed = new HashSet<string>(this._lhs.FixedVariables);
+            HashSet<String> lhsFloating = new HashSet<string>(this._lhs.FloatingVariables);
+
+            return false;
         }
 
         /// <summary>
