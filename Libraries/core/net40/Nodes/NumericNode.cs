@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
@@ -47,7 +44,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Lexical Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <param name="numType">SPARQL Numeric Type</param>
-        public NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
+        protected NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
             : base(g, value, datatype) 
         {
             this._numType = numType;
@@ -99,9 +96,9 @@ namespace VDS.RDF.Nodes
                 case SparqlNumericType.Decimal:
                     return this.AsDecimal() != Decimal.Zero;
                 case SparqlNumericType.Float:
-                    return this.AsFloat() != 0.0f && this.AsFloat() != Single.NaN;
+                    return this.AsFloat() != 0.0f && !float.IsNaN(this.AsFloat());
                 case SparqlNumericType.Double:
-                    return this.AsDouble() != 0.0d && this.AsDouble() != Double.NaN;
+                    return this.AsDouble() != 0.0d && !double.IsNaN(this.AsDouble());
                 default:
                     return SparqlSpecsHelper.EffectiveBooleanValue(this);
             }
