@@ -37,9 +37,9 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class NegatedPropertySet : ISparqlAlgebra
     {
-        private List<INode> _properties = new List<INode>();
-        private PatternItem _start, _end;
-        private bool _inverse;
+        private readonly List<INode> _properties = new List<INode>();
+        private readonly PatternItem _start, _end;
+        private readonly bool _inverse;
 
         /// <summary>
         /// Creates a new Negated Property Set
@@ -108,8 +108,6 @@ namespace VDS.RDF.Query.Algebra
                 return this._inverse;
             }
         }
-
-        #region ISparqlAlgebra Members
 
         /// <summary>
         /// Evaluates the Negated Property Set
@@ -215,6 +213,22 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get { return this.Variables; }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get { return Enumerable.Empty<String>(); }
+        }
+
+        /// <summary>
         /// Transforms the Algebra back into a SPARQL QUery
         /// </summary>
         /// <returns></returns>
@@ -244,8 +258,6 @@ namespace VDS.RDF.Query.Algebra
             gp.AddTriplePattern(pp);
             return gp;
         }
-
-        #endregion
 
         /// <summary>
         /// Gets the String representation of the Algebra

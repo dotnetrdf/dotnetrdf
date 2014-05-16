@@ -1287,5 +1287,25 @@ WHERE
                 Assert.AreEqual(2, r.Count, "Expected 2 variable bindings per row.");
             }
         }
+
+        [Test]
+        public void SparqlNestedOptionalCore406()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources\core-406.ttl");
+
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-406.rq");
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+
+            foreach (SparqlResult result in results)
+            {
+                Assert.IsTrue(result.HasBoundValue("first"), "Row " + result + " failed to contain ?first binding");
+            }
+        }
     }
 }

@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Algebra
     public class PropertyFunction
         : IUnaryOperator
     {
-        private ISparqlPropertyFunction _function;
-        private ISparqlAlgebra _algebra;
+        private readonly ISparqlPropertyFunction _function;
+        private readonly ISparqlAlgebra _algebra;
 
         /// <summary>
         /// Creates a new Property function algebra
@@ -94,6 +94,24 @@ namespace VDS.RDF.Query.Algebra
                 return this._algebra.Variables.Concat(this._function.Variables).Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables includes those of the property function that aren't themselves fixed
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return this._algebra.FloatingVariables.Concat(this._function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._algebra.FixedVariables; } }
 
         /// <summary>
         /// Throws an error because property functions cannot be converted back to queries

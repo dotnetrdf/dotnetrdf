@@ -25,8 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.PropertyFunctions;
 
@@ -41,7 +39,7 @@ namespace VDS.RDF.Query.Algebra
     public class FullTextQuery
         : IUnaryOperator
     {
-        private IFullTextSearchProvider _provider;
+        private readonly IFullTextSearchProvider _provider;
 
         /// <summary>
         /// Creates a new Full Text Query algebra
@@ -94,6 +92,16 @@ namespace VDS.RDF.Query.Algebra
                 return this.InnerAlgebra.Variables;
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this.InnerAlgebra.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this.InnerAlgebra.FixedVariables; } } 
 
         /// <summary>
         /// Converts the algebra into a query

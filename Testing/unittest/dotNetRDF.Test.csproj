@@ -153,6 +153,7 @@
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
     <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\Algebra\PatternToAlgebraTests.cs" />
+    <Compile Include="Query\Algebra\VariableClassificationTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BindTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
@@ -238,6 +239,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Query\SampleWeightings.n3" />
+    <Content Include="lsparql.ttl" />
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -287,6 +289,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\diff_cases\case6_a.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-406.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\n3\anon-prop.n3">
@@ -3334,6 +3339,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\cogapp.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-406.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\sparql\core-410.srx">
