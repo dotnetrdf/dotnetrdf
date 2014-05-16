@@ -7,6 +7,7 @@ Change Log
 
 Changed
 - Bug Fixes
+ - Fix a bug with Left Join producing incorrect results due to join linearization optimizations in some cases (CORE-406)
  - Fix a bug in substituting parameter values containing $ signs into SparqlParameterizedString instances (CORE-408)
  - Fix a corner case in evaluating CONSTRUCT queries with empty WHERE clause and concrete triples in template (CORE-407)
  - Fix overly strict SPARQL Results XML parsing (CORE-410)
@@ -18,7 +19,8 @@ Changed
 - Parsing
  - Improve error message for excess triple pattern tokens (CORE-411)
 - Query
- - Add FixedVariables and FloatingVariables properties to ISparqlAlgebra (CORE-406)
+ - Add FixedVariables and FloatingVariables properties to ISparqlAlgebra and related classes (CORE-406)
+ - Improve logic for when Left Joins are linearized (CORE-406)
 
 Removed
 - Builds

@@ -302,11 +302,19 @@ namespace VDS.RDF.Query.Algebra
 
         private bool CanFlowResultsToRhs(SparqlEvaluationContext context)
         {
-            return false;
+            // Can't have any conflicting variables
             HashSet<String> lhsFixed = new HashSet<string>(this._lhs.FixedVariables);
             HashSet<String> lhsFloating = new HashSet<string>(this._lhs.FloatingVariables);
+            HashSet<String> rhsFloating = new HashSet<string>(this._rhs.FloatingVariables);
+            HashSet<String> rhsFixed = new HashSet<string>(this._rhs.FixedVariables);
 
-            return false;
+            // RHS Floating can't be floating/fixed on LHS
+            if (rhsFloating.Any(v => lhsFloating.Contains(v) || lhsFixed.Contains(v))) return false;
+            // RHS Fixed can't be floating on LHS
+            if (rhsFixed.Any(v => lhsFloating.Contains(v))) return false;
+
+            // Otherwise OK
+            return true;
         }
 
         /// <summary>
