@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
                         if (this._graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             //Include graph variable if not yet bound
-                            INode currGraph = (currGraphUri == null) ? null : new UriNode(null, currGraphUri);
+                            INode currGraph = new UriNode(null, currGraphUri);
                             Set s = new Set();
                             s.Add(this._graphSpecifier.Value.Substring(1), currGraph);
                             finalResult.Add(s);
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
                         if (this._graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             String gvar = this._graphSpecifier.Value.Substring(1);
-                            INode currGraph = (currGraphUri == null) ? null : new UriNode(null, currGraphUri);
+                            INode currGraph = new UriNode(null, currGraphUri);
                             foreach (int id in result.SetIDs.ToList())
                             {
                                 ISet s = result[id];

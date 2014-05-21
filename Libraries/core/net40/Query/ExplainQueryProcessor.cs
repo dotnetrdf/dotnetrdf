@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using VDS.Common.References;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
@@ -51,14 +52,17 @@ namespace VDS.RDF.Query
         /// Specifies Explanations are output to Debug
         /// </summary>
         OutputToDebug = 1,
+
         /// <summary>
         /// Specifies Explanations are output to Trace
         /// </summary>
         OutputToTrace = 2,
+
         /// <summary>
         /// Specifies Explanations are output to Console Standard Output
         /// </summary>
         OutputToConsoleStdOut = 4,
+
         /// <summary>
         /// Specifies Explanations are output to Console Standard Error
         /// </summary>
@@ -68,6 +72,7 @@ namespace VDS.RDF.Query
         /// Specifies Explanations are output to Debug and Console Standard Output
         /// </summary>
         OutputDefault = OutputToDebug | OutputToConsoleStdOut,
+
         /// <summary>
         /// Specifies Explanations are output to all
         /// </summary>
@@ -77,22 +82,27 @@ namespace VDS.RDF.Query
         /// Show the Thread ID of the Thread evaluating the query (useful in multi-threaded environments)
         /// </summary>
         ShowThreadID = 16,
+
         /// <summary>
         /// Show the Depth of the Algebra Operator
         /// </summary>
         ShowDepth = 32,
+
         /// <summary>
         /// Show the Type of the Algebra Operator
         /// </summary>
         ShowOperator = 64,
+
         /// <summary>
         /// Show the Action being performed (makes it clear whether the explanation marks the start/end of an operation)
         /// </summary>
         ShowAction = 128,
+
         /// <summary>
         /// Shows Timings for the Query
         /// </summary>
         ShowTimings = 256,
+
         /// <summary>
         /// Show Intermediate Result Counts at each stage of evaluation
         /// </summary>
@@ -102,10 +112,12 @@ namespace VDS.RDF.Query
         /// Shows Basic Information (Depth, Operator and Action)
         /// </summary>
         ShowBasic = ShowDepth | ShowOperator | ShowAction,
+
         /// <summary>
         /// Shows Default Information (Thread ID, Depth, Operator and Action)
         /// </summary>
         ShowDefault = ShowThreadID | ShowDepth | ShowOperator | ShowAction,
+
         /// <summary>
         /// Shows All Information
         /// </summary>
@@ -118,6 +130,7 @@ namespace VDS.RDF.Query
         /// This lets you see how many joins, cross products, filters, assignments etc must be applied in each BGP
         /// </remarks>
         AnalyseBgps = 1024,
+
         /// <summary>
         /// Shows an analysis of Joins prior to evaluating them
         /// </summary>
@@ -127,27 +140,38 @@ namespace VDS.RDF.Query
         AnalyseJoins = 2048,
 
         /// <summary>
+        /// Shows an analysis of Named Graphs used by a Graph clause prior to evaluating them
+        /// </summary>
+        /// <remarks>
+        /// This lets you see how many graphs a given Graph clause will operate over.  As the Graph clause in SPARQL is defined as the union of evaluating the inner operator over each named graph in the dataset graph clauses applied to datasets with many named graphs can be expensive.
+        /// </remarks>
+        AnalyseNamedGraphs = 4096,
+
+        /// <summary>
         /// Sets whether Evaluation should be simulated (means timings will not be accurate but allows you to explain queries without needing actual data to evaluate them against)
         /// </summary>
-        Simulate = 4096,
+        Simulate = 8092,
 
         /// <summary>
         /// Shows all analysis information
         /// </summary>
-        AnalyseAll = AnalyseBgps | AnalyseJoins,
+        AnalyseAll = AnalyseBgps | AnalyseJoins | AnalyseNamedGraphs,
 
         /// <summary>
         /// Basic Explanation Level (Console Standard Output and Basic Information)
         /// </summary>
         Basic = OutputToConsoleStdOut | ShowBasic,
+
         /// <summary>
         /// Default Explanation Level (Default Outputs and Default Information)
         /// </summary>
         Default = OutputDefault | ShowDefault,
+
         /// <summary>
         /// Detailed Explanation Level (Default Outputs and All Information)
         /// </summary>
         Detailed = OutputDefault | ShowAll,
+
         /// <summary>
         /// Full Explanation Level (All Outputs, All Information and All Analysis)
         /// </summary>
@@ -157,14 +181,17 @@ namespace VDS.RDF.Query
         /// Basic Explanation Level with Query Evaluation simulated
         /// </summary>
         BasicSimulation = Basic | Simulate,
+
         /// <summary>
         /// Default Explanation Level with Query Evaluation simulated
         /// </summary>
         DefaultSimulation = Default | Simulate,
+
         /// <summary>
         /// Detailed Explanation Level with Query Evaluation simulated
         /// </summary>
         DetailedSimulation = Detailed | Simulate,
+
         /// <summary>
         /// Full Explanation Level with Query Evaluation simulated
         /// </summary>
@@ -177,10 +204,10 @@ namespace VDS.RDF.Query
     public class ExplainQueryProcessor
         : LeviathanQueryProcessor
     {
-        private ThreadIsolatedValue<int> _depthCounter;
-        private ThreadIsolatedReference<Stack<DateTime>> _startTimes;
+        private readonly ThreadIsolatedValue<int> _depthCounter;
+        private readonly ThreadIsolatedReference<Stack<DateTime>> _startTimes;
         private ExplanationLevel _level = ExplanationLevel.Default;
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new Explain Query Processor that will use the Default Explanation Level
@@ -209,7 +236,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="store">Triple Store</param>
         public ExplainQueryProcessor(IInMemoryQueryableStore store)
-            : this(new InMemoryDataset(store)) { }
+            : this(new InMemoryDataset(store)) {}
 
         /// <summary>
         /// Creates a new Explain Query Processor with the desired Explanation Level
@@ -217,21 +244,15 @@ namespace VDS.RDF.Query
         /// <param name="store">Triple Store</param>
         /// <param name="level">Explanation Level</param>
         public ExplainQueryProcessor(IInMemoryQueryableStore store, ExplanationLevel level)
-            : this(new InMemoryDataset(store), level) { }
+            : this(new InMemoryDataset(store), level) {}
 
         /// <summary>
         /// Gets/Sets the Explanation Level
         /// </summary>
         public ExplanationLevel ExplanationLevel
         {
-            get 
-            {
-                return this._level;
-            }
-            set 
-            {
-                this._level = value;
-            }
+            get { return this._level; }
+            set { this._level = value; }
         }
 
         /// <summary>
@@ -248,15 +269,20 @@ namespace VDS.RDF.Query
         /// Prints Analysis
         /// </summary>
         /// <param name="algebra">Algebra</param>
-        private void PrintAnalysis(ISparqlAlgebra algebra)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        private void PrintAnalysis(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (algebra is IBgp)
             {
-                this.PrintBgpAnalysis((IBgp)algebra);
+                this.PrintBgpAnalysis((IBgp) algebra);
             }
             else if (algebra is IAbstractJoin)
             {
-                this.PrintJoinAnalysis((IAbstractJoin)algebra);
+                this.PrintJoinAnalysis((IAbstractJoin) algebra);
+            }
+            else if (algebra is Algebra.Graph)
+            {
+                this.PrintGraphAnalysis((Algebra.Graph) algebra, context);
             }
         }
 
@@ -351,7 +377,7 @@ namespace VDS.RDF.Query
             {
                 vars.Append(" ?" + var + ",");
             }
-            vars.Remove(vars.Length-1, 1);
+            vars.Remove(vars.Length - 1, 1);
             vars.Append(" }");
 
             if (join is IMinus)
@@ -370,11 +396,88 @@ namespace VDS.RDF.Query
                 if (joinVars.Count == 0)
                 {
                     this.PrintExplanations("Cross Product");
-                } 
-                else 
+                }
+                else
                 {
                     this.PrintExplanations("Join on " + vars.ToString());
                 }
+            }
+        }
+
+        private void PrintGraphAnalysis(Algebra.Graph graph, SparqlEvaluationContext context)
+        {
+            if (!this.HasFlag(ExplanationLevel.AnalyseNamedGraphs)) return;
+
+            switch (graph.GraphSpecifier.TokenType)
+            {
+                case Token.QNAME:
+                case Token.URI:
+                    // Only a single active graph
+                    Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                    this.PrintExplanations("Graph clause accesses single named graph " + activeGraphUri.AbsoluteUri);
+                    break;
+                case Token.VARIABLE:
+                    // Potentially many active graphs
+                    List<String> activeGraphs = new List<string>();
+                    String gvar = graph.GraphSpecifier.Value.Substring(1);
+
+                    //Watch out for the case in which the Graph Variable is not bound for all Sets in which case
+                    //we still need to operate over all Graphs
+                    if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
+                    {
+                        //If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
+                        List<Uri> graphUris = new List<Uri>();
+                        foreach (ISet s in context.InputMultiset.Sets)
+                        {
+                            INode temp = s[gvar];
+                            if (temp == null) continue;
+                            if (temp.NodeType != NodeType.Uri) continue;
+                            activeGraphs.Add(temp.ToString());
+                            graphUris.Add(((IUriNode) temp).Uri);
+                        }
+                    }
+                    else
+                    {
+                        // Worth explaining that the graph variable is partially bound
+                        if (context.InputMultiset.ContainsVariable(gvar))
+                        {
+                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " to specify named graphs, this variable is only partially bound at this point in the query so can't be use to restrict list of named graphs to access");
+                        }
+
+                        //Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
+                        if (context.Query != null && context.Query.NamedGraphs.Any())
+                        {
+                            //Query specifies one/more named Graphs
+                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
+                            activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
+                        }
+                        else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
+                        {
+                            //Gives null since the query dataset does not include any named graphs
+                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which will match no graphs because the queries dataset description does not include any named graphs i.e. there where FROM clauses but no FROM NAMED clauses");
+                            return;
+                        }
+                        else
+                        {
+                            //Query is over entire dataset/default Graph since no named Graphs are explicitly specified
+                            this.PrintExplanations("Graph clause uses variable ?" + gvar + " which accesses all named graphs provided by the dataset");
+                            activeGraphs.AddRange(context.Data.GraphUris.Select(u => u.ToSafeString()));
+                        }
+                    }
+
+                    //Remove all duplicates from Active Graphs to avoid duplicate results
+                    activeGraphs = activeGraphs.Distinct().ToList();
+                    activeGraphs.RemoveAll(x => x == null);
+                    this.PrintExplanations("Graph clause will access the following " + activeGraphs.Count + " graphs:");
+                    foreach (String uri in activeGraphs)
+                    {
+                        this.PrintExplanations(uri);
+                    }
+
+                    break;
+
+                default:
+                    throw new RdfQueryException("Cannot use a '" + graph.GraphSpecifier.GetType() + "' Token to specify the Graph for a GRAPH clause");
             }
         }
 
@@ -490,13 +593,13 @@ namespace VDS.RDF.Query
             this.ExplainEvaluationStart(algebra, context);
 
             //Print analysis (if enabled)
-            this.PrintAnalysis(algebra);
+            this.PrintAnalysis(algebra, context);
 
             //Start Timing (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowTimings)) this._startTimes.Value.Push(DateTime.Now);
 
             //Do the actual Evaluation
-            BaseMultiset results;// = evaluator(algebra, context);
+            BaseMultiset results; // = evaluator(algebra, context);
             if (this.HasFlag(ExplanationLevel.Simulate))
             {
                 results = (algebra is ITerminalOperator) ? new SingletonMultiset(algebra.Variables) : evaluator(algebra, context);
