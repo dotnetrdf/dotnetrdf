@@ -1324,18 +1324,25 @@ WHERE
 
             //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Console.WriteLine("Starting query...");
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-
-            if (q.QueryExecutionTime != null)
+            TimeSpan total = new TimeSpan();
+            for (int i = 0; i < 10; i++)
             {
-                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
-                Assert.IsTrue(q.QueryExecutionTime.Value < new TimeSpan(0,0, 0, 0, 400));
-            }
-            TestTools.ShowResults(results);
+                Console.WriteLine("Starting query run " + i + " of " + 10);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
 
-            Assert.AreEqual(14, results.Count);
+                if (q.QueryExecutionTime != null)
+                {
+                    Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                    total = total + q.QueryExecutionTime.Value;
+                }
+                //TestTools.ShowResults(results);
+
+                Assert.AreEqual(14, results.Count);
+            }
+
+            Console.WriteLine("Total ExecutionT Time: " + total);
+            Assert.IsTrue(total < new TimeSpan(0, 0, 1));
         }
     }
 }
