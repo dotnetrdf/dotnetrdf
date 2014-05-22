@@ -288,7 +288,7 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else if (this.Syntax == NTriplesSyntax.Rdf11 && next == ' ')
                 {
-                    throw new RdfParseException("Spaces are not valid in URIs");
+                    throw Error("Spaces are not valid in URIs");
                 }
                 else
                 {
