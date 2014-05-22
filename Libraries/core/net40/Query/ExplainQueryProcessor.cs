@@ -496,21 +496,30 @@ namespace VDS.RDF.Query
         /// <param name="output">String to output</param>
         private void PrintExplanations(String output)
         {
+            String indent = new string(' ', this._depthCounter.Value * 2);
             if (this.HasFlag(ExplanationLevel.OutputToConsoleStdErr))
             {
+                Console.Error.Write(indent);
                 Console.Error.WriteLine(output);
             }
             if (this.HasFlag(ExplanationLevel.OutputToConsoleStdOut))
             {
+                Console.Write(indent);
                 Console.WriteLine(output);
             }
             if (this.HasFlag(ExplanationLevel.OutputToDebug))
             {
+#if !PORTABLE
+                System.Diagnostics.Debug.Write(indent);
                 System.Diagnostics.Debug.WriteLine(output);
+#else
+                System.Diagnostics.Debug.WriteLine(indent + output);
+#endif
             }
 #if !SILVERLIGHT
             if (this.HasFlag(ExplanationLevel.OutputToTrace))
             {
+                System.Diagnostics.Trace.Write(indent);
                 System.Diagnostics.Trace.WriteLine(output);
             }
 #endif
