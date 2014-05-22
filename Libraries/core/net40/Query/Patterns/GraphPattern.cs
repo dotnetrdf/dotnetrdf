@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Patterns
         private bool _isService = false;
         private bool _isSilent = false;
         private IToken _graphSpecifier = null;
-        private List<GraphPattern> _graphPatterns = new List<GraphPattern>();
-        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
-        private List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
-        private List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
+        private readonly List<GraphPattern> _graphPatterns = new List<GraphPattern>();
+        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        private readonly List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
+        private readonly List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
         private ISparqlFilter _filter;
         private BindingsPattern _data;
         private bool _break = false, _broken = false;

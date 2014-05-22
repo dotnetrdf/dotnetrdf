@@ -112,43 +112,35 @@ namespace VDS.RDF.Query.Patterns
                 //We have fewer variables so we go before the other pattern
                 return -1;
             }
-            else if (this._vars.Count > other.Variables.Count)
+            if (this._vars.Count > other.Variables.Count)
             {
                 //We have more variables so we go after the other pattern
                 return 1;
             }
-            else
-            {
-                if (this._vars.Count > 0)
-                {
-                    for (int i = 0; i < this._vars.Count; i++)
-                    {
-                        int c = this._vars[i].CompareTo(other.Variables[i]);
-                        if (c < 0)
-                        {
-                            //Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
-                            return -1;
-                        }
-                        else if (c > 0)
-                        {
-                            //Other variables occur alphabetically sooner than ours so we go after
-                            return 1;
-                        }
-                        //Otherwise we continue checking
-                    }
+            //Neither pattern has any variables so we consider these to be equivalent
+            //Order of these patterns has no effect
+            if (this._vars.Count <= 0) return 0;
 
-                    //If we reach this point then we contain the same variables
-                    //Now we order based on our Index Types
-                    TriplePatternTypeComparer sorter = new TriplePatternTypeComparer();
-                    return sorter.Compare(this.PatternType, other.PatternType);
-                }
-                else
+            for (int i = 0; i < this._vars.Count; i++)
+            {
+                int c = String.Compare(this._vars[i], other.Variables[i], StringComparison.Ordinal);
+                if (c < 0)
                 {
-                    //Neither pattern has any variables so we consider these to be equivalent
-                    //Order of these patterns has no effect
-                    return 0;
+                    //Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
+                    return -1;
                 }
+                if (c > 0)
+                {
+                    //Other variables occur alphabetically sooner than ours so we go after
+                    return 1;
+                }
+                //Otherwise we continue checking
             }
+
+            //If we reach this point then we contain the same variables
+            //Now we order based on our Index Types
+            TriplePatternTypeComparer sorter = new TriplePatternTypeComparer();
+            return sorter.Compare(this.PatternType, other.PatternType);
         }
 
         /// <summary>

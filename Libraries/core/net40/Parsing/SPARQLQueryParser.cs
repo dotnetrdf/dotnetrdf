@@ -3418,10 +3418,9 @@ namespace VDS.RDF.Parsing
 
             //Now collect Tokens until we hit the closing Right Bracket
             int openBrackets = 1;
-            IToken next;
             do
             {
-                next = context.Tokens.Peek();
+                IToken next = context.Tokens.Peek();
 
                 if (next.TokenType == Token.LEFTCURLYBRACKET)
                 {
@@ -3453,7 +3452,9 @@ namespace VDS.RDF.Parsing
                 if (var.IsResultVariable) context.Query.AddVariable("?" + var.Name, false);
             }
             SubQueryPattern subqueryPattern = new SubQueryPattern(subquery);
-            p.AddTriplePattern(subqueryPattern);
+            GraphPattern p2 = new GraphPattern();
+            p2.AddTriplePattern(subqueryPattern);
+            p.AddGraphPattern(p2);
         }
 
         private void TryParseServiceClause(SparqlQueryParserContext context, GraphPattern p)

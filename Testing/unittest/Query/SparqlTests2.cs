@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -36,6 +37,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -1306,6 +1308,34 @@ WHERE
             {
                 Assert.IsTrue(result.HasBoundValue("first"), "Row " + result + " failed to contain ?first binding");
             }
+        }
+
+        [Test]
+        public void SparqlSubQueryGraphInteractionCore416()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-416.trig");
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            SparqlFormatter formatter = new SparqlFormatter();
+            Console.WriteLine(formatter.Format(q));
+
+            ISparqlDataset dataset = AsDataset(store);
+
+            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Console.WriteLine("Starting query...");
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            if (q.QueryExecutionTime != null)
+            {
+                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                Assert.IsTrue(q.QueryExecutionTime.Value < new TimeSpan(0,0, 0, 0, 400));
+            }
+            TestTools.ShowResults(results);
+
+            Assert.AreEqual(14, results.Count);
         }
     }
 }
