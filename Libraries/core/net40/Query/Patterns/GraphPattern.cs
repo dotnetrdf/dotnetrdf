@@ -860,7 +860,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (this.IsGraph)
                 {
-                    bgp = new Algebra.Graph(bgp, this.GraphSpecifier);
+                    bgp = Algebra.Graph.ApplyGraph(bgp, this.GraphSpecifier);
                 }
                 else if (this.IsService)
                 {
@@ -904,7 +904,8 @@ namespace VDS.RDF.Query.Patterns
                 if (gp.IsGraph)
                 {
                     //A GRAPH clause means a Join of the current pattern to a Graph clause
-                    complex = Join.CreateJoin(complex, new Algebra.Graph(gp.ToAlgebra(), gp.GraphSpecifier));
+                    ISparqlAlgebra gpAlgebra = gp.ToAlgebra();
+                    complex = Join.CreateJoin(complex, Algebra.Graph.ApplyGraph(gpAlgebra, gp.GraphSpecifier));
                 }
                 else if (gp.IsOptional)
                 {

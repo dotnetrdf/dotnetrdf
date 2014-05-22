@@ -1322,7 +1322,7 @@ WHERE
 
             ISparqlDataset dataset = AsDataset(store);
 
-            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll);
+            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             Console.WriteLine("Starting query...");
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
