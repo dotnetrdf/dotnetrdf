@@ -214,10 +214,14 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="dataset">Dataset</param>
         public ExplainQueryProcessor(ISparqlDataset dataset)
+            : this(new ExplainDataset(dataset)) { }
+
+        private ExplainQueryProcessor(ExplainDataset dataset)
             : base(dataset)
         {
             this._depthCounter = new ThreadIsolatedValue<int>(() => 0);
             this._startTimes = new ThreadIsolatedReference<Stack<DateTime>>(() => new Stack<DateTime>());
+            dataset.Processor = this;
         }
 
         /// <summary>
@@ -260,7 +264,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="flag">Flag</param>
         /// <returns></returns>
-        private bool HasFlag(ExplanationLevel flag)
+        internal bool HasFlag(ExplanationLevel flag)
         {
             return ((this._level & flag) == flag);
         }
@@ -485,7 +489,7 @@ namespace VDS.RDF.Query
         /// Prints Expalantions
         /// </summary>
         /// <param name="output">StringBuilder to output to</param>
-        private void PrintExplanations(StringBuilder output)
+        internal void PrintExplanations(StringBuilder output)
         {
             this.PrintExplanations(output.ToString());
         }
@@ -494,9 +498,9 @@ namespace VDS.RDF.Query
         /// Prints Explanations
         /// </summary>
         /// <param name="output">String to output</param>
-        private void PrintExplanations(String output)
+        internal void PrintExplanations(String output)
         {
-            String indent = new string(' ', this._depthCounter.Value * 2);
+            String indent = new string(' ', Math.Max(this._depthCounter.Value-1, 1) * 2);
             if (this.HasFlag(ExplanationLevel.OutputToConsoleStdErr))
             {
                 Console.Error.Write(indent);
@@ -937,6 +941,45 @@ namespace VDS.RDF.Query
         public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<ZeroOrMorePath>(path, context, base.ProcessZeroOrMorePath);
+        }
+    }
+
+    class ExplainDataset 
+        : WrapperDataset
+    {
+        public ExplainDataset(ISparqlDataset dataset) 
+            : base(dataset) {}
+
+        public ExplainQueryProcessor Processor { get; set; }
+
+        public override void SetActiveGraph(Uri graphUri)
+        {
+            if (this.Processor != null)
+            {
+                if (this.Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                {
+                    this.Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+                }
+            }
+            base.SetActiveGraph(graphUri);
+        }
+
+        public override void SetActiveGraph(IEnumerable<Uri> graphUris)
+        {
+            IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
+            if (this.Processor != null)
+            {
+                if (this.Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                {
+                    this.Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
+                    foreach (Uri graphUri in gs)
+                    {
+                        this.Processor.PrintExplanations(graphUri.ToSafeString());
+                        
+                    }
+                }
+            }
+            base.SetActiveGraph(gs);
         }
     }
 }

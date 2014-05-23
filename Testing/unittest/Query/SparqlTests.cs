@@ -124,11 +124,11 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlParameterizedStringShoulNotDecodeEncodedCharactersInUri()
+        public void SparqlParameterizedStringShouldNotDecodeEncodedCharactersInUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some%40encoded%2furi"));
-            Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
+            Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded%2furi>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
         [Test]

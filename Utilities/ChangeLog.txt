@@ -5,7 +5,7 @@ A Toolkit of command line utilities and GUI tools for working with RDF data
 
 Version 1.0.5
 
-dotNetRDF Project 2009-13
+dotNetRDF Project 2009-14
 dotnetrdf-develop@lists.sf.net
 
 Change Log
@@ -22,11 +22,12 @@ rdfConvert
 
 rdfEditor (Not available under Mono)
 - Relax strictness of SPARQL XML Results Parser (CORE-410)
+- Fix lack of position information for some errors from NTriples parser
 
 rdfOptStats
    
 rdfQuery
-- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411)
+- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411, CORE-416)
 
 rdfServer
 
@@ -37,7 +38,7 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411)
+- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411, CORE-416)
 
 StoreManager
 - Fix a bug with exporting data to some formats resulting in incorrect/missing data (TOOLS-409)

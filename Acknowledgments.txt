@@ -1,4 +1,4 @@
-Acknowledgements
+﻿Acknowledgements
 ================
 
 Dependencies
@@ -103,3 +103,7 @@ improvements in the code:
  - Tony Lootens
  - Austin Barton
  - Eugen F
+ - Dimitrii Rassokhin
+ - Сергей Попов
+ - Sergei Popov
+ - Mark D Wood

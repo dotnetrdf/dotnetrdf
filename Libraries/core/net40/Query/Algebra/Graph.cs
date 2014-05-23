@@ -344,5 +344,18 @@ namespace VDS.RDF.Query.Algebra
         {
             return new Graph(optimiser.Optimise(this._pattern), this._graphSpecifier);
         }
+
+        public static ISparqlAlgebra ApplyGraph(ISparqlAlgebra algebra, IToken graphSpecifier)
+        {
+            if (!(algebra is Graph)) return new Graph(algebra, graphSpecifier);
+
+            Graph other = (Graph) algebra;
+            if (other.GraphSpecifier.TokenType == graphSpecifier.TokenType && other.GraphSpecifier.Value.Equals(graphSpecifier.Value))
+            {
+                // We already have the appropriate graph specifier applied to us so reapplying it is unecessary
+                return algebra;
+            }
+            return new Graph(algebra, graphSpecifier);
+        }
     }
 }

@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Patterns
         private bool _isService = false;
         private bool _isSilent = false;
         private IToken _graphSpecifier = null;
-        private List<GraphPattern> _graphPatterns = new List<GraphPattern>();
-        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
-        private List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
-        private List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
+        private readonly List<GraphPattern> _graphPatterns = new List<GraphPattern>();
+        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        private readonly List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
+        private readonly List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
         private ISparqlFilter _filter;
         private BindingsPattern _data;
         private bool _break = false, _broken = false;
@@ -860,7 +860,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (this.IsGraph)
                 {
-                    bgp = new Algebra.Graph(bgp, this.GraphSpecifier);
+                    bgp = Algebra.Graph.ApplyGraph(bgp, this.GraphSpecifier);
                 }
                 else if (this.IsService)
                 {
@@ -904,7 +904,8 @@ namespace VDS.RDF.Query.Patterns
                 if (gp.IsGraph)
                 {
                     //A GRAPH clause means a Join of the current pattern to a Graph clause
-                    complex = Join.CreateJoin(complex, new Algebra.Graph(gp.ToAlgebra(), gp.GraphSpecifier));
+                    ISparqlAlgebra gpAlgebra = gp.ToAlgebra();
+                    complex = Join.CreateJoin(complex, Algebra.Graph.ApplyGraph(gpAlgebra, gp.GraphSpecifier));
                 }
                 else if (gp.IsOptional)
                 {
@@ -953,6 +954,10 @@ namespace VDS.RDF.Query.Patterns
                     complex = new Extend(complex, p.AssignExpression, p.VariableName);
                 }
             }
+            if (this.IsGraph)
+            {
+                complex = Algebra.Graph.ApplyGraph(complex, this.GraphSpecifier);
+            }
             if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
             {
                 if (this._isOptional && !(this._isExists || this._isNotExists))
@@ -980,6 +985,7 @@ namespace VDS.RDF.Query.Patterns
                 //If no FILTER just return the transform
                 return complex;
             }
+
         }
 
         #endregion
