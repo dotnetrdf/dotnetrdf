@@ -24,12 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
@@ -39,15 +36,15 @@ namespace VDS.RDF.Query
     [TestFixture]
     public class WeightedOptimiserTests
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
         [Test]
         public void SparqlOptimiserQueryWeightedSimple()
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                const string query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s ?p ?o .
@@ -80,7 +77,7 @@ SELECT * WHERE
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                const string query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s rdfs:label ?label .
@@ -113,7 +110,7 @@ SELECT * WHERE
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                const string query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s a ?type .
@@ -146,7 +143,7 @@ SELECT * WHERE
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                const string query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s a rdfs:Class .
@@ -176,80 +173,11 @@ SELECT * WHERE
         }
 
         [Test]
-        public void SparqlOptimiserQueryWeightedSimple5()
-        {
-            try
-            {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE
-{
-  ?s rdfs:label 'example' .
-  ?s a rdfs:Class .
-}";
-
-                Graph weightings = new Graph();
-#if PORTABLE
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Portable.Test");
-#else
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
-#endif
-                SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
-
-                SparqlQuery q = this._parser.ParseFromString(query);
-
-                Console.WriteLine(this._formatter.Format(q));
-
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Literal, "Second Triple Pattern should have object 'example'");
-            }
-            finally
-            {
-                SparqlOptimiser.ResetOptimisers();
-            }
-        }
-
-        [Test]
-        public void SparqlOptimiserQueryWeightedSimple6()
-        {
-            try
-            {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE
-{
-  ?s rdfs:label 'example' .
-  ?s a rdfs:Class .
-  ?s rdfs:subClassOf rdfs:Class .
-}";
-
-                Graph weightings = new Graph();
-#if PORTABLE
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Portable.Test");
-#else
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
-#endif
-                SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
-
-                SparqlQuery q = this._parser.ParseFromString(query);
-
-                Console.WriteLine(this._formatter.Format(q));
-
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[2]).Object).Node.NodeType == NodeType.Literal, "Third Triple Pattern should have object 'example'");
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
-                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
-
-            }
-            finally
-            {
-                SparqlOptimiser.ResetOptimisers();
-            }
-        }
-
-        [Test]
         public void SparqlOptimiserQueryWeightedUnknowns()
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                const string query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s rdfs:comment 'Predicates are weighted less than subjects' .
