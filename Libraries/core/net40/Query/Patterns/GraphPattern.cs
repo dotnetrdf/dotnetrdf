@@ -954,6 +954,10 @@ namespace VDS.RDF.Query.Patterns
                     complex = new Extend(complex, p.AssignExpression, p.VariableName);
                 }
             }
+            if (this.IsGraph)
+            {
+                complex = Algebra.Graph.ApplyGraph(complex, this.GraphSpecifier);
+            }
             if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
             {
                 if (this._isOptional && !(this._isExists || this._isNotExists))
@@ -981,6 +985,7 @@ namespace VDS.RDF.Query.Patterns
                 //If no FILTER just return the transform
                 return complex;
             }
+
         }
 
         #endregion
