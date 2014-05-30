@@ -157,12 +157,12 @@ namespace VDS.RDF.Parsing
                         context.Input.Read();
                         if (context.Input.TokenType != JsonToken.EndObject)
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Result Set Object was expected");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, end of the JSON Result Set Object was expected");
                         }
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Result Set Object was expected");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, start of the JSON Result Set Object was expected");
                     }
                 }
                 else
@@ -368,7 +368,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (propName.Equals("boolean"))
                     {
-                        this.ParseBoolean(context);
+                        ParseBoolean(context);
                     }
                     else
                     {
@@ -443,28 +443,20 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
                         }
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the 'bindings' property for the Results Object");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the 'bindings' property for the Results Object");
                     }
 
-                    //Expect the End of the Results Object
-                    context.Input.Read();
-                    if (context.Input.TokenType != JsonToken.EndObject)
-                    {
-                        // CORE-419 - May possibly additional elements not specified by the specification
-                        // In the interests of compatibility we silently ignore these
-
-
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the end of the Results Object");
-                    }
+                    // Skip to the End of the Results Object
+                    this.SkipToEndOfObject(context, true);
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of the Results Object");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of the Results Object");
                 }
             }
             else
@@ -575,7 +567,7 @@ namespace VDS.RDF.Parsing
 
                         //Check that we get a Property Value as a String
                         context.Input.Read();
-                        if (!this.IsValidValue(context))
+                        if (!IsValidValue(context))
                         {
                             throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
                         }
@@ -701,7 +693,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Parser method which parses the 'boolean' property of the Result Set
         /// </summary>
-        private void ParseBoolean(SparqlJsonParserContext context)
+        private static void ParseBoolean(SparqlJsonParserContext context)
         {
             //Expect a Boolean
             if (context.Input.Read())
@@ -727,7 +719,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Context</param>
         /// <returns></returns>
-        private bool IsValidValue(SparqlJsonParserContext context)
+        private static bool IsValidValue(SparqlJsonParserContext context)
         {
             switch (context.Input.TokenType)
             {
@@ -736,6 +728,123 @@ namespace VDS.RDF.Parsing
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        /// <summary>
+        /// Skips to the end of the current object
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="issueWarning">True if a warning should be issued</param>
+        private void SkipToEndOfObject(SparqlJsonParserContext context, bool issueWarning)
+        {
+            if (issueWarning)
+            {
+                this.RaiseWarning("Found extra JSON property " + context.Input.Value + " which will be ignored and discarded");
+            }
+
+            int depth = 1;
+            while (depth > 1)
+            {
+                // Try to read next token
+                if (!context.Input.Read()) throw Error(context, "Unexpected EOF while trying to skip to end of JSON object");
+
+                // Decide how to skip based on next token
+                switch (context.Input.TokenType)
+                {
+                    case JsonToken.Boolean:
+                    case JsonToken.Comment:
+                    case JsonToken.Bytes:
+                    case JsonToken.Date:
+                    case JsonToken.Float:
+                    case JsonToken.Integer:
+                    case JsonToken.Null:
+                    case JsonToken.PropertyName:
+                    case JsonToken.Raw:
+                    case JsonToken.String:
+                        // Ignore and continue
+                        continue;
+
+                    case JsonToken.StartArray:
+                        // Need to separately skip the array
+                        this.SkipToEndOfArray(context, false);
+                        break;
+
+                    case JsonToken.EndArray:
+                        // Illegal syntax
+                        throw Error(context, "Illegal end of array while trying to skip to end of JSON object");
+
+                    case JsonToken.StartObject:
+                        // Increment depth to avoid recursion
+                        depth++;
+                        break;
+
+                    case JsonToken.EndObject:
+                        // Decrement depth and exit if we've reached end of object
+                        depth--;
+                        if (depth == 0) return;
+                        break;
+
+                    default:
+                        // Anything else is illegal syntax
+                        throw Error(context, "Illegal JSON token of type " + context.Input.TokenType + " with value " + context.Input.Value + " while trying to skip to end of JSON object");
+                }
+            }
+        }
+
+        private void SkipToEndOfArray(SparqlJsonParserContext context, bool issueWarning)
+        {
+            if (issueWarning)
+            {
+                this.RaiseWarning("Found extra JSON array which will be ignored and discarded");
+            }
+
+            int depth = 1;
+            while (depth > 1)
+            {
+                // Try to read next token
+                if (!context.Input.Read()) throw Error(context, "Unexpected EOF while trying to skip to end of JSON array");
+
+                // Decide how to skip based on next token
+                switch (context.Input.TokenType)
+                {
+                    case JsonToken.Boolean:
+                    case JsonToken.Comment:
+                    case JsonToken.Bytes:
+                    case JsonToken.Date:
+                    case JsonToken.Float:
+                    case JsonToken.Integer:
+                    case JsonToken.Null:
+                    case JsonToken.PropertyName:
+                    case JsonToken.Raw:
+                    case JsonToken.String:
+                        // Ignore and continue
+                        continue;
+
+                    case JsonToken.StartArray:
+                        // Increment depth to avoid recursion
+                        depth++;
+                        break;
+
+                    case JsonToken.EndArray:
+                        // Decrement depth and exit if we've reached end of object
+                        depth--;
+                        if (depth == 0) return;
+                        break;
+
+                    case JsonToken.StartObject:
+                        // Need to separately skip the object
+                        this.SkipToEndOfObject(context, false);
+                        break;
+
+                    case JsonToken.EndObject:
+                        // Illegal syntax
+                        throw Error(context, "Illegal end of object while trying to skip to end of JSON array");
+
+                    default:
+                        // Anything else is illegal syntax
+                        throw Error(context, "Illegal JSON token of type " + context.Input.TokenType + " with value " + context.Input.Value + " while trying to skip to end of JSON array");
+                }
             }
         }
 
@@ -765,7 +874,6 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         /// <param name="message">Warning Message</param>
-// ReSharper disable once UnusedMember.Local
         private void RaiseWarning(String message)
         {
             SparqlWarning d = this.Warning;
