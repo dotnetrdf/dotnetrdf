@@ -23,10 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -67,11 +63,8 @@ namespace VDS.RDF.Parsing
                 //If we get here we've read a Token which isn't a comment
                 return true;
             }
-            else
-            {
-                //Couldn't read to start with as already at end of stream
-                return false;
-            }
+            //Couldn't read to start with as already at end of stream
+            return false;
         }
     }
 }

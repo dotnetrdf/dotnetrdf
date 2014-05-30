@@ -1,5 +1,4 @@
-﻿
-Change Log
+﻿Change Log
 ==========
 
 1.0.6
@@ -7,6 +6,7 @@ Change Log
 
 Changed
 - Bug Fixes
+ - Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
 
 1.0.5
 -----
