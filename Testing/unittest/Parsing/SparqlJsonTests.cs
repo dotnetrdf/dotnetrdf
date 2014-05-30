@@ -24,12 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
@@ -37,12 +33,12 @@ namespace VDS.RDF.Parsing
     [TestFixture]
     public class SparqlJsonTests
     {
-        private SparqlJsonParser _parser = new SparqlJsonParser();
+        private readonly SparqlJsonParser _parser = new SparqlJsonParser();
 
         [Test]
         public void ParsingSparqlJsonDates1()
         {
-            String data = @"{
+            const string data = @"{
  ""head"" : { ""vars"" : [ ""date"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -60,7 +56,7 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingSparqlJsonNumerics1()
         {
-            String data = @"{
+            const string data = @"{
  ""head"" : { ""vars"" : [ ""num"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -78,7 +74,7 @@ namespace VDS.RDF.Parsing
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingSparqlJsonNumerics2()
         {
-            String data = @"{
+            const string data = @"{
  ""head"" : { ""vars"" : [ ""num"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -96,7 +92,7 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingSparqlJsonBoolean1()
         {
-            String data = @"{
+            const string data = @"{
  ""head"" : { ""vars"" : [ ""bool"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -114,7 +110,7 @@ namespace VDS.RDF.Parsing
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingSparqlJsonBoolean2()
         {
-            String data = @"{
+            const string data = @"{
  ""head"" : { ""vars"" : [ ""bool"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -141,6 +137,25 @@ namespace VDS.RDF.Parsing
  }
 }";
 
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_01()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""distinct"" : false,
+   ""ordered"" : true
+ }
+}";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 

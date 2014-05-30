@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json;
@@ -90,16 +88,13 @@ namespace VDS.RDF.Parsing
             {
                 this.Parse(input, handler);
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 try
                 {
                     input.Close();
                 }
+// ReSharper disable once EmptyGeneralCatchClause
                 catch
                 {
                     //No catch actions - just trying to cleanup
@@ -114,9 +109,9 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream to read from</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
-            this.Load(handler, (TextReader)input);
+            this.Load(handler, (TextReader) input);
         }
-        
+
 #if !NO_FILE
         /// <summary>
         /// Loads a Result Set from a file using a Results Handler
@@ -209,7 +204,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, the 'head' property of the JSON Result Set Object was expected");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, the 'head' property of the JSON Result Set Object was expected");
                 }
             }
             else
@@ -226,20 +221,17 @@ namespace VDS.RDF.Parsing
             //Can we read the Head Object
             if (context.Input.Read())
             {
-                if (context.Input.TokenType == JsonToken.Null)
+                switch (context.Input.TokenType)
                 {
-                    //Null Header so this must be a Boolean Result Set
-                }
-                else if (context.Input.TokenType == JsonToken.StartObject)
-                {
-                    //Header Object
-                    this.ParseHeaderProperties(context);
-
-                    //When we get control back we should have already read the last token which should be an End Object
-                    if (context.Input.TokenType != JsonToken.EndObject)
-                    {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the Header Object of the JSON Result Set was expected");
-                    }
+                    case JsonToken.Null:
+                        break;
+                    case JsonToken.StartObject:
+                        this.ParseHeaderProperties(context);
+                        if (context.Input.TokenType != JsonToken.EndObject)
+                        {
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the Header Object of the JSON Result Set was expected");
+                        }
+                        break;
                 }
             }
             else
@@ -456,13 +448,17 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error(context,"Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the 'bindings' property for the Results Object");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the 'bindings' property for the Results Object");
                     }
 
                     //Expect the End of the Results Object
                     context.Input.Read();
                     if (context.Input.TokenType != JsonToken.EndObject)
                     {
+                        // CORE-419 - May possibly additional elements not specified by the specification
+                        // In the interests of compatibility we silently ignore these
+
+
                         throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the end of the Results Object");
                     }
                 }
@@ -563,8 +559,8 @@ namespace VDS.RDF.Parsing
         /// <param name="r">Result Object that is being constructed from the Binding Object</param>
         private void ParseBoundVariable(SparqlJsonParserContext context, String var, SparqlResult r)
         {
-            String token, nodeValue, nodeType, nodeLang, nodeDatatype;
-            nodeValue = nodeType = nodeLang = nodeDatatype = null;
+            String nodeType, nodeLang, nodeDatatype;
+            string nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
             //Can we read the start of an Object
             if (context.Input.Read())
@@ -575,7 +571,7 @@ namespace VDS.RDF.Parsing
 
                     while (context.Input.TokenType != JsonToken.EndObject)
                     {
-                        token = context.Input.Value.ToString().ToLower();
+                        String token = context.Input.Value.ToString().ToLower();
 
                         //Check that we get a Property Value as a String
                         context.Input.Read();
@@ -651,7 +647,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (nodeValue.Contains("://"))
                         {
-                            n = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf("://") + 3));
+                            n = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf("://", StringComparison.Ordinal) + 3));
                         }
                         else if (nodeValue.Contains(":"))
                         {
@@ -749,7 +745,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="message">Error Message</param>
         /// <returns></returns>
-        private RdfParseException Error(SparqlJsonParserContext context, String message)
+        private static RdfParseException Error(SparqlJsonParserContext context, String message)
         {
             StringBuilder error = new StringBuilder();
             if (context.Input.HasLineInfo())
@@ -762,16 +758,14 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException(error.ToString(), context.Input.LineNumber, context.Input.LinePosition);
             }
-            else
-            {
-                throw new RdfParseException(error.ToString());
-            }
+            throw new RdfParseException(error.ToString());
         }
 
         /// <summary>
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         /// <param name="message">Warning Message</param>
+// ReSharper disable once UnusedMember.Local
         private void RaiseWarning(String message)
         {
             SparqlWarning d = this.Warning;
