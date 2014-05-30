@@ -204,7 +204,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, the 'head' property of the JSON Result Set Object was expected");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'head' property of the JSON Result Set Object was expected");
                 }
             }
             else
@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing
                         this.ParseHeaderProperties(context);
                         if (context.Input.TokenType != JsonToken.EndObject)
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the Header Object of the JSON Result Set was expected");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, end of the Header Object of the JSON Result Set was expected");
                         }
                         break;
                 }
@@ -278,7 +278,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name for a property of the Header Object of the JSON Result Set");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Property Name for a property of the Header Object of the JSON Result Set");
                     }
 
                     //Read next Token
@@ -312,14 +312,14 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a String giving the name of a Variable for the Result Set");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a String giving the name of a Variable for the Result Set");
                         }
                         context.Input.Read();
                     }
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the Start of an Array giving the list of Variables for the 'vars' property of the Header Object of the JSON Result Set");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' with value '" + context.Input.Value + "' encountered, expected the Start of an Array giving the list of Variables for the 'vars' property of the Header Object of the JSON Result Set");
                 }
             }
             else
@@ -377,7 +377,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, the 'results' or 'boolean' property of the JSON Result Set Object was expected");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'results' or 'boolean' property of the JSON Result Set Object was expected");
                 }
             }
             else
@@ -425,7 +425,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the 'bindings' property for the Results Object");
+                                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the 'bindings' property for the Results Object");
                                 }
                             }
                             else
@@ -443,12 +443,12 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
                         }
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the 'bindings' property for the Results Object");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the 'bindings' property for the Results Object");
                     }
 
                     // Skip to the End of the Results Object
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of the Results Object");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the start of the Results Object");
                 }
             }
             else
@@ -481,7 +481,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a Binding Object");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the start of a Binding Object");
                     }
 
                     if (!context.Input.Read())
@@ -514,7 +514,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name giving the Binding for a Variable for this Result");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Property Name giving the Binding for a Variable for this Result");
                     }
 
                     //Get Next Token
@@ -569,7 +569,7 @@ namespace VDS.RDF.Parsing
                         context.Input.Read();
                         if (!IsValidValue(context))
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
                         }
 
                         //Extract the Information from the Object
@@ -681,7 +681,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a Bound Variable Object");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the start of a Bound Variable Object");
                 }
             }
             else
@@ -705,7 +705,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Boolean value for the 'boolean' property of the JSON Result Set");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Boolean value for the 'boolean' property of the JSON Result Set");
                 }
             }
             else
