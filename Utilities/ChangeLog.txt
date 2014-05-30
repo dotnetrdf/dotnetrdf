@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.5
+Version 1.0.6
 
 dotNetRDF Project 2009-14
 dotnetrdf-develop@lists.sf.net
@@ -21,13 +21,10 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
-- Relax strictness of SPARQL XML Results Parser (CORE-410)
-- Fix lack of position information for some errors from NTriples parser
 
 rdfOptStats
    
 rdfQuery
-- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411, CORE-416)
 
 rdfServer
 
@@ -38,9 +35,5 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411, CORE-416)
 
 StoreManager
-- Fix a bug with exporting data to some formats resulting in incorrect/missing data (TOOLS-409)
-- Various SPARQL related fixes (CORE-406, CORE-407, CORE-411)
-- Fix to improve compatibility with some Sesame installations (CORE-410)
