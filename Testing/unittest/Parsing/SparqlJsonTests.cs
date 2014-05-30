@@ -161,5 +161,170 @@ namespace VDS.RDF.Parsing
 
             Assert.AreEqual(1, results.Count);
         }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_02()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""ordered"" : true
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_03()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ]
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_04()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : ""ignored""
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_05()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : [ ""ignored"", ""junk"" ]
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_06()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : { ""ignored"" : true }
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_07()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : { ""ignored"" : { ""foo"" : ""bar"" } }
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore419_08()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : { ""ignored"" : { ""foo"" : [ ""bar"", ""faz"", { ""object"" : ""value"" } ] } }
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore419_09()
+        {
+            const String data = @"{
+  ""head"" : { ""link"" : [], ""vars"" : [ ""g"" ] },
+  ""results"" : {
+   ""ordered"" : true,
+   ""distinct"" : false,
+   ""bindings"" : [ 
+    { ""g"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+   ""extra"" : 
+ }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonMalformed()
+        {
+            const String data = @"{ ""junk"": ]";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
     }
 }
