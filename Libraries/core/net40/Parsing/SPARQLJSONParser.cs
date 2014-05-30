@@ -744,7 +744,7 @@ namespace VDS.RDF.Parsing
             }
 
             int depth = 1;
-            while (depth > 1)
+            while (depth > 0)
             {
                 // Try to read next token
                 if (!context.Input.Read()) throw Error(context, "Unexpected EOF while trying to skip to end of JSON object");
@@ -800,7 +800,7 @@ namespace VDS.RDF.Parsing
             }
 
             int depth = 1;
-            while (depth > 1)
+            while (depth > 0)
             {
                 // Try to read next token
                 if (!context.Input.Read()) throw Error(context, "Unexpected EOF while trying to skip to end of JSON array");
