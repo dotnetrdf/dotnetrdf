@@ -867,7 +867,7 @@ namespace VDS.RDF.Specifications
                                     Double dbl;
                                     if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
-                                        if (dbl == 0.0d || dbl == Double.NaN)
+                                        if (dbl == 0.0d || double.IsNaN(dbl))
                                         {
                                             //Zero/NaN gives EBV of false
                                             return false;

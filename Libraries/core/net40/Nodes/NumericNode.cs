@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Specifications;
@@ -99,9 +96,9 @@ namespace VDS.RDF.Nodes
                 case EffectiveNumericType.Decimal:
                     return this.AsDecimal() != Decimal.Zero;
                 case EffectiveNumericType.Float:
-                    return this.AsFloat() != 0.0f && this.AsFloat() != Single.NaN;
+                    return this.AsFloat() != 0.0f && !float.IsNaN(this.AsFloat());
                 case EffectiveNumericType.Double:
-                    return this.AsDouble() != 0.0d && this.AsDouble() != Double.NaN;
+                    return this.AsDouble() != 0.0d && !double.IsNaN(this.AsDouble());
                 default:
                     return false;
             }

@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 1.0.3
+Version 1.0.6
 
 dotNetRDF Project 2009-14
 dotnetrdf-develop@lists.sf.net
@@ -73,9 +73,9 @@ We recommend using NuGet to install dotNetRDF libraries since that will manage d
 To use this library you will need .Net Framework 3.5 SP1 or higher.
 
 The Core Library depends on the following third party libraries:
-- JSON.Net 5.0.8 which can be obtained from http://json.codeplex.com
+- JSON.Net 6.0.3 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack (Not required if using the PCL build)
-- VDS.Common 1.2.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
+- VDS.Common 1.3.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
 - Portable.Runtime 0.1.0 which can be obtained from http://pclcontrib.codeplex.com (Only required if using the PCL build)
 
 The relevant DLLs are included with this release and if you wish to use the library you may need to reference these
@@ -105,13 +105,10 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- The W3C Candidate Recommendations on NTriples, NQuads and TriG (5th November 2013) are not yet supported
+- TriG support does not yet match the RDF 1.1 specification (Feb 25th 2014)
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-
-Storage
-- More recent versions of Virtuoso may not permit deleting blank nodes due to an apparent Virtuoso bug
  
 Change History
 --------------
@@ -188,6 +185,12 @@ NB - Dates are given UK style as dd/mm/yyyy
 14/11/2013 - Release of Version 1.0.2 (Build 1.0.2.2880)
 
 17/1/2014 - Release of Version 1.0.3 (Build 1.0.3.3065)
+
+14/3/2014 - Release of Version 1.0.4 (Build 1.0.4.3225)
+
+23/5/2014 - Release of Version 1.0.5 (Build 1.0.5.3315)
+
+?/7/2014 - Release of Version 1.0.6 (Build 1.0.6.?)
 
 Acknowledgements
 ----------------

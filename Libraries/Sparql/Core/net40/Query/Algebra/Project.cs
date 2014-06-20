@@ -41,9 +41,8 @@ namespace VDS.RDF.Query.Algebra
     public class Select
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
-        private List<SparqlVariable> _variables = new List<SparqlVariable>();
-        private bool _all = false;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly List<SparqlVariable> _variables = new List<SparqlVariable>();
 
         /// <summary>
         /// Creates a new Select
@@ -55,19 +54,13 @@ namespace VDS.RDF.Query.Algebra
         {
             this._pattern = pattern;
             this._variables.AddRange(variables);
-            this._all = selectAll;
+            this.IsSelectAll = selectAll;
         }
 
         /// <summary>
         /// Does this operator select all variables?
         /// </summary>
-        public bool IsSelectAll
-        {
-            get
-            {
-                return this._all;
-            }
-        }
+        public bool IsSelectAll { get; private set; }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -117,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             //Trim Variables that aren't being SELECTed
-            if (!this._all)
+            if (!this.IsSelectAll)
             {
                 foreach (String var in context.InputMultiset.Variables.ToList())
                 {
@@ -141,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = context.InputMultiset;
 
             //Apply variable ordering if applicable
-            if (!this._all && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
+            if (!this.IsSelectAll && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
             {
                 context.OutputMultiset.SetVariableOrder(context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name));
             }
@@ -156,6 +149,32 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._pattern.Variables.Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // For a SELECT * all floating variables from inner algebra are floating
+                // For SELECT ?vars all floating variables that are selected are floating
+                return this.IsSelectAll ? this._pattern.FloatingVariables : this._pattern.FloatingVariables.Where(v => this._variables.Any(rv => rv.Name.Equals(v) && rv.IsResultVariable));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // For a SELECT * all fixed variables from inner algebra are fixed
+                // For SELECT ?vars all fixed variables that are selected are fixed
+                return this.IsSelectAll ? this._pattern.FixedVariables : this._pattern.FixedVariables.Where(v => this._variables.Any(rv => rv.Name.Equals(v) && rv.IsResultVariable));
             }
         }
 
@@ -221,7 +240,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Select(optimiser.Optimise(this._pattern), this._all, this._variables);
+            return new Select(optimiser.Optimise(this._pattern), this.IsSelectAll, this._variables);
         }
     }
 
@@ -234,7 +253,7 @@ namespace VDS.RDF.Query.Algebra
     public class Ask 
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
+        private readonly ISparqlAlgebra _pattern;
 
         /// <summary>
         /// Creates a new ASK
@@ -301,6 +320,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._pattern.Variables.Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the String representation of the Ask

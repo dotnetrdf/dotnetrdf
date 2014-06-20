@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Algebra
     public class OrderBy
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
-        private ISparqlOrderBy _ordering;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly ISparqlOrderBy _ordering;
 
         /// <summary>
         /// Creates a new Order By clause
@@ -87,6 +87,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._pattern.Variables.Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra

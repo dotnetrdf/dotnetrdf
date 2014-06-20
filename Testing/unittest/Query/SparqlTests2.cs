@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -36,6 +37,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -1286,6 +1288,60 @@ WHERE
                 Console.WriteLine(r);
                 Assert.AreEqual(2, r.Count, "Expected 2 variable bindings per row.");
             }
+        }
+
+        [Test]
+        public void SparqlNestedOptionalCore406()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources\core-406.ttl");
+
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-406.rq");
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+
+            foreach (SparqlResult result in results)
+            {
+                Assert.IsTrue(result.HasBoundValue("first"), "Row " + result + " failed to contain ?first binding");
+            }
+        }
+
+        [Test]
+        public void SparqlSubQueryGraphInteractionCore416()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-416.trig");
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            //SparqlFormatter formatter = new SparqlFormatter();
+            //Console.WriteLine(formatter.Format(q));
+
+            ISparqlDataset dataset = AsDataset(store);
+
+            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            TimeSpan total = new TimeSpan();
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine("Starting query run " + i + " of " + 10);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+
+                if (q.QueryExecutionTime != null)
+                {
+                    Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                    total = total + q.QueryExecutionTime.Value;
+                }
+                TestTools.ShowResults(results);
+                Assert.AreEqual(4, results.Count);
+            }
+
+            Console.WriteLine("Total ExecutionT Time: " + total);
+            Assert.IsTrue(total < new TimeSpan(0, 0, 1));
         }
     }
 }

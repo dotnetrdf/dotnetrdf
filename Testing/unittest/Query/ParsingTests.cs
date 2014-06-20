@@ -393,5 +393,135 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             Assert.AreEqual(String.Empty, lit.Language);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
         }
+        
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter1()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { @subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetUri("subject", uri);
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter2()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { $subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetVariable("subject", new UriNode(null, uri));
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens1()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens2()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o .
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens3()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ;
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens4()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ,
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
     }
 }

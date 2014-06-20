@@ -94,12 +94,12 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        public static string[] NTriples = {"text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples"};
+        public static string[] NTriples = { "application/ntriples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads
         /// </summary>
-        public static string[] NQuads = {"text/x-nquads"};
+        public static string[] NQuads = { "application/n-quads", "text/x-nquads" };
 
         /// <summary>
         /// MIME Types for TriG

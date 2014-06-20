@@ -74,6 +74,16 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        IEnumerable<String> FloatingVariables { get; }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        IEnumerable<String> FixedVariables { get; }
+
+        /// <summary>
         /// Gets whether a Triple Pattern uses the Default Dataset when evaluated
         /// </summary>
         /// <remarks>

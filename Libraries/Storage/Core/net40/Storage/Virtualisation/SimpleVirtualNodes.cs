@@ -69,6 +69,16 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IBlankNode)other);
         }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public override int CompareVirtualId(int other)
+        {
+            return VirtualID.CompareTo(other);
+        }
     }
 
     /// <summary>
@@ -112,6 +122,16 @@ namespace VDS.RDF.Storage.Virtualisation
         public int CompareTo(SimpleVirtualGraphLiteralNode other)
         {
             return this.CompareTo((IGraphLiteralNode)other);
+        }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public override int CompareVirtualId(int other)
+        {
+            return VirtualID.CompareTo(other);
         }
     }
 
@@ -157,6 +177,16 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((ILiteralNode)other);
         }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public override int CompareVirtualId(int other)
+        {
+            return VirtualID.CompareTo(other);
+        }
     }
 
     /// <summary>
@@ -200,6 +230,16 @@ namespace VDS.RDF.Storage.Virtualisation
         public int CompareTo(SimpleVirtualUriNode other)
         {
             return this.CompareTo((IUriNode)other);
+        }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public override int CompareVirtualId(int other)
+        {
+            return VirtualID.CompareTo(other);
         }
     }
 
@@ -245,5 +285,15 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IVariableNode)other);
         }
+        }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public override int CompareVirtualId(int other)
+        {
+            return VirtualID.CompareTo(other);
     }
 }

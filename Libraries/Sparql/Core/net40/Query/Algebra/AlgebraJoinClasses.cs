@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
@@ -42,8 +41,8 @@ namespace VDS.RDF.Query.Algebra
     public class ExistsJoin 
         : IExistsJoin
     {
-        private ISparqlAlgebra _lhs, _rhs;
-        private bool _mustExist;
+        private readonly ISparqlAlgebra _lhs, _rhs;
+        private readonly bool _mustExist;
 
         /// <summary>
         /// Creates a new Exists Join
@@ -101,6 +100,22 @@ namespace VDS.RDF.Query.Algebra
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
             }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get { return this._lhs.FloatingVariables; }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get { return this._lhs.FixedVariables; }
         }
 
         /// <summary>
@@ -214,8 +229,8 @@ namespace VDS.RDF.Query.Algebra
     public class LeftJoin 
         : ILeftJoin
     {
-        private ISparqlAlgebra _lhs, _rhs;
-        private ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(true)));
+        private readonly ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
 
         /// <summary>
         /// Creates a new LeftJoin where there is no Filter over the join
@@ -235,9 +250,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern</param>
         /// <param name="filter">Filter to decide which RHS solutions are valid</param>
         public LeftJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs, ISparqlFilter filter)
+            : this(lhs, rhs)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
             this._filter = filter;
         }
 
@@ -248,8 +262,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
+            // Need to be careful about whether we linearize (CORE-406)
+            if (!this.CanLinearizeLhs(context))
+            {
+                context.InputMultiset = new IdentityMultiset();
+            }
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -262,8 +280,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Only execute the RHS if the LHS had some results
-                context.InputMultiset = lhsResult;
+                // Only execute the RHS if the LHS had some results
+                // Need to be careful about whether we linearize (CORE-406)
+                context.InputMultiset = CanFlowResultsToRhs(context) ? lhsResult : new IdentityMultiset();
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);
                 context.CheckTimeout();
 
@@ -275,6 +294,29 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
+        private bool CanLinearizeLhs(SparqlEvaluationContext context)
+        {
+            // Must be no floating variables already present in the results to be flowed
+            return this._lhs.FloatingVariables.All(v => !context.InputMultiset.ContainsVariable(v));
+        }
+
+        private bool CanFlowResultsToRhs(SparqlEvaluationContext context)
+        {
+            // Can't have any conflicting variables
+            HashSet<String> lhsFixed = new HashSet<string>(this._lhs.FixedVariables);
+            HashSet<String> lhsFloating = new HashSet<string>(this._lhs.FloatingVariables);
+            HashSet<String> rhsFloating = new HashSet<string>(this._rhs.FloatingVariables);
+            HashSet<String> rhsFixed = new HashSet<string>(this._rhs.FixedVariables);
+
+            // RHS Floating can't be floating/fixed on LHS
+            if (rhsFloating.Any(v => lhsFloating.Contains(v) || lhsFixed.Contains(v))) return false;
+            // RHS Fixed can't be floating on LHS
+            if (rhsFixed.Any(v => lhsFloating.Contains(v))) return false;
+
+            // Otherwise OK
+            return true;
+        }
+
         /// <summary>
         /// Gets the Variables used in the Algebra
         /// </summary>
@@ -283,6 +325,32 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those fixed on RHS or floating on either side and not fixed on LHS
+                IEnumerable<String> floating = this._lhs.FloatingVariables.Concat(this._rhs.FloatingVariables).Concat(this._rhs.FixedVariables).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return floating.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on LHS
+                return this._lhs.FixedVariables;
             }
         }
 
@@ -431,7 +499,7 @@ namespace VDS.RDF.Query.Algebra
     public class Join 
         : IJoin
     {
-        private ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlAlgebra _lhs, _rhs;
 
         /// <summary>
         /// Creates a new Join
@@ -537,6 +605,32 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those floating on either side which are not fixed
+                IEnumerable<String> floating = this._lhs.FloatingVariables.Concat(this._rhs.FloatingVariables).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return floating.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on either side
+                return this._lhs.FixedVariables.Concat(this._rhs.FixedVariables).Distinct();
+            }
+        }
+
+        /// <summary>
         /// Gets the LHS of the Join
         /// </summary>
         public ISparqlAlgebra Lhs
@@ -627,7 +721,7 @@ namespace VDS.RDF.Query.Algebra
     public class Union 
         : IUnion
     {
-        private ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlAlgebra _lhs, _rhs;
 
         /// <summary>
         /// Creates a new Union
@@ -673,6 +767,31 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those not fixed
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return this.Variables.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on both sides
+                return this._lhs.FixedVariables.Intersect(this._rhs.FixedVariables);
             }
         }
 

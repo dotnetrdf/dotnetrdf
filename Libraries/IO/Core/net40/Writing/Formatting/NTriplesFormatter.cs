@@ -216,4 +216,17 @@ namespace VDS.RDF.Writing.Formatting
             return this.FormatChar(temp.ToCharArray());
         }
     }
+
+    /// <summary>
+    /// Formatter for formatting as NTriples according to the RDF 1.1 specification
+    /// </summary>
+    public class NTriples11Formatter
+        : NTriplesFormatter
+    {
+        /// <summary>
+        /// Creaates a new formatter
+        /// </summary>
+        public NTriples11Formatter()
+            : base(NTriplesSyntax.Rdf11) { }
+    }
 }

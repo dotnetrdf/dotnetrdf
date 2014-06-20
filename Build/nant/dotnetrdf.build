@@ -30,11 +30,12 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="104" />
-  <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="104" />
-  <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.4" />
+  <property name="dotnetrdf.version" value="106" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="106" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.6-prerelease01" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.6.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -54,8 +55,6 @@
 
   <target name="projectsync" description="Sync project files" unless="${dotnetrdf.nocompile}" 
 	depends="projectsync-core-net35,
-		 projectsync-core-silverlight,
-		 projectsync-core-windowsphone,
 		 projectsync-core-clientprofile,
 	   projectsync-core-clientprofile-net35,
      projectsync-core-portable,
@@ -75,24 +74,6 @@
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-    </exec>
-  </target>
-
-  <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file"  unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
-    <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-    </exec>    
-  </target>
-
-  <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file"  unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
-    <!-- This exec task syncs the Windows Phone project file with the Core Library -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
     </exec>
   </target>
 
@@ -191,7 +172,7 @@
           depends="license-libs,license-tests,license-utils" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-libs" description="Applies License headers to all library targets"
-          depends="license-core,license-core-silverlight,
+          depends="license-core,
                    license-data-virtuoso,
                    license-query-fulltext,
                    license-editor-core,license-editor-wpf,
@@ -229,23 +210,6 @@
   </target>
   
   <!-- TODO: Probably need a license-core-portable target that ensures we don't overwrite 3rd Party Licenses -->
-
-  <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
-      <arg value="-directory" />
-      <arg value="Libraries/core/sl4/" />
-      <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.License.exclude.exts}" />
-      <arg value="-exclude" />
-      <arg value="${dotnetrdf.License.exclude.regex}" />
-      <arg value="-license-search" />
-      <arg value="${dotnetrdf.License.search}" />
-      <arg value="-license-file" />
-      <arg value="${dotnetrdf.License.replace}" />
-      <arg value="-fix" />
-      <arg value="${dotnetrdf.License.overwrite}" />
-    </exec>
-  </target>
 
   <target name="license-data-virtuoso" description="Applies License headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
@@ -561,8 +525,6 @@
   <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
           depends="compile-core,
                    compile-core-net35,
-                   compile-core-silverlight,
-                   compile-core-windowsphone,
                    compile-core-clientprofile,
                    compile-core-clientprofile-net35,
                    compile-core-portable">  
@@ -623,31 +585,6 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${string::replace(framework::get-framework-directory(framework::get-target-framework()), 'Framework64', 'Framework')}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="license-core,projectsync-core-windowsphone">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
@@ -957,9 +894,7 @@
 
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-core,build-core-net35,
-                   build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
-                   build-core-windowsphone,
                    build-core-portable,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
@@ -991,24 +926,6 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/VDS.Common.dll" />
-  </target>
-
-  <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/VDS.Common.dll" />
-  </target>
-
-  <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
@@ -1188,11 +1105,34 @@
 
   <!-- Release Build Targets -->
 
+  <target name="validate-release" description="Validates that the release artifacts have the correct version set"
+	        depends="validate-release-libs,
+		   validate-release-utils" />
+
+  <target name="validate-release-libs" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Libraries/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
+  <target name="validate-release-utils" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Utilities/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
   <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
-          depends="build-release-libs,
+          depends="validate-release,
+                   build-release-libs,
                    build-release-utils" />
 
-  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-libs,build-libs">
     <copy todir="bin/stable/Libraries/" overwrite="true">
       <fileset basedir="bin/nightlies/Libraries">
         <include name="**/*" />
@@ -1200,7 +1140,7 @@
     </copy>
   </target>
 
-  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="build-utils">
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-utils,build-utils">
     <copy todir="bin/stable/Toolkit/" overwrite="true">
       <fileset basedir="bin/nightlies/Toolkit">
         <include name="**/*" />
@@ -1425,22 +1365,7 @@
       </fileset>
     </delete>
     <delete>
-      <fileset basedir="Build/nuget/Core/lib/sl4">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/sl4-wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
+      <fileset basedir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
         <include name="*" />
       </fileset>
     </delete>
@@ -1470,24 +1395,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/sl4/">
-      <fileset basedir="bin/stable/Libraries/Core/sl4/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/sl4-wp/">
-      <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/portable-win+net40+sl4+wp/">
-      <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/portable-windows8+net45/">
+    <copy todir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
         <include name="dotNetRDF.*" />
         <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->

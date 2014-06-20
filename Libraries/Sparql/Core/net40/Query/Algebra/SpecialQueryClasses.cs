@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class SelectDistinctGraphs : ISparqlAlgebra
     {
-        private String _graphVar;
+        private readonly String _graphVar;
 
         /// <summary>
         /// Creates a new Select Distinct algebra
@@ -56,27 +56,12 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context.OutputMultiset = new Multiset();
-            String var;
-            if (context.Query != null)
-            {
-                var = context.Query.Variables.First(v => v.IsResultVariable).Name;
-            }
-            else
-            {
-                var = this._graphVar;
-            }
+            string var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : this._graphVar;
 
             foreach (Uri graphUri in context.Data.GraphUris)
             {
                 Set s = new Set();
-                if (graphUri == null)
-                {
-                    s.Add(var, null);
-                }
-                else
-                {
-                    s.Add(var, new UriNode(graphUri));
-                }
+                s.Add(var, graphUri == null ? null : new UriNode(null, graphUri));
                 context.OutputMultiset.Add(s);
             }
 
@@ -88,11 +73,18 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> Variables
         {
-            get
-            {
-                return Enumerable.Empty<String>();
-            }
+            get { return this._graphVar.AsEnumerable(); }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._graphVar.AsEnumerable(); } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
         /// Gets the Graph Variable to which Graph URIs are bound
@@ -181,6 +173,16 @@ namespace VDS.RDF.Query.Algebra
                 return Enumerable.Empty<String>();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return Enumerable.Empty<String>(); } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
         /// Gets the String representation of the Algebra

@@ -75,11 +75,16 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
 
             TripleStore store = new TripleStore();
+            List<Uri> graphUris = this.ListGraphs().ToList();
 
             if (writer is TriXWriter)
             {
                 //For TriX must load all into memory and then write out all at once
-                foreach (Uri u in this.ListGraphs())
+
+                // Make sure we always include the default graph in the export
+                if (!graphUris.Contains(null)) graphUris.Add(null);
+
+                foreach (Uri u in graphUris)
                 {
                     Graph g = new Graph();
                     this._manager.LoadGraph(g, u);
@@ -102,7 +107,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
                 //For non-TriX formats assume it is safe to append one Graph at a time to the file
                 int graphCount = 0, tripleCount = 0;
-                foreach (Uri u in this.ListGraphs())
+                
+                // Make sure we always include the default graph in the export
+                if (!graphUris.Contains(null)) graphUris.Add(null);
+
+                // Write each graph out
+                foreach (Uri u in graphUris)
                 {
                     using (FileStream stream = new FileStream(this._file, FileMode.Append))
                     {
@@ -110,7 +120,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         {
                             //Stream via a WriteThroughHandler
                             this.Information = "Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default");
-                            WriteThroughHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
+                            IRdfHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
+                            if (u != null) handler = new GraphUriRewriteHandler(handler, u);
                             ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
                             this._manager.LoadGraph(progHandler, u);
                             graphCount++;
@@ -166,31 +177,20 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 return this._manager.ListGraphs();
             }
-            else if (this._manager is IQueryableStorage)
+            if (!(this._manager is IQueryableStorage)) throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
+
+            List<Uri> uris = new List<Uri>();
+            Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+            if (!(results is SparqlResultSet)) throw new RdfStorageException("Store failed to list graphs so unable to do a Graph by Graph export");
+            SparqlResultSet rset = (SparqlResultSet)results;
+            foreach (SparqlResult res in rset)
             {
-                List<Uri> uris = new List<Uri>();
-                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
-                if (results is SparqlResultSet)
+                if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
                 {
-                    SparqlResultSet rset = (SparqlResultSet)results;
-                    foreach (SparqlResult res in rset)
-                    {
-                        if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
-                        {
-                            uris.Add(((IUriNode)res["g"]).Uri);
-                        }
-                    }
-                    return uris;
-                }
-                else
-                {
-                    throw new RdfStorageException("Store failed to list graphs so unable to do a Graph by Graph export");
+                    uris.Add(((IUriNode)res["g"]).Uri);
                 }
             }
-            else
-            {
-                throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
-            }
+            return uris;
         }
     }
 

@@ -38,9 +38,9 @@ namespace VDS.RDF.Query.Algebra
     public class Extend
         : IUnaryOperator
     {
-        private ISparqlAlgebra _inner;
-        private String _var;
-        private ISparqlExpression _expr;
+        private readonly ISparqlAlgebra _inner;
+        private readonly String _var;
+        private readonly ISparqlExpression _expr;
 
         /// <summary>
         /// Creates a new Extend operator
@@ -196,6 +196,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._inner.Variables.Concat(this._var.AsEnumerable()); 
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._inner.FloatingVariables.Concat(this._var.AsEnumerable()); } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._inner.FixedVariables; } }
 
         /// <summary>
         /// Converts the Algebra to a Query

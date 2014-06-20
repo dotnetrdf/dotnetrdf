@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Patterns
@@ -37,7 +36,7 @@ namespace VDS.RDF.Query.Patterns
     public class SubQueryPattern 
         : BaseTriplePattern, ISubQueryPattern, IComparable<SubQueryPattern>
     {
-        private SparqlQuery _subquery;
+        private readonly SparqlQuery _subquery;
 
         /// <summary>
         /// Creates a new Sub-query pattern which represents the given sub-query
@@ -68,6 +67,16 @@ namespace VDS.RDF.Query.Patterns
                 return this._subquery;
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public override IEnumerable<String> FloatingVariables { get { return this._subquery.ToAlgebra().FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public override IEnumerable<String> FixedVariables { get { return this._subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Gets the pattern type

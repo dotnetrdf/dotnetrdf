@@ -24,14 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Text;
 using NUnit.Framework;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -60,6 +55,46 @@ namespace VDS.RDF.Parsing.Suites
 
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [Test]
+        public void ParsingSparqlResultsXmlCustomAttributes()
+        {
+            // Test case based off of CORE-410
+            SparqlResultSet results = new SparqlResultSet();
+            this.ResultsParser.Load(results, @"resources\sparql\core-410.srx");
+
+            TestTools.ShowResults(results);
+
+            INode first = results[0]["test"];
+            INode second = results[1]["test"];
+            INode third = results[2]["test"];
+
+            Assert.AreEqual(NodeType.Literal, first.NodeType);
+            ILiteralNode firstLit = (ILiteralNode) first;
+            Assert.IsNotNull(firstLit.DataType);
+            Assert.AreEqual(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
+            Assert.AreEqual("1993", firstLit.Value);
+
+            Assert.AreEqual(NodeType.Literal, second.NodeType);
+            ILiteralNode secondLit = (ILiteralNode) second;
+            Assert.AreNotEqual(String.Empty, secondLit.Language);
+            Assert.AreEqual("en", secondLit.Language);
+            Assert.AreEqual("test", secondLit.Value);
+
+            Assert.AreEqual(NodeType.Literal, third.NodeType);
+            ILiteralNode thirdLit = (ILiteralNode) third;
+            Assert.AreEqual(String.Empty, thirdLit.Language);
+            Assert.IsNull(thirdLit.DataType);
+            Assert.AreEqual("test plain literal", thirdLit.Value);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlResultsXmlConflictingAttributes()
+        {
+            // Test case based off of CORE-410
+            SparqlResultSet results = new SparqlResultSet();
+            this.ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx");
         }
     }
 }

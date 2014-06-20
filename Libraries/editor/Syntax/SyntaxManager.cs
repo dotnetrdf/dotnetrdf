@@ -43,12 +43,13 @@ namespace VDS.RDF.Utilities.Editor.Syntax
     {
         private static bool _init = false;
 
-        private static List<SyntaxDefinition> _builtinDefs = new List<SyntaxDefinition>()
+        private static readonly List<SyntaxDefinition> _builtinDefs = new List<SyntaxDefinition>()
         {
             new SyntaxDefinition("RdfXml", "rdfxml.xshd", new String[] { ".rdf", ".owl" }, new RdfXmlParser(), new RdfXmlWriter(), new RdfSyntaxValidator(new RdfXmlParser())),
-            new SyntaxDefinition("Turtle", "turtle.xshd", new String[] { ".ttl", ".n3" }, new TurtleParser(), new CompressingTurtleWriter(WriterCompressionLevel.High), new RdfSyntaxValidator(new TurtleParser())),
+            new SyntaxDefinition("Turtle", "turtle.xshd", new String[] { ".ttl", ".n3" }, new TurtleParser(TurtleSyntax.Original), new CompressingTurtleWriter(WriterCompressionLevel.High, TurtleSyntax.Original), new RdfSyntaxValidator(new TurtleParser(TurtleSyntax.Original))),
             new SyntaxDefinition("Turtle11", "turtle11.xshd", new string[] { ".ttl", ".n3"}, new TurtleParser(TurtleSyntax.W3C), new CompressingTurtleWriter(WriterCompressionLevel.High, TurtleSyntax.W3C), new RdfSyntaxValidator(new TurtleParser(TurtleSyntax.W3C))),
-            new SyntaxDefinition("NTriples", "ntriples.xshd", new String[] { ".nt", ".nq" }, new NTriplesParser(), new NTriplesWriter(), new RdfSyntaxValidator(new NTriplesParser())),
+            new SyntaxDefinition("NTriples", "ntriples.xshd", new String[] { ".nt", ".nq" }, new NTriplesParser(NTriplesSyntax.Original), new NTriplesWriter(NTriplesSyntax.Original), new RdfSyntaxValidator(new NTriplesParser(NTriplesSyntax.Original))),
+            new SyntaxDefinition("NTriples11", "ntriples.xshd", new String[] { ".nt", ".nq" }, new NTriplesParser(NTriplesSyntax.Rdf11), new NTriplesWriter(NTriplesSyntax.Rdf11), new RdfSyntaxValidator(new NTriplesParser(NTriplesSyntax.Rdf11))),
             new SyntaxDefinition("Notation3", "n3.xshd", new String[] { ".n3" }, new Notation3Parser(), new Notation3Writer(), new RdfSyntaxValidator(new Notation3Parser())),
             new SyntaxDefinition("RdfJson", "rdfjson.xshd", new String[] { ".json" }, new RdfJsonParser(), new RdfJsonWriter(), new RdfSyntaxValidator(new RdfJsonParser())),
             new SyntaxDefinition("XHtmlRdfA", "xhtml-rdfa.xshd", new String[] { ".html", ".xhtml", ".htm", ".shtml" }, new RdfAParser(), new HtmlWriter(), new RdfStrictSyntaxValidator(new RdfAParser())),
@@ -61,7 +62,8 @@ namespace VDS.RDF.Utilities.Editor.Syntax
 
             new SyntaxDefinition("SparqlUpdate11", "sparql-update.xshd", new String[] { }, new SparqlUpdateValidator()),
 
-            new SyntaxDefinition("NQuads", "nquads.xshd", new String[] { ".nq" }, new RdfDatasetSyntaxValidator(new NQuadsParser())),
+            new SyntaxDefinition("NQuads", "nquads.xshd", new String[] { ".nq" }, new RdfDatasetSyntaxValidator(new NQuadsParser(NQuadsSyntax.Original))),
+            new SyntaxDefinition("NQuads11", "nquads11.xshd", new String[] { ".nq" }, new RdfDatasetSyntaxValidator(new NQuadsParser(NQuadsSyntax.Rdf11))),
             new SyntaxDefinition("TriG", "trig.xshd", new String[] { ".trig" }, new RdfDatasetSyntaxValidator(new TriGParser())),
             new SyntaxDefinition("TriX", "trix.xshd", new String[] { ".xml" }, new RdfDatasetSyntaxValidator(new TriXParser()))
         };

@@ -26,16 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //Uncomment when working on this code, don't forget to comment out afterwards
 //#define WINDOWS_PHONE
 
-//This code contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
+//This code originally contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
 
-#if WINDOWS_PHONE 
-
-using System;
 using System.Linq;
-using System.Net;
+using VDS.RDF.Parsing.Tokens;
+#if WINDOWS_PHONE
 using System.Collections;
 using System.Collections.Generic;
-using VDS.Common.Collections;
 
 namespace VDS.RDF
 {
@@ -43,16 +40,17 @@ namespace VDS.RDF
     /// Emulates the HashSet class for Windows Phone since Windows Phone doesn't have the HashSet class in its Silverlight based profile
     /// </summary>
     /// <remarks>
-    /// Code taken from http://social.msdn.microsoft.com/Forums/en-US/windowsphone7series/thread/e1dd3571-dfb8-4abe-b63a-62106d6a4965/
+    /// Does not handle null items
     /// </remarks>
-    public class HashSet<T> 
-        : ICollection<T>
+    public class HashSet<T>
+        : ICollection<T>, ISet<T>
     {
-        private MultiDictionary<T, List<T>> _dictionary;
+        private const byte Value = 0x0;
+        private readonly IDictionary<T, byte> _dictionary;
 
         public HashSet()
         {
-            this._dictionary = new MultiDictionary<T, List<T>>();
+            this._dictionary = new Dictionary<T, byte>();
         }
 
         public HashSet(IEnumerable<T> items)
@@ -63,13 +61,17 @@ namespace VDS.RDF
                 this.Add(item);
             }
         }
-        // Methods
-        public void Add(T item)
+
+        public bool Add(T item)
         {
-            if (!this.Contains(item))
-            {
-                this._dictionary.Add(item, new List<T> { item });
-            }
+            if (this.Contains(item)) return false;
+            this._dictionary.Add(item, Value);
+            return true;
+        }
+
+        void ICollection<T>.Add(T item)
+        {
+            ((ISet<T>)this).Add(item);
         }
 
         public void Clear()
@@ -79,43 +81,22 @@ namespace VDS.RDF
 
         public bool Contains(T item)
         {
-            List<T> values;
-            if (this._dictionary.TryGetValue(item, out values))
-            {
-                return values.Contains(item);
-            }
-            else
-            {
-                return false;
-            }
+            return this._dictionary.ContainsKey(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
             this._dictionary.Keys.CopyTo(array, arrayIndex);
-            //throw new NotImplementedException();
         }
 
         public bool Remove(T item)
         {
-            List<T> values;
-            if (this._dictionary.TryGetValue(item, out values))
-            {
-                bool result = values.Remove(item);
-                if (result && values.Count == 0) this._dictionary.Remove(item);
-                return result;
-            }
-            else
-            {
-                return false;
-            }
+            return this._dictionary.Remove(item);
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return (from items in this._dictionary.Values
-                    from item in items
-                    select item).GetEnumerator();
+            return this._dictionary.Keys.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -131,25 +112,93 @@ namespace VDS.RDF
             }
         }
 
-        // Properties
+        public void IntersectWith(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            foreach (T key in this._dictionary.Keys.ToList())
+            {
+                if (!temp.Contains(key)) this._dictionary.Remove(key);
+            }
+        }
+
+        public void ExceptWith(IEnumerable<T> other)
+        {
+            foreach (T key in other)
+            {
+                this._dictionary.Remove(key);
+            }
+        }
+
+        public void SymmetricExceptWith(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            // Firstly remove things present in both
+            foreach (T key in temp.ToList())
+            {
+                if (this.Remove(key))
+                {
+                    // Also in other set so remove
+                    temp.Remove(key);
+                }
+                else
+                {
+                    // Not in current set so add
+                    this.Add(key);
+                }
+            }
+        }
+
+        public bool IsSubsetOf(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            return this._dictionary.Keys.All(k => temp.Contains(k));
+        }
+
+        public bool IsSupersetOf(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            if (temp.Count > this.Count) return false;
+            return temp.All(k => this.Contains(k));
+        }
+
+        public bool IsProperSupersetOf(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            if (temp.Count == 0 && this.Count != 0) return true;
+            if (temp.Count > this.Count) return false;
+            return temp.All(k => this.Contains(k));
+        }
+
+        public bool IsProperSubsetOf(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            if (this.Count == 0 && temp.Count != 0) return true;
+            if (this.Count > temp.Count) return false;
+            return this._dictionary.Keys.All(k => temp.Contains(k));
+        }
+
+        public bool Overlaps(IEnumerable<T> other)
+        {
+            return other.Any(k => this.Contains(k));
+        }
+
+        public bool SetEquals(IEnumerable<T> other)
+        {
+            ISet<T> temp = new HashSet<T>(other);
+            if (this.Count != temp.Count) return false;
+            return this._dictionary.Keys.All(k => temp.Contains(k));
+        }
+
         public int Count
         {
-            get
-            {
-                return (from items in this._dictionary.Values
-                        select items.Count).Sum();
-            }
+            get { return this._dictionary.Count; }
         }
 
         public bool IsReadOnly
         {
-            get
-            { 
-                return false;
-            }
+            get { return false; }
         }
     }
-
 }
 
 #endif
