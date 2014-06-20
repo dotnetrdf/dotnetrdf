@@ -39,7 +39,7 @@ namespace VDS.RDF.Update.Commands
     public class InsertDataCommand
         : SparqlUpdateCommand
     {
-        private GraphPattern _pattern;
+        private readonly GraphPattern _pattern;
 
         /// <summary>
         /// Creates a new INSERT DATA command
@@ -65,18 +65,15 @@ namespace VDS.RDF.Update.Commands
                 //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
                 return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
             }
-            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+            if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
                 //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
                 return false;
             }
-            else
-            {
-                //For other patterns all Triple patterns must be constructable with no explicit variables
-                //If top level then any Child Graph Patterns must be valid
-                //Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
-            }
+            //For other patterns all Triple patterns must be constructable with no explicit variables
+            //If top level then any Child Graph Patterns must be valid
+            //Otherwise must have no Child Graph Patterns
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
         }
 
         /// <summary>
@@ -101,23 +98,13 @@ namespace VDS.RDF.Update.Commands
                 {
                     return true;
                 }
-                else
-                {
-                    List<String> affectedUris = new List<string>();
-                    if (this._pattern.IsGraph)
-                    {
-                        affectedUris.Add(this._pattern.GraphSpecifier.Value);
-                    }
-                    else
-                    {
-                        affectedUris.Add(null);
-                    }
-                    affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
-                                          where p.IsGraph
-                                          select p.GraphSpecifier.Value);
+                List<String> affectedUris = new List<string>();
+                affectedUris.Add(this._pattern.IsGraph ? this._pattern.GraphSpecifier.Value : null);
+                affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
 
-                    return affectedUris.Distinct().Count() <= 1;
-                }
+                return affectedUris.Distinct().Count() <= 1;
             }
         }
 
@@ -129,14 +116,7 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(Uri graphUri)
         {
             List<String> affectedUris = new List<string>();
-            if (this._pattern.IsGraph)
-            {
-                affectedUris.Add(this._pattern.GraphSpecifier.Value);
-            } 
-            else 
-            {
-                affectedUris.Add(String.Empty);
-            }
+            affectedUris.Add(this._pattern.IsGraph ? this._pattern.GraphSpecifier.Value : String.Empty);
             if (this._pattern.HasChildGraphPatterns)
             {
                 affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
@@ -213,14 +193,13 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 //Insert the actual Triples
-                INode subj, pred, obj;
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
-                    subj = p.Subject.Construct(constructContext);
-                    pred = p.Predicate.Construct(constructContext);
-                    obj = p.Object.Construct(constructContext);
+                    INode subj = p.Subject.Construct(constructContext);
+                    INode pred = p.Predicate.Construct(constructContext);
+                    INode obj = p.Object.Construct(constructContext);
 
-                    target.Assert(new Triple(subj, pred, obj));
+                    target.Assert(new Triple(subj, pred, obj, graphUri));
                 }
             }
         }
