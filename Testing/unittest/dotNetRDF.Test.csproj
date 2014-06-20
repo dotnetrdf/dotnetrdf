@@ -216,6 +216,7 @@
     <Compile Include="Storage\Async\VirtuosoAsync.cs" />
     <Compile Include="TestConfigManager.cs" />
     <Compile Include="TestTools.cs" />
+    <Compile Include="Update\LoadTests.cs" />
     <Compile Include="Update\UpdateTests2.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Update\UpdateTests1.cs" />
@@ -247,6 +248,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\core-349.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-421\g1.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-421\g2.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-421\test.nq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\diff_cases\case1_a.ttl">
@@ -3354,6 +3364,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\core-416.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-421\test.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-421\test2.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">
