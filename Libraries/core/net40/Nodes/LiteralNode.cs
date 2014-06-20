@@ -275,7 +275,7 @@ namespace VDS.RDF.Nodes
         {
             StringBuilder stringOut = new StringBuilder();
             stringOut.Append(this.Value);
-            if (!this.HasLanguage)
+            if (this.HasLanguage)
             {
                 stringOut.Append("@");
                 stringOut.Append(this.Language);

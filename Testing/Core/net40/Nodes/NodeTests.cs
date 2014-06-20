@@ -51,7 +51,7 @@ namespace VDS.RDF.Nodes
                 g.CreateBlankNode(Guid.NewGuid()),
                 g.CreateLiteralNode("Test text"),
                 g.CreateLiteralNode("Test text", "en"),
-                g.CreateLiteralNode("Test text", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
+                g.CreateLiteralNode("Test text", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), // Equivalent to CreateLiteralNode("Test text") due to RDF 1.1 implicit typing
                 g.CreateUriNode("rdf:type"),
                 null,
                 g.CreateUriNode(new Uri("http://example.org#test")),
@@ -62,7 +62,7 @@ namespace VDS.RDF.Nodes
             {
                 Console.WriteLine(n != null ? n.ToString() : "null");
             }
-            Assert.AreEqual(test.Count - 2, test.Distinct().Count());
+            Assert.AreEqual(test.Count - 3, test.Distinct().Count());
         }
    
         [Test]
@@ -246,7 +246,7 @@ namespace VDS.RDF.Nodes
                 Assert.AreNotEqual(helloEn, helloAgain, "Identical Literals with differing Language Tags are non-equal");
                 Assert.AreNotEqual(helloEnUS, helloAgain, "Identical Literals with differing Language Tags are non-equal");
 
-                Assert.AreEqual(hello, helloAgain, "Identical Literals with the same Language Tag are equal");
+                Assert.AreEqual(hello, helloAgain, "Identical Literals with no Language Tag are equal");
 
                 //Test Plain Literals
                 INode plain1, plain2, plain3, plain4;
@@ -303,13 +303,6 @@ namespace VDS.RDF.Nodes
                 Assert.AreEqual(one3, one4, "Literals with equivalent lexical values and identical data types can be considered equal under Loose Equality Mode");
                 Assert.AreNotEqual(t, one5, "Literals with equivalent lexical values (but which are not in the recognized lexical space of the type i.e. require a cast) and identical data types are still non-equal under Loose Equality Mode");
 
-            }
-            catch (Exception ex)
-            {
-                //Reset Literal Equality Mode
-                Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
-
-                throw;
             }
             finally
             {

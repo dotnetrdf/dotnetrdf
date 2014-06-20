@@ -137,49 +137,30 @@ namespace VDS.RDF.Nodes
                 return false;
             }
 
-            //Language Tags must be equal (if present)
-            //If they don't have language tags then they'll both be set to String.Empty which will give true
-            if (a.HasLanguage && b.HasLanguage)
+            // Language Tags must be equal (if present)
+            if (a.HasLanguage || b.HasLanguage)
             {
-                if (a.Language.Equals(b.Language, StringComparison.OrdinalIgnoreCase))
-                {
-                    //Datatypes must be equal (if present)
-                    //If they don't have Data Types then they'll both be null
-                    //Otherwise the URIs must be equal
-                    if (!a.HasDataType && !b.HasDataType)
-                    {
-                        //Use String equality to get the result
-                        return a.Value.Equals(b.Value, StringComparison.Ordinal);
-                    }
-                    if (!a.HasDataType)
-                    {
-                        //We have a Null DataType but the other Node doesn't so can't be equal
-                        return false;
-                    }
-                    if (!b.HasDataType)
-                    {
-                        //The other Node has a Null DataType but we don't so can't be equal
-                        return false;
-                    }
-                    if (AreUrisEqual(a.DataType, b.DataType))
-                    {
-                        //We have equal DataTypes so use String Equality to evaluate
-                        if (Options.LiteralEqualityMode == LiteralEqualityMode.Strict)
-                        {
-                            //Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
-                            return a.Value.Equals(b.Value, StringComparison.Ordinal);
-                        }
-                        //Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
-                        return (a.CompareTo(b) == 0);
-                    }
-                    //Data Types didn't match
-                    return false;
-                }
-                //Language Tags didn't match
-                return false;
+                // If both don't have a language tag then they are not equal
+                if (!(a.HasLanguage && b.HasLanguage)) return false;
+
+                // Check Language Tags are equal, language tags are case insensitive
+                return a.Language.Equals(b.Language, StringComparison.OrdinalIgnoreCase) && a.Value.Equals(b.Value, StringComparison.Ordinal);
             }
-            // One has a language tag and the other does not
-            return false;
+
+            // For plain literals the lexical value must be equal
+            if (!a.HasDataType && !b.HasDataType) return a.Value.Equals(b.Value, StringComparison.Ordinal);
+
+            // If both don't have same data type then they are not equal
+            if (!AreUrisEqual(a.DataType, b.DataType)) return false;
+
+            //We have equal DataTypes so use check if lexical values are equivalent
+            if (Options.LiteralEqualityMode == LiteralEqualityMode.Strict)
+            {
+                //Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
+                return a.Value.Equals(b.Value, StringComparison.Ordinal);
+            }
+            //Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
+            return (a.CompareTo(b) == 0);
         }
 
         /// <summary>
