@@ -1317,8 +1317,8 @@ WHERE
             store.LoadFromFile(@"resources\core-416.trig");
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
-            SparqlFormatter formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
+            //SparqlFormatter formatter = new SparqlFormatter();
+            //Console.WriteLine(formatter.Format(q));
 
             ISparqlDataset dataset = AsDataset(store);
 
@@ -1336,9 +1336,8 @@ WHERE
                     Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
                     total = total + q.QueryExecutionTime.Value;
                 }
-                //TestTools.ShowResults(results);
-
-                Assert.AreEqual(14, results.Count);
+                TestTools.ShowResults(results);
+                Assert.AreEqual(4, results.Count);
             }
 
             Console.WriteLine("Total ExecutionT Time: " + total);

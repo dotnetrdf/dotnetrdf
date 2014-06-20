@@ -70,7 +70,6 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data, context.Processor);
-                //subcontext.InputMultiset = context.InputMultiset;
 
                 //Add any Named Graphs to the subquery
                 if (context.Query != null)
