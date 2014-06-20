@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -674,6 +675,45 @@ WHERE
             Assert.IsNotNull(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
             Assert.AreEqual(1, g.Triples.Count, "Expected a single triple");
+        }
+
+        [Test]
+        public void SparqlConstructFromSubqueryWithLimitCore420()
+        {
+            const string queryStr = @"CONSTRUCT
+{
+  ?s ?p ?o .
+} WHERE {
+  ?s ?p ?o .
+  {
+    SELECT ?s WHERE {
+      ?s a <http://xmlns.com/foaf/0.1/Person> .
+    } LIMIT 3
+  }
+}";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+            IGraph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
+            g.NamespaceMap.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            var rdfType = g.CreateUriNode("rdf:type");
+            var person = g.CreateUriNode("foaf:Person");
+            var name = g.CreateUriNode("foaf:name");
+            var age = g.CreateUriNode("foaf:age");
+            for (int i = 0; i < 3; i++)
+            {
+                // Create 3 statements for each instance of foaf:Person (including rdf:type statement)
+                var s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
+                g.Assert(new Triple(s, rdfType, person));
+                g.Assert(new Triple(s, name, g.CreateLiteralNode("Person " + i)));
+                g.Assert(new Triple(s, age, g.CreateLiteralNode((20 + i).ToString(CultureInfo.InvariantCulture))));
+            }
+
+            //ISparqlQueryProcessor processor = new ExplainQueryProcessor(new InMemoryDataset(g), ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll | ExplanationLevel.OutputToConsoleStdOut);
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            var resultGraph = processor.ProcessQuery(q) as IGraph;
+
+            Assert.That(resultGraph, Is.Not.Null);
+            Assert.That(resultGraph.Triples.Count, Is.EqualTo(9)); // Returns 3 rather than 9
         }
     }
 }
