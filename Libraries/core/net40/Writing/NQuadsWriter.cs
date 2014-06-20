@@ -223,7 +223,8 @@ namespace VDS.RDF.Writing
             if (t.GraphUri != null || graphUri != null)
             {
                 output.Append(" <");
-                output.Append(context.UriFormatter.FormatUri(t.GraphUri ?? graphUri));
+                // Favour graph name rather than per-triple graph name because we may have a triple with a different graph name than the containing graph
+                output.Append(context.UriFormatter.FormatUri(graphUri ?? t.GraphUri));
                 output.Append(">");
             }
             output.Append(" .");

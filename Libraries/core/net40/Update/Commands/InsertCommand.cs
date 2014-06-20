@@ -358,7 +358,7 @@ namespace VDS.RDF.Update.Commands
                                     try
                                     {
                                         Triple t = p.Construct(constructContext);
-                                        // BUG - CORE-421
+                                        t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
                                         insertedTriples.Add(t);
                                     }
                                     catch (RdfQueryException)

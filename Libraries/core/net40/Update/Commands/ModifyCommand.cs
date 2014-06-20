@@ -42,7 +42,7 @@ namespace VDS.RDF.Update.Commands
     public class ModifyCommand 
         : BaseModificationCommand
     {
-        private GraphPattern _deletePattern, _insertPattern, _wherePattern;
+        private readonly GraphPattern _deletePattern, _insertPattern, _wherePattern;
 
         /// <summary>
         /// Creates a new INSERT/DELETE command
@@ -110,14 +110,7 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(Uri graphUri)
         {
             List<String> affectedUris = new List<string>();
-            if (this.TargetUri != null)
-            {
-                affectedUris.Add(this.TargetUri.AbsoluteUri);
-            }
-            else
-            {
-                affectedUris.Add(String.Empty);
-            }
+            affectedUris.Add(this.TargetUri != null ? this.TargetUri.AbsoluteUri : String.Empty);
             if (this._deletePattern.IsGraph) affectedUris.Add(this._deletePattern.GraphSpecifier.Value);
             if (this._deletePattern.HasChildGraphPatterns)
             {
@@ -467,7 +460,9 @@ namespace VDS.RDF.Update.Commands
                             {
                                 try
                                 {
-                                    insertedTriples.Add(p.Construct(constructContext));
+                                    Triple t = p.Construct(constructContext);
+                                    t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
+                                    insertedTriples.Add(t);
                                 }
                                 catch (RdfQueryException)
                                 {

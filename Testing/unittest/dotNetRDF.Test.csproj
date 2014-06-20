@@ -3372,6 +3372,9 @@
     <Content Include="resources\core-421\test2.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\core-421\test3.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
