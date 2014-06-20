@@ -94,11 +94,8 @@ namespace VDS.RDF.Nodes
             {
                 return this.Equals((INode) obj);
             }
-            else
-            {
-                //Can only be equal to things which are Nodes
-                return false;
-            }
+            //Can only be equal to things which are Nodes
+            return false;
         }
 
         /// <summary>
@@ -114,15 +111,8 @@ namespace VDS.RDF.Nodes
             if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            if (other.NodeType == NodeType.Blank)
-            {
-                return EqualityHelper.AreBlankNodesEqual(this, other);
-            }
-            else
-            {
-                //Can only be equal to Blank Nodes
-                return false;
-            }
+            //Can only be equal to Blank Nodes
+            return other.NodeType == NodeType.Blank && EqualityHelper.AreBlankNodesEqual(this, other);
         }
 
         /// <summary>
@@ -150,22 +140,19 @@ namespace VDS.RDF.Nodes
                 //So we return a 1 to indicate we're greater than it
                 return 1;
             }
-            else if (other.NodeType == NodeType.Variable)
+            if (other.NodeType == NodeType.Variable)
             {
                 //Blank Nodes are considered greater than Variables
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank)
+            if (other.NodeType == NodeType.Blank)
             {
                 //Order Blank Nodes lexically by their ID
                 return ComparisonHelper.CompareBlankNodes(this, other);
             }
-            else
-            {
-                //Anything else is greater than a Blank Node
-                //So we return a -1 to indicate we are less than the other Node
-                return -1;
-            }
+            //Anything else is greater than a Blank Node
+            //So we return a -1 to indicate we are less than the other Node
+            return -1;
         }
 
         /// <summary>

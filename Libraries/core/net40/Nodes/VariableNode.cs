@@ -92,19 +92,11 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
-
+            if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            if (other.NodeType == NodeType.Variable)
-            {
-                return EqualityHelper.AreVariablesEqual(this, (INode)other);
-            }
-            else
-            {
-                //Can only be equal to other Variables
-                return false;
-            }
+            //Can only be equal to other Variables
+            return other.NodeType == NodeType.Variable && EqualityHelper.AreVariablesEqual(this, other);
         }
 
         /// <summary>
@@ -128,15 +120,12 @@ namespace VDS.RDF.Nodes
 
             if (ReferenceEquals(this, obj)) return true;
 
+            //Can only be equal to other Nodes
             if (obj is INode)
             {
                 return this.Equals((INode)obj);
             }
-            else
-            {
-                //Can only be equal to other Nodes
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -162,15 +151,12 @@ namespace VDS.RDF.Nodes
                 //Variables are considered greater than null
                 return 1;
             }
-            else if (other.NodeType == NodeType.Variable)
+            if (other.NodeType == NodeType.Variable)
             {
                 return ComparisonHelper.CompareVariables(this, other);
             }
-            else
-            {
-                //Variable Nodes are less than everything else
-                return -1;
-            }
+            //Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>

@@ -11,6 +11,7 @@ namespace VDS.RDF.Graphs
     /// </summary>
     [TestFixture]
     public abstract class AbstractGraphContractTests
+        : BaseTest
     {
         /// <summary>
         /// Gets a new fresh instance of a graph for testing
@@ -337,6 +338,98 @@ namespace VDS.RDF.Graphs
             actual = g.Edges.ToList();
             Assert.AreEqual(es.Length, actual.Count);
             Assert.IsTrue(es.All(e => actual.Remove(e)));
+        }
+
+        [Test]
+        public void GraphContractUsage1()
+        {
+            //Create a new Empty Graph
+            IGraph g = this.GetInstance();
+            Assert.IsNotNull(g);
+
+            //Define Namespaces
+            g.Namespaces.AddNamespace("vds", new Uri("http://www.vdesign-studios.com/dotNetRDF#"));
+            g.Namespaces.AddNamespace("ecs", new Uri("http://id.ecs.soton.ac.uk/person/"));
+
+            //Check we set the Namespace OK
+            Assert.IsTrue(g.Namespaces.HasNamespace("vds"), "Failed to set a Namespace");
+
+            //Create Uri Nodes
+            INode rav08r, wh, lac, hcd;
+            rav08r = g.CreateUriNode("ecs:11471");
+            wh = g.CreateUriNode("ecs:1650");
+            hcd = g.CreateUriNode("ecs:46");
+            lac = g.CreateUriNode("ecs:60");
+
+            //Create Uri Nodes for some Predicates
+            INode supervises, collaborates, advises, has;
+            supervises = g.CreateUriNode("vds:supervises");
+            collaborates = g.CreateUriNode("vds:collaborates");
+            advises = g.CreateUriNode("vds:advises");
+            has = g.CreateUriNode("vds:has");
+
+            //Create some Literal Nodes
+            INode singleLine = g.CreateLiteralNode("Some string");
+            INode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
+            INode french = g.CreateLiteralNode("Bonjour", "fr");
+            INode number = g.CreateLiteralNode("12", new Uri(g.Namespaces.GetNamespaceUri("xsd") + "integer"));
+
+            g.Assert(new Triple(wh, supervises, rav08r));
+            g.Assert(new Triple(lac, supervises, rav08r));
+            g.Assert(new Triple(hcd, advises, rav08r));
+            g.Assert(new Triple(wh, collaborates, lac));
+            g.Assert(new Triple(wh, collaborates, hcd));
+            g.Assert(new Triple(lac, collaborates, hcd));
+            g.Assert(new Triple(rav08r, has, singleLine));
+            g.Assert(new Triple(rav08r, has, multiLine));
+            g.Assert(new Triple(rav08r, has, french));
+            g.Assert(new Triple(rav08r, has, number));
+
+            //Now print all the Statements
+            Console.WriteLine("All Statements");
+            Assert.AreEqual(10, g.Count);
+
+            //Get statements about Rob Vesse
+            Console.WriteLine();
+            Console.WriteLine("Statements about Rob Vesse");
+            Assert.AreEqual(7, g.GetTriples(rav08r));
+
+            //Get Statements about Collaboration
+            Console.WriteLine();
+            Console.WriteLine("Statements about Collaboration");
+            Assert.AreEqual(3, g.GetTriples(collaborates));
+        }
+
+        [Test]
+        public void GraphContractUsage2()
+        {
+            //Create a new Empty Graph
+            IGraph g = this.GetInstance();
+            Assert.IsNotNull(g);
+
+            //Define Namespaces
+            g.Namespaces.AddNamespace("pets", new Uri("http://example.org/pets"));
+            Assert.IsTrue(g.Namespaces.HasNamespace("pets"));
+
+            //Create Uri Nodes
+            INode dog, fido, rob, owner, name, species, breed, lab;
+            dog = g.CreateUriNode("pets:Dog");
+            fido = g.CreateUriNode("pets:abc123");
+            rob = g.CreateUriNode("pets:def456");
+            owner = g.CreateUriNode("pets:hasOwner");
+            name = g.CreateUriNode("pets:hasName");
+            species = g.CreateUriNode("pets:isAnimal");
+            breed = g.CreateUriNode("pets:isBreed");
+            lab = g.CreateUriNode("pets:Labrador");
+
+            //Assert Triples
+            g.Assert(new Triple(fido, species, dog));
+            g.Assert(new Triple(fido, owner, rob));
+            g.Assert(new Triple(fido, name, g.CreateLiteralNode("Fido")));
+            g.Assert(new Triple(rob, name, g.CreateLiteralNode("Rob")));
+            g.Assert(new Triple(fido, breed, lab));
+
+            Assert.AreEqual(5, g.Count);
         }
     }
 

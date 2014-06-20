@@ -115,19 +115,11 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
-
+            if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            if (other.NodeType == NodeType.GraphLiteral)
-            {
-                return EqualityHelper.AreGraphLiteralsEqual(this, other);
-            }
-            else
-            {
-                //Can only be equal to a Graph Literal Node
-                return false;
-            }
+            //Can only be equal to a Graph Literal Node
+            return other.NodeType == NodeType.GraphLiteral && EqualityHelper.AreGraphLiteralsEqual(this, other);
         }
 
         /// <summary>
@@ -179,21 +171,18 @@ namespace VDS.RDF.Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType != NodeType.GraphLiteral)
+            if (other.NodeType != NodeType.GraphLiteral)
             {
                 //Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.GraphLiteral)
+            if (other.NodeType == NodeType.GraphLiteral)
             {
                 return ComparisonHelper.CompareGraphLiterals(this, (INode)other);
             }
-            else
-            {
-                //Anything else is Greater Than us
-                return -1;
-            }
+            //Anything else is Greater Than us
+            return -1;
         }
 
         /// <summary>

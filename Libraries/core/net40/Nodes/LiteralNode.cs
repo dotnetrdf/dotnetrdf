@@ -253,7 +253,7 @@ namespace VDS.RDF.Nodes
             if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return other.NodeType == NodeType.Literal && this.Equals((INode)other);
+            return other.NodeType == NodeType.Literal && EqualityHelper.AreLiteralsEqual(this, other);
         }
 
         /// <summary>

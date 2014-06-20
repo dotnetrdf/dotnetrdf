@@ -42,11 +42,11 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Internal Only Constructor for URI Nodes
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">URI</param>
         protected internal BaseUriNode(Uri uri)
             : base(NodeType.Uri)
         {
+// ReSharper disable once DoNotCallOverridableMethodsInConstructor
             this.Uri = uri;
 
             //Compute Hash Code
@@ -69,6 +69,7 @@ namespace VDS.RDF.Nodes
         protected BaseUriNode(SerializationInfo info, StreamingContext context)
             : base(NodeType.Uri)
         {
+// ReSharper disable once DoNotCallOverridableMethodsInConstructor
             this.Uri = UriFactory.Create(info.GetString("uri"));
 
             //Compute Hash Code
@@ -92,19 +93,15 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (obj == null) return false;
-
+            if (ReferenceEquals(obj, null)) return false;
             if (ReferenceEquals(this, obj)) return true;
 
             if (obj is INode)
             {
                 return this.Equals((INode) obj);
             }
-            else
-            {
-                //Can only be equal to other Nodes
-                return false;
-            }
+            //Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -117,19 +114,11 @@ namespace VDS.RDF.Nodes
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((Object) other == null) return false;
-
+            if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            if (other.NodeType == NodeType.Uri)
-            {
-                return EqualityHelper.AreUrisEqual(this.Uri, other.Uri);
-            }
-            else
-            {
-                //Can only be equal to UriNodes
-                return false;
-            }
+            //Can only be equal to UriNodes
+            return other.NodeType == NodeType.Uri && EqualityHelper.AreUrisEqual(this.Uri, other.Uri);
         }
 
         /// <summary>
@@ -171,23 +160,20 @@ namespace VDS.RDF.Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
+            if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
             {
                 //URI Nodes are greater than Blank and Variable Nodes
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Uri)
+            if (other.NodeType == NodeType.Uri)
             {
                 //Return the result of CompareTo using the URI comparison helper
                 return ComparisonHelper.CompareUris(this.Uri, other.Uri);
             }
-            else
-            {
-                //Anything else is considered greater than a URI Node
-                //Return -1 to indicate this
-                return -1;
-            }
+            //Anything else is considered greater than a URI Node
+            //Return -1 to indicate this
+            return -1;
         }
 
         /// <summary>
