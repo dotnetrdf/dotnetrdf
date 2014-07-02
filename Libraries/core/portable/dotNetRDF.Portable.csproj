@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
+    <WarningsAsErrors>3245,3644</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,6 +55,8 @@
     <DefineConstants>TRACE;PORTABLE, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <WarningsAsErrors>3245,3644</WarningsAsErrors>
+    <DocumentationFile>bin\Release\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Compatability\CryptoConfig.cs" />
