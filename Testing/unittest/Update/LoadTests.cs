@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !NO_FILE
+
+using System;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -110,3 +112,5 @@ namespace VDS.RDF.Update
         }
     }
 }
+
+#endif
