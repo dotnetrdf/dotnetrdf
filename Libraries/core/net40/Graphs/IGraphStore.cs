@@ -84,24 +84,14 @@ namespace VDS.RDF.Graphs
         void Add(IGraph g);
 
         /// <summary>
-        /// Adds the contents of a Graph to the store using the given URI for the added Quads
+        /// Adds the contents of a Graph to the store using the given graph name for the added Quads
         /// </summary>
-        /// <param name="graphName">URI of the Graph to add to</param>
+        /// <param name="graphName">Name of the Graph to add to</param>
         /// <param name="g">Graph</param>
         /// <remarks>
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
         void Add(INode graphName, IGraph g);
-
-        /// <summary>
-        /// Adds a Triple to the Store as a Quad using the given URI
-        /// </summary>
-        /// <param name="graphName">Graph name</param>
-        /// <param name="t">Triple</param>
-        /// <remarks>
-        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
-        /// </remarks>
-        void Add(INode graphName, Triple t);
 
         /// <summary>
         /// Adds a Quad to the Store
@@ -166,28 +156,10 @@ namespace VDS.RDF.Graphs
         void Remove(INode graphName);
 
         /// <summary>
-        /// Removes a Triple from the store using the given Graph name
-        /// </summary>
-        /// <param name="graphName">Graph name</param>
-        /// <param name="t">Triple</param>
-        /// <remarks>
-        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
-        /// </remarks>
-        void Remove(INode graphName, Triple t);
-
-        /// <summary>
         /// Removes a Quad from the store
         /// </summary>
         /// <param name="q">Quad</param>
         void Remove(Quad q);
-
-        /// <summary>
-        /// Get all Triples in the Store
-        /// </summary>
-        IEnumerable<Triple> Triples 
-        { 
-            get;
-        }
 
         /// <summary>
         /// Get all Quads in the store
@@ -198,27 +170,11 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
-        /// Is the given Triple contained in any graph in the store?
-        /// </summary>
-        /// <param name="t">Triple</param>
-        /// <returns></returns>
-        bool Contains(Triple t);
-
-        /// <summary>
         /// Is the given Quad contained in the store?
         /// </summary>
         /// <param name="q">Quad</param>
         /// <returns></returns>
         bool Contains(Quad q);
-
-        /// <summary>
-        /// Find any triples matching the given search criteria, null is treated as a wildcard.  Implementations should retain duplicates since the same triple may occur in multiple graphs.
-        /// </summary>
-        /// <param name="s">Subject</param>
-        /// <param name="p">Predicate</param>
-        /// <param name="o">Object</param>
-        /// <returns>Enumerable of triples</returns>
-        IEnumerable<Triple> FindTriples(INode s, INode p, INode o);
 
         /// <summary>
         /// Find any quads matching the given search criteria in any graph, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
@@ -227,7 +183,7 @@ namespace VDS.RDF.Graphs
         /// <param name="p">Predicate</param>
         /// <param name="o">Object</param>
         /// <returns>Enumerable of quads</returns>
-        IEnumerable<Quad> FindQuads(INode s, INode p, INode o);
+        IEnumerable<Quad> Find(INode s, INode p, INode o);
 
         /// <summary>
         /// Finds any quads matching the given search criteria, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
@@ -240,6 +196,6 @@ namespace VDS.RDF.Graphs
         /// <remarks>
         ///  <see cref="Quad.DefaultGraphNode"/> must be used to access the default unnamed graph since <em>null</em> is treated as a wildcard for this method
         /// </remarks>
-        IEnumerable<Quad> FindQuads(INode g, INode s, INode p, INode o);
+        IEnumerable<Quad> Find(INode g, INode s, INode p, INode o);
     }
 }

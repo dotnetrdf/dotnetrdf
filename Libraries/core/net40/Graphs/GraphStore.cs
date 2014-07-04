@@ -47,7 +47,7 @@ namespace VDS.RDF.Graphs
         /// Creates a new graph store using the default graph collection implementation
         /// </summary>
         public GraphStore()
-            : this(new GraphCollection()) { }
+            : this(new GraphCollection()) {}
 
         /// <summary>
         /// Creates a new graph store using the given graph collection
@@ -61,18 +61,12 @@ namespace VDS.RDF.Graphs
 
         public IEnumerable<INode> GraphNames
         {
-            get
-            {
-                return this._graphs.Keys; 
-            }
+            get { return this._graphs.Keys; }
         }
 
         public IEnumerable<IGraph> Graphs
         {
-            get 
-            {
-                return this._graphs.Values;
-            }
+            get { return this._graphs.Values; }
         }
 
         public IGraph this[INode graphName]
@@ -99,12 +93,6 @@ namespace VDS.RDF.Graphs
         {
             if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
             this._graphs.Add(graphName, g);
-        }
-
-        public void Add(INode graphName, Triple t)
-        {
-            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
-            this.Add(t.AsQuad(graphName));
         }
 
         public void Add(Quad q)
@@ -150,7 +138,7 @@ namespace VDS.RDF.Graphs
                 dest = new Graph();
                 this.Add(destName, dest);
             }
-            
+
             //Copy triples
             dest.Assert(src.Triples);
         }
@@ -222,86 +210,48 @@ namespace VDS.RDF.Graphs
             this._graphs.Remove(graphName);
         }
 
-        public void Remove(INode graphName, Triple t)
-        {
-            if (ReferenceEquals(graphName, null)) graphName = Quad.DefaultGraphNode;
-            if (this.HasGraph(graphName))
-            {
-                IGraph g = this[graphName];
-                g.Retract(t);
-            }
-        }
-
         public void Remove(Quad q)
         {
-            this.Remove(q.Graph, q.AsTriple());
-        }
-
-        public IEnumerable<Triple> Triples
-        {
-            get 
+            if (this.HasGraph(q.Graph))
             {
-                return (from g in this._graphs.Values
-                        from t in g.Triples
-                        select t);
+                this[q.Graph].Retract(q.AsTriple());
             }
         }
 
         public IEnumerable<Quad> Quads
         {
-            get 
+            get
             {
                 return (from kvp in this._graphs
-                        from t in kvp.Value.Triples
-                        select t.AsQuad(kvp.Key));
-
+                    from t in kvp.Value.Triples
+                    select t.AsQuad(kvp.Key));
             }
         }
 
-        public virtual IEnumerable<Triple> FindTriples(INode s, INode p, INode o)
-        {
-            return (from IGraph g in this._graphs.Values
-                    from t in g.Find(s, p, o)
-                    select t);
-        }
-
-        public virtual IEnumerable<Quad> FindQuads(INode s, INode p, INode o)
+        public virtual IEnumerable<Quad> Find(INode s, INode p, INode o)
         {
             return (from KeyValuePair<INode, IGraph> kvp in this._graphs
-                    from t in kvp.Value.Find(s, p, o)
-                    select t.AsQuad(kvp.Key));
+                from t in kvp.Value.Find(s, p, o)
+                select t.AsQuad(kvp.Key));
         }
 
-        public virtual IEnumerable<Quad> FindQuads(INode g, INode s, INode p, INode o)
+        public virtual IEnumerable<Quad> Find(INode g, INode s, INode p, INode o)
         {
             if (ReferenceEquals(g, null))
             {
                 // Null acts as a wildcard
-                return this.FindQuads(s, p, o);
+                return this.Find(s, p, o);
             }
-            else if (this.HasGraph(g))
-            {
-                // Otherwise search in a specific named graph
-                return this[g].Find(s, p, o).AsQuads(g);
-            }
-            else
-            {
-                return Enumerable.Empty<Quad>();
-            }
-        }
+            // If given graph is not present then no results
+            if (this.HasGraph(g)) return Enumerable.Empty<Quad>();
 
-        public bool Contains(Triple t)
-        {
-            return this._graphs.Values.Any(g => g.ContainsTriple(t));
+            // Otherwise search in a specific named graph
+            return this[g].Find(s, p, o).AsQuads(g);
         }
 
         public bool Contains(Quad q)
         {
-            if (this.HasGraph(q.Graph))
-            {
-                return this[q.Graph].ContainsTriple(q.AsTriple());
-            }
-            return false;
+            return this.HasGraph(q.Graph) && this[q.Graph].ContainsTriple(q.AsTriple());
         }
     }
 }
