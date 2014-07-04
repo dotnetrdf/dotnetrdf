@@ -40,10 +40,10 @@ namespace VDS.RDF.Utilities.Web.Deploy
     {
         private bool _noClassicRegistration = false;
         private bool _noIntegratedRegistration = false;
-        private bool _noLocalIIS = false;
+        private bool _noLocalIis = false;
         private bool _negotiate = false;
         private String _site = "Default Web Site";
-        private bool _sql = false, _virtuoso = false, _fulltext = false;
+        private bool _virtuoso = false, _fulltext = false;
 
         public void RunDeploy(String[] args)
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 }
             }
 
-            if (this._noLocalIIS)
+            if (this._noLocalIis)
             {
                 Console.WriteLine("rdfWebDeploy: No Local IIS Server available so switching to -xmldeploy mode");
                 XmlDeploy xdeploy = new XmlDeploy();
@@ -99,7 +99,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 //Deploy dotNetRDF and required DLLs to the bin directory of the application
                 String sourceFolder = RdfWebDeployHelper.ExecutablePath;
                 IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
-                if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
                 if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
                 if (this._fulltext) dlls = dlls.Concat(RdfWebDeployHelper.RequiredFullTextDLLs);
                 foreach (String dll in dlls)
@@ -330,7 +329,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         Console.WriteLine("rdfWebDeploy: IIS Classic Handler and Module registration will not be performed");
                         break;
                     case "-noiis":
-                        this._noLocalIIS = true;
+                        this._noLocalIis = true;
                         Console.WriteLine("rdfWebDeploy: No local IIS Server available");
                         break;
                     case "-site":
@@ -345,10 +344,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             Console.Error.Write("rdfWebDeploy: Error: Expected a site name to be specified after the -site option");
                             return false;
                         }
-                        break;
-                    case "-sql":
-                        this._sql = true;
-                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
                         break;
                     case "-virtuoso":
                         this._virtuoso = true;
