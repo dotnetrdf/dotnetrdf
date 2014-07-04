@@ -29,14 +29,15 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Graphs
 {
     /// <summary>
-    /// Interface for Graph Stores
+    /// Interface for Graph Stores, an extension of an <see cref="IQuadStore"/> that allows the data to be accessed in terms of <see cref="IGraph"/> instances
     /// </summary>
     /// <remarks>
     /// <para>
     /// This interface is a hybrid of the old ITripleStore and ISparqlDataset interfaces from the 1.0 APIs, it allows for data to be manipulated at either the Graph, Triple or Quad level as desired.
     /// </para>
     /// </remarks>
-    public interface IGraphStore
+    public interface IGraphStore 
+        : IQuadStore
     {
         /// <summary>
         /// Gets the names of the Graphs in the Store
@@ -68,16 +69,6 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
-        /// Determines whether the store has a specific graph
-        /// </summary>
-        /// <param name="graphName">Graph name</param>
-        /// <returns>True if the Graph exists in the store, false otherwise</returns>
-        /// <remarks>
-        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
-        /// </remarks>
-        bool HasGraph(INode graphName);
-
-        /// <summary>
         /// Adds the contents of a Graph to the stores default unnamed graph
         /// </summary>
         /// <param name="g">Graph</param>
@@ -92,12 +83,6 @@ namespace VDS.RDF.Graphs
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
         void Add(INode graphName, IGraph g);
-
-        /// <summary>
-        /// Adds a Quad to the Store
-        /// </summary>
-        /// <param name="q">Quad</param>
-        void Add(Quad q);
 
         /// <summary>
         /// Copies the contents of one graph to another
@@ -120,15 +105,6 @@ namespace VDS.RDF.Graphs
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
         void Move(INode srcName, INode destName, bool overwrite);
-
-        /// <summary>
-        /// Clears the contents of the given graph
-        /// </summary>
-        /// <param name="graphName">Graph name</param>
-        /// <remarks>
-        /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
-        /// </remarks>
-        void Clear(INode graphName);
 
         /// <summary>
         /// Removes the contents of the given graph from the stores default unnamed graph
@@ -154,48 +130,5 @@ namespace VDS.RDF.Graphs
         /// <em>null</em> or <see cref="Quad.DefaultGraphNode"/> may be used to access the default unnamed graph
         /// </remarks>
         void Remove(INode graphName);
-
-        /// <summary>
-        /// Removes a Quad from the store
-        /// </summary>
-        /// <param name="q">Quad</param>
-        void Remove(Quad q);
-
-        /// <summary>
-        /// Get all Quads in the store
-        /// </summary>
-        IEnumerable<Quad> Quads 
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Is the given Quad contained in the store?
-        /// </summary>
-        /// <param name="q">Quad</param>
-        /// <returns></returns>
-        bool Contains(Quad q);
-
-        /// <summary>
-        /// Find any quads matching the given search criteria in any graph, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
-        /// </summary>
-        /// <param name="s">Subject</param>
-        /// <param name="p">Predicate</param>
-        /// <param name="o">Object</param>
-        /// <returns>Enumerable of quads</returns>
-        IEnumerable<Quad> Find(INode s, INode p, INode o);
-
-        /// <summary>
-        /// Finds any quads matching the given search criteria, null is treated as a wildcard.  Implementations should not retain duplicates though it should be impossible to have duplicate quads in the first place.
-        /// </summary>
-        /// <param name="g">Graph name</param>
-        /// <param name="s">Subject</param>
-        /// <param name="p">Predicate</param>
-        /// <param name="o">Object</param>
-        /// <returns>Enumerable of quads</returns>
-        /// <remarks>
-        ///  <see cref="Quad.DefaultGraphNode"/> must be used to access the default unnamed graph since <em>null</em> is treated as a wildcard for this method
-        /// </remarks>
-        IEnumerable<Quad> Find(INode g, INode s, INode p, INode o);
     }
 }

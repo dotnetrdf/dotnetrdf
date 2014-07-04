@@ -26,14 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Graphs
 {
     /// <summary>
-    /// In-memory implementation of a Graph store that uses a <see cref="IGraphCollection"/> behind the scenes
+    /// In-memory implementation of a Graph/Quad store that uses a <see cref="IGraphCollection"/> behind the scenes
     /// </summary>
     public class GraphStore
         : IGraphStore
