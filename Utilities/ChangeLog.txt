@@ -31,6 +31,7 @@ rdfServer
 rdfServerGUI
  
 rdfWebDeploy
+- Fix a bug with it trying to deploy/test for the presence of incorrect DLLs (TOOLS-424)
 
 soh 
 
