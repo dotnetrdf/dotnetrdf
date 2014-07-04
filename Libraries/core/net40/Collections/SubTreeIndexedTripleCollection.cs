@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
 using VDS.RDF.Graphs;
@@ -45,35 +44,34 @@ namespace VDS.RDF.Collections
     public class SubTreeIndexedTripleCollection
         : BaseTripleCollection
     {
-        //Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
-        //Indexes
-        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
-                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
-                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer());
+        // Main Storage
+        private readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
+        // Indexes
+        private readonly MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>>(new FastNodeComparer()),
+            _p = new MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>>(new FastNodeComparer()),
+            _o = new MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>>(new FastNodeComparer());
 
-        //Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode("s"),
-                             _predVar = new VariableNode("p"),
-                             _objVar = new VariableNode("o");
+        // Placeholder Variables for compound lookups
+        private readonly VariableNode _subjVar = new VariableNode("s"),
+            _predVar = new VariableNode("p"),
+            _objVar = new VariableNode("o");
 
         //Hash Functions
-        private Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
-                                  _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
-                                  _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
+        private readonly Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
+            _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
+            _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
 
         //Comparers
-        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastNodeComparer()),
-                                  _pComparer = new PredicateObjectComparer(new FastNodeComparer()),
-                                  _oComparer = new ObjectSubjectComparer(new FastNodeComparer());
+        private readonly IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastNodeComparer()),
+            _pComparer = new PredicateObjectComparer(new FastNodeComparer()),
+            _oComparer = new ObjectSubjectComparer(new FastNodeComparer());
 
         private long _count = 0;
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection
         /// </summary>
-        public SubTreeIndexedTripleCollection()
-        { }
+        public SubTreeIndexedTripleCollection() {}
 
         /// <summary>
         /// Indexes a Triple
@@ -94,7 +92,7 @@ namespace VDS.RDF.Collections
         /// <param name="index">Index to insert into</param>
         /// <param name="comparer">Comparer for the Index</param>
         /// <param name="hashFunc">Hash Function for the Index</param>
-        private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
+        private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index, Func<Triple, int> hashFunc, IComparer<Triple> comparer)
         {
             MultiDictionary<Triple, List<Triple>> subtree;
             if (index.TryGetValue(n, out subtree))
@@ -104,7 +102,7 @@ namespace VDS.RDF.Collections
                 {
                     if (ts == null)
                     {
-                        subtree[t] = new List<Triple> { t };
+                        subtree[t] = new List<Triple> {t};
                     }
                     else
                     {
@@ -113,13 +111,13 @@ namespace VDS.RDF.Collections
                 }
                 else
                 {
-                    subtree.Add(t, new List<Triple> { t });
+                    subtree.Add(t, new List<Triple> {t});
                 }
             }
             else
             {
                 subtree = new MultiDictionary<Triple, List<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
-                subtree.Add(t, new List<Triple> { t });
+                subtree.Add(t, new List<Triple> {t});
                 index.Add(n, subtree);
             }
         }
@@ -133,7 +131,6 @@ namespace VDS.RDF.Collections
             this.Unindex(t.Subject, t, this._s);
             this.Unindex(t.Predicate, t, this._p);
             this.Unindex(t.Object, t, this._o);
-
         }
 
         /// <summary>
@@ -187,7 +184,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override long Count
         {
-            get 
+            get
             {
                 //Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
                 return this._count;
@@ -223,15 +220,15 @@ namespace VDS.RDF.Collections
             if (this._o.TryGetValue(obj, out subtree))
             {
                 return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
+                    where ts != null
+                    from t in ts
+                    select t);
             }
             else
             {
                 return Enumerable.Empty<Triple>();
             }
-         }
+        }
 
         /// <summary>
         /// Gets all the triples with a given predicate
@@ -244,9 +241,9 @@ namespace VDS.RDF.Collections
             if (this._p.TryGetValue(pred, out subtree))
             {
                 return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
+                    where ts != null
+                    from t in ts
+                    select t);
             }
             else
             {
@@ -265,9 +262,9 @@ namespace VDS.RDF.Collections
             if (this._s.TryGetValue(subj, out subtree))
             {
                 return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
+                    where ts != null
+                    from t in ts
+                    select t);
             }
             else
             {
@@ -284,7 +281,7 @@ namespace VDS.RDF.Collections
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
             MultiDictionary<Triple, List<Triple>> subtree;
-            if (this._p.TryGetValue(obj, out subtree))
+            if (this._p.TryGetValue(pred, out subtree))
             {
                 List<Triple> ts;
                 if (subtree.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
@@ -361,10 +358,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
-            get 
-            {
-                return this._o.Keys;
-            }
+            get { return this._o.Keys; }
         }
 
         /// <summary>
@@ -372,10 +366,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
-            get
-            {
-                return this._p.Keys;
-            }
+            get { return this._p.Keys; }
         }
 
         /// <summary>
@@ -383,10 +374,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
-            get 
-            {
-                return this._s.Keys;
-            }
+            get { return this._s.Keys; }
         }
 
         /// <summary>
