@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Query;
 
@@ -335,6 +336,68 @@ namespace VDS.RDF.Parsing
             this._parser.Load(results, new StringReader(data));
 
             Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.IsFalse(results.Result);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore423_02()
+        {
+            const String data = @"{""boolean"": true, ""head"": {""link"": []}}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.IsTrue(results.Result);
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore423_03()
+        {
+            const String data = @"{ 
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+  },
+  ""head"": { ""vars"": [ ""x"" ] }";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(1, results.Variables.Count());
+        }
+
+        [Test]
+        public void ParsingSparqlJsonCore423_04()
+        {
+            const String data = @"{ 
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+  },
+  ""head"": { ""vars"": [ ""x"", ""y"" ] }";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(2, results.Variables.Count());
+        }
+
+        [Test,ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore423_05()
+        {
+            const String data = @"{ 
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""y"" : { ""type"" : ""uri"",  ""value"" : ""urn:a:test"" } }
+   ],
+  },
+  ""head"": { ""vars"": [ ""x"" ] }";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
         }
     }
 }
