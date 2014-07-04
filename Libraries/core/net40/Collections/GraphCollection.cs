@@ -88,16 +88,10 @@ namespace VDS.RDF.Collections
         public override bool Remove(INode graphName)
         {
             IGraph g;
-            if (this._graphs.TryGetValue(graphName, out g))
-            {
-                if (this._graphs.Remove(graphName))
-                {
-                    this.RaiseGraphRemoved(g, graphName);
-                    return true;
-                }
-                return false;
-            }
-            return false;
+            if (!this._graphs.TryGetValue(graphName, out g)) return false;
+            if (!this._graphs.Remove(graphName)) return false;
+            this.RaiseGraphRemoved(g, graphName);
+            return true;
         }
 
         /// <summary>
@@ -160,10 +154,7 @@ namespace VDS.RDF.Collections
                 {
                     return g;
                 }
-                else
-                {
-                    throw new RdfException("The Graph with the given name does not exist in this Graph Collection");
-                }
+                throw new RdfException("The Graph with the given name does not exist in this Graph Collection");
             }
             set
             {

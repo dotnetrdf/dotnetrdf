@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using VDS.Common.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
@@ -44,11 +42,6 @@ namespace VDS.RDF.Collections
         /// Underlying Storage of the Triple Collection
         /// </summary>
         protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
-
-        /// <summary>
-        /// Creates a new Triple Collection
-        /// </summary>
-        public TripleCollection() { }
 
         /// <summary>
         /// Determines whether a given Triple is in the Triple Collection

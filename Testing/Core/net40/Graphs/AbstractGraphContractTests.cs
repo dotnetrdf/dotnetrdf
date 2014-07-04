@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Graphs
@@ -523,6 +524,15 @@ namespace VDS.RDF.Graphs
         protected override IGraph GetInstance()
         {
             return new Graph();
+        }
+    }
+
+    public class GraphWithSubTreeIndexContractTests
+        : AbstractGraphContractTests
+    {
+        protected override IGraph GetInstance()
+        {
+            return new Graph(new SubTreeIndexedTripleCollection());
         }
     }
 

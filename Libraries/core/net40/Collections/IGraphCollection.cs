@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
@@ -31,7 +30,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for Graph Collections, a graph collection is a RDF dictionary therefore graphs with duplicate names will be merged together.
+    /// Interface for Graph Collections, a graph collection is a RDF dictionary therefore graphs with duplicate names will be merged together when <see cref="ICollection{T}.Add"/> is used
     /// </summary>
     public interface IGraphCollection
         : IRdfDictionary<INode,IGraph>

@@ -54,14 +54,7 @@ namespace VDS.RDF.Collections
         public virtual bool Contains(KeyValuePair<INode, IGraph> kvp)
         {
             IGraph g;
-            if (this.TryGetValue(kvp.Key, out g))
-            {
-                return kvp.Value.Equals(g);
-            }
-            else
-            {
-                return false;
-            }
+            return this.TryGetValue(kvp.Key, out g) && kvp.Value.Equals(g);
         }
 
         /// <summary>
@@ -114,19 +107,9 @@ namespace VDS.RDF.Collections
             IGraph g;
             if (this.TryGetValue(kvp.Key, out g))
             {
-                if (kvp.Value.Equals(g))
-                {
-                    return this.Remove(kvp.Key);
-                }
-                else
-                {
-                    return false;
-                }
+                return kvp.Value.Equals(g) && this.Remove(kvp.Key);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -194,11 +177,8 @@ namespace VDS.RDF.Collections
                 g = this[graphName];
                 return true;
             }
-            else
-            {
-                g = null;
-                return false;
-            }
+            g = null;
+            return false;
         }
 
         /// <summary>
@@ -209,7 +189,7 @@ namespace VDS.RDF.Collections
         public virtual void CopyTo(KeyValuePair<INode, IGraph>[] dest, int index)
         {
             if (dest == null) throw new ArgumentNullException("dest", "Null destination array");
-            if (index < 0) throw new ArgumentOutOfRangeException("Index < 0");
+            if (index < 0) throw new ArgumentOutOfRangeException("index", "Index < 0");
             if ((dest.Length - index) < this.Count) throw new ArgumentException("Insufficient space to copy");
 
             int i = index;

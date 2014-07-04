@@ -95,6 +95,7 @@
     <Compile Include="Configuration\ConfigurationVocabulary.cs" />
     <Compile Include="Configuration\IObjectFactory.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="GraphExtensions.cs" />
     <Compile Include="Graphs\IQuadStore.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="LiteralExtensions.cs" />

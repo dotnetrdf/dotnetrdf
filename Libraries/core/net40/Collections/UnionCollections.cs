@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
@@ -43,8 +42,8 @@ namespace VDS.RDF.Collections
     public class UnionTripleCollection 
         : BaseTripleCollection
     {
-        private List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
-        private BaseTripleCollection _baseCollection;
+        private readonly List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
+        private readonly BaseTripleCollection _baseCollection;
 
         /// <summary>
         /// Creates a new Union Triple Collection which is a union of two collections
@@ -53,7 +52,7 @@ namespace VDS.RDF.Collections
         /// <param name="additionalTriples">Additional Triple Collection</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, BaseTripleCollection additionalTriples)
         {
-            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
+            if (baseTriples == null) throw new ArgumentNullException("baseTriples");
             if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
             this._collections.Add(baseTriples);
             this._collections.Add(additionalTriples);
@@ -67,7 +66,8 @@ namespace VDS.RDF.Collections
         /// <param name="additionalTriples">Additional Triple Collection(s)</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
         {
-            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
+            if (baseTriples == null) throw new ArgumentNullException("baseTriples");
+            if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
             this._collections.Add(baseTriples);
             this._collections.AddRange(additionalTriples);
             this._baseCollection = baseTriples;

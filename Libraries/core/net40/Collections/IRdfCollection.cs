@@ -25,15 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for RDF Collections, RDF collections are sets which are required to ignore duplicates.
+    /// Interface for RDF Collections, RDF collections are essentially sets and therfore are required to ignore duplicates
     /// </summary>
     /// <typeparam name="T">Type</typeparam>
+    /// <remarks>
+    /// This simple interface is provided rather than using <see cref="ISet{T}"/> because it requires a large range of complex set operations to be defined which are unecessary for us
+    /// </remarks>
     public interface IRdfCollection<T>
         : IEnumerable<T>, IDisposable
     {
@@ -56,7 +57,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="item">Item</param>
         /// <returns>True if the item was removed, false otherwise</returns>
-        bool Remove(T t);
+        bool Remove(T item);
 
         /// <summary>
         /// Gets the count of the items in the collection
