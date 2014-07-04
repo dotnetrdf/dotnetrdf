@@ -9,6 +9,7 @@ Changed
  - Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
  - Fix bug with incorrect sub-query evaluation (CORE-420)
  - Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
+ - Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
 
 1.0.5
 -----
