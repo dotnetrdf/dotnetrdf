@@ -186,6 +186,28 @@ namespace VDS.RDF.Graphs
             Assert.IsFalse(qs.Contains(t.AsQuad(Quad.DefaultGraphNode)));
         }
 
+        /// <summary>
+        /// Performs some basic checks on the Find() implementation of a given graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        protected static void FindBasicChecks(IGraph g)
+        {
+            // Find everything
+            List<Triple> ts = g.Find(null, null, null).ToList();
+            Assert.AreEqual(g.Count, ts.Count);
+
+            // Find nothing
+            ts = g.Find(g.CreateUriNode(new Uri("http://nosuchthing")), null, null).ToList();
+            Assert.AreEqual(0, ts.Count);
+
+            // Find each specific triple
+            foreach (Triple t in g.Triples)
+            {
+                ts = g.Find(t.Subject, t.Predicate, t.Object).ToList();
+                Assert.AreEqual(1, ts.Count);
+            }
+        }
+
         [Test]
         public void GraphContractFind1()
         {
@@ -207,6 +229,9 @@ namespace VDS.RDF.Graphs
             g.Assert(t3);
             Assert.AreEqual(3, g.Count);
 
+            // Perform basic checks
+            FindBasicChecks(g);
+
             // Find by subject
             List<Triple> ts = g.Find(s1, null, null).ToList();
             Assert.AreEqual(2, ts.Count);
@@ -217,22 +242,15 @@ namespace VDS.RDF.Graphs
             ts = g.Find(null, p, null).ToList();
             Assert.AreEqual(3, ts.Count);
 
+            // Find by object
+            ts = g.Find(null, null, o1).ToList();
+            Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+
             // Find by subject and object
             ts = g.Find(s2, null, o2).ToList();
             Assert.AreEqual(1, ts.Count);
             Assert.IsTrue(ts.Contains(t3));
-
-            // Find everything
-            ts = g.Find(null, null, null).ToList();
-            Assert.AreEqual(3, ts.Count);
-
-            // Find nothing
-            ts = g.Find(g.CreateUriNode(new Uri("http://s3")), null, null).ToList();
-            Assert.AreEqual(0, ts.Count);
-
-            // Find specific triple
-            ts = g.Find(s1, p, o1).ToList();
-            Assert.AreEqual(1, ts.Count);
         }
 
         [Test]
@@ -256,6 +274,9 @@ namespace VDS.RDF.Graphs
             g.Assert(t3);
             Assert.AreEqual(3, g.Count);
 
+            // Perform basic checks
+            FindBasicChecks(g);
+
             // Find by subject
             List<Triple> ts = g.Find(s1, null, null).ToList();
             Assert.AreEqual(2, ts.Count);
@@ -266,22 +287,76 @@ namespace VDS.RDF.Graphs
             ts = g.Find(null, p, null).ToList();
             Assert.AreEqual(3, ts.Count);
 
+            // Find by object
+            ts = g.Find(null, null, o2).ToList();
+            Assert.AreEqual(2, ts.Count);
+            Assert.IsTrue(ts.Contains(t2));
+            Assert.IsTrue(ts.Contains(t3));
+
             // Find by subject and object
             ts = g.Find(s2, null, o2).ToList();
             Assert.AreEqual(1, ts.Count);
             Assert.IsTrue(ts.Contains(t3));
 
-            // Find everything
-            ts = g.Find(null, null, null).ToList();
-            Assert.AreEqual(3, ts.Count);
-
-            // Find nothing
-            ts = g.Find(g.CreateBlankNode(), null, null).ToList();
-            Assert.AreEqual(0, ts.Count);
-
-            // Find specific triple
-            ts = g.Find(s1, p, o1).ToList();
+            ts = g.Find(s1, null, o1).ToList();
             Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+
+            ts = g.Find(s1, null, o2).ToList();
+            Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t2));
+
+            ts = g.Find(s2, null, o1).ToList();
+            Assert.AreEqual(0, ts.Count);
+        }
+
+        [Test]
+        public void GraphContractFind3()
+        {
+            IGraph g = this.GetInstance();
+            Assert.AreEqual(0, g.Count);
+            Assert.IsTrue(g.IsEmpty);
+
+            INode s = g.CreateBlankNode();
+            INode s2 = g.CreateBlankNode();
+            INode p1 = g.CreateUriNode(new Uri("http://p1"));
+            INode p2 = g.CreateUriNode(new Uri("http://p2"));
+            INode o = g.CreateLiteralNode("value");
+            INode o2 = g.CreateUriNode(new Uri("http://o"));
+
+            Triple t1 = new Triple(s, p1, o);
+            g.Assert(t1);
+            Triple t2 = new Triple(s2, p1, o);
+            g.Assert(t2);
+            Triple t3 = new Triple(s, p2, o2);
+            g.Assert(t3);
+            Assert.AreEqual(3, g.Count);
+
+            // Perform basic checks
+            FindBasicChecks(g);
+
+            // Find by subject
+            List<Triple> ts = g.Find(s, null, null).ToList();
+            Assert.AreEqual(2, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+            Assert.IsTrue(ts.Contains(t3));
+
+            // Find by predicate
+            ts = g.Find(null, p1, null).ToList();
+            Assert.AreEqual(2, ts.Count);
+
+            // Find by predicate and object
+            ts = g.Find(null, p1, o).ToList();
+            Assert.AreEqual(2, ts.Count);
+            Assert.IsTrue(ts.Contains(t1));
+            Assert.IsTrue(ts.Contains(t2));
+
+            ts = g.Find(null, p2, o2).ToList();
+            Assert.AreEqual(1, ts.Count);
+            Assert.IsTrue(ts.Contains(t3));
+
+            ts = g.Find(null, p2, o).ToList();
+            Assert.AreEqual(0, ts.Count);
         }
 
         [Test]
@@ -297,8 +372,8 @@ namespace VDS.RDF.Graphs
             INode o1 = g.CreateLiteralNode("value");
             INode o2 = g.CreateUriNode(new Uri("http://o"));
 
-            INode[] vs = new INode[] { s1, s2, o1, o2 };
-            INode[] es = new INode[] { p };
+            INode[] vs = new INode[] {s1, s2, o1, o2};
+            INode[] es = new INode[] {p};
 
             g.Assert(new Triple(s1, p, o1));
             g.Assert(new Triple(s1, p, o2));
@@ -329,8 +404,8 @@ namespace VDS.RDF.Graphs
             INode o1 = g.CreateVariableNode("var");
             INode o2 = g.CreateUriNode(new Uri("http://o"));
 
-            INode[] vs = new INode[] { s1, s2, o1, o2 };
-            INode[] es = new INode[] { p };
+            INode[] vs = new INode[] {s1, s2, o1, o2};
+            INode[] es = new INode[] {p};
 
             g.Assert(new Triple(s1, p, o1));
             g.Assert(new Triple(s1, p, o2));
@@ -455,26 +530,22 @@ namespace VDS.RDF.Graphs
     public class ThreadSafeGraphContractTests
         : AbstractGraphContractTests
     {
-        protected override IGraph  GetInstance()
-{
- 	return new ThreadSafeGraph();
-}
+        protected override IGraph GetInstance()
+        {
+            return new ThreadSafeGraph();
+        }
     }
 
     [TestFixture]
     public class WrapperGraphContractTests
         : AbstractGraphContractTests
     {
-
         protected override IGraph GetInstance()
         {
             return new TestWrapperGraph();
         }
 
         private class TestWrapperGraph
-            : WrapperGraph
-        {
-            
-        }
+            : WrapperGraph {}
     }
 }
