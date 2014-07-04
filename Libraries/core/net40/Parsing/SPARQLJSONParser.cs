@@ -150,8 +150,11 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.StartObject)
                     {
                         //Parse the Header and the Body
-                        this.ParseHeader(context);
-                        this.ParseBody(context);
+                        if (this.ParseHeader(context))
+                        {
+                            // For SPARQL Results JSON with an unexpected ordering the act of parsing the header may cause us to parse the body
+                            this.ParseBody(context);
+                        }
 
                         //Check we now get the End of the Result Set Object
                         context.Input.Read();
@@ -186,30 +189,38 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set
         /// </summary>
-        private void ParseHeader(SparqlJsonParserContext context)
+        private bool ParseHeader(SparqlJsonParserContext context)
+        {
+            return this.ParseHeader(context, false);
+        }
+
+        /// <summary>
+        /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set
+        /// </summary>
+        private bool ParseHeader(SparqlJsonParserContext context, bool bodySeen)
         {
             //Can we read the Head Property
-            if (context.Input.Read())
-            {
-                if (context.Input.TokenType == JsonToken.PropertyName)
-                {
-                    //Check the Property Name is head
-                    String propName = context.Input.Value.ToString();
-                    if (!propName.Equals("head"))
-                    {
-                        throw Error(context, "Unexpected Property Name '" + propName + "' encountered, expected the 'head' property of the JSON Result Set Object");
-                    }
+            if (!context.Input.Read()) throw new RdfParseException("Unexpected End of Input while trying to parse the Head property of the JSON Result Set Object");
+            if (context.Input.TokenType != JsonToken.PropertyName) throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'head'" + (bodySeen ? String.Empty : "'results'/'boolean'") + " property of the JSON Result Set Object was expected");
 
-                    this.ParseHeaderObject(context);
-                }
-                else
-                {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'head' property of the JSON Result Set Object was expected");
-                }
-            }
-            else
+            //Check the Property Name is head/results/boolean
+            String propName = context.Input.Value.ToString();
+            switch (propName)
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse the Head property of the JSON Result Set Object");
+                case "head":
+                    this.ParseHeaderObject(context);
+                    return true;
+                case "results":
+                    // We've seen the results before the header, still expect to see a header afterwards
+                    this.ParseResults(context);
+                    return this.ParseHeader(context, true);
+                case "boolean":
+                    // We've seen the boolean result before the header, still expect to see a header afterwards
+                    ParseBoolean(context);
+                    return this.ParseHeader(context, false);
+                default:
+                    // TODO Technically we should probably allow and ignore unknown objects
+                    throw Error(context, "Unexpected Property Name '" + propName + "' encountered, expected the 'head' property of the JSON Result Set Object");
             }
         }
 
@@ -879,9 +890,9 @@ namespace VDS.RDF.Parsing
             error.Append(message);
             if (context.Input.HasLineInfo())
             {
-                throw new RdfParseException(error.ToString(), context.Input.LineNumber, context.Input.LinePosition);
+               return new RdfParseException(error.ToString(), context.Input.LineNumber, context.Input.LinePosition);
             }
-            throw new RdfParseException(error.ToString());
+            return new RdfParseException(error.ToString());
         }
 
         /// <summary>

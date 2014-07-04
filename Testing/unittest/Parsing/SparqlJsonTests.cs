@@ -326,5 +326,15 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
         }
+
+        [Test]
+        public void ParsingSparqlJsonCore423_01()
+        {
+            const String data = @"{""boolean"": false, ""head"": {""link"": []}}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
+        }
     }
 }
