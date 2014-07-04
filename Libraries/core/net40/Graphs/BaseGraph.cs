@@ -37,7 +37,6 @@ using VDS.Common.Collections;
 using VDS.RDF.Collections;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 #if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
 #endif
@@ -72,7 +71,7 @@ namespace VDS.RDF.Graphs
         /// </summary>
         protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
 
-        private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+        private TripleEventHandler _tripleAddedHandler, _tripleRemovedHandler;
 #if !SILVERLIGHT
         private GraphDeserializationInfo _dsInfo;
 #endif
@@ -91,8 +90,8 @@ namespace VDS.RDF.Graphs
             this._nsmapper = new NamespaceMapper();
 
             //Create Event Handlers and attach to the Triple Collection
-            this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
+            this._tripleAddedHandler = this.OnTripleAsserted;
+            this._tripleRemovedHandler = this.OnTripleRetracted;
             this.AttachEventHandlers(this._triples);
         }
 
@@ -367,6 +366,13 @@ namespace VDS.RDF.Graphs
 
         #region Triple Selection
 
+        /// <summary>
+        /// Finds triples matching the given search criteria i.e. those where the given nodes occur in the appropriate position(s).  Null values are considered wildcards for a position.
+        /// </summary>
+        /// <param name="s">Subject</param>
+        /// <param name="p">Predicate</param>
+        /// <param name="o">Object</param>
+        /// <returns>Triples</returns>
         public virtual IEnumerable<Triple> Find(INode s, INode p, INode o)
         {
             if (ReferenceEquals(s, null))
@@ -380,60 +386,42 @@ namespace VDS.RDF.Graphs
                         // Wildcard Subject, Predicate and Object
                         return this.Triples;
                     }
-                    else
-                    {
-                        // Wildcard Subject and Predicate with Fixed Object
-                        return this._triples.WithObject(o);
-                    }
+                    // Wildcard Subject and Predicate with Fixed Object
+                    return this._triples.WithObject(o);
                 }
-                else
+                // Fixed Predicate with Wildcard Subject
+                if (ReferenceEquals(o, null))
                 {
-                    // Fixed Predicate with Wildcard Subject
-                    if (ReferenceEquals(o, null))
-                    {
-                        // Fixed Predicate with Wildcard Subject and Object
-                        return this._triples.WithPredicate(p);
-                    }
-                    else
-                    {
-                        // Fixed Predicate and Object with Wildcard Subject
-                        return this._triples.WithPredicateObject(p, o);
-                    }
+                    // Fixed Predicate with Wildcard Subject and Object
+                    return this._triples.WithPredicate(p);
                 }
+                // Fixed Predicate and Object with Wildcard Subject
+                return this._triples.WithPredicateObject(p, o);
             }
-            else
+
+            // Fixed Subject
+            if (ReferenceEquals(p, null))
             {
-                // Fixed Subject
-                if (ReferenceEquals(p, null))
+                // Wildcard Predicate with Fixed Subject
+                if (ReferenceEquals(o, null))
                 {
-                    // Wildcard Predicate with Fixed Subject
-                    if (ReferenceEquals(o, null))
-                    {
-                        // Wildcard Predicate and Object with Fixed Subject
-                        return this._triples.WithSubject(s);
-                    }
-                    else
-                    {
-                        // Wildcard Predicate with Fixed Subject and Object
-                        return this._triples.WithSubjectObject(s, o);
-                    }
+                    // Wildcard Predicate and Object with Fixed Subject
+                    return this._triples.WithSubject(s);
                 }
-                else
-                {
-                    // Fixed Subject and Predicate
-                    if (ReferenceEquals(o, null))
-                    {
-                        // Fixed Subject and Predicate with Wildcard Object
-                        return this._triples.WithSubjectPredicate(s, p);
-                    }
-                    else
-                    {
-                        // Fixed Subject, Predicate and Object
-                        Triple t = new Triple(s, p, o);
-                        return this._triples.Contains(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
-                    }
-                }
+                // Wildcard Predicate with Fixed Subject and Object
+                return this._triples.WithSubjectObject(s, o);
             }
+
+            // Fixed Subject and Predicate
+            if (ReferenceEquals(o, null))
+            {
+                // Fixed Subject and Predicate with Wildcard Object
+                return this._triples.WithSubjectPredicate(s, p);
+            }
+
+            // Fixed Subject, Predicate and Object
+            Triple t = new Triple(s, p, o);
+            return this._triples.Contains(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -500,18 +488,13 @@ namespace VDS.RDF.Graphs
             //Graphs can't be equal to null
             if (obj == null) return false;
 
-            if (obj is IGraph)
-            {
-                IGraph g = (IGraph)obj;
+            // Graphs can only be equal to other Graphs
+            if (!(obj is IGraph)) return false;
 
-                Dictionary<INode, INode> temp;
-                return this.Equals(g, out temp);
-            }
-            else
-            {
-                //Graphs can only be equal to other Graphs
-                return false;
-            }
+            IGraph g = (IGraph)obj;
+
+            Dictionary<INode, INode> temp;
+            return this.Equals(g, out temp);
         }
 
         /// <summary>
@@ -534,10 +517,7 @@ namespace VDS.RDF.Graphs
                 mapping = matcher.Mapping;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         #endregion
@@ -572,10 +552,7 @@ namespace VDS.RDF.Graphs
                 mapping = matcher.Mapping;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -843,10 +820,7 @@ namespace VDS.RDF.Graphs
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         /// <summary>
@@ -874,10 +848,7 @@ namespace VDS.RDF.Graphs
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         /// <summary>
@@ -897,12 +868,12 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <remarks>
-        /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
+        /// May be useful if you replace the Triple Collection after instantiation
         /// </remarks>
         protected void AttachEventHandlers(ITripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded += this.TripleAddedHandler;
-            tripleCollection.TripleRemoved += this.TripleRemovedHandler;
+            tripleCollection.TripleAdded += this._tripleAddedHandler;
+            tripleCollection.TripleRemoved += this._tripleRemovedHandler;
         }
 
         /// <summary>
@@ -910,12 +881,12 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <remarks>
-        /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
+        /// May be useful if you replace the Triple Collection after instantiation
         /// </remarks>
         protected void DetachEventHandlers(ITripleCollection tripleCollection)
         {
-            tripleCollection.TripleAdded -= this.TripleAddedHandler;
-            tripleCollection.TripleRemoved -= this.TripleRemovedHandler;
+            tripleCollection.TripleAdded -= this._tripleAddedHandler;
+            tripleCollection.TripleRemoved -= this._tripleRemovedHandler;
         }
 
         #endregion
@@ -1002,16 +973,9 @@ namespace VDS.RDF.Graphs
                     reader.Read();
                     while (reader.Name.Equals("triple"))
                     {
-                        try
-                        {
-                            Object temp = tripleDeserializer.Deserialize(reader);
-                            this.Assert((Triple)temp);
-                            reader.Read();
-                        }
-                        catch
-                        {
-                            throw;
-                        }
+                        Object temp = tripleDeserializer.Deserialize(reader);
+                        this.Assert((Triple)temp);
+                        reader.Read();
                     }
                 }
             }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Nodes;
 
@@ -87,7 +85,7 @@ namespace VDS.RDF.Namespaces
             INamespaceMapper nsmap = this.GetInstance();
             Assert.AreEqual(0, nsmap.Prefixes.Count());
 
-            // Nukk namespace URIs are forbidden
+            // Null namespace URIs are forbidden
             nsmap.AddNamespace("ex", null);
         }
     }

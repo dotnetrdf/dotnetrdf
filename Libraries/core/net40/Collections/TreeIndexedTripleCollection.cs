@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
 using VDS.RDF.Graphs;
@@ -42,32 +41,32 @@ namespace VDS.RDF.Collections
     public class TreeIndexedTripleCollection
         : BaseTripleCollection
     {
-        //Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
-        //Simple Indexes
-        private MultiDictionary<INode, List<Triple>> _s, _p, _o;
-        //Compound Indexes
-        private MultiDictionary<Triple, List<Triple>> _sp, _so, _po;
+        // Main Storage
+        private readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
+        // Simple Indexes
+        private readonly MultiDictionary<INode, List<Triple>> _s, _p, _o;
+        // Compound Indexes
+        private readonly MultiDictionary<Triple, List<Triple>> _sp, _so, _po;
 
-        //Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode("s"),
-                             _predVar = new VariableNode("p"),
-                             _objVar = new VariableNode("o");
+        // Placeholder Variables for compound lookups
+        private readonly VariableNode _subjVar = new VariableNode("s"),
+            _predVar = new VariableNode("p"),
+            _objVar = new VariableNode("o");
 
-         private int _count = 0;
+        private int _count = 0;
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection
         /// </summary>
-         public TreeIndexedTripleCollection()
-             : this(MultiDictionaryMode.AVL) { }
+        public TreeIndexedTripleCollection()
+            : this(MultiDictionaryMode.AVL) {}
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection
         /// </summary>
         /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
         public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode)
-            : this(true, true, true, Options.FullTripleIndexing, Options.FullTripleIndexing, Options.FullTripleIndexing, compoundIndexMode) { }
+            : this(true, true, true, Options.FullTripleIndexing, Options.FullTripleIndexing, Options.FullTripleIndexing, compoundIndexMode) {}
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection with the given Indexing options
@@ -95,12 +94,12 @@ namespace VDS.RDF.Collections
         /// <param name="t">Triple</param>
         private void Index(Triple t)
         {
-            this.IndexSimple(t.Subject, t, this._s);
-            this.IndexSimple(t.Predicate, t, this._p);
-            this.IndexSimple(t.Object, t, this._o);
-            this.IndexCompound(t, this._sp);
-            this.IndexCompound(t, this._so);
-            this.IndexCompound(t, this._po);
+            IndexSimple(t.Subject, t, this._s);
+            IndexSimple(t.Predicate, t, this._p);
+            IndexSimple(t.Object, t, this._o);
+            IndexCompound(t, this._sp);
+            IndexCompound(t, this._so);
+            IndexCompound(t, this._po);
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace VDS.RDF.Collections
         /// <param name="n">Node to index by</param>
         /// <param name="t">Triple</param>
         /// <param name="index">Index to insert into</param>
-        private void IndexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
+        private static void IndexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             if (index == null) return;
 
@@ -118,7 +117,7 @@ namespace VDS.RDF.Collections
             {
                 if (ts == null)
                 {
-                    index[n] = new List<Triple> { t };
+                    index[n] = new List<Triple> {t};
                 }
                 else
                 {
@@ -127,7 +126,7 @@ namespace VDS.RDF.Collections
             }
             else
             {
-                index.Add(n, new List<Triple> { t });
+                index.Add(n, new List<Triple> {t});
             }
         }
 
@@ -136,7 +135,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="t">Triple to index by</param>
         /// <param name="index">Index to insert into</param>
-        private void IndexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
+        private static void IndexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             if (index == null) return;
 
@@ -145,7 +144,7 @@ namespace VDS.RDF.Collections
             {
                 if (ts == null)
                 {
-                    index[t] = new List<Triple> { t };
+                    index[t] = new List<Triple> {t};
                 }
                 else
                 {
@@ -154,7 +153,7 @@ namespace VDS.RDF.Collections
             }
             else
             {
-                index.Add(t, new List<Triple> { t });
+                index.Add(t, new List<Triple> {t});
             }
         }
 
@@ -164,12 +163,12 @@ namespace VDS.RDF.Collections
         /// <param name="t">Triple</param>
         private void Unindex(Triple t)
         {
-            this.UnindexSimple(t.Subject, t, this._s);
-            this.UnindexSimple(t.Predicate, t, this._p);
-            this.UnindexSimple(t.Object, t, this._o);
-            this.UnindexCompound(t, this._sp);
-            this.UnindexCompound(t, this._so);
-            this.UnindexCompound(t, this._po);
+            UnindexSimple(t.Subject, t, this._s);
+            UnindexSimple(t.Predicate, t, this._p);
+            UnindexSimple(t.Object, t, this._o);
+            UnindexCompound(t, this._sp);
+            UnindexCompound(t, this._so);
+            UnindexCompound(t, this._po);
         }
 
         /// <summary>
@@ -178,15 +177,13 @@ namespace VDS.RDF.Collections
         /// <param name="n">Node to index by</param>
         /// <param name="t">Triple</param>
         /// <param name="index">Index to remove from</param>
-        private void UnindexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
+        private static void UnindexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             if (index == null) return;
 
             List<Triple> ts;
-            if (index.TryGetValue(n, out ts))
-            {
-                if (ts != null) ts.Remove(t);
-            }
+            if (!index.TryGetValue(n, out ts)) return;
+            if (ts != null) ts.Remove(t);
         }
 
         /// <summary>
@@ -194,15 +191,13 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="t">Triple</param>
         /// <param name="index">Index to remove from</param>
-        private void UnindexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
+        private static void UnindexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             if (index == null) return;
 
             List<Triple> ts;
-            if (index.TryGetValue(t, out ts))
-            {
-                if (ts != null) ts.Remove(t);
-            }
+            if (!index.TryGetValue(t, out ts)) return;
+            if (ts != null) ts.Remove(t);
         }
 
         /// <summary>
@@ -212,14 +207,11 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override bool Add(Triple t)
         {
-            if (!this.Contains(t))
-            {
-                this._triples.Add(t, null);
-                this.Index(t);
-                this._count++;
-                return true;
-            }
-            return false;
+            if (this.Contains(t)) return false;
+            this._triples.Add(t, null);
+            this.Index(t);
+            this._count++;
+            return true;
         }
 
         /// <summary>
@@ -237,7 +229,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override long Count
         {
-            get 
+            get
             {
                 //Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
                 return this._count;
@@ -274,17 +266,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._o.TryGetValue(obj, out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this._triples.Keys.Where(t => t.Object.Equals(obj));
-            }
+            return this._triples.Keys.Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -299,17 +285,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._p.TryGetValue(pred, out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this._triples.Keys.Where(t => t.Predicate.Equals(pred));
-            }
+            return this._triples.Keys.Where(t => t.Predicate.Equals(pred));
         }
 
         /// <summary>
@@ -324,17 +304,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._s.TryGetValue(subj, out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this._triples.Keys.Where(t => t.Subject.Equals(subj));
-            }
+            return this._triples.Keys.Where(t => t.Subject.Equals(subj));
         }
 
         /// <summary>
@@ -350,17 +324,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._po.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this.WithPredicate(pred).Where(t => t.Object.Equals(obj));
-            }
+            return this.WithPredicate(pred).Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -376,17 +344,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._so.TryGetValue(new Triple(subj, this._predVar, obj), out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this.WithSubject(subj).Where(t => t.Object.Equals(obj));
-            }
+            return this.WithSubject(subj).Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -402,17 +364,11 @@ namespace VDS.RDF.Collections
                 List<Triple> ts;
                 if (this._sp.TryGetValue(new Triple(subj, pred, this._objVar), out ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return (ts ?? Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return this.WithSubject(subj).Where(t => t.Predicate.Equals(pred));
-            }
+            return this.WithSubject(subj).Where(t => t.Predicate.Equals(pred));
         }
 
         /// <summary>
@@ -420,16 +376,8 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
-            get 
-            {
-                if (this._o != null)
-                {
-                    return this._o.Keys;
-                }
-                else
-                {
-                    return this._triples.Keys.Select(t => t.Object);
-                }
+            get {
+                return this._o != null ? this._o.Keys : this._triples.Keys.Select(t => t.Object);
             }
         }
 
@@ -438,16 +386,8 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
-            get
-            {
-                if (this._p != null)
-                {
-                    return this._p.Keys;
-                }
-                else
-                {
-                    return this._triples.Keys.Select(t => t.Predicate);
-                }
+            get {
+                return this._p != null ? this._p.Keys : this._triples.Keys.Select(t => t.Predicate);
             }
         }
 
@@ -456,16 +396,8 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
-            get 
-            {
-                if (this._s != null)
-                {
-                    return this._s.Keys;
-                }
-                else
-                {
-                    return this._triples.Keys.Select(t => t.Subject);
-                }
+            get {
+                return this._s != null ? this._s.Keys : this._triples.Keys.Select(t => t.Subject);
             }
         }
 

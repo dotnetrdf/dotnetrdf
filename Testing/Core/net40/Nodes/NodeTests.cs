@@ -46,23 +46,24 @@ namespace VDS.RDF.Nodes
                 g.CreateUriNode("rdf:type"),
                 g.CreateUriNode(new Uri("http://example.org")),
                 g.CreateBlankNode(),
-                g.CreateBlankNode(),
+                g.CreateBlankNode(), // Will be distinct from previous CreateBlankNode()
                 null,
                 g.CreateBlankNode(Guid.NewGuid()),
                 g.CreateLiteralNode("Test text"),
-                g.CreateLiteralNode("Test text", "en"),
-                g.CreateLiteralNode("Test text", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), // Equivalent to CreateLiteralNode("Test text") due to RDF 1.1 implicit typing
-                g.CreateUriNode("rdf:type"),
-                null,
+                g.CreateLiteralNode("Test text", "en"), // Will be distinct from CreateLiteralNode("Test text") because it has a languate type
+                g.CreateLiteralNode("Test text", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), // Non-distinct - Equivalent to CreateLiteralNode("Test text") due to RDF 1.1 implicit typing to xsd:string
+                g.CreateUriNode("rdf:type"), // Non-distinct
+                null, // Non-distinct
                 g.CreateUriNode(new Uri("http://example.org#test")),
-                g.CreateUriNode(new Uri("http://example.org"))
+                g.CreateUriNode(new Uri("http://example.org")) // Non-distinct
             };
+            const int totalNonDistinct = 4;
 
             foreach (INode n in test.Distinct())
             {
                 Console.WriteLine(n != null ? n.ToString() : "null");
             }
-            Assert.AreEqual(test.Count - 3, test.Distinct().Count());
+            Assert.AreEqual(test.Count - totalNonDistinct, test.Distinct().Count());
         }
    
         [Test]

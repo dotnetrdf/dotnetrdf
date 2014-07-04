@@ -229,6 +229,10 @@ namespace VDS.RDF.Graphs
             // Find nothing
             ts = g.Find(g.CreateUriNode(new Uri("http://s3")), null, null).ToList();
             Assert.AreEqual(0, ts.Count);
+
+            // Find specific triple
+            ts = g.Find(s1, p, o1).ToList();
+            Assert.AreEqual(1, ts.Count);
         }
 
         [Test]
@@ -274,6 +278,10 @@ namespace VDS.RDF.Graphs
             // Find nothing
             ts = g.Find(g.CreateBlankNode(), null, null).ToList();
             Assert.AreEqual(0, ts.Count);
+
+            // Find specific triple
+            ts = g.Find(s1, p, o1).ToList();
+            Assert.AreEqual(1, ts.Count);
         }
 
         [Test]
@@ -392,12 +400,12 @@ namespace VDS.RDF.Graphs
             //Get statements about Rob Vesse
             Console.WriteLine();
             Console.WriteLine("Statements about Rob Vesse");
-            Assert.AreEqual(7, g.GetTriples(rav08r));
+            Assert.AreEqual(7, g.GetTriples(rav08r).Count());
 
             //Get Statements about Collaboration
             Console.WriteLine();
             Console.WriteLine("Statements about Collaboration");
-            Assert.AreEqual(3, g.GetTriples(collaborates));
+            Assert.AreEqual(3, g.GetTriples(collaborates).Count());
         }
 
         [Test]
