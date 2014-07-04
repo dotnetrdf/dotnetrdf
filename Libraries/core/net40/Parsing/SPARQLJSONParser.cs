@@ -213,11 +213,13 @@ namespace VDS.RDF.Parsing
                 case "results":
                     // We've seen the results before the header, still expect to see a header afterwards
                     this.ParseResults(context);
-                    return this.ParseHeader(context, true);
+                    this.ParseHeader(context, true);
+                    return false;
                 case "boolean":
                     // We've seen the boolean result before the header, still expect to see a header afterwards
                     ParseBoolean(context);
-                    return this.ParseHeader(context, false);
+                    this.ParseHeader(context, false);
+                    return false;
                 default:
                     // TODO Technically we should probably allow and ignore unknown objects
                     throw Error(context, "Unexpected Property Name '" + propName + "' encountered, expected the 'head' property of the JSON Result Set Object");
