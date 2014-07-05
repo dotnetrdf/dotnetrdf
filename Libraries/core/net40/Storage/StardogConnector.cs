@@ -1643,16 +1643,17 @@ namespace VDS.RDF.Storage
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
         {
             //Build the Request Uri
-            String requestUri = this._baseUri + servicePath;
+            String requestUri = this._baseUri + servicePath + "?";
+
             if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
             {
-                requestUri += "?";
                 foreach (String p in requestParams.Keys)
                 {
                     requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
-                requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }
+
+            requestUri += this.GetReasoningParameter();
 
             //Create our Request
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
@@ -1692,16 +1693,16 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Adds Stardog specific request headers
+        /// Adds Stardog specific request headers; reasoning needed for < 2.2
         /// </summary>
         /// <param name="request"></param>
         protected virtual void AddStardogHeaders(HttpWebRequest request)
         {
 #if !SILVERLIGHT
-            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
+            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";" + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
             request.Headers.Add("SD-Protocol", "1.0");
 #else
-            request.Headers["SD-Connection-String"] = "kb=" + this._kb + this.GetReasoningParameter();
+            request.Headers["SD-Connection-String"] = "kb=" + this._kb + ";" + this.GetReasoningParameter();
             request.Headers["SD-Protocol"] = "1.0";
 #endif
         }
@@ -1711,15 +1712,15 @@ namespace VDS.RDF.Storage
             switch (this._reasoning)
             {
                 case StardogReasoningMode.QL:
-                    return ";reasoning=QL";
+                    return "reasoning=QL";
                 case StardogReasoningMode.EL:
-                    return ";reasoning=EL";
+                    return "reasoning=EL";
                 case StardogReasoningMode.RL:
-                    return ";reasoning=RL";
+                    return "reasoning=RL";
                 case StardogReasoningMode.DL:
-                    return ";reasoning=DL";
+                    return "reasoning=DL";
                 case StardogReasoningMode.RDFS:
-                    return ";reasoning=RDFS";
+                    return "reasoning=RDFS";
                 case StardogReasoningMode.SL:
                     throw new RdfStorageException("Stardog 1.* does not support the SL reasoning level, please ensure you are using a Stardog 2.* connector if you wish to use this reasoning level");
                 case StardogReasoningMode.None:
@@ -2375,9 +2376,8 @@ namespace VDS.RDF.Storage
         protected override void AddStardogHeaders(HttpWebRequest request)
         {
             String reasoning = this.GetReasoningParameter();
-            if (reasoning.Length > 1) reasoning = reasoning.Substring(1);
 #if !SILVERLIGHT
-            request.Headers.Add("SD-Connection-String", reasoning); // Only reasoning parameter needed in Stardog 2.0
+            request.Headers.Add("SD-Connection-String", reasoning); // Only reasoning parameter needed in Stardog 2.0, but < 2.2
 #else
             request.Headers["SD-Connection-String"] = reasoning;
 #endif
@@ -2388,17 +2388,17 @@ namespace VDS.RDF.Storage
             switch (this._reasoning)
             {
                 case StardogReasoningMode.QL:
-                    return ";reasoning=QL";
+                    return "reasoning=QL";
                 case StardogReasoningMode.EL:
-                    return ";reasoning=EL";
+                    return "reasoning=EL";
                 case StardogReasoningMode.RL:
-                    return ";reasoning=RL";
+                    return "reasoning=RL";
                 case StardogReasoningMode.DL:
-                    return ";reasoning=DL";
+                    return "reasoning=DL";
                 case StardogReasoningMode.RDFS:
-                    return ";reasoning=RDFS";
+                    return "reasoning=RDFS";
                 case StardogReasoningMode.SL:
-                    return ";reasoning=SL";
+                    return "reasoning=SL";
                 case StardogReasoningMode.None:
                 default:
                     return String.Empty;
