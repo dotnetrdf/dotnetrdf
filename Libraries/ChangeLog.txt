@@ -10,6 +10,8 @@ Changed
  - Fix bug with incorrect sub-query evaluation (CORE-420)
  - Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
  - Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
+ - Fix possible NPE when running updates with a custom query processor
+ - Fix for Stardog 2.2 reasoning support
 
 1.0.5
 -----

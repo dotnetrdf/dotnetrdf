@@ -261,7 +261,7 @@ namespace VDS.RDF
             t.SetApartmentState(ApartmentState.MTA);
             t.Start();
             t.Join();
-            if (ex != null) throw new Exception("Error in MTA Thread, see inner exception for details", ex);
+            if (ex != null) throw ex;
         }
 
         /// <summary>

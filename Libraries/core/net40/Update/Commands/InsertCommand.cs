@@ -216,7 +216,7 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
-                if (results is IdentityMultiset) queryContext.OutputMultiset = new SingletonMultiset(results.Variables);
+                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards
@@ -258,7 +258,7 @@ namespace VDS.RDF.Update.Commands
                 MultiDictionary<Uri, IGraph> graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : 0), true, new UriComparer(), MultiDictionaryMode.AVL);
 
                 //Insert the Triples for each Solution
-                foreach (ISet s in queryContext.OutputMultiset.Sets)
+                foreach (ISet s in results.Sets)
                 {
                     List<Triple> insertedTriples = new List<Triple>();
 

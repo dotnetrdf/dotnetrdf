@@ -161,6 +161,23 @@ namespace VDS.RDF.Update
         }
 
         [Test]
+        public void SparqlUpdateWithDefaultQueryProcessor()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = null;
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
+
+            ISparqlUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+        }
+
+        [Test]
         public void SparqlUpdateWithCustomQueryProcessor()
         {
             Graph g = new Graph();
@@ -173,7 +190,7 @@ namespace VDS.RDF.Update
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
 
-            ExplainUpdateProcessor processor = new ExplainUpdateProcessor(dataset, ExplanationLevel.Full);
+            ISparqlUpdateProcessor processor = new ExplainUpdateProcessor(dataset, ExplanationLevel.Full);
             processor.ProcessCommandSet(cmds);
         }
 
