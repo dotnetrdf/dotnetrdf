@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Extend(" + this._inner.ToSafeString() + ")";
+            return "Extend(" + this._inner.ToSafeString() + ", " + this._expr.ToString() + " AS ?" + this._var + ")";
         }
     }
 }

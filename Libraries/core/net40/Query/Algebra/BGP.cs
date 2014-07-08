@@ -212,17 +212,22 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._triplePatterns.Count == 0)
+            switch (this._triplePatterns.Count)
             {
-                return "BGP()";
-            }
-            else if (this._triplePatterns.Count == 1)
-            {
-                return "BGP(" + this._triplePatterns[0].ToString() + ")";
-            }
-            else
-            {
-                return "BGP([" + this._triplePatterns.Count + " Patterns])";
+                case 0:
+                    return "BGP()";
+                case 1:
+                    return "BGP(" + this._triplePatterns[0].ToString() + ")";
+                default:
+                    StringBuilder builder = new StringBuilder();
+                    builder.Append("BGP(");
+                    for (int i = 0; i < this._triplePatterns.Count; i++)
+                    {
+                        builder.Append(this._triplePatterns[i].ToString());
+                        if (i < this._triplePatterns.Count - 1) builder.Append(", ");
+                    }
+                    builder.Append(")");
+                    return builder.ToString();
             }
         }
 
