@@ -38,19 +38,12 @@
       </group>
     </dependencies>
     <releaseNotes>
-- Update Json.Net dependency to 6.0.3
-- Update VDS.Common dependency to 1.3.0
-- Update PCL build to profile 136 and removed SL4 and WP7 builds
-- Fix a bug with join linearization optimization for OPTIONAL creating incorrect results (CORE-406)
-- Fix a corner case in evaluating CONSTRUCT queries with empty WHERE clause and concrete triples in template (CORE-407)
-- Fix a bug in substituting parameter values containing $ signs into SparqlParameterizedString instances (CORE-408)
-- Fix overly strict SPARQL Results XML parsing (CORE-410)
-- Fix lack of position information for some NTriples parsing errors
-- Fix bug in sub-query scheduling (CORE-416)
-- Fix bug in multiple evaluation of GRAPH clauses (CORE-416)
-- Fix bug with incorrect usage of Single.NaN and Double.NaN constants (CORE-412)
-- Improve error message for excess tokens from SPARQL Parser (CORE-411)
-- Improvements to ExplainQueryProcessor
+- Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
+- Fix bug with incorrect sub-query evaluation (CORE-420)
+- Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
+- Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
+- Fix possible NPE when running updates with a custom query processor
+- Fix for Stardog 2.2 reasoning support
     </releaseNotes>
   </metadata>
 </package>
