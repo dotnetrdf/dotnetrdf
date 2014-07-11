@@ -12,6 +12,7 @@
     <AssemblyName>dotNetRDF.Sparql</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Results\IQueryResults.cs" />
+    <Compile Include="Query\Results\IResultRow.cs" />
+    <Compile Include="Query\Results\ITabularResults.cs" />
+    <Compile Include="Query\Results\ResultRow.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
@@ -68,9 +73,7 @@
     <Compile Include="SparqlExceptions.cs" />
     <Compile Include="SparqlExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Query\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Writing\Formatting\BaseResultFormatter.cs" />
     <Compile Include="Writing\Formatting\IResultFormatter.cs" />
@@ -89,4 +92,11 @@
     <Compile Include="ISparqlResultsReader.cs" />
     <Compile Include="ISparqlResultsWriter.cs" />
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>
