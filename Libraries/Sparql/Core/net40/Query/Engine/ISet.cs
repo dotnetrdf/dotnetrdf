@@ -27,8 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Engine
 {
     /// <summary>
     /// Interface for Sets which represents a possible solution during SPARQL evaluation
@@ -65,15 +66,6 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="vars">Variables</param>
         /// <returns></returns>
         bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
-
-        /// <summary>
-        /// Gets/Sets the ID of the Set
-        /// </summary>
-        int ID 
-        { 
-            get; 
-            set; 
-        }
 
         /// <summary>
         /// Removes a Value for a Variable from the Set
@@ -127,8 +119,6 @@ namespace VDS.RDF.Query.Algebra
     public abstract class BaseSet
         : ISet
     {
-        private int _id = 0;
-
         /// <summary>
         /// Adds a Value for a Variable to the Set
         /// </summary>
@@ -158,21 +148,6 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="vars">Variables</param>
         /// <returns></returns>
         public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
-
-        /// <summary>
-        /// Gets/Sets the ID of the Set
-        /// </summary>
-        public int ID
-        {
-            get
-            {
-                return this._id;
-            }
-            set
-            {
-                this._id = value;
-            }
-        }
 
         /// <summary>
         /// Removes a Value for a Variable from the Set
@@ -244,10 +219,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 return this.Equals((ISet)obj);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>

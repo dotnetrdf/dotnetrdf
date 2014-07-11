@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Engine
 {
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra
     public class SetDistinctnessComparer
         : IEqualityComparer<ISet>
     {
-        private List<String> _vars = new List<String>();
+        private readonly List<String> _vars = new List<String>();
 
         /// <summary>
         /// Creates a new comparer that compares across all variables
@@ -72,11 +72,8 @@ namespace VDS.RDF.Query.Algebra
                 //i.e. compare for equality across all variables in the sets
                 return x.Equals(y);
             }
-            else
-            {
-                //Otherwise compare for equality on specified variables
-                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
-            }
+            //Otherwise compare for equality on specified variables
+            return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
         }
 
         /// <summary>
@@ -90,19 +87,16 @@ namespace VDS.RDF.Query.Algebra
 
             if (this._vars.Count == 0)
             {
-                return obj.GetHashCode();
+                return 0;
             }
-            else
+            StringBuilder output = new StringBuilder();
+            foreach (String var in this._vars)
             {
-                StringBuilder output = new StringBuilder();
-                foreach (String var in this._vars)
-                {
-                    output.Append("?" + var + " = " + obj[var].ToSafeString());
-                    output.Append(" , ");
-                }
-                output.Remove(output.Length - 3, 3);
-                return output.ToString().GetHashCode();
+                output.Append("?" + var + " = " + obj[var].ToSafeString());
+                output.Append(" , ");
             }
+            output.Remove(output.Length - 3, 3);
+            return output.ToString().GetHashCode();
         }
     }
 }

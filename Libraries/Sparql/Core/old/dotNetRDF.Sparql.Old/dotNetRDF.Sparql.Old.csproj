@@ -82,7 +82,6 @@
     <Compile Include="Query\Algebra\GroupMultiset.cs" />
     <Compile Include="Query\Algebra\Having.cs" />
     <Compile Include="Query\Algebra\IdentityMultiset.cs" />
-    <Compile Include="Query\Algebra\ISet.cs" />
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\LazyBgp.cs" />
     <Compile Include="Query\Algebra\Minus.cs" />
@@ -100,8 +99,6 @@
     <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
     <Compile Include="Query\Algebra\RestrictionFilters.cs" />
     <Compile Include="Query\Algebra\Service.cs" />
-    <Compile Include="Query\Algebra\Set.cs" />
-    <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
     <Compile Include="Query\Algebra\SubQuery.cs" />

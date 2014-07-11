@@ -344,7 +344,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        internal static String ToSafeString(this Object obj)
+        public static String ToSafeString(this Object obj)
         {
             return (obj == null) ? String.Empty : obj.ToString();
         }

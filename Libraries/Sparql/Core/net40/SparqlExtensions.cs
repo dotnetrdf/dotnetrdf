@@ -20,12 +20,12 @@ namespace VDS.RDF
         {
             switch (query.QueryType)
             {
-                case SparqlQueryType.Select:
-                case SparqlQueryType.SelectAll:
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
+                case QueryType.Select:
+                case QueryType.SelectAll:
+                case QueryType.SelectAllDistinct:
+                case QueryType.SelectAllReduced:
+                case QueryType.SelectDistinct:
+                case QueryType.SelectReduced:
                     return true;
                 default:
                     return false;

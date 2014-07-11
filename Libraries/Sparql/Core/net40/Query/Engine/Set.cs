@@ -26,10 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Patterns;
+using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Engine
 {
     /// <summary>
     /// Represents one possible set of values which is a solution to the query
@@ -41,7 +40,7 @@ namespace VDS.RDF.Query.Algebra
         IComparable
 #endif
     {
-        private Dictionary<String, INode> _values;
+        private readonly Dictionary<String, INode> _values;
 
         /// <summary>
         /// Creates a new Set
@@ -56,7 +55,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
-        internal Set(ISet x, ISet y)
+        public Set(ISet x, ISet y)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
@@ -80,38 +79,12 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Set which is a copy of an existing Set
         /// </summary>
         /// <param name="x">Set to copy</param>
-        internal Set(ISet x)
+        public Set(ISet x)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
             {
                 this._values.Add(var, x[var]);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Set from a SPARQL Result
-        /// </summary>
-        /// <param name="result">Result</param>
-        internal Set(SparqlResult result)
-        {
-            this._values = new Dictionary<string, INode>();
-            foreach (String var in result.Variables)
-            {
-                this.Add(var, result[var]);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Set from a Binding Tuple
-        /// </summary>
-        /// <param name="tuple">Tuple</param>
-        internal Set(BindingTuple tuple)
-        {
-            this._values = new Dictionary<string, INode>();
-            foreach (KeyValuePair<String, PatternItem> binding in tuple.Values)
-            {
-                this.Add(binding.Key, tuple[binding.Key]);
             }
         }
 
@@ -124,14 +97,9 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._values.ContainsKey(variable))
-                {
-                    return this._values[variable];
-                }
-                else
-                {
-                    return null;
-                }
+                INode value = null;
+                this._values.TryGetValue(variable, out value);
+                return value;
             }
         }
 
@@ -225,7 +193,6 @@ namespace VDS.RDF.Query.Algebra
         public override ISet Join(ISet other)
         {
             return new Set(this, other);
-            //return new JoinedSet(other, this);
         }
 
         /// <summary>
@@ -235,7 +202,6 @@ namespace VDS.RDF.Query.Algebra
         public override ISet Copy()
         {
             return new Set(this);
-            //return new JoinedSet(this);
         }
 
         /// <summary>
@@ -245,8 +211,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public bool Equals(Set other)
         {
-            if (other == null) return false;
-            return this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
+            return other != null && this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || EqualityHelper.AreNodesEqual(pair.Value, other[pair.Key])));
         }
 
 #if PORTABLE

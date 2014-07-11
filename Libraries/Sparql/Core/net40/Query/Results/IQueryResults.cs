@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Results
         /// <summary>
         /// Gets whether this result represents a tabular result
         /// </summary>
-        bool IsResultSet { get; }
+        bool IsTabular { get; }
 
         /// <summary>
         /// Gets whether this result represents a graph result
