@@ -42,7 +42,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Elements\BindElement.cs" />
+    <Compile Include="Query\Elements\DataElement.cs" />
+    <Compile Include="Query\Elements\FilterElement.cs" />
+    <Compile Include="Query\Elements\GroupElement.cs" />
+    <Compile Include="Query\Elements\MinusElement.cs" />
+    <Compile Include="Query\Elements\NamedGraphElement.cs" />
+    <Compile Include="Query\Elements\OptionalElement.cs" />
+    <Compile Include="Query\Elements\PathBlockElement.cs" />
+    <Compile Include="Query\Elements\ServiceElement.cs" />
+    <Compile Include="Query\Elements\SubQueryElement.cs" />
+    <Compile Include="Query\Elements\TripleBlockElement.cs" />
+    <Compile Include="Query\Elements\IElementVisitor.cs" />
+    <Compile Include="Query\Elements\IElement.cs" />
+    <Compile Include="Query\Paths\TriplePath.cs" />
+    <Compile Include="Query\Elements\UnionElement.cs" />
     <Compile Include="Query\Engine\ISet.cs" />
+    <Compile Include="Query\Paths\AlternativePath.cs" />
+    <Compile Include="Query\Paths\BaseBinaryPath.cs" />
+    <Compile Include="Query\Paths\BaseUnaryPath.cs" />
+    <Compile Include="Query\Paths\CardinalityPathClasses.cs" />
+    <Compile Include="Query\Paths\InversePath.cs" />
+    <Compile Include="Query\Paths\IPath.cs" />
+    <Compile Include="Query\Paths\NegatedSet.cs" />
+    <Compile Include="Query\Paths\PartialPath.cs" />
+    <Compile Include="Query\Paths\PathEvaluationContext.cs" />
+    <Compile Include="Query\Paths\PathTransformContext.cs" />
+    <Compile Include="Query\Paths\Property.cs" />
+    <Compile Include="Query\Paths\SequencePath.cs" />
+    <Compile Include="Query\Sorting\DescendingSortCondition.cs" />
+    <Compile Include="Query\Sorting\ISortCondition.cs" />
     <Compile Include="Query\Engine\Set.cs" />
     <Compile Include="Query\Engine\SetDistinctnessComparer.cs" />
     <Compile Include="Query\IQuery.cs" />

@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="path">Property Path</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
+        public ITriplePattern GetTriplePattern(PatternItem subj, IPath path, PatternItem obj)
         {
             if (path is Property)
             {

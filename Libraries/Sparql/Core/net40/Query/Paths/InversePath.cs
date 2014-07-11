@@ -28,37 +28,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Abstract Base Class for Unary Path operators
+    /// Represents an Inverse Path
     /// </summary>
-    public abstract class BaseUnaryPath : ISparqlPath
+    public class InversePath : BaseUnaryPath
     {
         /// <summary>
-        /// Path
-        /// </summary>
-        protected ISparqlPath _path;
-
-        /// <summary>
-        /// Creates a new Unary Path
+        /// Creates a new Inverse Path
         /// </summary>
         /// <param name="path">Path</param>
-        public BaseUnaryPath(ISparqlPath path)
-        {
-            this._path = path;
-        }
+        public InversePath(IPath path)
+            : base(path) { }
 
         /// <summary>
-        /// Gets the Inner Path
+        /// Gets the String representation of the Path
         /// </summary>
-        public ISparqlPath Path
+        /// <returns></returns>
+        public override string ToString()
         {
-            get
-            {
-                return this._path;
-            }
+            return "^ " + this._path.ToString();
         }
 
         /// <summary>
@@ -66,12 +58,25 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         /// <param name="context">Path Transformation Context</param>
         /// <returns></returns>
-        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
+        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
+        {
+            //Swap the Subject and Object over
+            PatternItem tempObj = context.Object;
+            PatternItem tempSubj = context.Subject;
+            PatternItem tempEnd = context.End;
+            context.Object = tempSubj;
+            context.Subject = tempObj;
+            context.End = tempSubj;
 
-        /// <summary>
-        /// Gets the String representation of the Path
-        /// </summary>
-        /// <returns></returns>
-        public abstract override String ToString();
+            //Then transform the path
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
+
+            //Then swap the Subject and Object back
+            context.Subject = tempSubj;
+            context.Object = tempObj;
+            context.End = tempEnd;
+
+            return context.ToAlgebra();
+        }
     }
 }

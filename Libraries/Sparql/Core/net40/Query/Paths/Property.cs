@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
@@ -35,9 +37,9 @@ namespace VDS.RDF.Query.Paths
     /// <summary>
     /// Represents a Predicate which is part of a Path
     /// </summary>
-    public class Property : ISparqlPath
+    public class Property : IPath
     {
-        private INode _predicate;
+        private readonly INode _predicate;
 
         /// <summary>
         /// Creates a new Property

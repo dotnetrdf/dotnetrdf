@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Paths
         /// Creates a new Cardinality Restriction
         /// </summary>
         /// <param name="path">Path</param>
-        public Cardinality(ISparqlPath path)
+        public Cardinality(IPath path)
             : base(path) { }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         /// <param name="path">Path</param>
         /// <param name="n">N</param>
-        public FixedCardinality(ISparqlPath path, int n)
+        public FixedCardinality(IPath path, int n)
             : base(path)
         {
             this._n = n;
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Paths
         /// Creates a new Zero or More cardinality restriction
         /// </summary>
         /// <param name="path">Path</param>
-        public ZeroOrMore(ISparqlPath path)
+        public ZeroOrMore(IPath path)
             : base(path) { }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Paths
         /// Creates a new Zero or One cardinality restriction
         /// </summary>
         /// <param name="path">Path</param>
-        public ZeroOrOne(ISparqlPath path)
+        public ZeroOrOne(IPath path)
             : base(path) { }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Paths
         /// Creates a new One or More cardinality restriction
         /// </summary>
         /// <param name="path">Path</param>
-        public OneOrMore(ISparqlPath path)
+        public OneOrMore(IPath path)
             : base(path) { }
 
         /// <summary>
@@ -326,7 +326,7 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         /// <param name="path">Path</param>
         /// <param name="n">Minimum Cardinality</param>
-        public NOrMore(ISparqlPath path, int n)
+        public NOrMore(IPath path, int n)
             : base(path) 
         {
             this._n = n;
@@ -389,7 +389,7 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         /// <param name="path">Path</param>
         /// <param name="n">Maximum Cardinality</param>
-        public ZeroToN(ISparqlPath path, int n)
+        public ZeroToN(IPath path, int n)
             : base(path) 
         {
             this._n = n;
@@ -451,7 +451,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="path">Path</param>
         /// <param name="n">Minimum Cardinality</param>
         /// <param name="m">Maximum Cardinality</param>
-        public NToM(ISparqlPath path, int n, int m)
+        public NToM(IPath path, int n, int m)
             : base(path)
         {
             this._n = n;

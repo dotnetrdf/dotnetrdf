@@ -23,25 +23,22 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents Alternative Paths
+    /// Represents a standard forwards path
     /// </summary>
-    public class AlternativePath : BaseBinaryPath
+    public class SequencePath : BaseBinaryPath
     {
         /// <summary>
-        /// Creates a new Alternative Path
+        /// Creates a new Sequence Path
         /// </summary>
         /// <param name="lhs">LHS Path</param>
         /// <param name="rhs">RHS Path</param>
-        public AlternativePath(ISparqlPath lhs, ISparqlPath rhs)
+        public SequencePath(IPath lhs, IPath rhs)
             : base(lhs, rhs) { }
 
         /// <summary>
@@ -51,11 +48,9 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append('(');
             output.Append(this._lhs.ToString());
-            output.Append(" | ");
+            output.Append(" / ");
             output.Append(this._rhs.ToString());
-            output.Append(')');
             return output.ToString();
         }
 
@@ -66,11 +61,33 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            PathTransformContext lhsContext = new PathTransformContext(context);
-            PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = this._lhs.ToAlgebra(lhsContext);
-            ISparqlAlgebra rhs = this._rhs.ToAlgebra(rhsContext);
-            return new Union(lhs, rhs);
+            bool top = context.Top;
+
+            //The Object becomes a temporary variable then we transform the LHS of the path
+            context.Object = context.GetNextTemporaryVariable();
+            context.Top = false;
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._lhs, context.Object));
+
+            //The Subject is then the Object that results from the LHS transform since the
+            //Transform may adjust the Object
+            context.Subject = context.Object;
+
+            //We then reset the Object to be the target Object so that if the RHS is the last part
+            //of the Path then it will complete the path transformation
+            //If it isn't the last part of the path it will be set to a new temporary variable
+            context.Top = top;
+            if (context.Top)
+            {
+                context.ResetObject();
+            }
+            else
+            {
+                context.Object = context.GetNextTemporaryVariable();
+            }
+            context.Top = top;
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._rhs, context.Object));
+
+            return context.ToAlgebra();
         }
     }
 }

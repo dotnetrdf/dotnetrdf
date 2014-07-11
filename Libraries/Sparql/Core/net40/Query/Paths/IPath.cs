@@ -24,26 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents a Path expression in SPARQL
+    /// Represents a Path expression
     /// </summary>
-    public interface ISparqlPath
+    public interface IPath
     {
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        ISparqlAlgebra ToAlgebra(PathTransformContext context);
-
         /// <summary>
         /// Gets the String representation of a Path
         /// </summary>

@@ -32,45 +32,32 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Abstract Base Class for Binary Path operators
+    /// Abstract Base Class for Unary Path operators
     /// </summary>
-    public abstract class BaseBinaryPath : ISparqlPath
+    public abstract class BaseUnaryPath : IPath
     {
         /// <summary>
-        /// Parts of the Path
+        /// Path
         /// </summary>
-        protected ISparqlPath _lhs, _rhs;
+        protected IPath _path;
 
         /// <summary>
-        /// Creates a new Binary Path
+        /// Creates a new Unary Path
         /// </summary>
-        /// <param name="lhs">LHS Path</param>
-        /// <param name="rhs">RHS Path</param>
-        public BaseBinaryPath(ISparqlPath lhs, ISparqlPath rhs)
+        /// <param name="path">Path</param>
+        public BaseUnaryPath(IPath path)
         {
-            this._lhs = lhs;
-            this._rhs = rhs;
+            this._path = path;
         }
 
         /// <summary>
-        /// Gets the LHS Path component
+        /// Gets the Inner Path
         /// </summary>
-        public ISparqlPath LhsPath
+        public IPath Path
         {
             get
             {
-                return this._lhs;
-            }
-        }
-
-        /// <summary>
-        /// Gets the RHS Path component
-        /// </summary>
-        public ISparqlPath RhsPath
-        {
-            get
-            {
-                return this._rhs;
+                return this._path;
             }
         }
 

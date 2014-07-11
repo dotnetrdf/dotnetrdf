@@ -28,29 +28,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents an Inverse Path
+    /// Abstract Base Class for Binary Path operators
     /// </summary>
-    public class InversePath : BaseUnaryPath
+    public abstract class BaseBinaryPath : IPath
     {
         /// <summary>
-        /// Creates a new Inverse Path
+        /// Parts of the Path
         /// </summary>
-        /// <param name="path">Path</param>
-        public InversePath(ISparqlPath path)
-            : base(path) { }
+        protected IPath _lhs, _rhs;
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Creates a new Binary Path
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        /// <param name="lhs">LHS Path</param>
+        /// <param name="rhs">RHS Path</param>
+        public BaseBinaryPath(IPath lhs, IPath rhs)
         {
-            return "^ " + this._path.ToString();
+            this._lhs = lhs;
+            this._rhs = rhs;
+        }
+
+        /// <summary>
+        /// Gets the LHS Path component
+        /// </summary>
+        public IPath LhsPath
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS Path component
+        /// </summary>
+        public IPath RhsPath
+        {
+            get
+            {
+                return this._rhs;
+            }
         }
 
         /// <summary>
@@ -58,25 +79,12 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         /// <param name="context">Path Transformation Context</param>
         /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            //Swap the Subject and Object over
-            PatternItem tempObj = context.Object;
-            PatternItem tempSubj = context.Subject;
-            PatternItem tempEnd = context.End;
-            context.Object = tempSubj;
-            context.Subject = tempObj;
-            context.End = tempSubj;
+        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
-            //Then transform the path
-            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
-
-            //Then swap the Subject and Object back
-            context.Subject = tempSubj;
-            context.Object = tempObj;
-            context.End = tempEnd;
-
-            return context.ToAlgebra();
-        }
+        /// <summary>
+        /// Gets the String representation of the Path
+        /// </summary>
+        /// <returns></returns>
+        public abstract override String ToString();
     }
 }
