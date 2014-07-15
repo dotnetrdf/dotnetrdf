@@ -116,7 +116,7 @@ namespace VDS.RDF.Graphs
         {
             get
             {
-                return this.Triple.IsGroundTriple;
+                return this.Triple.IsGroundTriple && (this.Graph.NodeType != NodeType.Blank && this.Graph.NodeType != NodeType.Variable);
             }
         }
 

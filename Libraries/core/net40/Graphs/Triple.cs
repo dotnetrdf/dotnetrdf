@@ -36,6 +36,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 #if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+
 #endif
 
 namespace VDS.RDF.Graphs
@@ -44,12 +45,12 @@ namespace VDS.RDF.Graphs
     /// Class for representing RDF Triples in memory
     /// </summary>
 #if !SILVERLIGHT
-    [Serializable,XmlRoot(ElementName="triple")]
+    [Serializable, XmlRoot(ElementName = "triple")]
 #endif
     public sealed class Triple
         : IEquatable<Triple>, IComparable<Triple>
 #if !SILVERLIGHT
-        , ISerializable, IXmlSerializable
+            , ISerializable, IXmlSerializable
 #endif
     {
         private int _hashcode;
@@ -82,14 +83,13 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Deserialization only constructor
         /// </summary>
-        private Triple()
-        { }
+        private Triple() {}
 
         private Triple(SerializationInfo info, StreamingContext context)
         {
-            this.Subject = (INode)info.GetValue("s", typeof(INode));
-            this.Predicate = (INode)info.GetValue("p", typeof(INode));
-            this.Object = (INode)info.GetValue("o", typeof(INode));
+            this.Subject = (INode) info.GetValue("s", typeof (INode));
+            this.Predicate = (INode) info.GetValue("p", typeof (INode));
+            this.Object = (INode) info.GetValue("o", typeof (INode));
 
             //Compute Hash Code
             this._hashcode = Tools.CreateHashCode(this);
@@ -118,10 +118,7 @@ namespace VDS.RDF.Graphs
         [Obsolete("Triples no longer hold a reference to a Graph, use Quad if that is required", true)]
         public IGraph Graph
         {
-            get
-            {
-                throw new NotSupportedException();
-            }
+            get { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -131,10 +128,7 @@ namespace VDS.RDF.Graphs
         [Obsolete("Triples no longer hold a reference to a Graph, use Quad if that is required", true)]
         public Uri GraphUri
         {
-            get
-            {
-                throw new NotSupportedException();
-            }
+            get { throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -145,10 +139,7 @@ namespace VDS.RDF.Graphs
         /// </remarks>
         public IEnumerable<INode> Nodes
         {
-            get
-            {
-                return new INode[] { this.Subject, this.Predicate, this.Object };
-            }
+            get { return new INode[] {this.Subject, this.Predicate, this.Object}; }
         }
 
         /// <summary>
@@ -156,14 +147,15 @@ namespace VDS.RDF.Graphs
         /// </summary>
         /// <remarks>
         /// <para>
-        /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practise this means that the Triple does not contain any Blank Nodes.
+        /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practise this means that the Triple does not contain any Blank Nodes/Variables
         /// </para>
         /// </remarks>
         public bool IsGroundTriple
         {
             get
             {
-                return (this.Subject.NodeType != NodeType.Blank && this.Predicate.NodeType != NodeType.Blank && this.Object.NodeType != NodeType.Blank);
+                return ((this.Subject.NodeType != NodeType.Blank && this.Subject.NodeType != NodeType.Variable) && (this.Predicate.NodeType != NodeType.Blank && this.Predicate.NodeType != NodeType.Variable) && (this.Object.NodeType != NodeType.Blank && this.Object.NodeType != NodeType.Variable));
+                
             }
         }
 

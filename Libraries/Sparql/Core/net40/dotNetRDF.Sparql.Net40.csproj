@@ -62,10 +62,12 @@
     <Compile Include="Query\Algebra\IAlgebraVisitor.cs" />
     <Compile Include="Query\Compiler\IQueryCompiler.cs" />
     <Compile Include="Query\Engine\IAlgebraExecutor.cs" />
+    <Compile Include="Query\Engine\IBgpExecutor.cs" />
     <Compile Include="Query\Engine\Medusa\LongSkipEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\LongTakeEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\MedusaAlgebraExecutor.cs" />
     <Compile Include="Query\Engine\Medusa\MedusaExtensions.cs" />
+    <Compile Include="Query\Engine\Medusa\QuadStoreBgpExecutor.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
     <Compile Include="Query\Expressions\ExpressionType.cs" />
