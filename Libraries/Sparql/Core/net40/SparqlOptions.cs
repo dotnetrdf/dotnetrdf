@@ -8,7 +8,6 @@ namespace VDS.RDF
 {
     public static class SparqlOptions
     {
-        private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
         private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
         private static bool _queryOptimisation = true, _algebraOptimisation = true, _unsafeOptimisation = false;
         private static bool _queryAllowUnknownFunctions = true;
@@ -82,24 +81,6 @@ namespace VDS.RDF
             set
             {
                 _unsafeOptimisation = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the default syntax used for parsing SPARQL queries
-        /// </summary>
-        /// <remarks>
-        /// The default is SPARQL 1.1 unless you use this property to change it
-        /// </remarks>
-        public static SparqlQuerySyntax QueryDefaultSyntax
-        {
-            get
-            {
-                return _queryDefaultSyntax;
-            }
-            set
-            {
-                _queryDefaultSyntax = value;
             }
         }
 

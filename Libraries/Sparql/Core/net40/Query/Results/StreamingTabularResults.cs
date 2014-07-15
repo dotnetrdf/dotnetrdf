@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Results
             this._stream = stream;
         }
 
-        public ~StreamingTabularResults()
+        ~StreamingTabularResults()
         {
             this.Dispose(false);
         }

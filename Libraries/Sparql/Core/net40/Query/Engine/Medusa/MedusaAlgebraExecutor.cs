@@ -19,6 +19,8 @@ namespace VDS.RDF.Query.Engine.Medusa
         {
             List<Triple> patterns = bgp.TriplePatterns.ToList();
             if (patterns.Count == 0) return new Set().AsEnumerable();
+
+            throw new NotImplementedException();
         }
 
         public IEnumerable<ISet> Execute(Slice slice)
@@ -28,17 +30,9 @@ namespace VDS.RDF.Query.Engine.Medusa
             IEnumerable<ISet> innerResult = this.Execute(slice.InnerAlgebra);
             if (slice.Limit > 0)
             {
-                if (slice.Offset > 0)
-                {
-                    return innerResult.Skip(slice.Offset).Take(slice.Limit);
-                }
-                return innerResult.Take(slice.Limit);
+                return slice.Offset > 0 ? innerResult.Skip(slice.Offset).Take(slice.Limit) : innerResult.Take(slice.Limit);
             }
-            if (slice.Offset > 0)
-            {
-                return innerResult.Skip(slice.Offset);
-            }
-            return innerResult;
+            return slice.Offset > 0 ? innerResult.Skip(slice.Offset) : innerResult;
         }
     }
 }

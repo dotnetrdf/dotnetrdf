@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF
 {
@@ -63,6 +64,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="result">Result</param>
         /// <returns></returns>
-        bool HandleResult(SparqlResult result);
+        bool HandleResult(IResultRow result);
     }
 }

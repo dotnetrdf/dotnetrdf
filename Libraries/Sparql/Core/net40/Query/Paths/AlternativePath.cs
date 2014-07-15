@@ -58,19 +58,5 @@ namespace VDS.RDF.Query.Paths
             output.Append(')');
             return output.ToString();
         }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            PathTransformContext lhsContext = new PathTransformContext(context);
-            PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = this._lhs.ToAlgebra(lhsContext);
-            ISparqlAlgebra rhs = this._rhs.ToAlgebra(rhsContext);
-            return new Union(lhs, rhs);
-        }
     }
 }

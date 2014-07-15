@@ -24,17 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Patterns;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Specifications;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Specifications
 {
@@ -651,7 +646,7 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="dtUri">Data Type Uri</param>
         /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
+        public static EffectiveNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
         {
             return GetNumericTypeFromDataTypeUri(dtUri.AbsoluteUri);
         }
@@ -661,28 +656,21 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="dtUri">Data Type Uri as a String</param>
         /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(String dtUri)
+        public static EffectiveNumericType GetNumericTypeFromDataTypeUri(String dtUri)
         {
             if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
             {
-                return SparqlNumericType.Double;
+                return EffectiveNumericType.Double;
             }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
+            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
             {
-                return SparqlNumericType.Float;
+                return EffectiveNumericType.Float;
             }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
             {
-                return SparqlNumericType.Decimal;
+                return EffectiveNumericType.Decimal;
             }
-            else if (IntegerDataTypes.Contains(dtUri))
-            {
-                return SparqlNumericType.Integer;
-            }
-            else
-            {
-                return SparqlNumericType.NaN;
-            }
+            return XmlSpecsHelper.IntegerDataTypes.Contains(dtUri) ? EffectiveNumericType.Integer : EffectiveNumericType.NaN;
         }
 
         #endregion
@@ -744,7 +732,7 @@ namespace VDS.RDF.Specifications
                         }
                         else
                         {
-                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
+                            if (!SparqlGrammarHelper.IsHex(cs[i + 1]) || !SparqlGrammarHelper.IsHex(cs[i + 2]))
                             {
                                 throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
                             }
@@ -784,7 +772,7 @@ namespace VDS.RDF.Specifications
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)n;
+                    INode lit = (INode)n;
 
                     if (lit.DataType == null)
                     {
@@ -836,10 +824,10 @@ namespace VDS.RDF.Specifications
                         else
                         {
                             //Is it a Number?
-                            SparqlNumericType numType = GetNumericTypeFromDataTypeUri(dt);
+                            EffectiveNumericType numType = GetNumericTypeFromDataTypeUri(dt);
                             switch (numType)
                             {
-                                case SparqlNumericType.Decimal:
+                                case EffectiveNumericType.Decimal:
                                     //Should be a decimal
                                     Decimal dec;
                                     if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
@@ -861,8 +849,8 @@ namespace VDS.RDF.Specifications
                                         return false;
                                     }
 
-                                case SparqlNumericType.Float:
-                                case SparqlNumericType.Double:
+                                case EffectiveNumericType.Float:
+                                case EffectiveNumericType.Double:
                                     //Should be a double
                                     Double dbl;
                                     if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
@@ -884,7 +872,7 @@ namespace VDS.RDF.Specifications
                                         return false;
                                     }
 
-                                case SparqlNumericType.Integer:
+                                case EffectiveNumericType.Integer:
                                     //Should be an Integer
                                     long l;
                                     if (Int64.TryParse(lit.Value, out l))
@@ -906,7 +894,7 @@ namespace VDS.RDF.Specifications
                                         return false;
                                     }
 
-                                case SparqlNumericType.NaN:
+                                case EffectiveNumericType.NaN:
                                     //If not a Numeric Type then Type error
                                     throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
 
@@ -977,8 +965,8 @@ namespace VDS.RDF.Specifications
                 else
                 {
                     //Both have known types
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
-                    if (numtype != SparqlNumericType.NaN)
+                    EffectiveNumericType numtype = (EffectiveNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
+                    if (numtype != EffectiveNumericType.NaN)
                     {
                         //Both are Numeric so use Numeric equality
                         try
@@ -1007,7 +995,7 @@ namespace VDS.RDF.Specifications
                                 return TimeSpanEquality(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
-                                return ((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
+                                return ((INode)x).Value.Equals(((INode)y).Value);
                             default:
                                 //Use value equality
                                 return (x.CompareTo(y) == 0);
@@ -1090,12 +1078,12 @@ namespace VDS.RDF.Specifications
                 else
                 {
                     //Both have known types
-                    SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                    if (numtype != SparqlNumericType.NaN)
+                    EffectiveNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
+                    EffectiveNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
+                    EffectiveNumericType numtype = (EffectiveNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                    if (numtype != EffectiveNumericType.NaN)
                     {
-                        if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
+                        if (xnumtype == EffectiveNumericType.NaN || ynumtype == EffectiveNumericType.NaN)
                         {
                             //If one is non-numeric then we can't assume non-equality
                             return false;
@@ -1150,7 +1138,7 @@ namespace VDS.RDF.Specifications
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
-                                return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
+                                return !((INode)x).Value.Equals(((INode)y).Value);
                             default:
                                 //Use value equality
                                 return (x.CompareTo(y) != 0);
@@ -1206,33 +1194,26 @@ namespace VDS.RDF.Specifications
         /// <param name="y">Node</param>
         /// <param name="type">SPARQL Numeric Tyoe</param>
         /// <returns></returns>
-        public static bool NumericEquality(INode x, INode y, SparqlNumericType type)
+        public static bool NumericEquality(INode x, INode y, EffectiveNumericType type)
         {
             if (x == null || y == null) throw new NodeValueException("Cannot evaluate numeric equality when one or both arguments are Null");
-            if (type == SparqlNumericType.NaN) throw new NodeValueException("Cannot evaluate numeric equality when the Numeric Type is NaN");
+            if (type == EffectiveNumericType.NaN) throw new NodeValueException("Cannot evaluate numeric equality when the Numeric Type is NaN");
 
-            try
-            {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+            IValuedNode a = x.AsValuedNode();
+            IValuedNode b = y.AsValuedNode();
 
-                switch (type)
-                {
-                    case SparqlNumericType.Decimal:
-                        return ToDecimal(a).Equals(ToDecimal(b));
-                    case SparqlNumericType.Double:
-                        return ToDouble(a).Equals(ToDouble(b));
-                    case SparqlNumericType.Float:
-                        return ToFloat(a).Equals(ToFloat(b));
-                    case SparqlNumericType.Integer:
-                        return ToInteger(a).Equals(ToInteger(b));
-                    default:
-                        throw new NodeValueException("Cannot evaluate numeric equality since of the arguments is not numeric");
-                }
-            }
-            catch (FormatException)
+            switch (type)
             {
-                throw;// new NodeValueException("Cannot evaluate numeric equality since one of the arguments does not have a valid lexical value for the given type");
+                case EffectiveNumericType.Decimal:
+                    return a.AsDecimal().Equals(b.AsDecimal());
+                case EffectiveNumericType.Double:
+                    return a.AsDouble().Equals(b.AsDouble());
+                case EffectiveNumericType.Float:
+                    return a.AsFloat().Equals(b.AsFloat());
+                case EffectiveNumericType.Integer:
+                    return a.AsInteger().Equals(b.AsInteger());
+                default:
+                    throw new NodeValueException("Cannot evaluate numeric equality since of the arguments is not numeric");
             }
         }
 
@@ -1349,11 +1330,8 @@ namespace VDS.RDF.Specifications
             if (x == null || y == null) throw new NodeValueException("Cannot evaluate time span equality when one or both arguments are Null");
             try
             {
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
-
-                TimeSpan c = ToTimeSpan(a);
-                TimeSpan d = ToTimeSpan(b);
+                TimeSpan c = x.AsValuedNode().AsTimeSpan();
+                TimeSpan d = y.AsValuedNode().AsTimeSpan();
 
                 return c.Equals(d);
             }
@@ -1368,8 +1346,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDecimal() instead")]
-        public static Decimal ToDecimal(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsDecimal() instead", true)]
+        public static Decimal ToDecimal(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Decimal");
             return Decimal.Parse(n.Value);
@@ -1380,8 +1358,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDouble() instead")]
-        public static Double ToDouble(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsDouble() instead", true)]
+        public static Double ToDouble(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Double");
             return Double.Parse(n.Value);
@@ -1392,8 +1370,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsFloat() instead")]
-        public static Single ToFloat(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsFloat() instead", true)]
+        public static Single ToFloat(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Float");
             return Single.Parse(n.Value);
@@ -1404,8 +1382,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsInteger() instead")]
-        public static Int64 ToInteger(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsInteger() instead", true)]
+        public static Int64 ToInteger(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to an Integer");
             return Int64.Parse(n.Value);
@@ -1416,8 +1394,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTime() instead")]
-        public static DateTime ToDateTime(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsDateTime() instead", true)]
+        public static DateTime ToDateTime(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Date Time");
             return DateTime.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
@@ -1428,8 +1406,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead")]
-        public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead", true)]
+        public static DateTimeOffset ToDateTimeOffset(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Date Time");
             return DateTimeOffset.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
@@ -1440,8 +1418,8 @@ namespace VDS.RDF.Specifications
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsTimeSpan() instead")]
-        public static TimeSpan ToTimeSpan(ILiteralNode n)
+        [Obsolete("Use AsValuedNode().AsTimeSpan() instead", true)]
+        public static TimeSpan ToTimeSpan(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Time Span");
             return TimeSpan.Parse(n.Value);

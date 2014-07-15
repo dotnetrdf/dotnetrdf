@@ -24,17 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Abstract Base Class for Unary Path operators
     /// </summary>
-    public abstract class BaseUnaryPath : IPath
+    public abstract class BaseUnaryPath 
+        : IPath
     {
         /// <summary>
         /// Path
@@ -45,7 +42,7 @@ namespace VDS.RDF.Query.Paths
         /// Creates a new Unary Path
         /// </summary>
         /// <param name="path">Path</param>
-        public BaseUnaryPath(IPath path)
+        protected BaseUnaryPath(IPath path)
         {
             this._path = path;
         }
@@ -60,13 +57,6 @@ namespace VDS.RDF.Query.Paths
                 return this._path;
             }
         }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
         /// <summary>
         /// Gets the String representation of the Path

@@ -14,6 +14,7 @@ namespace VDS.RDF.Query
     /// Interface for SPARQL Queries
     /// </summary>
     public interface IQuery
+        : IEquatable<IQuery>
     {
         /// <summary>
         /// Gets/Sets the namespaces for the query

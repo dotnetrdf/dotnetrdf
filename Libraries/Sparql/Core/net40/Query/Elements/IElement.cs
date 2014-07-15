@@ -11,11 +11,11 @@ namespace VDS.RDF.Query.Elements
         /// <summary>
         /// Gets all variables mentioned in the element
         /// </summary>
-        IEnumerable<String> Variables { get; set; }
+        IEnumerable<String> Variables { get; }
         
         /// <summary>
         /// Gets all variables projected and thus visible outside the element
         /// </summary>
-        IEnumerable<string> ProjectedVariables { get; set; }
+        IEnumerable<string> ProjectedVariables { get; }
     }
 }

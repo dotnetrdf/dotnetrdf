@@ -102,40 +102,6 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            if (this._n > 0)
-            {
-                //Generate a Triple Pattern for each step in the cardinality
-                for (int i = 0; i < this._n; i++)
-                {
-                    context.Object = context.GetNextTemporaryVariable();
-
-                    if (i < this._n - 1 || !context.Top)
-                    {
-                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
-                        context.Subject = context.Object;
-                    }
-                    else
-                    {
-                        context.ResetObject();
-                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
-                    }
-                }
-
-                return context.ToAlgebra();
-            }
-            else
-            {
-                return new ZeroLengthPath(context.Subject, context.Object, this._path);
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
@@ -187,16 +153,6 @@ namespace VDS.RDF.Query.Paths
         {
             return this._path.ToString() + "*";
         }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            return new ZeroOrMorePath(context.Subject, context.Object, this._path);
-        }
     }
 
     /// <summary>
@@ -242,21 +198,6 @@ namespace VDS.RDF.Query.Paths
         {
             return this._path.ToString() + "?";
         }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            PathTransformContext lhsContext = new PathTransformContext(context);
-            PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, this._path);
-            ISparqlAlgebra rhs = this._path.ToAlgebra(rhsContext);
-
-            return new Distinct(new Union(lhs, rhs));
-        }
     }
 
     /// <summary>
@@ -301,16 +242,6 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "+";
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            return new OneOrMorePath(context.Subject, context.Object, this._path);
         }
     }
 
@@ -362,19 +293,6 @@ namespace VDS.RDF.Query.Paths
         {
             return this._path.ToString() + "{" + this._n + ",}";
         }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            PatternItem tempVar = context.GetNextTemporaryVariable();
-            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, this._n), tempVar));
-            context.AddTriplePattern(new PropertyPathPattern(tempVar, new ZeroOrMore(this._path), context.Object));
-            return context.ToAlgebra();
-        }
     }
 
     /// <summary>
@@ -424,17 +342,6 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "{," + this._n + "}";
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new NToM(this._path, 0, this._n), context.Object));
-            return context.ToAlgebra();
         }
     }
 
@@ -487,32 +394,6 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "{" + this._n + "," + this._m + "}";
-        }
-
-        /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            ISparqlAlgebra complex = null;
-            int i = this._n;
-            while (i <= this._m)
-            {
-                PathTransformContext tempContext = new PathTransformContext(context);
-                tempContext.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, i), context.Object));
-                if (complex == null)
-                {
-                    complex = tempContext.ToAlgebra();
-                }
-                else
-                {
-                    complex = new Union(complex, tempContext.ToAlgebra());
-                }
-                i++;
-            }
-            return complex;
         }
     }
 }

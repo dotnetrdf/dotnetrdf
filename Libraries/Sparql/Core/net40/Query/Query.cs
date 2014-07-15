@@ -206,8 +206,15 @@ namespace VDS.RDF.Query
                     case QueryType.SelectReduced:
                         // Only projected variables are the result variables
                         return this._projections.Select(kvp => kvp.Key);
+                    default:
+                        throw new RdfQueryException("Cannot determine result variables for Unknown query types, please set a QueryType first");
                 }
             }
+        }
+
+        public bool Equals(IQuery other)
+        {
+            throw new NotImplementedException();
         }
     }
 }

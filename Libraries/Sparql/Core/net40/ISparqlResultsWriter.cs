@@ -23,12 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using VDS.RDF.Query;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF
 {
@@ -37,21 +33,12 @@ namespace VDS.RDF
     /// </summary>
     public interface ISparqlResultsWriter
     {
-#if !NO_FILE
-        /// <summary>
-        /// Saves the Result Set to the given File
-        /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
-        void Save(SparqlResultSet results, String filename);
-#endif
-
         /// <summary>
         /// Saves the Result Set to the given Stream
         /// </summary>
-        /// <param name="results">Result Set to save</param>
+        /// <param name="results">Query Results to save</param>
         /// <param name="output">Stream to save to</param>
-        void Save(SparqlResultSet results, TextWriter output);
+        void Save(IQueryResults results, TextWriter output);
 
         /// <summary>
         /// Event raised when a non-fatal issue with the SPARQL Results being written is detected

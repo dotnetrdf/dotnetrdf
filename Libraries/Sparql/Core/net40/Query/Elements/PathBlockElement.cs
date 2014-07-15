@@ -45,5 +45,15 @@ namespace VDS.RDF.Query.Elements
         {
             visitor.Visit(this);
         }
+
+        public IEnumerable<string> Variables
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IEnumerable<string> ProjectedVariables
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

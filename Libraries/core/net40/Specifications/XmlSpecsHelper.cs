@@ -135,7 +135,7 @@ namespace VDS.RDF.Specifications
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method
         /// </summary>
-        public static String[] SupportedTypes = new String[] {
+        public static readonly String[] SupportedTypes = new String[] {
             XmlSchemaDataTypeAnyUri,
             XmlSchemaDataTypeBase64Binary,
             XmlSchemaDataTypeBoolean,
@@ -167,7 +167,7 @@ namespace VDS.RDF.Specifications
         /// <summary>
         /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL
         /// </summary>
-        public static String[] IntegerDataTypes = {   
+        public static readonly String[] IntegerDataTypes = {   
                                                       XmlSpecsHelper.XmlSchemaDataTypeByte, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeInt,
                                                       XmlSpecsHelper.XmlSchemaDataTypeInteger, 

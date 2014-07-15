@@ -370,6 +370,8 @@
     <Compile Include="Query\Ordering\ISparqlOrderBy.cs" />
     <Compile Include="Query\Ordering\SparqlOrderByClasses.cs" />
     <Compile Include="Query\Ordering\TripleComparer.cs" />
+    <Compile Include="Query\Paths\PathEvaluationContext.cs" />
+    <Compile Include="Query\Paths\PathTransformContext.cs" />
     <Compile Include="Query\Patterns\BaseTriplePattern.cs" />
     <Compile Include="Query\Patterns\BindingsPattern.cs" />
     <Compile Include="Query\Patterns\BindPattern.cs" />
@@ -433,7 +435,11 @@
     <Compile Include="Update\SparqlUpdateCommandSet.cs" />
     <Compile Include="Update\SparqlUpdateEvaluationContext.cs" />
     <Compile Include="Update\SparqlUpdateSpecsHelper.cs" />
+    <Compile Include="Writing\Formatting\BaseResultFormatter.cs" />
+    <Compile Include="Writing\Formatting\IResultFormatter.cs" />
+    <Compile Include="Writing\Formatting\IResultSetFormatter.cs" />
     <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
+    <Compile Include="Writing\Serialization\ResultSerializationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />

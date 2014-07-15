@@ -354,7 +354,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns></returns>
-        internal static String ToSafeString(this Uri u)
+        public static String ToSafeString(this Uri u)
         {
             return (u == null) ? String.Empty : u.AbsoluteUri;
         }

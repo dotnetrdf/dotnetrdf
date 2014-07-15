@@ -17,5 +17,15 @@ namespace VDS.RDF.Query.Elements
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<string> Variables
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IEnumerable<string> ProjectedVariables
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Specifications
 {
@@ -22,22 +21,19 @@ namespace VDS.RDF.Specifications
                 //Must have a Colon in a QName
                 return false;
             }
-            else
+            //Split into Prefix and Local Name
+            String[] parts = value.Split(':');
+
+            //If SPARQL 1.0 then can only have two sections
+            if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
+
+            //All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
+            for (int i = 0; i < parts.Length - 1; i++)
             {
-                //Split into Prefix and Local Name
-                String[] parts = value.Split(':');
-
-                //If SPARQL 1.0 then can only have two sections
-                if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
-
-                //All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
-                for (int i = 0; i < parts.Length - 1; i++)
-                {
-                    if (!IsPNPrefix(parts[i].ToCharArray())) return false;
-                }
-                //Final section must match PN_LOCAL
-                return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
+                if (!IsPNPrefix(parts[i].ToCharArray())) return false;
             }
+            //Final section must match PN_LOCAL
+            return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
         }
 
         /// <summary>
@@ -57,30 +53,16 @@ namespace VDS.RDF.Specifications
 
             //First Character must be from PN_CHARS_U or a digit
             char first = cs[0];
-            if (Char.IsDigit(first) || IsPNCharsU(first))
+            if (!Char.IsDigit(first) && !IsPNCharsU(first)) return false;
+            if (cs.Length <= 1) return true;
+            for (int i = 1; i < cs.Length; i++)
             {
-                if (cs.Length > 1)
-                {
-                    for (int i = 1; i < cs.Length; i++)
-                    {
-                        if (i < cs.Length - 1)
-                        {
-                            //Subsequent Chars must be from PN_CHARS (except -) or a '.'
-                            if (cs[i] == '.' || cs[i] == '-') return false;
-                            if (!IsPNChars(cs[i])) return false;
-                        }
-                    }
-                    return true;
-                }
-                else
-                {
-                    return true;
-                }
+                if (i >= cs.Length - 1) continue;
+                //Subsequent Chars must be from PN_CHARS (except -) or a '.'
+                if (cs[i] == '.' || cs[i] == '-') return false;
+                if (!IsPNChars(cs[i])) return false;
             }
-            else
-            {
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
@@ -150,21 +132,21 @@ namespace VDS.RDF.Specifications
             {
                 return true;
             }
-            else if (c >= 'a' && c <= 'z')
+            if (c >= 'a' && c <= 'z')
             {
                 return true;
             }
-            else if ((c >= 0x00c0 && c <= 0x00d6) ||
-                     (c >= 0x00d8 && c <= 0x00f6) ||
-                     (c >= 0x00f8 && c <= 0x02ff) ||
-                     (c >= 0x0370 && c <= 0x037d) ||
-                     (c >= 0x037f && c <= 0x1fff) ||
-                     (c >= 0x200c && c <= 0x200d) ||
-                     (c >= 0x2070 && c <= 0x218f) ||
-                     (c >= 0x2c00 && c <= 0x2fef) ||
-                     (c >= 0x3001 && c <= 0xd7ff) ||
-                     (c >= 0xf900 && c <= 0xfdcf) ||
-                     (c >= 0xfdf0 && c <= 0xfffd) /*||
+            if ((c >= 0x00c0 && c <= 0x00d6) ||
+                (c >= 0x00d8 && c <= 0x00f6) ||
+                (c >= 0x00f8 && c <= 0x02ff) ||
+                (c >= 0x0370 && c <= 0x037d) ||
+                (c >= 0x037f && c <= 0x1fff) ||
+                (c >= 0x200c && c <= 0x200d) ||
+                (c >= 0x2070 && c <= 0x218f) ||
+                (c >= 0x2c00 && c <= 0x2fef) ||
+                (c >= 0x3001 && c <= 0xd7ff) ||
+                (c >= 0xf900 && c <= 0xfdcf) ||
+                (c >= 0xfdf0 && c <= 0xfffd) /*||
                      (c >= 0x10000 && c <= 0xeffff)*/)
             {
                 return true;
@@ -196,23 +178,20 @@ namespace VDS.RDF.Specifications
             {
                 return true;
             }
-            else if (c == 0x00b7)
+            if (c == 0x00b7)
             {
                 return true;
             }
-            else if (IsPNCharsU(c))
+            if (IsPNCharsU(c))
             {
                 return true;
             }
-            else if ((c >= 0x0300 && c <= 0x036f) ||
-                     (c >= 0x204f && c <= 0x2040))
+            if ((c >= 0x0300 && c <= 0x036f) ||
+                (c >= 0x204f && c <= 0x2040))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -232,65 +211,51 @@ namespace VDS.RDF.Specifications
             //First character must be a digit or from PN_CHARS_U
             char first = cs[0];
             int start = 0;
-            if (Char.IsDigit(first) || IsPNCharsU(first) ||
-                (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, 0, out start)))
+            if (!Char.IsDigit(first) && !IsPNCharsU(first) && (syntax == SparqlQuerySyntax.Sparql_1_0 || !IsPLX(cs, 0, out start))) return false;
+            if (start > 0)
             {
-                if (start > 0)
-                {
-                    //Means the first thing was a PLX
-                    //If the only thing in the local name was a PLX this is valid
-                    if (start == cs.Length - 1) return true;
-                    //If there are further characters we'll start 
-                }
-                else
-                {
-                    //Otherwise we need to check the rest of the characters
-                    start = 1;
-                }
-
-                //Check the rest of the characters
-                if (cs.Length > start)
-                {
-                    for (int i = start; i < cs.Length; i++)
-                    {
-                        if (i < cs.Length - 1)
-                        {
-                            //Middle characters may be from PN_CHARS or '.'
-                            int j = i;
-                            if (!(cs[i] == '.' || IsPNChars(cs[i]) ||
-                                  (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, i, out j))
-                                ))
-                            {
-                                return false;
-                            }
-                            if (i != j)
-                            {
-                                //This means we just saw a PLX
-                                //Last thing being a PLX is valid
-                                if (j == cs.Length - 1) return true;
-                                //Otherwise adjust the index appropriately and continue checking further characters
-                                i = j;
-                            }
-                        }
-                        else
-                        {
-                            //Last Character must be from PN_CHARS if it wasn't a PLX which is handled elsewhere
-                            return IsPNChars(cs[i]);
-                        }
-                    }
-
-                    //Should never get here but have to add this to keep compiler happy
-                    throw new RdfParseException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
-                }
-                else
-                {
-                    return true;
-                }
+                //Means the first thing was a PLX
+                //If the only thing in the local name was a PLX this is valid
+                if (start == cs.Length - 1) return true;
+                //If there are further characters we'll start 
             }
             else
             {
-                return false;
+                //Otherwise we need to check the rest of the characters
+                start = 1;
             }
+
+            //Check the rest of the characters
+            if (cs.Length <= start) return true;
+            for (int i = start; i < cs.Length; i++)
+            {
+                if (i < cs.Length - 1)
+                {
+                    //Middle characters may be from PN_CHARS or '.'
+                    int j = i;
+                    if (!(cs[i] == '.' || IsPNChars(cs[i]) ||
+                          (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, i, out j))
+                        ))
+                    {
+                        return false;
+                    }
+                    if (i == j) continue;
+
+                    //This means we just saw a PLX
+                    //Last thing being a PLX is valid
+                    if (j == cs.Length - 1) return true;
+                    //Otherwise adjust the index appropriately and continue checking further characters
+                    i = j;
+                }
+                else
+                {
+                    //Last Character must be from PN_CHARS if it wasn't a PLX which is handled elsewhere
+                    return IsPNChars(cs[i]);
+                }
+            }
+
+            //Should never get here but have to add this to keep compiler happy
+            throw new RdfParseException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
         }
 
         /// <summary>
@@ -305,39 +270,27 @@ namespace VDS.RDF.Specifications
 
             //First character must be from PN_CHARS_BASE
             char first = cs[0];
-            if (IsPNCharsBase(first))
+            if (!IsPNCharsBase(first)) return false;
+            if (cs.Length <= 1) return true;
+            for (int i = 1; i < cs.Length; i++)
             {
-                if (cs.Length > 1)
+                if (i < cs.Length - 1)
                 {
-                    for (int i = 1; i < cs.Length; i++)
+                    //Middle characters may be from PN_CHARS or '.'
+                    if (!(cs[i] == '.' || IsPNChars(cs[i])))
                     {
-                        if (i < cs.Length - 1)
-                        {
-                            //Middle characters may be from PN_CHARS or '.'
-                            if (!(cs[i] == '.' || IsPNChars(cs[i])))
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Last Character must be from PN_CHARS
-                            return IsPNChars(cs[i]);
-                        }
+                        return false;
                     }
-
-                    //Should never get here but have to add this to keep compiler happy
-                    throw new RdfParseException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
                 }
                 else
                 {
-                    return true;
+                    //Last Character must be from PN_CHARS
+                    return IsPNChars(cs[i]);
                 }
             }
-            else
-            {
-                return false;
-            }
+
+            //Should never get here but have to add this to keep compiler happy
+            throw new RdfParseException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
         }
 
         /// <summary>
@@ -357,65 +310,48 @@ namespace VDS.RDF.Specifications
                     //If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
                 }
-                else
-                {
-                    char a = cs[startIndex + 1];
-                    char b = cs[startIndex + 2];
-                    if (IsHex(a) && IsHex(b))
-                    {
-                        //Valid % encoding
-                        endIndex = startIndex + 2;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                char a = cs[startIndex + 1];
+                char b = cs[startIndex + 2];
+                if (!IsHex(a) || !IsHex(b)) return false;
+
+                //Valid % encoding
+                endIndex = startIndex + 2;
+                return true;
             }
-            else if (cs[startIndex] == '\\')
+            if (cs[startIndex] != '\\') return false;
+            if (startIndex >= cs.Length - 1)
             {
-                if (startIndex >= cs.Length - 1)
-                {
-                    //If we saw a backslash but no subsequent character not a valid PLX escape
-                    return false;
-                }
-                else
-                {
-                    char c = cs[startIndex + 1];
-                    switch (c)
-                    {
-                        case '_':
-                        case '~':
-                        case '-':
-                        case '.':
-                        case '!':
-                        case '$':
-                        case '&':
-                        case '\'':
-                        case '(':
-                        case ')':
-                        case '*':
-                        case '+':
-                        case ',':
-                        case ';':
-                        case '=':
-                        case '/':
-                        case '?':
-                        case '#':
-                        case '@':
-                        case '%':
-                            //Valid Escape
-                            endIndex = startIndex + 1;
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            }
-            else
-            {
+                //If we saw a backslash but no subsequent character not a valid PLX escape
                 return false;
+            }
+            char c = cs[startIndex + 1];
+            switch (c)
+            {
+                case '_':
+                case '~':
+                case '-':
+                case '.':
+                case '!':
+                case '$':
+                case '&':
+                case '\'':
+                case '(':
+                case ')':
+                case '*':
+                case '+':
+                case ',':
+                case ';':
+                case '=':
+                case '/':
+                case '?':
+                case '#':
+                case '@':
+                case '%':
+                    //Valid Escape
+                    endIndex = startIndex + 1;
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -430,28 +366,37 @@ namespace VDS.RDF.Specifications
             {
                 return true;
             }
-            else
+            switch (c)
             {
-                switch (c)
-                {
-                    case 'A':
-                    case 'a':
-                    case 'B':
-                    case 'b':
-                    case 'C':
-                    case 'c':
-                    case 'D':
-                    case 'd':
-                    case 'E':
-                    case 'f':
-                    case 'F':
-                        return true;
-                    default:
-                        return false;
-                }
+                case 'A':
+                case 'a':
+                case 'B':
+                case 'b':
+                case 'C':
+                case 'c':
+                case 'D':
+                case 'd':
+                case 'E':
+                case 'f':
+                case 'F':
+                    return true;
+                default:
+                    return false;
             }
         }
 
         #endregion
+    }
+
+    public enum SparqlQuerySyntax
+    {
+        /// <summary>
+        /// SPARQL 1.0 as defined by the W3C
+        /// </summary>
+        Sparql_1_0,
+        /// <summary>
+        /// SPARQL 1.1 as defined by the W3C
+        /// </summary>
+        Sparql_1_1
     }
 }

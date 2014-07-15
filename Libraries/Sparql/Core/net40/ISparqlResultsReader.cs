@@ -23,9 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.IO;
-using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
@@ -34,51 +32,6 @@ namespace VDS.RDF
     /// </summary>
     public interface ISparqlResultsReader
     {
-        /// <summary>
-        /// Loads a Result Set from the given Stream
-        /// </summary>
-        /// <param name="input">Stream to read from</param>
-        /// <param name="results">Result Set to load into</param>
-        /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
-        void Load(SparqlResultSet results, StreamReader input);
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads a Result Set from the given File
-        /// </summary>
-        /// <param name="filename">File containing a Result Set</param>
-        /// <param name="results">Result Set to load into</param>
-        /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
-        void Load(SparqlResultSet results, String filename);
-#endif
-
-        /// <summary>
-        /// Loads a Result Set from the given Input
-        /// </summary>
-        /// <param name="input">Input to read from</param>
-        /// <param name="results">Result Set to load into</param>
-        /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
-        void Load(SparqlResultSet results, TextReader input);
-
-        /// <summary>
-        /// Loads a Result Set using a Results Handler from the given Stream
-        /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="input">Stream to read from</param>
-        void Load(ISparqlResultsHandler handler, StreamReader input);
-
-#if !NO_FILE
-        /// <summary>
-        /// Loads a Result Set using a Results Handler from the given file
-        /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="filename">File to read results from</param>
-        void Load(ISparqlResultsHandler handler, String filename);
-#endif
-
         /// <summary>
         /// Loads a Result Set using a Results Handler from the given Input
         /// </summary>

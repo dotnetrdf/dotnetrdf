@@ -75,13 +75,6 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
-
-        /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>

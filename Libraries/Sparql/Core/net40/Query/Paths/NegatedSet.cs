@@ -73,33 +73,6 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
-        /// </summary>
-        /// <param name="context">Path Transformation Context</param>
-        /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra(PathTransformContext context)
-        {
-            if (this._properties.Count > 0 && this._inverseProperties.Count == 0)
-            {
-                return new NegatedPropertySet(context.Subject, context.Object, this._properties);
-            }
-            else if (this._properties.Count == 0 && this._inverseProperties.Count > 0)
-            {
-                return new NegatedPropertySet(context.Object, context.Subject, this._inverseProperties, true);
-            }
-            else
-            {
-                PathTransformContext lhsContext = new PathTransformContext(context);
-                PathTransformContext rhsContext = new PathTransformContext(context);
-                lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(this._properties, Enumerable.Empty<Property>()), lhsContext.Object));
-                rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), this._inverseProperties), rhsContext.Object));
-                ISparqlAlgebra lhs = lhsContext.ToAlgebra();
-                ISparqlAlgebra rhs = rhsContext.ToAlgebra();
-                return new Union(lhs, rhs);
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
