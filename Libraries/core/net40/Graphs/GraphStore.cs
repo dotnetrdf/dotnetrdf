@@ -242,7 +242,7 @@ namespace VDS.RDF.Graphs
                 return this.Find(s, p, o);
             }
             // If given graph is not present then no results
-            if (this.HasGraph(g)) return Enumerable.Empty<Quad>();
+            if (!this.HasGraph(g)) return Enumerable.Empty<Quad>();
 
             // Otherwise search in a specific named graph
             return this[g].Find(s, p, o).AsQuads(g);
