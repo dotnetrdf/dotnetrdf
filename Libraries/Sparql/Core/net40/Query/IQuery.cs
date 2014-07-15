@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Results;
+using VDS.RDF.Query.Templates;
 
 namespace VDS.RDF.Query
 {
@@ -109,5 +111,64 @@ namespace VDS.RDF.Query
         /// Removes the sort conditions from the query
         /// </summary>
         void ClearSortConditions();
+
+        /// <summary>
+        /// Gets/Sets the WHERE clause of the query
+        /// </summary>
+        IElement WhereClause { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the HAVING conditions of the query
+        /// </summary>
+        IEnumerable<IExpression> HavingConditions { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the GROUP BY expressions of the query
+        /// </summary>
+        IEnumerable<KeyValuePair<IExpression, String>> GroupExpressions { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the VALUES clause of the query
+        /// </summary>
+        ITabularResults ValuesClause { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the CONSTRUCT template for the query
+        /// </summary>
+        ITemplate ConstructTemplate { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the projections from the query
+        /// </summary>
+        IEnumerable<KeyValuePair<String, IExpression>> Projections { get; set; }
+
+        /// <summary>
+        /// Adds a variable to the projections of the query
+        /// </summary>
+        /// <param name="var">Variable to project</param>
+        void AddProjectVariable(String var);
+
+        /// <summary>
+        /// Adds a project expression to the projections of the query
+        /// </summary>
+        /// <param name="var">Variable to assign value to</param>
+        /// <param name="expr">Expression</param>
+        void AddProjectExpression(String var, IExpression expr);
+
+        /// <summary>
+        /// Removes the projection for the given variable
+        /// </summary>
+        /// <param name="var">Variable</param>
+        void RemoveProjection(String var);
+
+        /// <summary>
+        /// Removes all projections for the query
+        /// </summary>
+        void ClearProjections();
+
+        /// <summary>
+        /// Gets the variables that will be the results of the query
+        /// </summary>
+        IEnumerable<String> ResultVariables { get; } 
     }
 }

@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Engine
         private readonly Dictionary<String, INode> _values;
 
         /// <summary>
-        /// Creates a new Set
+        /// Creates a new empty Set
         /// </summary>
         public Set()
         {

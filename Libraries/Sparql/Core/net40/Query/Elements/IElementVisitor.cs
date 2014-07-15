@@ -7,26 +7,26 @@
     {
         void Visit(BindElement bind);
 
-        void Visit(DataElement bind);
+        void Visit(DataElement data);
 
-        void Visit(FilterElement bind);
+        void Visit(FilterElement filter);
 
-        void Visit(GroupElement bind);
+        void Visit(GroupElement group);
 
-        void Visit(MinusElement bind);
+        void Visit(MinusElement minus);
 
-        void Visit(NamedGraphElement bind);
+        void Visit(NamedGraphElement namedGraph);
 
-        void Visit(OptionalElement bind);
+        void Visit(OptionalElement optional);
 
-        void Visit(PathBlockElement bind);
+        void Visit(PathBlockElement pathBlock);
 
-        void Visit(ServiceElement bind);
+        void Visit(ServiceElement service);
 
-        void Visit(SubQueryElement bind);
+        void Visit(SubQueryElement subQuery);
 
-        void Visit(TripleBlockElement bind);
+        void Visit(TripleBlockElement tripleBlock);
 
-        void Visit(UnionElement bind);
+        void Visit(UnionElement union);
     }
 }

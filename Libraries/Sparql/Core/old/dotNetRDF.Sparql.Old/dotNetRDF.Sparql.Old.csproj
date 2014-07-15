@@ -319,7 +319,6 @@
     <Compile Include="Query\Expressions\Functions\XPath\String\UpperCaseFunction.cs" />
     <Compile Include="Query\Expressions\IExpressionTransformer.cs" />
     <Compile Include="Query\Expressions\ISPARQLCustomExpressionFactory.cs" />
-    <Compile Include="Query\Expressions\ISPARQLExpression.cs" />
     <Compile Include="Query\Expressions\LeviathanFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Primary\AggregateTerm.cs" />
     <Compile Include="Query\Expressions\Primary\AllModifier.cs" />
