@@ -19,11 +19,11 @@ namespace VDS.RDF.Query.Engine.Medusa
 
         private long ToTake { get; set; }
 
-        private IEnumerable<T> InnerEnumerable { get; set; } 
+        private IEnumerable<T> InnerEnumerable { get; set; }
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new LongTakeEnumerator<T>(this.InnerEnumerable.GetEnumerator(), this.ToTake);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -60,7 +60,11 @@ namespace VDS.RDF.Query.Engine.Medusa
 
         public bool MoveNext()
         {
-            if (this.Taken >= this.ToTake) return false;
+            if (this.Taken >= this.ToTake)
+            {
+                this.Finished = true;
+                return false;
+            }
             if (!this.InnerEnumerator.MoveNext())
             {
                 this.Finished = true;
@@ -81,7 +85,7 @@ namespace VDS.RDF.Query.Engine.Medusa
         {
             get
             {
-                if (this.Finished || this.Taken >= this.ToTake) throw new InvalidOperationException("Past the end of the enumerator");
+                if (this.Finished) throw new InvalidOperationException("Past the end of the enumerator");
                 if (this.Taken == 0) throw new InvalidOperationException("Before the start of the enumerator, MoveNext() must be called at least once before accessing this property");
                 return this.InnerEnumerator.Current;
             }

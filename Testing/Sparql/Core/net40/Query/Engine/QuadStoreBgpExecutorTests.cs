@@ -22,14 +22,12 @@ namespace VDS.RDF.Query.Engine
             INode p = g.CreateUriNode(":predicate");
             INode o1 = g.CreateUriNode(":object");
             INode o2 = g.CreateLiteralNode("test");
-            INode o3 = g.CreateBlankNode();
 
             g.Assert(s1, p, o1);
             g.Assert(s1, p, o2);
-            g.Assert(s1, p, o3);
+            g.Assert(s1, p, s2);
             g.Assert(s2, p, o1);
             g.Assert(s2, p, o2);
-            g.Assert(s2, p, o3);
 
             return g;
         }
@@ -93,9 +91,86 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
             List<ISet> results = executor.Match(Quad.DefaultGraphNode, search).ToList();
-            Assert.AreEqual(6, results.Count);
+            Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
+        }
+
+        [Test]
+        public void QuadStoreBgpExecutorMatch3()
+        {
+            IGraph g = this.CreateGraph();
+            IQuadStore qs = CreateQuadStore(g);
+            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+
+            Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateBlankNode());
+
+            List<ISet> results = executor.Match(Quad.DefaultGraphNode, search).ToList();
+            Assert.AreEqual(5, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("s")));
+        }
+
+        [Test]
+        public void QuadStoreBgpExecutorChainedMatch1()
+        {
+            IGraph g = this.CreateGraph();
+            IQuadStore qs = CreateQuadStore(g);
+            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+
+            Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
+            Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o2"));
+
+            List<ISet> results = executor.Match(Quad.DefaultGraphNode, search).ToList();
+            Assert.AreEqual(5, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
+
+            results = results.SelectMany(s => executor.Match(Quad.DefaultGraphNode, search2, s)).ToList();
+            Assert.AreEqual(2, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 3));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("o2")));
+        }
+
+        [Test]
+        public void QuadStoreBgpExecutorChainedMatch2()
+        {
+            IGraph g = this.CreateGraph();
+            IQuadStore qs = CreateQuadStore(g);
+            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+
+            INode b = g.CreateBlankNode();
+            Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), b);
+            Triple search2 = new Triple(b, g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
+
+            List<ISet> results = executor.Match(Quad.DefaultGraphNode, search).ToList();
+            Assert.AreEqual(5, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("s")));
+
+            results = results.SelectMany(s => executor.Match(Quad.DefaultGraphNode, search2, s)).ToList();
+            Assert.AreEqual(2, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 3));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("o")));
+        }
+
+        [Test]
+        public void QuadStoreBgpExecutorChainedMatch3()
+        {
+            IGraph g = this.CreateGraph();
+            IQuadStore qs = CreateQuadStore(g);
+            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+
+            Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
+            Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateLiteralNode("nosuchthing"));
+
+            List<ISet> results = executor.Match(Quad.DefaultGraphNode, search).ToList();
+            Assert.AreEqual(5, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
+
+            results = results.SelectMany(s => executor.Match(Quad.DefaultGraphNode, search2, s)).ToList();
+            Assert.AreEqual(0, results.Count);
         }
     }
 }
