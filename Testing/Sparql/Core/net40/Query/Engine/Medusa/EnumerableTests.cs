@@ -39,11 +39,13 @@ namespace VDS.RDF.Query.Engine.Medusa
             while (enumerator.MoveNext()) { }
         }
 
-        private static Object[] SkipAndTakeData = new object[]
+        public static readonly Object[] SkipAndTakeData = new object[]
                                                   {
                                                       new object[] { 1, 50, 10 },
                                                       new object[] { 1, 10, 10 },
-                                                      new object[] { 1, 10, 5 }
+                                                      new object[] { 1, 10, 5 },
+                                                      new object[] { 1, 10, 20 },
+                                                      new object[] { 100, 100, 50 },
                                                   };
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -106,6 +108,11 @@ namespace VDS.RDF.Query.Engine.Medusa
             IEnumerable<int> expected = data.Skip(skip);
             IEnumerable<int> actual = new LongSkipEnumerable<int>(data, skip);
 
+            if (skip > count)
+            {
+                Assert.IsFalse(expected.Any());
+                Assert.IsFalse(actual.Any());
+            }
             Assert.AreEqual(expected.Count(), actual.Count());
             Check(expected, actual);
         }
