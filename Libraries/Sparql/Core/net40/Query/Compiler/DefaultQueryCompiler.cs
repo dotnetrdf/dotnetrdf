@@ -60,7 +60,8 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(NamedGraphElement namedGraph)
         {
-            throw new NotImplementedException();
+            namedGraph.Element.Accept(this);
+            this._algebras.Push(new NamedGraph(namedGraph.Graph, this._algebras.Pop()));
         }
 
         public void Visit(OptionalElement optional)
@@ -90,7 +91,13 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(UnionElement union)
         {
-            throw new NotImplementedException();
+            union.Lhs.Accept(this);
+            union.Rhs.Accept(this);
+
+            IAlgebra rhs = this._algebras.Pop();
+            IAlgebra lhs = this._algebras.Pop();
+
+            this._algebras.Push(new Union(lhs, rhs));
         }
     }
 }

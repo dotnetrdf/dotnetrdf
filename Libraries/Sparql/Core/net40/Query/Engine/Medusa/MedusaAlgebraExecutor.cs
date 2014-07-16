@@ -10,36 +10,30 @@ namespace VDS.RDF.Query.Engine.Medusa
     public abstract class MedusaAlgebraExecutor
         : IAlgebraExecutor
     {
-        private Stack<INode> _activeGraphNames = new Stack<INode>();
-
         protected MedusaAlgebraExecutor(IBgpExecutor executor)
         {
             if (executor == null) throw new ArgumentNullException("executor");
             this.BgpExecutor = executor;
-            this._activeGraphNames.Push(Quad.DefaultGraphNode);
         }
 
         public IBgpExecutor BgpExecutor { get; private set; }
 
-        public INode ActiveGraph { get { return this._activeGraphNames.Peek(); } }
-
-        public void PushActiveGraph(INode graphName)
+        protected virtual IExecutionContext EnsureContext(IExecutionContext context)
         {
-            this._activeGraphNames.Push(graphName);
-        }
-
-        public void PopActiveGraph()
-        {
-            if (this._activeGraphNames.Count <= 1) throw new RdfQueryException("Cannot pop the active graph when there is only 1 active graph in the stack");
-            this._activeGraphNames.Pop();
+            return context ?? new QueryExecutionContext();
         }
 
         public virtual IEnumerable<ISet> Execute(IAlgebra algebra)
         {
-            throw new NotImplementedException();
+            return Execute(algebra, EnsureContext(null));
         }
 
-        public virtual IEnumerable<ISet> Execute(Bgp bgp)
+        public virtual IEnumerable<ISet> Execute(IAlgebra algebra, IExecutionContext context)
+        {
+            return algebra.Execute(this, EnsureContext(context));
+        }
+
+        public virtual IEnumerable<ISet> Execute(Bgp bgp, IExecutionContext context)
         {
             List<Triple> patterns = bgp.TriplePatterns.ToList();
             if (patterns.Count == 0) return new Set().AsEnumerable();
@@ -49,18 +43,18 @@ namespace VDS.RDF.Query.Engine.Medusa
             {
                 if (i == 0)
                 {
-                    results = this.BgpExecutor.Match(this.ActiveGraph, patterns[i]);
+                    results = this.BgpExecutor.Match(context.ActiveGraph, patterns[i]);
                 }
                 else
                 {
                     int i1 = i;
-                    results = results.SelectMany(s => this.BgpExecutor.Match(this.ActiveGraph, patterns[i1], s));
+                    results = results.SelectMany(s => this.BgpExecutor.Match(context.ActiveGraph, patterns[i1], s));
                 }
             }
             return results;
         }
 
-        public virtual IEnumerable<ISet> Execute(Slice slice)
+        public virtual IEnumerable<ISet> Execute(Slice slice, IExecutionContext context)
         {
             if (slice.Limit == 0) return Enumerable.Empty<ISet>();
 
@@ -70,6 +64,25 @@ namespace VDS.RDF.Query.Engine.Medusa
                 return slice.Offset > 0 ? innerResult.Skip(slice.Offset).Take(slice.Limit) : innerResult.Take(slice.Limit);
             }
             return slice.Offset > 0 ? innerResult.Skip(slice.Offset) : innerResult;
+        }
+
+        public IEnumerable<ISet> Execute(Union union, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            return union.Lhs.Execute(this, context).Concat(union.Rhs.Execute(this, context));
+        }
+
+        public IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            if (namedGraph.Graph.NodeType != NodeType.Variable)
+            {
+                // Fixed Graph Name
+                context = context.PushActiveGraph(namedGraph.Graph);
+                return namedGraph.InnerAlgebra.Execute(this, context);
+            }
+            // Graph Variable
+            throw new NotImplementedException();
         }
     }
 }

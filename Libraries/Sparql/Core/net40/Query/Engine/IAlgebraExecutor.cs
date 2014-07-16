@@ -7,8 +7,14 @@ namespace VDS.RDF.Query.Engine
     {
         IEnumerable<ISet> Execute(IAlgebra algebra);
 
-        IEnumerable<ISet> Execute(Bgp bgp);
+        IEnumerable<ISet> Execute(IAlgebra algebra, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Slice slice);
+        IEnumerable<ISet> Execute(Bgp bgp, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(Slice slice, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(Union union, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context);
     }
 }

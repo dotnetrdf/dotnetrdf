@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -10,11 +9,21 @@ namespace VDS.RDF.Query.Algebra
         : IEquatable<IAlgebra>
     {
         void Accept(IAlgebraVisitor visitor);
+
+        IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context);
     }
 
     public interface IUnaryAlgebra
         : IAlgebra
     {
         IAlgebra InnerAlgebra { get; }
+    }
+
+    public interface IBinaryAlgebra
+        : IAlgebra
+    {
+        IAlgebra Lhs { get; }
+
+        IAlgebra Rhs { get; }
     }
 }

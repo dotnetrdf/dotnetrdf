@@ -2,6 +2,7 @@
 using System.Linq;
 using VDS.Common.Collections;
 using VDS.RDF.Graphs;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -44,6 +45,11 @@ namespace VDS.RDF.Query.Algebra
         public void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);
+        }
+
+        public IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        {
+            return executor.Execute(this, context);
         }
     }
 }

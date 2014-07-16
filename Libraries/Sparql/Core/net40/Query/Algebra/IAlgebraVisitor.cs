@@ -4,6 +4,10 @@
     {
         void Visit(Bgp bgp);
 
-        void Visit(Slice bgp);
+        void Visit(Slice slice);
+
+        void Visit(Union union);
+
+        void Visit(NamedGraph namedGraph);
     }
 }
