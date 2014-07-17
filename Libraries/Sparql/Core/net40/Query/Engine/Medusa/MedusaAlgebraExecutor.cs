@@ -1,10 +1,12 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Engine.Medusa
 {
@@ -106,6 +108,21 @@ namespace VDS.RDF.Query.Engine.Medusa
             // Fixed Graph Name
             context = context.PushActiveGraph(namedGraph.Graph);
             return namedGraph.InnerAlgebra.Execute(this, context);
+        }
+
+        public IEnumerable<ISet> Execute(Filter filter, IExecutionContext context)
+        {
+            return filter.InnerAlgebra.Execute(this, context).Where(s =>
+            {
+                try
+                {
+                    return filter.Expressions.Select(expr => expr.Evaluate(s, context.CreateExpressionContext())).All(n => n.AsSafeBoolean());
+                }
+                catch (RdfQueryException)
+                {
+                    return false;
+                }
+            });
         }
     }
 }

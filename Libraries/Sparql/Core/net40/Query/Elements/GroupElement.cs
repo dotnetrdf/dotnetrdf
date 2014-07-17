@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,7 +11,7 @@ namespace VDS.RDF.Query.Elements
             this.Elements = elements != null ? new List<IElement>(elements) : new List<IElement>();
         }
 
-        public IList<IElement> Elements { get; set; }
+        public IList<IElement> Elements { get; private set; }
 
         public bool Equals(IElement other)
         {

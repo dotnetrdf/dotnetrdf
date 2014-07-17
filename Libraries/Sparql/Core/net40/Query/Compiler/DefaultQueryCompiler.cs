@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(FilterElement filter)
         {
-            throw new NotImplementedException();
+            this._algebras.Push(new Filter(this._algebras.Pop(), filter.Expressions));
         }
 
         public void Visit(GroupElement group)

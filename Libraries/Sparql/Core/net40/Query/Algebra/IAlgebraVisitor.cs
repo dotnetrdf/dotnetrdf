@@ -9,5 +9,7 @@
         void Visit(Union union);
 
         void Visit(NamedGraph namedGraph);
+
+        void Visit(Filter filter);
     }
 }

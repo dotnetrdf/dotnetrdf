@@ -34,6 +34,7 @@ namespace VDS.RDF.Query.Expressions
     /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries
     /// </summary>
     public interface IExpression
+        : IEquatable<IExpression>
     {
         /// <summary>
         /// Evalutes a SPARQL Expression for the given binding in a given context

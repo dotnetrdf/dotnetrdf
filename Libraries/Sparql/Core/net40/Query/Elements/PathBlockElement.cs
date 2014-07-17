@@ -17,7 +17,6 @@ namespace VDS.RDF.Query.Elements
 
         public IList<TriplePath> Paths { get; private set; }
 
-
         public bool Equals(IElement other)
         {
             if (ReferenceEquals(this, other)) return true;
