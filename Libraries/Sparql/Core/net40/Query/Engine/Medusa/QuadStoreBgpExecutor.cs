@@ -18,7 +18,31 @@ namespace VDS.RDF.Query.Engine.Medusa
 
         public IQuadStore QuadStore { get; private set; }
 
-        public IEnumerable<ISet> Match(INode graphName, Triple t)
+        public IEnumerable<ISet> Match(Triple t, IExecutionContext context)
+        {
+            INode graphName = context.ActiveGraph;
+            // If active graph not the special Default Graph Node then just matching a single specific graph
+            if (!Quad.DefaultGraphNode.Equals(graphName)) return Match(graphName, t);
+
+            // Possibly default graph is actually empty or the merge of multiple graphs
+            List<INode> graphNames = context.DefaultGraphs.ToList();
+            switch (graphNames.Count)
+            {
+                case 0:
+                    // Empty default graph
+                    return Enumerable.Empty<ISet>();
+                case 1:
+                    // The default graph is a single specific graph
+                    return Match(graphName, t);
+                default:
+                    // Default graph is merge of multiple graphs
+                    // Therefore the match means matching on all relevant graphs and applying distinct
+                    // since identical matches could occur across graphs
+                    return graphNames.SelectMany(n => Match(n, t)).Distinct();
+            }
+        }
+
+        protected IEnumerable<ISet> Match(INode graphName, Triple t)
         {
             if (t.IsGroundTriple)
             {
@@ -31,7 +55,31 @@ namespace VDS.RDF.Query.Engine.Medusa
             return this.QuadStore.Find(graphName, s, p, o).Select(q => QuadToSet(q, t));
         }
 
-        public IEnumerable<ISet> Match(INode graphName, Triple t, ISet input)
+        public IEnumerable<ISet> Match(Triple t, ISet input, IExecutionContext context)
+        {
+            INode graphName = context.ActiveGraph;
+            // If active graph not the special Default Graph Node then just matching a single specific graph
+            if (!Quad.DefaultGraphNode.Equals(graphName)) return Match(graphName, t, input);
+
+            // Possibly default graph is actually empty or the merge of multiple graphs
+            List<INode> graphNames = context.DefaultGraphs.ToList();
+            switch (graphNames.Count)
+            {
+                case 0:
+                    // Empty default graph
+                    return Enumerable.Empty<ISet>();
+                case 1:
+                    // The default graph is a single specific graph
+                    return Match(graphName, t, input);
+                default:
+                    // Default graph is merge of multiple graphs
+                    // Therefore the match means matching on all relevant graphs and applying distinct
+                    // since identical matches could occur across graphs
+                    return graphNames.SelectMany(n => Match(n, t, input)).Distinct();
+            }
+        }
+
+        protected IEnumerable<ISet> Match(INode graphName, Triple t, ISet input)
         {
             if (t.IsGroundTriple)
             {

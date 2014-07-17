@@ -1,13 +1,34 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Graphs;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Engine
 {
-    public interface IBgpExecutor {
+    /// <summary>
+    /// Interface for BGP executors
+    /// </summary>
+    public interface IBgpExecutor
+    {
+        /// <summary>
+        /// Matches a single triple pattern against the active graph as defined by the given context
+        /// </summary>
+        /// <param name="t">Triple pattern</param>
+        /// <param name="context">Execution Context</param>
+        /// <returns>Set for each distinct match</returns>
+        /// <remarks>
+        /// The active graph may be formed of multiple graphs, please see the remarks on <see cref="IExecutionContext.ActiveGraph"/> to understand how it should be interpreted
+        /// </remarks>
+        IEnumerable<ISet> Match(Triple t, IExecutionContext context);
 
-        IEnumerable<ISet> Match(INode graphName, Triple t);
-
-        IEnumerable<ISet> Match(INode graphName, Triple t, ISet input);
+        /// <summary>
+        /// Matches a single triple pattern with relevant variables from the given input set substituted into it against the active graph as defined by the given context
+        /// </summary>
+        /// <param name="t">Triple pattern</param>
+        /// <param name="input">Input Set</param>
+        /// <param name="context">Execution Context</param>
+        /// <returns>Set for each distinct match</returns>
+        /// <remarks>
+        /// The active graph may be formed of multiple graphs, please see the remarks on <see cref="IExecutionContext.ActiveGraph"/> to understand how it should be interpreted
+        /// </remarks>
+        IEnumerable<ISet> Match(Triple t, ISet input, IExecutionContext context);
     }
 }

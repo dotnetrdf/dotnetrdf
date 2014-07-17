@@ -11,24 +11,24 @@ namespace VDS.RDF.Query.Engine
         : IExecutionContext
     {
         public QueryExecutionContext()
-            : this(Quad.DefaultGraphNode) {}
+            : this(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null) {}
 
-        public QueryExecutionContext(INode activeGraph)
-            : this(activeGraph, null) { }
-
-        public QueryExecutionContext(INode activeGraph, IEnumerable<INode> namedGraphs)
+        public QueryExecutionContext(INode activeGraph, IEnumerable<INode> defaultGraphs, IEnumerable<INode> namedGraphs)
         {
             this.ActiveGraph = activeGraph;
+            this.DefaultGraphs = defaultGraphs != null ? new List<INode>(defaultGraphs) : Enumerable.Empty<INode>();
             this.NamedGraphs = namedGraphs != null ? new List<INode>(namedGraphs) : Enumerable.Empty<INode>();
         }
 
         public INode ActiveGraph { get; private set; }
 
+        public IEnumerable<INode> DefaultGraphs { get; private set; } 
+
         public IEnumerable<INode> NamedGraphs { get; private set; } 
 
         public IExecutionContext PushActiveGraph(INode graphName)
         {
-            return new QueryExecutionContext(graphName, this.NamedGraphs);
+            return new QueryExecutionContext(graphName, this.DefaultGraphs, this.NamedGraphs);
         }
 
         public virtual IExpressionContext CreateExpressionContext()

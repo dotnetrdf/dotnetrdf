@@ -44,12 +44,12 @@ namespace VDS.RDF.Query.Engine.Medusa
             {
                 if (i == 0)
                 {
-                    results = this.BgpExecutor.Match(context.ActiveGraph, patterns[i]);
+                    results = this.BgpExecutor.Match(patterns[i], context);
                 }
                 else
                 {
                     int i1 = i;
-                    results = results.SelectMany(s => this.BgpExecutor.Match(context.ActiveGraph, patterns[i1], s));
+                    results = results.SelectMany(s => this.BgpExecutor.Match(patterns[i1], s, context));
                 }
             }
             return results;
