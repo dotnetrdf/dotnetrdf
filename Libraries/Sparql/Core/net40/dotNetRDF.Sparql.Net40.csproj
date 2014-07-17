@@ -73,6 +73,7 @@
     <Compile Include="Query\Engine\IExecutionContext.cs" />
     <Compile Include="Collections\LongSkipEnumerable.cs" />
     <Compile Include="Collections\LongTakeEnumerable.cs" />
+    <Compile Include="Query\Engine\Medusa\BaseBgpExecutor.cs" />
     <Compile Include="Query\Engine\Medusa\MedusaAlgebraExecutor.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Query\Engine\Medusa\NamedGraphEnumerable.cs" />
