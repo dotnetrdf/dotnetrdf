@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Collections
 {
     [TestFixture]
     public class EnumerableTests
@@ -17,6 +16,8 @@ namespace VDS.RDF.Query.Engine.Medusa
             Console.WriteLine("Actual:");
             TestTools.PrintEnumerableStruct(actual, ",");
             Console.WriteLine();
+
+            Assert.AreEqual(expected.Count(), actual.Count());
 
             IEnumerator<T> expectedEnumerator = expected.GetEnumerator();
             IEnumerator<T> actualEnumerator = actual.GetEnumerator();
@@ -41,12 +42,23 @@ namespace VDS.RDF.Query.Engine.Medusa
 
         public static readonly Object[] SkipAndTakeData = new object[]
                                                   {
+                                                      new object[] { 1, 1, 1},
                                                       new object[] { 1, 50, 10 },
                                                       new object[] { 1, 10, 10 },
                                                       new object[] { 1, 10, 5 },
                                                       new object[] { 1, 10, 20 },
-                                                      new object[] { 100, 100, 50 },
+                                                      new object[] { 1, 100, 50 },
                                                   };
+
+        public static readonly Object[] AddOmitData = new object[]
+                                                          {
+                                                              new object[] { 1, 1, 1},
+                                                              new object[] { 1, 10, 1},
+                                                              new object[] { 1, 10, 11},
+                                                              new object[] { 1, 10, 100},
+                                                              new object[] { 1, 100, 50 },
+                                                              new object[] { 1, 100, 1000 }
+                                                          };
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void EnumeratorBeforeFirstElement1()
@@ -59,18 +71,18 @@ namespace VDS.RDF.Query.Engine.Medusa
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void EnumeratorBeforeFirstElement2()
         {
-            IEnumerable<int> data = Enumerable.Range(1, 10);
-            IEnumerator<int> enumerator = new LongSkipEnumerator<int>(data.GetEnumerator(), 1);
-            int i = enumerator.Current;
+            IEnumerable<String> data = new String[] { "a", "b", "c" };
+            IEnumerator<String> enumerator = new LongTakeEnumerator<String>(data.GetEnumerator(), 1);
+            String i = enumerator.Current;
+            Assert.AreEqual(default(String), i);
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void EnumeratorBeforeFirstElement3()
         {
-            IEnumerable<String> data = new String[] {"a", "b", "c"};
-            IEnumerator<String> enumerator =  new LongTakeEnumerator<String>(data.GetEnumerator(), 1);
-            String i = enumerator.Current;
-            Assert.AreEqual(default(String), i);
+            IEnumerable<int> data = Enumerable.Range(1, 10);
+            IEnumerator<int> enumerator = new LongSkipEnumerator<int>(data.GetEnumerator(), 1);
+            int i = enumerator.Current;
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
@@ -100,6 +112,25 @@ namespace VDS.RDF.Query.Engine.Medusa
             String i = enumerator.Current;
             Assert.AreEqual(default(String), i);
         }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void EnumeratorAfterLastElement3()
+        {
+            IEnumerable<int> data = Enumerable.Range(1, 10);
+            IEnumerator<int> enumerator = new LongSkipEnumerator<int>(data.GetEnumerator(), 1);
+            this.Exhaust(enumerator);
+            int i = enumerator.Current;
+        }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void EnumeratorAfterLastElement4()
+        {
+            IEnumerable<String> data = new String[] { "a", "b", "c" };
+            IEnumerator<String> enumerator = new LongSkipEnumerator<String>(data.GetEnumerator(), 1);
+            this.Exhaust(enumerator);
+            String i = enumerator.Current;
+            Assert.AreEqual(default(String), i);
+        }
             
         [TestCaseSource("SkipAndTakeData")]
         public void LongSkipEnumerable(int start, int count, int skip)
@@ -113,7 +144,7 @@ namespace VDS.RDF.Query.Engine.Medusa
                 Assert.IsFalse(expected.Any());
                 Assert.IsFalse(actual.Any());
             }
-            Assert.AreEqual(expected.Count(), actual.Count());
+            
             Check(expected, actual);
         }
 
@@ -124,7 +155,26 @@ namespace VDS.RDF.Query.Engine.Medusa
             IEnumerable<int> expected = data.Take(take);
             IEnumerable<int> actual = new LongTakeEnumerable<int>(data, take);
 
-            Assert.AreEqual(expected.Count(), actual.Count());
+            Check(expected, actual);
+        }
+
+        [TestCaseSource("AddOmitData")]
+        public void AddDistinctEnumerable(int start, int count, int item)
+        {
+            IEnumerable<int> data = Enumerable.Range(start, count);
+            IEnumerable<int> expected = data.Concat(item.AsEnumerable()).Distinct();
+            IEnumerable<int> actual = new AddDistinctEnumerable<int>(data, item);
+
+            Check(expected, actual);
+        }
+
+        [TestCaseSource("AddOmitData")]
+        public void OmitAllEnumerable(int start, int count, int item)
+        {
+            IEnumerable<int> data = Enumerable.Range(start, count);
+            IEnumerable<int> expected = data.Where(x => !x.Equals(item));
+            IEnumerable<int> actual = new OmitAllEnumerable<int>(data, item);
+
             Check(expected, actual);
         }
     }

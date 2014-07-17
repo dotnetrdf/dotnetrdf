@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
@@ -24,6 +25,21 @@ namespace VDS.RDF.Query.Algebra
 
             Union union = (Union) other;
             return this.Lhs.Equals(union.Lhs) && this.Rhs.Equals(union.Rhs);
+        }
+
+        public IEnumerable<string> ProjectedVariables
+        {
+            get { return this.Lhs.ProjectedVariables.Concat(this.Rhs.ProjectedVariables).Distinct(); }
+        }
+
+        public IEnumerable<string> FixedVariables
+        {
+            get { return this.Lhs.FixedVariables.Intersect(this.Rhs.FixedVariables).Except(this.FloatingVariables); }
+        }
+
+        public IEnumerable<string> FloatingVariables
+        {
+            get { return this.Lhs.FloatingVariables.Concat(this.Rhs.FloatingVariables).Distinct(); }
         }
 
         public void Accept(IAlgebraVisitor visitor)

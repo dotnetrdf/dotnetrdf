@@ -1,4 +1,5 @@
-﻿using VDS.RDF.Nodes;
+﻿using System.Collections.Generic;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Engine
@@ -13,6 +14,11 @@ namespace VDS.RDF.Query.Engine
         /// </summary>
         INode ActiveGraph { get; }
 
+        /// <summary>
+        /// Gets the named graphs for the execution context
+        /// </summary>
+        IEnumerable<INode> NamedGraphs { get; }
+            
         /// <summary>
         /// Creates a new execution context with the given Active Graph
         /// </summary>

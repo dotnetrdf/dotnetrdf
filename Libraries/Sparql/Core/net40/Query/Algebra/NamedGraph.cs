@@ -1,28 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.Common.Tries;
+using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
 {
     public class NamedGraph
-        : IUnaryAlgebra
+        : BaseUnaryAlgebra
     {
         public NamedGraph(INode graphName, IAlgebra innerAlgebra)
+            : base(innerAlgebra)
         {
             if (graphName == null) throw new ArgumentNullException("graphName");
-            if (innerAlgebra == null) throw new ArgumentNullException("innerAlgebra");
-
             this.Graph = graphName;
-            this.InnerAlgebra = innerAlgebra;
         }
 
         public INode Graph { get; private set; }
 
-        public bool Equals(IAlgebra other)
+        public override IEnumerable<string> FixedVariables
+        {
+            get
+            {
+                if (this.Graph.NodeType != NodeType.Variable) return base.FixedVariables;
+                return base.FixedVariables.AddDistinct(this.Graph.VariableName);
+            }
+        }
+
+        public override IEnumerable<string> FloatingVariables
+        {
+            get
+            {
+                if (this.Graph.NodeType != NodeType.Variable) return base.FloatingVariables;
+                return base.FloatingVariables.OmitAll(this.Graph.VariableName);
+            }
+        }
+
+        public override IEnumerable<string> ProjectedVariables
+        {
+            get
+            {
+                if (this.Graph.NodeType != NodeType.Variable) return base.ProjectedVariables;
+                return base.ProjectedVariables.AddDistinct(this.Graph.VariableName);
+            }
+        }
+
+        public override bool Equals(IAlgebra other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
@@ -32,16 +55,14 @@ namespace VDS.RDF.Query.Algebra
             return this.Graph.Equals(ng.Graph) && this.InnerAlgebra.Equals(ng.InnerAlgebra);
         }
 
-        public void Accept(IAlgebraVisitor visitor)
+        public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        public override IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
         }
-
-        public IAlgebra InnerAlgebra { get; private set; }
     }
 }

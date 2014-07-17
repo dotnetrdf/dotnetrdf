@@ -41,7 +41,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\AddDistinctEnumerable.cs" />
+    <Compile Include="Collections\OmitAllEnumerable.cs" />
+    <Compile Include="Collections\WrapperEnumerable.cs" />
+    <Compile Include="Collections\WrapperEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Algebra\BaseUnaryAlgebra.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
     <Compile Include="Query\Algebra\IAlgebra.cs" />
     <Compile Include="Query\Algebra\NamedGraph.cs" />
@@ -66,10 +71,11 @@
     <Compile Include="Query\Engine\IAlgebraExecutor.cs" />
     <Compile Include="Query\Engine\IBgpExecutor.cs" />
     <Compile Include="Query\Engine\IExecutionContext.cs" />
-    <Compile Include="Query\Engine\Medusa\LongSkipEnumerable.cs" />
-    <Compile Include="Query\Engine\Medusa\LongTakeEnumerable.cs" />
+    <Compile Include="Collections\LongSkipEnumerable.cs" />
+    <Compile Include="Collections\LongTakeEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\MedusaAlgebraExecutor.cs" />
-    <Compile Include="Query\Engine\Medusa\MedusaExtensions.cs" />
+    <Compile Include="Collections\EnumerableExtensions.cs" />
+    <Compile Include="Query\Engine\Medusa\NamedGraphEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\QuadStoreBgpExecutor.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />

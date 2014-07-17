@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
 using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
 {
-    public class Bgp 
+    public class Bgp
         : IAlgebra
     {
-
         public Bgp()
         {
             this.TriplePatterns = new ImmutableView<Triple>();
@@ -40,6 +41,21 @@ namespace VDS.RDF.Query.Algebra
                 if (!ts[i].Equals(otherTriples[i])) return false;
             }
             return true;
+        }
+
+        public IEnumerable<string> ProjectedVariables
+        {
+            get { return this.TriplePatterns.SelectMany(t => t.Nodes).Where(n => n.NodeType == NodeType.Variable).Select(n => n.VariableName).Distinct(); }
+        }
+
+        public IEnumerable<string> FixedVariables
+        {
+            get { return this.ProjectedVariables; }
+        }
+
+        public IEnumerable<string> FloatingVariables
+        {
+            get { return Enumerable.Empty<String>(); }
         }
 
         public void Accept(IAlgebraVisitor visitor)

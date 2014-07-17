@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Algebra
 {
     public class Slice
-        : IUnaryAlgebra
+        : BaseUnaryAlgebra
     {
         public Slice(IAlgebra innerAlgebra, long limit, long offset)
+            : base(innerAlgebra)
         {
-            if (innerAlgebra == null) throw new ArgumentNullException("innerAlgebra", "Inner Algebra cannot be null");
-            this.InnerAlgebra = innerAlgebra;
             this.Limit = limit >= 0 ? limit : -1;
             this.Offset = offset > 0 ? offset : 0;
         }
-
-        public IAlgebra InnerAlgebra { get; private set; }
 
         public long Limit { get; private set; }
 
         public long Offset { get; private set; }
 
-        public bool Equals(IAlgebra other)
+        public override bool Equals(IAlgebra other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
@@ -33,12 +27,12 @@ namespace VDS.RDF.Query.Algebra
             return this.Limit == s.Limit && this.Offset == s.Offset;
         }
 
-        public void Accept(IAlgebraVisitor visitor)
+        public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        public override IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
         }

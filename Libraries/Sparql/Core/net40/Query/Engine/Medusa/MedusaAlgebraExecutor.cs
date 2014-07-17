@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
@@ -75,14 +76,13 @@ namespace VDS.RDF.Query.Engine.Medusa
         public IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context)
         {
             context = EnsureContext(context);
-            if (namedGraph.Graph.NodeType != NodeType.Variable)
-            {
-                // Fixed Graph Name
-                context = context.PushActiveGraph(namedGraph.Graph);
-                return namedGraph.InnerAlgebra.Execute(this, context);
-            }
-            // Graph Variable
-            throw new NotImplementedException();
+
+            // Variable Graph Name
+            if (namedGraph.Graph.NodeType == NodeType.Variable) return new NamedGraphEnumerable(namedGraph, this, context);
+
+            // Fixed Graph Name
+            context = context.PushActiveGraph(namedGraph.Graph);
+            return namedGraph.InnerAlgebra.Execute(this, context);
         }
     }
 }
