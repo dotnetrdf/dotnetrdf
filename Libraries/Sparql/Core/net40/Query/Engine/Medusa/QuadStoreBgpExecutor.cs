@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
@@ -25,8 +24,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             if (!Quad.DefaultGraphNode.Equals(graphName)) return Match(graphName, t);
 
             // Possibly default graph is actually empty or the merge of multiple graphs
-            List<INode> graphNames = context.DefaultGraphs.ToList();
-            switch (graphNames.Count)
+            switch (context.DefaultGraphs.Count)
             {
                 case 0:
                     // Empty default graph
@@ -38,7 +36,7 @@ namespace VDS.RDF.Query.Engine.Medusa
                     // Default graph is merge of multiple graphs
                     // Therefore the match means matching on all relevant graphs and applying distinct
                     // since identical matches could occur across graphs
-                    return graphNames.SelectMany(n => Match(n, t)).Distinct();
+                    return context.DefaultGraphs.SelectMany(n => Match(n, t)).Distinct();
             }
         }
 

@@ -24,7 +24,7 @@ namespace VDS.RDF.Query.Engine
         /// <remarks>
         /// If this enumerable returns zero results then the query must behave default graph is empty.  If it contains any values then the query must behave as if the default graph is the merge of all the mentioned graphs.  If it contains only the special value <see cref="Quad.DefaultGraphNode"/> then the default graph is the one provided by the underlying dataset.
         /// </remarks>
-        IEnumerable<INode> DefaultGraphs { get; }
+        ICollection<INode> DefaultGraphs { get; }
             
         /// <summary>
         /// Gets the named graphs for the execution context
@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Engine
         /// <remarks>
         /// If this enumerable returns zero results then the dataset must be treated as if it contains no named graphs
         /// </remarks>
-        IEnumerable<INode> NamedGraphs { get; }
+        ICollection<INode> NamedGraphs { get; }
             
         /// <summary>
         /// Creates a new execution context with the given Active Graph

@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             context = EnsureContext(context);
 
             // Variable Graph Name
-            if (namedGraph.Graph.NodeType == NodeType.Variable) return new NamedGraphEnumerable(namedGraph, this, context);
+            if (namedGraph.Graph.NodeType == NodeType.Variable) return context.NamedGraphs.Count > 0 ? new NamedGraphEnumerable(namedGraph, this, context) : Enumerable.Empty<ISet>();
 
             // Fixed Graph Name
             context = context.PushActiveGraph(namedGraph.Graph);
