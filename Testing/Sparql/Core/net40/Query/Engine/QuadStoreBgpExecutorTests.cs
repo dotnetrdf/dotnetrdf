@@ -180,5 +180,27 @@ namespace VDS.RDF.Query.Engine
             results = results.SelectMany(s => executor.Match(search2, s, context)).ToList();
             Assert.AreEqual(0, results.Count);
         }
+
+        [Test]
+        public void QuadStoreBgpExecutorDistinctMatch1()
+        {
+            IGraph g = CreateGraph();
+            IQuadStore qs = CreateQuadStore(g);
+            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+
+            Triple search = new Triple(g.CreateVariableNode("a"), g.CreateVariableNode("b"), g.CreateVariableNode("c"));
+            Triple search2 = new Triple(g.CreateVariableNode("d"), g.CreateVariableNode("e"), g.CreateVariableNode("f"));
+
+            QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
+            List<ISet> results = executor.Match(search, context).ToList();
+            Assert.AreEqual(5, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 3));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("a") && s.ContainsVariable("b") && s.ContainsVariable("c")));
+
+            results = results.SelectMany(s => executor.Match(search2, s, context)).ToList();
+            Assert.AreEqual(25, results.Count);
+            Assert.IsTrue(results.All(s => s.Variables.Count() == 6));
+            Assert.IsTrue(results.All(s => s.ContainsVariable("a") && s.ContainsVariable("b") && s.ContainsVariable("c") && s.ContainsVariable("d") && s.ContainsVariable("e") && s.ContainsVariable("f")));
+        }
     }
 }
