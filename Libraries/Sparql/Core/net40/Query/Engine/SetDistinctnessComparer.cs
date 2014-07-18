@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Engine
 {
@@ -73,7 +74,7 @@ namespace VDS.RDF.Query.Engine
                 return x.Equals(y);
             }
             //Otherwise compare for equality on specified variables
-            return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
+            return this._vars.All(v => (x[v] == null && y[v] == null) || EqualityHelper.AreNodesEqual(x[v], y[v]));
         }
 
         /// <summary>
@@ -83,10 +84,11 @@ namespace VDS.RDF.Query.Engine
         /// <returns>Hash Code</returns>
         public int GetHashCode(ISet obj)
         {
-            if (obj == null) return 0;
+            if (obj == null) return -1;
 
             if (this._vars.Count == 0)
             {
+                // TODO Should really compute something here
                 return 0;
             }
             StringBuilder output = new StringBuilder();
