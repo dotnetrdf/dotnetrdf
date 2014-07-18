@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Engine.Join.Strategies
     /// <summary>
     /// A decorator for join strategies
     /// </summary>
-    public class WrapperJoinStrategy
+    public abstract class WrapperJoinStrategy
         : IJoinStrategy
     {
         public WrapperJoinStrategy(IJoinStrategy strategy)

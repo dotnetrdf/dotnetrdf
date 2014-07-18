@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VDS.RDF.Collections
 {
@@ -23,6 +22,11 @@ namespace VDS.RDF.Collections
         public static IEnumerable<T> AddDistinct<T>(this IEnumerable<T> enumerable, T item)
         {
             return new AddDistinctEnumerable<T>(enumerable, item);
+        }
+
+        public static IEnumerable<T> AddIfEmpty<T>(this IEnumerable<T> enumerable, T item)
+        {
+            return new AddIfEmptyEnumerable<T>(enumerable, item);
         }
     }
 }
