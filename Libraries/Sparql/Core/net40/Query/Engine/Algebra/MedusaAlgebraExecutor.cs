@@ -5,19 +5,28 @@ using VDS.RDF.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Engine.Joins;
+using VDS.RDF.Query.Engine.Joins.Strategies;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Algebra
 {
-    public abstract class MedusaAlgebraExecutor
+    public class MedusaAlgebraExecutor
         : IAlgebraExecutor
     {
-        protected MedusaAlgebraExecutor(IBgpExecutor executor)
+        public MedusaAlgebraExecutor(IBgpExecutor executor)
+            : this(executor, new DefaultJoinStrategySelector()) { }
+
+        public MedusaAlgebraExecutor(IBgpExecutor executor, IJoinStrategySelector joinStrategySelector)
         {
             if (executor == null) throw new ArgumentNullException("executor");
+            if (joinStrategySelector == null) throw new ArgumentNullException("joinStrategySelector");
             this.BgpExecutor = executor;
+            this.JoinStrategySelector = joinStrategySelector;
         }
 
         public IBgpExecutor BgpExecutor { get; private set; }
+
+        public IJoinStrategySelector JoinStrategySelector { get; private set; }
 
         /// <summary>
         /// Ensures that a valid context is available
@@ -117,6 +126,24 @@ namespace VDS.RDF.Query.Engine.Medusa
         public IEnumerable<ISet> Execute(Table table, IExecutionContext context)
         {
             return table.IsEmpty ? Enumerable.Empty<ISet>() : table.Data;
+        }
+
+        public IEnumerable<ISet> Execute(Join join, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            IEnumerable<ISet> lhsResults = join.Lhs.Execute(this, context);
+            IEnumerable<ISet> rhsResults = join.Rhs.Execute(this, context);
+
+            return new JoinEnumerable(lhsResults, rhsResults, this.JoinStrategySelector.Select(join.Lhs, join.Rhs), context);
+        }
+
+        public IEnumerable<ISet> Execute(LeftJoin leftJoin, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            IEnumerable<ISet> lhsResults = leftJoin.Lhs.Execute(this, context);
+            IEnumerable<ISet> rhsResults = leftJoin.Rhs.Execute(this, context);
+
+            return new JoinEnumerable(lhsResults, rhsResults, new LeftJoinStrategy(this.JoinStrategySelector.Select(leftJoin.Lhs, leftJoin.Rhs), leftJoin.Expressions), context);
         }
     }
 }

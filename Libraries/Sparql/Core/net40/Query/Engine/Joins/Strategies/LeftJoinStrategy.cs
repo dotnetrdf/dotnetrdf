@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Engine.Join.Workers;
+using VDS.RDF.Query.Engine.Joins.Workers;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Engine.Join.Strategies
+namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
     /// <summary>
     /// A decorator which converts other join strategies into left joins

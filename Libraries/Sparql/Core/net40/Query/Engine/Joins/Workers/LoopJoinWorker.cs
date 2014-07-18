@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
-namespace VDS.RDF.Query.Engine.Join.Workers
+namespace VDS.RDF.Query.Engine.Joins.Workers
 {
     public class LoopJoinWorker
         : ReusableJoinWorker

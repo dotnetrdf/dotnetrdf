@@ -5,10 +5,10 @@ using VDS.RDF.Query.Engine.Algebra;
 
 namespace VDS.RDF.Query.Algebra
 {
-    public class Union
+    public class Join
         : BaseBinaryAlgebra
     {
-        public Union(IAlgebra lhs, IAlgebra rhs) 
+        public Join(IAlgebra lhs, IAlgebra rhs) 
             : base(lhs, rhs) { }
 
         public override IEnumerable<string> ProjectedVariables
@@ -18,12 +18,12 @@ namespace VDS.RDF.Query.Algebra
 
         public override IEnumerable<string> FixedVariables
         {
-            get { return this.Lhs.FixedVariables.Intersect(this.Rhs.FixedVariables); }
+            get { return this.Lhs.FixedVariables.Concat(this.Rhs.FixedVariables).Distinct(); }
         }
 
         public override IEnumerable<string> FloatingVariables
         {
-            get { return this.ProjectedVariables.Except(this.FixedVariables); }
+            get { return this.Lhs.FloatingVariables.Concat(this.Rhs.FloatingVariables).Distinct().Except(this.FixedVariables); }
         }
 
         public override void Accept(IAlgebraVisitor visitor)
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Algebra
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is Union)) return false;
+            if (!(other is Join)) return false;
 
-            Union u = (Union) other;
-            return this.Lhs.Equals(u.Lhs) && this.Rhs.Equals(u.Rhs);
+            Join j = (Join) other;
+            return this.Lhs.Equals(j.Lhs) && this.Rhs.Equals(j.Rhs);
         }
     }
 }

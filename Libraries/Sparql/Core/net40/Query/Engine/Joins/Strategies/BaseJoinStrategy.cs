@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Engine.Join.Strategies
+namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
     /// <summary>
     /// Abstract join strategy that does a straight join between sets to be joined

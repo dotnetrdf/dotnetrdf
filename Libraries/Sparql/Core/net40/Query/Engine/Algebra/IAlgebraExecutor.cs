@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Engine
+namespace VDS.RDF.Query.Engine.Algebra
 {
     public interface IAlgebraExecutor
     {
@@ -20,5 +20,9 @@ namespace VDS.RDF.Query.Engine
         IEnumerable<ISet> Execute(Filter filter, IExecutionContext context);
 
         IEnumerable<ISet> Execute(Table table, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(Join join, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(LeftJoin join, IExecutionContext context);
     }
 }

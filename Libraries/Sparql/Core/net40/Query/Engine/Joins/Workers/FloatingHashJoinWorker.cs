@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Engine.Join.Workers
+namespace VDS.RDF.Query.Engine.Joins.Workers
 {
     public class FloatingHashJoinWorker
         : ReusableJoinWorker

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace VDS.RDF.Query.Engine.Join.Workers
+namespace VDS.RDF.Query.Engine.Joins.Workers
 {
     public class FixedHashJoinWorker
         : ReusableJoinWorker

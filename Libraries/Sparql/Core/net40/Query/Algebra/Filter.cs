@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Engine.Algebra;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Algebra

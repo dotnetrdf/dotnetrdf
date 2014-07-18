@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using VDS.Common.Tries;
 using VDS.RDF.Collections;
 
-namespace VDS.RDF.Query.Engine.Join
+namespace VDS.RDF.Query.Engine.Joins
 {
     public class JoinEnumerable
         : WrapperEnumerable<ISet>

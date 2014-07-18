@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using VDS.RDF.Query.Engine.Join.Workers;
+using VDS.RDF.Query.Engine.Joins.Workers;
 
-namespace VDS.RDF.Query.Engine.Join.Strategies
+namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
     public class FloatingHashJoinStrategy
         : BaseVariableJoinStrategy

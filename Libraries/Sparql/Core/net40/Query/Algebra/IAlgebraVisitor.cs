@@ -13,5 +13,9 @@
         void Visit(Filter filter);
 
         void Visit(Table table);
+
+        void Visit(Join join);
+
+        void Visit(LeftJoin leftJoin);
     }
 }

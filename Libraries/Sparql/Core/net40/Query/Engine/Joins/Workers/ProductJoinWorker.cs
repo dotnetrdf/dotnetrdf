@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Engine.Join.Workers
+namespace VDS.RDF.Query.Engine.Joins.Workers
 {
     public class ProductJoinWorker
         : ReusableJoinWorker

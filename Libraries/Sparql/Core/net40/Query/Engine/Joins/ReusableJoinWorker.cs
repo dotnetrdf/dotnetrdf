@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Engine.Join
+namespace VDS.RDF.Query.Engine.Joins
 {
     /// <summary>
     /// Abstract implementation of a reusable join worker

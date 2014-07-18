@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Query.Engine.Join.Strategies
+namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
     /// <summary>
     /// A decorator for join strategies

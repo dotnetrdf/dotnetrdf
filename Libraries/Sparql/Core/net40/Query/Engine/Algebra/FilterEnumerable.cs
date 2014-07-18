@@ -4,7 +4,7 @@ using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Algebra
 {
     public class FilterEnumerable
         : WrapperEnumerable<ISet>

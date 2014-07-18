@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Engine.Algebra;
 
 namespace VDS.RDF.Query.Algebra
 {

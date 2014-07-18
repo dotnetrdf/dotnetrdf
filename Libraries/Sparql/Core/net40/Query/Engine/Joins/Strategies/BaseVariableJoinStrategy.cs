@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.Query.Engine.Join.Strategies
+namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
     public abstract class BaseVariableJoinStrategy
         : BaseJoinStrategy

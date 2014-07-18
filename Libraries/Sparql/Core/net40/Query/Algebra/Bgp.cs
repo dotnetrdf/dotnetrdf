@@ -5,6 +5,7 @@ using VDS.Common.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Engine.Algebra;
 
 namespace VDS.RDF.Query.Algebra
 {

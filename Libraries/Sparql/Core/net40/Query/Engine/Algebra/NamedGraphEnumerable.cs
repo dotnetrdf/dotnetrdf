@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Algebra
 {
     public class NamedGraphEnumerable
         : IEnumerable<ISet>
