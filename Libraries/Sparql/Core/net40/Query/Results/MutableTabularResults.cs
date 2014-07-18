@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common.Tries;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Results
@@ -124,6 +125,19 @@ namespace VDS.RDF.Query.Results
             {
                 row.Set(var, initialValue);
             }
+        }
+
+        public bool Equals(IMutableTabularResults other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return true;
+            if (this.Count != other.Count) return false;
+
+            for (int i = 0; i < this.Count; i++)
+            {
+                if (!this[i].Equals(other[i])) return false;
+            }
+            return true;
         }
     }
 }

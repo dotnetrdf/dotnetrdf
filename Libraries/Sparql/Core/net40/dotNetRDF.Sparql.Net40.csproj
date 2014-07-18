@@ -52,6 +52,7 @@
     <Compile Include="Query\Algebra\IAlgebra.cs" />
     <Compile Include="Query\Algebra\NamedGraph.cs" />
     <Compile Include="Query\Algebra\Slice.cs" />
+    <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Algebra\Union.cs" />
     <Compile Include="Query\Compiler\DefaultQueryCompiler.cs" />
     <Compile Include="Query\Elements\BindElement.cs" />
@@ -69,12 +70,14 @@
     <Compile Include="Query\Elements\IElement.cs" />
     <Compile Include="Query\Algebra\IAlgebraVisitor.cs" />
     <Compile Include="Query\Compiler\IQueryCompiler.cs" />
+    <Compile Include="Query\Engine\BaseSet.cs" />
     <Compile Include="Query\Engine\IAlgebraExecutor.cs" />
     <Compile Include="Query\Engine\IBgpExecutor.cs" />
     <Compile Include="Query\Engine\IExecutionContext.cs" />
     <Compile Include="Collections\LongSkipEnumerable.cs" />
     <Compile Include="Collections\LongTakeEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\BaseBgpExecutor.cs" />
+    <Compile Include="Query\Engine\Medusa\FilterEnumerable.cs" />
     <Compile Include="Query\Engine\Medusa\GraphBgpExecutor.cs" />
     <Compile Include="Query\Engine\Medusa\MedusaAlgebraExecutor.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
@@ -98,6 +101,9 @@
     <Compile Include="Query\Paths\Property.cs" />
     <Compile Include="Query\Paths\SequencePath.cs" />
     <Compile Include="Query\Query.cs" />
+    <Compile Include="Query\Results\IMutableResultRow.cs" />
+    <Compile Include="Query\Results\IMutableTabularResults.cs" />
+    <Compile Include="Query\Results\IRandomAccessTabularResults.cs" />
     <Compile Include="Query\Sorting\DescendingSortCondition.cs" />
     <Compile Include="Query\Sorting\ISortCondition.cs" />
     <Compile Include="Query\Engine\Set.cs" />

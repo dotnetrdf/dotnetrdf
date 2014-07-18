@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
+using VDS.Common.References;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Results
@@ -106,6 +107,35 @@ namespace VDS.RDF.Query.Results
         public IEnumerable<string> Variables
         {
             get { return new ImmutableView<String>(this._variables); }
+        }
+
+        public bool Equals(IResultRow other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this._variables.Count != other.Variables.Count()) return false;
+
+            foreach (String var in this._variables)
+            {
+                INode n;
+                if (this.TryGetValue(var, out n))
+                {
+                    // There is value for the variable in this row
+                    INode m;
+                    // If there is not a value for it in the other row they are not equal
+                    if (!other.TryGetValue(var, out m)) return false;
+                    // If the values are not equal then the rows are not equal
+                    if (!EqualityHelper.AreNodesEqual(n, m)) return false;
+                }
+                else
+                {
+                    // No value for the variable in this row
+                    // If there is a value for it in the other row then these rows are not equal
+                    if (other.TryGetValue(var, out n)) return false;
+                }
+            }
+            // All values match
+            return true;
         }
     }
 }

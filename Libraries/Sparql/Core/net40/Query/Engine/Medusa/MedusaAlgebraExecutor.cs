@@ -1,12 +1,10 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Engine.Medusa
 {
@@ -78,7 +76,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             if (slice.Limit == 0) return Enumerable.Empty<ISet>();
 
             // Execute the inner algebra
-            IEnumerable<ISet> innerResult = this.Execute(slice.InnerAlgebra);
+            IEnumerable<ISet> innerResult = slice.InnerAlgebra.Execute(this, context);
 
             // Apply Limit and Offset if present
             if (slice.Limit > 0)
@@ -112,17 +110,13 @@ namespace VDS.RDF.Query.Engine.Medusa
 
         public IEnumerable<ISet> Execute(Filter filter, IExecutionContext context)
         {
-            return filter.InnerAlgebra.Execute(this, context).Where(s =>
-            {
-                try
-                {
-                    return filter.Expressions.Select(expr => expr.Evaluate(s, context.CreateExpressionContext())).All(n => n.AsSafeBoolean());
-                }
-                catch (RdfQueryException)
-                {
-                    return false;
-                }
-            });
+            IEnumerable<ISet> innerResult = filter.InnerAlgebra.Execute(this, context);
+            return filter.Expressions.Count > 0 ? new FilterEnumerable(innerResult, filter.Expressions, context) : innerResult;
+        }
+
+        public IEnumerable<ISet> Execute(Table table, IExecutionContext context)
+        {
+            return table.IsEmpty ? Enumerable.Empty<ISet>() : table.Data;
         }
     }
 }

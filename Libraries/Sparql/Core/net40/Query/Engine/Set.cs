@@ -174,6 +174,14 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
+        /// Gets whether the set is empty
+        /// </summary>
+        public override bool IsEmpty
+        {
+            get { return this._values.Count == 0; }
+        }
+
+        /// <summary>
         /// Gets the Values in the Set
         /// </summary>
         public override IEnumerable<INode> Values

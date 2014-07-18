@@ -8,6 +8,7 @@ namespace VDS.RDF.Query.Results
     /// Represents a single result row in a tabular result
     /// </summary>
     public interface IResultRow
+        : IEquatable<IResultRow>
     {
         /// <summary>
         /// Gets the value of the specified variable which may be null
@@ -66,19 +67,4 @@ namespace VDS.RDF.Query.Results
         /// </summary>
         IEnumerable<String> Variables { get; }
     }
-
-    /// <summary>
-    /// A result row which is mutable
-    /// </summary>
-    public interface IMutableResultRow
-        : IResultRow
-    {
-        /// <summary>
-        /// Sets the value of the specified variable
-        /// </summary>
-        /// <param name="var">Variable</param>
-        /// <param name="value">Value</param>
-        void Set(String var, INode value);
-    }
-    
 }

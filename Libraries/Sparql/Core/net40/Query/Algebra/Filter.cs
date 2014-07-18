@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using VDS.Common.Collections;
+using System.Linq;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 
@@ -13,10 +13,10 @@ namespace VDS.RDF.Query.Algebra
             : base(innerAlgebra)
         {
             if (expressions == null) throw new ArgumentNullException("expressions");
-            this.Expressions = new MaterializedImmutableView<IExpression>(expressions);
+            this.Expressions = expressions.ToList().AsReadOnly();
         }
 
-        public ICollection<IExpression> Expressions { get; private set; }
+        public IList<IExpression> Expressions { get; private set; }
 
         public override void Accept(IAlgebraVisitor visitor)
         {
@@ -37,12 +37,9 @@ namespace VDS.RDF.Query.Algebra
             Filter f = (Filter) other;
             if (this.Expressions.Count != f.Expressions.Count) return false;
 
-            IEnumerator<IExpression> exprs = this.Expressions.GetEnumerator();
-            IEnumerator<IExpression> otherExprs = f.Expressions.GetEnumerator();
-            while (exprs.MoveNext())
+            for (int i = 0; i < this.Expressions.Count; i++)
             {
-                if (!otherExprs.MoveNext()) return false;
-                if (exprs.Current.Equals(otherExprs.Current)) return false;
+                if (!this.Expressions[i].Equals(f.Expressions[i])) return false;
             }
             return true;
         }

@@ -11,5 +11,7 @@
         void Visit(NamedGraph namedGraph);
 
         void Visit(Filter filter);
+
+        void Visit(Table table);
     }
 }

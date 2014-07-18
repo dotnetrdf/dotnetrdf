@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
 {
@@ -40,12 +44,22 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(DataElement data)
         {
-            throw new NotImplementedException();
+            this._algebras.Push(new Table(((IEnumerable<IResultRow>) data.Data).Select(r =>
+            {
+                Set s = new Set();
+                foreach (String var in r.Variables)
+                {
+                    INode n;
+                    if (r.TryGetBoundValue(var, out n)) s.Add(var, n);
+                }
+                return s;
+            })));
         }
 
         public void Visit(FilterElement filter)
         {
-            this._algebras.Push(new Filter(this._algebras.Pop(), filter.Expressions));
+            // A standalone filter applies over Table Unit
+            this._algebras.Push(new Filter(Table.CreateUnit(), filter.Expressions));
         }
 
         public void Visit(GroupElement group)

@@ -18,5 +18,7 @@ namespace VDS.RDF.Query.Engine
         IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context);
 
         IEnumerable<ISet> Execute(Filter filter, IExecutionContext context);
+
+        IEnumerable<ISet> Execute(Table table, IExecutionContext context);
     }
 }
