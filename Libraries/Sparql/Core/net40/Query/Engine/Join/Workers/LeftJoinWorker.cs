@@ -19,11 +19,10 @@ namespace VDS.RDF.Query.Engine.Join.Workers
 
         public IList<IExpression> Expressions { get; private set; }
 
-        public override IEnumerable<ISet> Find(ISet lhs)
+        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
         {
-            IEnumerable<ISet> rhs = base.Find(lhs);
-            // TODO Need to get the execution context from somewhere
-            if (this.Expressions.Count > 0) rhs = new FilterEnumerable(rhs, this.Expressions, null);
+            IEnumerable<ISet> rhs = base.Find(lhs, context);
+            if (this.Expressions.Count > 0) rhs = new FilterEnumerable(rhs, this.Expressions, context);
             return rhs.AddIfEmpty(new Set());
         }
     }

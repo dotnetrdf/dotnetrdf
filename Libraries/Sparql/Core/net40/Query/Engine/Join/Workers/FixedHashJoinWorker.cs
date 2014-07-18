@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace VDS.RDF.Query.Engine.Join.Workers
 {
-    public class HashJoinWorker
+    public class FixedHashJoinWorker
         : ReusableJoinWorker
     {
-        public HashJoinWorker(IList<String> joinVars, IEnumerable<ISet> rhs)
+        public FixedHashJoinWorker(IList<String> joinVars, IEnumerable<ISet> rhs)
         {
             if (joinVars == null) throw new ArgumentNullException("joinVars");
             this.JoinVariables = joinVars is ReadOnlyCollection<String> ? joinVars : new List<string>(joinVars).AsReadOnly();
+            if (this.JoinVariables.Count == 0) throw new ArgumentException("Number of join variables must be >= 1", "joinVars");
             
             // Build the hash
             this.Hash = new Dictionary<ISet, List<ISet>>(new SetDistinctnessComparer(this.JoinVariables));
@@ -31,10 +32,10 @@ namespace VDS.RDF.Query.Engine.Join.Workers
 
         public IList<String> JoinVariables { get; private set; } 
 
-        public override IEnumerable<ISet> Find(ISet lhs)
+        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
         {
             List<ISet> sets;
-            return this.Hash.TryGetValue(lhs, out sets) ? sets : Enumerable.Empty<ISet>();
+            return this.Hash.TryGetValue(lhs, out sets) ? sets.Where(s => lhs.IsCompatibleWith(s, this.JoinVariables)) : Enumerable.Empty<ISet>();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Engine.Join.Strategies
     public abstract class WrapperJoinStrategy
         : IJoinStrategy
     {
-        public WrapperJoinStrategy(IJoinStrategy strategy)
+        protected WrapperJoinStrategy(IJoinStrategy strategy)
         {
             if (strategy == null) throw new ArgumentNullException("strategy");
             this.InnerStrategy = strategy;

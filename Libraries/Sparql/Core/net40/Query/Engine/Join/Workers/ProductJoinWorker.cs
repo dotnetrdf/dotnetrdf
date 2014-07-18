@@ -14,7 +14,7 @@ namespace VDS.RDF.Query.Engine.Join.Workers
 
         public IEnumerable<ISet> Rhs { get; private set; }
 
-        public override IEnumerable<ISet> Find(ISet lhs)
+        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
         {
             return this.Rhs;
         }

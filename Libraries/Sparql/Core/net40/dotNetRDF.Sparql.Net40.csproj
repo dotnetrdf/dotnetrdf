@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\AddDistinctEnumerable.cs" />
+    <Compile Include="Collections\AddIfEmptyEnumerable.cs" />
     <Compile Include="Collections\OmitAllEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerator.cs" />
@@ -89,14 +90,19 @@
     <Compile Include="Query\Engine\Join\ReusableJoinWorker.cs" />
     <Compile Include="Query\Engine\Join\Strategies\BaseJoinStrategy.cs" />
     <Compile Include="Query\Engine\Join\Strategies\BaseVariableJoinStrategy.cs" />
-    <Compile Include="Query\Engine\Join\Strategies\HashJoinStrategy.cs" />
+    <Compile Include="Query\Engine\Join\Strategies\FloatingHashJoinStrategy.cs" />
+    <Compile Include="Query\Engine\Join\Strategies\FixedHashJoinStrategy.cs" />
+    <Compile Include="Query\Engine\Join\Strategies\LeftJoinStrategy.cs" />
     <Compile Include="Query\Engine\Join\Strategies\LoopJoinStrategy.cs" />
     <Compile Include="Query\Engine\Join\Strategies\MaterializedJoinStrategy.cs" />
     <Compile Include="Query\Engine\Join\Strategies\ProductJoinStrategy.cs" />
     <Compile Include="Query\Engine\Join\Strategies\WrapperJoinStrategy.cs" />
-    <Compile Include="Query\Engine\Join\Workers\HashJoinWorker.cs" />
+    <Compile Include="Query\Engine\Join\Workers\FloatingHashJoinWorker.cs" />
+    <Compile Include="Query\Engine\Join\Workers\FixedHashJoinWorker.cs" />
+    <Compile Include="Query\Engine\Join\Workers\LeftJoinWorker.cs" />
     <Compile Include="Query\Engine\Join\Workers\LoopJoinWorker.cs" />
     <Compile Include="Query\Engine\Join\Workers\ProductJoinWorker.cs" />
+    <Compile Include="Query\Engine\Join\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />

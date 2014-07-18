@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Engine.Join.Workers
     public abstract class WrapperJoinWorker
         : IJoinWorker
     {
-        public WrapperJoinWorker(IJoinWorker worker)
+        protected WrapperJoinWorker(IJoinWorker worker)
         {
             if (worker == null) throw new ArgumentNullException();
             this.InnerWorker = worker;
@@ -17,14 +17,14 @@ namespace VDS.RDF.Query.Engine.Join.Workers
 
         public IJoinWorker InnerWorker { get; private set; }
 
-        public virtual IEnumerable<ISet> Find(ISet lhs)
+        public virtual IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
         {
-            return this.InnerWorker.Find(lhs);
+            return this.InnerWorker.Find(lhs, context);
         }
 
-        public bool CanReuse(ISet s)
+        public bool CanReuse(ISet s, IExecutionContext context)
         {
-            return this.InnerWorker.CanReuse(s);
+            return this.InnerWorker.CanReuse(s, context);
         }
     }
 }
