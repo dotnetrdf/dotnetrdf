@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
         public FloatingHashJoinStrategy(IEnumerable<string> joinVars)
             : base(joinVars) { }
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return new FloatingHashJoinWorker(this.JoinVariables, rhs);
         }

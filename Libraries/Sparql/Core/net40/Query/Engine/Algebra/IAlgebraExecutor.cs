@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Engine.Algebra
         /// </summary>
         /// <param name="algebra">Algebra</param>
         /// <returns>Enumerable of solutions</returns>
-        IEnumerable<ISet> Execute(IAlgebra algebra);
+        IEnumerable<ISolution> Execute(IAlgebra algebra);
 
         /// <summary>
         /// Executes the algebra using the given context (or a new default context if it is null)
@@ -21,46 +21,44 @@ namespace VDS.RDF.Query.Engine.Algebra
         /// <param name="algebra">Algebra</param>
         /// <param name="context">Execution context</param>
         /// <returns>Enumberable of solutions</returns>
-        IEnumerable<ISet> Execute(IAlgebra algebra, IExecutionContext context);
+        IEnumerable<ISolution> Execute(IAlgebra algebra, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Bgp bgp, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Bgp bgp, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Slice slice, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Slice slice, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Union union, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Union union, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context);
+        IEnumerable<ISolution> Execute(NamedGraph namedGraph, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Filter filter, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Filter filter, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Table table, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Table table, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Join join, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Join join, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(LeftJoin join, IExecutionContext context);
+        IEnumerable<ISolution> Execute(LeftJoin join, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Minus minus, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Minus minus, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Distinct distinct, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Distinct distinct, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Reduced reduced, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Reduced reduced, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Project project, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Project project, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(OrderBy orderBy, IExecutionContext context);
+        IEnumerable<ISolution> Execute(OrderBy orderBy, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Extend extend, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Extend extend, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(GroupBy groupBy, IExecutionContext context);
+        IEnumerable<ISolution> Execute(GroupBy groupBy, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(Service service, IExecutionContext context);
+        IEnumerable<ISolution> Execute(Service service, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(PropertyPath path, IExecutionContext context);
+        IEnumerable<ISolution> Execute(PropertyPath path, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(TopN topN, IExecutionContext context);
+        IEnumerable<ISolution> Execute(TopN topN, IExecutionContext context);
 
-        IEnumerable<ISet> Execute(PropertyFunction propertyFunction, IExecutionContext context);
-
-        IEnumerable<ISet> Execute(IndexJoin indexJoin, IExecutionContext context);
+        IEnumerable<ISolution> Execute(PropertyFunction propertyFunction, IExecutionContext context);
     }
 }

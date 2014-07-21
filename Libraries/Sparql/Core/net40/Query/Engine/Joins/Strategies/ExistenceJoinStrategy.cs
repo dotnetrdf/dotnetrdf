@@ -9,12 +9,12 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
         public ExistenceJoinStrategy(IJoinStrategy strategy) 
             : base(strategy) {}
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return new ExistenceJoinWorker(base.PrepareWorker(rhs));
         }
 
-        public override ISet Join(ISet lhs, ISet rhs)
+        public override ISolution Join(ISolution lhs, ISolution rhs)
         {
             return lhs;
         }
@@ -26,12 +26,12 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
         public NonExistenceJoinStrategy(IJoinStrategy strategy)
             : base(strategy) { }
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return new NonExistenceJoinWorker(base.PrepareWorker(rhs));
         }
 
-        public override ISet Join(ISet lhs, ISet rhs)
+        public override ISolution Join(ISolution lhs, ISolution rhs)
         {
             return lhs;
         }

@@ -1,5 +1,8 @@
 ﻿namespace VDS.RDF.Query.Algebra
 {
+    /// <summary>
+    /// Interface for algebra visitors
+    /// </summary>
     public interface IAlgebraVisitor
     {
         void Visit(Bgp bgp);
@@ -39,7 +42,5 @@
         void Visit(TopN topN);
 
         void Visit(PropertyFunction propertyFunction);
-
-        void Visit(IndexJoin indexJoin);
     }
 }

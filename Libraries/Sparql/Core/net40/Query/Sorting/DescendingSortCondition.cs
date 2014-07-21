@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Sorting
             get { return false; }
         }
 
-        public int Compare(ISet x, ISet y)
+        public int Compare(ISolution x, ISolution y)
         {
             int c = this._condition.Compare(x, y);
             // Reverse sort order if inner condition is an ascending sort

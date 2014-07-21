@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Engine.Joins
         /// <param name="lhs">Left hand side set</param>
         /// <param name="context"></param>
         /// <returns>Enumerable of sets from the right hand side</returns>
-        IEnumerable<ISet> Find(ISet lhs, IExecutionContext context);
+        IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context);
 
         /// <summary>
         /// Gets whether this worker can be reused for the given set
@@ -21,6 +21,6 @@ namespace VDS.RDF.Query.Engine.Joins
         /// <param name="s">Set</param>
         /// <param name="context"></param>
         /// <returns>True if the worker can be reused, false otherwise</returns>
-        bool CanReuse(ISet s, IExecutionContext context);
+        bool CanReuse(ISolution s, IExecutionContext context);
     }
 }

@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
     public class FloatingHashJoinWorker
         : ReusableJoinWorker
     {
-        public FloatingHashJoinWorker(IList<String> joinVars, IEnumerable<ISet> rhs)
+        public FloatingHashJoinWorker(IList<String> joinVars, IEnumerable<ISolution> rhs)
         {
             if (joinVars == null) throw new ArgumentNullException("joinVars");
             this.JoinVariables = joinVars is ReadOnlyCollection<String> ? joinVars : new List<string>(joinVars).AsReadOnly();
@@ -23,8 +23,8 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
                 this.Hash.Add(new Dictionary<INode, IList<int>>());
                 this.Nulls.Add(new List<int>());
             }
-            this.Sets = new List<ISet>();
-            foreach (ISet s in rhs)
+            this.Sets = new List<ISolution>();
+            foreach (ISolution s in rhs)
             {
                 int id = this.Sets.Count;
                 this.Sets.Add(s);
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
             }
         }
 
-        private IList<ISet> Sets { get; set; } 
+        private IList<ISolution> Sets { get; set; } 
 
         private IList<IDictionary<INode, IList<int>>> Hash { get; set; }
 
@@ -58,10 +58,10 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
 
         public IList<String> JoinVariables { get; private set; } 
 
-        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public override IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
             // If no RHS sets then there can't be any matches
-            if (this.Sets.Count == 0) return Enumerable.Empty<ISet>();
+            if (this.Sets.Count == 0) return Enumerable.Empty<ISolution>();
 
             // Otherwise use the hashes to find the possible matches
             IEnumerable<int> possMatches = null;

@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="set">Set the expression is evaluated on</param>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        IValuedNode Evaluate(ISet set, IExpressionContext context);
+        IValuedNode Evaluate(ISolution set, IExpressionContext context);
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in an expression

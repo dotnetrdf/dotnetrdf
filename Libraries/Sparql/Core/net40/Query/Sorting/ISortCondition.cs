@@ -4,8 +4,11 @@ using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Sorting
 {
+    /// <summary>
+    /// Interface for sort conditions
+    /// </summary>
     public interface ISortCondition
-        : IComparer<ISet>, IEquatable<ISortCondition>
+        : IComparer<ISolution>, IEquatable<ISortCondition>
     {
         /// <summary>
         /// Gets whether this is an ascending sort condition

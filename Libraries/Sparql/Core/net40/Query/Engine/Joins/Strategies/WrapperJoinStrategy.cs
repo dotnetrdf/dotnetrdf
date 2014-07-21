@@ -17,12 +17,12 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
 
         public IJoinStrategy InnerStrategy { get; private set; }
 
-        public virtual IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public virtual IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return this.InnerStrategy.PrepareWorker(rhs);
         }
 
-        public virtual ISet Join(ISet lhs, ISet rhs)
+        public virtual ISolution Join(ISolution lhs, ISolution rhs)
         {
             return this.InnerStrategy.Join(lhs, rhs);
         }

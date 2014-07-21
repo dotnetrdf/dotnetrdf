@@ -17,12 +17,12 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
 
         public IJoinWorker InnerWorker { get; private set; }
 
-        public virtual IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public virtual IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
             return this.InnerWorker.Find(lhs, context);
         }
 
-        public bool CanReuse(ISet s, IExecutionContext context)
+        public bool CanReuse(ISolution s, IExecutionContext context)
         {
             return this.InnerWorker.CanReuse(s, context);
         }

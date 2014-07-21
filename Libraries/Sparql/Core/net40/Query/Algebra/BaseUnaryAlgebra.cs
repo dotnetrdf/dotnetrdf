@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Algebra
 
         public abstract void Accept(IAlgebraVisitor visitor);
 
-        public abstract IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context);
+        public abstract IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context);
 
         public abstract bool Equals(IAlgebra other);
     }

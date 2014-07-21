@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Algebra
 
         void Accept(IAlgebraVisitor visitor);
 
-        IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context);
+        IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context);
     }
 
     public interface IUnaryAlgebra

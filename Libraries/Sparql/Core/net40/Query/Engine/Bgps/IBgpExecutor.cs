@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Graphs;
 
-namespace VDS.RDF.Query.Engine
+namespace VDS.RDF.Query.Engine.Bgps
 {
     /// <summary>
     /// Interface for BGP executors
@@ -17,7 +17,7 @@ namespace VDS.RDF.Query.Engine
         /// <remarks>
         /// The active graph may be formed of multiple graphs, please see the remarks on <see cref="IExecutionContext.ActiveGraph"/> to understand how it should be interpreted
         /// </remarks>
-        IEnumerable<ISet> Match(Triple t, IExecutionContext context);
+        IEnumerable<ISolution> Match(Triple t, IExecutionContext context);
 
         /// <summary>
         /// Matches a single triple pattern with relevant variables from the given input set substituted into it against the active graph as defined by the given context
@@ -29,6 +29,6 @@ namespace VDS.RDF.Query.Engine
         /// <remarks>
         /// The active graph may be formed of multiple graphs, please see the remarks on <see cref="IExecutionContext.ActiveGraph"/> to understand how it should be interpreted
         /// </remarks>
-        IEnumerable<ISet> Match(Triple t, ISet input, IExecutionContext context);
+        IEnumerable<ISolution> Match(Triple t, ISolution input, IExecutionContext context);
     }
 }

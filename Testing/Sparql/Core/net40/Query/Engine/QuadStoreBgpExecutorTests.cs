@@ -5,7 +5,8 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Engine.Medusa;
+using VDS.RDF.Query.Engine.Bgp;
+using VDS.RDF.Query.Engine.Bgps;
 
 namespace VDS.RDF.Query.Engine
 {
@@ -49,7 +50,7 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateUriNode(":object"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(1, results.Count);
             Assert.AreEqual(0, results.First().Variables.Count());
         }
@@ -64,7 +65,7 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateUriNode(":nosuchthing2"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(0, results.Count);
         }
 
@@ -78,7 +79,7 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(3, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 1));
             Assert.IsTrue(results.All(s => s.ContainsVariable("o")));
@@ -94,7 +95,7 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
@@ -110,7 +111,7 @@ namespace VDS.RDF.Query.Engine
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateBlankNode());
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("s")));
@@ -127,7 +128,7 @@ namespace VDS.RDF.Query.Engine
             Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o2"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
@@ -150,7 +151,7 @@ namespace VDS.RDF.Query.Engine
             Triple search2 = new Triple(b, g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("s")));
@@ -172,7 +173,7 @@ namespace VDS.RDF.Query.Engine
             Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateLiteralNode("nosuchthing"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 2));
             Assert.IsTrue(results.All(s => s.ContainsVariable("o") && s.ContainsVariable("s")));
@@ -192,7 +193,7 @@ namespace VDS.RDF.Query.Engine
             Triple search2 = new Triple(g.CreateVariableNode("d"), g.CreateVariableNode("e"), g.CreateVariableNode("f"));
 
             QueryExecutionContext context = new QueryExecutionContext(Quad.DefaultGraphNode, Quad.DefaultGraphNode.AsEnumerable(), null);
-            List<ISet> results = executor.Match(search, context).ToList();
+            List<ISolution> results = executor.Match(search, context).ToList();
             Assert.AreEqual(5, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 3));
             Assert.IsTrue(results.All(s => s.ContainsVariable("a") && s.ContainsVariable("b") && s.ContainsVariable("c")));

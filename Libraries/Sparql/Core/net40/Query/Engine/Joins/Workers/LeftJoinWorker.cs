@@ -19,12 +19,12 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
 
         public IList<IExpression> Expressions { get; private set; }
 
-        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public override IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
-            IEnumerable<ISet> rhs = base.Find(lhs, context);
+            IEnumerable<ISolution> rhs = base.Find(lhs, context);
             // TODO Do we need a specific enumerable to handle left join filtering?
             if (this.Expressions.Count > 0) rhs = new FilterEnumerable(rhs.Select(s => lhs.Join(s)), this.Expressions, context);
-            return rhs.AddIfEmpty(new Set());
+            return rhs.AddIfEmpty(new Solution());
         }
     }
 }

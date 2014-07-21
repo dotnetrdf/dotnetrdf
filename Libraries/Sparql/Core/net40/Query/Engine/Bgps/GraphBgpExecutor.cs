@@ -4,7 +4,7 @@ using System.Linq;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Bgps
 {
     /// <summary>
     /// A BGP executor over a single <see cref="IGraph"/> instance

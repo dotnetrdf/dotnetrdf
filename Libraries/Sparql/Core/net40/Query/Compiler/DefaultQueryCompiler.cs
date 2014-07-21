@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Compiler
         {
             this._algebras.Push(new Table(((IEnumerable<IResultRow>) data.Data).Select(r =>
             {
-                Set s = new Set();
+                Solution s = new Solution();
                 foreach (String var in r.Variables)
                 {
                     INode n;

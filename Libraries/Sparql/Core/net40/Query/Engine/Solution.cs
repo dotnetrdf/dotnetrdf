@@ -31,31 +31,31 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Engine
 {
     /// <summary>
-    /// Represents one possible set of values which is a solution to the query
+    /// Represents one possible solution to the query
     /// </summary>
-    public sealed class Set 
-        : BaseSet, IEquatable<Set>
+    public sealed class Solution 
+        : BaseSolution, IEquatable<Solution>
 #if PORTABLE
-        , IComparable<Set>,
+        , IComparable<Solution>,
         IComparable
 #endif
     {
         private readonly Dictionary<String, INode> _values;
 
         /// <summary>
-        /// Creates a new empty Set
+        /// Creates a new empty solution
         /// </summary>
-        public Set()
+        public Solution()
         {
             this._values = new Dictionary<string, INode>();
         }
 
         /// <summary>
-        /// Creates a new Set which is the Join of the two Sets
+        /// Creates a new solution which is the Join of the two solutions
         /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
-        public Set(ISet x, ISet y)
+        /// <param name="x">A solution</param>
+        /// <param name="y">A solution</param>
+        public Solution(ISolution x, ISolution y)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
@@ -76,10 +76,10 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Creates a new Set which is a copy of an existing Set
+        /// Creates a new solution which is a copy of an existing solution
         /// </summary>
-        /// <param name="x">Set to copy</param>
-        public Set(ISet x)
+        /// <param name="x">solution to copy</param>
+        public Solution(ISolution x)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Retrieves the Value in this set for the given Variable
+        /// Retrieves the Value in this solution for the given Variable
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns>Either a Node or a null</returns>
@@ -97,14 +97,14 @@ namespace VDS.RDF.Query.Engine
         {
             get
             {
-                INode value = null;
+                INode value;
                 this._values.TryGetValue(variable, out value);
                 return value;
             }
         }
 
         /// <summary>
-        /// Adds a Value for a Variable to the Set
+        /// Adds a Value for a Variable to the solution
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <param name="value">Value</param>
@@ -116,12 +116,12 @@ namespace VDS.RDF.Query.Engine
             }
             else
             {
-                throw new RdfQueryException("The value of a variable in a Set cannot be changed");
+                throw new RdfQueryException("The value of a variable in a solution cannot be changed");
             }
         }
 
         /// <summary>
-        /// Removes a Value for a Variable from the Set
+        /// Removes a Value for a Variable from the solution
         /// </summary>
         /// <param name="variable">Variable</param>
         public override void Remove(String variable)
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Checks whether the Set contains a given Variable
+        /// Checks whether the solution contains a given Variable
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns></returns>
@@ -140,29 +140,29 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// Gets whether the solution is compatible with a given solution based on the given variables
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Solution</param>
         /// <param name="vars">Variables</param>
         /// <returns></returns>
-        public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
+        public override bool IsCompatibleWith(ISolution s, IEnumerable<string> vars)
         {
             return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
         }
 
         /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// Gets whether the solution is minus compatible with a given solution based on the given variables
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Solution</param>
         /// <param name="vars">Variables</param>
         /// <returns></returns>
-        public override bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars)
+        public override bool IsMinusCompatibleWith(ISolution s, IEnumerable<string> vars)
         {
             return vars.Any(v => this[v] != null && this[v].Equals(s[v]));
         }
 
         /// <summary>
-        /// Gets the Variables in the Set
+        /// Gets the Variables in the solution
         /// </summary>
         public override IEnumerable<String> Variables
         {
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets whether the set is empty
+        /// Gets whether the solution is empty
         /// </summary>
         public override bool IsEmpty
         {
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets the Values in the Set
+        /// Gets the Values in the solution
         /// </summary>
         public override IEnumerable<INode> Values
         {
@@ -194,30 +194,48 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Joins the set to another set
+        /// Joins the solution to another solution
         /// </summary>
-        /// <param name="other">Other Set</param>
+        /// <param name="other">Other solution</param>
         /// <returns></returns>
-        public override ISet Join(ISet other)
+        public override ISolution Join(ISolution other)
         {
-            return new Set(this, other);
+            return new Solution(this, other);
         }
 
         /// <summary>
-        /// Copies the Set
+        /// Copies the solution
         /// </summary>
         /// <returns></returns>
-        public override ISet Copy()
+        public override ISolution Copy()
         {
-            return new Set(this);
+            return new Solution(this);
         }
 
         /// <summary>
-        /// Gets whether the Set is equal to another set
+        /// Copies the solution only including the specified variables
         /// </summary>
-        /// <param name="other">Set to compare with</param>
         /// <returns></returns>
-        public bool Equals(Set other)
+        public override ISolution Project(IEnumerable<string> vars)
+        {
+            Solution s = new Solution();
+            foreach (String var in vars)
+            {
+                INode n;
+                if (this._values.TryGetValue(var, out n))
+                {
+                    s.Add(var, n);
+                }
+            }
+            return s;
+        }
+
+        /// <summary>
+        /// Gets whether the solution is equal to another solution
+        /// </summary>
+        /// <param name="other">solution to compare with</param>
+        /// <returns></returns>
+        public bool Equals(Solution other)
         {
             return other != null && this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || EqualityHelper.AreNodesEqual(pair.Value, other[pair.Key])));
         }
@@ -225,7 +243,7 @@ namespace VDS.RDF.Query.Engine
 #if PORTABLE
         //TODO: CORE-303 clean up - why is this necessary?
 
-        public int CompareTo(Set other)
+        public int CompareTo(Solution other)
         {
             foreach (var pair in _values.OrderBy(v => v.Key))
             {
@@ -239,9 +257,9 @@ namespace VDS.RDF.Query.Engine
 
         public int CompareTo(object other)
         {
-            if (other is Set)
+            if (other is Solution)
             {
-                return CompareTo(other as Set);
+                return CompareTo(other as Solution);
             }
             return -1;
         }

@@ -5,6 +5,7 @@ using VDS.RDF.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Engine.Bgps;
 using VDS.RDF.Query.Engine.Joins;
 using VDS.RDF.Query.Engine.Joins.Strategies;
 
@@ -38,27 +39,27 @@ namespace VDS.RDF.Query.Engine.Algebra
             return context ?? new QueryExecutionContext();
         }
 
-        public virtual IEnumerable<ISet> Execute(IAlgebra algebra)
+        public virtual IEnumerable<ISolution> Execute(IAlgebra algebra)
         {
             return Execute(algebra, EnsureContext(null));
         }
 
-        public virtual IEnumerable<ISet> Execute(IAlgebra algebra, IExecutionContext context)
+        public virtual IEnumerable<ISolution> Execute(IAlgebra algebra, IExecutionContext context)
         {
             return algebra.Execute(this, EnsureContext(context));
         }
 
-        public virtual IEnumerable<ISet> Execute(Bgp bgp, IExecutionContext context)
+        public virtual IEnumerable<ISolution> Execute(Bgp bgp, IExecutionContext context)
         {
             context = EnsureContext(context);
 
             // An empty BGP acts as an identity and always matches producing a single empty set
             List<Triple> patterns = bgp.TriplePatterns.ToList();
-            if (patterns.Count == 0) return new Set().AsEnumerable();
+            if (patterns.Count == 0) return new Solution().AsEnumerable();
 
             // Otherwise build up the enumerable by sequencing the triple pattern matches together
             // TODO Should the query engine schedule the order of patterns or are we expecting the optimizer to do that for us?
-            IEnumerable<ISet> results = Enumerable.Empty<ISet>();
+            IEnumerable<ISolution> results = Enumerable.Empty<ISolution>();
             for (int i = 0; i < patterns.Count; i++)
             {
                 if (i == 0)
@@ -77,15 +78,15 @@ namespace VDS.RDF.Query.Engine.Algebra
             return results;
         }
 
-        public virtual IEnumerable<ISet> Execute(Slice slice, IExecutionContext context)
+        public virtual IEnumerable<ISolution> Execute(Slice slice, IExecutionContext context)
         {
             context = EnsureContext(context);
 
             // Zero Limit means we can short circuit any further evaluation
-            if (slice.Limit == 0) return Enumerable.Empty<ISet>();
+            if (slice.Limit == 0) return Enumerable.Empty<ISolution>();
 
             // Execute the inner algebra
-            IEnumerable<ISet> innerResult = slice.InnerAlgebra.Execute(this, context);
+            IEnumerable<ISolution> innerResult = slice.InnerAlgebra.Execute(this, context);
 
             // Apply Limit and Offset if present
             if (slice.Limit > 0)
@@ -97,7 +98,7 @@ namespace VDS.RDF.Query.Engine.Algebra
             return slice.Offset > 0 ? innerResult.Skip(slice.Offset) : innerResult;
         }
 
-        public IEnumerable<ISet> Execute(Union union, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Union union, IExecutionContext context)
         {
             context = EnsureContext(context);
 
@@ -105,109 +106,108 @@ namespace VDS.RDF.Query.Engine.Algebra
             return union.Lhs.Execute(this, context).Concat(union.Rhs.Execute(this, context));
         }
 
-        public IEnumerable<ISet> Execute(NamedGraph namedGraph, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(NamedGraph namedGraph, IExecutionContext context)
         {
             context = EnsureContext(context);
 
             // Variable Graph Name
-            if (namedGraph.Graph.NodeType == NodeType.Variable) return context.NamedGraphs.Count > 0 ? new NamedGraphEnumerable(namedGraph, this, context) : Enumerable.Empty<ISet>();
+            if (namedGraph.Graph.NodeType == NodeType.Variable) return context.NamedGraphs.Count > 0 ? new NamedGraphEnumerable(namedGraph, this, context) : Enumerable.Empty<ISolution>();
 
             // Fixed Graph Name
             context = context.PushActiveGraph(namedGraph.Graph);
             return namedGraph.InnerAlgebra.Execute(this, context);
         }
 
-        public IEnumerable<ISet> Execute(Filter filter, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Filter filter, IExecutionContext context)
         {
-            IEnumerable<ISet> innerResult = filter.InnerAlgebra.Execute(this, context);
+            IEnumerable<ISolution> innerResult = filter.InnerAlgebra.Execute(this, context);
             return filter.Expressions.Count > 0 ? new FilterEnumerable(innerResult, filter.Expressions, context) : innerResult;
         }
 
-        public IEnumerable<ISet> Execute(Table table, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Table table, IExecutionContext context)
         {
-            return table.IsEmpty ? Enumerable.Empty<ISet>() : table.Data;
+            return table.IsEmpty ? Enumerable.Empty<ISolution>() : table.Data;
         }
 
-        public IEnumerable<ISet> Execute(Join join, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Join join, IExecutionContext context)
         {
             context = EnsureContext(context);
-            IEnumerable<ISet> lhsResults = join.Lhs.Execute(this, context);
-            IEnumerable<ISet> rhsResults = join.Rhs.Execute(this, context);
+            IEnumerable<ISolution> lhsResults = join.Lhs.Execute(this, context);
+            IEnumerable<ISolution> rhsResults = join.Rhs.Execute(this, context);
 
             return new JoinEnumerable(lhsResults, rhsResults, this.JoinStrategySelector.Select(join.Lhs, join.Rhs), context);
         }
 
-        public IEnumerable<ISet> Execute(LeftJoin leftJoin, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(LeftJoin leftJoin, IExecutionContext context)
         {
             context = EnsureContext(context);
-            IEnumerable<ISet> lhsResults = leftJoin.Lhs.Execute(this, context);
-            IEnumerable<ISet> rhsResults = leftJoin.Rhs.Execute(this, context);
+            IEnumerable<ISolution> lhsResults = leftJoin.Lhs.Execute(this, context);
+            IEnumerable<ISolution> rhsResults = leftJoin.Rhs.Execute(this, context);
 
             return new JoinEnumerable(lhsResults, rhsResults, new LeftJoinStrategy(this.JoinStrategySelector.Select(leftJoin.Lhs, leftJoin.Rhs), leftJoin.Expressions), context);
         }
 
-        public IEnumerable<ISet> Execute(Minus minus, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Minus minus, IExecutionContext context)
         {
             context = EnsureContext(context);
-            IEnumerable<ISet> lhsResults = minus.Lhs.Execute(this, context);
-            IEnumerable<ISet> rhsResults = minus.Rhs.Execute(this, context);
+            IEnumerable<ISolution> lhsResults = minus.Lhs.Execute(this, context);
+            IEnumerable<ISolution> rhsResults = minus.Rhs.Execute(this, context);
 
             return new JoinEnumerable(lhsResults, rhsResults, new NonExistenceJoinStrategy(this.JoinStrategySelector.Select(minus.Lhs, minus.Rhs)), context);
         }
 
-        public IEnumerable<ISet> Execute(Distinct distinct, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Distinct distinct, IExecutionContext context)
         {
             context = EnsureContext(context);
             // TODO Likely want to provide an optimized IEqualityComparer here
             return distinct.InnerAlgebra.Execute(this, context).Distinct();
         }
 
-        public IEnumerable<ISet> Execute(Reduced reduced, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Reduced reduced, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            return reduced.InnerAlgebra.Execute(this, context).Reduced();
+        }
+
+        public IEnumerable<ISolution> Execute(Project project, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            return project.InnerAlgebra.Execute(this, context).Select(s => s.Project(project.Projections));
+        }
+
+        public IEnumerable<ISolution> Execute(OrderBy orderBy, IExecutionContext context)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISet> Execute(Project project, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Extend extend, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            IEnumerable<ISolution> innerResults = extend.InnerAlgebra.Execute(this, context);
+            return new ExtendEnumerable(innerResults, extend.Assignments, context);
+        }
+
+        public IEnumerable<ISolution> Execute(GroupBy groupBy, IExecutionContext context)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISet> Execute(OrderBy orderBy, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(Service service, IExecutionContext context)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISet> Execute(Extend extend, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(PropertyPath path, IExecutionContext context)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISet> Execute(GroupBy groupBy, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(TopN topN, IExecutionContext context)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ISet> Execute(Service service, IExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ISet> Execute(PropertyPath path, IExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ISet> Execute(TopN topN, IExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ISet> Execute(PropertyFunction propertyFunction, IExecutionContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<ISet> Execute(IndexJoin indexJoin, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(PropertyFunction propertyFunction, IExecutionContext context)
         {
             throw new NotImplementedException();
         }

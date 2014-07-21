@@ -4,7 +4,7 @@ using System.Linq;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Bgps
 {
     /// <summary>
     /// Base implementation of a BGP executor which handles determining which graphs the matches should apply to
@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Engine.Medusa
     public abstract class BaseBgpExecutor 
         : IBgpExecutor
     {
-        public IEnumerable<ISet> Match(Triple t, IExecutionContext context)
+        public IEnumerable<ISolution> Match(Triple t, IExecutionContext context)
         {
             INode graphName = context.ActiveGraph;
             // If active graph not the special Default Graph Node then just matching a single specific graph
@@ -23,7 +23,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             {
                 case 0:
                     // Empty default graph
-                    return Enumerable.Empty<ISet>();
+                    return Enumerable.Empty<ISolution>();
                 case 1:
                     // The default graph is a single specific graph
                     return Match(graphName, t);
@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             }
         }
 
-        public IEnumerable<ISet> Match(Triple t, ISet input, IExecutionContext context)
+        public IEnumerable<ISolution> Match(Triple t, ISolution input, IExecutionContext context)
         {
             INode graphName = context.ActiveGraph;
             // If active graph not the special Default Graph Node then just matching a single specific graph
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             {
                 case 0:
                     // Empty default graph
-                    return Enumerable.Empty<ISet>();
+                    return Enumerable.Empty<ISolution>();
                 case 1:
                     // The default graph is a single specific graph
                     return Match(graphName, t, input);
@@ -59,12 +59,12 @@ namespace VDS.RDF.Query.Engine.Medusa
             }
         }
 
-        protected virtual IEnumerable<ISet> Match(INode graphName, Triple t)
+        protected virtual IEnumerable<ISolution> Match(INode graphName, Triple t)
         {
             if (t.IsGroundTriple)
             {
                 // Return an empty row for each quad that matches
-                return this.Find(graphName, t.Subject, t.Predicate, t.Object).Select(q => new Set());
+                return this.Find(graphName, t.Subject, t.Predicate, t.Object).Select(q => new Solution());
             }
             INode s = ToFindItem(t.Subject);
             INode p = ToFindItem(t.Predicate);
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             return this.Find(graphName, s, p, o).Select(q => QuadToSet(q, t));
         }
 
-        protected virtual IEnumerable<ISet> Match(INode graphName, Triple t, ISet input)
+        protected virtual IEnumerable<ISolution> Match(INode graphName, Triple t, ISolution input)
         {
             if (t.IsGroundTriple)
             {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Engine.Medusa
             }
         }
 
-        protected static INode ToFindItem(INode n, ISet set)
+        protected static INode ToFindItem(INode n, ISolution set)
         {
             switch (n.NodeType)
             {
@@ -112,14 +112,14 @@ namespace VDS.RDF.Query.Engine.Medusa
             }
         }
 
-        protected static ISet QuadToSet(Quad matched, Triple pattern)
+        protected static ISolution QuadToSet(Quad matched, Triple pattern)
         {
             return QuadToSet(matched, pattern, null);
         }
 
-        protected static ISet QuadToSet(Quad matched, Triple pattern, ISet set)
+        protected static ISolution QuadToSet(Quad matched, Triple pattern, ISolution set)
         {
-            ISet output = set != null ? new Set(set) : new Set();
+            ISolution output = set != null ? new Solution(set) : new Solution();
             String sVar = ToVarName(pattern.Subject);
             if (sVar != null && output[sVar] == null) output.Add(sVar, matched.Subject);
             String pVar = ToVarName(pattern.Predicate);

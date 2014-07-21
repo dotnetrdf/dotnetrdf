@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
         public MaterializedJoinStrategy(IJoinStrategy strategy) 
             : base(strategy) {}
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return base.PrepareWorker(rhs.ToList());
         }

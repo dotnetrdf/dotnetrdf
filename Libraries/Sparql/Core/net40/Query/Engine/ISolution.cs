@@ -30,49 +30,49 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Engine
 {
     /// <summary>
-    /// Interface for Sets which represents a possible solution during SPARQL evaluation
+    /// Interface which represents a possible solution during SPARQL evaluation
     /// </summary>
-    public interface ISet 
-        : IEquatable<ISet>
+    public interface ISolution 
+        : IEquatable<ISolution>
     {
         /// <summary>
-        /// Adds a Value for a Variable to the Set
+        /// Adds a Value for a Variable to the solution
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <param name="value">Value</param>
         void Add(string variable, INode value);
 
         /// <summary>
-        /// Checks whether the Set contains a given Variable
+        /// Checks whether the solution contains a given Variable
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns></returns>
         bool ContainsVariable(string variable);
 
         /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// Gets whether the solution is compatible with a given solution based on the given variables
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Solution</param>
         /// <param name="vars">Variables</param>
         /// <returns></returns>
-        bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
+        bool IsCompatibleWith(ISolution s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// Gets whether the Solution is minus compatible with a given solution based on the given variables
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Solution</param>
         /// <param name="vars">Variables</param>
         /// <returns></returns>
-        bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
+        bool IsMinusCompatibleWith(ISolution s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Removes a Value for a Variable from the Set
+        /// Removes a Value for a Variable from the solution
         /// </summary>
         /// <param name="variable">Variable</param>
         void Remove(string variable);
 
         /// <summary>
-        /// Retrieves the Value in this set for the given Variable
+        /// Retrieves the Value in this solution for the given Variable
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns>Either a Node or a null</returns>
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets the Values in the Set
+        /// Gets the Values in the solution
         /// </summary>
         IEnumerable<INode> Values 
         { 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets the Variables in the Set
+        /// Gets the Variables in the solution
         /// </summary>
         IEnumerable<string> Variables 
         { 
@@ -98,21 +98,27 @@ namespace VDS.RDF.Query.Engine
         }
 
         /// <summary>
-        /// Gets whether the set is empty
+        /// Gets whether the solution is empty
         /// </summary>
         bool IsEmpty { get; }
 
         /// <summary>
-        /// Joins the set to another set
+        /// Joins the solution to another solution
         /// </summary>
-        /// <param name="other">Other Set</param>
+        /// <param name="other">Other solution</param>
         /// <returns></returns>
-        ISet Join(ISet other);
+        ISolution Join(ISolution other);
 
         /// <summary>
-        /// Copies the Set
+        /// Copies the solution
         /// </summary>
         /// <returns></returns>
-        ISet Copy();
+        ISolution Copy();
+
+        /// <summary>
+        /// Copies the solution only including the specified variables
+        /// </summary>
+        /// <returns></returns>
+        ISolution Project(IEnumerable<String> vars);
     }
 }

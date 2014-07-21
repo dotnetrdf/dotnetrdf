@@ -8,9 +8,9 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
     public abstract class BaseJoinStrategy 
         : IJoinStrategy
     {
-        public abstract IJoinWorker PrepareWorker(IEnumerable<ISet> rhs);
+        public abstract IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs);
 
-        public ISet Join(ISet lhs, ISet rhs)
+        public ISolution Join(ISolution lhs, ISolution rhs)
         {
             return lhs.Join(rhs);
         }

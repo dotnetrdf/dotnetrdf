@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Query.Engine.Medusa
+namespace VDS.RDF.Query.Engine.Bgps
 {
     /// <summary>
     /// A BGP executor over a <see cref="IQuadStore"/>

@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Algebra
     public class Table
         : IAlgebra
     {
-        public Table(IEnumerable<ISet> sets)
+        public Table(IEnumerable<ISolution> sets)
         {
             if (sets == null) throw new ArgumentNullException("sets");
             this.Data = sets.ToList().AsReadOnly();
@@ -19,15 +19,15 @@ namespace VDS.RDF.Query.Algebra
 
         public static Table CreateUnit()
         {
-            return new Table(new Set().AsEnumerable());
+            return new Table(new Solution().AsEnumerable());
         }
 
         public static Table CreateEmpty()
         {
-            return new Table(Enumerable.Empty<ISet>());
+            return new Table(Enumerable.Empty<ISolution>());
         }
 
-        public IList<ISet> Data { get; private set; }
+        public IList<ISolution> Data { get; private set; }
 
         public bool IsEmpty { get; private set; }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
             visitor.Visit(this);
         }
 
-        public IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        public IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
         }

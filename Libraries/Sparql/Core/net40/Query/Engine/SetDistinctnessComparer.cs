@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Engine
     /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables
     /// </summary>
     public class SetDistinctnessComparer
-        : IEqualityComparer<ISet>
+        : IEqualityComparer<ISolution>
     {
         private readonly List<String> _vars = new List<String>();
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Engine
         /// <param name="x">First Set</param>
         /// <param name="y">Second Set</param>
         /// <returns>True if sets are equal, false otherwise</returns>
-        public bool Equals(ISet x, ISet y)
+        public bool Equals(ISolution x, ISolution y)
         {
             //Both null considered equal
             if (x == null && y == null) return true;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Engine
         /// </summary>
         /// <param name="obj">Set</param>
         /// <returns>Hash Code</returns>
-        public int GetHashCode(ISet obj)
+        public int GetHashCode(ISolution obj)
         {
             if (obj == null) return -1;
 

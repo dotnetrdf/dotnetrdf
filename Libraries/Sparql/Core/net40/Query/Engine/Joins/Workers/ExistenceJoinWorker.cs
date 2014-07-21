@@ -9,9 +9,9 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
         public ExistenceJoinWorker(IJoinWorker worker) 
             : base(worker) { }
 
-        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public override IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
-            return base.Find(lhs, context).Any() ? new Set().AsEnumerable() : Enumerable.Empty<ISet>();
+            return base.Find(lhs, context).Any() ? new Solution().AsEnumerable() : Enumerable.Empty<ISolution>();
         }
     }
 
@@ -21,9 +21,9 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
         public NonExistenceJoinWorker(IJoinWorker worker) 
             : base(worker) { }
 
-        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public override IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
-            return base.Find(lhs, context).Any() ? Enumerable.Empty<ISet>() : new Set().AsEnumerable();
+            return base.Find(lhs, context).Any() ? Enumerable.Empty<ISolution>() : new Solution().AsEnumerable();
         }
     }
 }

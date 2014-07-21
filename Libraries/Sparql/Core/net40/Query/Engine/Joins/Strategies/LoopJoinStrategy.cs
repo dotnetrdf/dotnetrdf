@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
         public LoopJoinStrategy(IEnumerable<String> joinVars) 
             : base(joinVars) { }
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return new LoopJoinWorker(this.JoinVariables, rhs);
         }

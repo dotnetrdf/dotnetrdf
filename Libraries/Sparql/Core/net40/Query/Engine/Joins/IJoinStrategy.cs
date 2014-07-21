@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Engine.Joins
         /// </summary>
         /// <param name="rhs">The enumerable that represents the RHS of the join</param>
         /// <returns>Join worker</returns>
-        IJoinWorker PrepareWorker(IEnumerable<ISet> rhs);
+        IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs);
 
         /// <summary>
         /// Joins the two sets together
@@ -20,6 +20,6 @@ namespace VDS.RDF.Query.Engine.Joins
         /// <param name="lhs">Left hand side set</param>
         /// <param name="rhs">Right hand side set</param>
         /// <returns>Joined set</returns>
-        ISet Join(ISet lhs, ISet rhs);
+        ISolution Join(ISolution lhs, ISolution rhs);
     }
 }

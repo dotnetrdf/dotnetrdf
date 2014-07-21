@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
     public class LoopJoinWorker
         : ReusableJoinWorker
     {
-        public LoopJoinWorker(IList<String> joinVars, IEnumerable<ISet> rhs)
+        public LoopJoinWorker(IList<String> joinVars, IEnumerable<ISolution> rhs)
         {
             if (joinVars == null) throw new ArgumentNullException("joinVars");
             if (rhs == null) throw new ArgumentNullException("rhs");
@@ -16,11 +16,11 @@ namespace VDS.RDF.Query.Engine.Joins.Workers
             this.Rhs = rhs;
         }
 
-        public IEnumerable<ISet> Rhs { get; private set; }
+        public IEnumerable<ISolution> Rhs { get; private set; }
 
         public IList<String> JoinVariables { get; private set; } 
 
-        public override IEnumerable<ISet> Find(ISet lhs, IExecutionContext context)
+        public override IEnumerable<ISolution> Find(ISolution lhs, IExecutionContext context)
         {
             return this.Rhs.Where(s => lhs.IsCompatibleWith(s, this.JoinVariables));
         }

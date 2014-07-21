@@ -20,7 +20,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
 
         public IEnumerable<IExpression> Expressions { get; private set; }
 
-        public override IJoinWorker PrepareWorker(IEnumerable<ISet> rhs)
+        public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
             return new LeftJoinWorker(base.PrepareWorker(rhs), this.Expressions);
         }

@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Algebra
             visitor.Visit(this);
         }
 
-        public override IEnumerable<ISet> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
         }

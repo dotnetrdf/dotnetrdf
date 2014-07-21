@@ -7,7 +7,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Engine.Algebra
 {
     public class NamedGraphEnumerable
-        : IEnumerable<ISet>
+        : IEnumerable<ISolution>
     {
         public NamedGraphEnumerable(NamedGraph namedGraph, IAlgebraExecutor executor, IExecutionContext context)
         {
@@ -25,7 +25,7 @@ namespace VDS.RDF.Query.Engine.Algebra
 
         private IExecutionContext Context { get; set; }
 
-        public IEnumerator<ISet> GetEnumerator()
+        public IEnumerator<ISolution> GetEnumerator()
         {
             return new NamedGraphEnumerator(this.NamedGraph, this.Executor, this.Context);
         }
@@ -37,11 +37,11 @@ namespace VDS.RDF.Query.Engine.Algebra
     }
 
     public class NamedGraphEnumerator
-        : IEnumerator<ISet>
+        : IEnumerator<ISolution>
     {
-        private ISet _current;
+        private ISolution _current;
         private IEnumerator<INode> _graphNames;
-        private IEnumerator<ISet> _enumerator;
+        private IEnumerator<ISolution> _enumerator;
 
         public NamedGraphEnumerator(NamedGraph namedGraph, IAlgebraExecutor executor, IExecutionContext context)
         {
@@ -109,11 +109,11 @@ namespace VDS.RDF.Query.Engine.Algebra
 
                 // We have a next set from the inner algebra execution
                 // Assign/Check Graph Variable as appropriate
-                ISet set = this._enumerator.Current;
+                ISolution set = this._enumerator.Current;
                 if (set[this.GraphVariable] == null)
                 {
                     // Not yet assigned so assign now
-                    this._current = new Set(set);
+                    this._current = new Solution(set);
                     this._current.Add(this.GraphVariable, this._graphNames.Current);
                     return true;
                 }
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Engine.Algebra
             this._enumerator = null;
         }
 
-        public ISet Current
+        public ISolution Current
         {
             get
             {

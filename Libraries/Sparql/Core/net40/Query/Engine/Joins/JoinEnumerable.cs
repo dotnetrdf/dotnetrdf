@@ -5,9 +5,9 @@ using VDS.RDF.Collections;
 namespace VDS.RDF.Query.Engine.Joins
 {
     public class JoinEnumerable
-        : WrapperEnumerable<ISet>
+        : WrapperEnumerable<ISolution>
     {
-        public JoinEnumerable(IEnumerable<ISet> lhs, IEnumerable<ISet> rhs, IJoinStrategy strategy, IExecutionContext context)
+        public JoinEnumerable(IEnumerable<ISolution> lhs, IEnumerable<ISolution> rhs, IJoinStrategy strategy, IExecutionContext context)
             : base(lhs)
         {
             if (rhs == null) throw new ArgumentNullException("rhs");
@@ -18,24 +18,24 @@ namespace VDS.RDF.Query.Engine.Joins
             this.Context = context;
         }
 
-        public IEnumerable<ISet> Lhs { get { return this.InnerEnumerable; } }
+        public IEnumerable<ISolution> Lhs { get { return this.InnerEnumerable; } }
 
-        public IEnumerable<ISet> Rhs { get; private set; }
+        public IEnumerable<ISolution> Rhs { get; private set; }
 
         public IJoinStrategy Strategy { get; private set; }
 
         public IExecutionContext Context { get; private set; }
 
-        public override IEnumerator<ISet> GetEnumerator()
+        public override IEnumerator<ISolution> GetEnumerator()
         {
             return new JoinEnumerator(this.Lhs.GetEnumerator(), this.Rhs, this.Strategy, this.Context);
         }
     }
 
     public class JoinEnumerator
-        : WrapperEnumerator<ISet>
+        : WrapperEnumerator<ISolution>
     {
-        public JoinEnumerator(IEnumerator<ISet> lhs, IEnumerable<ISet> rhs, IJoinStrategy strategy, IExecutionContext context)
+        public JoinEnumerator(IEnumerator<ISolution> lhs, IEnumerable<ISolution> rhs, IJoinStrategy strategy, IExecutionContext context)
             : base(lhs)
         {
             if (rhs == null) throw new ArgumentNullException("rhs");
@@ -46,9 +46,9 @@ namespace VDS.RDF.Query.Engine.Joins
             this.Context = context;
         }
 
-        public IEnumerable<ISet> Rhs { get; private set; }
+        public IEnumerable<ISolution> Rhs { get; private set; }
 
-        private IEnumerator<ISet> RhsEnumerator { get; set; } 
+        private IEnumerator<ISolution> RhsEnumerator { get; set; } 
 
         public IJoinStrategy Strategy { get; private set; }
 
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Engine.Joins
 
         private IJoinWorker Worker { get; set; }
 
-        protected override bool TryMoveNext(out ISet item)
+        protected override bool TryMoveNext(out ISolution item)
         {
             item = null;
 
