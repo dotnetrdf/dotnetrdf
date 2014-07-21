@@ -160,6 +160,7 @@
     <Compile Include="Query\Results\RandomAccessTabularResults.cs" />
     <Compile Include="Query\Results\ResultRow.cs" />
     <Compile Include="Query\Results\StreamingTabularResults.cs" />
+    <Compile Include="Query\Sorting\SortConditionApplicator.cs" />
     <Compile Include="Query\Templates\ITemplate.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />

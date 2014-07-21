@@ -8,6 +8,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Engine.Bgps;
 using VDS.RDF.Query.Engine.Joins;
 using VDS.RDF.Query.Engine.Joins.Strategies;
+using VDS.RDF.Query.Sorting;
 
 namespace VDS.RDF.Query.Engine.Algebra
 {
@@ -177,7 +178,8 @@ namespace VDS.RDF.Query.Engine.Algebra
 
         public IEnumerable<ISolution> Execute(OrderBy orderBy, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            context = EnsureContext(context);
+            return orderBy.InnerAlgebra.Execute(this, context).OrderBy(s => s, new SortConditionApplicator(orderBy.SortConditions));
         }
 
         public IEnumerable<ISolution> Execute(Extend extend, IExecutionContext context)
