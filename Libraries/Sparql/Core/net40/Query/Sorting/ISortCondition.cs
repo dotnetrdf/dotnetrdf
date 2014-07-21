@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using VDS.RDF.Query.Engine;
 
-namespace VDS.RDF.Query.Engine
+namespace VDS.RDF.Query.Sorting
 {
     public interface ISortCondition
-        : IComparer<ISet>
+        : IComparer<ISet>, IEquatable<ISortCondition>
     {
         /// <summary>
         /// Gets whether this is an ascending sort condition

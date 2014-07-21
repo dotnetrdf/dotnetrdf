@@ -1,6 +1,7 @@
 ﻿using System;
+using VDS.RDF.Query.Engine;
 
-namespace VDS.RDF.Query.Engine.Sorting
+namespace VDS.RDF.Query.Sorting
 {
     public class DescendingSortCondition
         : ISortCondition
@@ -24,6 +25,13 @@ namespace VDS.RDF.Query.Engine.Sorting
             // Reverse sort order if inner condition is an ascending sort
             // If it is already a descending sort leave as is
             return this._condition.IsAscending ? c*-1 : c;
+        }
+
+        public bool Equals(ISortCondition other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return !other.IsAscending && this._condition.Equals(other);
         }
     }
 }

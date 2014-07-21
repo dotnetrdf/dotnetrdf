@@ -10,6 +10,7 @@ using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Results;
+using VDS.RDF.Query.Sorting;
 using VDS.RDF.Query.Templates;
 
 namespace VDS.RDF.Query

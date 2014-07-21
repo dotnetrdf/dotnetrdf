@@ -145,5 +145,71 @@ namespace VDS.RDF.Query.Engine.Algebra
 
             return new JoinEnumerable(lhsResults, rhsResults, new LeftJoinStrategy(this.JoinStrategySelector.Select(leftJoin.Lhs, leftJoin.Rhs), leftJoin.Expressions), context);
         }
+
+        public IEnumerable<ISet> Execute(Minus minus, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            IEnumerable<ISet> lhsResults = minus.Lhs.Execute(this, context);
+            IEnumerable<ISet> rhsResults = minus.Rhs.Execute(this, context);
+
+            return new JoinEnumerable(lhsResults, rhsResults, new NonExistenceJoinStrategy(this.JoinStrategySelector.Select(minus.Lhs, minus.Rhs)), context);
+        }
+
+        public IEnumerable<ISet> Execute(Distinct distinct, IExecutionContext context)
+        {
+            context = EnsureContext(context);
+            // TODO Likely want to provide an optimized IEqualityComparer here
+            return distinct.InnerAlgebra.Execute(this, context).Distinct();
+        }
+
+        public IEnumerable<ISet> Execute(Reduced reduced, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(Project project, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(OrderBy orderBy, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(Extend extend, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(GroupBy groupBy, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(Service service, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(PropertyPath path, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(TopN topN, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(PropertyFunction propertyFunction, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> Execute(IndexJoin indexJoin, IExecutionContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

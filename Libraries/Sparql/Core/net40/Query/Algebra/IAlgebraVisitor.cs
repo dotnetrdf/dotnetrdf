@@ -17,5 +17,29 @@
         void Visit(Join join);
 
         void Visit(LeftJoin leftJoin);
+
+        void Visit(Minus minus);
+
+        void Visit(Distinct distinct);
+
+        void Visit(Reduced reduced);
+
+        void Visit(Project project);
+
+        void Visit(OrderBy orderBy);
+
+        void Visit(Extend extend);
+
+        void Visit(GroupBy groupBy);
+
+        void Visit(Service service);
+
+        void Visit(PropertyPath path);
+
+        void Visit(TopN topN);
+
+        void Visit(PropertyFunction propertyFunction);
+
+        void Visit(IndexJoin indexJoin);
     }
 }
