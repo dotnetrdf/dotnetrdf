@@ -39,5 +39,10 @@ namespace VDS.RDF.Collections
         {
             return new ReducedEnumerable<T>(enumerable);
         }
+
+        public static IEnumerable<T> Top<T>(this IEnumerable<T> enumerable, IComparer<T> comparer, long n)
+        {
+            return new TopNEnumerable<T>(enumerable, comparer, n);
+        }
     }
 }

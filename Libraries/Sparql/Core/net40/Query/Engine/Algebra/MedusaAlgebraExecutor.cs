@@ -191,27 +191,28 @@ namespace VDS.RDF.Query.Engine.Algebra
 
         public IEnumerable<ISolution> Execute(GroupBy groupBy, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Group By execution is not yet implemented");
         }
 
         public IEnumerable<ISolution> Execute(Service service, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Service execution is not yet implemented");
         }
 
         public IEnumerable<ISolution> Execute(PropertyPath path, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Property path execution is not yet implemented");
         }
 
         public IEnumerable<ISolution> Execute(TopN topN, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            context = EnsureContext(context);
+            return topN.InnerAlgebra.Execute(this, context).Top(new SortConditionApplicator(topN.SortConditions), topN.N);
         }
 
         public IEnumerable<ISolution> Execute(PropertyFunction propertyFunction, IExecutionContext context)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Property function execution is not yet implemented");
         }
     }
 }
