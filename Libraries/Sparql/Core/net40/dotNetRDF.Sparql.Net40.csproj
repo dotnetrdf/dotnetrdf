@@ -45,6 +45,7 @@
     <Compile Include="Collections\AddIfEmptyEnumerable.cs" />
     <Compile Include="Collections\OmitAllEnumerable.cs" />
     <Compile Include="Collections\ReducedEnumerable.cs" />
+    <Compile Include="Collections\TopNEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
