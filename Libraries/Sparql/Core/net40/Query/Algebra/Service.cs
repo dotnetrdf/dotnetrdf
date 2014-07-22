@@ -1,39 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 
 namespace VDS.RDF.Query.Algebra
 {
     public class Service
-        : IAlgebra
+        : BaseUnaryAlgebra
     {
-        public bool Equals(IAlgebra other)
+        public Service(IAlgebra innerAlgebra, Uri endpointUri, bool isSilent)
+            : base(innerAlgebra)
         {
-            throw new NotImplementedException();
+            if (endpointUri == null) throw new ArgumentNullException("endpointUri");
+            EndpointUri = endpointUri;
+            IsSilent = isSilent;
         }
 
-        public IEnumerable<string> ProjectedVariables
+        public Uri EndpointUri { get; private set; }
+
+        public bool IsSilent { get; private set; }
+
+        public override bool Equals(IAlgebra other)
         {
-            get { throw new NotImplementedException(); }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is Service)) return false;
+
+            Service svc = (Service) other;
+            return EqualityHelper.AreUrisEqual(this.EndpointUri, svc.EndpointUri) && this.IsSilent == svc.IsSilent && this.InnerAlgebra.Equals(svc.InnerAlgebra);
         }
 
-        public IEnumerable<string> FixedVariables
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IEnumerable<string> FloatingVariables
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public void Accept(IAlgebraVisitor visitor)
+        public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
+        public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
         }

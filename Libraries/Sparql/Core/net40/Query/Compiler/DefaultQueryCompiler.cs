@@ -23,10 +23,62 @@ namespace VDS.RDF.Query.Compiler
             {
                 query.WhereClause.Accept(this);
             }
+            else
+            {
+                // If no WHERE clause then use Table Unit
+                this._algebras.Push(Table.CreateUnit());
+            }
 
-            // TODO visit modifiers
+            // Then visit the modifiers in the appropriate order
 
+            // GROUP BY
 
+            // Project Expressions
+            if (query.Projections.Any(kvp => kvp.Value != null))
+            {
+                // TODO Must handle replacing aggregates with their temporary variables
+                // TODO Provide an Extend.Create() method to concatenate Extend instances together
+                this._algebras.Push(new Extend(this._algebras.Pop(), query.Projections.Where(kvp => kvp.Value != null)));
+            }
+
+            // HAVING
+            if (query.HavingConditions.Any())
+            {
+                this._algebras.Push(new Filter(this._algebras.Pop(), query.HavingConditions));
+            }
+
+            // VALUES
+            if (query.ValuesClause != null)
+            {
+                this._algebras.Push(new Join(this._algebras.Pop(), new Table(this.CompileInlineData(query.ValuesClause))));
+            }
+
+            // ORDER BY
+            if (query.SortConditions.Any())
+            {
+                this._algebras.Push(new OrderBy(this._algebras.Pop(), query.SortConditions));
+            }
+
+            // PROJECT
+            if (query.Projections.Any(kvp => kvp.Value == null))
+            {
+                this._algebras.Push(new Project(this._algebras.Pop(), query.Projections.Where(kvp => kvp.Value == null).Select(kvp => kvp.Key)));
+            }
+
+            // DISTINCT/REDUCED
+            switch (query.QueryType)
+            {
+                case QueryType.SelectAllDistinct:
+                case QueryType.SelectDistinct:
+                    this._algebras.Push(new Distinct(this._algebras.Pop()));
+                    break;
+                case QueryType.SelectAllReduced:
+                case QueryType.SelectReduced:
+                    this._algebras.Push(new Reduced(this._algebras.Pop()));
+                    break;
+            }
+
+            // LIMIT and OFFSET
             if (query.HasLimit || query.HasOffset)
             {
                 this._algebras.Push(new Slice(this._algebras.Pop(), query.Limit, query.Offset));
@@ -44,16 +96,7 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(DataElement data)
         {
-            this._algebras.Push(new Table(((IEnumerable<IResultRow>) data.Data).Select(r =>
-            {
-                Solution s = new Solution();
-                foreach (String var in r.Variables)
-                {
-                    INode n;
-                    if (r.TryGetBoundValue(var, out n)) s.Add(var, n);
-                }
-                return s;
-            })));
+            this._algebras.Push(new Table(this.CompileInlineData(data.Data)));
         }
 
         public void Visit(FilterElement filter)
@@ -90,7 +133,8 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(ServiceElement service)
         {
-            throw new NotImplementedException();
+            service.InnerElement.Accept(this);
+            this._algebras.Push(new Service(this._algebras.Pop(), service.EndpointUri, service.IsSilent));
         }
 
         public void Visit(SubQueryElement subQuery)
@@ -112,6 +156,20 @@ namespace VDS.RDF.Query.Compiler
             IAlgebra lhs = this._algebras.Pop();
 
             this._algebras.Push(new Union(lhs, rhs));
+        }
+
+        protected IEnumerable<ISolution> CompileInlineData(IEnumerable<IResultRow> rows)
+        {
+            foreach (IResultRow r in rows)
+            {
+                Solution s = new Solution();
+                foreach (String var in r.Variables)
+                {
+                    INode n;
+                    if (r.TryGetBoundValue(var, out n)) s.Add(var, n);
+                }
+                yield return s;
+            }
         }
     }
 }

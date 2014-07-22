@@ -11,7 +11,7 @@ namespace VDS.RDF.Query.Elements
         public FilterElement(IEnumerable<IExpression> expressions)
         {
             if (expressions == null) throw new ArgumentNullException("expressions");
-            this.Expressions = new List<IExpression>(expressions);
+            this.Expressions = expressions.ToList();
         }
 
         public IList<IExpression> Expressions { get; private set; }

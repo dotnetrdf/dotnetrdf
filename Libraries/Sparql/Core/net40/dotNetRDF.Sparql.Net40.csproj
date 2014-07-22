@@ -87,6 +87,7 @@
     <Compile Include="Query\Elements\IElement.cs" />
     <Compile Include="Query\Algebra\IAlgebraVisitor.cs" />
     <Compile Include="Query\Compiler\IQueryCompiler.cs" />
+    <Compile Include="Query\Engine\Algebra\BaseAlgebraExecutor.cs" />
     <Compile Include="Query\Engine\Algebra\ExtendEnumerable.cs" />
     <Compile Include="Query\Engine\BaseSolution.cs" />
     <Compile Include="Query\Engine\Algebra\IAlgebraExecutor.cs" />

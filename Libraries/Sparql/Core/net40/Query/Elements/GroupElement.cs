@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Elements
     {
         public GroupElement(IEnumerable<IElement> elements)
         {
-            this.Elements = elements != null ? new List<IElement>(elements) : new List<IElement>();
+            this.Elements = elements != null ? elements.ToList() : new List<IElement>();
         }
 
         public IList<IElement> Elements { get; private set; }
