@@ -7,18 +7,13 @@ namespace VDS.RDF.Query.Elements
     public class UnionElement
         : IElement
     {
-        public UnionElement(IElement lhs, IElement rhs)
+        public UnionElement(IEnumerable<IElement> elements)
         {
-            if (lhs == null) throw new ArgumentNullException("lhs");
-            if (rhs == null) throw new ArgumentNullException("rhs");
-
-            this.Lhs = lhs;
-            this.Rhs = rhs;
+            if (elements == null) throw new ArgumentNullException("elements");
+            this.Elements = elements.ToList();
         }
 
-        public IElement Lhs { get; private set; }
-
-        public IElement Rhs { get; private set; }
+        public IList<IElement> Elements { get; private set; }
 
         public bool Equals(IElement other)
         {
@@ -27,7 +22,12 @@ namespace VDS.RDF.Query.Elements
             if (!(other is UnionElement)) return false;
 
             UnionElement union = (UnionElement) other;
-            return this.Lhs.Equals(union.Lhs) && this.Rhs.Equals(union.Rhs);
+            if (this.Elements.Count != union.Elements.Count) return false;
+            for (int i = 0; i < this.Elements.Count; i++)
+            {
+                if (!this.Elements[i].Equals(union.Elements[i])) return false;
+            }
+            return true;
         }
 
         public void Accept(IElementVisitor visitor)
@@ -37,12 +37,12 @@ namespace VDS.RDF.Query.Elements
 
         public IEnumerable<string> Variables
         {
-            get { return this.Lhs.Variables.Concat(this.Rhs.Variables).Distinct(); }
+            get { return this.Elements.SelectMany(e => e.Variables).Distinct(); }
         }
 
         public IEnumerable<string> ProjectedVariables
         {
-            get { return this.Lhs.ProjectedVariables.Concat(this.Rhs.ProjectedVariables).Distinct(); }
+            get { return this.Elements.SelectMany(e => e.ProjectedVariables).Distinct(); }
         }
     }
 }

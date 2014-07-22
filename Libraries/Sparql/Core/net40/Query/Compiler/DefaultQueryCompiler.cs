@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(BindElement bind)
         {
-            throw new NotImplementedException();
+            this._algebras.Push(new Extend(this._algebras.Pop(), bind.Assignments));
         }
 
         public void Visit(DataElement data)
@@ -101,8 +101,7 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(FilterElement filter)
         {
-            // A standalone filter applies over Table Unit
-            this._algebras.Push(new Filter(Table.CreateUnit(), filter.Expressions));
+            this._algebras.Push(new Filter(this._algebras.Pop(), filter.Expressions));
         }
 
         public void Visit(GroupElement group)
@@ -149,13 +148,19 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(UnionElement union)
         {
-            union.Lhs.Accept(this);
-            union.Rhs.Accept(this);
+            // Firstly convert all the elements
+            for (int i = 0; i < union.Elements.Count; i++)
+            {
+                union.Elements[i].Accept(this);
+            }
 
-            IAlgebra rhs = this._algebras.Pop();
-            IAlgebra lhs = this._algebras.Pop();
-
-            this._algebras.Push(new Union(lhs, rhs));
+            // Then union together the results
+            IAlgebra current = this._algebras.Pop();
+            for (int i = 1; i < union.Elements.Count; i++)
+            {
+                current = new Union(this._algebras.Pop(), current);
+            }
+            this._algebras.Push(current);
         }
 
         protected IEnumerable<ISolution> CompileInlineData(IEnumerable<IResultRow> rows)
