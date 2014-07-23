@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -74,6 +77,38 @@ namespace VDS.RDF.Query.Algebra
         public IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
+        }
+
+        public override string ToString()
+        {
+            if (this.IsUnit) return "(table unit)";
+            if (this.IsEmpty) return "(table empty)";
+            
+            StringBuilder builder = new StringBuilder();
+            INodeFormatter formatter = new Notation3Formatter();
+            builder.Append("(table (vars ");
+            foreach (String var in this.ProjectedVariables)
+            {
+                builder.Append(formatter.Format(new VariableNode(var)));
+            }
+            builder.AppendLine(")");
+            foreach (ISolution solution in this.Data)
+            {
+                builder.Append("  (row");
+                foreach (String var in solution.Variables)
+                {
+                    INode n = solution[var];
+                    if (n == null) continue;
+                    builder.Append(" [ ");
+                    builder.Append(formatter.Format(new VariableNode(var)));
+                    builder.Append(' ');
+                    builder.Append(formatter.Format(n));
+                    builder.Append("]");
+                }
+                builder.AppendLine(")");
+            }
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }

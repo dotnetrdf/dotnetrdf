@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 
@@ -44,6 +46,16 @@ namespace VDS.RDF.Query.Algebra
 
             Union u = (Union) other;
             return this.Lhs.Equals(u.Lhs) && this.Rhs.Equals(u.Rhs);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("(union");
+            builder.AppendLineIndented(this.Lhs.ToString(), 2);
+            builder.AppendLineIndented(this.Rhs.ToString(), 2);
+            builder.Append(")");
+            return builder.ToString();
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -12,7 +14,7 @@ namespace VDS.RDF.Query.Algebra
         : IAlgebra
     {
         public Bgp()
-            : this(null) { }
+            : this(null) {}
 
         public Bgp(IEnumerable<Triple> patterns)
         {
@@ -64,6 +66,27 @@ namespace VDS.RDF.Query.Algebra
         public IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
+        }
+
+        public override string ToString()
+        {
+            if (this.TriplePatterns.Count == 0) return "(bgp)";
+
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("(bgp");
+            INodeFormatter formatter = new Notation3Formatter();
+            foreach (Triple t in this.TriplePatterns)
+            {
+                builder.Append("  (triple ");
+                builder.Append(t.Subject.ToString(formatter));
+                builder.Append(' ');
+                builder.Append(t.Predicate.ToString(formatter));
+                builder.Append(' ');
+                builder.Append(t.Object.ToString(formatter));
+                builder.AppendLine(")");
+            }
+            builder.Append(")");
+            return builder.ToString();
         }
     }
 }

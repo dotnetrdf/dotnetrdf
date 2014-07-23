@@ -400,11 +400,11 @@ namespace VDS.RDF
         /// <remarks>
         /// Strings containing new lines are split over multiple lines
         /// </remarks>
-        internal static void AppendLineIndented(this StringBuilder builder, String line, int indent)
+        public static void AppendLineIndented(this StringBuilder builder, String line, int indent)
         {
             if (line.Contains('\n'))
             {
-                String[] lines = line.Split('\n');
+                String[] lines = line.Split(new char[] { '\n', '\r' });
                 foreach (String l in lines)
                 {
                     if (String.IsNullOrEmpty(l) || l.ToCharArray().All(c => Char.IsWhiteSpace(c))) continue;

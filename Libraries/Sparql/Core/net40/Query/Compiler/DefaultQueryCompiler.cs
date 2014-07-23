@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Compiler
     public class DefaultQueryCompiler
         : IQueryCompiler, IElementVisitor
     {
-        private readonly Stack<IAlgebra> _algebras = new Stack<IAlgebra>();
+        private Stack<IAlgebra> _algebras = new Stack<IAlgebra>();
 
         public virtual IAlgebra Compile(IQuery query)
         {
@@ -148,11 +148,18 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(UnionElement union)
         {
+            Stack<IAlgebra> currentStack = this._algebras;
+            this._algebras = new Stack<IAlgebra>();
+
             // Firstly convert all the elements
             foreach (IElement element in union.Elements)
             {
+                this._algebras.Push(Table.CreateUnit());
                 element.Accept(this);
+                currentStack.Push(this._algebras.Pop());
+                if (this._algebras.Count > 0) throw new RdfQueryException(String.Format("Query compilation failed, expected to produce 1 algebra but produced {0}", this._algebras.Count));
             }
+            this._algebras = currentStack;
 
             // Then union together the results
             IAlgebra current = this._algebras.Pop();

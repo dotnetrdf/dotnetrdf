@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 
@@ -63,6 +64,16 @@ namespace VDS.RDF.Query.Algebra
 
             Join j = (Join) other;
             return this.Lhs.Equals(j.Lhs) && this.Rhs.Equals(j.Rhs);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("(join");
+            builder.AppendLineIndented(this.Lhs.ToString(), 2);
+            builder.AppendLineIndented(this.Rhs.ToString(), 2);
+            builder.Append(")");
+            return builder.ToString();
         }
     }
 }
