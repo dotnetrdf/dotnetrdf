@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.Common.Collections;
-using VDS.RDF.Graphs;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Elements;
-using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Results;
 using VDS.RDF.Query.Sorting;
@@ -23,65 +20,20 @@ namespace VDS.RDF.Query
         public Query()
         {
             this.Namespaces = new NamespaceMapper(true);
-            this.DefaultGraphs = Enumerable.Empty<INode>();
-            this.NamedGraphs = Enumerable.Empty<INode>();
+            this.DefaultGraphs = new List<INode>();
+            this.NamedGraphs = new List<INode>();
+            this.SortConditions = new List<ISortCondition>();
+            this.HavingConditions = new List<IExpression>();
+            this.Limit = -1;
         }
 
         public INamespaceMapper Namespaces { get; set; }
 
         public Uri BaseUri { get; set; }
 
-        public IEnumerable<INode> DefaultGraphs { get; set; }
+        public IList<INode> DefaultGraphs { get; set; }
 
-        public IEnumerable<INode> NamedGraphs { get; set; }
-
-        public void AddDefaultGraph(INode graphName)
-        {
-            if (graphName == null) return;
-            List<INode> defGraphs = this.DefaultGraphs != null ? this.DefaultGraphs.ToList() : new List<INode>();
-            if (defGraphs.Contains(graphName)) return;
-            defGraphs.Add(graphName);
-            this.DefaultGraphs = defGraphs;
-        }
-
-        public void RemoveDefaultGraph(INode graphName)
-        {
-            if (graphName == null) return;
-            List<INode> defGraphs = this.DefaultGraphs != null ? this.DefaultGraphs.ToList() : new List<INode>();
-            if (defGraphs.Remove(graphName))
-            {
-                this.DefaultGraphs = defGraphs;
-            }
-        }
-
-        public void ClearDefaultGraphs()
-        {
-            this.DefaultGraphs = Enumerable.Empty<INode>();
-        }
-
-        public void AddNamedGraph(INode graphName)
-        {
-            if (graphName == null) return;
-            List<INode> namedGraphs = this.NamedGraphs != null ? this.NamedGraphs.ToList() : new List<INode>();
-            if (namedGraphs.Contains(graphName)) return;
-            namedGraphs.Add(graphName);
-            this.NamedGraphs = namedGraphs;
-        }
-
-        public void RemoveNamedGraph(INode graphName)
-        {
-            if (graphName == null) return;
-            List<INode> namedGraphs = this.NamedGraphs != null ? this.NamedGraphs.ToList() : new List<INode>();
-            if (namedGraphs.Remove(graphName))
-            {
-                this.NamedGraphs = namedGraphs;
-            }
-        }
-
-        public void ClearNamedGraphs()
-        {
-            this.NamedGraphs = Enumerable.Empty<INode>();
-        }
+        public IList<INode> NamedGraphs { get; set; }
 
         public QueryType QueryType { get; set; }
 
@@ -99,23 +51,13 @@ namespace VDS.RDF.Query
             get { return this.Offset > 0; }
         }
 
-        public IEnumerable<ISortCondition> SortConditions { get; set; }
-
-        public void AddSortCondition(ISortCondition condition)
-        {
-            this.SortConditions = this.SortConditions == null ? condition.AsEnumerable() : this.SortConditions.Concat(condition.AsEnumerable());
-        }
-
-        public void ClearSortConditions()
-        {
-            this.SortConditions = Enumerable.Empty<ISortCondition>();
-        }
+        public IList<ISortCondition> SortConditions { get; set; }
 
         public IElement WhereClause { get; set; }
 
-        public IEnumerable<IExpression> HavingConditions { get; set; }
+        public IList<IExpression> HavingConditions { get; set; }
 
-        public IEnumerable<KeyValuePair<IExpression, string>> GroupExpressions { get; set; }
+        public IList<KeyValuePair<IExpression, string>> GroupExpressions { get; set; }
 
         public ITabularResults ValuesClause { get; set; }
 

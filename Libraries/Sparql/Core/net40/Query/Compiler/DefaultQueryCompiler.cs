@@ -18,15 +18,13 @@ namespace VDS.RDF.Query.Compiler
         {
             this._algebras.Clear();
 
+            // Always start from table unit
+            this._algebras.Push(Table.CreateUnit());
+
             // Firstly visit the where clause
             if (query.WhereClause != null)
             {
                 query.WhereClause.Accept(this);
-            }
-            else
-            {
-                // If no WHERE clause then use Table Unit
-                this._algebras.Push(Table.CreateUnit());
             }
 
             // Then visit the modifiers in the appropriate order
@@ -34,33 +32,32 @@ namespace VDS.RDF.Query.Compiler
             // GROUP BY
 
             // Project Expressions
-            if (query.Projections.Any(kvp => kvp.Value != null))
+            if (query.Projections != null && query.Projections.Any(kvp => kvp.Value != null))
             {
                 // TODO Must handle replacing aggregates with their temporary variables
-                // TODO Provide an Extend.Create() method to concatenate Extend instances together
-                this._algebras.Push(new Extend(this._algebras.Pop(), query.Projections.Where(kvp => kvp.Value != null)));
+                this._algebras.Push(Extend.Create(this._algebras.Pop(), query.Projections.Where(kvp => kvp.Value != null)));
             }
 
             // HAVING
-            if (query.HavingConditions.Any())
+            if (query.HavingConditions != null && query.HavingConditions.Any())
             {
-                this._algebras.Push(new Filter(this._algebras.Pop(), query.HavingConditions));
+                this._algebras.Push(Filter.Create(this._algebras.Pop(), query.HavingConditions));
             }
 
             // VALUES
             if (query.ValuesClause != null)
             {
-                this._algebras.Push(new Join(this._algebras.Pop(), new Table(this.CompileInlineData(query.ValuesClause))));
+                this._algebras.Push(Join.Create(this._algebras.Pop(), new Table(this.CompileInlineData(query.ValuesClause))));
             }
 
             // ORDER BY
-            if (query.SortConditions.Any())
+            if (query.SortConditions != null && query.SortConditions.Any())
             {
                 this._algebras.Push(new OrderBy(this._algebras.Pop(), query.SortConditions));
             }
 
             // PROJECT
-            if (query.Projections.Any(kvp => kvp.Value == null))
+            if (query.Projections != null && query.Projections.Any(kvp => kvp.Value == null))
             {
                 this._algebras.Push(new Project(this._algebras.Pop(), query.Projections.Where(kvp => kvp.Value == null).Select(kvp => kvp.Key)));
             }
@@ -91,17 +88,17 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(BindElement bind)
         {
-            this._algebras.Push(new Extend(this._algebras.Pop(), bind.Assignments));
+            this._algebras.Push(Extend.Create(this._algebras.Pop(), bind.Assignments));
         }
 
         public void Visit(DataElement data)
         {
-            this._algebras.Push(new Table(this.CompileInlineData(data.Data)));
+            this._algebras.Push(Join.Create(this._algebras.Pop(), new Table(this.CompileInlineData(data.Data))));
         }
 
         public void Visit(FilterElement filter)
         {
-            this._algebras.Push(new Filter(this._algebras.Pop(), filter.Expressions));
+            this._algebras.Push(Filter.Create(this._algebras.Pop(), filter.Expressions));
         }
 
         public void Visit(GroupElement group)
@@ -143,15 +140,18 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(TripleBlockElement tripleBlock)
         {
-            this._algebras.Push(new Bgp(tripleBlock.Triples));
+// ReSharper disable RedundantCast
+            IAlgebra bgp = tripleBlock.Triples.Count > 0 ? (IAlgebra)new Bgp(tripleBlock.Triples) : (IAlgebra)Table.CreateUnit();
+// ReSharper restore RedundantCast
+            this._algebras.Push(Join.Create(this._algebras.Pop(), bgp));
         }
 
         public void Visit(UnionElement union)
         {
             // Firstly convert all the elements
-            for (int i = 0; i < union.Elements.Count; i++)
+            foreach (IElement element in union.Elements)
             {
-                union.Elements[i].Accept(this);
+                element.Accept(this);
             }
 
             // Then union together the results
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Compiler
             {
                 current = new Union(this._algebras.Pop(), current);
             }
-            this._algebras.Push(current);
+            this._algebras.Push(Join.Create(this._algebras.Pop(), current));
         }
 
         protected IEnumerable<ISolution> CompileInlineData(IEnumerable<IResultRow> rows)

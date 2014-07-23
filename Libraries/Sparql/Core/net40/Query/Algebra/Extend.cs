@@ -10,11 +10,24 @@ namespace VDS.RDF.Query.Algebra
     public class Extend
         : BaseUnaryAlgebra
     {
-        public Extend(IAlgebra innerAlgebra, IEnumerable<KeyValuePair<String, IExpression>> assignments)
+        private Extend(IAlgebra innerAlgebra, IEnumerable<KeyValuePair<String, IExpression>> assignments)
             : base(innerAlgebra)
         {
             this.Assignments = assignments.ToList().AsReadOnly();
             if (this.Assignments.Count == 0) throw new ArgumentException("Number of assignments must be >= 1", "assignments");
+        }
+
+        public static Extend Create(IAlgebra innerAlgebra, IEnumerable<KeyValuePair<String, IExpression>> assignments)
+        {
+            if (!(innerAlgebra is Extend)) return Wrap(innerAlgebra, assignments);
+
+            Extend e = (Extend) innerAlgebra;
+            return new Extend(e.InnerAlgebra, e.Assignments.Concat(assignments));
+        }
+
+        public static Extend Wrap(IAlgebra innerAlgebra, IEnumerable<KeyValuePair<String, IExpression>> assignments)
+        {
+            return new Extend(innerAlgebra, assignments);
         }
 
         public IList<KeyValuePair<String, IExpression>> Assignments { get; private set; }

@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Engine.Bgp;
-using VDS.RDF.Query.Engine.Bgps;
 
-namespace VDS.RDF.Query.Engine
+namespace VDS.RDF.Query.Engine.Bgps
 {
     [TestFixture]
     public class QuadStoreBgpExecutorTests

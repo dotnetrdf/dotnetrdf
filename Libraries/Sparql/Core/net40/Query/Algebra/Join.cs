@@ -8,8 +8,27 @@ namespace VDS.RDF.Query.Algebra
     public class Join
         : BaseBinaryAlgebra
     {
-        public Join(IAlgebra lhs, IAlgebra rhs) 
+        private Join(IAlgebra lhs, IAlgebra rhs) 
             : base(lhs, rhs) { }
+
+        public static IAlgebra Create(IAlgebra lhs, IAlgebra rhs)
+        {
+            if (IsTableUnit(lhs)) return rhs;
+            return IsTableUnit(rhs) ? lhs : new Join(lhs, rhs);
+        }
+
+        private static bool IsTableUnit(IAlgebra algebra)
+        {
+            if (algebra is Table)
+            {
+                return ((Table) algebra).IsUnit;
+            }
+            if (algebra is Bgp)
+            {
+                return ((Bgp) algebra).TriplePatterns.Count == 0;
+            }
+            return false;
+        }
 
         public override IEnumerable<string> ProjectedVariables
         {

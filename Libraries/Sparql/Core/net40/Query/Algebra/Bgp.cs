@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.Common.Collections;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
@@ -13,19 +12,17 @@ namespace VDS.RDF.Query.Algebra
         : IAlgebra
     {
         public Bgp()
-        {
-            this.TriplePatterns = new ImmutableView<Triple>();
-        }
+            : this(null) { }
 
         public Bgp(IEnumerable<Triple> patterns)
         {
-            this.TriplePatterns = patterns != null ? new MaterializedImmutableView<Triple>(patterns) : new ImmutableView<Triple>();
+            this.TriplePatterns = patterns != null ? patterns.ToList().AsReadOnly() : new List<Triple>().AsReadOnly();
         }
 
         /// <summary>
         /// Gets the Triple Patterns in the BGP
         /// </summary>
-        public IEnumerable<Triple> TriplePatterns { get; private set; }
+        public IList<Triple> TriplePatterns { get; private set; }
 
         public bool Equals(IAlgebra other)
         {
@@ -33,13 +30,13 @@ namespace VDS.RDF.Query.Algebra
             if (other == null) return false;
             if (!(other is Bgp)) return false;
 
-            List<Triple> ts = this.TriplePatterns.ToList();
-            List<Triple> otherTriples = ((Bgp) other).TriplePatterns.ToList();
-            if (ts.Count != otherTriples.Count) return false;
+            Bgp bgp = (Bgp) other;
 
-            for (int i = 0; i < ts.Count; i++)
+            if (this.TriplePatterns.Count != bgp.TriplePatterns.Count) return false;
+
+            for (int i = 0; i < this.TriplePatterns.Count; i++)
             {
-                if (!ts[i].Equals(otherTriples[i])) return false;
+                if (!this.TriplePatterns[i].Equals(bgp.TriplePatterns[i])) return false;
             }
             return true;
         }

@@ -10,11 +10,24 @@ namespace VDS.RDF.Query.Algebra
     public class Filter
         : BaseUnaryAlgebra
     {
-        public Filter(IAlgebra innerAlgebra, IEnumerable<IExpression> expressions)
+        private Filter(IAlgebra innerAlgebra, IEnumerable<IExpression> expressions)
             : base(innerAlgebra)
         {
             if (expressions == null) throw new ArgumentNullException("expressions");
             this.Expressions = expressions.ToList().AsReadOnly();
+        }
+
+        public static Filter Create(IAlgebra innerAlgebra, IEnumerable<IExpression> expressions)
+        {
+            if (!(innerAlgebra is Filter)) return Wrap(innerAlgebra, expressions);
+
+            Filter f = (Filter) innerAlgebra;
+            return new Filter(f.InnerAlgebra, f.Expressions.Concat(expressions));
+        }
+
+        public static Filter Wrap(IAlgebra innerAlgebra, IEnumerable<IExpression> expressions)
+        {
+            return new Filter(innerAlgebra, expressions);
         }
 
         public IList<IExpression> Expressions { get; private set; }
