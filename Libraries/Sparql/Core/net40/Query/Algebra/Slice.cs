@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 
@@ -36,6 +37,33 @@ namespace VDS.RDF.Query.Algebra
         public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(slice ");
+            if (this.Offset > 0)
+            {
+                builder.Append(this.Offset);
+            }
+            else
+            {
+                builder.Append('_');
+            }
+            builder.Append(' ');
+            if (this.Limit > 0)
+            {
+                builder.Append(this.Limit);
+            }
+            else
+            {
+                builder.Append('_');
+            }
+            builder.AppendLine();
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }

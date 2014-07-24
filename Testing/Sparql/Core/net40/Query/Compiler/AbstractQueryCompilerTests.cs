@@ -150,9 +150,9 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Table), algebra);
+            Assert.IsInstanceOf(typeof (Table), algebra);
 
-            Table table = (Table)algebra;
+            Table table = (Table) algebra;
             Assert.IsTrue(table.IsEmpty);
         }
 
@@ -163,14 +163,14 @@ namespace VDS.RDF.Query.Compiler
 
             IQuery query = new Query();
             IMutableTabularResults data = new MutableTabularResults("x".AsEnumerable(), Enumerable.Empty<IMutableResultRow>());
-            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> { { "x", 1.ToLiteral(this.NodeFactory) } }));
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
             query.WhereClause = new DataElement(data);
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Table), algebra);
+            Assert.IsInstanceOf(typeof (Table), algebra);
 
-            Table table = (Table)algebra;
+            Table table = (Table) algebra;
             Assert.IsFalse(table.IsEmpty);
             Assert.IsFalse(table.IsUnit);
 
@@ -184,17 +184,17 @@ namespace VDS.RDF.Query.Compiler
             IQueryCompiler compiler = this.CreateInstance();
 
             IQuery query = new Query();
-            IMutableTabularResults data = new MutableTabularResults(new String[] { "x", "y" }, Enumerable.Empty<IMutableResultRow>());
-            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> { { "x", 1.ToLiteral(this.NodeFactory) } }));
-            data.Add(new MutableResultRow("y".AsEnumerable(), new Dictionary<string, INode> { { "y", 2.ToLiteral(this.NodeFactory) } }));
-            data.Add(new MutableResultRow(data.Variables, new Dictionary<string, INode> { { "x", 3.ToLiteral(this.NodeFactory) }, { "y", 4.ToLiteral(this.NodeFactory) } }));
+            IMutableTabularResults data = new MutableTabularResults(new String[] {"x", "y"}, Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
+            data.Add(new MutableResultRow("y".AsEnumerable(), new Dictionary<string, INode> {{"y", 2.ToLiteral(this.NodeFactory)}}));
+            data.Add(new MutableResultRow(data.Variables, new Dictionary<string, INode> {{"x", 3.ToLiteral(this.NodeFactory)}, {"y", 4.ToLiteral(this.NodeFactory)}}));
             query.WhereClause = new DataElement(data);
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Table), algebra);
+            Assert.IsInstanceOf(typeof (Table), algebra);
 
-            Table table = (Table)algebra;
+            Table table = (Table) algebra;
             Assert.IsFalse(table.IsEmpty);
             Assert.IsFalse(table.IsUnit);
 
@@ -263,10 +263,145 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Table), algebra);
+            Assert.IsInstanceOf(typeof (Table), algebra);
 
-            Table table = (Table)algebra;
+            Table table = (Table) algebra;
             Assert.IsTrue(table.IsEmpty);
+        }
+
+        [TestCase(0),
+         TestCase(100),
+         TestCase(Int64.MaxValue),
+         TestCase(-1),
+         TestCase(Int64.MinValue)]
+        public void QueryCompilerLimit(long limit)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.Limit = limit;
+            Assert.IsTrue(limit >= 0L ? query.HasLimit : !query.HasLimit);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            if (limit >= 0L)
+            {
+                Assert.IsInstanceOf(typeof (Slice), algebra);
+
+                Slice slice = (Slice) algebra;
+                Assert.AreEqual(limit, slice.Limit);
+                Assert.AreEqual(0L, slice.Offset);
+            }
+            else
+            {
+                Assert.IsInstanceOf(typeof (Table), algebra);
+
+                Table table = (Table) algebra;
+                Assert.IsTrue(table.IsUnit);
+            }
+        }
+
+        [TestCase(0),
+         TestCase(100),
+         TestCase(Int64.MaxValue),
+         TestCase(-1),
+         TestCase(Int64.MinValue)]
+        public void QueryCompilerOffset(long offset)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.Offset = offset;
+            Assert.IsTrue(offset > 0L ? query.HasOffset : !query.HasOffset);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            if (offset > 0L)
+            {
+                Assert.IsInstanceOf(typeof (Slice), algebra);
+
+                Slice slice = (Slice) algebra;
+                Assert.AreEqual(offset, slice.Offset);
+                Assert.AreEqual(-1L, slice.Limit);
+            }
+            else
+            {
+                Assert.IsInstanceOf(typeof (Table), algebra);
+
+                Table table = (Table) algebra;
+                Assert.IsTrue(table.IsUnit);
+            }
+        }
+
+        [TestCase(0, 0),
+         TestCase(100, 0),
+         TestCase(100, 5000),
+         TestCase(Int64.MaxValue, 0),
+         TestCase(0, Int64.MaxValue),
+         TestCase(-1, -1),
+         TestCase(-1, 100),
+         TestCase(Int64.MinValue, 0),
+         TestCase(0, Int64.MinValue)]
+        public void QueryCompilerLimitOffset(long limit, long offset)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.Limit = limit;
+            query.Offset = offset;
+            Assert.IsTrue(limit >= 0L ? query.HasLimit : !query.HasLimit);
+            Assert.IsTrue(offset > 0L ? query.HasOffset : !query.HasOffset);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            if (limit >= 0L || offset > 0L)
+            {
+                Assert.IsInstanceOf(typeof (Slice), algebra);
+
+                Slice slice = (Slice) algebra;
+                Assert.AreEqual(limit >= 0L ? limit : -1L, slice.Limit);
+                Assert.AreEqual(offset > 0L ? offset : 0L, slice.Offset);
+            }
+            else
+            {
+                Assert.IsInstanceOf(typeof (Table), algebra);
+
+                Table table = (Table) algebra;
+                Assert.IsTrue(table.IsUnit);
+            }
+        }
+
+        [TestCase(QueryType.SelectAllDistinct),
+         TestCase(QueryType.SelectDistinct)]
+        public void QueryCompilerDistinct(QueryType type)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.QueryType = type;
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof (Distinct), algebra);
+        }
+
+        [TestCase(QueryType.SelectAllReduced),
+         TestCase(QueryType.SelectReduced)]
+        public void QueryCompilerReduced(QueryType type)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.QueryType = type;
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof (Reduced), algebra);
         }
     }
 

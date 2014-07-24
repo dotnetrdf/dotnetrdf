@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 
@@ -27,6 +28,15 @@ namespace VDS.RDF.Query.Algebra
             if (!(other is Reduced)) return false;
 
             return this.InnerAlgebra.Equals(((Reduced) other).InnerAlgebra);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("(reduced");
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }
