@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -39,6 +41,20 @@ namespace VDS.RDF.Query.Algebra
         public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this, context);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(service ");
+            if (this.IsSilent) builder.Append("silent ");
+            IUriFormatter formatter = new AlgebraNodeFormatter();
+            builder.Append('<');
+            builder.Append(formatter.FormatUri(this.EndpointUri));
+            builder.AppendLine(">");
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }

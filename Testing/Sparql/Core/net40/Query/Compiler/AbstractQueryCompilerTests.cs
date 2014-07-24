@@ -403,6 +403,26 @@ namespace VDS.RDF.Query.Compiler
 
             Assert.IsInstanceOf(typeof (Reduced), algebra);
         }
+
+        [TestCase("http://example.org", false),
+         TestCase("http://example.org", true),
+         TestCase("http://foo.bar/faz", false)]
+        public void QueryCompilerService(String endpoint, bool silent)
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Uri endpointUri = new Uri(endpoint);
+            query.WhereClause = new ServiceElement(new TripleBlockElement(), endpointUri, silent);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Service), algebra);
+
+            Service service = (Service) algebra;
+            Assert.AreEqual(silent, service.IsSilent);
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(endpointUri, service.EndpointUri));
+        }
     }
 
     /// <summary>
