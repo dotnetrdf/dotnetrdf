@@ -16,7 +16,7 @@ namespace VDS.RDF.Collections
 
         public override IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new AddIfEmptyEnumerator<T>(this.InnerEnumerable.GetEnumerator(), this.AdditionalItem);
         }
     }
 

@@ -243,10 +243,10 @@ namespace VDS.RDF
 
         public static void TestInMtaThread(ThreadStart info)
         {
-                Thread t = new Thread(info);
-                t.SetApartmentState(ApartmentState.MTA);
-                t.Start();
-                t.Join();
+            Thread t = new Thread(info);
+            t.SetApartmentState(ApartmentState.MTA);
+            t.Start();
+            t.Join();
         }
 
         public static void PrintEnumerable<T>(IEnumerable<T> items, String sep)
@@ -298,6 +298,28 @@ namespace VDS.RDF
             {
                 Thread.CurrentThread.CurrentCulture = currentCulture;
             }
+        }
+
+        public static void PrintOrderingComparisonEnumerable<T>(IEnumerable<T> enumerable)
+            where T : class
+        {
+            Console.WriteLine("Ascending Order:");
+            PrintEnumerable(enumerable.OrderBy(i => i), ",");
+            Console.WriteLine();
+            Console.WriteLine("Descending Order:");
+            PrintEnumerable(enumerable.OrderByDescending(i => i), ",");
+            Console.WriteLine();
+        }
+
+        public static void PrintOrderingComparisonEnumerableStruct<T>(IEnumerable<T> enumerable)
+            where T : struct
+        {
+            Console.WriteLine("Ascending Order:");
+            PrintEnumerableStruct(enumerable.OrderBy(i => i), ",");
+            Console.WriteLine();
+            Console.WriteLine("Descending Order:");
+            PrintEnumerableStruct(enumerable.OrderByDescending(i => i), ",");
+            Console.WriteLine();
         }
     }
 }

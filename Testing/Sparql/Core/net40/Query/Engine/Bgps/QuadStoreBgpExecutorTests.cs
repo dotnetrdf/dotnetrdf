@@ -8,7 +8,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Engine.Bgps
 {
     [TestFixture]
-    public class QuadStoreBgpExecutorTests
+    public abstract class AbstractBgpExecutorTests
     {
         private static IGraph CreateGraph()
         {
@@ -30,19 +30,13 @@ namespace VDS.RDF.Query.Engine.Bgps
             return g;
         }
 
-        private static IQuadStore CreateQuadStore(IGraph g)
-        {
-            GraphStore gs = new GraphStore();
-            gs.Add(g);
-            return gs;
-        }
+        protected abstract IBgpExecutor CreateExecutor(IGraph g);
 
         [Test]
-        public void QuadStoreBgpExecutorGround1()
+        public void BgpExecutorGround1()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateUriNode(":object"));
 
@@ -53,11 +47,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorGround2()
+        public void BgpExecutorGround2()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateUriNode(":nosuchthing2"));
 
@@ -67,11 +60,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorMatch1()
+        public void BgpExecutorMatch1()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateUriNode(":subject"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
@@ -83,11 +75,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorMatch2()
+        public void BgpExecutorMatch2()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
 
@@ -99,11 +90,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorMatch3()
+        public void BgpExecutorMatch3()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateBlankNode());
 
@@ -115,11 +105,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorChainedMatch1()
+        public void BgpExecutorChainedMatch1()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
             Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o2"));
@@ -137,11 +126,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorChainedMatch2()
+        public void BgpExecutorChainedMatch2()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             INode b = g.CreateBlankNode();
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), b);
@@ -160,11 +148,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorChainedMatch3()
+        public void BgpExecutorChainedMatch3()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateVariableNode("s"), g.CreateUriNode(":predicate"), g.CreateVariableNode("o"));
             Triple search2 = new Triple(g.CreateVariableNode("o"), g.CreateUriNode(":predicate"), g.CreateLiteralNode("nosuchthing"));
@@ -180,11 +167,10 @@ namespace VDS.RDF.Query.Engine.Bgps
         }
 
         [Test]
-        public void QuadStoreBgpExecutorDistinctMatch1()
+        public void BgpExecutorDistinctMatch1()
         {
             IGraph g = CreateGraph();
-            IQuadStore qs = CreateQuadStore(g);
-            IBgpExecutor executor = new QuadStoreBgpExecutor(qs);
+            IBgpExecutor executor = this.CreateExecutor(g);
 
             Triple search = new Triple(g.CreateVariableNode("a"), g.CreateVariableNode("b"), g.CreateVariableNode("c"));
             Triple search2 = new Triple(g.CreateVariableNode("d"), g.CreateVariableNode("e"), g.CreateVariableNode("f"));
@@ -199,6 +185,33 @@ namespace VDS.RDF.Query.Engine.Bgps
             Assert.AreEqual(25, results.Count);
             Assert.IsTrue(results.All(s => s.Variables.Count() == 6));
             Assert.IsTrue(results.All(s => s.ContainsVariable("a") && s.ContainsVariable("b") && s.ContainsVariable("c") && s.ContainsVariable("d") && s.ContainsVariable("e") && s.ContainsVariable("f")));
+        }
+    }
+
+    [TestFixture]
+    public class QuadStoreBgpExecutorTests 
+        : AbstractBgpExecutorTests
+    {
+        private static IQuadStore CreateQuadStore(IGraph g)
+        {
+            GraphStore gs = new GraphStore();
+            gs.Add(g);
+            return gs;
+        }
+
+        protected override IBgpExecutor CreateExecutor(IGraph g)
+        {
+            return new QuadStoreBgpExecutor(CreateQuadStore(g));
+        }
+    }
+
+    [TestFixture]
+    public class GraphBgpExecutorTests
+        : AbstractBgpExecutorTests
+    {
+        protected override IBgpExecutor CreateExecutor(IGraph g)
+        {
+            return new GraphBgpExecutor(g);
         }
     }
 }

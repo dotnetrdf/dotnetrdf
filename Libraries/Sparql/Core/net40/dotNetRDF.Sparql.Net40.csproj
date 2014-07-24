@@ -45,6 +45,7 @@
     <Compile Include="Collections\AddIfEmptyEnumerable.cs" />
     <Compile Include="Collections\OmitAllEnumerable.cs" />
     <Compile Include="Collections\ReducedEnumerable.cs" />
+    <Compile Include="Collections\ReversedComparer.cs" />
     <Compile Include="Collections\TopNEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerator.cs" />
@@ -130,7 +131,7 @@
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
     <Compile Include="Query\Expressions\ExpressionType.cs" />
-    <Compile Include="Query\Processors\BaseAlgebraQueryProcessor.cs" />
+    <Compile Include="Query\Processors\AlgebraQueryProcessor.cs" />
     <Compile Include="Query\Processors\IQueryProcessor.cs" />
     <Compile Include="Query\Paths\TriplePath.cs" />
     <Compile Include="Query\Elements\UnionElement.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Query\Paths\PartialPath.cs" />
     <Compile Include="Query\Paths\Property.cs" />
     <Compile Include="Query\Paths\SequencePath.cs" />
+    <Compile Include="Query\Processors\MedusaQueryProcessor.cs" />
     <Compile Include="Query\Query.cs" />
     <Compile Include="Query\QueryCallbacks.cs" />
     <Compile Include="Query\Results\AlgebraExecutionResultStream.cs" />

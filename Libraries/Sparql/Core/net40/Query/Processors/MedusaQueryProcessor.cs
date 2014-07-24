@@ -14,7 +14,7 @@ namespace VDS.RDF.Query.Processors
         public MedusaQueryProcessor(IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
             : this(new DefaultQueryCompiler(), bgpExecutor, joinStrategySelector) { }
 
-        public MedusaQueryProcessor(DefaultQueryCompiler defaultQueryCompiler, IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
+        public MedusaQueryProcessor(IQueryCompiler defaultQueryCompiler, IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
             : base(defaultQueryCompiler, new MedusaAlgebraExecutor(bgpExecutor, joinStrategySelector)) { }
     }
 }

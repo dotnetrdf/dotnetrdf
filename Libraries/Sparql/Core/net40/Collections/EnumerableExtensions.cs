@@ -44,5 +44,10 @@ namespace VDS.RDF.Collections
         {
             return new TopNEnumerable<T>(enumerable, comparer, n);
         }
+
+        public static IEnumerable<T> Top<T>(this IEnumerable<T> enumerable, long n)
+        {
+            return Top(enumerable, Comparer<T>.Default, n);
+        }
     }
 }
