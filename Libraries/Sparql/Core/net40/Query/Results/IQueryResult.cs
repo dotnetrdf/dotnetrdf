@@ -2,7 +2,10 @@
 
 namespace VDS.RDF.Query.Results
 {
-    public interface IQueryResults
+    /// <summary>
+    /// Represents the result of a SPARQL Query
+    /// </summary>
+    public interface IQueryResult
     {
         /// <summary>
         /// Gets whether this result represents a tabular result

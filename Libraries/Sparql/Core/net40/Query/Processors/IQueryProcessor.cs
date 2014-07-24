@@ -23,26 +23,37 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System.IO;
+using System;
 using VDS.RDF.Query.Results;
 
-namespace VDS.RDF
+namespace VDS.RDF.Query.Processors
 {
     /// <summary>
-    /// Interface for Writer classes which serialize Sparql Result Sets into concrete results set syntaxes
+    /// Interface for SPARQL Query Processors
     /// </summary>
-    public interface ISparqlResultsWriter
+    /// <remarks>
+    /// <para>
+    /// A SPARQL Query Processor is a class that knows how to evaluate SPARQL queries against some data source to which the processor has access
+    /// </para>
+    /// <para>
+    /// The point of this interface is to allow for end users to implement custom query processors or to extend and modify the behaviour of the default Leviathan engine as required.
+    /// </para>
+    /// </remarks>
+    public interface IQueryProcessor
     {
         /// <summary>
-        /// Saves the Result Set to the given Stream
+        /// Executes the given query
         /// </summary>
-        /// <param name="result">Query Results to save</param>
-        /// <param name="output">Stream to save to</param>
-        void Save(IQueryResult result, TextWriter output);
+        /// <param name="query">Query</param>
+        /// <returns>Query Result</returns>
+        IQueryResult Execute(IQuery query);
 
         /// <summary>
-        /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
+        /// Executes the given query asynchronously
         /// </summary>
-        event SparqlWarning Warning;
+        /// <param name="query">Query</param>
+        /// <param name="callback">Callback for when the query completes</param>
+        /// <param name="state">State to be passed to the callback</param>
+        void Execute(IQuery query, QueryCallback callback, Object state);
     }
 }

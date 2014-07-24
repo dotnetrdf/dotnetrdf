@@ -44,7 +44,7 @@ namespace VDS.RDF
     public delegate void GraphCallback(IGraph g, Object state);
 
     /// <summary>
-    /// Callback for methods that return a <see cref="IGraphStore"> asynchronously
+    /// Callback for methods that return a <see cref="IGraphStore" /> asynchronously
     /// </summary>
     /// <param name="graphStore">Graph store</param>
     /// <param name="state">State</param>

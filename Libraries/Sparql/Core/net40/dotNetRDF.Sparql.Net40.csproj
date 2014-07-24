@@ -130,6 +130,8 @@
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
     <Compile Include="Query\Expressions\ExpressionType.cs" />
+    <Compile Include="Query\Processors\BaseAlgebraQueryProcessor.cs" />
+    <Compile Include="Query\Processors\IQueryProcessor.cs" />
     <Compile Include="Query\Paths\TriplePath.cs" />
     <Compile Include="Query\Elements\UnionElement.cs" />
     <Compile Include="Query\Engine\ISolution.cs" />
@@ -144,6 +146,8 @@
     <Compile Include="Query\Paths\Property.cs" />
     <Compile Include="Query\Paths\SequencePath.cs" />
     <Compile Include="Query\Query.cs" />
+    <Compile Include="Query\QueryCallbacks.cs" />
+    <Compile Include="Query\Results\AlgebraExecutionResultStream.cs" />
     <Compile Include="Query\Results\IMutableResultRow.cs" />
     <Compile Include="Query\Results\IMutableTabularResults.cs" />
     <Compile Include="Query\Results\IRandomAccessTabularResults.cs" />
@@ -153,13 +157,13 @@
     <Compile Include="Query\Engine\SetDistinctnessComparer.cs" />
     <Compile Include="Query\IQuery.cs" />
     <Compile Include="Query\IQueryType.cs" />
-    <Compile Include="Query\Results\IQueryResults.cs" />
+    <Compile Include="Query\Results\IQueryResult.cs" />
     <Compile Include="Query\Results\IResultRow.cs" />
     <Compile Include="Query\Results\IResultStream.cs" />
     <Compile Include="Query\Results\ITabularResults.cs" />
     <Compile Include="Query\Results\MutableResultRow.cs" />
     <Compile Include="Query\Results\MutableTabularResults.cs" />
-    <Compile Include="Query\Results\QueryResults.cs" />
+    <Compile Include="Query\Results\QueryResult.cs" />
     <Compile Include="Query\Results\RandomAccessTabularResults.cs" />
     <Compile Include="Query\Results\ResultRow.cs" />
     <Compile Include="Query\Results\StreamingTabularResults.cs" />

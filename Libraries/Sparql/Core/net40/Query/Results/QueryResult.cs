@@ -5,10 +5,10 @@ namespace VDS.RDF.Query.Results
     /// <summary>
     /// Basic implementation of query results
     /// </summary>
-    public class QueryResults
-        : IQueryResults
+    public class QueryResult
+        : IQueryResult
     {
-        public QueryResults(bool result)
+        public QueryResult(bool result)
         {
             this.IsBoolean = true;
             this.IsGraph = false;
@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Results
             this.Boolean = result;
         }
 
-        public QueryResults(ITabularResults results)
+        public QueryResult(ITabularResults results)
         {
             this.IsBoolean = false;
             this.IsGraph = false;
@@ -24,7 +24,7 @@ namespace VDS.RDF.Query.Results
             this.Table = results;
         }
 
-        public QueryResults(IGraph g)
+        public QueryResult(IGraph g)
         {
             this.IsBoolean = false;
             this.IsGraph = true;

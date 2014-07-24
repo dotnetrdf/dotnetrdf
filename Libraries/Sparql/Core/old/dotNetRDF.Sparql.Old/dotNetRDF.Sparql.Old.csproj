@@ -333,7 +333,6 @@
     <Compile Include="Query\Filters\SparqlFilterClasses.cs" />
     <Compile Include="Query\Grouping\ISparqlGroupBy.cs" />
     <Compile Include="Query\Grouping\SparqlGroupByClasses.cs" />
-    <Compile Include="Query\ISparqlQueryProcessor.cs" />
     <Compile Include="Query\LeviathanQueryProcessor.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
