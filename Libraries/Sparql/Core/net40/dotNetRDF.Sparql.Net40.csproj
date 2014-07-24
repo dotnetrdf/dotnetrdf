@@ -71,6 +71,7 @@
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Algebra\TopN.cs" />
     <Compile Include="Query\Algebra\Union.cs" />
+    <Compile Include="Query\Compiler\CompilingElementVisitor.cs" />
     <Compile Include="Query\Compiler\DefaultQueryCompiler.cs" />
     <Compile Include="Query\Elements\BindElement.cs" />
     <Compile Include="Query\Elements\DataElement.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
+    <Compile Include="Writing\Formatting\AlgebraNodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">
@@ -195,9 +197,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Writing\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Specifications\SparqlSyntax.cs" />

@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
             if (this.IsEmpty) return "(table empty)";
             
             StringBuilder builder = new StringBuilder();
-            INodeFormatter formatter = new Notation3Formatter();
+            INodeFormatter formatter = new AlgebraNodeFormatter();
             builder.Append("(table (vars ");
             foreach (String var in this.ProjectedVariables)
             {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     INode n = solution[var];
                     if (n == null) continue;
-                    builder.Append(" [ ");
+                    builder.Append(" [");
                     builder.Append(formatter.Format(new VariableNode(var)));
                     builder.Append(' ');
                     builder.Append(formatter.Format(n));

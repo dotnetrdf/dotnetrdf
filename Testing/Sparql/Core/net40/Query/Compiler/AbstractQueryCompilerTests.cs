@@ -7,17 +7,41 @@ using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
 {
     [TestFixture]
     public abstract class AbstractQueryCompilerTests
     {
+        protected INodeFactory NodeFactory { get; set; }
+
+        [SetUp]
+        public void Setup()
+        {
+            if (this.NodeFactory == null) this.NodeFactory = new NodeFactory();
+        }
+
         /// <summary>
         /// Creates a new query compiler instance to use for testing
         /// </summary>
         /// <returns></returns>
         protected abstract IQueryCompiler CreateInstance();
+
+        [Test]
+        public void QueryCompilerEmptyWhere()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Table), algebra);
+
+            Table table = (Table) algebra;
+            Assert.IsTrue(table.IsUnit);
+        }
 
         [Test]
         public void QueryCompilerEmptyBgp()
@@ -29,7 +53,7 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Table), algebra);
+            Assert.IsInstanceOf(typeof (Table), algebra);
 
             Table table = (Table) algebra;
             Assert.IsTrue(table.IsUnit);
@@ -46,7 +70,7 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Bgp), algebra);
+            Assert.IsInstanceOf(typeof (Bgp), algebra);
 
             Bgp bgp = (Bgp) algebra;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
@@ -67,11 +91,11 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Union), algebra);
+            Assert.IsInstanceOf(typeof (Union), algebra);
 
             Union u = (Union) algebra;
-            Assert.IsInstanceOf(typeof(Bgp), u.Lhs);
-            Assert.IsInstanceOf(typeof(Bgp), u.Rhs);
+            Assert.IsInstanceOf(typeof (Bgp), u.Lhs);
+            Assert.IsInstanceOf(typeof (Bgp), u.Rhs);
         }
 
         [Test]
@@ -93,18 +117,18 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Union), algebra);
+            Assert.IsInstanceOf(typeof (Union), algebra);
 
-            Union u = (Union)algebra;
-            Assert.IsInstanceOf(typeof(Bgp), u.Lhs);
+            Union u = (Union) algebra;
+            Assert.IsInstanceOf(typeof (Bgp), u.Lhs);
 
             Bgp bgp = (Bgp) u.Lhs;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
             Assert.IsTrue(bgp.TriplePatterns.Contains(t1));
 
-            Assert.IsInstanceOf(typeof(Union), u.Rhs);
+            Assert.IsInstanceOf(typeof (Union), u.Rhs);
             u = (Union) u.Rhs;
-            Assert.IsInstanceOf(typeof(Bgp), u.Lhs);
+            Assert.IsInstanceOf(typeof (Bgp), u.Lhs);
 
             bgp = (Bgp) u.Lhs;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
@@ -113,6 +137,136 @@ namespace VDS.RDF.Query.Compiler
             bgp = (Bgp) u.Rhs;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
             Assert.IsTrue(bgp.TriplePatterns.Contains(t3));
+        }
+
+        [Test]
+        public void QueryCompilerInlineEmptyValues()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults(Enumerable.Empty<String>(), Enumerable.Empty<IMutableResultRow>());
+            query.WhereClause = new DataElement(data);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Table), algebra);
+
+            Table table = (Table)algebra;
+            Assert.IsTrue(table.IsEmpty);
+        }
+
+        [Test]
+        public void QueryCompilerInlineValues1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults("x".AsEnumerable(), Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> { { "x", 1.ToLiteral(this.NodeFactory) } }));
+            query.WhereClause = new DataElement(data);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Table), algebra);
+
+            Table table = (Table)algebra;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(1, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
+        }
+
+        [Test]
+        public void QueryCompilerInlineValues2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults(new String[] { "x", "y" }, Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> { { "x", 1.ToLiteral(this.NodeFactory) } }));
+            data.Add(new MutableResultRow("y".AsEnumerable(), new Dictionary<string, INode> { { "y", 2.ToLiteral(this.NodeFactory) } }));
+            data.Add(new MutableResultRow(data.Variables, new Dictionary<string, INode> { { "x", 3.ToLiteral(this.NodeFactory) }, { "y", 4.ToLiteral(this.NodeFactory) } }));
+            query.WhereClause = new DataElement(data);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Table), algebra);
+
+            Table table = (Table)algebra;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(3, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x") || s.ContainsVariable("y")));
+            Assert.IsFalse(table.Data.All(s => s.ContainsVariable("x") && s.ContainsVariable("y")));
+            Assert.IsTrue(table.Data.Any(s => s.ContainsVariable("x") && s.ContainsVariable("y")));
+        }
+
+        [Test]
+        public void QueryCompilerValues1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults("x".AsEnumerable(), Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
+            query.ValuesClause = data;
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Table), algebra);
+
+            Table table = (Table) algebra;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(1, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
+        }
+
+        [Test]
+        public void QueryCompilerValues2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults(new String[] {"x", "y"}, Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
+            data.Add(new MutableResultRow("y".AsEnumerable(), new Dictionary<string, INode> {{"y", 2.ToLiteral(this.NodeFactory)}}));
+            data.Add(new MutableResultRow(data.Variables, new Dictionary<string, INode> {{"x", 3.ToLiteral(this.NodeFactory)}, {"y", 4.ToLiteral(this.NodeFactory)}}));
+            query.ValuesClause = data;
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Table), algebra);
+
+            Table table = (Table) algebra;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(3, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x") || s.ContainsVariable("y")));
+            Assert.IsFalse(table.Data.All(s => s.ContainsVariable("x") && s.ContainsVariable("y")));
+            Assert.IsTrue(table.Data.Any(s => s.ContainsVariable("x") && s.ContainsVariable("y")));
+        }
+
+        [Test]
+        public void QueryCompilerEmptyValues()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IMutableTabularResults data = new MutableTabularResults(Enumerable.Empty<String>(), Enumerable.Empty<IMutableResultRow>());
+            query.ValuesClause = data;
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Table), algebra);
+
+            Table table = (Table)algebra;
+            Assert.IsTrue(table.IsEmpty);
         }
     }
 

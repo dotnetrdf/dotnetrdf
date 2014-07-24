@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
 
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("(bgp");
-            INodeFormatter formatter = new Notation3Formatter();
+            INodeFormatter formatter = new AlgebraNodeFormatter();
             foreach (Triple t in this.TriplePatterns)
             {
                 builder.Append("  (triple ");
