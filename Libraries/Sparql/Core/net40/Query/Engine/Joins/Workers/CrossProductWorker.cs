@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace VDS.RDF.Query.Engine.Joins.Workers
 {
-    public class ProductJoinWorker
+    public class CrossProductWorker
         : ReusableJoinWorker
     {
-        public ProductJoinWorker(IEnumerable<ISolution> rhs)
+        public CrossProductWorker(IEnumerable<ISolution> rhs)
         {
             if (rhs == null) throw new ArgumentNullException("rhs");
             this.Rhs = rhs;

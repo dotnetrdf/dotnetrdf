@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
     public class ExistenceJoinStrategy
         : WrapperJoinStrategy
     {
-        public ExistenceJoinStrategy(IJoinStrategy strategy) 
+        public ExistenceJoinStrategy(IJoinStrategy strategy)
             : base(strategy) {}
 
         public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
@@ -21,10 +21,10 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
     }
 
     public class NonExistenceJoinStrategy
-    : WrapperJoinStrategy
+        : WrapperJoinStrategy
     {
         public NonExistenceJoinStrategy(IJoinStrategy strategy)
-            : base(strategy) { }
+            : base(strategy) {}
 
         public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {

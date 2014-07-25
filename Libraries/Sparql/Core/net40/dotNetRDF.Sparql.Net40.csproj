@@ -118,14 +118,14 @@
     <Compile Include="Query\Engine\Joins\Strategies\LeftJoinStrategy.cs" />
     <Compile Include="Query\Engine\Joins\Strategies\LoopJoinStrategy.cs" />
     <Compile Include="Query\Engine\Joins\Strategies\MaterializedJoinStrategy.cs" />
-    <Compile Include="Query\Engine\Joins\Strategies\ProductJoinStrategy.cs" />
+    <Compile Include="Query\Engine\Joins\Strategies\CrossProductStrategy.cs" />
     <Compile Include="Query\Engine\Joins\Strategies\WrapperJoinStrategy.cs" />
     <Compile Include="Query\Engine\Joins\Workers\ExistenceJoinWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\FloatingHashJoinWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\FixedHashJoinWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\LeftJoinWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\LoopJoinWorker.cs" />
-    <Compile Include="Query\Engine\Joins\Workers\ProductJoinWorker.cs" />
+    <Compile Include="Query\Engine\Joins\Workers\CrossProductWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />

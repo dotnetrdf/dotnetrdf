@@ -140,7 +140,14 @@ namespace VDS.RDF.Query.Engine
                 output.Append(" , ");
                 count++;
             }
-            if (count > 0) output.Remove(output.Length - 3, 3);
+            if (count > 0)
+            {
+                output.Remove(output.Length - 3, 3);
+            }
+            else
+            {
+                output.Append("<empty>");
+            }
             return output.ToString();
         }
     }

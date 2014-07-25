@@ -3,12 +3,12 @@ using VDS.RDF.Query.Engine.Joins.Workers;
 
 namespace VDS.RDF.Query.Engine.Joins.Strategies
 {
-    public class ProductJoinStrategy
+    public class CrossProductStrategy
         : BaseJoinStrategy
     {
         public override IJoinWorker PrepareWorker(IEnumerable<ISolution> rhs)
         {
-            return new ProductJoinWorker(rhs);
+            return new CrossProductWorker(rhs);
         }
     }
 }

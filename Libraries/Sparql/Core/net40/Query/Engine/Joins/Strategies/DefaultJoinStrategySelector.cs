@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Engine.Joins.Strategies
 
         protected virtual IJoinStrategy CreateProduct()
         {
-            return new MaterializedJoinStrategy(new ProductJoinStrategy());
+            return new MaterializedJoinStrategy(new CrossProductStrategy());
         }
     }
 }

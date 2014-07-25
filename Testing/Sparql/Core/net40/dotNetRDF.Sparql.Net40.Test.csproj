@@ -48,6 +48,10 @@
     <Compile Include="Collections\EnumerableTests.cs" />
     <Compile Include="Query\Compiler\AbstractQueryCompilerTests.cs" />
     <Compile Include="Query\Engine\Bgps\QuadStoreBgpExecutorTests.cs" />
+    <Compile Include="Query\Engine\Joins\AbstractJoinTests.cs" />
+    <Compile Include="Query\Engine\Joins\CrossProductTests.cs" />
+    <Compile Include="Query\Engine\Joins\HashJoinTests.cs" />
+    <Compile Include="Query\Engine\Joins\LoopJoinTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Libraries\core\net40\dotNetRDF.Net40.csproj">
