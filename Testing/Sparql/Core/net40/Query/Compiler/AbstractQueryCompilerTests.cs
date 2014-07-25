@@ -8,6 +8,8 @@ using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
@@ -426,6 +428,69 @@ namespace VDS.RDF.Query.Compiler
         }
 
         [Test]
+        public void QueryCompilerBind1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IExpression expr = new ConstantTerm(true.ToLiteral(this.NodeFactory));
+            query.WhereClause = new BindElement(new KeyValuePair<String, IExpression>("x", expr).AsEnumerable());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Extend), algebra);
+
+            Extend extend = (Extend) algebra;
+            Assert.AreEqual(1, extend.Assignments.Count);
+            Assert.AreEqual("x", extend.Assignments[0].Key);
+            Assert.AreEqual(expr, extend.Assignments[0].Value);
+        }
+
+        [Test]
+        public void QueryCompilerBind2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IExpression expr1 = new ConstantTerm(true.ToLiteral(this.NodeFactory));
+            IExpression expr2 = new ConstantTerm(false.ToLiteral(this.NodeFactory));
+            IElement[] elements =
+            {
+                new BindElement(new KeyValuePair<String, IExpression>("x", expr1).AsEnumerable()), new BindElement(new KeyValuePair<String, IExpression>("y", expr2).AsEnumerable())
+            };
+            query.WhereClause = new GroupElement(elements);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Extend), algebra);
+
+            Extend extend = (Extend) algebra;
+            Assert.AreEqual(2, extend.Assignments.Count);
+            Assert.AreEqual("x", extend.Assignments[0].Key);
+            Assert.AreEqual(expr1, extend.Assignments[0].Value);
+            Assert.AreEqual("y", extend.Assignments[1].Key);
+            Assert.AreEqual(expr2, extend.Assignments[1].Value);
+        }
+
+        [Test]
+        public void QueryCompilerFilter1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            IExpression expr = new ConstantTerm(true.ToLiteral(this.NodeFactory));
+            query.WhereClause = new FilterElement(expr.AsEnumerable());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Filter), algebra);
+
+            Filter filter = (Filter) algebra;
+            Assert.AreEqual(1, filter.Expressions.Count);
+            Assert.AreEqual(expr, filter.Expressions[0]);
+        }
+
+        [Test]
         public void QueryCompilerGroup1()
         {
             IQueryCompiler compiler = this.CreateInstance();
@@ -440,17 +505,61 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Join), algebra);
 
+            Assert.IsInstanceOf(typeof (Join), algebra);
             Join join = (Join) algebra;
 
             Assert.IsInstanceOf(typeof (Bgp), join.Lhs);
-
             Bgp bgp = (Bgp) join.Lhs;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
             Assert.IsTrue(bgp.TriplePatterns.Contains(t));
 
-            Table table = (Table)join.Rhs;
+            Assert.IsInstanceOf(typeof (Table), join.Rhs);
+            Table table = (Table) join.Rhs;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(1, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
+        }
+
+
+        [Test]
+        public void QueryCompilerGroup2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            TripleBlockElement tripleBlock = new TripleBlockElement(t.AsEnumerable());
+
+            IMutableTabularResults data = new MutableTabularResults("x".AsEnumerable(), Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
+            DataElement inlineData = new DataElement(data);
+
+            IExpression expr = new ConstantTerm(true.ToLiteral(this.NodeFactory));
+            FilterElement filter = new FilterElement(expr.AsEnumerable());
+
+            query.WhereClause = new GroupElement(new IElement[] {tripleBlock, filter, inlineData});
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof (Filter), algebra);
+            Filter f = (Filter) algebra;
+            Assert.AreEqual(1, f.Expressions.Count);
+            Assert.AreEqual(expr, f.Expressions[0]);
+
+            Assert.IsInstanceOf(typeof (Join), f.InnerAlgebra);
+            Join join = (Join) f.InnerAlgebra;
+
+            Assert.IsInstanceOf(typeof (Bgp), join.Lhs);
+            Bgp bgp = (Bgp) join.Lhs;
+            Assert.AreEqual(1, bgp.TriplePatterns.Count);
+            Assert.IsTrue(bgp.TriplePatterns.Contains(t));
+
+            Assert.IsInstanceOf(typeof (Table), join.Rhs);
+            Table table = (Table) join.Rhs;
             Assert.IsFalse(table.IsEmpty);
             Assert.IsFalse(table.IsUnit);
 

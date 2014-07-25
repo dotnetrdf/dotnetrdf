@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="leftExpr">Left Expression</param>
         /// <param name="rightExpr">Right Expression</param>
-        public BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
+        protected BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
         {
             this.FirstArgument = leftExpr;
             this.SecondArgument = rightExpr;
@@ -111,6 +111,11 @@ namespace VDS.RDF.Query.Expressions
         public bool IsConstant
         {
             get { return false; }
+        }
+
+        public void Accept(IExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
         }
     }
 }

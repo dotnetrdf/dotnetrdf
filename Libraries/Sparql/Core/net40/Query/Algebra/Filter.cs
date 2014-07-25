@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 using VDS.RDF.Query.Expressions;
@@ -56,6 +57,24 @@ namespace VDS.RDF.Query.Algebra
                 if (!this.Expressions[i].Equals(f.Expressions[i])) return false;
             }
             return true;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(filter (exprlist ");
+            for (int i = 0; i < this.Expressions.Count; i++)
+            {
+                // TODO Use a helper to print expressions in prefix style a la ARQ SSE
+                builder.Append("(");
+                builder.Append(this.Expressions[i].ToString());
+                builder.Append(")");
+                if (i < this.Expressions.Count - 1) builder.Append(' ');
+            }
+            builder.AppendLine(")");
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }

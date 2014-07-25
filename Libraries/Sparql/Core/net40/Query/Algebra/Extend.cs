@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -55,6 +58,23 @@ namespace VDS.RDF.Query.Algebra
                 if (!this.Assignments[i].Equals(e.Assignments[i])) return false;
             }
             return this.InnerAlgebra.Equals(e.InnerAlgebra);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(extend ");
+            INodeFormatter formatter = new AlgebraNodeFormatter();
+            for (int i = 0; i < this.Assignments.Count; i++)
+            {
+                builder.Append('(');
+                builder.Append(formatter.Format(new VariableNode(this.Assignments[i].Key)));
+                builder.Append(' ');
+                builder.Append(this.Assignments[i].Value.ToString());
+                builder.Append(')');
+                if (i < this.Assignments.Count - 1) builder.Append(' ');
+            }
+            return builder.ToString();
         }
     }
 }

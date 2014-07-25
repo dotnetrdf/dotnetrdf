@@ -126,6 +126,11 @@ namespace VDS.RDF.Query.Expressions.Primary
             get { return false; }
         }
 
+        public void Accept(IExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public IExpression Copy()
         {
             return new VariableTerm(this.VariableName);

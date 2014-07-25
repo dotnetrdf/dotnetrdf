@@ -76,5 +76,10 @@ namespace VDS.RDF.Query.Expressions
         public virtual bool IsDeterministic { get { return this.Argument.IsDeterministic; } }
 
         public bool IsConstant { get { return false; } }
+
+        public void Accept(IExpressionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

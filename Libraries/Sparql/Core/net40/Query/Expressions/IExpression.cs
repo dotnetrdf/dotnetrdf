@@ -78,6 +78,12 @@ namespace VDS.RDF.Query.Expressions
         /// Gets whether the expression represents a constant
         /// </summary>
         bool IsConstant { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="visitor"></param>
+        void Accept(IExpressionVisitor visitor);
     }
 
     public interface INullaryExpression

@@ -132,6 +132,7 @@
     <Compile Include="Query\Expressions\BaseUnaryExpression.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
+    <Compile Include="Query\Expressions\Interface1.cs" />
     <Compile Include="Query\Expressions\Primary\ConstantTerm.cs" />
     <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
     <Compile Include="Query\Processors\AlgebraQueryProcessor.cs" />
