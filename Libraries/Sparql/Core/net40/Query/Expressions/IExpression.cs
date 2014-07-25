@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions
@@ -53,25 +54,9 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the SPARQL Expression Type
-        /// </summary>
-        ExpressionType Type
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions
         /// </summary>
         String Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of this Expression
-        /// </summary>
-        IEnumerable<IExpression> Arguments
         {
             get;
         }
@@ -88,5 +73,68 @@ namespace VDS.RDF.Query.Expressions
         /// Gets whether an expression is deterministic i.e. guarantees to produce the a specific output when given a specific input
         /// </summary>
         bool IsDeterministic { get; }
+
+        /// <summary>
+        /// Gets whether the expression represents a constant
+        /// </summary>
+        bool IsConstant { get; }
+    }
+
+    public interface INullaryExpression
+        : IExpression
+    {
+        IExpression Copy();
+    }
+
+    public interface IUnaryExpression
+        : IExpression
+    {
+        IExpression Argument { get; }
+
+        IExpression Copy(IExpression argument);
+    }
+
+    public interface IBinaryExpression
+        : IExpression
+    {
+        IExpression FirstArgument { get; }
+
+        IExpression SecondArgument { get; }
+
+        IExpression Copy(IExpression arg1, IExpression arg2);
+    }
+
+    public interface ITernayExpression
+        : IExpression
+    {
+        IExpression FirstArgument { get; }
+
+        IExpression SecondArgument { get; }
+
+        IExpression ThirdArgument { get; }
+
+        IExpression Copy(IExpression arg1, IExpression arg2, IExpression arg3);
+    }
+
+    public interface INAryExpression
+        : IExpression
+    {
+        IEnumerable<IExpression> Arguments { get; }
+
+        IExpression Copy(IEnumerable<IExpression> arguments);
+    }
+
+    public interface IAlgebraExpression
+        : IExpression
+    {
+        IAlgebra Algebra { get; }
+
+        IExpression Copy(IAlgebra algebra);
+    }
+
+    public interface IAggregateExpression
+        : IExpression
+    {
+        // TODO Figure out what this marker interface needs when I start porting aggregates
     }
 }

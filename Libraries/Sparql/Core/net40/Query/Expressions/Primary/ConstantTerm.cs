@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class for representing constant terms
     /// </summary>
     public class ConstantTerm
-        : IExpression
+        : INullaryExpression
     {
         /// <summary>
         /// Creates a new Constant
@@ -57,8 +57,8 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Evaluates the expression
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
         public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
@@ -95,17 +95,6 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public ExpressionType Type
-        {
-            get
-            {
-                return ExpressionType.Primary;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public String Functor
@@ -113,17 +102,6 @@ namespace VDS.RDF.Query.Expressions.Primary
             get
             {
                 return String.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<IExpression>();
             }
         }
 
@@ -141,6 +119,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         public bool IsDeterministic
         {
             get { return true; }
+        }
+
+        public bool IsConstant
+        {
+            get { return true; }
+        }
+
+        public IExpression Copy()
+        {
+            return new ConstantTerm(this.Node);
         }
 
         /// <summary>

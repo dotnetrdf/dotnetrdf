@@ -35,13 +35,8 @@ namespace VDS.RDF.Query.Expressions
     /// Abstract base class for Binary Expressions
     /// </summary>
     public abstract class BaseBinaryExpression
-        : IExpression
+        : IBinaryExpression
     {
-        /// <summary>
-        /// The sub-expressions of this Expression
-        /// </summary>
-        protected IExpression _leftExpr, _rightExpr;
-
         /// <summary>
         /// Creates a new Base Binary Expression
         /// </summary>
@@ -49,15 +44,27 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="rightExpr">Right Expression</param>
         public BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
         {
-            this._leftExpr = leftExpr;
-            this._rightExpr = rightExpr;
+            this.FirstArgument = leftExpr;
+            this.SecondArgument = rightExpr;
         }
+
+        /// <summary>
+        /// The sub-expressions of this Expression
+        /// </summary>
+        public IExpression FirstArgument { get; set; }
+
+        /// <summary>
+        /// The sub-expressions of this Expression
+        /// </summary>
+        public IExpression SecondArgument { get; set; }
+
+        public abstract IExpression Copy(IExpression arg1, IExpression arg2);
 
         /// <summary>
         /// Evaluates the expression
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
         public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
 
@@ -76,16 +83,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._leftExpr.Variables.Concat(this._rightExpr.Variables);
+                return this.FirstArgument.Variables.Concat(this.SecondArgument.Variables);
             }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public abstract ExpressionType Type
-        {
-            get;
         }
 
         /// <summary>
@@ -97,27 +96,21 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return new IExpression[] { this._leftExpr, this._rightExpr };
-            }
-        }
-
-        /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
         public virtual bool CanParallelise
         {
             get
             {
-                return this._leftExpr.CanParallelise && this._rightExpr.CanParallelise;
+                return this.FirstArgument.CanParallelise && this.SecondArgument.CanParallelise;
             }
         }
 
-        public abstract bool IsDeterministic { get; }
+        public virtual bool IsDeterministic { get { return this.FirstArgument.IsDeterministic && this.SecondArgument.IsDeterministic; } }
+
+        public bool IsConstant
+        {
+            get { return false; }
+        }
     }
 }

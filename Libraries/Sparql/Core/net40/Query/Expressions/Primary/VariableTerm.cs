@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 
@@ -35,7 +34,7 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class representing Variable value expressions
     /// </summary>
     public class VariableTerm
-        : IExpression
+        : INullaryExpression
     {
         public string VariableName { get; private set; }
 
@@ -96,17 +95,6 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public ExpressionType Type
-        {
-            get
-            {
-                return ExpressionType.Primary;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public String Functor
@@ -114,17 +102,6 @@ namespace VDS.RDF.Query.Expressions.Primary
             get
             {
                 return String.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<IExpression>();
             }
         }
 
@@ -142,6 +119,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         public bool IsDeterministic
         {
             get { return true; }
+        }
+
+        public bool IsConstant
+        {
+            get { return false; }
+        }
+
+        public IExpression Copy()
+        {
+            return new VariableTerm(this.VariableName);
         }
     }
 }

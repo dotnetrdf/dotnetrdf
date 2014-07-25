@@ -9,25 +9,28 @@ namespace VDS.RDF.Query.Expressions
     /// Abstract base class for Unary Expressions
     /// </summary>
     public abstract class BaseUnaryExpression 
-        : IExpression
+        : IUnaryExpression
     {
-        /// <summary>
-        /// The sub-expression of this Expression
-        /// </summary>
-        protected IExpression _expr;
-
         /// <summary>
         /// Creates a new Base Unary Expression
         /// </summary>
-        /// <param name="expr">Expression</param>
-        protected BaseUnaryExpression(IExpression expr)
+        /// <param name="argument">Argument</param>
+        protected BaseUnaryExpression(IExpression argument)
         {
-            this._expr = expr;
+            this.Argument = argument;
         }
+
+        /// <summary>
+        /// The sub-expression of this Expression
+        /// </summary>
+        public IExpression Argument { get; set; }
+
+        public abstract IExpression Copy(IExpression argument);
 
         /// <summary>
         /// Evaluates the expression
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
         public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
@@ -47,16 +50,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this._expr.Variables;
+                return this.Argument.Variables;
             }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public abstract ExpressionType Type
-        {
-            get;
         }
 
         /// <summary>
@@ -68,27 +63,18 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public virtual IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return this._expr.AsEnumerable();
-            }
-        }
-
-        /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
         public virtual bool CanParallelise
         {
             get
             {
-                return this._expr.CanParallelise;
+                return this.Argument.CanParallelise;
             }
         }
 
-        public abstract bool IsDeterministic { get; }
+        public virtual bool IsDeterministic { get { return this.Argument.IsDeterministic; } }
+
+        public bool IsConstant { get { return false; } }
     }
 }
