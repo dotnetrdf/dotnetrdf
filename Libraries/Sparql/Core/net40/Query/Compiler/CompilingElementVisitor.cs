@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
@@ -12,9 +13,13 @@ namespace VDS.RDF.Query.Compiler
         : IElementVisitor
     {
         public CompilingElementVisitor()
+            : this(Table.CreateUnit()) {}
+
+        public CompilingElementVisitor(IAlgebra initiaAlgebra)
         {
+            if (initiaAlgebra == null) throw new ArgumentNullException("initiaAlgebra");
             this.Algebras = new Stack<IAlgebra>();
-            this.Algebras.Push(Table.CreateUnit());
+            this.Algebras.Push(initiaAlgebra);
         }
 
         private Stack<IAlgebra> Algebras { get; set; }
@@ -43,7 +48,23 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(GroupElement group)
         {
-            throw new NotImplementedException();
+            IList<FilterElement> filters = group.Elements.OfType<FilterElement>().ToList();
+
+            IList<IElement> elements = group.Elements.Where(e => !(e is FilterElement)).ToList();
+
+            IAlgebra algebra = Table.CreateUnit();
+            foreach (IElement e in elements)
+            {
+                CompilingElementVisitor compiler = new CompilingElementVisitor(algebra);
+                algebra = compiler.Compile(e);
+            }
+            this.Algebras.Push(Join.Create(this.Algebras.Pop(), algebra));
+
+            // Apply filters
+            foreach (FilterElement filter in filters)
+            {
+                filter.Accept(this);
+            }
         }
 
         public void Visit(MinusElement minus)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
@@ -417,11 +418,44 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Service), algebra);
+            Assert.IsInstanceOf(typeof (Service), algebra);
 
             Service service = (Service) algebra;
             Assert.AreEqual(silent, service.IsSilent);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(endpointUri, service.EndpointUri));
+        }
+
+        [Test]
+        public void QueryCompilerGroup1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            IMutableTabularResults data = new MutableTabularResults("x".AsEnumerable(), Enumerable.Empty<IMutableResultRow>());
+            data.Add(new MutableResultRow("x".AsEnumerable(), new Dictionary<string, INode> {{"x", 1.ToLiteral(this.NodeFactory)}}));
+            TripleBlockElement tripleBlock = new TripleBlockElement(t.AsEnumerable());
+            DataElement inlineData = new DataElement(data);
+            query.WhereClause = new GroupElement(new IElement[] {tripleBlock, inlineData});
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Join), algebra);
+
+            Join join = (Join) algebra;
+
+            Assert.IsInstanceOf(typeof (Bgp), join.Lhs);
+
+            Bgp bgp = (Bgp) join.Lhs;
+            Assert.AreEqual(1, bgp.TriplePatterns.Count);
+            Assert.IsTrue(bgp.TriplePatterns.Contains(t));
+
+            Table table = (Table)join.Rhs;
+            Assert.IsFalse(table.IsEmpty);
+            Assert.IsFalse(table.IsUnit);
+
+            Assert.AreEqual(1, table.Data.Count);
+            Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
         }
     }
 
