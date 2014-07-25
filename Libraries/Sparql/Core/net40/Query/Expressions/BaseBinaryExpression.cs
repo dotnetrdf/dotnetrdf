@@ -26,120 +26,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Abstract base class for Unary Expressions
-    /// </summary>
-    public abstract class BaseUnaryExpression 
-        : ISparqlExpression
-    {
-        /// <summary>
-        /// The sub-expression of this Expression
-        /// </summary>
-        protected ISparqlExpression _expr;
-
-        /// <summary>
-        /// Creates a new Base Unary Expression
-        /// </summary>
-        /// <param name="expr">Expression</param>
-        public BaseUnaryExpression(ISparqlExpression expr)
-        {
-            this._expr = expr;
-        }
-
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <param name="context">Evaluuation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets an enumeration of all the Variables used in this expression
-        /// </summary>
-        public virtual IEnumerable<String> Variables
-        {
-            get
-            {
-                return this._expr.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public abstract SparqlExpressionType Type
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression
-        /// </summary>
-        public abstract String Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public virtual IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return this._expr.AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the arguments of the expression using the given transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
-    }
-
-    /// <summary>
     /// Abstract base class for Binary Expressions
     /// </summary>
     public abstract class BaseBinaryExpression
-        : ISparqlExpression
+        : IExpression
     {
         /// <summary>
         /// The sub-expressions of this Expression
         /// </summary>
-        protected ISparqlExpression _leftExpr, _rightExpr;
+        protected IExpression _leftExpr, _rightExpr;
 
         /// <summary>
         /// Creates a new Base Binary Expression
         /// </summary>
         /// <param name="leftExpr">Left Expression</param>
         /// <param name="rightExpr">Right Expression</param>
-        public BaseBinaryExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr)
+        public BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
         {
             this._leftExpr = leftExpr;
             this._rightExpr = rightExpr;
@@ -151,7 +59,9 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
+
+        public abstract bool Equals(IExpression other);
 
         /// <summary>
         /// Gets the String representation of the Expression
@@ -173,7 +83,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Type of the Expression
         /// </summary>
-        public abstract SparqlExpressionType Type
+        public abstract ExpressionType Type
         {
             get;
         }
@@ -189,11 +99,11 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
+                return new IExpression[] { this._leftExpr, this._rightExpr };
             }
         }
 
@@ -208,11 +118,6 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        /// <summary>
-        /// Transforms the arguments of the expression using the given transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
+        public abstract bool IsDeterministic { get; }
     }
 }

@@ -28,8 +28,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using VDS.Common.References;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Specifications
 {
@@ -38,6 +40,11 @@ namespace VDS.RDF.Specifications
     /// </summary>
     public static class SparqlSpecsHelper
     {
+        static SparqlSpecsHelper()
+        {
+            // TODO May want to use a different node formatter here
+            Formatter = new AlgebraNodeFormatter();
+        }
 
         #region Keywords and Constants
 
@@ -500,6 +507,8 @@ namespace VDS.RDF.Specifications
         /// Regular Expression Pattern for Valid Doubles in Sparql
         /// </summary>
         public static Regex SparqlDouble = new Regex(TurtleSpecsHelper.ValidDoublePattern);
+
+        public static INodeFormatter Formatter { get; private set; }
 
         #endregion
 

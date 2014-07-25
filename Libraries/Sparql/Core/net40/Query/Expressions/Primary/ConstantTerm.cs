@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {
@@ -34,20 +36,15 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class for representing constant terms
     /// </summary>
     public class ConstantTerm
-        : ISparqlExpression
+        : IExpression
     {
-        /// <summary>
-        /// Node this Term represents
-        /// </summary>
-        protected IValuedNode _node;
-
         /// <summary>
         /// Creates a new Constant
         /// </summary>
         /// <param name="n">Valued Node</param>
         public ConstantTerm(IValuedNode n)
         {
-            this._node = n;
+            this.Node = n;
         }
 
         /// <summary>
@@ -63,9 +60,18 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return this._node;
+            return this.Node;
+        }
+
+        public bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is ConstantTerm)) return false;
+
+            return EqualityHelper.AreNodesEqual(this.Node, ((ConstantTerm) other).Node);
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.Formatter.Format(this._node);
+            return SparqlSpecsHelper.Formatter.Format(this.Node);
         }
 
         /// <summary>
@@ -91,11 +97,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Type of the Expression
         /// </summary>
-        public SparqlExpressionType Type
+        public ExpressionType Type
         {
             get
             {
-                return SparqlExpressionType.Primary;
+                return ExpressionType.Primary;
             }
         }
 
@@ -113,11 +119,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return Enumerable.Empty<ISparqlExpression>();
+                return Enumerable.Empty<IExpression>();
             }
         }
 
@@ -132,22 +138,14 @@ namespace VDS.RDF.Query.Expressions.Primary
             }
         }
 
-        /// <summary>
-        /// Node this Term represents
-        /// </summary>
-        internal IValuedNode Node
+        public bool IsDeterministic
         {
-            get { return _node; }
+            get { return true; }
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Node this Term represents
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
-        }
+        protected internal IValuedNode Node { get; protected set; }
     }
 }

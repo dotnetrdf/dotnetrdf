@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {
@@ -34,9 +35,9 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class representing Variable value expressions
     /// </summary>
     public class VariableTerm
-        : ISparqlExpression
+        : IExpression
     {
-        private String _name;
+        public string VariableName { get; private set; }
 
         /// <summary>
         /// Creates a new Variable Expression
@@ -44,12 +45,12 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="name">Variable Name</param>
         public VariableTerm(String name)
         {
-            this._name = name;
+            this.VariableName = name;
 
             //Strip leading ?/$ if present
-            if (this._name.StartsWith("?") || this._name.StartsWith("$"))
+            if (this.VariableName.StartsWith("?") || this.VariableName.StartsWith("$"))
             {
-                this._name = this._name.Substring(1);
+                this.VariableName = this.VariableName.Substring(1);
             }
         }
         
@@ -59,10 +60,19 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode value = context.Binder.Value(this._name, bindingID);
+            INode value = solution[this.VariableName];
             return value.AsValuedNode();
+        }
+
+        public bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is VariableTerm)) return false;
+
+            return this.VariableName.Equals(((VariableTerm) other).VariableName);
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + this._name;
+            return "?" + this.VariableName;
         }
 
         /// <summary>
@@ -81,18 +91,18 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return this._name.AsEnumerable();
+                return this.VariableName.AsEnumerable();
             }
         }
 
         /// <summary>
         /// Gets the Type of the Expression
         /// </summary>
-        public SparqlExpressionType Type
+        public ExpressionType Type
         {
             get
             {
-                return SparqlExpressionType.Primary;
+                return ExpressionType.Primary;
             }
         }
 
@@ -110,11 +120,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return Enumerable.Empty<ISparqlExpression>();
+                return Enumerable.Empty<IExpression>();
             }
         }
 
@@ -129,14 +139,9 @@ namespace VDS.RDF.Query.Expressions.Primary
             }
         }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public bool IsDeterministic
         {
-            return this;
+            get { return true; }
         }
     }
 }

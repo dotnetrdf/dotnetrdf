@@ -173,7 +173,6 @@
     <Compile Include="Query\Expressions\Arithmetic\MultiplicationExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\SubtractionExpression.cs" />
     <Compile Include="Query\Expressions\ArqFunctionFactory.cs" />
-    <Compile Include="Query\Expressions\BaseExpressionClasses.cs" />
     <Compile Include="Query\Expressions\Comparison\EqualsExpression.cs" />
     <Compile Include="Query\Expressions\Comparison\GreaterThanExpression.cs" />
     <Compile Include="Query\Expressions\Comparison\GreaterThanOrEqualToExpression.cs" />
@@ -322,10 +321,8 @@
     <Compile Include="Query\Expressions\LeviathanFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Primary\AggregateTerm.cs" />
     <Compile Include="Query\Expressions\Primary\AllModifier.cs" />
-    <Compile Include="Query\Expressions\Primary\ConstantTerm.cs" />
     <Compile Include="Query\Expressions\Primary\DistinctModifier.cs" />
     <Compile Include="Query\Expressions\Primary\GraphPatternTerm.cs" />
-    <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
     <Compile Include="Query\Expressions\SparqlBuiltInFunctionFactory.cs" />
     <Compile Include="Query\Expressions\SPARQLExpressionFactory.cs" />
     <Compile Include="Query\Expressions\XPathFunctionFactory.cs" />

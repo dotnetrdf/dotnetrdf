@@ -128,9 +128,13 @@
     <Compile Include="Query\Engine\Joins\Workers\CrossProductWorker.cs" />
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
+    <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />
+    <Compile Include="Query\Expressions\BaseUnaryExpression.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
     <Compile Include="Query\Expressions\ExpressionType.cs" />
+    <Compile Include="Query\Expressions\Primary\ConstantTerm.cs" />
+    <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
     <Compile Include="Query\Processors\AlgebraQueryProcessor.cs" />
     <Compile Include="Query\Processors\GraphQueryProcesor.cs" />
     <Compile Include="Query\Processors\IQueryProcessor.cs" />
