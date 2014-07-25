@@ -5,16 +5,16 @@ using VDS.RDF.Query.Engine.Joins.Strategies;
 
 namespace VDS.RDF.Query.Processors
 {
-    public class MedusaQueryProcessor
+    public abstract class MedusaQueryProcessor
         : AlgebraQueryProcessor
     {
-        public MedusaQueryProcessor(IBgpExecutor bgpExecutor)
+        protected MedusaQueryProcessor(IBgpExecutor bgpExecutor)
             : this(new DefaultQueryCompiler(), bgpExecutor, new DefaultJoinStrategySelector()) { }
 
-        public MedusaQueryProcessor(IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
+        protected MedusaQueryProcessor(IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
             : this(new DefaultQueryCompiler(), bgpExecutor, joinStrategySelector) { }
 
-        public MedusaQueryProcessor(IQueryCompiler defaultQueryCompiler, IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
+        protected MedusaQueryProcessor(IQueryCompiler defaultQueryCompiler, IBgpExecutor bgpExecutor, IJoinStrategySelector joinStrategySelector)
             : base(defaultQueryCompiler, new MedusaAlgebraExecutor(bgpExecutor, joinStrategySelector)) { }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Graphs;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Compiler;
 using VDS.RDF.Query.Engine;
@@ -24,10 +26,14 @@ namespace VDS.RDF.Query.Processors
 
         public IAlgebraExecutor Executor { get; private set; }
 
+        public virtual IEnumerable<INode> DatasetDefaultGraphs { get { return Quad.DefaultGraphNode.AsEnumerable(); } }
+
+        public virtual IEnumerable<INode> DatasetNamedGraphs { get { return Enumerable.Empty<INode>(); } } 
+
         public IQueryResult Execute(IQuery query)
         {
             IAlgebra algebra = this.Compile(query);
-            IExecutionContext context = new QueryExecutionContext(query);
+            var context = CreateExecutionContext(query);
             IEnumerable<ISolution> solutions = this.Execute(algebra, context);
 
             switch (query.QueryType)
@@ -59,10 +65,21 @@ namespace VDS.RDF.Query.Processors
         }
 
         /// <summary>
+        /// Creates an execution context for the query
+        /// </summary>
+        /// <param name="query">Query</param>
+        /// <returns>Execution Context</returns>
+        protected virtual IExecutionContext CreateExecutionContext(IQuery query)
+        {
+            IExecutionContext context = new QueryExecutionContext(query, this.DatasetDefaultGraphs, this.DatasetNamedGraphs);
+            return context;
+        }
+
+        /// <summary>
         /// Compiles the query into algebra
         /// </summary>
         /// <param name="query">Query</param>
-        /// <returns></returns>
+        /// <returns>Algebra</returns>
         protected virtual IAlgebra Compile(IQuery query)
         {
             return this.Compiler.Compile(query);
@@ -73,7 +90,7 @@ namespace VDS.RDF.Query.Processors
         /// </summary>
         /// <param name="algebra">Algebra</param>
         /// <param name="context">Execution Context</param>
-        /// <returns></returns>
+        /// <returns>Query solutions</returns>
         protected virtual IEnumerable<ISolution> Execute(IAlgebra algebra, IExecutionContext context)
         {
             return this.Executor.Execute(algebra, context);

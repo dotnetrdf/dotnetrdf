@@ -35,6 +35,11 @@ namespace VDS.RDF.Graphs
         IEnumerable<Quad> Quads { get; }
 
         /// <summary>
+        /// Gets the names of the Graphs in the Store
+        /// </summary>
+        IEnumerable<INode> GraphNames { get; }
+
+        /// <summary>
         /// Is the given Quad contained in the store?
         /// </summary>
         /// <param name="q">Quad</param>

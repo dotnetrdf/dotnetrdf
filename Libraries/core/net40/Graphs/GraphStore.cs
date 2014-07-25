@@ -60,7 +60,7 @@ namespace VDS.RDF.Graphs
 
         public IEnumerable<INode> GraphNames
         {
-            get { return this._graphs.Keys; }
+            get { return this._graphs.Keys.Except(Quad.DefaultGraphNode.AsEnumerable()); }
         }
 
         public IEnumerable<IGraph> Graphs

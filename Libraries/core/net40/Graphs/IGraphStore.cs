@@ -40,14 +40,6 @@ namespace VDS.RDF.Graphs
         : IQuadStore
     {
         /// <summary>
-        /// Gets the names of the Graphs in the Store
-        /// </summary>
-        IEnumerable<INode> GraphNames
-        { 
-            get;
-        }
-
-        /// <summary>
         /// Gets the Graphs in the Store
         /// </summary>
         IEnumerable<IGraph> Graphs
