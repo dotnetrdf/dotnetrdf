@@ -88,7 +88,7 @@ namespace VDS.RDF.Graphs
                     report.AreDifferentSizes = true;
                     foreach (Triple t in b.Triples)
                     {
-                        if (t.IsGroundTriple)
+                        if (t.IsGround)
                         {
                             report.AddAddedTriple(t);
                         }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Graphs
                 report.AreDifferentSizes = true;
                 foreach (Triple t in a.Triples)
                 {
-                    if (t.IsGroundTriple)
+                    if (t.IsGround)
                     {
                         report.AddRemovedTriple(t);
                     }
@@ -144,7 +144,7 @@ namespace VDS.RDF.Graphs
 
             //Next check for changes in Ground Triples
             //Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
-            foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
+            foreach (Triple t in a.Triples.Where(t => t.IsGround))
             {
                 if (!b.Triples.Contains(t))
                 {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Graphs
                 }
             }
             //Iterate over the Ground Triples in the 2nd Graph to find those that have been added in the 2nd
-            foreach (Triple t in b.Triples.Where(t => t.IsGroundTriple))
+            foreach (Triple t in b.Triples.Where(t => t.IsGround))
             {
                 if (!a.Triples.Contains(t))
                 {
@@ -162,16 +162,16 @@ namespace VDS.RDF.Graphs
 
             //Do we need to compute MSGs?
             //If all Triples are Ground Triples then this step gets skipped which saves on computation
-            if (a.Triples.Any(t => !t.IsGroundTriple) || b.Triples.Any(t => !t.IsGroundTriple))
+            if (a.Triples.Any(t => !t.IsGround) || b.Triples.Any(t => !t.IsGround))
             {
                 //Some non-ground Triples so start computing MSGs
 
                 //First build 2 HashSets of the non-ground Triples from the Graphs
-                foreach (Triple t in a.Triples.Where(t => !t.IsGroundTriple))
+                foreach (Triple t in a.Triples.Where(t => !t.IsGround))
                 {
                     this._lhsUnassigned.Add(t);
                 }
-                foreach (Triple t in b.Triples.Where(t => !t.IsGroundTriple))
+                foreach (Triple t in b.Triples.Where(t => !t.IsGround))
                 {
                     this._rhsUnassigned.Add(t);
                 }

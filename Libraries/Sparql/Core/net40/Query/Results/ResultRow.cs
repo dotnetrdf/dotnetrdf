@@ -43,6 +43,8 @@ namespace VDS.RDF.Query.Results
             // TODO Should we validate that values does not have any variables that aren't also in variables?
         }
 
+        public bool IsEmpty { get { return this._variables.Count == 0; } }
+
         public INode this[string var]
         {
             get
@@ -92,7 +94,7 @@ namespace VDS.RDF.Query.Results
             return this.TryGetBoundValue(var, out value);
         }
 
-        public bool IsGroundResult
+        public bool IsGround
         {
             get
             {

@@ -58,13 +58,18 @@ namespace VDS.RDF.Query.Results
         bool HasBoundValue(String var);
 
         /// <summary>
-        /// Gets whether a result is ground i.e. all values are neither null nor blank nodes
+        /// Gets whether a row is ground i.e. all values are neither null nor blank nodes
         /// </summary>
-        bool IsGroundResult { get; }
+        bool IsGround { get; }
 
         /// <summary>
         /// Gets the variables present in this row
         /// </summary>
         IEnumerable<String> Variables { get; }
+
+        /// <summary>
+        /// Gets whether the row is empty
+        /// </summary>
+        bool IsEmpty { get; }
     }
 }

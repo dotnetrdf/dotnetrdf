@@ -150,7 +150,7 @@ namespace VDS.RDF.Graphs
         /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practise this means that the Triple does not contain any Blank Nodes/Variables
         /// </para>
         /// </remarks>
-        public bool IsGroundTriple
+        public bool IsGround
         {
             get
             {

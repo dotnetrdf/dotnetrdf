@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Engine.Bgps
 
         protected virtual IEnumerable<ISolution> Match(INode graphName, Triple t)
         {
-            if (t.IsGroundTriple)
+            if (t.IsGround)
             {
                 // Return an empty row for each quad that matches
                 return this.Find(graphName, t.Subject, t.Predicate, t.Object).Select(q => new Solution());
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Engine.Bgps
 
         protected virtual IEnumerable<ISolution> Match(INode graphName, Triple t, ISolution input)
         {
-            if (t.IsGroundTriple)
+            if (t.IsGround)
             {
                 // Return an empty row for each quad that matches
                 return this.Find(graphName, t.Subject, t.Predicate, t.Object).Select(q => input);

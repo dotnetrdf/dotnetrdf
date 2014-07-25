@@ -65,7 +65,7 @@ namespace VDS.RDF.Graphs
             this._parentTriples = parent.Triples.ToList();
             foreach (Triple t in subgraph.Triples)
             {
-                if (t.IsGroundTriple)
+                if (t.IsGround)
                 {
                     //If the other Graph doesn't contain the Ground Triple can't be a sub-graph
                     //We make the contains call first as that is typically O(1) while the Remove call may be O(n)
@@ -116,14 +116,14 @@ namespace VDS.RDF.Graphs
 #if SILVERLIGHT
             for (int i = 0; i < this._parentTriples.Count; i++)
             {
-                if (this._parentTriples[i].IsGroundTriple)
+                if (this._parentTriples[i].IsGround)
                 {
                     this._parentTriples.RemoveAt(i);
                     i--;
                 }
             }
 #else
-            this._parentTriples.RemoveAll(t => t.IsGroundTriple);
+            this._parentTriples.RemoveAll(t => t.IsGround);
 #endif
 
             //If there are no Triples left in the parent Graph, all our Triples were Ground Triples and there are no Blank Nodes to map then we're a sub-graph
@@ -228,7 +228,7 @@ namespace VDS.RDF.Graphs
 
             //Initialise the Source Triples list
             this._subTriples.AddRange(from t in subgraph.Triples
-                                         where !t.IsGroundTriple
+                                         where !t.IsGround
                                          select t);
 
             //First thing consider the trivial mapping

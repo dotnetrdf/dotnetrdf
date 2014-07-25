@@ -46,6 +46,12 @@ namespace VDS.RDF.Query.Results
             this._rows = rows != null ? new List<IResultRow>(rows) : new List<IResultRow>();
         }
 
+        public RandomAccessTabularResults(ITabularResults results)
+        {
+            this._variables = new MaterializedImmutableView<string>(results.Variables);
+            this._rows = new List<IResultRow>(results);
+        }
+
         public IEnumerator<IResultRow> GetEnumerator()
         {
             return this._rows.GetEnumerator();

@@ -146,7 +146,7 @@ namespace VDS.RDF.Graphs
             this._targetTriples = new HashSet<Triple>(h.Triples);
             foreach (Triple t in g.Triples)
             {
-                if (t.IsGroundTriple)
+                if (t.IsGround)
                 {
                     //If the other Graph doesn't contain the Ground Triple so can't be equal
                     //We make the contains call first as that is typically O(1) while the Remove call may be O(n)
@@ -202,7 +202,7 @@ namespace VDS.RDF.Graphs
             }
 
             //If the other Graph still contains Ground Triples then the Graphs aren't equal
-            if (this._targetTriples.Any(t => t.IsGroundTriple))
+            if (this._targetTriples.Any(t => t.IsGround))
             {
                 Debug.WriteLine("[NOT EQUAL] Second Graph contains ground triples not present in first graph");
                 return false;
@@ -335,7 +335,7 @@ namespace VDS.RDF.Graphs
 
             //Initialise the Source Triples list
             this._sourceTriples = new HashSet<Triple>(from t in g.Triples
-                                                      where !t.IsGroundTriple
+                                                      where !t.IsGround
                                                       select t);
 
             //First thing consider the trivial mapping
