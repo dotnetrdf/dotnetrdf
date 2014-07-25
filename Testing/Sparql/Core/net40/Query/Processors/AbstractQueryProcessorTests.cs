@@ -189,9 +189,7 @@ namespace VDS.RDF.Query.Processors
             Assert.AreEqual(1, results.Count);
 
             IResultRow row = results[0];
-            Assert.AreEqual(t.Subject, row["s"]);
-            Assert.AreEqual(t.Predicate, row["p"]);
-            Assert.AreEqual(t.Object, row["o"]);
+            Assert.IsTrue(row.IsEmpty);
         }
     }
 }
