@@ -45,6 +45,25 @@ namespace VDS.RDF.Query.Algebra
             return executor.Execute(this, context);
         }
 
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(extend (");
+            foreach (KeyValuePair<String, IExpression> assignment in this.Assignments)
+            {
+                builder.Append(" (");
+                builder.Append(formatter.Format(new VariableNode(assignment.Key)));
+                builder.Append(' ');
+                builder.Append(assignment.Value.ToPrefixString(formatter));
+                builder.Append(")");
+            }
+            builder.AppendLine(")");
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
+        }
+
         public override bool Equals(IAlgebra other)
         {
             if (ReferenceEquals(this, other)) return true;

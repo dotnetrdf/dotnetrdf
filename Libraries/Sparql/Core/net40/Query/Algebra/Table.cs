@@ -91,9 +91,10 @@ namespace VDS.RDF.Query.Algebra
             if (this.IsEmpty) return "(table empty)";
 
             StringBuilder builder = new StringBuilder();
-            builder.Append("(table (vars ");
+            builder.Append("(table (vars");
             foreach (String var in this.ProjectedVariables)
             {
+                builder.Append(' ');
                 builder.Append(formatter.Format(new VariableNode(var)));
             }
             builder.AppendLine(")");

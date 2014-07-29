@@ -129,6 +129,7 @@
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />
+    <Compile Include="Query\Expressions\BaseNullaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseUnaryExpression.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />

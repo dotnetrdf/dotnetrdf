@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {
@@ -34,8 +35,11 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class representing Variable value expressions
     /// </summary>
     public class VariableTerm
-        : INullaryExpression
+        : BaseNullaryExpression
     {
+        /// <summary>
+        /// Gets the Variable Name
+        /// </summary>
         public string VariableName { get; private set; }
 
         /// <summary>
@@ -56,16 +60,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Evaluates the expression
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             INode value = solution[this.VariableName];
             return value.AsValuedNode();
         }
 
-        public bool Equals(IExpression other)
+        public override bool Equals(IExpression other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
@@ -78,15 +82,15 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// Gets the String representation of this Expression
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return "?" + this.VariableName;
+            return formatter.Format(new VariableNode(this.VariableName));
         }
 
         /// <summary>
         /// Gets the enumeration containing the single variable that this expression term represents
         /// </summary>
-        public IEnumerable<String> Variables
+        public override IEnumerable<String> Variables
         {
             get
             {
@@ -97,18 +101,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public String Functor
+        /// <returns>An operator symbol, function keyword or URI if an operator/function.  Null otherwise</returns>
+        public override String Functor
         {
-            get
-            {
-                return String.Empty;
-            }
+            get { return null; }
         }
 
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
@@ -116,22 +118,22 @@ namespace VDS.RDF.Query.Expressions.Primary
             }
         }
 
-        public bool IsDeterministic
+        public override bool IsDeterministic
         {
             get { return true; }
         }
 
-        public bool IsConstant
+        public override bool IsConstant
         {
             get { return false; }
         }
 
-        public void Accept(IExpressionVisitor visitor)
+        public override string ToPrefixString(IAlgebraFormatter formatter)
         {
-            visitor.Visit(this);
+            return formatter.Format(new VariableNode(this.VariableName));
         }
 
-        public IExpression Copy()
+        public override IExpression Copy()
         {
             return new VariableTerm(this.VariableName);
         }

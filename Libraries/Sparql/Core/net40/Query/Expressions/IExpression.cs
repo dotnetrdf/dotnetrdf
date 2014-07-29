@@ -55,8 +55,9 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions
+        /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords.  If this is not an operator or function then null is returned
         /// </summary>
+        ///<returns>An operator symbol, function keyword or URI if an operator/function.  Null otherwise</returns>
         String Functor
         {
             get;

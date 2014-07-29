@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
-using VDS.RDF.Specifications;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {
@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// Class for representing constant terms
     /// </summary>
     public class ConstantTerm
-        : INullaryExpression
+        : BaseNullaryExpression
     {
         /// <summary>
         /// Creates a new Constant
@@ -60,12 +60,12 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return this.Node;
         }
 
-        public bool Equals(IExpression other)
+        public override bool Equals(IExpression other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
@@ -78,15 +78,15 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// Gets the String representation of this Expression
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return SparqlSpecsHelper.Formatter.Format(this.Node);
+            return this.Node.ToString(formatter);
         }
 
         /// <summary>
         /// Gets an Empty Enumerable since a Node Term does not use variables
         /// </summary>
-        public IEnumerable<String> Variables
+        public override IEnumerable<String> Variables
         {
             get
             {
@@ -97,18 +97,15 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public String Functor
+        public override String Functor
         {
-            get
-            {
-                return String.Empty;
-            }
+            get { return null; }
         }
 
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
@@ -116,22 +113,22 @@ namespace VDS.RDF.Query.Expressions.Primary
             }
         }
 
-        public bool IsDeterministic
+        public override bool IsDeterministic
         {
             get { return true; }
         }
 
-        public bool IsConstant
+        public override bool IsConstant
         {
             get { return true; }
         }
 
-        public void Accept(IExpressionVisitor visitor)
+        public override string ToPrefixString(IAlgebraFormatter formatter)
         {
-            visitor.Visit(this);
+            return this.Node.ToString(formatter);
         }
 
-        public IExpression Copy()
+        public override IExpression Copy()
         {
             return new ConstantTerm(this.Node);
         }
@@ -139,6 +136,6 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Node this Term represents
         /// </summary>
-        protected internal IValuedNode Node { get; protected set; }
+        public IValuedNode Node { get; protected set; }
     }
 }
