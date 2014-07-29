@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Sorting
 {
@@ -15,5 +16,9 @@ namespace VDS.RDF.Query.Sorting
         /// </summary>
         /// <returns>True if an ascending sort condition, false if a descending sort condition</returns>
         bool IsAscending { get; }
+
+        String ToString();
+
+        String ToString(INodeFormatter formatter);
     }
 }

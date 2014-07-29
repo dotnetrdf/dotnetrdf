@@ -181,6 +181,7 @@
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
     <Compile Include="Writing\Formatting\AlgebraNodeFormatter.cs" />
+    <Compile Include="Writing\Formatting\IAlgebraFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.Net40.csproj">

@@ -79,13 +79,18 @@ namespace VDS.RDF.Query.Algebra
             return executor.Execute(this, context);
         }
 
-        public override string ToString()
+        public override String ToString()
         {
+            return this.ToString(new AlgebraNodeFormatter());
+        }
+
+        public string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
             if (this.IsUnit) return "(table unit)";
             if (this.IsEmpty) return "(table empty)";
-            
+
             StringBuilder builder = new StringBuilder();
-            INodeFormatter formatter = new AlgebraNodeFormatter();
             builder.Append("(table (vars ");
             foreach (String var in this.ProjectedVariables)
             {

@@ -5,6 +5,7 @@ using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -59,15 +60,14 @@ namespace VDS.RDF.Query.Algebra
             return true;
         }
 
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("(filter (exprlist ");
             for (int i = 0; i < this.Expressions.Count; i++)
             {
-                // TODO Use a helper to print expressions in prefix style a la ARQ SSE
                 builder.Append("(");
-                builder.Append(this.Expressions[i].ToString());
+                builder.Append(this.Expressions[i].ToPrefixString(formatter));
                 builder.Append(")");
                 if (i < this.Expressions.Count - 1) builder.Append(' ');
             }

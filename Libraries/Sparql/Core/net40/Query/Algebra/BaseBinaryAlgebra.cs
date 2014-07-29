@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -32,5 +33,12 @@ namespace VDS.RDF.Query.Algebra
         public abstract IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context);
 
         public abstract bool Equals(IAlgebra other);
+
+        public override string ToString()
+        {
+            return ToString(new AlgebraNodeFormatter());
+        }
+
+        public abstract string ToString(IAlgebraFormatter formatter);
     }
 }

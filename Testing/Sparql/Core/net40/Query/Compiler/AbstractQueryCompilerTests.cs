@@ -491,6 +491,61 @@ namespace VDS.RDF.Query.Compiler
         }
 
         [Test]
+        public void QueryCompilerMinus1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            TripleBlockElement triples = new TripleBlockElement(t.AsEnumerable());
+            query.WhereClause = new MinusElement(triples);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof (Minus), algebra);
+
+            Minus minus = (Minus) algebra;
+            Assert.IsInstanceOf(typeof(Table), minus.Lhs);
+            Assert.IsInstanceOf(typeof(Bgp), minus.Rhs);
+
+            Table lhs = (Table) minus.Lhs;
+            Assert.IsTrue(lhs.IsUnit);
+
+            Bgp rhs = (Bgp) minus.Rhs;
+            Assert.AreEqual(1, rhs.TriplePatterns.Count);
+            Assert.IsTrue(rhs.TriplePatterns.Contains(t));
+        }
+
+        [Test]
+        public void QueryCompilerMinus2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t1 = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            Triple t2 = new Triple(new VariableNode("s"), new BlankNode(Guid.NewGuid()), new LiteralNode("test"));
+            TripleBlockElement matchTriples = new TripleBlockElement(t1.AsEnumerable());
+            TripleBlockElement minusTriples = new TripleBlockElement(t2.AsEnumerable());
+            query.WhereClause = new GroupElement(new IElement[] { matchTriples, new MinusElement(minusTriples) });
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Minus), algebra);
+
+            Minus minus = (Minus)algebra;
+            Assert.IsInstanceOf(typeof(Bgp), minus.Lhs);
+            Assert.IsInstanceOf(typeof(Bgp), minus.Rhs);
+
+            Bgp lhs = (Bgp)minus.Lhs;
+            Assert.AreEqual(1, lhs.TriplePatterns.Count);
+            Assert.IsTrue(lhs.TriplePatterns.Contains(t1));
+
+            Bgp rhs = (Bgp)minus.Rhs;
+            Assert.AreEqual(1, rhs.TriplePatterns.Count);
+            Assert.IsTrue(rhs.TriplePatterns.Contains(t2));
+        }
+
+        [Test]
         public void QueryCompilerGroup1()
         {
             IQueryCompiler compiler = this.CreateInstance();

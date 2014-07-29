@@ -2,6 +2,7 @@
 using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -30,11 +31,11 @@ namespace VDS.RDF.Query.Algebra
             return this.InnerAlgebra.Equals(((Distinct) other).InnerAlgebra);
         }
 
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("(distinct");
-            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
             builder.AppendLine(")");
             return builder.ToString();
         }

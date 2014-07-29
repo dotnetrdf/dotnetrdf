@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -84,6 +85,14 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="visitor"></param>
         void Accept(IExpressionVisitor visitor);
+
+        String ToString();
+
+        string ToString(IAlgebraFormatter formatter);
+
+        String ToPrefixString();
+
+        string ToPrefixString(IAlgebraFormatter formatter);
     }
 
     public interface INullaryExpression

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -41,7 +43,27 @@ namespace VDS.RDF.Query.Expressions
         /// Gets the String representation of the Expression
         /// </summary>
         /// <returns></returns>
-        public abstract override string ToString();
+        public sealed override string ToString()
+        {
+            return ToString(new AlgebraNodeFormatter());
+        }
+
+        public string ToString(IAlgebraFormatter formatter)
+        {
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            return String.Format("{0}({1})", f, this.Argument.ToString(formatter));
+        }
+
+        public string ToPrefixString()
+        {
+            return ToPrefixString(new AlgebraNodeFormatter());
+        }
+
+        public string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            return String.Format("({0} {1})", f, this.Argument.ToPrefixString(formatter));
+        }
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in this expression

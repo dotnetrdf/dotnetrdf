@@ -70,11 +70,16 @@ namespace VDS.RDF.Query.Algebra
 
         public override string ToString()
         {
+            return ToString(new AlgebraNodeFormatter());
+        }
+
+        public string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
             if (this.TriplePatterns.Count == 0) return "(bgp)";
 
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("(bgp");
-            INodeFormatter formatter = new AlgebraNodeFormatter();
             foreach (Triple t in this.TriplePatterns)
             {
                 builder.Append("  (triple ");

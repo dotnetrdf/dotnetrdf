@@ -1,5 +1,6 @@
 ﻿using System;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Sorting
 {
@@ -17,6 +18,17 @@ namespace VDS.RDF.Query.Sorting
         public bool IsAscending
         {
             get { return false; }
+        }
+
+        public override string ToString()
+        {
+            return ToString(new AlgebraNodeFormatter());
+        }
+
+        public string ToString(INodeFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return this._condition.IsAscending ? String.Format("(desc {0})", this._condition.ToString(formatter)) : this._condition.ToString(formatter);
         }
 
         public int Compare(ISolution x, ISolution y)

@@ -69,7 +69,9 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(MinusElement minus)
         {
-            throw new NotImplementedException();
+            CompilingElementVisitor compiler = new CompilingElementVisitor();
+            IAlgebra rhs = compiler.Compile(minus.Element);
+            this.Algebras.Push(new Minus(this.Algebras.Pop(), rhs));
         }
 
         public void Visit(NamedGraphElement namedGraph)

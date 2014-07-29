@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -48,12 +50,13 @@ namespace VDS.RDF.Query.Algebra
             return this.Lhs.Equals(u.Lhs) && this.Rhs.Equals(u.Rhs);
         }
 
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
+            if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("(union");
-            builder.AppendLineIndented(this.Lhs.ToString(), 2);
-            builder.AppendLineIndented(this.Rhs.ToString(), 2);
+            builder.AppendLineIndented(this.Lhs.ToString(formatter), 2);
+            builder.AppendLineIndented(this.Rhs.ToString(formatter), 2);
             builder.Append(")");
             return builder.ToString();
         }

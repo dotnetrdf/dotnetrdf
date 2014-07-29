@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -43,6 +46,17 @@ namespace VDS.RDF.Query.Algebra
 
             Minus m = (Minus) other;
             return this.Lhs.Equals(m.Lhs) && this.Rhs.Equals(m.Rhs);
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("(minus");
+            builder.AppendLineIndented(this.Lhs.ToString(formatter), 2);
+            builder.AppendLineIndented(this.Rhs.ToString(formatter), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
     }
 }

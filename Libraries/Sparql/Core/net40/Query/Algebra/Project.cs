@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -39,6 +42,22 @@ namespace VDS.RDF.Query.Algebra
         public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
             return executor.Execute(this);
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("(project (");
+            foreach (String var in this.Projections)
+            {
+                builder.Append(' ');
+                builder.Append(formatter.Format(new VariableNode(var)));
+            }
+            builder.AppendLine(")");
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
+            builder.AppendLine(")");
+            return builder.ToString();
         }
 
         public override bool Equals(IAlgebra other)

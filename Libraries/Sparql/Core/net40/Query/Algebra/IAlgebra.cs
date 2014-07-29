@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -17,6 +18,10 @@ namespace VDS.RDF.Query.Algebra
         void Accept(IAlgebraVisitor visitor);
 
         IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context);
+
+        String ToString();
+
+        string ToString(IAlgebraFormatter formatter);
     }
 
     public interface IUnaryAlgebra

@@ -43,16 +43,16 @@ namespace VDS.RDF.Query.Algebra
             return executor.Execute(this, context);
         }
 
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
+            if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.Append("(service ");
             if (this.IsSilent) builder.Append("silent ");
-            IUriFormatter formatter = new AlgebraNodeFormatter();
             builder.Append('<');
             builder.Append(formatter.FormatUri(this.EndpointUri));
             builder.AppendLine(">");
-            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
             builder.AppendLine(")");
             return builder.ToString();
         }

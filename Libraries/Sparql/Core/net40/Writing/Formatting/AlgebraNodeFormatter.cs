@@ -9,7 +9,7 @@ namespace VDS.RDF.Writing.Formatting
     /// </summary>
     public class AlgebraNodeFormatter
         // TODO Would be nicer to extend another formatter that uses some syntax compressions
-        : NTriples11Formatter
+        : NTriples11Formatter, IAlgebraFormatter
     {
         protected override string FormatVariableNode(INode v, QuadSegment? segment)
         {

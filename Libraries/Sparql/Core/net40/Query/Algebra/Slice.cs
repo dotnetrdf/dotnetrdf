@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -39,8 +41,9 @@ namespace VDS.RDF.Query.Algebra
             return executor.Execute(this, context);
         }
 
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
+            if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.Append("(slice ");
             if (this.Offset > 0)
@@ -61,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
                 builder.Append('_');
             }
             builder.AppendLine();
-            builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);
+            builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
             builder.AppendLine(")");
             return builder.ToString();
         }
