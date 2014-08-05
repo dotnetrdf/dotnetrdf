@@ -546,6 +546,61 @@ namespace VDS.RDF.Query.Compiler
         }
 
         [Test]
+        public void QueryCompilerOptional1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            TripleBlockElement triples = new TripleBlockElement(t.AsEnumerable());
+            query.WhereClause = new OptionalElement(triples);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(LeftJoin), algebra);
+
+            LeftJoin leftJoin = (LeftJoin)algebra;
+            Assert.IsInstanceOf(typeof(Table), leftJoin.Lhs);
+            Assert.IsInstanceOf(typeof(Bgp), leftJoin.Rhs);
+
+            Table lhs = (Table)leftJoin.Lhs;
+            Assert.IsTrue(lhs.IsUnit);
+
+            Bgp rhs = (Bgp)leftJoin.Rhs;
+            Assert.AreEqual(1, rhs.TriplePatterns.Count);
+            Assert.IsTrue(rhs.TriplePatterns.Contains(t));
+        }
+
+        [Test]
+        public void QueryCompilerOptional2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t1 = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            Triple t2 = new Triple(new VariableNode("s"), new BlankNode(Guid.NewGuid()), new LiteralNode("test"));
+            TripleBlockElement matchTriples = new TripleBlockElement(t1.AsEnumerable());
+            TripleBlockElement minusTriples = new TripleBlockElement(t2.AsEnumerable());
+            query.WhereClause = new GroupElement(new IElement[] { matchTriples, new OptionalElement(minusTriples) });
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(LeftJoin), algebra);
+
+            LeftJoin leftJoin = (LeftJoin)algebra;
+            Assert.IsInstanceOf(typeof(Bgp), leftJoin.Lhs);
+            Assert.IsInstanceOf(typeof(Bgp), leftJoin.Rhs);
+
+            Bgp lhs = (Bgp)leftJoin.Lhs;
+            Assert.AreEqual(1, lhs.TriplePatterns.Count);
+            Assert.IsTrue(lhs.TriplePatterns.Contains(t1));
+
+            Bgp rhs = (Bgp)leftJoin.Rhs;
+            Assert.AreEqual(1, rhs.TriplePatterns.Count);
+            Assert.IsTrue(rhs.TriplePatterns.Contains(t2));
+        }
+
+        [Test]
         public void QueryCompilerGroup1()
         {
             IQueryCompiler compiler = this.CreateInstance();
@@ -577,7 +632,6 @@ namespace VDS.RDF.Query.Compiler
             Assert.AreEqual(1, table.Data.Count);
             Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
         }
-
 
         [Test]
         public void QueryCompilerGroup2()
@@ -620,6 +674,34 @@ namespace VDS.RDF.Query.Compiler
 
             Assert.AreEqual(1, table.Data.Count);
             Assert.IsTrue(table.Data.All(s => s.ContainsVariable("x")));
+        }
+
+        [Test]
+        public void QueryCompilerSubQuery1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.AddProjectVariable("y");
+            IQuery subQuery = new Query();
+            subQuery.AddProjectVariable("x");
+            query.WhereClause = new SubQueryElement(subQuery);
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Project), algebra);
+
+            Project outerProject = (Project) algebra;
+            Assert.AreEqual(1, outerProject.Projections.Count);
+            Assert.IsTrue(outerProject.Projections.Contains("y"));
+            Assert.IsInstanceOf(typeof(Project), outerProject.InnerAlgebra);
+
+            Project innerProject = (Project) outerProject.InnerAlgebra;
+            Assert.IsTrue(innerProject.Projections.Contains("x"));
+            Assert.IsInstanceOf(typeof(Table), innerProject.InnerAlgebra);
+
+            Table table = (Table) innerProject.InnerAlgebra;
+            Assert.IsTrue(table.IsUnit);
         }
     }
 

@@ -23,18 +23,16 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents Alternative Paths
     /// </summary>
-    public class AlternativePath : BaseBinaryPath
+    public class AlternativePath 
+        : BaseBinaryPath
     {
         /// <summary>
         /// Creates a new Alternative Path
@@ -44,19 +42,28 @@ namespace VDS.RDF.Query.Paths
         public AlternativePath(IPath lhs, IPath rhs)
             : base(lhs, rhs) { }
 
-        /// <summary>
-        /// Gets the String representation of the Path
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool IsTerminal
         {
-            StringBuilder output = new StringBuilder();
-            output.Append('(');
-            output.Append(this._lhs.ToString());
-            output.Append(" | ");
-            output.Append(this._rhs.ToString());
-            output.Append(')');
-            return output.ToString();
+            get { return false; }
+        }
+
+        public override bool IsFixedLength
+        {
+            get { return this._lhs.IsFixedLength && this._rhs.IsFixedLength; }
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("alt ");
+            if (!this._lhs.IsTerminal) builder.Append('(');
+            builder.Append(this._lhs.ToString(formatter));
+            if (!this._lhs.IsTerminal) builder.Append(')');
+            builder.Append(' ');
+            if (!this._rhs.IsTerminal) builder.Append('(');
+            builder.Append(this._rhs.ToString(formatter));
+            if (!this._rhs.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 }

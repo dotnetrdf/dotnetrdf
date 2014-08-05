@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Security.Cryptography.X509Certificates;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
@@ -33,9 +35,26 @@ namespace VDS.RDF.Query.Paths
     public interface IPath
     {
         /// <summary>
+        /// Gets whether the path is a terminal i.e. is not a modifier on another path
+        /// </summary>
+        bool IsTerminal { get; }
+
+        /// <summary>
+        /// Gets whether the path has a fixed length
+        /// </summary>
+        bool IsFixedLength { get; }
+
+        /// <summary>
         /// Gets the String representation of a Path
         /// </summary>
         /// <returns></returns>
         String ToString();
+
+        /// <summary>
+        /// Gets the string representation of a path using the given formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <returns></returns>
+        string ToString(IAlgebraFormatter formatter);
     }
 }

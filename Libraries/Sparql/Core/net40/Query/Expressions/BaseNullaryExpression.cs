@@ -32,14 +32,14 @@ namespace VDS.RDF.Query.Expressions
 
         public override string ToString()
         {
-            return ToString(new AlgebraNodeFormatter());
+            return ToString(new AlgebraFormatter());
         }
 
         public abstract string ToString(IAlgebraFormatter formatter);
 
         public string ToPrefixString()
         {
-            return ToPrefixString(new AlgebraNodeFormatter());
+            return ToPrefixString(new AlgebraFormatter());
         }
 
         public abstract string ToPrefixString(IAlgebraFormatter formatter);

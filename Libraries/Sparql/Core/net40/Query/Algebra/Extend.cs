@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Algebra
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("(extend ");
-            INodeFormatter formatter = new AlgebraNodeFormatter();
+            INodeFormatter formatter = new AlgebraFormatter();
             for (int i = 0; i < this.Assignments.Count; i++)
             {
                 builder.Append('(');

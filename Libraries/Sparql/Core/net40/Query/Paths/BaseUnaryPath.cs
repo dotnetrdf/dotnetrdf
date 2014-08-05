@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
@@ -58,10 +59,19 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public abstract bool IsTerminal { get; }
+
+        public abstract bool IsFixedLength { get; }
+
         /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public sealed override String ToString()
+        {
+            return ToString(new AlgebraFormatter());
+        }
+
+        public abstract String ToString(IAlgebraFormatter formatter);
     }
 }

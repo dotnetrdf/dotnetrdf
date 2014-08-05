@@ -181,7 +181,7 @@
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
-    <Compile Include="Writing\Formatting\AlgebraNodeFormatter.cs" />
+    <Compile Include="Writing\Formatting\AlgebraFormatter.cs" />
     <Compile Include="Writing\Formatting\IAlgebraFormatter.cs" />
   </ItemGroup>
   <ItemGroup>

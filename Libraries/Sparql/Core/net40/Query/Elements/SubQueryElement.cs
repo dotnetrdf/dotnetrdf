@@ -29,10 +29,7 @@ namespace VDS.RDF.Query.Elements
         }
 
         public IEnumerable<string> Variables {
-            get
-            {
-                throw new NotImplementedException();
-            } 
+            get { return this.ProjectedVariables; } 
         }
 
         public IEnumerable<string> ProjectedVariables { get { return this.SubQuery.ResultVariables; } }

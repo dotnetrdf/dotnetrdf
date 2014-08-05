@@ -24,14 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Text;
-using VDS.RDF.Query.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents a standard forwards path
     /// </summary>
-    public class SequencePath : BaseBinaryPath
+    public class SequencePath 
+        : BaseBinaryPath
     {
         /// <summary>
         /// Creates a new Sequence Path
@@ -41,17 +42,32 @@ namespace VDS.RDF.Query.Paths
         public SequencePath(IPath lhs, IPath rhs)
             : base(lhs, rhs) { }
 
+        public override bool IsTerminal
+        {
+            get { return false; }
+        }
+
+        public override bool IsFixedLength
+        {
+            get { return true; }
+        }
+
         /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            StringBuilder output = new StringBuilder();
-            output.Append(this._lhs.ToString());
-            output.Append(" / ");
-            output.Append(this._rhs.ToString());
-            return output.ToString();
+            StringBuilder builder = new StringBuilder();
+            builder.Append("sequence ");
+            if (!this._lhs.IsTerminal) builder.Append('(');
+            builder.Append(this._lhs.ToString(formatter));
+            if (!this._lhs.IsTerminal) builder.Append(')');
+            builder.Append(' ');
+            if (!this._rhs.IsTerminal) builder.Append('(');
+            builder.Append(this._rhs.ToString(formatter));
+            if (!this._rhs.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 }

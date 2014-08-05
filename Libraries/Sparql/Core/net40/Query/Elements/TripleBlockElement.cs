@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
@@ -56,35 +55,12 @@ namespace VDS.RDF.Query.Elements
 
         public IEnumerable<string> Variables
         {
-            get
-            {
-                HashSet<String> vars = new HashSet<string>();
-                foreach (Triple t in this.Triples)
-                {
-                    if (t.Subject.NodeType == NodeType.Variable) vars.Add(t.Subject.VariableName);
-                    if (t.Subject.NodeType == NodeType.Blank) vars.Add(t.Subject.AnonID.ToString());
-                    if (t.Predicate.NodeType == NodeType.Variable) vars.Add(t.Predicate.VariableName);
-                    if (t.Predicate.NodeType == NodeType.Blank) vars.Add(t.Predicate.AnonID.ToString());
-                    if (t.Object.NodeType == NodeType.Variable) vars.Add(t.Object.VariableName);
-                    if (t.Object.NodeType == NodeType.Blank) vars.Add(t.Object.AnonID.ToString());
-                }
-                return vars;
-            }
+            get { return this.ProjectedVariables; }
         }
 
         public IEnumerable<string> ProjectedVariables
         {
-            get
-            {
-                HashSet<String> vars = new HashSet<string>();
-                foreach (Triple t in this.Triples)
-                {
-                    if (t.Subject.NodeType == NodeType.Variable) vars.Add(t.Subject.VariableName);
-                    if (t.Predicate.NodeType == NodeType.Variable) vars.Add(t.Predicate.VariableName);
-                    if (t.Object.NodeType == NodeType.Variable) vars.Add(t.Object.VariableName);
-                }
-                return vars;
-            }
+            get { return this.Triples.SelectMany(t => t.Nodes).Where(n => n.NodeType == NodeType.Variable).Select(n => n.VariableName); }
         }
     }
 }

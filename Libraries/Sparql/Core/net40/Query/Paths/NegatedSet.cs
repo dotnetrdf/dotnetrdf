@@ -23,21 +23,21 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents a Negated Property Set
     /// </summary>
-    public class NegatedSet : IPath
+    public class NegatedSet
+        : IPath
     {
-        private List<Property> _properties = new List<Property>();
-        private List<Property> _inverseProperties = new List<Property>();
+        private readonly List<Property> _properties = new List<Property>();
+        private readonly List<Property> _inverseProperties = new List<Property>();
 
         /// <summary>
         /// Creates a new Negated Property Set
@@ -55,10 +55,7 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         public IEnumerable<Property> Properties
         {
-            get
-            {
-                return this._properties;
-            }
+            get { return this._properties; }
         }
 
         /// <summary>
@@ -66,10 +63,17 @@ namespace VDS.RDF.Query.Paths
         /// </summary>
         public IEnumerable<Property> InverseProperties
         {
-            get
-            {
-                return this._inverseProperties;
-            }
+            get { return this._inverseProperties; }
+        }
+
+        public bool IsTerminal
+        {
+            get { return false; }
+        }
+
+        public bool IsFixedLength
+        {
+            get { return true; }
         }
 
         /// <summary>
@@ -78,30 +82,36 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-            output.Append('!');
-            if (this._properties.Count + this._inverseProperties.Count > 1) output.Append('(');
+            return ToString(new AlgebraFormatter());
+        }
+
+        public String ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            StringBuilder builder = new StringBuilder();
+            builder.Append('!');
+            if (this._properties.Count + this._inverseProperties.Count > 1) builder.Append('(');
 
             for (int i = 0; i < this._properties.Count; i++)
             {
-                output.Append(this._properties[i].ToString());
+                builder.Append(this._properties[i].ToString(formatter));
                 if (i < this._properties.Count - 1 || this._inverseProperties.Count > 0)
                 {
-                    output.Append(" | ");
+                    builder.Append(" | ");
                 }
             }
             for (int i = 0; i < this._inverseProperties.Count; i++)
             {
-                output.Append(this._inverseProperties[i].ToString());
+                builder.Append(this._inverseProperties[i].ToString(formatter));
                 if (i < this._inverseProperties.Count - 1)
                 {
-                    output.Append(" | ");
+                    builder.Append(" | ");
                 }
             }
 
-            if (this._properties.Count + this._inverseProperties.Count > 1) output.Append(')');
+            if (this._properties.Count + this._inverseProperties.Count > 1) builder.Append(')');
 
-            return output.ToString();
+            return builder.ToString();
         }
     }
 }

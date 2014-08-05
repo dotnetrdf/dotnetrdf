@@ -24,24 +24,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents a Cardinality restriction on a Path
     /// </summary>
-    public abstract class Cardinality : BaseUnaryPath
+    public abstract class Cardinality 
+        : BaseUnaryPath
     {
         /// <summary>
         /// Creates a new Cardinality Restriction
         /// </summary>
         /// <param name="path">Path</param>
-        public Cardinality(IPath path)
+        protected Cardinality(IPath path)
             : base(path) { }
 
         /// <summary>
@@ -59,14 +57,25 @@ namespace VDS.RDF.Query.Paths
         {
             get;
         }
+
+        public override bool IsFixedLength
+        {
+            get { return this.MinCardinality == this.MaxCardinality; }
+        }
+
+        public override bool IsTerminal
+        {
+            get { return false; }
+        }
     }
 
     /// <summary>
     /// Represents a Fixed Cardinality restriction on a Path
     /// </summary>
-    public class FixedCardinality : Cardinality
+    public class FixedCardinality
+        : Cardinality
     {
-        private int _n;
+        private readonly int _n;
 
         /// <summary>
         /// Creates a new Fixed Cardinality restriction
@@ -105,16 +114,24 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "{" + this._n + "}";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("pathN ");
+            builder.Append(this._n);
+            builder.Append(' ');
+            if (!this._path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this._path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
     /// <summary>
     /// Represents a Zero or More cardinality restriction on a Path
     /// </summary>
-    public class ZeroOrMore : Cardinality
+    public class ZeroOrMore 
+        : Cardinality
     {
         /// <summary>
         /// Creates a new Zero or More cardinality restriction
@@ -149,9 +166,14 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "*";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("path* ");
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
@@ -194,9 +216,14 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "?";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("path? ");
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
@@ -239,18 +266,24 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "+";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("path+ ");
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
     /// <summary>
     /// Represents a N or More cardinality restriction on a Path
     /// </summary>
-    public class NOrMore : Cardinality
+    public class NOrMore 
+        : Cardinality
     {
-        private int _n;
+        private readonly int _n;
 
         /// <summary>
         /// Creates a new N or More cardinality restriction
@@ -289,9 +322,16 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "{" + this._n + ",}";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("mod ");
+            builder.Append(this.MinCardinality);
+            builder.Append(" _ ");
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
@@ -300,7 +340,7 @@ namespace VDS.RDF.Query.Paths
     /// </summary>
     public class ZeroToN : Cardinality
     {
-        private int _n;
+        private readonly int _n;
 
         /// <summary>
         /// Creates a new Zero to N cardinality restriction
@@ -339,18 +379,29 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "{," + this._n + "}";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("mod ");
+            builder.Append(this.MinCardinality);
+            builder.Append(' ');
+            builder.Append(this.MaxCardinality);
+            builder.Append(' ');
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 
     /// <summary>
     /// Represents a N to M cardinality restriction on a Path
     /// </summary>
-    public class NToM : Cardinality
+// ReSharper disable once InconsistentNaming
+    public class NToM 
+        : Cardinality
     {
-        private int _n, _m;
+        private readonly int _n, _m;
 
         /// <summary>
         /// Creates a new N to M cardinality restriction
@@ -391,9 +442,18 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            return this._path.ToString() + "{" + this._n + "," + this._m + "}";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("mod ");
+            builder.Append(this.MinCardinality);
+            builder.Append(' ');
+            builder.Append(this.MaxCardinality);
+            builder.Append(' ');
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 }

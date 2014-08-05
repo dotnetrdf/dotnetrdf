@@ -43,7 +43,7 @@ namespace VDS.RDF.Specifications
         static SparqlSpecsHelper()
         {
             // TODO May want to use a different node formatter here
-            Formatter = new AlgebraNodeFormatter();
+            Formatter = new AlgebraFormatter();
         }
 
         #region Keywords and Constants

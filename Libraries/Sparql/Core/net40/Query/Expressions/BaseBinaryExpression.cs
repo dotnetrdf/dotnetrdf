@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public sealed override string ToString()
         {
-            return ToString(new AlgebraNodeFormatter());
+            return ToString(new AlgebraFormatter());
         }
 
         public string ToString(IAlgebraFormatter formatter)
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Expressions
 
         public string ToPrefixString()
         {
-            return ToPrefixString(new AlgebraNodeFormatter());
+            return ToPrefixString(new AlgebraFormatter());
         }
 
         public string ToPrefixString(IAlgebraFormatter formatter)

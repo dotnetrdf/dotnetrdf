@@ -9,6 +9,9 @@ using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
 {
+    /// <summary>
+    /// An element visitor that compiles elements into query algebra
+    /// </summary>
     public class CompilingElementVisitor
         : IElementVisitor
     {
@@ -82,7 +85,9 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(OptionalElement optional)
         {
-            throw new NotImplementedException();
+            CompilingElementVisitor compiler = new CompilingElementVisitor();
+            IAlgebra rhs = compiler.Compile(optional.Element);
+            this.Algebras.Push(new LeftJoin(this.Algebras.Pop(), rhs, optional.Expressions));
         }
 
         public void Visit(PathBlockElement pathBlock)
@@ -98,7 +103,9 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(SubQueryElement subQuery)
         {
-            throw new NotImplementedException();
+            DefaultQueryCompiler compiler = new DefaultQueryCompiler();
+            IAlgebra innerAlgebra = compiler.Compile(subQuery.SubQuery);
+            this.Algebras.Push(Join.Create(this.Algebras.Pop(), innerAlgebra));
         }
 
         public void Visit(TripleBlockElement tripleBlock)

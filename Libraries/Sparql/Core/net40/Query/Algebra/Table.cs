@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Algebra
 
         public override String ToString()
         {
-            return this.ToString(new AlgebraNodeFormatter());
+            return this.ToString(new AlgebraFormatter());
         }
 
         public string ToString(IAlgebraFormatter formatter)

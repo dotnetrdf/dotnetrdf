@@ -29,13 +29,15 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents an Inverse Path
     /// </summary>
-    public class InversePath : BaseUnaryPath
+    public class InversePath 
+        : BaseUnaryPath
     {
         /// <summary>
         /// Creates a new Inverse Path
@@ -44,13 +46,24 @@ namespace VDS.RDF.Query.Paths
         public InversePath(IPath path)
             : base(path) { }
 
-        /// <summary>
-        /// Gets the String representation of the Path
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool IsTerminal
         {
-            return "^ " + this._path.ToString();
+            get { return false; }
+        }
+
+        public override bool IsFixedLength
+        {
+            get { return this._path.IsFixedLength; }
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("reverse ");
+            if (!this.Path.IsTerminal) builder.Append('(');
+            builder.Append(this.Path.ToString(formatter));
+            if (!this.Path.IsTerminal) builder.Append(')');
+            return builder.ToString();
         }
     }
 }

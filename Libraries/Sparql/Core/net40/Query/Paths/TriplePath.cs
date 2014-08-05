@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Paths
 {
+    /// <summary>
+    /// Represents a triple or a path
+    /// </summary>
     public class TriplePath
         : IEquatable<TriplePath>
     {
@@ -19,6 +23,15 @@ namespace VDS.RDF.Query.Paths
             this.Subject = subj;
             this.Path = path;
             this.Object = obj;
+
+            List<String> vars = new List<string>();
+            if (subj.NodeType == NodeType.Variable) vars.Add(subj.VariableName);
+            if (!this.IsPath)
+            {
+                if (((Property)this.Path).Predicate.NodeType == NodeType.Variable) vars.Add(((Property)this.Path).Predicate.VariableName);
+            }
+            if (obj.NodeType == NodeType.Variable) vars.Add(obj.VariableName);
+            this.Variables = vars.AsReadOnly();
         }
 
         /// <summary>
@@ -37,6 +50,13 @@ namespace VDS.RDF.Query.Paths
 
         public IPath Path { get; private set; }
 
+        public IEnumerable<String> Variables { get; private set; }
+
+        /// <summary>
+        /// Converts into a simple triple if possible
+        /// </summary>
+        /// <returns>Simple triple</returns>
+        /// <exception cref="RdfException">Thrown if the path is not a simple triple</exception>
         public Triple AsTriple()
         {
             if (this.IsTriple) return new Triple(this.Subject, ((Property)this.Path).Predicate, this.Object);

@@ -24,20 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Represents a Predicate which is part of a Path
     /// </summary>
-    public class Property : IPath
+    public class Property
+        : IPath
     {
         private readonly INode _predicate;
 
@@ -61,65 +57,29 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public bool IsTerminal
+        {
+            get { return true; }
+        }
+
+        public bool IsFixedLength
+        {
+            get { return true; }
+        }
+
+        public override string ToString()
+        {
+            return ToString(new AlgebraFormatter());
+        }
+
         /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public string ToString(IAlgebraFormatter formatter)
         {
-            StringBuilder output = new StringBuilder();
-
-            switch (this._predicate.NodeType)
-            {
-                case NodeType.Literal:
-                    bool longlit = (this._predicate.Value.Contains('\n') || this._predicate.Value.Contains('\r') || this._predicate.Value.Contains('"'));
-
-                    if (longlit)
-                    {
-                        output.Append("\"\"\"");
-                    }
-                    else
-                    {
-                        output.Append("\"");
-                    }
-
-                    output.Append(this._predicate.Value);
-
-                    if (longlit)
-                    {
-                        output.Append("\"\"\"");
-                    }
-                    else
-                    {
-                        output.Append("\"");
-                    }
-
-                    if (this._predicate.HasLanguage)
-                    {
-                        output.Append("@");
-                        output.Append(this._predicate.Language);
-                    }
-                    else if (this._predicate.HasDataType)
-                    {
-                        output.Append("^^<");
-                        output.Append(this._predicate.DataType.ToString());
-                        output.Append(">");
-                    }
-
-                    break;
-
-                case NodeType.Uri:
-                    output.Append('<');
-                    output.Append(this._predicate.Uri.ToSafeString());
-                    output.Append('>');
-                    break;
-
-                default:
-                    output.Append(this._predicate.ToString());
-                    break;
-            }
-
-            return output.ToString();
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return formatter.Format(this.Predicate);
         }
     }
 }

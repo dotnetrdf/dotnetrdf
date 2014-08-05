@@ -24,17 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
     /// Abstract Base Class for Binary Path operators
     /// </summary>
-    public abstract class BaseBinaryPath : IPath
+    public abstract class BaseBinaryPath 
+        : IPath
     {
         /// <summary>
         /// Parts of the Path
@@ -74,10 +72,19 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public abstract bool IsTerminal { get; }
+
+        public abstract bool IsFixedLength { get; }
+
         /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public sealed override String ToString()
+        {
+            return ToString(new AlgebraFormatter());
+        }
+
+        public abstract String ToString(IAlgebraFormatter formatter);
     }
 }
