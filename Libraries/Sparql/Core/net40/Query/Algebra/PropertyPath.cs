@@ -21,6 +21,11 @@ namespace VDS.RDF.Query.Algebra
 
         public TriplePath Path { get; private set; }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new PropertyPath(innerAlgebra, this.Path);
+        }
+
         public override IEnumerable<string> ProjectedVariables
         {
             get { return this.InnerAlgebra.ProjectedVariables.Concat(this.Path.Variables).Distinct(); }

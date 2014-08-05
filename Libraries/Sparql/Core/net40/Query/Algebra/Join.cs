@@ -13,10 +13,27 @@ namespace VDS.RDF.Query.Algebra
         private Join(IAlgebra lhs, IAlgebra rhs) 
             : base(lhs, rhs) { }
 
+        /// <summary>
+        /// Creates a join only if necessary i.e. if one side is a join identity returns only the other side
+        /// </summary>
+        /// <param name="lhs">LHS algebra</param>
+        /// <param name="rhs">RHS algebra</param>
+        /// <returns>Algebra</returns>
         public static IAlgebra Create(IAlgebra lhs, IAlgebra rhs)
         {
             if (IsTableUnit(lhs)) return rhs;
             return IsTableUnit(rhs) ? lhs : new Join(lhs, rhs);
+        }
+
+        /// <summary>
+        /// Creates a join, unlike <see cref="Create"/> does not simplify when one side is the join identity
+        /// </summary>
+        /// <param name="lhs">LHS algebra</param>
+        /// <param name="rhs">RHS algebra</param>
+        /// <returns>Join</returns>
+        public static IAlgebra CreateDirect(IAlgebra lhs, IAlgebra rhs)
+        {
+            return new Join(lhs, rhs);
         }
 
         private static bool IsTableUnit(IAlgebra algebra)
@@ -30,6 +47,11 @@ namespace VDS.RDF.Query.Algebra
                 return ((Bgp) algebra).TriplePatterns.Count == 0;
             }
             return false;
+        }
+
+        public override IAlgebra Copy(IAlgebra lhs, IAlgebra rhs)
+        {
+            return Create(lhs, rhs);
         }
 
         public override IEnumerable<string> ProjectedVariables

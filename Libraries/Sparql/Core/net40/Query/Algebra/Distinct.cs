@@ -12,6 +12,11 @@ namespace VDS.RDF.Query.Algebra
         public Distinct(IAlgebra innerAlgebra) 
             : base(innerAlgebra) {}
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new Distinct(innerAlgebra);
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

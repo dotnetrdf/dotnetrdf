@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\EnumerableTests.cs" />
+    <Compile Include="Query\Algebra\Transforms\AbstractAlgebraTransformTests.cs" />
+    <Compile Include="Query\Algebra\Transforms\PromoteTableEmptyTests.cs" />
     <Compile Include="Query\Compiler\AbstractQueryCompilerTests.cs" />
     <Compile Include="Query\Engine\Bgps\QuadStoreBgpExecutorTests.cs" />
     <Compile Include="Query\Engine\Joins\AbstractJoinTests.cs" />

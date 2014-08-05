@@ -25,6 +25,11 @@ namespace VDS.RDF.Query.Algebra
 
         public IList<ISortCondition> SortConditions { get; private set; }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new TopN(innerAlgebra, this.SortConditions, this.N);
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

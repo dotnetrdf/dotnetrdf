@@ -13,6 +13,11 @@ namespace VDS.RDF.Query.Algebra
         public Reduced(IAlgebra innerAlgebra) 
             : base(innerAlgebra) { }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new Reduced(innerAlgebra);
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

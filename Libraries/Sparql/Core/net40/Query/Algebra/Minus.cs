@@ -13,6 +13,11 @@ namespace VDS.RDF.Query.Algebra
         public Minus(IAlgebra lhs, IAlgebra rhs) 
             : base(lhs, rhs) { }
 
+        public override IAlgebra Copy(IAlgebra lhs, IAlgebra rhs)
+        {
+            return new Minus(lhs, rhs);
+        }
+
         public override IEnumerable<string> ProjectedVariables
         {
             get { return this.Lhs.ProjectedVariables; }

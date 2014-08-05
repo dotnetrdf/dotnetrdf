@@ -33,6 +33,11 @@ namespace VDS.RDF.Query.Algebra
             return EqualityHelper.AreUrisEqual(this.EndpointUri, svc.EndpointUri) && this.IsSilent == svc.IsSilent && this.InnerAlgebra.Equals(svc.InnerAlgebra);
         }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new Service(innerAlgebra, this.EndpointUri, this.IsSilent);
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

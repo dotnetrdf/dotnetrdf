@@ -116,5 +116,10 @@ namespace VDS.RDF.Query.Algebra
             builder.AppendLine(")");
             return builder.ToString();
         }
+
+        public IAlgebra Copy(IEnumerable<ISolution> data)
+        {
+            return new Table(data);
+        }
     }
 }

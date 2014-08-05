@@ -9,7 +9,13 @@ namespace VDS.RDF.Query.Algebra
     public class GroupBy
         : BaseUnaryAlgebra
     {
-        public GroupBy(IAlgebra innerAlgebra) : base(innerAlgebra) {}
+        public GroupBy(IAlgebra innerAlgebra) 
+            : base(innerAlgebra) {}
+
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            throw new NotImplementedException();
+        }
 
         public override IEnumerable<string> ProjectedVariables
         {

@@ -68,5 +68,10 @@ namespace VDS.RDF.Query.Algebra
             builder.AppendLine(")");
             return builder.ToString();
         }
+
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new Slice(innerAlgebra, this.Limit, this.Offset);
+        }
     }
 }

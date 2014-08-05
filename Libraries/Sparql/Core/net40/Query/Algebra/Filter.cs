@@ -34,6 +34,11 @@ namespace VDS.RDF.Query.Algebra
 
         public IList<IExpression> Expressions { get; private set; }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return Create(innerAlgebra, this.Expressions);
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

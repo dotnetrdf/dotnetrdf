@@ -39,6 +39,11 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new NamedGraph(this.Graph, innerAlgebra);
+        }
+
         public override IEnumerable<string> ProjectedVariables
         {
             get

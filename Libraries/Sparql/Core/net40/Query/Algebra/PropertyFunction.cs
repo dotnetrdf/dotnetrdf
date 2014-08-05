@@ -12,6 +12,11 @@ namespace VDS.RDF.Query.Algebra
         public PropertyFunction(IAlgebra innerAlgebra)
             : base(innerAlgebra) {}
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Accept(IAlgebraVisitor visitor)
         {
             visitor.Visit(this);

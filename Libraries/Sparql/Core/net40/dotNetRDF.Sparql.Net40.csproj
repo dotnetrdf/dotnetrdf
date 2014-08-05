@@ -71,6 +71,10 @@
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Algebra\TopN.cs" />
+    <Compile Include="Query\Algebra\Transforms\ApplyTransformVisitor.cs" />
+    <Compile Include="Query\Algebra\Transforms\IAlgebraTransform.cs" />
+    <Compile Include="Query\Algebra\Transforms\PromoteTableEmpty.cs" />
+    <Compile Include="Query\Algebra\Transforms\TransformCopy.cs" />
     <Compile Include="Query\Algebra\Union.cs" />
     <Compile Include="Query\Compiler\CompilingElementVisitor.cs" />
     <Compile Include="Query\Compiler\DefaultQueryCompiler.cs" />

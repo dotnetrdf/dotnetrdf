@@ -24,6 +24,11 @@ namespace VDS.RDF.Query.Algebra
 
         public IList<IExpression> Expressions { get; private set; }
 
+        public override IAlgebra Copy(IAlgebra lhs, IAlgebra rhs)
+        {
+            return new LeftJoin(lhs, rhs, this.Expressions);
+        }
+
         public override IEnumerable<string> ProjectedVariables
         {
             get { return this.Lhs.ProjectedVariables.Concat(this.Rhs.ProjectedVariables).Distinct(); }

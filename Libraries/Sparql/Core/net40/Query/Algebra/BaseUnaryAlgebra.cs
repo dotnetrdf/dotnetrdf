@@ -17,6 +17,8 @@ namespace VDS.RDF.Query.Algebra
 
         public IAlgebra InnerAlgebra { get; private set; }
 
+        public abstract IAlgebra Copy(IAlgebra innerAlgebra);
+
         public virtual IEnumerable<string> ProjectedVariables
         {
             get { return this.InnerAlgebra.ProjectedVariables; }

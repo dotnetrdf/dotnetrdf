@@ -22,6 +22,11 @@ namespace VDS.RDF.Query.Algebra
 
         public IList<String> Projections { get; private set; }
 
+        public override IAlgebra Copy(IAlgebra innerAlgebra)
+        {
+            return new Project(innerAlgebra, this.Projections);
+        }
+
         public override IEnumerable<string> ProjectedVariables { get { return this.Projections; } }
 
         public override IEnumerable<string> FixedVariables

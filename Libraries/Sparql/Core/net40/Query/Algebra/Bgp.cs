@@ -93,5 +93,10 @@ namespace VDS.RDF.Query.Algebra
             builder.Append(")");
             return builder.ToString();
         }
+
+        public IAlgebra Copy(IEnumerable<Triple> triplePatterns)
+        {
+            return new Bgp(triplePatterns);
+        }
     }
 }

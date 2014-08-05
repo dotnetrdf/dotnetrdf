@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Engine.Algebra;
@@ -14,6 +13,11 @@ namespace VDS.RDF.Query.Algebra
     {
         public Union(IAlgebra lhs, IAlgebra rhs) 
             : base(lhs, rhs) { }
+
+        public override IAlgebra Copy(IAlgebra lhs, IAlgebra rhs)
+        {
+            return new Union(lhs, rhs);
+        }
 
         public override IEnumerable<string> ProjectedVariables
         {
