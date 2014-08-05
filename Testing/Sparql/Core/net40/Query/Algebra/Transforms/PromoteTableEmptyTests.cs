@@ -46,5 +46,17 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
             CheckTransform(join, lhs);
         }
+
+        [Test]
+        public void PromoteTableEmptyJoin4()
+        {
+            IAlgebra lhs = Table.CreateUnit();
+            IAlgebra rhs = Join.CreateDirect(Table.CreateUnit(), Table.CreateEmpty());
+
+            IAlgebra join = Join.CreateDirect(lhs, rhs);
+            Assert.IsInstanceOf(typeof(Join), join);
+
+            CheckTransform(join, Table.CreateEmpty());
+        }
     }
 }
