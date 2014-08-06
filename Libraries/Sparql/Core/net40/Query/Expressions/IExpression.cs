@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Grouping;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions
@@ -151,6 +152,6 @@ namespace VDS.RDF.Query.Expressions
     public interface IAggregateExpression
         : IExpression
     {
-        // TODO Figure out what this marker interface needs when I start porting aggregates
+        IAccumulator CreateAccumulator();
     }
 }
