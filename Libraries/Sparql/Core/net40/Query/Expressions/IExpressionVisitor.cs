@@ -5,8 +5,6 @@
     /// </summary>
     public interface IExpressionVisitor
     {
-        void Visit(IExpression expression);
-
         void Visit(INullaryExpression nullaryExpression);
 
         void Visit(IUnaryExpression unaryExpression);
@@ -18,5 +16,7 @@
         void Visit(INAryExpression nAryExpression);
 
         void Visit(IAlgebraExpression algebraExpression);
+
+        void Visit(IAggregateExpression aggregateExpression);
     }
 }

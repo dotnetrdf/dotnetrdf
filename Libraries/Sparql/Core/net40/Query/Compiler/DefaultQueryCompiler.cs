@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Compiler
 {
@@ -24,7 +26,20 @@ namespace VDS.RDF.Query.Compiler
 
             // Then visit the modifiers in the appropriate order
 
+            // Extract out any aggregators
+            List<IAggregateExpression> aggregators = new List<IAggregateExpression>();
+            if (query.Projections != null)
+            {
+                // TODO Do the extraction
+
+                // TODO Substitute aggregators for temporary variables
+            }
+
             // GROUP BY
+            if (query.GroupExpressions != null || aggregators.Count > 0)
+            {
+                // TODO Produce GroupBy clause
+            }
 
             // Project Expressions
             if (query.Projections != null && query.Projections.Any(kvp => kvp.Value != null))

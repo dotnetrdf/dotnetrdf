@@ -33,10 +33,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
             get { return false; }
         }
 
-        public void Accept(IExpressionVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
+        public abstract void Accept(IExpressionVisitor visitor);
 
         public abstract bool Equals(IExpression other);
 

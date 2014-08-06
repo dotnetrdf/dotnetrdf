@@ -8,8 +8,13 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query.Expressions.Aggregates
 {
     public class CountAllAggregate
-        : BaseAggregate
+        : BaseAggregate, INullaryExpression
     {
+        public override void Accept(IExpressionVisitor visitor)
+        {
+            visitor.Visit((IAggregateExpression)this);
+        }
+
         public override bool Equals(IExpression other)
         {
             if (ReferenceEquals(this, other)) return false;
@@ -33,6 +38,11 @@ namespace VDS.RDF.Query.Expressions.Aggregates
         }
 
         public override string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IExpression Copy()
         {
             throw new NotImplementedException();
         }
