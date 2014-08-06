@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
@@ -92,7 +94,39 @@ namespace VDS.RDF.Query.Compiler
 
         public void Visit(PathBlockElement pathBlock)
         {
-            throw new NotImplementedException();
+            // Handle empty path blocks
+            if (pathBlock.Paths.Count == 0)
+            {
+                this.Algebras.Push(Join.Create(this.Algebras.Pop(), Table.CreateUnit()));
+                return;
+            }
+
+            // Build up the algebra based on the paths
+            List<Triple> currentTriples = new List<Triple>();
+            IAlgebra current = Table.CreateUnit();
+            foreach (TriplePath triplePath in pathBlock.Paths)
+            {
+                if (triplePath.IsTriple)
+                {
+                    currentTriples.Add(triplePath.AsTriple());
+                }
+                else
+                {
+                    // Add current group of triples if relevant
+                    if (currentTriples.Count > 0)
+                    {
+                        current = Join.Create(current, new Bgp(currentTriples));
+                        currentTriples.Clear();
+                    }
+                    // Wrap with path
+                    current = new PropertyPath(current, triplePath);
+                }
+            }
+            // Remember to add final group of triples if relevant
+            if (currentTriples.Count > 0) current = Join.Create(current, new Bgp(currentTriples));
+
+            // Finally join to existing algebra
+            this.Algebras.Push(Join.Create(this.Algebras.Pop(), current));
         }
 
         public void Visit(ServiceElement service)

@@ -10,6 +10,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Query.Compiler
@@ -76,6 +77,98 @@ namespace VDS.RDF.Query.Compiler
             Assert.IsInstanceOf(typeof (Bgp), algebra);
 
             Bgp bgp = (Bgp) algebra;
+            Assert.AreEqual(1, bgp.TriplePatterns.Count);
+            Assert.IsTrue(bgp.TriplePatterns.Contains(t));
+        }
+
+        [Test]
+        public void QueryCompilerEmptyPathBlock()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            query.WhereClause = new PathBlockElement(Enumerable.Empty<TriplePath>());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Table), algebra);
+
+            Table table = (Table)algebra;
+            Assert.IsTrue(table.IsUnit);
+        }
+
+        [Test]
+        public void QueryCompilerPathBlock1()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            query.WhereClause = new PathBlockElement(new TriplePath(t).AsEnumerable());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Bgp), algebra);
+
+            Bgp bgp = (Bgp)algebra;
+            Assert.AreEqual(1, bgp.TriplePatterns.Count);
+            Assert.IsTrue(bgp.TriplePatterns.Contains(t));
+        }
+
+        [Test]
+        public void QueryCompilerPathBlock2()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            query.WhereClause = new PathBlockElement(new TriplePath[] { new TriplePath(t), new TriplePath(t.Subject, new InversePath(new Property(t.Predicate)), t.Object) });
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(PropertyPath), algebra);
+
+            PropertyPath pp = (PropertyPath) algebra;
+            Assert.IsTrue(pp.TriplePath.IsPath);
+            Assert.IsInstanceOf(typeof(InversePath), pp.TriplePath.Path);
+            Assert.AreEqual(t.Subject, pp.TriplePath.Subject);
+            Assert.AreEqual(t.Object, pp.TriplePath.Object);
+
+            Assert.IsInstanceOf(typeof(Bgp), pp.InnerAlgebra);
+            Bgp bgp = (Bgp)pp.InnerAlgebra;
+            Assert.AreEqual(1, bgp.TriplePatterns.Count);
+            Assert.IsTrue(bgp.TriplePatterns.Contains(t));
+        }
+
+        [Test]
+        public void QueryCompilerPathBlock3()
+        {
+            IQueryCompiler compiler = this.CreateInstance();
+
+            IQuery query = new Query();
+            Triple t = new Triple(new VariableNode("s"), new VariableNode("p"), new VariableNode("o"));
+            INode seqA = new UriNode(new Uri("http://a"));
+            INode seqB = new UriNode(new Uri("http://b"));
+            query.WhereClause = new PathBlockElement(new TriplePath[] { new TriplePath(t), new TriplePath(t.Subject, new InversePath(new Property(t.Predicate)), t.Object), new TriplePath(t.Subject, new SequencePath(new Property(seqA), new Property(seqB)), t.Object) });
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(PropertyPath), algebra);
+
+            PropertyPath pp = (PropertyPath)algebra;
+            Assert.IsTrue(pp.TriplePath.IsPath);
+            Assert.IsInstanceOf(typeof(SequencePath), pp.TriplePath.Path);
+            Assert.AreEqual(t.Subject, pp.TriplePath.Subject);
+            Assert.AreEqual(t.Object, pp.TriplePath.Object);
+
+            Assert.IsInstanceOf(typeof(PropertyPath), pp.InnerAlgebra);
+            pp = (PropertyPath) pp.InnerAlgebra;
+            Assert.IsInstanceOf(typeof(InversePath), pp.TriplePath.Path);
+            Assert.AreEqual(t.Subject, pp.TriplePath.Subject);
+            Assert.AreEqual(t.Object, pp.TriplePath.Object);
+
+            Assert.IsInstanceOf(typeof(Bgp), pp.InnerAlgebra);
+            Bgp bgp = (Bgp)pp.InnerAlgebra;
             Assert.AreEqual(1, bgp.TriplePatterns.Count);
             Assert.IsTrue(bgp.TriplePatterns.Contains(t));
         }

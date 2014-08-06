@@ -12,28 +12,28 @@ namespace VDS.RDF.Query.Algebra
     public class PropertyPath
         : BaseUnaryAlgebra
     {
-        public PropertyPath(IAlgebra innerAlgebra, TriplePath path)
+        public PropertyPath(IAlgebra innerAlgebra, TriplePath triplePath)
             : base(innerAlgebra)
         {
-            if (path == null) throw new ArgumentNullException("path");
-            this.Path = path;
+            if (triplePath == null) throw new ArgumentNullException("triplePath");
+            this.TriplePath = triplePath;
         }
 
-        public TriplePath Path { get; private set; }
+        public TriplePath TriplePath { get; private set; }
 
         public override IAlgebra Copy(IAlgebra innerAlgebra)
         {
-            return new PropertyPath(innerAlgebra, this.Path);
+            return new PropertyPath(innerAlgebra, this.TriplePath);
         }
 
         public override IEnumerable<string> ProjectedVariables
         {
-            get { return this.InnerAlgebra.ProjectedVariables.Concat(this.Path.Variables).Distinct(); }
+            get { return this.InnerAlgebra.ProjectedVariables.Concat(this.TriplePath.Variables).Distinct(); }
         }
 
         public override IEnumerable<string> FixedVariables
         {
-            get { return this.InnerAlgebra.FixedVariables.Concat(this.Path.Variables).Distinct(); }
+            get { return this.InnerAlgebra.FixedVariables.Concat(this.TriplePath.Variables).Distinct(); }
         }
 
         public override IEnumerable<string> FloatingVariables
@@ -56,11 +56,11 @@ namespace VDS.RDF.Query.Algebra
             if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.Append("(path ");
-            builder.Append(formatter.Format(this.Path.Subject));
+            builder.Append(formatter.Format(this.TriplePath.Subject));
             builder.Append(" (");
-            builder.Append(this.Path.Path.ToString(formatter));
+            builder.Append(this.TriplePath.Path.ToString(formatter));
             builder.Append(") ");
-            builder.AppendLine(formatter.Format(this.Path.Object));
+            builder.AppendLine(formatter.Format(this.TriplePath.Object));
             builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);
             builder.AppendLine(")");
             return builder.ToString();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
 
             PropertyPath pp = (PropertyPath) other;
 
-            return this.Path.Equals(pp.Path);
+            return this.TriplePath.Equals(pp.TriplePath);
         }
     }
 }
