@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
-using VDS.Common.References;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Results
@@ -62,7 +61,6 @@ namespace VDS.RDF.Query.Results
         {
             get
             {
-                INode value;
                 if (index < 0 || index >= this._variables.Count) throw new IndexOutOfRangeException(String.Format("Column Index {0} is not within the valid range of 0 to {1}", index, this._variables.Count - 1));
                 String var = this._variables[index];
                 return this[var];

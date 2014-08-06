@@ -29,6 +29,11 @@ namespace VDS.RDF.Query.Compiler
 
         private Stack<IAlgebra> Algebras { get; set; }
 
+        /// <summary>
+        /// Compiles the given element into algebra
+        /// </summary>
+        /// <param name="element">Element</param>
+        /// <returns>Compiled Algebra</returns>
         public IAlgebra Compile(IElement element)
         {
             element.Accept(this);
