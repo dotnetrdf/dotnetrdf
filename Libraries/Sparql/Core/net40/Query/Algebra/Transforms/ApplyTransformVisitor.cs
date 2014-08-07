@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Transforms;
+using VDS.RDF.Query.Sorting;
 
 namespace VDS.RDF.Query.Algebra.Transforms
 {
@@ -184,8 +186,23 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
         public void Visit(OrderBy orderBy)
         {
+            IEnumerable<IExpression> rawTransformedExpressions = TransformExpressions(orderBy.SortConditions.Select(c => c.Expression));
+
             orderBy.InnerAlgebra.Accept(this);
-            this.ResultingAlgebra = this.AlgebraTransform.Transform(orderBy, this.ResultingAlgebra);
+            if (rawTransformedExpressions == null)
+            {
+                this.ResultingAlgebra = this.AlgebraTransform.Transform(orderBy, this.ResultingAlgebra);
+            }
+            else
+            {
+                List<IExpression> transformedExpressions = rawTransformedExpressions.ToList();
+                List<ISortCondition> transformedSortConditions = new List<ISortCondition>();
+                for (int i = 0; i < orderBy.SortConditions.Count; i++)
+                {
+                    transformedSortConditions.Add(new SortCondition(transformedExpressions[i], orderBy.SortConditions[i].IsAscending));
+                }
+                this.ResultingAlgebra = new OrderBy(this.ResultingAlgebra, transformedSortConditions);
+            }
         }
 
         public void Visit(Extend extend)
