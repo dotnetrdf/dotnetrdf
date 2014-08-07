@@ -172,7 +172,9 @@
     <Compile Include="Query\Results\IMutableResultRow.cs" />
     <Compile Include="Query\Results\IMutableTabularResults.cs" />
     <Compile Include="Query\Results\IRandomAccessTabularResults.cs" />
-    <Compile Include="Query\Sorting\DescendingSortCondition.cs" />
+    <Compile Include="Query\Sorting\InvertedComparer.cs" />
+    <Compile Include="Query\Sorting\ExpressionValueComparer.cs" />
+    <Compile Include="Query\Sorting\SortCondition.cs" />
     <Compile Include="Query\Sorting\ISortCondition.cs" />
     <Compile Include="Query\Engine\Solution.cs" />
     <Compile Include="Query\Engine\SetDistinctnessComparer.cs" />
@@ -189,6 +191,8 @@
     <Compile Include="Query\Results\ResultRow.cs" />
     <Compile Include="Query\Results\StreamingTabularResults.cs" />
     <Compile Include="Query\Sorting\SortConditionApplicator.cs" />
+    <Compile Include="Query\Sorting\SparqlNodeComparer.cs" />
+    <Compile Include="Query\Sorting\SparqlOrderingComparer.cs" />
     <Compile Include="Query\Templates\ITemplate.cs" />
     <Compile Include="SparqlOptions.cs" />
     <Compile Include="Specifications\SparqlGrammarHelper.cs" />

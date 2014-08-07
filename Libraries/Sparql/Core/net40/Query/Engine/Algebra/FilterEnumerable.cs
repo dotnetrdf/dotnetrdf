@@ -56,9 +56,10 @@ namespace VDS.RDF.Query.Engine.Algebra
                 {
                     // Check that the solution under consideration results in true for every expression
                     bool accept = true;
+                    IExpressionContext context = this.Context.CreateExpressionContext();
                     foreach (IExpression expr in this.Expressions)
                     {
-                        IValuedNode n = expr.Evaluate(item, this.Context.CreateExpressionContext());
+                        IValuedNode n = expr.Evaluate(item, context);
 
                         if (n.AsSafeBoolean()) continue;
 

@@ -52,11 +52,12 @@ namespace VDS.RDF.Query.Engine.Algebra
 
             // Evaluate the expressions and add the generated values to the solution
             item = new Solution(this.InnerEnumerator.Current);
+            IExpressionContext context = this.Context.CreateExpressionContext();
             foreach (KeyValuePair<String, IExpression> kvp in this.Assignments)
             {
                 try
                 {
-                    IValuedNode n = kvp.Value.Evaluate(item, this.Context.CreateExpressionContext());
+                    IValuedNode n = kvp.Value.Evaluate(item, context);
                     item.Add(kvp.Key, n);
                 }
                 catch (RdfQueryException)

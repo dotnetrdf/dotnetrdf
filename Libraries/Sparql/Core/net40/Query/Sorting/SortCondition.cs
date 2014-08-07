@@ -34,7 +34,8 @@ namespace VDS.RDF.Query.Sorting
 
         public IComparer<ISolution> CreateComparer(IExpressionContext context)
         {
-            throw new NotImplementedException();
+            IComparer<ISolution> comparer = new ExpressionValueComparer(this.Expression, context, new SparqlOrderingComparer());
+            return this.IsAscending ? comparer : new InvertedComparer<ISolution>(comparer);
         }
 
         public override string ToString()

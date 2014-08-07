@@ -393,7 +393,6 @@
     <Compile Include="Query\QueryProcessors.cs" />
     <Compile Include="Query\SparqlEvaluationContext.cs" />
     <Compile Include="Query\SPARQLExpressionParser.cs" />
-    <Compile Include="Query\SparqlNodeComparer.cs" />
     <Compile Include="Query\SparqlParameterizedString.cs" />
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SPARQLQuery.cs" />
