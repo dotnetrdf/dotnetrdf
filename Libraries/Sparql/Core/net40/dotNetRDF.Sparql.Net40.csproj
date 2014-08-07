@@ -143,6 +143,7 @@
     <Compile Include="Query\Expressions\Primary\ConstantTerm.cs" />
     <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
     <Compile Include="Query\Expressions\Transforms\ApplyExpressionTransformVisitor.cs" />
+    <Compile Include="Query\Expressions\Transforms\ExprTransformCopy.cs" />
     <Compile Include="Query\Expressions\Transforms\IExpressionTransform.cs" />
     <Compile Include="Query\Grouping\BaseExpressionAccumulator.cs" />
     <Compile Include="Query\Grouping\CountAllAccumulator.cs" />

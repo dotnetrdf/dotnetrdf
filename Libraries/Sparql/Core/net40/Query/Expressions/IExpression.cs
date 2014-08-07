@@ -90,17 +90,23 @@ namespace VDS.RDF.Query.Expressions
 
         String ToString();
 
-        string ToString(IAlgebraFormatter formatter);
+        String ToString(IAlgebraFormatter formatter);
 
         String ToPrefixString();
 
-        string ToPrefixString(IAlgebraFormatter formatter);
+        String ToPrefixString(IAlgebraFormatter formatter);
+
+        /// <summary>
+        /// Makes a copy of the expression
+        /// </summary>
+        /// <returns>Copy of the expression</returns>
+        IExpression Copy();
     }
 
     public interface INullaryExpression
         : IExpression
     {
-        IExpression Copy();
+        
     }
 
     public interface IUnaryExpression
@@ -150,7 +156,7 @@ namespace VDS.RDF.Query.Expressions
     }
 
     public interface IAggregateExpression
-        : IExpression
+        : INAryExpression
     {
         IAccumulator CreateAccumulator();
     }

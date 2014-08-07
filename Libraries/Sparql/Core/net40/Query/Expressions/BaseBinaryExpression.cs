@@ -60,6 +60,11 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         public IExpression SecondArgument { get; set; }
 
+        public virtual IExpression Copy()
+        {
+            return Copy(this.FirstArgument.Copy(), this.SecondArgument.Copy());
+        }
+
         public abstract IExpression Copy(IExpression arg1, IExpression arg2);
 
         /// <summary>
@@ -120,24 +125,19 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this.FirstArgument.CanParallelise && this.SecondArgument.CanParallelise;
-            }
-        }
+        public abstract bool CanParallelise { get; }
 
-        public virtual bool IsDeterministic { get { return this.FirstArgument.IsDeterministic && this.SecondArgument.IsDeterministic; } }
+        public abstract bool IsDeterministic { get; }
 
-        public bool IsConstant
-        {
-            get { return false; }
-        }
+        public abstract bool IsConstant { get; }
 
         public void Accept(IExpressionVisitor visitor)
         {
             visitor.Visit(this);
         }
+
+        public abstract override bool Equals(Object other);
+
+        public abstract override int GetHashCode();
     }
 }

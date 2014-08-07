@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Expressions.Transforms
 {
@@ -14,6 +15,8 @@ namespace VDS.RDF.Query.Expressions.Transforms
 
         IExpression Transform(INAryExpression expression, IEnumerable<IExpression> transformedArguments);
 
-        IExpression Transform(IAggregateExpression expression);
+        IExpression Transform(IAggregateExpression expression, IEnumerable<IExpression> transformedArguments);
+
+        IExpression Transform(IAlgebraExpression expression, IAlgebra transformedAlgebra);
     }
 }

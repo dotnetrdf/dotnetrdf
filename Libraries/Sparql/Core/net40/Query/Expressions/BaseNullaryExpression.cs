@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Writing.Formatting;
@@ -45,5 +46,9 @@ namespace VDS.RDF.Query.Expressions
         public abstract string ToPrefixString(IAlgebraFormatter formatter);
 
         public abstract IExpression Copy();
+
+        public abstract override bool Equals(Object other);
+
+        public abstract override int GetHashCode();
     }
 }

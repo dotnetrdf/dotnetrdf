@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Algebra.Transforms;
 
@@ -10,14 +8,22 @@ namespace VDS.RDF.Query.Expressions.Transforms
     public class ApplyExpressionTransformVisitor
         : IExpressionVisitor
     {
-        public ApplyExpressionTransformVisitor(IExpressionTransform algebraTransform)
+        public ApplyExpressionTransformVisitor(IExpressionTransform expressionTransform)
         {
-            if (algebraTransform == null) throw new ArgumentNullException("algebraTransform");
-            this.ExpressionTransform = algebraTransform;
+            if (expressionTransform == null) throw new ArgumentNullException("expressionTransform");
+            this.ExpressionTransform = expressionTransform;
             this.Expressions = new Stack<IExpression>();
         }
 
+        public ApplyExpressionTransformVisitor(IExpressionTransform expressionTransform, IAlgebraTransform algebraTransform)
+            : this(expressionTransform)
+        {
+            this.AlgebraTransform = algebraTransform;
+        }
+
         private IExpressionTransform ExpressionTransform { get; set; }
+
+        private IAlgebraTransform AlgebraTransform { get; set; }
 
         private Stack<IExpression> Expressions { get; set; }
 
@@ -63,22 +69,46 @@ namespace VDS.RDF.Query.Expressions.Transforms
 
         public void Visit(ITernayExpression ternayExpression)
         {
-            throw new NotImplementedException();
+            ternayExpression.FirstArgument.Accept(this);
+            IExpression firstArg = this.ResultingExpression;
+            ternayExpression.SecondArgument.Accept(this);
+            IExpression secondArg = this.ResultingExpression;
+            ternayExpression.ThirdArgument.Accept(this);
+            IExpression thirdArg = this.ResultingExpression;
+            this.ResultingExpression = this.ExpressionTransform.Transform(ternayExpression, firstArg, secondArg, thirdArg);
         }
 
         public void Visit(INAryExpression nAryExpression)
         {
-            throw new NotImplementedException();
+            List<IExpression> transformedArgs = new List<IExpression>();
+            foreach (IExpression arg in nAryExpression.Arguments)
+            {
+                arg.Accept(this);
+                transformedArgs.Add(this.ResultingExpression);
+            }
+            this.ResultingExpression = this.ExpressionTransform.Transform(nAryExpression, transformedArgs);
         }
 
         public void Visit(IAlgebraExpression algebraExpression)
         {
-            throw new NotImplementedException();
+            IAlgebra algebra = algebraExpression.Algebra;
+            if (this.AlgebraTransform != null)
+            {
+                ApplyTransformVisitor transform = new ApplyTransformVisitor(this.AlgebraTransform, this.ExpressionTransform);
+                algebra = transform.Transform(algebra);
+            }
+            this.ResultingExpression = this.ExpressionTransform.Transform(algebraExpression, algebra);
         }
 
         public void Visit(IAggregateExpression aggregateExpression)
         {
-            throw new NotImplementedException();
+            List<IExpression> transformedArgs = new List<IExpression>();
+            foreach (IExpression arg in aggregateExpression.Arguments)
+            {
+                arg.Accept(this);
+                transformedArgs.Add(this.ResultingExpression);
+            }
+            this.ResultingExpression = this.ExpressionTransform.Transform(aggregateExpression, transformedArgs);
         }
     }
 }

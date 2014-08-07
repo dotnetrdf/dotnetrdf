@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Transforms;
 
 namespace VDS.RDF.Query.Algebra.Transforms
 {
@@ -18,6 +18,12 @@ namespace VDS.RDF.Query.Algebra.Transforms
             this.Algebras = new Stack<IAlgebra>();
         }
 
+        public ApplyTransformVisitor(IAlgebraTransform algebraTransform, IExpressionTransform expressionTransform)
+            : this(algebraTransform)
+        {
+            this.ExpressionTransform = expressionTransform;
+        }
+
         /// <summary>
         /// Transforms the given algebra
         /// </summary>
@@ -32,6 +38,8 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
         private IAlgebraTransform AlgebraTransform { get; set; }
 
+        private IExpressionTransform ExpressionTransform { get; set; }
+
         private Stack<IAlgebra> Algebras { get; set; }
 
         private IAlgebra ResultingAlgebra
@@ -45,6 +53,47 @@ namespace VDS.RDF.Query.Algebra.Transforms
             {
                 this.Algebras.Push(value);
             }
+        }
+
+        private IEnumerable<IExpression> TransformExpressions(IEnumerable<IExpression> expressions)
+        {
+            // Return null if no transform available
+            if (this.ExpressionTransform == null) return null;
+
+            // Apply expression transform
+            List<IExpression> transformedExpressions = new List<IExpression>();
+            bool changed = false;
+            foreach (IExpression expr in expressions)
+            {
+                ApplyExpressionTransformVisitor transform = new ApplyExpressionTransformVisitor(this.ExpressionTransform, this.AlgebraTransform);
+                transformedExpressions.Add(transform.Transform(expr));
+
+                // Set changed marker if expression was changed
+                if (!expr.Equals(transformedExpressions[transformedExpressions.Count - 1])) changed = true;
+            }
+            // Return changes if any, otherwise return null
+            return changed ? transformedExpressions : null;
+        }
+
+        private IEnumerable<KeyValuePair<string, IExpression>> TransformAssignments(IEnumerable<KeyValuePair<string, IExpression>> assignments)
+        {
+            // Return null if no transform available
+            if (this.ExpressionTransform == null) return null;
+
+            // Apply expression transform
+            List<KeyValuePair<string, IExpression>> transformedAssignments = new List<KeyValuePair<string, IExpression>>();
+            bool changed = false;
+            foreach (KeyValuePair<string, IExpression> kvp in assignments)
+            {
+                ApplyExpressionTransformVisitor transform = new ApplyExpressionTransformVisitor(this.ExpressionTransform, this.AlgebraTransform);
+                transformedAssignments.Add(new KeyValuePair<string, IExpression>(kvp.Key, transform.Transform(kvp.Value)));
+
+                // Set changed marker if expression was changed
+                if (!kvp.Value.Equals(transformedAssignments[transformedAssignments.Count - 1].Value)) changed = true;
+            }
+
+            // Return changes if any, otherwise return null
+            return changed ? transformedAssignments : null;
         }
 
         public void Visit(Bgp bgp)
@@ -75,8 +124,10 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
         public void Visit(Filter filter)
         {
+            IEnumerable<IExpression> transformedExpressions = this.TransformExpressions(filter.Expressions);
+
             filter.InnerAlgebra.Accept(this);
-            this.ResultingAlgebra = this.AlgebraTransform.Transform(filter, this.ResultingAlgebra);
+            this.ResultingAlgebra = transformedExpressions == null ? this.AlgebraTransform.Transform(filter, this.ResultingAlgebra) : Filter.Create(this.ResultingAlgebra, transformedExpressions);
         }
 
         public void Visit(Table table)
@@ -95,11 +146,13 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
         public void Visit(LeftJoin leftJoin)
         {
+            IEnumerable<IExpression> transformedExpressions = this.TransformExpressions(leftJoin.Expressions);
+
             leftJoin.Lhs.Accept(this);
             IAlgebra lhs = this.ResultingAlgebra;
             leftJoin.Rhs.Accept(this);
             IAlgebra rhs = this.ResultingAlgebra;
-            this.ResultingAlgebra = this.AlgebraTransform.Transform(leftJoin, lhs, rhs);
+            this.ResultingAlgebra = transformedExpressions == null ? this.AlgebraTransform.Transform(leftJoin, lhs, rhs) : new LeftJoin(lhs, rhs, transformedExpressions);
         }
 
         public void Visit(Minus minus)
@@ -137,12 +190,16 @@ namespace VDS.RDF.Query.Algebra.Transforms
 
         public void Visit(Extend extend)
         {
+            IEnumerable<KeyValuePair<string, IExpression>> transformedAssignments = this.TransformAssignments(extend.Assignments);
+
             extend.InnerAlgebra.Accept(this);
-            this.ResultingAlgebra = this.AlgebraTransform.Transform(extend, this.ResultingAlgebra);
+            this.ResultingAlgebra = transformedAssignments == null ? this.AlgebraTransform.Transform(extend, this.ResultingAlgebra) : Extend.Create(this.ResultingAlgebra, transformedAssignments);
         }
 
         public void Visit(GroupBy groupBy)
         {
+            
+
             groupBy.InnerAlgebra.Accept(this);
             this.ResultingAlgebra = this.AlgebraTransform.Transform(groupBy, this.ResultingAlgebra);
         }

@@ -27,6 +27,11 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         public IExpression Argument { get; set; }
 
+        public virtual IExpression Copy()
+        {
+            return Copy(this.Argument.Copy());
+        }
+
         public abstract IExpression Copy(IExpression argument);
 
         /// <summary>
@@ -87,21 +92,19 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this.Argument.CanParallelise;
-            }
-        }
+        public abstract bool CanParallelise { get; }
 
-        public virtual bool IsDeterministic { get { return this.Argument.IsDeterministic; } }
+        public abstract bool IsDeterministic { get; }
 
-        public bool IsConstant { get { return false; } }
+        public abstract bool IsConstant { get; }
 
         public void Accept(IExpressionVisitor visitor)
         {
             visitor.Visit(this);
         }
+
+        public abstract override bool Equals(Object other);
+
+        public abstract override int GetHashCode();
     }
 }

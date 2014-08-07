@@ -133,6 +133,17 @@ namespace VDS.RDF.Query.Expressions.Primary
             return new ConstantTerm(this.Node);
         }
 
+        public override bool Equals(object other)
+        {
+            if (other is ConstantTerm) return Equals((IExpression) other);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Node.GetHashCode();
+        }
+
         /// <summary>
         /// Node this Term represents
         /// </summary>

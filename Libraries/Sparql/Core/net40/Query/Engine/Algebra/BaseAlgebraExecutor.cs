@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Engine.Algebra
         public IEnumerable<ISolution> Execute(OrderBy orderBy, IExecutionContext context)
         {
             context = EnsureContext(context);
-            return orderBy.InnerAlgebra.Execute(this, context).OrderBy(s => s, new SortConditionApplicator(orderBy.SortConditions));
+            return orderBy.InnerAlgebra.Execute(this, context).OrderBy(s => s, new SortConditionApplicator(orderBy.SortConditions, context.CreateExpressionContext()));
         }
 
         public IEnumerable<ISolution> Execute(Extend extend, IExecutionContext context)
@@ -181,7 +181,7 @@ namespace VDS.RDF.Query.Engine.Algebra
         public IEnumerable<ISolution> Execute(TopN topN, IExecutionContext context)
         {
             context = EnsureContext(context);
-            return topN.InnerAlgebra.Execute(this, context).Top(new SortConditionApplicator(topN.SortConditions), topN.N);
+            return topN.InnerAlgebra.Execute(this, context).Top(new SortConditionApplicator(topN.SortConditions, context.CreateExpressionContext()), topN.N);
         }
 
         public IEnumerable<ISolution> Execute(PropertyFunction propertyFunction, IExecutionContext context)

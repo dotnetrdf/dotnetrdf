@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Grouping;
@@ -18,17 +20,17 @@ namespace VDS.RDF.Query.Expressions.Aggregates
 
         public abstract string Functor { get; }
 
-        public bool CanParallelise
+        public virtual bool CanParallelise
         {
             get { return false; }
         }
 
-        public bool IsDeterministic
+        public virtual bool IsDeterministic
         {
             get { return true; }
         }
 
-        public bool IsConstant
+        public virtual bool IsConstant
         {
             get { return false; }
         }
@@ -51,6 +53,19 @@ namespace VDS.RDF.Query.Expressions.Aggregates
 
         public abstract string ToPrefixString(IAlgebraFormatter formatter);
 
+        public virtual IExpression Copy()
+        {
+            return Copy(this.Arguments.Select(arg => arg.Copy()));
+        }
+
         public abstract IAccumulator CreateAccumulator();
+
+        public abstract IEnumerable<IExpression> Arguments { get; }
+
+        public abstract IExpression Copy(IEnumerable<IExpression> arguments);
+
+        public abstract override bool Equals(Object other);
+
+        public abstract override int GetHashCode();
     }
 }

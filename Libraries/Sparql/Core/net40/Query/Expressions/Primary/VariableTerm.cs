@@ -137,5 +137,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             return new VariableTerm(this.VariableName);
         }
+
+        public override bool Equals(object other)
+        {
+            if (other is VariableTerm) return Equals((IExpression) other);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.VariableName.GetHashCode();
+        }
     }
 }

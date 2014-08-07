@@ -1,23 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Sorting
 {
-    public class DescendingSortCondition
+    public class SortCondition
         : ISortCondition
     {
-        public readonly ISortCondition _condition;
-
-        public DescendingSortCondition(ISortCondition condition)
+        public SortCondition(IExpression expression, bool isAscending)
         {
-            if (condition == null) throw new ArgumentNullException("condition");
-            this._condition = condition;
+            if (expression == null) throw new ArgumentNullException("expression");
+            this.Expression = expression;
+            this.IsAscending = isAscending;
         }
 
-        public bool IsAscending
+        public SortCondition(IExpression expression)
+            : this(expression, true) {}
+
+        public bool IsAscending { get; private set; }
+
+        public IExpression Expression { get; private set; }
+
+        public bool Equals(ISortCondition other)
         {
-            get { return false; }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+
+            return this.IsAscending == other.IsAscending && this.Expression.Equals(other.Expression);
+        }
+
+        public IComparer<ISolution> CreateComparer(IExpressionContext context)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()
@@ -25,25 +42,21 @@ namespace VDS.RDF.Query.Sorting
             return ToString(new AlgebraFormatter());
         }
 
-        public string ToString(INodeFormatter formatter)
+        public string ToString(IAlgebraFormatter formatter)
         {
             if (formatter == null) throw new ArgumentNullException("formatter");
-            return this._condition.IsAscending ? String.Format("(desc {0})", this._condition.ToString(formatter)) : this._condition.ToString(formatter);
+            return this.IsAscending ? this.Expression.ToString(formatter) : String.Format("DESC({0})", this.Expression.ToString(formatter));
         }
 
-        public int Compare(ISolution x, ISolution y)
+        public string ToPrefixString()
         {
-            int c = this._condition.Compare(x, y);
-            // Reverse sort order if inner condition is an ascending sort
-            // If it is already a descending sort leave as is
-            return this._condition.IsAscending ? c*-1 : c;
+            return ToPrefixString(new AlgebraFormatter());
         }
 
-        public bool Equals(ISortCondition other)
+        public string ToPrefixString(IAlgebraFormatter formatter)
         {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            return !other.IsAscending && this._condition.Equals(other);
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return this.IsAscending ? this.Expression.ToPrefixString(formatter) : String.Format("(desc {0})", this.Expression.ToPrefixString(formatter));
         }
     }
 }

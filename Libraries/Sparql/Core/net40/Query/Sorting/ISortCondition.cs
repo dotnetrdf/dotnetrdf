@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Sorting
@@ -9,7 +10,7 @@ namespace VDS.RDF.Query.Sorting
     /// Interface for sort conditions
     /// </summary>
     public interface ISortCondition
-        : IComparer<ISolution>, IEquatable<ISortCondition>
+        : IEquatable<ISortCondition>
     {
         /// <summary>
         /// Gets whether this is an ascending sort condition
@@ -17,8 +18,19 @@ namespace VDS.RDF.Query.Sorting
         /// <returns>True if an ascending sort condition, false if a descending sort condition</returns>
         bool IsAscending { get; }
 
+        /// <summary>
+        /// Gets the expression used for sorting
+        /// </summary>
+        IExpression Expression { get; }
+
+        IComparer<ISolution> CreateComparer(IExpressionContext context);
+            
         String ToString();
 
-        String ToString(INodeFormatter formatter);
+        String ToString(IAlgebraFormatter formatter);
+
+        String ToPrefixString();
+
+        String ToPrefixString(IAlgebraFormatter formatter);
     }
 }
