@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Algebra
 
         public override IEnumerable<ISolution> Execute(IAlgebraExecutor executor, IExecutionContext context)
         {
-            return executor.Execute(this);
+            return executor.Execute(this, context);
         }
 
         public override string ToString(IAlgebraFormatter formatter)

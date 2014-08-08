@@ -222,10 +222,7 @@ namespace VDS.RDF.Query.Engine
             foreach (String var in vars)
             {
                 INode n;
-                if (this._values.TryGetValue(var, out n))
-                {
-                    s.Add(var, n);
-                }
+                s.Add(var, this._values.TryGetValue(var, out n) ? n : null);
             }
             return s;
         }

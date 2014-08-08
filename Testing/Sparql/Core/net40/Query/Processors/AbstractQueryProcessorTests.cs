@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
@@ -93,7 +94,6 @@ namespace VDS.RDF.Query.Processors
             Assert.IsTrue(result.Boolean.HasValue);
             Assert.IsTrue(result.Boolean.Value);
         }
-
 
         [Test]
         public void QueryProcessorAskWhereConcreteMatch()
@@ -190,6 +190,80 @@ namespace VDS.RDF.Query.Processors
 
             IResultRow row = results[0];
             Assert.IsTrue(row.IsEmpty);
+        }
+
+        [Test]
+        public void QueryProcessorProject1()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.AddProjectVariable("x");
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x", "y"});
+            r1.Set("x", ten);
+            r1.Set("y", hundred);
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            Assert.AreEqual(1, results.Count);
+
+            IResultRow row = results[0];
+            Assert.IsTrue(row.HasBoundValue("x"));
+            Assert.AreEqual(ten, row["x"]);
+        }
+
+        [Test]
+        public void QueryProcessorProject2()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.AddProjectVariable("x");
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x", "y" });
+            r1.Set("x", ten);
+            r1.Set("y", hundred);
+            IMutableResultRow r2 = new MutableResultRow(new String[] { "x" });
+            r2.Set("x", ten);
+            IMutableResultRow r3 = new MutableResultRow(new String[] { "y"});
+            r3.Set("y", hundred);
+            IMutableResultRow r4 = new MutableResultRow();
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1, r2, r3, r4 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            Assert.AreEqual(data.Count, results.Count);
+
+            foreach (IResultRow row in results)
+            {
+                Assert.IsTrue(row.HasValue("x"));
+                if (row.HasBoundValue("x"))
+                {
+                    Assert.AreEqual(ten, row["x"]);
+                }
+                else
+                {
+                    Assert.IsFalse(row.HasBoundValue("x"));
+                }
+            }
         }
     }
 }
