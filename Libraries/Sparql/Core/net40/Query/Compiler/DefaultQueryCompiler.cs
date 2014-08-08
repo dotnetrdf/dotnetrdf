@@ -53,7 +53,8 @@ namespace VDS.RDF.Query.Compiler
                 // Build the projections substituting temporary variables for aggregates where necessary
                 foreach (KeyValuePair<String, IExpression> kvp in query.Projections)
                 {
-                    if (kvp.Value == null || aggregates.Count == 0)
+                    if (kvp.Value == null) continue;
+                    if (aggregates.Count == 0)
                     {
                         projections.Add(kvp);
                     }
@@ -69,15 +70,15 @@ namespace VDS.RDF.Query.Compiler
             // GROUP BY
             if (query.GroupExpressions != null || aggregates.Count > 0)
             {
-                // TODO Produce GroupBy clause
+                IEnumerable<KeyValuePair<IAggregateExpression, String>> aggregators = aggSubstitutions.Select(kvp => new KeyValuePair<IAggregateExpression, string>((IAggregateExpression) kvp.Key, ((VariableTerm) kvp.Value).VariableName));
                 if (query.GroupExpressions != null)
                 {
-                    // TODO Group By Expressions
+                    algebra = new GroupBy(algebra, query.GroupExpressions, aggregators);
                 }
                 else
                 {
-                    // TODO Default Grouping
-                }                
+                    algebra = new GroupBy(algebra, aggregators);
+                }
             }
 
             // Project Expressions
@@ -105,9 +106,9 @@ namespace VDS.RDF.Query.Compiler
             }
 
             // PROJECT
-            if (query.Projections != null && query.Projections.Any(kvp => kvp.Value == null))
+            if (query.Projections != null && query.Projections.Any())
             {
-                algebra = new Project(algebra, query.Projections.Where(kvp => kvp.Value == null).Select(kvp => kvp.Key));
+                algebra = new Project(algebra, query.Projections.Select(kvp => kvp.Key));
             }
 
             // DISTINCT/REDUCED

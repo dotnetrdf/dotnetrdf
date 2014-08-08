@@ -54,10 +54,10 @@ namespace VDS.RDF.Query.Algebra
             if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.Append("(project (");
-            foreach (String var in this.Projections)
+            for(int i = 0; i < this.Projections.Count; i++)
             {
-                builder.Append(' ');
-                builder.Append(formatter.Format(new VariableNode(var)));
+                if (i > 0) builder.Append(' ');
+                builder.Append(formatter.Format(new VariableNode(this.Projections[i])));
             }
             builder.AppendLine(")");
             builder.AppendLineIndented(this.InnerAlgebra.ToString(formatter), 2);

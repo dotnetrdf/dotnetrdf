@@ -71,10 +71,10 @@ namespace VDS.RDF.Query.Algebra
             builder.Append("(filter (exprlist ");
             for (int i = 0; i < this.Expressions.Count; i++)
             {
+                if (i > 0) builder.Append(' ');
                 builder.Append("(");
                 builder.Append(this.Expressions[i].ToPrefixString(formatter));
                 builder.Append(")");
-                if (i < this.Expressions.Count - 1) builder.Append(' ');
             }
             builder.AppendLine(")");
             builder.AppendLineIndented(this.InnerAlgebra.ToString(), 2);

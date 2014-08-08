@@ -799,7 +799,7 @@ namespace VDS.RDF.Query.Compiler
         }
 
         [TestCase("x"),
-         TestCase("y"),
+         TestCase("x", "y"),
          TestCase("x", "y", "z")]
         public void QueryCompilerProject(params String[] vars)
         {
@@ -824,7 +824,7 @@ namespace VDS.RDF.Query.Compiler
         }
 
         [Test]
-        public void QueryCompilerProjectAggregates()
+        public void QueryCompilerGroupBy1()
         {
             IQueryCompiler compiler = new DefaultQueryCompiler();
 
@@ -833,11 +833,83 @@ namespace VDS.RDF.Query.Compiler
 
             IAlgebra algebra = compiler.Compile(query);
             Console.WriteLine(algebra.ToString());
-            Assert.IsInstanceOf(typeof(Project), algebra);
 
+            Assert.IsInstanceOf(typeof(Project), algebra);
             Project project = (Project)algebra;
-            Assert.AreEqual(0, project.Projections.Count);
+            Assert.AreEqual(1, project.Projections.Count);
             Assert.IsTrue(project.Projections.Contains("x"));
+
+            Assert.IsInstanceOf(typeof(Extend), project.InnerAlgebra);
+            Extend extend = (Extend) project.InnerAlgebra;
+            Assert.AreEqual(1, extend.Assignments.Count);
+            Assert.AreEqual(query.Projections.First().Key, extend.Assignments.First().Key);
+
+            Assert.IsInstanceOf(typeof(GroupBy), extend.InnerAlgebra);
+            GroupBy group = (GroupBy) extend.InnerAlgebra;
+            Assert.AreEqual(0, group.GroupExpressions.Count);
+            Assert.AreEqual(1, group.Aggregators.Count);
+            Assert.AreEqual(query.Projections.First().Value, group.Aggregators.First().Key);
+        }
+
+        [Test]
+        public void QueryCompilerGroupBy2()
+        {
+            IQueryCompiler compiler = new DefaultQueryCompiler();
+
+            IQuery query = new Query();
+            query.AddProjectExpression("x", new CountAllAggregate());
+            query.AddProjectExpression("y", new CountAllAggregate());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof(Project), algebra);
+            Project project = (Project)algebra;
+            Assert.AreEqual(2, project.Projections.Count);
+            Assert.IsTrue(project.Projections.Contains("x"));
+
+            Assert.IsInstanceOf(typeof(Extend), project.InnerAlgebra);
+            Extend extend = (Extend)project.InnerAlgebra;
+            Assert.AreEqual(2, extend.Assignments.Count);
+            Assert.AreEqual(query.Projections.First().Key, extend.Assignments.First().Key);
+            Assert.AreEqual(query.Projections.Last().Key, extend.Assignments.Last().Key);
+
+            Assert.IsInstanceOf(typeof(GroupBy), extend.InnerAlgebra);
+            GroupBy group = (GroupBy)extend.InnerAlgebra;
+            Assert.AreEqual(0, group.GroupExpressions.Count);
+            Assert.AreEqual(1, group.Aggregators.Count);
+            Assert.AreEqual(query.Projections.First().Value, group.Aggregators.First().Key);
+        }
+
+        [Test]
+        public void QueryCompilerGroupBy3()
+        {
+            IQueryCompiler compiler = new DefaultQueryCompiler();
+
+            IQuery query = new Query();
+            query.AddProjectExpression("x", new CountAllAggregate());
+            query.AddProjectExpression("y", new CountAggregate(new VariableTerm("foo")));
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof(Project), algebra);
+            Project project = (Project)algebra;
+            Assert.AreEqual(2, project.Projections.Count);
+            Assert.IsTrue(project.Projections.Contains("x"));
+
+            Assert.IsInstanceOf(typeof(Extend), project.InnerAlgebra);
+            Extend extend = (Extend)project.InnerAlgebra;
+            Assert.AreEqual(2, extend.Assignments.Count);
+            Assert.AreEqual(query.Projections.First().Key, extend.Assignments.First().Key);
+            Assert.AreEqual(query.Projections.Last().Key, extend.Assignments.Last().Key);
+
+            Assert.IsInstanceOf(typeof(GroupBy), extend.InnerAlgebra);
+            GroupBy group = (GroupBy)extend.InnerAlgebra;
+            Assert.AreEqual(0, group.GroupExpressions.Count);
+            Assert.AreEqual(2, group.Aggregators.Count);
+            Assert.AreEqual(query.Projections.First().Value, group.Aggregators.First().Key);
+            Assert.AreEqual(query.Projections.Last().Value, group.Aggregators.Last().Key);
         }
     }
 

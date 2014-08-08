@@ -55,12 +55,13 @@ namespace VDS.RDF.Query.Algebra
             if (formatter == null) throw new ArgumentNullException("formatter");
             StringBuilder builder = new StringBuilder();
             builder.Append("(extend (");
-            foreach (KeyValuePair<String, IExpression> assignment in this.Assignments)
+            for (int i = 0; i < this.Assignments.Count; i++)
             {
-                builder.Append(" (");
-                builder.Append(formatter.Format(new VariableNode(assignment.Key)));
+                if (i > 0) builder.Append(' ');
+                builder.Append('(');
+                builder.Append(formatter.Format(new VariableNode(this.Assignments[i].Key)));
                 builder.Append(' ');
-                builder.Append(assignment.Value.ToPrefixString(formatter));
+                builder.Append(this.Assignments[i].Value.ToPrefixString(formatter));
                 builder.Append(")");
             }
             builder.AppendLine(")");
