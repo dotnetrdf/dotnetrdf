@@ -19,12 +19,16 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
+- Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
 
 rdfEditor (Not available under Mono)
 
 rdfOptStats
-   
+
 rdfQuery
+- Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
+- Fix bug with incorrect sub-query evaluation (CORE-420)
+- Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
 
 rdfServer
 
@@ -36,5 +40,10 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
+- Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
+- Fix bug with incorrect sub-query evaluation (CORE-420)
+- Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
 
 StoreManager
+- Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
+- Fix for Stardog 2.2 reasoning support
