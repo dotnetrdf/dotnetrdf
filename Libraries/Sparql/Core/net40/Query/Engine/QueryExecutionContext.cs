@@ -10,6 +10,8 @@ namespace VDS.RDF.Query.Engine
     public class QueryExecutionContext
         : IExecutionContext
     {
+        private DateTimeOffset? _now;
+
         /// <summary>
         /// Creates a new execution context
         /// </summary>
@@ -67,7 +69,16 @@ namespace VDS.RDF.Query.Engine
 
         public virtual IExpressionContext CreateExpressionContext()
         {
-            throw new NotImplementedException();
+            return new ExpressionContext(this);
+        }
+
+        public DateTimeOffset EffectiveNow
+        {
+            get
+            {
+                if (!this._now.HasValue) this._now = DateTimeOffset.Now;
+                return this._now.Value;
+            }
         }
     }
 }

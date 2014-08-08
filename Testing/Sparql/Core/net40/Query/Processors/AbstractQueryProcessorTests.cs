@@ -7,7 +7,9 @@ using NUnit.Framework;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Elements;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Results;
+using VDS.RDF.Query.Sorting;
 
 namespace VDS.RDF.Query.Processors
 {
@@ -264,6 +266,74 @@ namespace VDS.RDF.Query.Processors
                     Assert.IsFalse(row.HasBoundValue("x"));
                 }
             }
+        }
+
+        [Test]
+        public void QueryProcessorOrderBy1()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.SortConditions = new ISortCondition[] { new SortCondition(new VariableTerm("x")) };
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x" });
+            r1.Set("x", ten);
+            IMutableResultRow r2 = new MutableResultRow(new String[] { "x" });
+            r2.Set("x", hundred);
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1, r2 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            Assert.AreEqual(data.Count, results.Count);
+
+            IResultRow first = results[0];
+            IResultRow second = results[1];
+            Assert.IsTrue(first.HasBoundValue("x"));
+            Assert.IsTrue(second.HasBoundValue("x"));
+            Assert.AreEqual(ten, first["x"]);
+            Assert.AreEqual(hundred, second["x"]);
+        }
+
+        [Test]
+        public void QueryProcessorOrderBy2()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.SortConditions = new ISortCondition[] { new SortCondition(new VariableTerm("x"), false) };
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x" });
+            r1.Set("x", ten);
+            IMutableResultRow r2 = new MutableResultRow(new String[] { "x" });
+            r2.Set("x", hundred);
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1, r2 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            Assert.AreEqual(data.Count, results.Count);
+
+            IResultRow first = results[0];
+            IResultRow second = results[1];
+            Assert.IsTrue(first.HasBoundValue("x"));
+            Assert.IsTrue(second.HasBoundValue("x"));
+            Assert.AreEqual(hundred, first["x"]);
+            Assert.AreEqual(ten, second["x"]);
         }
     }
 }

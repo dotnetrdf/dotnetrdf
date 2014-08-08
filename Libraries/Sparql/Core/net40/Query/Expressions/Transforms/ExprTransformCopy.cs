@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Expressions.Transforms
 {
+    /// <summary>
+    /// An expression transform that simply copies expressions
+    /// </summary>
     public class ExprTransformCopy
         : IExpressionTransform
     {

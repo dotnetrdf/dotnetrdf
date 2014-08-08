@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
@@ -46,5 +47,13 @@ namespace VDS.RDF.Query.Engine
         /// </summary>
         /// <returns>New expression context</returns>
         IExpressionContext CreateExpressionContext();
+
+        /// <summary>
+        /// Gets the effective now for the purposes of the execution
+        /// </summary>
+        /// <remarks>
+        /// Must return a constant value throughout the life of the execution, may be late bound i.e. does not need to be initialized until the first time it is accessed
+        /// </remarks>
+        DateTimeOffset EffectiveNow { get; }
     }
 }

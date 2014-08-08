@@ -133,10 +133,12 @@
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\Aggregates\BaseAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\CountAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\CountAllAggregate.cs" />
     <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseNullaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseUnaryExpression.cs" />
+    <Compile Include="Query\Expressions\ExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpressionContext.cs" />
     <Compile Include="Query\Expressions\IExpression.cs" />
     <Compile Include="Query\Expressions\IExpressionVisitor.cs" />
@@ -144,8 +146,12 @@
     <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
     <Compile Include="Query\Expressions\Transforms\ApplyExpressionTransformVisitor.cs" />
     <Compile Include="Query\Expressions\Transforms\ExprTransformCopy.cs" />
+    <Compile Include="Query\Expressions\Transforms\ExprTransformMultipleSubstitute.cs" />
+    <Compile Include="Query\Expressions\Transforms\ExprTransformSubstitute.cs" />
     <Compile Include="Query\Expressions\Transforms\IExpressionTransform.cs" />
+    <Compile Include="Query\Expressions\Visitors\CollectAggregatesVisitor.cs" />
     <Compile Include="Query\Grouping\BaseExpressionAccumulator.cs" />
+    <Compile Include="Query\Grouping\CountAccumulator.cs" />
     <Compile Include="Query\Grouping\CountAllAccumulator.cs" />
     <Compile Include="Query\Grouping\IAccumulator.cs" />
     <Compile Include="Query\Processors\AlgebraQueryProcessor.cs" />

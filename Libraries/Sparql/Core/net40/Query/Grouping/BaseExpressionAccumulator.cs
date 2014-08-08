@@ -22,15 +22,7 @@ namespace VDS.RDF.Query.Grouping
 
         public IExpression Expression { get; private set; }
 
-        public bool Equals(IAccumulator other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is BaseExpressionAccumulator)) return false;
-
-            BaseExpressionAccumulator acc = (BaseExpressionAccumulator) other;
-            return this.Expression.Equals(acc.Expression);
-        }
+        public abstract bool Equals(IAccumulator other);
 
         public void Accumulate(ISolution solution, IExpressionContext context)
         {
@@ -46,6 +38,6 @@ namespace VDS.RDF.Query.Grouping
 
         protected abstract void Accumulate(IValuedNode value);
 
-        public IValuedNode AccumulatedResult { get; private set; }
+        public virtual IValuedNode AccumulatedResult { get; private set; }
     }
 }

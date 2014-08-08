@@ -9,6 +9,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Aggregates;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Results;
@@ -795,6 +796,48 @@ namespace VDS.RDF.Query.Compiler
 
             Table table = (Table) innerProject.InnerAlgebra;
             Assert.IsTrue(table.IsUnit);
+        }
+
+        [TestCase("x"),
+         TestCase("y"),
+         TestCase("x", "y", "z")]
+        public void QueryCompilerProject(params String[] vars)
+        {
+            IQueryCompiler compiler = new DefaultQueryCompiler();
+
+            IQuery query = new Query();
+            foreach (String var in vars)
+            {
+                query.AddProjectVariable(var);
+            }
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Project), algebra);
+
+            Project project = (Project) algebra;
+            Assert.AreEqual(vars.Length, project.Projections.Count);
+            foreach (String var in vars)
+            {
+                Assert.IsTrue(project.Projections.Contains(var), "Project for ?" + var +  " missing");
+            }
+        }
+
+        [Test]
+        public void QueryCompilerProjectAggregates()
+        {
+            IQueryCompiler compiler = new DefaultQueryCompiler();
+
+            IQuery query = new Query();
+            query.AddProjectExpression("x", new CountAllAggregate());
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOf(typeof(Project), algebra);
+
+            Project project = (Project)algebra;
+            Assert.AreEqual(0, project.Projections.Count);
+            Assert.IsTrue(project.Projections.Contains("x"));
         }
     }
 

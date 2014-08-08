@@ -17,7 +17,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
 
         public override bool Equals(IExpression other)
         {
-            if (ReferenceEquals(this, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
             return other is CountAllAggregate;
         }

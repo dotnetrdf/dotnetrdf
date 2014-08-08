@@ -54,6 +54,8 @@
     <Compile Include="Query\Engine\Joins\CrossProductTests.cs" />
     <Compile Include="Query\Engine\Joins\HashJoinTests.cs" />
     <Compile Include="Query\Engine\Joins\LoopJoinTests.cs" />
+    <Compile Include="Query\Expressions\Transforms\AbstractAlgebraTransformTests.cs" />
+    <Compile Include="Query\Expressions\Transforms\ExpressionMultipleSubstituteTests.cs" />
     <Compile Include="Query\Processors\AbstractQueryProcessorTests.cs" />
     <Compile Include="Query\Processors\GraphQueryProcessorTests.cs" />
     <Compile Include="Query\Processors\QuadStoreQueryProcessorTests.cs" />

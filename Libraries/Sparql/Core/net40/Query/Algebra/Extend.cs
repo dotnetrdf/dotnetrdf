@@ -83,22 +83,5 @@ namespace VDS.RDF.Query.Algebra
             }
             return this.InnerAlgebra.Equals(e.InnerAlgebra);
         }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("(extend ");
-            INodeFormatter formatter = new AlgebraFormatter();
-            for (int i = 0; i < this.Assignments.Count; i++)
-            {
-                builder.Append('(');
-                builder.Append(formatter.Format(new VariableNode(this.Assignments[i].Key)));
-                builder.Append(' ');
-                builder.Append(this.Assignments[i].Value.ToString());
-                builder.Append(')');
-                if (i < this.Assignments.Count - 1) builder.Append(' ');
-            }
-            return builder.ToString();
-        }
     }
 }
