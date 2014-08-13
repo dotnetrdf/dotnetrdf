@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Engine
     /// <summary>
     /// Represents one possible solution to the query
     /// </summary>
-    public sealed class Solution 
+    public class Solution 
         : BaseSolution, IEquatable<Solution>
 #if PORTABLE
         , IComparable<Solution>,

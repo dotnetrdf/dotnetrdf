@@ -98,6 +98,9 @@
     <Compile Include="Query\Engine\BaseSolution.cs" />
     <Compile Include="Query\Engine\Algebra\IAlgebraExecutor.cs" />
     <Compile Include="Query\Engine\Bgps\IBgpExecutor.cs" />
+    <Compile Include="Query\Engine\Grouping\GroupByEnumerable.cs" />
+    <Compile Include="Query\Engine\Grouping\ISolutionGroup.cs" />
+    <Compile Include="Query\Engine\Grouping\SolutionGroup.cs" />
     <Compile Include="Query\Engine\IExecutionContext.cs" />
     <Compile Include="Collections\LongSkipEnumerable.cs" />
     <Compile Include="Collections\LongTakeEnumerable.cs" />
