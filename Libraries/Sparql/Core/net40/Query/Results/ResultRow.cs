@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.Common.Collections;
 using VDS.RDF.Nodes;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Results
 {
@@ -136,6 +138,30 @@ namespace VDS.RDF.Query.Results
             }
             // All values match
             return true;
+        }
+
+        public override string ToString()
+        {
+            return ToString(new AlgebraFormatter());
+        }
+
+        public String ToString(INodeFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            if (this._variables.Count == 0) return "<empty row>";
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < this._variables.Count; i++)
+            {
+                if (i > 0) builder.Append(", ");
+                builder.Append("?");
+                builder.Append(this._variables[i]);
+                builder.Append(" = ");
+                INode n = this[this._variables[i]];
+                if (n == null) continue;
+                builder.Append(n.ToString(formatter));
+            }
+            return builder.ToString();
         }
     }
 }

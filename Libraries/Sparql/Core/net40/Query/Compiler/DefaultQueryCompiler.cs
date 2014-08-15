@@ -68,10 +68,10 @@ namespace VDS.RDF.Query.Compiler
             }
 
             // GROUP BY
-            if (query.GroupExpressions != null || aggregates.Count > 0)
+            if ((query.GroupExpressions != null && query.GroupExpressions.Count > 0) || aggregates.Count > 0)
             {
                 IEnumerable<KeyValuePair<IAggregateExpression, String>> aggregators = aggSubstitutions.Select(kvp => new KeyValuePair<IAggregateExpression, string>((IAggregateExpression) kvp.Key, ((VariableTerm) kvp.Value).VariableName));
-                if (query.GroupExpressions != null)
+                if (query.GroupExpressions != null && query.GroupExpressions.Count > 0)
                 {
                     algebra = new GroupBy(algebra, query.GroupExpressions, aggregators);
                 }

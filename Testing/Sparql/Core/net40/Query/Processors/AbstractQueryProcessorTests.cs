@@ -7,6 +7,8 @@ using NUnit.Framework;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Elements;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Aggregates;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Results;
 using VDS.RDF.Query.Sorting;
@@ -334,6 +336,52 @@ namespace VDS.RDF.Query.Processors
             Assert.IsTrue(second.HasBoundValue("x"));
             Assert.AreEqual(hundred, first["x"]);
             Assert.AreEqual(ten, second["x"]);
+        }
+
+        [Test]
+        public void QueryProcessorGroupBy1()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.AddProjectVariable("x");
+            query.AddProjectExpression("count", new CountAllAggregate());
+            query.GroupExpressions.Add(new KeyValuePair<IExpression, string>(new VariableTerm("x"), "x"));
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x", "y" });
+            r1.Set("x", ten);
+            r1.Set("y", hundred);
+            IMutableResultRow r2 = new MutableResultRow(new String[] { "x" });
+            r2.Set("x", ten);
+            IMutableResultRow r3 = new MutableResultRow(new String[] { "y" });
+            r3.Set("y", hundred);
+            IMutableResultRow r4 = new MutableResultRow();
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1, r2, r3, r4 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            QueryTestTools.ShowResults(results);
+            Assert.AreEqual(2, results.Count);
+
+            foreach (IResultRow row in results)
+            {
+                Assert.AreEqual(2, row.Variables.Count());
+                Assert.IsTrue(row.HasValue("x"));
+                if (row.HasBoundValue("x"))
+                {
+                    Assert.AreEqual(ten, row["x"]);
+                }
+                Assert.IsTrue(row.HasBoundValue("count"));
+                Assert.AreEqual(new LongNode(2), row["count"]);
+            }
         }
     }
 }

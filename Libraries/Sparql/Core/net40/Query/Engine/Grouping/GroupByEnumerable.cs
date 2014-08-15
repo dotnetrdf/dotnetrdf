@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Engine.Grouping
             this.ExecutionContext = context;
         }
 
-        private IEnumerator<KeyValuePair<ISolution, ISolutionGroup>> Groups { get; set; } 
+        private IEnumerator<KeyValuePair<ISolution, ISolutionGroup>> Groups { get; set; }
 
         private IList<KeyValuePair<IExpression, string>> GroupExpressions { get; set; }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Engine.Grouping
 
         private void CollectGroups()
         {
-            IDictionary<ISolution, ISolutionGroup> groups = new Dictionary<ISolution, ISolutionGroup>();
+            IDictionary<ISolution, ISolutionGroup> groups = new Dictionary<ISolution, ISolutionGroup>(new GroupKeyComparer(this.CreateKeyVariables()));
 
             // Collect and group the solutions
             while (this.InnerEnumerator.MoveNext())
@@ -115,6 +115,18 @@ namespace VDS.RDF.Query.Engine.Grouping
             }
 
             this.Groups = groups.GetEnumerator();
+        }
+
+        private IEnumerable<String> CreateKeyVariables()
+        {
+            if (this.GroupExpressions.Count == 0) return Enumerable.Empty<String>();
+
+            List<String> keyVars = new List<string>();
+            for (int i = 0; i < this.GroupExpressions.Count; i++)
+            {
+                keyVars.Add(this.GroupExpressions[i].Value ?? ".key" + i);
+            }
+            return keyVars;
         }
 
         private ISolution CreateKey(ISolution solution)

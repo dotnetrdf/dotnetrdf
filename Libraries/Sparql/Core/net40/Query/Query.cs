@@ -24,6 +24,7 @@ namespace VDS.RDF.Query
             this.NamedGraphs = new List<INode>();
             this.SortConditions = new List<ISortCondition>();
             this.HavingConditions = new List<IExpression>();
+            this.GroupExpressions = new List<KeyValuePair<IExpression, string>>();
             this.Limit = -1;
         }
 

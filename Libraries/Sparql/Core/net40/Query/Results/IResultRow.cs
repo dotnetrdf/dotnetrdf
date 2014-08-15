@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Results
 {
@@ -71,5 +72,9 @@ namespace VDS.RDF.Query.Results
         /// Gets whether the row is empty
         /// </summary>
         bool IsEmpty { get; }
+
+        String ToString();
+
+        String ToString(INodeFormatter formatter);
     }
 }

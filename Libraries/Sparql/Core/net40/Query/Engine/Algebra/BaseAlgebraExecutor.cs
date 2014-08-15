@@ -4,6 +4,7 @@ using System.Linq;
 using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Engine.Grouping;
 using VDS.RDF.Query.Engine.Joins;
 using VDS.RDF.Query.Engine.Joins.Strategies;
 using VDS.RDF.Query.Sorting;
@@ -164,7 +165,9 @@ namespace VDS.RDF.Query.Engine.Algebra
 
         public IEnumerable<ISolution> Execute(GroupBy groupBy, IExecutionContext context)
         {
-            throw new NotImplementedException("Group By execution is not yet implemented");
+            context = EnsureContext(context);
+            IEnumerable<ISolution> innerResults = groupBy.InnerAlgebra.Execute(this, context);
+            return new GroupByEnumerable(innerResults, groupBy.GroupExpressions, groupBy.Aggregators, context);
         }
 
         public IEnumerable<ISolution> Execute(Service service, IExecutionContext context)

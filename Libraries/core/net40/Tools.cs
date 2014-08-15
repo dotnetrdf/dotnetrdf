@@ -213,30 +213,27 @@ namespace VDS.RDF
         /// <exception cref="NodeValueException">Thrown if an unknown node type is passed</exception>
         public static int CreateHashCode(INode n)
         {
-            if (ReferenceEquals(n, null)) throw new NullReferenceException("Cannot create a hash code for a null node");
+            if (ReferenceEquals(n, null)) return 0;
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    return Tools.CombineHashCodes(NodeType.Blank, n.AnonID);
+                    return CombineHashCodes(NodeType.Blank, n.AnonID);
                 case NodeType.GraphLiteral:
-                    return Tools.CombineHashCodes(NodeType.GraphLiteral, n.SubGraph);
+                    return CombineHashCodes(NodeType.GraphLiteral, n.SubGraph);
                     case NodeType.Literal:
                     if (n.HasLanguage)
                     {
-                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, n.Language));
-                    } 
-                    else if (n.HasDataType)
-                    {
-                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, n.DataType));
+                        return CombineHashCodes(NodeType.Literal, CombineHashCodes(n.Value, n.Language));
                     }
-                    else
+                    if (n.HasDataType)
                     {
-                        return Tools.CombineHashCodes(NodeType.Literal, Tools.CombineHashCodes(n.Value, PlainLiteralHashCodeSalt));
+                        return CombineHashCodes(NodeType.Literal, CombineHashCodes(n.Value, n.DataType));
                     }
+                    return CombineHashCodes(NodeType.Literal, CombineHashCodes(n.Value, PlainLiteralHashCodeSalt));
                 case NodeType.Uri:
-                    return Tools.CombineHashCodes(NodeType.Uri, n.Uri);
+                    return CombineHashCodes(NodeType.Uri, n.Uri);
                 case NodeType.Variable:
-                    return Tools.CombineHashCodes(NodeType.Variable, n.VariableName);
+                    return CombineHashCodes(NodeType.Variable, n.VariableName);
                 default:
                     throw new NodeValueException("Cannot create a hash code for an unknown node type");
             }
