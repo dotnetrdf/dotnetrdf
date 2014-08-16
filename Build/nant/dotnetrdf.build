@@ -13,6 +13,7 @@
   <property name="nosilverlight" value="" />
   <property name="nowindowsphone" value="${nosilverlight}" />
   <property name="noportable" value="${nosilverlight}" />
+  <property name="nosymbols" value="true" />
   
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="nowarn" value="1591;0067" />
@@ -562,10 +563,7 @@
   </target>
 
   <target name="compile-libs-sparql-core" description="Compiles all builds of the SPARQL Core library" unless="${nocompile}"
-        depends="compile-sparql-core,
-                   compile-sparql-core-net35,
-                   compile-sparql-core-clientprofile,
-                   compile-sparql-core-clientprofile-net35">
+        depends="compile-sparql-core">
   </target>
 
   <target name="compile-sparql-core" description="Compiles just the dotnetRDF SPARQL Core Library" depends="license-sparql-core" unless="${nocompile}">
@@ -581,7 +579,7 @@
     </exec>
   </target>
 
-  <target name="compile-sparql-core-net35" description="Compile the dotnetRDF SPARQL Core .Net 3.5 Build" unless="${nocompile}" depends="license-sparql-core,projectsync-sparql-core-net35">
+  <!--<target name="compile-sparql-core-net35" description="Compile the dotnetRDF SPARQL Core .Net 3.5 Build" unless="${nocompile}" depends="license-sparql-core,projectsync-sparql-core-net35">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -615,7 +613,7 @@
       <arg line="/p:NoWarn=&quot;${nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
-  </target>
+  </target>-->
 
   <!-- Nightly Build Targets -->
 
@@ -922,8 +920,7 @@
 
   <target name="upload-zips" description="Uploads the Distribution ZIP Files to a website"
           depends="upload-libs-nightly,
-                   upload-libs-stable,
-                   upload-utils-stable">
+                   upload-libs-stable">
   </target>
 
   <target name="upload-libs-nightly" description="Uploads the Nightly ZIPs to a website" 
@@ -947,42 +944,14 @@
     </ftp>
   </target>
 
-  <target name="upload-utils-stable" description="Uploads the Toolkit ZIPs to a website" depends="dist-utils-stable">
-    <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
-      <put type="bin" update="false">
-        <include name="/${toolkitzip}" />
-      </put>
-    </ftp>
-  </target>
-
   <target name="upload-libs-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" 
-          depends="upload-libs-nuget-core,
-                   upload-libs-nuget-data-virtuoso,
-                   upload-libs-nuget-query-fulltext">
+          depends="upload-libs-nuget-core">
   </target>
 
   <target name="upload-libs-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-libs-nuget-core">
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${nuspecversion}.nupkg" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-    </exec>
-  </target>
-
-  <target name="upload-libs-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-libs-nuget-data-virtuoso">
-    <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.Data.Virtuoso.${nuspecversion}.nupkg" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-    </exec>
-  </target>
-
-  <target name="upload-libs-nuget-query-fulltext" description="Uploads the Query.FullText Library package to the NuGet Gallery" depends="dist-libs-nuget-query-fulltext">
-    <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.Query.FullText.${nuspecversion}.nupkg" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
     </exec>
