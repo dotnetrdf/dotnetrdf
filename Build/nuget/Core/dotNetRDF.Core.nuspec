@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotNetRDF.Core</id>
+    <version>$version$</version>
+    <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
+    <owners>RobVesse</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://www.dotnetrdf.org</projectUrl>
+    <iconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      ALPHA Release - dotNetRDF.Core is a new slimmed down core data model for dotNetRDF that includes the basic APIs for representing Nodes, Triples, Quads, Graphs and Graph Stores.
+    </description>
+    <tags>RDF Semantic Web Graph Graphs Triples Quads</tags>
+    <dependencies>       
+        <dependency id="VDS.Common" version="[1.3.0]" />
+    </dependencies>
+    <releaseNotes>
+- Slimmed down Core API
+- INode sub-interfaces consolidated into INode
+- INode no longer graph scoped
+- New Quad class
+- IGraphStore replaces ITripleStore
+- Support for RDF 1.1
+- Blank nodes now identified by Guid's
+    </releaseNotes>
+  </metadata>
+</package>

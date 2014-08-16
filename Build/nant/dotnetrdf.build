@@ -35,7 +35,7 @@
   <property name="releasetype" value="alpha" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
   <property name="toolsversion" value="190" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
   <property name="toolsreleasetype" value="alpha" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
-  <property name="nuspecversion" value="1.0.9-prerelease01" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="nuspecversion" value="1.0.9-alpha01" /> <!-- Version number passed to NuGet for packaging -->
   <property name="buildversion" value="1.0.9.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
@@ -45,13 +45,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage Libraries", "Storage Libraries", "{3B5E2EA1-394B-4137-9F62-062F0163CD9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{99E6AA95-7905-4997-A593-F21E11BDD2DB}"
-	ProjectSection(SolutionItems) = preProject
-		Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec = Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec
-		Build\nuget\Core\dotNetRDF.nuspec = Build\nuget\Core\dotNetRDF.nuspec
-		Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec = Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4}"
+	ProjectSection(SolutionItems) = preProject
+		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SPARQL Libraries", "SPARQL Libraries", "{A0F95852-74DF-46F9-9848-F934F62C0D70}"
 EndProject
@@ -193,6 +191,23 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{801E6FAA-AA74-4CD3-BFCD-21872401469D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Sparql.Net40.Test", "Testing\Sparql\Core\net40\dotNetRDF.Sparql.Net40.Test.csproj", "{EB1A04F2-3A92-4C46-8CD9-BF382261562C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{0E5A49A5-7169-4281-AD6E-6A533212A38B}"
+	ProjectSection(SolutionItems) = preProject
+		Build\nuget\Core\dotNetRDF.Core.nuspec = Build\nuget\Core\dotNetRDF.Core.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IO", "IO", "{31C3B378-E539-41B8-A17E-4631DB5F13ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4987AC0B-EAFD-44B6-94B3-850253E1ADAE}"
+	ProjectSection(SolutionItems) = preProject
+		Build\nuget\IO\Core\dotNetRDF.IO.Core.nuspec = Build\nuget\IO\Core\dotNetRDF.IO.Core.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Json", "Json", "{97265762-DBAE-411E-93A8-A2B813D84C36}"
+	ProjectSection(SolutionItems) = preProject
+		Build\nuget\IO\Json\dotNetRDF.IO.Json.nuspec = Build\nuget\IO\Json\dotNetRDF.IO.Json.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -718,6 +733,10 @@ Global
 		{9B91CBD6-96D0-4F7E-901D-83D82DA8AF08} = {F80E132E-28EE-4CC6-B11C-1683ED75B1FC}
 		{801E6FAA-AA74-4CD3-BFCD-21872401469D} = {9B91CBD6-96D0-4F7E-901D-83D82DA8AF08}
 		{EB1A04F2-3A92-4C46-8CD9-BF382261562C} = {801E6FAA-AA74-4CD3-BFCD-21872401469D}
+		{0E5A49A5-7169-4281-AD6E-6A533212A38B} = {99E6AA95-7905-4997-A593-F21E11BDD2DB}
+		{31C3B378-E539-41B8-A17E-4631DB5F13ED} = {99E6AA95-7905-4997-A593-F21E11BDD2DB}
+		{4987AC0B-EAFD-44B6-94B3-850253E1ADAE} = {31C3B378-E539-41B8-A17E-4631DB5F13ED}
+		{97265762-DBAE-411E-93A8-A2B813D84C36} = {31C3B378-E539-41B8-A17E-4631DB5F13ED}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.vsmdi

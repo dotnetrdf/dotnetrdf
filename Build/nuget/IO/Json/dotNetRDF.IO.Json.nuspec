@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotNetRDF.IO.Json</id>
+    <version>$version$</version>
+    <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
+    <owners>RobVesse</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://www.dotnetrdf.org</projectUrl>
+    <iconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      ALPHA Release - dotNetRDF.IO.Json provides support for reading and writing RDF in common JSON based formats
+    </description>
+    <tags>RDF RDF/XML Turtle NTriples Notation3 NQuads TriG TriX</tags>
+    <dependencies>       
+      <dependency id="dotNetRDF.IO.Core" version="$version$" />
+      <dependency id="Newtonsoft.Json" version="6.0.4" />
+    </dependencies>
+    <releaseNotes>
+    </releaseNotes>
+  </metadata>
+</package>
