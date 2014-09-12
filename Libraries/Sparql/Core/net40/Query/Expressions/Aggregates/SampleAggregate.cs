@@ -8,12 +8,12 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Aggregates
 {
-    public class CountAggregate
+    public class SampleAggregate
         : BaseAggregate
     {
         private readonly IExpression _argument;
 
-        public CountAggregate(IExpression arg)
+        public SampleAggregate(IExpression arg)
         {
             if (arg == null) throw new ArgumentNullException("arg");
             this._argument = arg;
@@ -26,7 +26,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
 
         public override string Functor
         {
-            get { return SparqlSpecsHelper.SparqlKeywordCount; }
+            get { return SparqlSpecsHelper.SparqlKeywordSample; }
         }
 
         public override void Accept(IExpressionVisitor visitor)
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
 
         public override IAccumulator CreateAccumulator()
         {
-            return new CountAccumulator(this._argument);
+            return new SampleAccumulator(this._argument);
         }
 
         public override IEnumerable<IExpression> Arguments
@@ -85,9 +85,9 @@ namespace VDS.RDF.Query.Expressions.Aggregates
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is CountAggregate)) return false;
+            if (!(other is SampleAggregate)) return false;
 
-            CountAggregate agg = (CountAggregate)other;
+            SampleAggregate agg = (SampleAggregate)other;
             return this._argument.Equals(agg.Arguments.First());
         }
     }

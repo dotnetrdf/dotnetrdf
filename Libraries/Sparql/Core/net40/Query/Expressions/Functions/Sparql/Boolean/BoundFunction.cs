@@ -24,7 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -42,35 +44,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public BoundFunction(VariableTerm varExpr)
             : base(varExpr) { }
 
-        /// <summary>
-        /// Evaluates the expression
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IExpression Copy(IExpression argument)
         {
-            return new BooleanNode(this._expr.Evaluate(context, bindingID) != null);
+            return new BoundFunction((VariableTerm)argument);
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return "BOUND(" + this._expr.ToString() + ")";
+            return new BooleanNode(this.Argument.Evaluate(solution, context) != null);
         }
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
+        public override bool Equals(IExpression other)
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is BoundFunction)) return false;
+
+            BoundFunction bound = (BoundFunction) other;
+            return this.Argument.Equals(bound.Argument);
         }
 
         /// <summary>
@@ -84,14 +75,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
         }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override bool CanParallelise
         {
-            return new BoundFunction((VariableTerm)transformer.Transform(this._expr));
+            get { return true; }
+        }
+
+        public override bool IsDeterministic
+        {
+            get { return true; }
+        }
+
+        public override bool IsConstant
+        {
+            get { return false; }
+        }
+
+        public override int GetHashCode()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

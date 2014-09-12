@@ -383,5 +383,54 @@ namespace VDS.RDF.Query.Processors
                 Assert.AreEqual(new LongNode(2), row["count"]);
             }
         }
+
+        [Test]
+        public void QueryProcessorGroupBy2()
+        {
+            IGraph g = new Graph();
+
+            IQuery query = new Query();
+            query.QueryType = QueryType.Select;
+            query.AddProjectVariable("x");
+            query.AddProjectExpression("sample", new SampleAggregate(new VariableTerm("y")));
+            query.GroupExpressions.Add(new KeyValuePair<IExpression, string>(new VariableTerm("x"), "x"));
+
+            // Form a VALUES clause for the WHERE
+            INode ten = new LongNode(10);
+            INode hundred = new LongNode(100);
+            IMutableResultRow r1 = new MutableResultRow(new String[] { "x", "y" });
+            r1.Set("x", ten);
+            r1.Set("y", hundred);
+            IMutableResultRow r2 = new MutableResultRow(new String[] { "x" });
+            r2.Set("x", ten);
+            IMutableResultRow r3 = new MutableResultRow(new String[] { "y" });
+            r3.Set("y", hundred);
+            IMutableResultRow r4 = new MutableResultRow();
+            IMutableTabularResults data = new MutableTabularResults(r1.Variables, new IMutableResultRow[] { r1, r2, r3, r4 });
+            query.WhereClause = new DataElement(data);
+
+            IQueryProcessor processor = CreateProcessor(g);
+            IQueryResult result = processor.Execute(query);
+
+            Assert.IsTrue(result.IsTabular);
+            IRandomAccessTabularResults results = new RandomAccessTabularResults(result.Table);
+            QueryTestTools.ShowResults(results);
+            Assert.AreEqual(2, results.Count);
+
+            foreach (IResultRow row in results)
+            {
+                Assert.AreEqual(2, row.Variables.Count());
+                Assert.IsTrue(row.HasValue("x"));
+                if (row.HasBoundValue("x"))
+                {
+                    Assert.AreEqual(ten, row["x"]);
+                }
+                Assert.IsTrue(row.HasValue("sample"));
+                if (row.HasBoundValue("sample"))
+                {
+                    Assert.AreEqual(hundred, row["sample"]);
+                }
+            }
+        }
     }
 }

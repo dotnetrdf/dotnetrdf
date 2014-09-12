@@ -103,7 +103,14 @@ namespace VDS.RDF.Query.Expressions
             visitor.Visit(this);
         }
 
-        public abstract override bool Equals(Object other);
+        public override bool Equals(Object other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is BaseUnaryExpression)) return false;
+
+            return this.Equals((BaseUnaryExpression) other);
+        }
 
         public abstract override int GetHashCode();
     }

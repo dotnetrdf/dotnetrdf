@@ -38,6 +38,6 @@ namespace VDS.RDF.Query.Grouping
 
         protected abstract void Accumulate(IValuedNode value);
 
-        public virtual IValuedNode AccumulatedResult { get; private set; }
+        public virtual IValuedNode AccumulatedResult { get; protected set; }
     }
 }
