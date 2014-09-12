@@ -24,9 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
@@ -35,9 +34,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ e() function
     /// </summary>
     public class EFunction 
-        : IExpression
+        : BaseNullaryExpression
     {
-        private IValuedNode _node = new DoubleNode(Math.E);
+        private readonly IValuedNode _node = new DoubleNode(Math.E);
 
         /// <summary>
         /// Evaluates the function
@@ -45,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return this._node;
         }
@@ -62,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {
@@ -70,59 +69,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
-
-        /// <summary>
-        /// Gets the Variables used
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get 
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get 
-            {
-                return SparqlExpressionType.Function; 
-            }
-        }
-
-        /// <summary>
-        /// Gets the arguments of the expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get 
-            {
-                return Enumerable.Empty<IExpression>(); 
-            }
-        }
-
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
                 return true;
             }
-        }
-
-        /// <summary>
-        /// Applies a transformer to the expressions arguments
-        /// </summary>
-        /// <param name="transformer">Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
         }
     }
 }

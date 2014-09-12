@@ -91,15 +91,5 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains;
             }
         }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new ContainsFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
-        }
     }
 }

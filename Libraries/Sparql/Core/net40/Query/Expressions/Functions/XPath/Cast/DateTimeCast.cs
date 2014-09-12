@@ -24,11 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -53,17 +51,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(solution, context);//.CoerceToDateTime();
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             if (n == null)
             {
                 throw new RdfQueryException("Cannot cast a Null to a xsd:dateTime");
             }
-
-            //New method should be much faster
-            //if (n is DateTimeNode) return n;
-            //if (n is DateNode) return new DateTimeNode(n.AsDateTime());
-            //return new DateTimeNode(n.AsDateTime());
 
             switch (n.NodeType)
             {
@@ -74,7 +67,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                 case NodeType.Literal:
                     if (n is DateTimeNode) return n;
-                    if (n is DateNode) return new DateTimeNode(n.AsDateTime());
                     //See if the value can be cast
                     INode lit = n;
                     if (lit.DataType != null)
@@ -89,11 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 //Parsed OK
                                 return new DateTimeNode(d);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:dateTime");
-                            }
-                            
+                            throw new RdfQueryException("Invalid lexical form for xsd:dateTime");
                         }
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
@@ -132,15 +120,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -149,16 +128,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeDateTime;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DateTimeCast(transformer.Transform(this._expr));
         }
     }
 }

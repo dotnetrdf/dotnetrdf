@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringExpr">String Expression</param>
         /// <param name="argExpr">Argument Expression</param>
-        public BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr)
+        protected BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr)
             : base(stringExpr, argExpr) { }
 
         /// <summary>

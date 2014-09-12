@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -43,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
         public DataTypeFunction(IExpression expr)
-            : base(expr) { }
+            : base(expr) {}
 
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
@@ -53,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(solution, context);
+            INode result = this.Argument.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -87,44 +89,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "DATATYPE(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordDataType;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DataTypeFunction(transformer.Transform(this._expr));
+            get { return SparqlSpecsHelper.SparqlKeywordDataType; }
         }
     }
 
@@ -142,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="expr">Expression</param>
         public DataType11Function(IExpression expr)
-            : base(expr) { }
+            : base(expr) {}
 
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
@@ -152,36 +121,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(solution, context);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        INode lit = result;
-                        if (lit.DataType == null)
-                        {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                return new UriNode(UriFactory.Create(RdfSpecsHelper.RdfLangString));
-                            }
-                            else
-                            {
-                                return new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
-                        }
-                        else
-                        {
-                            return new UriNode(lit.DataType);
-                        }
+            INode result = this.Argument.Evaluate(solution, context);
+            if (result == null) throw new RdfQueryException("Cannot return the Data Type URI of a null");
 
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
+            switch (result.NodeType)
+            {
+                case NodeType.Literal:
+                    if (result.HasLanguage) return new UriNode(UriFactory.Create(RdfSpecsHelper.RdfLangString));
+                    return result.HasDataType ? new UriNode(result.DataType) : new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                default:
+                    throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
             }
         }
     }

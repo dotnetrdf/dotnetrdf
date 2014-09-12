@@ -23,11 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Query.Expressions.Arithmetic
@@ -54,57 +51,16 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(solution, context);
-            IValuedNode b = this._rightExpr.Evaluate(solution, context);
+            IValuedNode a = this.FirstArgument.Evaluate(solution, context);
+            IValuedNode b = this.SecondArgument.Evaluate(solution, context);
 
-            IValuedNode[] inputs = new IValuedNode[] { a, b };
-            ISparqlOperator op = null;
+            IValuedNode[] inputs = { a, b };
+            ISparqlOperator op;
             if (SparqlOperators.TryGetOperator(SparqlOperatorType.Divide, out op, inputs))
             {
                 return op.Apply(inputs);
             }
-            else
-            {
-                throw new RdfQueryException("Cannot apply division to the given inputs");
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._leftExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._leftExpr.ToString());
-            }
-            output.Append(" / ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._rightExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._rightExpr.ToString());
-            }
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
+            throw new RdfQueryException("Cannot apply division to the given inputs");
         }
 
         /// <summary>
@@ -116,16 +72,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             {
                 return "/";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DivisionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

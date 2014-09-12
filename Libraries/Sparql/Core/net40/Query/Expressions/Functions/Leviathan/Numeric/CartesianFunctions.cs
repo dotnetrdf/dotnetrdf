@@ -241,22 +241,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 }
             }
         }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._3d)
-            {
-                return new CartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._z1), transformer.Transform(this._x2), transformer.Transform(this._y2), transformer.Transform(this._z2));
-            }
-            else
-            {
-                return new CartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._x2), transformer.Transform(this._y2));
-            }
-        }
     }
 }

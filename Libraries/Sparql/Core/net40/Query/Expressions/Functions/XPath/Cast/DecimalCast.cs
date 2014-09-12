@@ -30,6 +30,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -54,16 +56,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(solution, context);//.CoerceToDecimal();
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             if (n == null)
             {
                 throw new RdfQueryException("Cannot cast a Null to a xsd:decimal");
             }
-
-            //New method should be much faster
-            //if (n is DecimalNode) return n;
-            //return new DecimalNode(n.AsDecimal());
 
             switch (n.NodeType)
             {
@@ -79,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     if (lit.DataType != null)
                     {
                         string dt = lit.DataType.ToString();
-                        if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
+                        if (XmlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
                             //Already an integer type so valid as a xsd:decimal
                             decimal d;
@@ -131,15 +129,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -148,16 +137,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeDecimal;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new DecimalCast(transformer.Transform(this._expr));
         }
     }
 }

@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public abstract bool CanParallelise
+        public virtual bool CanParallelise
         {
             get
             {
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        public abstract bool IsDeterministic
+        public virtual bool IsDeterministic
         {
             get
             {
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        public abstract bool IsConstant
+        public virtual bool IsConstant
         {
             get
             {

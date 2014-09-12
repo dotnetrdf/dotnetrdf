@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -53,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(solution, context);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp == null) throw new RdfQueryException("Cannot square a null");
 
             switch (temp.NumericType)
@@ -70,32 +71,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 case EffectiveNumericType.Double:
                     double dbl = temp.AsDouble();
                     return new DoubleNode(Math.Pow(dbl, 3));
-                case EffectiveNumericType.NaN:
                 default:
-                    throw new RdfQueryException("Cannot square a non-numeric argument");
+                    throw new RdfQueryException("Cannot cube a non-numeric argument");
             }
         }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of this expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
@@ -105,16 +84,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CubeFunction(transformer.Transform(this._expr));
         }
     }
 }
