@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -35,9 +35,10 @@ using VDS.RDF.Writing;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
+// [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyFileVersion("1.9.0.0")]
 
 [assembly: RdfIO(SyntaxName = "RDF/JSON", Encoding = "utf-8", CanonicalMimeType = "application/rdf+json", MimeTypes = new string[]{ "application/json", "text/json" }, CanonicalFileExtension = ".rj", ParserType = typeof(RdfJsonParser), WriterType = typeof(RdfJsonWriter))]
 [assembly: RdfIO(SyntaxName = "GZipped RDF/JSON", Encoding = "utf-8", CanonicalMimeType = "application/rdf+json", MimeTypes = new string[] { "application/json", "text/json" }, CanonicalFileExtension = ".rj.gz", ParserType = typeof(GZippedRdfJsonParser), WriterType = typeof(GZippedRdfJsonWriter))]
+
