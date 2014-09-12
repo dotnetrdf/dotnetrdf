@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// Creates a new IRI() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IriFunction(ISparqlExpression expr)
+        public IriFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            IValuedNode result = this._expr.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot create an IRI from a null");
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
+                        INode lit = result;
                         string baseUri = string.Empty;
                         if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
                         string uri;
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new IriFunction(transformer.Transform(this._expr));
         }

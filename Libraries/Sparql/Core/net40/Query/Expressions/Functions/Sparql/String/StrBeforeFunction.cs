@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -36,16 +37,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL STRBEFORE function
     /// </summary>
     public class StrBeforeFunction
-        : ISparqlExpression
+        : IExpression
     {
-        private ISparqlExpression _stringExpr, _endsExpr;
+        private IExpression _stringExpr, _endsExpr;
 
         /// <summary>
         /// Creates a new STRBEFORE Function
         /// </summary>
         /// <param name="stringExpr">String Expression</param>
         /// <param name="startsExpr">Starts Expression</param>
-        public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+        public StrBeforeFunction(IExpression stringExpr, IExpression startsExpr)
         {
             this._stringExpr = stringExpr;
             this._endsExpr = startsExpr;
@@ -57,10 +58,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
-            ILiteralNode ends = this.CheckArgument(this._endsExpr, context, bindingID);
+            INode input = this.CheckArgument(this._stringExpr, solution, context);
+            INode ends = this.CheckArgument(this._endsExpr, solution, context);
 
             if (!this.IsValidArgumentPair(input, ends)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
@@ -103,19 +104,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
         }
 
-        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        private INode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context)
         {
-            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+            return this.CheckArgument(expr, solution, context, XPathFunctionFactory.AcceptStringArguments);
         }
 
-        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        private INode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context, Func<Uri, bool> argumentTypeValidator)
         {
-            INode temp = expr.Evaluate(context, bindingID);
+            INode temp = expr.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    INode lit = temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))
@@ -155,7 +156,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
+        protected bool IsValidArgumentPair(INode stringLit, INode argLit)
         {
             if (stringLit.DataType != null)
             {
@@ -256,11 +257,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the Arguments of the Function
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return new ISparqlExpression[] { this._stringExpr, this._endsExpr };
+                return new IExpression[] { this._stringExpr, this._endsExpr };
             }
         }
 
@@ -280,7 +281,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._endsExpr));
         }

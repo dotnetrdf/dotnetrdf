@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// Creates a new SPARQL ISNUMERIC() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public IsNumericFunction(ISparqlExpression expr)
+        public IsNumericFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -46,10 +46,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context"></param>
         /// <param name="bindingID"></param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
-            return new BooleanNode(result.NumericType != SparqlNumericType.NaN);
+            IValuedNode result = this._expr.Evaluate(solution, context);
+            return new BooleanNode(result.NumericType != EffectiveNumericType.NaN);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new IsNumericFunction(transformer.Transform(this._expr));
         }

@@ -28,14 +28,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
     /// Abstract Base Class for functions that generate UUIDs
     /// </summary>
-    public abstract class BaseUUIDFunction
-        : ISparqlExpression
+    public abstract class BaseUuidFunction
+        : BaseNullaryExpression
     {
         /// <summary>
         /// Evaluates the expression
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             Guid uuid = Guid.NewGuid();
             return this.EvaluateInternal(uuid);
@@ -59,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the variables used in the expression
         /// </summary>
-        public virtual IEnumerable<string> Variables
+        public override IEnumerable<string> Variables
         {
             get
             {
@@ -68,49 +69,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the expression
-        /// </summary>
-        public virtual SparqlExpressionType Type
-        {
-            get
-            { 
-                return SparqlExpressionType.Function; 
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the expression
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets the arguments of the expression
         /// </summary>
-        public virtual IEnumerable<ISparqlExpression> Arguments
+        public virtual IEnumerable<IExpression> Arguments
         {
             get 
             { 
-                return Enumerable.Empty<ISparqlExpression>();
+                return Enumerable.Empty<IExpression>();
             }
-        }
-
-        /// <summary>
-        /// Applies the transformer to the arguments of this expression
-        /// </summary>
-        /// <param name="transformer">Transformer</param>
-        /// <returns></returns>
-        public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
         }
 
         /// <summary>
         /// Returns whether the function can be parallelised
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get 
             {

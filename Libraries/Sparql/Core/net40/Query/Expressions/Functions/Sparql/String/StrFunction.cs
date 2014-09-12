@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new Str() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public StrFunction(ISparqlExpression expr)
+        public StrFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            IValuedNode result = this._expr.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the lexical value of an NULL");
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new StrFunction(transformer.Transform(this._expr));
         }

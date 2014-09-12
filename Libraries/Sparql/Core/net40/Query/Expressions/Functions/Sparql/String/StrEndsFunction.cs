@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringExpr">String Expression</param>
         /// <param name="endsExpr">Argument Expression</param>
-        public StrEndsFunction(ISparqlExpression stringExpr, ISparqlExpression endsExpr)
+        public StrEndsFunction(IExpression stringExpr, IExpression endsExpr)
             : base(stringExpr, endsExpr) { }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
+        protected override bool ValueInternal(INode stringLit, INode argLit)
         {
             return stringLit.Value.EndsWith(argLit.Value);
         }
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new StrEndsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

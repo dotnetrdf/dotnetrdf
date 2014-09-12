@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
@@ -37,18 +38,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
     /// Represents the XPath timezone-from-dateTime() function
     /// </summary>
     public class TimezoneFromDateTimeFunction
-        : ISparqlExpression
+        : IExpression
     {
         /// <summary>
         /// Expression that the Function applies to
         /// </summary>
-        protected ISparqlExpression _expr;
+        protected IExpression _expr;
 
         /// <summary>
         /// Creates a new XPath Timezone from Date Time function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public TimezoneFromDateTimeFunction(ISparqlExpression expr)
+        public TimezoneFromDateTimeFunction(IExpression expr)
         {
             this._expr = expr;
         }
@@ -59,9 +60,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public virtual IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this._expr.Evaluate(solution, context);
             if (temp != null)
             {
                 DateTimeOffset dt = temp.AsDateTimeOffset();
@@ -101,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        public bool EffectiveBooleanValue(ISolution solution, IExpressionContext context)
         {
             throw new RdfQueryException("Cannot calculate the Effective Boolean Value of an XML Schema Duration");
         }
@@ -151,7 +152,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -175,7 +176,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
+        public virtual IExpression Transform(IExpressionTransformer transformer)
         {
             return new TimezoneFromDateTimeFunction(transformer.Transform(this._expr));
         }

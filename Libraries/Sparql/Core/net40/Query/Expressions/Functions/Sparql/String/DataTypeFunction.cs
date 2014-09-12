@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new Datatype() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public DataTypeFunction(ISparqlExpression expr)
+        public DataTypeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = this._expr.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
+                        INode lit = result;
                         if (lit.DataType == null)
                         {
                             if (!lit.Language.Equals(string.Empty))
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new DataTypeFunction(transformer.Transform(this._expr));
         }
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new DataType function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public DataType11Function(ISparqlExpression expr)
+        public DataType11Function(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -150,9 +150,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = this._expr.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
+                        INode lit = result;
                         if (lit.DataType == null)
                         {
                             if (!lit.Language.Equals(string.Empty))

@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath
 {
@@ -41,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// Creates a new XPath Boolean Function
         /// </summary>
         /// <param name="expr">Expression to compute the Effective Boolean Value of</param>
-        public BooleanFunction(ISparqlExpression expr)
+        public BooleanFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,18 +52,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return new BooleanNode(this._expr.Evaluate(context, bindingID).AsSafeBoolean());
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + this._expr.ToString() + ")";
+            return new BooleanNode(this.Argument.Evaluate(solution, context).AsSafeBoolean());
         }
 
         /// <summary>
@@ -73,27 +66,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean;
             }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BooleanFunction(transformer.Transform(this._expr));
         }
     }
 }

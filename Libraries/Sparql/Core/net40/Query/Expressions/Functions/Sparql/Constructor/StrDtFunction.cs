@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// </summary>
         /// <param name="stringExpr">String Expression</param>
         /// <param name="dtExpr">Datatype Expression</param>
-        public StrDtFunction(ISparqlExpression stringExpr, ISparqlExpression dtExpr)
+        public StrDtFunction(IExpression stringExpr, IExpression dtExpr)
             : base(stringExpr, dtExpr) { }
 
         /// <summary>
@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode s = this._leftExpr.Evaluate(context, bindingID);
-            INode dt = this._rightExpr.Evaluate(context, bindingID);
+            INode s = this._leftExpr.Evaluate(solution, context);
+            INode dt = this._rightExpr.Evaluate(solution, context);
 
             if (s != null)
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                     }
                     if (s.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)s;
+                        INode lit = s;
                         if (lit.DataType == null)
                         {
                             if (lit.Language.Equals(string.Empty))
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new StrDtFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="arg1">First Argument</param>
         /// <param name="arg2">Second Argument</param>
-        public RootFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        public RootFunction(IExpression arg1, IExpression arg2)
             : base(arg1, arg2) { }
 
         /// <summary>
@@ -51,14 +52,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode arg = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode arg = this._leftExpr.Evaluate(solution, context);
             if (arg == null) throw new RdfQueryException("Cannot root a null");
-            IValuedNode root = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode root = this._rightExpr.Evaluate(solution, context);
             if (root == null) throw new RdfQueryException("Cannot root to a null root");
 
-            if (arg.NumericType == SparqlNumericType.NaN || root.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot root when one/both arguments are non-numeric");
+            if (arg.NumericType == EffectiveNumericType.NaN || root.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot root when one/both arguments are non-numeric");
 
             return new DoubleNode(Math.Pow(arg.AsDouble(), (1d / root.AsDouble())));
         }
@@ -99,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new RootFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

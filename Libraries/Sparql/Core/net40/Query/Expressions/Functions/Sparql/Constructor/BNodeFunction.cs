@@ -23,11 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
@@ -37,8 +36,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
     public class BNodeFunction 
         : BaseUnaryExpression
     {
-        private BNodeFunctionContext _funcContext;
-
         /// <summary>
         /// Creates a new BNode Function
         /// </summary>
@@ -49,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// Creates a new BNode Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public BNodeFunction(ISparqlExpression expr)
+        public BNodeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -58,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             this._funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
 
@@ -81,12 +78,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             }
             else
             {
-                INode temp = this._expr.Evaluate(context, bindingID);
+                INode temp = this._expr.Evaluate(solution, context);
                 if (temp != null)
                 {
                     if (temp.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)temp;
+                        INode lit = temp;
 
                         if (lit.DataType == null)
                         {
@@ -126,17 +123,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -144,100 +130,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             get
             {
                 return SparqlSpecsHelper.SparqlKeywordBNode;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the Expression
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get
-            {
-                if (this._expr == null) return Enumerable.Empty<string>();
-                return base.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                if (this._expr == null) return Enumerable.Empty<ISparqlExpression>();
-                return base.Arguments;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the expression can be parallelised
-        /// </summary>
-        public override bool CanParallelise
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BNodeFunction(transformer.Transform(this._expr));
-        }
-    }
-
-    class BNodeFunctionContext
-    {
-        private Dictionary<int, Dictionary<string, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
-        private Graph _g = new Graph();
-        private int _currInput;
-
-        public BNodeFunctionContext(int currInput)
-        {
-            this._currInput = currInput;
-        }
-
-        public int CurrentInput
-        {
-            get
-            {
-                return this._currInput;
-            }
-        }
-
-        public IGraph Graph
-        {
-            get
-            {
-                return this._g;
-            }
-        }
-
-        public Dictionary<int, Dictionary<string, INode>> BlankNodes
-        {
-            get
-            {
-                return this._bnodes;
-            }
-            set
-            {
-                this._bnodes = value;
             }
         }
     }

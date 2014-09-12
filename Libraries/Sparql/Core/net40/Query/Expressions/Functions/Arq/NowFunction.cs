@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ afn:now() function
     /// </summary>
     public class NowFunction 
-        : ISparqlExpression
+        : IExpression
     {
         private SparqlQuery _currQuery;
         private IValuedNode _node;
@@ -48,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns>
         /// Returns a constant Literal Node which is a Date Time typed Literal
         /// </returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             if (this._currQuery == null)
             {
@@ -123,11 +124,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the arguments of the expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get 
             {
-                return Enumerable.Empty<ISparqlExpression>(); 
+                return Enumerable.Empty<IExpression>(); 
             }
         }
 
@@ -136,7 +137,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return this;
         }

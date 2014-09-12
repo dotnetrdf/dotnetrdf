@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </para>
     /// </remarks>
     public class UnknownFunction
-        : ISparqlExpression
+        : IExpression
     {
         private Uri _funcUri;
-        private List<ISparqlExpression> _args = new List<ISparqlExpression>();
+        private List<IExpression> _args = new List<IExpression>();
 
         /// <summary>
         /// Creates a new Unknown Function that has no Arguments
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="funcUri">Function URI</param>
         /// <param name="expr">Argument Expression</param>
-        public UnknownFunction(Uri funcUri, ISparqlExpression expr)
+        public UnknownFunction(Uri funcUri, IExpression expr)
             : this(funcUri)
         {
             this._args.Add(expr);
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="funcUri">Function URI</param>
         /// <param name="exprs">Argument Expressions</param>
-        public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> exprs)
+        public UnknownFunction(Uri funcUri, IEnumerable<IExpression> exprs)
             : this(funcUri)
         {
             this._args.AddRange(exprs);
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return null;
         }
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return new UnknownFunction(this._funcUri, this._args.Select(e => transformer.Transform(e)));
         }

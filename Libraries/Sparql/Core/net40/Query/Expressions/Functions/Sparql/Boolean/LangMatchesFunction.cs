@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="term">Expression to obtain the Language of</param>
         /// <param name="langRange">Expression representing the Language Range to match</param>
-        public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange)
+        public LangMatchesFunction(IExpression term, IExpression langRange)
             : base(term, langRange) { }
 
         /// <summary>
@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._leftExpr.Evaluate(context, bindingID);
-            INode langRange = this._rightExpr.Evaluate(context, bindingID);
+            INode result = this._leftExpr.Evaluate(solution, context);
+            INode langRange = this._rightExpr.Evaluate(solution, context);
 
             if (result == null)
             {
@@ -68,8 +68,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 }
                 else if (langRange.NodeType == NodeType.Literal)
                 {
-                    string range = ((ILiteralNode)langRange).Value;
-                    string lang = ((ILiteralNode)result).Value;
+                    string range = (langRange).Value;
+                    string lang = (result).Value;
 
                     if (range.Equals("*"))
                     {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new LangMatchesFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

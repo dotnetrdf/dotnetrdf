@@ -35,9 +35,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     /// Class representing the SPARQL IF function
     /// </summary>
     public class IfElseFunction 
-        : ISparqlExpression
+        : IExpression
     {
-        private ISparqlExpression _condition, _ifBranch, _elseBranch;
+        private IExpression _condition, _ifBranch, _elseBranch;
 
         /// <summary>
         /// Creates a new IF function
@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="condition">Condition</param>
         /// <param name="ifBranch">Expression to evaluate if condition evaluates to true</param>
         /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error</param>
-        public IfElseFunction(ISparqlExpression condition, ISparqlExpression ifBranch, ISparqlExpression elseBranch)
+        public IfElseFunction(IExpression condition, IExpression ifBranch, IExpression elseBranch)
         {
             this._condition = condition;
             this._ifBranch = ifBranch;
@@ -58,19 +58,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._condition.Evaluate(context, bindingID);
+            IValuedNode result = this._condition.Evaluate(solution, context);
 
             //Condition evaluated without error so we go to the appropriate branch of the IF ELSE
             //depending on whether it evaluated to true or false
             if (result.AsSafeBoolean())
             {
-                return this._ifBranch.Evaluate(context, bindingID);
+                return this._ifBranch.Evaluate(solution, context);
             }
             else
             {
-                return this._elseBranch.Evaluate(context, bindingID);
+                return this._elseBranch.Evaluate(solution, context);
             }
         }
 
@@ -127,11 +127,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return new ISparqlExpression[] { this._condition, this._ifBranch, this._elseBranch };
+                return new IExpression[] { this._condition, this._ifBranch, this._elseBranch };
             }
         }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), transformer.Transform(this._elseBranch));
         }

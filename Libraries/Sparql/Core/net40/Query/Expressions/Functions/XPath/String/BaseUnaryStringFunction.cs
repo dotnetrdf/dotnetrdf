@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -36,21 +38,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Abstract Base Class for XPath Unary String functions
     /// </summary>
     public abstract class BaseUnaryStringFunction
-        : ISparqlExpression
+        : BaseUnaryExpression
     {
-        /// <summary>
-        /// Expression the function applies over
-        /// </summary>
-        protected ISparqlExpression _expr;
-
         /// <summary>
         /// Creates a new XPath Unary String function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public BaseUnaryStringFunction(ISparqlExpression stringExpr)
-        {
-            this._expr = stringExpr;
-        }
+        protected BaseUnaryStringFunction(IExpression stringExpr)
+            : base(stringExpr) { }
 
         /// <summary>
         /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
@@ -58,19 +53,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    INode lit = temp;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
-                            return this.ValueInternal(lit);
+                            return this.EvaluateInternal(lit);
                         }
                         else
                         {
@@ -79,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     }
                     else
                     {
-                        return this.ValueInternal(lit);
+                        return this.EvaluateInternal(lit);
                     }
                 }
                 else
@@ -98,71 +93,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected abstract IValuedNode ValueInternal(ILiteralNode stringLit);
-
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public virtual IEnumerable<string> Variables
-        {
-            get
-            {
-                return this._expr.Variables;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return this._expr.AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
+        protected abstract IValuedNode EvaluateInternal(INode stringLit);
     }
 }

@@ -23,11 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
@@ -35,23 +34,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
     /// Abstract base class for SPARQL Functions which operate on Sets
     /// </summary>
     public abstract class BaseSetFunction
-        : ISparqlExpression
+        : INAryExpression
     {
         /// <summary>
         /// Variable Expression Term that the Set function applies to
         /// </summary>
-        protected ISparqlExpression _expr;
+        protected IExpression _expr;
         /// <summary>
         /// Set that is used in the function
         /// </summary>
-        protected List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
+        protected List<IExpression> _expressions = new List<IExpression>();
 
         /// <summary>
         /// Creates a new SPARQL Set function
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
-        public BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+        protected BaseSetFunction(IExpression expr, IEnumerable<IExpression> set)
         {
             this._expr = expr;
             this._expressions.AddRange(set);
@@ -63,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
 
         /// <summary>
         /// Gets the Variable the function applies to
@@ -79,17 +78,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.SetOperator;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public abstract string Functor
@@ -100,11 +88,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <summary>
         /// Gets the Arguments of the Exception
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return this._expr.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
+                return this._expr.AsEnumerable<IExpression>().Concat(this._expressions);
             }
         }
 
@@ -124,12 +112,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 }

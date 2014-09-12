@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
@@ -41,7 +39,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// Creates a new Unary XPath Date Time function
         /// </summary>
         /// <param name="expr"></param>
-        public BaseUnaryDateTimeFunction(ISparqlExpression expr)
+        public BaseUnaryDateTimeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,9 +48,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp != null)
             {
                 return this.ValueInternal(temp.AsDateTimeOffset());
@@ -69,22 +67,5 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
         protected abstract IValuedNode ValueInternal(DateTimeOffset dateTime);
-
-        /// <summary>
-        /// Gets the String representation of the Function
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
     }
 }

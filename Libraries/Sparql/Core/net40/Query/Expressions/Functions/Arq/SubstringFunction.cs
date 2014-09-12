@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -36,16 +37,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ afn:substring() function which is a sub-string with Java semantics
     /// </summary>
     public class SubstringFunction 
-        : ISparqlExpression
+        : IExpression
     {
-        private ISparqlExpression _expr, _start, _end;
+        private IExpression _expr, _start, _end;
 
         /// <summary>
         /// Creates a new ARQ substring function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="startExpr">Expression giving an index at which to start the substring</param>
-        public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
+        public SubstringFunction(IExpression stringExpr, IExpression startExpr)
             : this(stringExpr, startExpr, null) { }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="stringExpr">Expression</param>
         /// <param name="startExpr">Expression giving an index at which to start the substring</param>
         /// <param name="endExpr">Expression giving an index at which to end the substring</param>
-        public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression endExpr)
+        public SubstringFunction(IExpression stringExpr, IExpression startExpr, IExpression endExpr)
         {
             this._expr = stringExpr;
             this._start = startExpr;
@@ -67,14 +68,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            ILiteralNode input = (ILiteralNode)this.CheckArgument(this._expr, context, bindingID);
-            IValuedNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+            INode input = this.CheckArgument(this._expr, solution, context);
+            IValuedNode start = this.CheckArgument(this._start, solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
             if (this._end != null)
             {
-                IValuedNode end = this.CheckArgument(this._end, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+                IValuedNode end = this.CheckArgument(this._end, solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(String.Empty)) return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -131,19 +132,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        private IValuedNode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context)
         {
-            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+            return this.CheckArgument(expr, solution, context, XPathFunctionFactory.AcceptStringArguments);
         }
 
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        private IValuedNode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context, Func<Uri, bool> argumentTypeValidator)
         {
-            IValuedNode temp = expr.Evaluate(context, bindingID);
+            IValuedNode temp = expr.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    INode lit = temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))
@@ -236,17 +237,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
                 if (this._end != null)
                 {
-                    return new ISparqlExpression[] { this._expr, this._start, this._end };
+                    return new IExpression[] { this._expr, this._start, this._end };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._end, this._start };
+                    return new IExpression[] { this._end, this._start };
                 }
             }
         }
@@ -267,7 +268,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._end != null)
             {

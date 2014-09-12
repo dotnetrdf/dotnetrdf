@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// Creates a new ARQ Local Name function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public LocalNameFunction(ISparqlExpression expr)
+        public LocalNameFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,9 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode temp = this._expr.Evaluate(context, bindingID);
+            INode temp = this._expr.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Uri)
@@ -118,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new LocalNameFunction(transformer.Transform(this._expr));
         }

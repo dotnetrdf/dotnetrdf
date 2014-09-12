@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// Creates a new XPath Round function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public RoundFunction(ISparqlExpression expr)
+        public RoundFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -51,25 +52,25 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this._expr.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     //Rounding an Integer has no effect
                     return a;
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
 #if !SILVERLIGHT
                     return new DecimalNode(null, Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
 #else
                     return new DecimalNode(null, Math.Round(a.AsDecimal()));
 #endif
 
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     try
                     {
 #if !SILVERLIGHT
@@ -87,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast the float value of a round to a float", ex);
                     }
 
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
 #if !SILVERLIGHT
                     return new DoubleNode(null, Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
 #else
@@ -135,7 +136,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new RoundFunction(transformer.Transform(this._expr));
         }

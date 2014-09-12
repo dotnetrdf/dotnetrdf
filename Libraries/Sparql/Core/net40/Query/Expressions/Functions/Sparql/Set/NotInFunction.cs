@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
-        public NotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+        public NotInFunction(IExpression expr, IEnumerable<IExpression> set)
             : base(expr, set) { }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = this._expr.Evaluate(solution, context);
             if (result != null)
             {
                 if (this._expressions.Count == 0) return new BooleanNode(true);
@@ -60,11 +60,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
                 //Have to use SPARQL Value Equality here
                 //If any expressions error and nothing in the set matches then an error is thrown
                 bool errors = false;
-                foreach (ISparqlExpression expr in this._expressions)
+                foreach (IExpression expr in this._expressions)
                 {
                     try
                     {
-                        INode temp = expr.Evaluate(context, bindingID);
+                        INode temp = expr.Evaluate(solution, context);
                         if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(false);
                     }
                     catch
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new NotInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
         }

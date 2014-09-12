@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new LCASE function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public LCaseFunction(ISparqlExpression expr)
+        public LCaseFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringLit"></param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             if (stringLit.DataType != null)
             {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new LCaseFunction(transformer.Transform(this._expr));
         }

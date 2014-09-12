@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -51,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// Creates a new Leviathan Random Function
         /// </summary>
         /// <param name="max">Maximum</param>
-        public RandomFunction(ISparqlExpression max)
+        public RandomFunction(IExpression max)
             : base(new ConstantTerm(new DoubleNode(0)), max)
         {
             this._args = 1;
@@ -62,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="min">Minumum</param>
         /// <param name="max">Maximum</param>
-        public RandomFunction(ISparqlExpression min, ISparqlExpression max)
+        public RandomFunction(IExpression min, IExpression max)
             : base(min, max)
         {
             this._args = 2;
@@ -74,14 +75,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode min = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode min = this._leftExpr.Evaluate(solution, context);
             if (min == null) throw new RdfQueryException("Cannot randomize with a null minimum");
-            IValuedNode max = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode max = this._rightExpr.Evaluate(solution, context);
             if (max == null) throw new RdfQueryException("Cannot randomize with a null maximum");
 
-            if (min.NumericType == SparqlNumericType.NaN || max.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
+            if (min.NumericType == EffectiveNumericType.NaN || max.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
 
             double x = min.AsDouble();
             double y = max.AsDouble();
@@ -147,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new RandomFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

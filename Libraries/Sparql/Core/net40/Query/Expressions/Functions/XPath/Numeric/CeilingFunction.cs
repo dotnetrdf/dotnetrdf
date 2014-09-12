@@ -24,10 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
@@ -41,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// Creates a new XPath Ceiling function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public CeilingFunction(ISparqlExpression expr)
+        public CeilingFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,15 +49,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this.Argument.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
             {
 #if !SILVERLIGHT
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     try
                     {
                         return new LongNode(Convert.ToInt64(Math.Ceiling(a.AsDecimal())));
@@ -72,14 +71,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast ceiling value of integer to an integer", ex);
                     }
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(Math.Ceiling(a.AsDecimal()));
 #else
-                case SparqlNumericType.Integer:
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Integer:
+                case EffectiveNumericType.Decimal:
 #endif
 
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     try
                     {
                         return new FloatNode(Convert.ToSingle(Math.Ceiling(a.AsDouble())));
@@ -93,31 +92,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast ceiling value of float to a float", ex);
                     }
 
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Ceiling(a.AsDouble()));
 
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
             }
         }
 
@@ -130,16 +109,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CeilingFunction(transformer.Transform(this._expr));
         }
     }
 }

@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// Creates a new XPath Float Cast Function Expression
         /// </summary>
         /// <param name="expr">Expression to be cast</param>
-        public FloatCast(ISparqlExpression expr)
+        public FloatCast(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Vinding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToFloat();
+            IValuedNode n = this._expr.Evaluate(solution, context);//.CoerceToFloat();
 
             if (n == null)
             {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     if (n is FloatNode) return n;
                     //See if the value can be cast
-                    ILiteralNode lit = (ILiteralNode)n;
+                    INode lit = n;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new FloatCast(transformer.Transform(this._expr));
         }

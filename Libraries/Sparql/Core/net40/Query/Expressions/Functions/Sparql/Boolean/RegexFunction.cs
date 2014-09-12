@@ -35,23 +35,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
     /// Class representing the SPARQL REGEX function
     /// </summary>
     public class RegexFunction
-        : ISparqlExpression
+        : IExpression
     {
         private string _pattern = null;
         private RegexOptions _options = RegexOptions.None;
         private bool _fixedPattern = false, _fixedOptions = false;
         //private bool _useInStr = false;
         private Regex _regex;
-        private ISparqlExpression _textExpr = null;
-        private ISparqlExpression _patternExpr = null;
-        private ISparqlExpression _optionExpr = null;
+        private IExpression _textExpr = null;
+        private IExpression _patternExpr = null;
+        private IExpression _optionExpr = null;
 
         /// <summary>
         /// Creates a new Regex() function expression
         /// </summary>
         /// <param name="text">Text to apply the Regular Expression to</param>
         /// <param name="pattern">Regular Expression Pattern</param>
-        public RegexFunction(ISparqlExpression text, ISparqlExpression pattern)
+        public RegexFunction(IExpression text, IExpression pattern)
             : this(text, pattern, null) { }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="text">Text to apply the Regular Expression to</param>
         /// <param name="pattern">Regular Expression Pattern</param>
         /// <param name="options">Regular Expression Options</param>
-        public RegexFunction(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression options)
+        public RegexFunction(IExpression text, IExpression pattern, IExpression options)
         {
             this._textExpr = text;
             this._patternExpr = pattern;
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     //Try to parse as a Regular Expression
                     try
                     {
-                        string p = ((ILiteralNode)n).Value;
+                        string p = (n).Value;
                         Regex temp = new Regex(p);
 
                         //It's a Valid Pattern
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    string ops = ((ILiteralNode)n).Value;
+                    string ops = (n).Value;
                     foreach (char c in ops.ToCharArray())
                     {
                         switch (c)
@@ -170,12 +170,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             //Configure Options
             if (this._optionExpr != null && !this._fixedOptions)
             {
-                this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
+                this.ConfigureOptions(this._optionExpr.Evaluate(solution, context), true);
             }
 
             //Compile the Regex if necessary
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 //Regex is not pre-compiled
                 if (this._patternExpr != null)
                 {
-                    IValuedNode p = this._patternExpr.Evaluate(context, bindingID);
+                    IValuedNode p = this._patternExpr.Evaluate(solution, context);
                     if (p != null)
                     {
                         if (p.NodeType == NodeType.Literal)
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
 
             //Execute the Regular Expression
-            IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
+            IValuedNode textNode = this._textExpr.Evaluate(solution, context);
             if (textNode == null)
             {
                 throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -302,17 +302,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
                 if (this._optionExpr != null)
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._patternExpr, this._optionExpr };
+                    return new IExpression[] { this._textExpr, this._patternExpr, this._optionExpr };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._patternExpr };
+                    return new IExpression[] { this._textExpr, this._patternExpr };
                 }
             }
         }
@@ -333,7 +333,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._optionExpr != null)
             {

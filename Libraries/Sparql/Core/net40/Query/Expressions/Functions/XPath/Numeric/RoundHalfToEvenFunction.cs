@@ -23,8 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using VDS.RDF.Query.Expressions.Factories;
 #if !SILVERLIGHT
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,13 +39,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
     public class RoundHalfToEvenFunction
         : BaseUnaryExpression
     {
-        private ISparqlExpression _precision;
+        private IExpression _precision;
 
         /// <summary>
         /// Creates a new XPath RoundHalfToEven function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public RoundHalfToEvenFunction(ISparqlExpression expr)
+        public RoundHalfToEvenFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="precision">Precision</param>
-        public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
+        public RoundHalfToEvenFunction(IExpression expr, IExpression precision)
             : this(expr)
         {
             this._precision = precision;
@@ -65,15 +65,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this._expr.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             int p = 0;
             if (this._precision != null)
             {
-                IValuedNode precision = this._precision.Evaluate(context, bindingID);
+                IValuedNode precision = this._precision.Evaluate(solution, context);
                 if (precision == null) throw new RdfQueryException("Cannot use a null precision for rounding");
                 try
                 {
@@ -87,14 +87,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
             switch (a.NumericType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     //Rounding an Integer has no effect
                     return a;
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(Math.Round(a.AsDecimal(), p, MidpointRounding.AwayFromZero));
 
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     try
                     {
                         return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble(), p, MidpointRounding.AwayFromZero)));
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast the float value of a round to a float", ex);
                     }
 
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Round(a.AsDouble(), p, MidpointRounding.AwayFromZero));
 
                 default:
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new RoundHalfToEvenFunction(transformer.Transform(this._expr));
         }

@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="term1">First Term</param>
         /// <param name="term2">Second Term</param>
-        public SameTermFunction(ISparqlExpression term1, ISparqlExpression term2)
+        public SameTermFunction(IExpression term1, IExpression term2)
             : base(term1, term2) { }
 
         /// <summary>
@@ -51,11 +51,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             INode a, b;
-            a = this._leftExpr.Evaluate(context, bindingID);
-            b = this._rightExpr.Evaluate(context, bindingID);
+            a = this._leftExpr.Evaluate(solution, context);
+            b = this._rightExpr.Evaluate(solution, context);
 
             if (a == null)
             {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new SameTermFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

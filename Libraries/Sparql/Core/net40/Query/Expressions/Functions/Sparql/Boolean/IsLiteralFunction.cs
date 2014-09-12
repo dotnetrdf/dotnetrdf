@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// Creates a new IsLiteral() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsLiteralFunction(ISparqlExpression expr)
+        public IsLiteralFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
+            INode result = this._expr.Evaluate(solution, context);
             if (result == null)
             {
                 return new BooleanNode(false);
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new IsLiteralFunction(transformer.Transform(this._expr));
         }

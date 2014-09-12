@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
     /// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression
     /// </summary>
     public class ExistsFunction 
-        : ISparqlExpression
+        : IExpression
     {
         private GraphPattern _pattern;
         private bool _mustExist;
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode() || this._lastCount != context.InputMultiset.Count) this.EvaluateInternal(context);
 
@@ -123,12 +123,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <remarks>
         /// We only ever need to evaluate the Graph Pattern once to get the Results
         /// </remarks>
-        private void EvaluateInternal(SparqlEvaluationContext origContext)
+        private void EvaluateInternal(IExpressionContext origContext)
         {
             this._result = null;
 
             //We must take a copy of the original context as otherwise we can have strange results
-            SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data);
+            IExpressionContext context = new IExpressionContext(origContext.Query, origContext.Data);
             context.InputMultiset = origContext.InputMultiset;
             context.OutputMultiset = new Multiset();
             this._lastInput = context.InputMultiset.GetHashCode();
@@ -296,11 +296,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return new ISparqlExpression[] { new GraphPatternTerm(this._pattern) };
+                return new IExpression[] { new GraphPatternTerm(this._pattern) };
             }
         }
 
@@ -309,9 +309,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
-            ISparqlExpression temp = transformer.Transform(new GraphPatternTerm(this._pattern));
+            IExpression temp = transformer.Transform(new GraphPatternTerm(this._pattern));
             if (temp is GraphPatternTerm)
             {
                 return new ExistsFunction(((GraphPatternTerm)temp).Pattern, this._mustExist);

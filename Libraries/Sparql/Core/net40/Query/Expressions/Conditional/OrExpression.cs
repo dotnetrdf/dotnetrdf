@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// </summary>
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
-        public OrExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
+        public OrExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
         /// Evaluates the expression
@@ -48,12 +48,12 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             //Lazy Evaluation for efficiency
             try
             {
-                bool leftResult = this._leftExpr.Evaluate(context, bindingID).AsBoolean();
+                bool leftResult = this._leftExpr.Evaluate(solution, context).AsBoolean();
                 if (leftResult)
                 {
                     //If the LHS is true it doesn't matter about any subsequent results
@@ -62,14 +62,14 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 else
                 {
                     //If the LHS is false then we have to evaluate the RHS
-                    return new BooleanNode(this._rightExpr.Evaluate(context, bindingID).AsBoolean());
+                    return new BooleanNode(this._rightExpr.Evaluate(solution, context).AsBoolean());
                 }
             }
             catch (Exception ex)
             {
                 //If there's an Error on the LHS we return true only if the RHS evaluates to true
                 //Otherwise we throw the Error
-                bool rightResult = this._rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
+                bool rightResult = this._rightExpr.Evaluate(solution, context).AsSafeBoolean();
                 if (rightResult)
                 {
                     return new BooleanNode(true);
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new OrExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

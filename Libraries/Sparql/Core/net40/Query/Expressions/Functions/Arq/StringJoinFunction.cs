@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
@@ -37,19 +38,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ afn:strjoin() function which is a string concatenation function with a separator
     /// </summary>
     public class StringJoinFunction 
-        : ISparqlExpression
+        : IExpression
     {
-        private ISparqlExpression _sep;
+        private IExpression _sep;
         private String _separator;
         private bool _fixedSeparator = false;
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private List<IExpression> _exprs = new List<IExpression>();
 
         /// <summary>
         /// Creates a new ARQ String Join function
         /// </summary>
         /// <param name="sepExpr">Separator Expression</param>
         /// <param name="expressions">Expressions to concatentate</param>
-        public StringJoinFunction(ISparqlExpression sepExpr, IEnumerable<ISparqlExpression> expressions)
+        public StringJoinFunction(IExpression sepExpr, IEnumerable<IExpression> expressions)
         {
             if (sepExpr is ConstantTerm)
             {
@@ -77,12 +78,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             StringBuilder output = new StringBuilder();
             for (int i = 0; i < this._exprs.Count; i++)
             {
-                IValuedNode temp = this._exprs[i].Evaluate(context, bindingID);
+                IValuedNode temp = this._exprs[i].Evaluate(solution, context);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
                 switch (temp.NodeType)
                 {
@@ -100,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     }
                     else
                     {
-                        IValuedNode sep = this._sep.Evaluate(context, bindingID);
+                        IValuedNode sep = this._sep.Evaluate(solution, context);
                         if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
                         if (sep.NodeType == NodeType.Literal)
                         {
@@ -177,7 +178,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -201,7 +202,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return new StringJoinFunction(transformer.Transform(this._sep), this._exprs.Select(e => transformer.Transform(e)));
         }

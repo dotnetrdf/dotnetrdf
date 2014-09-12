@@ -26,11 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions.Arq;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
     /// Expression Factory which generates ARQ Function expressions
@@ -40,7 +39,7 @@ namespace VDS.RDF.Query.Expressions
     /// Designed to help provide feature parity with the ARQ query engine contained in Jena
     /// </para>
     /// </remarks>
-    public class ArqFunctionFactory : ISparqlCustomExpressionFactory
+    public class ArqFunctionFactory : IExpressionFactory
     {
         /// <summary>
         /// ARQ Function Namespace
@@ -101,7 +100,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<IExpression> args, Dictionary<String,IExpression> scalarArgs, out IExpression expr)
         {
             //If any Scalar Arguments are present then can't possibly be an ARQ Function
             if (scalarArgs.Count > 0)
@@ -114,7 +113,7 @@ namespace VDS.RDF.Query.Expressions
             if (func.StartsWith(ArqFunctionFactory.ArqFunctionsNamespace))
             {
                 func = func.Substring(ArqFunctionFactory.ArqFunctionsNamespace.Length);
-                ISparqlExpression arqFunc = null;
+                IExpression arqFunc = null;
 
                 switch (func)
                 {

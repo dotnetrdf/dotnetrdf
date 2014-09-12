@@ -74,25 +74,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 return SparqlSpecsHelper.SparqlKeywordBound;
             }
         }
-
-        public override bool CanParallelise
-        {
-            get { return true; }
-        }
-
-        public override bool IsDeterministic
-        {
-            get { return true; }
-        }
-
-        public override bool IsConstant
-        {
-            get { return false; }
-        }
-
-        public override int GetHashCode()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

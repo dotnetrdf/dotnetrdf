@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
@@ -35,15 +37,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     /// Class representing the SPARQL COALESCE() function
     /// </summary>
     public class CoalesceFunction 
-        : ISparqlExpression
+        : IExpression
     {
-        private List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
+        private List<IExpression> _expressions = new List<IExpression>();
 
         /// <summary>
         /// Creates a new COALESCE function with the given expressions as its arguments
         /// </summary>
         /// <param name="expressions">Argument expressions</param>
-        public CoalesceFunction(IEnumerable<ISparqlExpression> expressions)
+        public CoalesceFunction(IEnumerable<IExpression> expressions)
         {
             this._expressions.AddRange(expressions);
         }
@@ -54,14 +56,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            foreach (ISparqlExpression expr in this._expressions)
+            foreach (IExpression expr in this._expressions)
             {
                 try
                 {
                     //Test the expression
-                    IValuedNode temp = expr.Evaluate(context, bindingID);
+                    IValuedNode temp = expr.Evaluate(solution, context);
 
                     //Don't return nulls
                     if (temp == null) continue;
@@ -113,17 +115,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public string Functor
@@ -137,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -154,16 +145,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 return this._expressions.All(e => e.CanParallelise);
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CoalesceFunction(this._expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

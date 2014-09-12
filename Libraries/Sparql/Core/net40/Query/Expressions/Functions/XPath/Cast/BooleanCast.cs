@@ -30,6 +30,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -43,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// Creates a new XPath Boolean Cast Function Expression
         /// </summary>
         /// <param name="expr">Expression to be cast</param>
-        public BooleanCast(ISparqlExpression expr) 
+        public BooleanCast(IExpression expr) 
             : base(expr) { }
 
         /// <summary>
@@ -52,9 +54,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(context, bindingID);//.CoerceToBoolean();
+            IValuedNode n = this.Argument.Evaluate(solution, context);//.CoerceToBoolean();
 
             //if (n == null)
             //{
@@ -75,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     //See if the value can be cast
                     if (n is BooleanNode) return n;
-                    ILiteralNode lit = (ILiteralNode)n;
+                    INode lit = n;
                     if (lit.DataType != null)
                     {
                         string dt = lit.DataType.ToString();
@@ -95,11 +97,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
 
                         //Cast based on Numeric Type
-                        SparqlNumericType type = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(dt);
+                        EffectiveNumericType type = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(dt);
 
                         switch (type)
                         {
-                            case SparqlNumericType.Decimal:
+                            case EffectiveNumericType.Decimal:
                                 Decimal dec;
                                 if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
@@ -117,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
                                 }
 
-                            case SparqlNumericType.Double:
+                            case EffectiveNumericType.Double:
                                 Double dbl;
                                 if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                 {
@@ -135,7 +137,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double as an intermediate stage in casting to a xsd:boolean");
                                 }
 
-                            case SparqlNumericType.Integer:
+                            case EffectiveNumericType.Integer:
                                 Int64 i;
                                 if (Int64.TryParse(lit.Value, out i))
                                 {
@@ -153,7 +155,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer as an intermediate stage in casting to a xsd:boolean");
                                 }
 
-                            case SparqlNumericType.NaN:
+                            case EffectiveNumericType.NaN:
                                 if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                                 {
                                     //DateTime cast forbidden
@@ -194,15 +196,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -211,16 +204,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BooleanCast(transformer.Transform(this._expr));
         }
     }
 }

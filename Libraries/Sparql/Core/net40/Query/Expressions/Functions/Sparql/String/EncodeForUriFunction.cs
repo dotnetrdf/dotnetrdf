@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new Encode for URI function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public EncodeForUriFunction(ISparqlExpression stringExpr)
+        public EncodeForUriFunction(IExpression stringExpr)
             : base(stringExpr) { }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             return new StringNode(Uri.EscapeUriString(stringLit.Value));
         }
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new EncodeForUriFunction(transformer.Transform(this._expr));
         }

@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// Creates a new SPARQL YEAR() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public MonthFunction(ISparqlExpression expr)
+        public MonthFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new MonthFunction(transformer.Transform(this._expr));
         }

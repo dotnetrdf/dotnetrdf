@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions.Factories;
 #if !NO_WEB
 using System.Web;
 #endif
@@ -45,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Escape HTML for URI function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public EscapeHtmlUriFunction(ISparqlExpression stringExpr)
+        public EscapeHtmlUriFunction(IExpression stringExpr)
             : base(stringExpr) { }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             return new StringNode(HttpUtility.UrlEncode(stringLit.Value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -83,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new EscapeHtmlUriFunction(transformer.Transform(this._expr));
         }

@@ -23,8 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -39,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringExpr">String Expression</param>
         /// <param name="argExpr">Argument Expression</param>
-        public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
+        public BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr)
             : base(stringExpr, argExpr) { }
 
         /// <summary>
@@ -48,29 +49,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode x = this._leftExpr.Evaluate(context, bindingID);
-            INode y = this._rightExpr.Evaluate(context, bindingID);
+            INode x = this.FirstArgument.Evaluate(solution, context);
+            INode y = this.SecondArgument.Evaluate(solution, context);
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                ILiteralNode stringLit = (ILiteralNode)x;
-                ILiteralNode argLit = (ILiteralNode)y;
-
-                if (IsValidArgumentPair(stringLit, argLit))
+                if (IsValidArgumentPair(x, y))
                 {
-                    return new BooleanNode(this.ValueInternal(stringLit, argLit));
+                    return new BooleanNode(this.ValueInternal(x, y));
                 }
-                else
-                {
-                    throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
-                }
+                throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
             }
-            else
-            {
-                throw new RdfQueryException("Arguments to a SPARQL String function must both be Literal Nodes");
-            }
+            throw new RdfQueryException("Arguments to a SPARQL String function must both be Literal Nodes");
         }
 
         /// <summary>
@@ -79,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="stringLit"></param>
         /// <param name="argLit"></param>
         /// <returns></returns>
-        protected abstract bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit);
+        protected abstract bool ValueInternal(INode stringLit, INode argLit);
 
         /// <summary>
         /// Determines whether the Arguments are valid
@@ -87,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
+        protected bool IsValidArgumentPair(INode stringLit, INode argLit)
         {
             if (stringLit.DataType != null)
             {
@@ -149,17 +141,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     //If 1st argument is plain literal and 2nd has language tag then invalid
                     return false;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the Expression Type
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
             }
         }
     }

@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// Creates a new Negation Expression
         /// </summary>
         /// <param name="expr">Expression to Negate</param>
-        public NotExpression(ISparqlExpression expr) 
+        public NotExpression(IExpression expr) 
             : base(expr) { }
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return new BooleanNode(!this._expr.Evaluate(context, bindingID).AsSafeBoolean());
+            return new BooleanNode(!this._expr.Evaluate(solution, context).AsSafeBoolean());
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new NotExpression(transformer.Transform(this._expr));
         }

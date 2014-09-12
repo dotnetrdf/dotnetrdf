@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Conditional
 {
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// </summary>
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
-        public AndExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
+        public AndExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
         /// Evaluates the expression
@@ -51,12 +52,12 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             //Lazy Evaluation for Efficiency
             try
             {
-                bool leftResult = this._leftExpr.Evaluate(context, bindingID).AsBoolean();
+                bool leftResult = this._leftExpr.Evaluate(solution, context).AsBoolean();
                 if (!leftResult)
                 {
                     //If the LHS is false then no subsequent results matter
@@ -65,14 +66,14 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 else
                 {
                     //If the LHS is true then we have to continue by evaluating the RHS
-                    return new BooleanNode(this._rightExpr.Evaluate(context, bindingID).AsBoolean());
+                    return new BooleanNode(this._rightExpr.Evaluate(solution, context).AsBoolean());
                 }
             }
             catch (Exception ex)
             {
                 //If we encounter an error on the LHS then we return false only if the RHS is false
                 //Otherwise we error
-                bool rightResult = this._rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
+                bool rightResult = this._rightExpr.Evaluate(solution, context).AsSafeBoolean();
                 if (!rightResult)
                 {
                     return new BooleanNode(false);
@@ -92,44 +93,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._leftExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._leftExpr.ToString());
-            }
-            output.Append(" && ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._rightExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._rightExpr.ToString());
-            }
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -138,16 +101,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
             {
                 return "&&";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new AndExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

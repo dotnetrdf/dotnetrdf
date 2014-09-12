@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="arg1">First Argument</param>
         /// <param name="arg2">Second Argument</param>
-        public MaxFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        public MaxFunction(IExpression arg1, IExpression arg2)
             : base(arg1, arg2) { }
 
         /// <summary>
@@ -51,22 +52,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode a = this._leftExpr.Evaluate(solution, context);
+            IValuedNode b = this._rightExpr.Evaluate(solution, context);
 
-            SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
+            EffectiveNumericType type = (EffectiveNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
             switch (type)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return new LongNode(Math.Max(a.AsInteger(), b.AsInteger()));
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(Math.Max(a.AsDecimal(), b.AsDecimal()));
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     return new FloatNode(Math.Max(a.AsFloat(), b.AsFloat()));
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Max(a.AsDouble(), b.AsDouble()));
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
@@ -109,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new MaxFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
     /// Represents the SPARQL RAND() Function
     /// </summary>
     public class RandFunction
-        : ISparqlExpression
+        : IExpression
     {
         private static Random _rnd = new Random();
 
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return new DoubleNode(_rnd.NextDouble());
         }
@@ -81,11 +81,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <summary>
         /// Gets the Arguments of this Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return Enumerable.Empty<ISparqlExpression>();
+                return Enumerable.Empty<IExpression>();
             }
         }
 
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return this;
         }

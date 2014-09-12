@@ -26,26 +26,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates.XPath;
 using VDS.RDF.Query.Expressions.Conditional;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.XPath;
-using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
 using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Specifications;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
     /// Expression Factory which generates XPath Function expressions
     /// </summary>
     public class XPathFunctionFactory 
-        : ISparqlCustomExpressionFactory
+        : IExpressionFactory
     {
         /// <summary>
         /// Namespace Uri for XPath Functions Namespace
@@ -117,7 +114,7 @@ namespace VDS.RDF.Query.Expressions
                             XPathUnicodeNormalizationFormKD = "NFKD",
                             XPathUnicodeNormalizationFormFull = "FULLY-NORMALIZED";
 
-        private String[] FunctionUris = {
+        private readonly String[] FunctionUris = {
                                             Not,
                                             Boolean,
                                             True,
@@ -152,7 +149,7 @@ namespace VDS.RDF.Query.Expressions
                                             TimezoneFromDateTime,
                                         };
 
-        private String[] AggregateUris = {
+        private readonly String[] AggregateUris = {
                                              StringJoin
                                          };
 
@@ -163,11 +160,11 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Argument Type Validator for validating that a Literal has an Integer datatype
         /// </summary>
-        public static Func<Uri, bool> AcceptIntegerArguments = (u => u != null && SparqlSpecsHelper.IntegerDataTypes.Contains(u.AbsoluteUri));
+        public static Func<Uri, bool> AcceptIntegerArguments = (u => u != null && XmlSpecsHelper.IntegerDataTypes.Contains(u.AbsoluteUri));
         /// <summary>
         /// Argument Type Validator for validating that a Literal has a Numeric datatype
         /// </summary>
-        public static Func<Uri, bool> AcceptNumericArguments = (u => u != null && SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN);
+        public static Func<Uri, bool> AcceptNumericArguments = (u => u != null && SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != EffectiveNumericType.NaN);
 
         /// <summary>
         /// Tries to create an XPath Function expression if the function Uri correseponds to a supported XPath Function
@@ -177,7 +174,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<IExpression> args, Dictionary<String,IExpression> scalarArgs, out IExpression expr)
         {
             //If any Scalar Arguments are present then can't possibly be an XPath Function
             if (scalarArgs.Count > 0)
@@ -190,7 +187,7 @@ namespace VDS.RDF.Query.Expressions
             if (func.StartsWith(XPathFunctionFactory.XPathFunctionsNamespace))
             {
                 func = func.Substring(XPathFunctionFactory.XPathFunctionsNamespace.Length);
-                ISparqlExpression xpathFunc = null;
+                IExpression xpathFunc = null;
 
                 switch (func)
                 {

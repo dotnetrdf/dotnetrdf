@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -41,45 +43,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// Creates a new IsBlank() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsBlankFunction(ISparqlExpression expr) : base(expr) { }
+        public IsBlankFunction(IExpression expr) 
+            : base(expr) { }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IsBlankFunction(argument);
+        }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Blank);
-            }
+            INode result = this.Argument.Evaluate(solution, context);
+            return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Blank);
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "ISBLANK(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IsBlankFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            IsBlankFunction blank = (IsBlankFunction) other;
+            return this.Argument.Equals(blank.Argument);
         }
 
         /// <summary>
@@ -91,16 +82,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordIsBlank;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsBlankFunction(transformer.Transform(this._expr));
         }
     }
 }

@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL UUID Function
     /// </summary>
     public class UUIDFunction
-        : BaseUUIDFunction
+        : BaseUuidFunction
     {
         /// <summary>
         /// Evaluates the function by generating the URN UUID form based on the given UUID
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL STRUUID Function
     /// </summary>
     public class StrUUIDFunction
-        : BaseUUIDFunction
+        : BaseUuidFunction
     {
         /// <summary>
         /// Evaluates the function by returning the string form of the given UUID

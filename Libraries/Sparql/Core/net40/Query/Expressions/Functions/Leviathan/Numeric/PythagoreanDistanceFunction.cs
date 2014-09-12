@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="arg1">First Argument</param>
         /// <param name="arg2">Second Argument</param>
-        public PythagoreanDistanceFunction(ISparqlExpression arg1, ISparqlExpression arg2)
+        public PythagoreanDistanceFunction(IExpression arg1, IExpression arg2)
             : base(arg1, arg2) { }
 
         /// <summary>
@@ -51,14 +52,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode x = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode x = this._leftExpr.Evaluate(solution, context);
             if (x == null) throw new RdfQueryException("Cannot calculate distance of a null");
-            IValuedNode y = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode y = this._rightExpr.Evaluate(solution, context);
             if (y == null) throw new RdfQueryException("Cannot calculate distance of a null");
 
-            if (x.NumericType == SparqlNumericType.NaN || y.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
+            if (x.NumericType == EffectiveNumericType.NaN || y.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
 
             return new DoubleNode(Math.Sqrt(Math.Pow(x.AsDouble(), 2) + Math.Pow(y.AsDouble(), 2)));
         }
@@ -99,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new PythagoreanDistanceFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

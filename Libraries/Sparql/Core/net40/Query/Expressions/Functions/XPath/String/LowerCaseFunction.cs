@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Lower Case function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public LowerCaseFunction(ISparqlExpression stringExpr)
+        public LowerCaseFunction(IExpression stringExpr)
             : base(stringExpr) { }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             return new StringNode(stringLit.Value.ToLower(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -80,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new LowerCaseFunction(transformer.Transform(this._expr));
         }

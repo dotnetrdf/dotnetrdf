@@ -146,6 +146,8 @@
     <Compile Include="Query\Expressions\Arithmetic\MinusExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\MultiplicationExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\SubtractionExpression.cs" />
+    <Compile Include="Query\Expressions\BaseNAryExpression.cs" />
+    <Compile Include="Query\Expressions\BaseTernaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseNullaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseUnaryExpression.cs" />
@@ -159,6 +161,12 @@
     <Compile Include="Query\Expressions\Conditional\NotExpression.cs" />
     <Compile Include="Query\Expressions\Conditional\OrExpression.cs" />
     <Compile Include="Query\Expressions\ExpressionContext.cs" />
+    <Compile Include="Query\Expressions\Factories\ArqFunctionFactory.cs" />
+    <Compile Include="Query\Expressions\Factories\IExpressionFactory.cs" />
+    <Compile Include="Query\Expressions\Factories\LeviathanFunctionFactory.cs" />
+    <Compile Include="Query\Expressions\Factories\SparqlBuiltInFunctionFactory.cs" />
+    <Compile Include="Query\Expressions\Factories\ExpressionFactory.cs" />
+    <Compile Include="Query\Expressions\Factories\XPathFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Functions\Arq\BNodeFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Arq\EFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Arq\LocalNameFunction.cs" />
@@ -309,6 +317,21 @@
     <Compile Include="Query\Grouping\CountAllAccumulator.cs" />
     <Compile Include="Query\Grouping\IAccumulator.cs" />
     <Compile Include="Query\Grouping\SampleAccumulator.cs" />
+    <Compile Include="Query\Operators\BaseOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeAddition.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeSubtraction.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanAddition.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanSubtraction.cs" />
+    <Compile Include="Query\Operators\ISparqlOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\AdditionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\BaseNumericOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\DivisionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\MultiplicationOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\SubtractionOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperatorType.cs" />
     <Compile Include="Query\Processors\AlgebraQueryProcessor.cs" />
     <Compile Include="Query\Processors\GraphQueryProcesor.cs" />
     <Compile Include="Query\Processors\IQueryProcessor.cs" />
@@ -388,7 +411,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Query\Expressions\Factories\LeviathanFunctionLibrary.ttl" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Specifications\SparqlSyntax.cs" />
   </ItemGroup>

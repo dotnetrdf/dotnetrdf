@@ -60,17 +60,17 @@ namespace VDS.RDF.Query.Operators.Numeric
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply addition when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            EffectiveNumericType type = (EffectiveNumericType)ns.Max(n => (int)n.NumericType);
 
             switch (type)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return new LongNode(ns.Select(n => n.AsInteger()).Sum());
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(ns.Select(n => n.AsDecimal()).Sum());
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     return new FloatNode(ns.Select(n => n.AsFloat()).Sum());
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(ns.Select(n => n.AsDouble()).Sum());
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the operation cannot be determined");

@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -36,16 +38,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Abstract Base class for XPath Binary String functions
     /// </summary>
     public abstract class BaseBinaryStringFunction
-        : ISparqlExpression
+        : IExpression
     {
         /// <summary>
         /// Expression the function applies over
         /// </summary>
-        protected ISparqlExpression _expr;
+        protected IExpression _expr;
         /// <summary>
         /// Argument expression
         /// </summary>
-        protected ISparqlExpression _arg;
+        protected IExpression _arg;
         /// <summary>
         /// Whether the argument can be null
         /// </summary>
@@ -62,7 +64,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="argExpr">Argument</param>
         /// <param name="allowNullArgument">Whether the argument may be null</param>
         /// <param name="argumentTypeValidator">Type validator for the argument</param>
-        public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
+        public BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
         {
             this._expr = stringExpr;
             this._arg = argExpr;
@@ -77,14 +79,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode temp = this._expr.Evaluate(context, bindingID);
+            INode temp = this._expr.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    INode lit = temp;
                     if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                     {
                         throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
@@ -98,20 +100,20 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 //Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
                 if (this._arg == null)
                 {
-                    return this.ValueInternal((ILiteralNode)temp);
+                    return this.ValueInternal(temp);
                 }
                 else
                 {
                     //Need to validate the argument
-                    INode tempArg = this._arg.Evaluate(context, bindingID);
+                    INode tempArg = this._arg.Evaluate(solution, context);
                     if (tempArg != null)
                     {
                         if (tempArg.NodeType == NodeType.Literal)
                         {
-                            ILiteralNode litArg = (ILiteralNode)tempArg;
+                            INode litArg = tempArg;
                             if (this._argumentTypeValidator(litArg.DataType))
                             {
-                                return this.ValueInternal((ILiteralNode)temp, litArg);
+                                return this.ValueInternal(temp, litArg);
                             }
                             else
                             {
@@ -126,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     else if (this._allowNullArgument)
                     {
                         //Null argument permitted so just invoke the non-argument version of the function
-                        return this.ValueInternal((ILiteralNode)temp);
+                        return this.ValueInternal(temp);
                     }
                     else
                     {
@@ -145,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public virtual IValuedNode ValueInternal(ILiteralNode stringLit)
+        public virtual IValuedNode ValueInternal(INode stringLit)
         {
             if (!this._allowNullArgument)
             {
@@ -163,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public abstract IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg);
+        public abstract IValuedNode ValueInternal(INode stringLit, INode arg);
 
         /// <summary>
         /// Gets the Variables used in the function
@@ -190,17 +192,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public abstract string Functor
@@ -211,11 +202,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
-                return new ISparqlExpression[] { this._expr, this._arg };
+                return new IExpression[] { this._expr, this._arg };
             }
         }
 
@@ -229,12 +220,5 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 return this._expr.CanParallelise && this._arg.CanParallelise;
             }
         }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 }

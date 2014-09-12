@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// </summary>
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
-        public NotEqualsExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
+        public NotEqualsExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
         /// Evaluates the expression
@@ -47,10 +47,10 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode x = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode y = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode x = this._leftExpr.Evaluate(solution, context);
+            IValuedNode y = this._rightExpr.Evaluate(solution, context);
 
             return new BooleanNode(SparqlSpecsHelper.Inequality(x, y));
         }
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new NotEqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

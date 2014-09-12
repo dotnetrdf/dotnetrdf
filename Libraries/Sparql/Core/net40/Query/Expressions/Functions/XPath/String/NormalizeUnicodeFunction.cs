@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -44,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Normalize Unicode function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public NormalizeUnicodeFunction(ISparqlExpression stringExpr)
+        public NormalizeUnicodeFunction(IExpression stringExpr)
             : base(stringExpr, null, true, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="normalizationFormExpr">Normalization Form</param>
-        public NormalizeUnicodeFunction(ISparqlExpression stringExpr, ISparqlExpression normalizationFormExpr)
+        public NormalizeUnicodeFunction(IExpression stringExpr, IExpression normalizationFormExpr)
             : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit)
+        public override IValuedNode ValueInternal(INode stringLit)
         {
             return new StringNode(stringLit.Value.Normalize(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -71,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(INode stringLit, INode arg)
         {
             if (arg == null)
             {
@@ -140,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._arg != null)
             {

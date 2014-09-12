@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// </summary>
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
-        public LessThanOrEqualToExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr)
+        public LessThanOrEqualToExpression(IExpression leftExpr, IExpression rightExpr)
             : base(leftExpr, rightExpr) { }
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             IValuedNode a, b;
-            a = this._leftExpr.Evaluate(context, bindingID);
-            b = this._rightExpr.Evaluate(context, bindingID);
+            a = this._leftExpr.Evaluate(solution, context);
+            b = this._rightExpr.Evaluate(solution, context);
 
             if (a == null)
             {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new LessThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

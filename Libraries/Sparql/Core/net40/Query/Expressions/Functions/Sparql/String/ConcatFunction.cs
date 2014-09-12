@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -36,15 +38,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL CONCAT function
     /// </summary>
     public class ConcatFunction
-        : ISparqlExpression
+        : IExpression
     {
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private List<IExpression> _exprs = new List<IExpression>();
 
         /// <summary>
         /// Creates a new SPARQL Concatenation function
         /// </summary>
         /// <param name="expressions">Enumeration of expressions</param>
-        public ConcatFunction(IEnumerable<ISparqlExpression> expressions)
+        public ConcatFunction(IEnumerable<IExpression> expressions)
         {
             this._exprs.AddRange(expressions);
         }
@@ -55,16 +57,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             string langTag = null;
             bool allString = true;
             bool allSameTag = true;
 
             StringBuilder output = new StringBuilder();
-            foreach (ISparqlExpression expr in this._exprs)
+            foreach (IExpression expr in this._exprs)
             {
-                INode temp = expr.Evaluate(context, bindingID);
+                INode temp = expr.Evaluate(solution, context);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
 
                 switch (temp.NodeType)
@@ -72,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     case NodeType.Literal:
                         //Check whether the Language Tags and Types are the same
                         //We need to do this so that we can produce the appropriate output
-                        ILiteralNode lit = (ILiteralNode)temp;
+                        INode lit = temp;
                         if (langTag == null)
                         {
                             langTag = lit.Language;
@@ -112,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the Arguments the function applies to
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -163,17 +165,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the SPARQL Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the expression
         /// </summary>
         public string Functor
@@ -182,16 +173,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordConcat;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new ConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
         }
     }
 }

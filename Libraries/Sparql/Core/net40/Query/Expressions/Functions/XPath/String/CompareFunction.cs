@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="a">First Comparand</param>
         /// <param name="b">Second Comparand</param>
-        public CompareFunction(ISparqlExpression a, ISparqlExpression b)
+        public CompareFunction(IExpression a, IExpression b)
             : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
@@ -51,9 +52,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(INode stringLit, INode arg)
         {
-            return new LongNode(string.Compare(stringLit.Value, arg.Value));
+            return new LongNode(string.Compare(stringLit.Value, arg.Value, Options.DefaultCulture, Options.DefaultComparisonOptions));
         }
 
         /// <summary>
@@ -74,16 +75,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CompareFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 }

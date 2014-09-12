@@ -36,36 +36,43 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Abstract base class for Binary Expressions
     /// </summary>
-    public abstract class BaseBinaryExpression
-        : IBinaryExpression
+    public abstract class BaseTernaryExpression
+        : ITernayExpression
     {
         /// <summary>
         /// Creates a new Base Binary Expression
         /// </summary>
-        /// <param name="leftExpr">Left Expression</param>
-        /// <param name="rightExpr">Right Expression</param>
-        protected BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
+        /// <param name="firstArg">First Argument</param>
+        /// <param name="secondArg">Second Argument</param>
+        /// <param name="thirdArg">Third Argument</param>
+        protected BaseTernaryExpression(IExpression firstArg, IExpression secondArg, IExpression thirdArg)
         {
-            this.FirstArgument = leftExpr;
-            this.SecondArgument = rightExpr;
+            this.FirstArgument = firstArg;
+            this.SecondArgument = secondArg;
+            this.ThirdArgument = thirdArg;
         }
 
         /// <summary>
-        /// The sub-expressions of this Expression
+        /// The first argument of this expression
         /// </summary>
         public IExpression FirstArgument { get; private set; }
 
         /// <summary>
-        /// The sub-expressions of this Expression
+        /// The second argument of this expression
         /// </summary>
         public IExpression SecondArgument { get; private set; }
 
+        /// <summary>
+        /// The third argument of this expression
+        /// </summary>
+        public IExpression ThirdArgument { get; private set; }
+
         public virtual IExpression Copy()
         {
-            return Copy(this.FirstArgument.Copy(), this.SecondArgument.Copy());
+            return Copy(this.FirstArgument.Copy(), this.SecondArgument.Copy(), this.ThirdArgument.Copy());
         }
 
-        public abstract IExpression Copy(IExpression arg1, IExpression arg2);
+        public abstract IExpression Copy(IExpression arg1, IExpression arg2, IExpression arg3);
 
         /// <summary>
         /// Evaluates the expression
@@ -89,7 +96,7 @@ namespace VDS.RDF.Query.Expressions
         public string ToString(IAlgebraFormatter formatter)
         {
             String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
-            return String.Format("{0}({1}, {2})", f, this.FirstArgument.ToString(formatter), this.SecondArgument.ToString(formatter));
+            return String.Format("{0}({1}, {2}, {3})", f, this.FirstArgument.ToString(formatter), this.SecondArgument.ToString(formatter), this.ThirdArgument.ToString(formatter));
         }
 
         public string ToPrefixString()
@@ -100,7 +107,7 @@ namespace VDS.RDF.Query.Expressions
         public string ToPrefixString(IAlgebraFormatter formatter)
         {
             String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
-            return String.Format("({0} {1} {2})", f, this.FirstArgument.ToPrefixString(formatter), this.SecondArgument.ToPrefixString(formatter));
+            return String.Format("({0} {1} {2} {3})", f, this.FirstArgument.ToPrefixString(formatter), this.SecondArgument.ToPrefixString(formatter), this.ThirdArgument.ToPrefixString(formatter));
         }
 
         /// <summary>
@@ -110,7 +117,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return this.FirstArgument.Variables.Concat(this.SecondArgument.Variables).Distinct();
+                return this.FirstArgument.Variables.Concat(this.SecondArgument.Variables).Concat(this.ThirdArgument.Variables).Distinct();
             }
         }
 
@@ -129,8 +136,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // Assume we can parallelise if both arguments can
-                return this.FirstArgument.CanParallelise && this.SecondArgument.CanParallelise;
+                // Assume we can parallelise if all arguments can
+                return this.FirstArgument.CanParallelise && this.SecondArgument.CanParallelise && this.ThirdArgument.CanParallelise;
             }
         }
 
@@ -138,8 +145,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // Assume we are deterministic if both arguments are
-                return this.FirstArgument.IsDeterministic && this.SecondArgument.IsDeterministic;
+                // Assume we are deterministic if all arguments are
+                return this.FirstArgument.IsDeterministic && this.SecondArgument.IsDeterministic && this.ThirdArgument.IsDeterministic;
             }
         }
 
@@ -147,8 +154,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // If we are deterministic and both arguments are constant then assume we are constant
-                return this.IsDeterministic && this.FirstArgument.IsConstant && this.SecondArgument.IsConstant;
+                // If we are deterministic and all arguments are constant then assume we are constant
+                return this.IsDeterministic && this.FirstArgument.IsConstant && this.SecondArgument.IsConstant && this.ThirdArgument.IsConstant;
             }
         }
 
@@ -161,14 +168,14 @@ namespace VDS.RDF.Query.Expressions
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is BaseBinaryExpression)) return false;
+            if (!(other is BaseTernaryExpression)) return false;
 
-            return this.Equals((BaseBinaryExpression) other);
+            return this.Equals((BaseTernaryExpression) other);
         }
 
         public override int GetHashCode()
         {
-            return Tools.CombineHashCodes(this.Functor, this.FirstArgument, this.SecondArgument);
+            return Tools.CombineHashCodes(this.Functor, this.FirstArgument, this.SecondArgument, this.ThirdArgument);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// The sub-expression of this Expression
         /// </summary>
-        public IExpression Argument { get; set; }
+        public IExpression Argument { get; private set; }
 
         public virtual IExpression Copy()
         {
@@ -92,11 +92,32 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public abstract bool CanParallelise { get; }
+        public bool CanParallelise
+        {
+            get
+            {
+                // Assume that if the argument can parallelise so can we
+                return this.Argument.CanParallelise;
+            }
+        }
 
-        public abstract bool IsDeterministic { get; }
+        public bool IsDeterministic
+        {
+            get
+            {
+                // Assume that if the argument is deterministic then we are too
+                return this.Argument.IsDeterministic;
+            }
+        }
 
-        public abstract bool IsConstant { get; }
+        public bool IsConstant
+        {
+            get
+            {
+                // Assume that if we are deterministic and the argument is constant then we will be constant
+                return this.IsDeterministic && this.Argument.IsConstant;
+            }
+        }
 
         public void Accept(IExpressionVisitor visitor)
         {
@@ -112,6 +133,9 @@ namespace VDS.RDF.Query.Expressions
             return this.Equals((BaseUnaryExpression) other);
         }
 
-        public abstract override int GetHashCode();
+        public override int GetHashCode()
+        {
+            return Tools.CombineHashCodes(this.Functor, this.Argument);
+        }
     }
 }

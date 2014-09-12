@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// Creates a new Unary Minus Expression
         /// </summary>
         /// <param name="expr">Expression to apply the Minus operator to</param>
-        public MinusExpression(ISparqlExpression expr) 
+        public MinusExpression(IExpression expr) 
             : base(expr) { }
 
         /// <summary>
@@ -50,17 +50,17 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this._expr.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot apply unary minus to a null");
 
             switch (a.NumericType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return new LongNode(-1 * a.AsInteger());
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     decimal decvalue = a.AsDecimal();
                     if (decvalue == Decimal.Zero)
                     {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                     {
                         return new DecimalNode(-1 * decvalue);
                     }
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     float fltvalue = a.AsFloat();
                     if (Single.IsNaN(fltvalue))
                     {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                     {
                         return new FloatNode(-1.0f * fltvalue);
                     }
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     double dblvalue = a.AsDouble();
                     if (Double.IsNaN(dblvalue))
                     {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new MinusExpression(transformer.Transform(this._expr));
         }

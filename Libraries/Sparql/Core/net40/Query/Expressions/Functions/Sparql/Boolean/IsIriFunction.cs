@@ -23,11 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -41,46 +39,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// Creates a new IsIRI() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsIriFunction(ISparqlExpression expr)
+        public IsIriFunction(IExpression expr)
             : base(expr) { }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IsIriFunction(argument);
+        }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
         /// </summary>
+        /// <param name="solution">Solution</param>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Uri);
-            }
+            INode result = this.Argument.Evaluate(solution, context);
+            return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Uri);
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "ISIRI(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IsIriFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            IsIriFunction func = (IsIriFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -92,16 +78,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordIsIri;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsIriFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -115,17 +91,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// Creates a new IsURI() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsUriFunction(ISparqlExpression expr)
+        public IsUriFunction(IExpression expr)
             : base(expr) { }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "ISURI(" + this._expr.ToString() + ")";
-        }
 
         /// <summary>
         /// Gets the Functor of the Expression
@@ -136,16 +103,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordIsUri;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsUriFunction(transformer.Transform(this._expr));
         }
     }
 }

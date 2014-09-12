@@ -26,22 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
+using VDS.RDF.Specifications;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
     /// Factory Class for generating Expressions for Sparql Extension Functions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Allows for users of the Library to implement and register Custom Expression Factories which can generate Expressions for their own Extension functions which they wish to use in their SPARQL queries.   Custom factories may be globally scoped by registering them with the <see cref="SparqlExpressionFactory.AddCustomFactory">AddCustomFactory()</see> method or locally by passing them to the three argument constructor of the <see cref="SparqlExpressionFactory.CreateExpression(Uri, List{ISparqlExpression}, IEnumerable{ISparqlCustomExpressionFactory})">CreateExpression()</see> method.
+    /// Allows for users of the Library to implement and register Custom Expression Factories which can generate Expressions for their own Extension functions which they wish to use in their SPARQL queries.   Custom factories may be globally scoped by registering them with the <see cref="ExpressionFactory.AddCustomFactory">AddCustomFactory()</see> method or locally by passing them to the three argument constructor of the <see cref="ExpressionFactory.CreateExpression(Uri, List{IExpression}, IEnumerable{IExpressionFactory})">CreateExpression()</see> method.
     /// </para>
     /// </remarks>
-    public static class SparqlExpressionFactory
+    public static class ExpressionFactory
     {
         /// <summary>
         /// List of Custom Expression factories
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions
         /// <remarks>
         /// All the standard function libraries (XPath, Leviathan and ARQ) included in dotNetRDF are automatically registered
         /// </remarks>
-        private static List<ISparqlCustomExpressionFactory> _customFactories = new List<ISparqlCustomExpressionFactory>() 
+        private static readonly List<IExpressionFactory> _customFactories = new List<IExpressionFactory>() 
         {
             new SparqlBuiltInFunctionFactory(),
             new XPathFunctionFactory(),
@@ -68,9 +68,9 @@ namespace VDS.RDF.Query.Expressions
         /// Uses only the globally scoped custom expression factories
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args)
+        public static IExpression CreateExpression(Uri u, List<IExpression> args)
         {
-            return CreateExpression(u, args, Enumerable.Empty<ISparqlCustomExpressionFactory>());
+            return CreateExpression(u, args, Enumerable.Empty<IExpressionFactory>());
         }
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace VDS.RDF.Query.Expressions
         /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories)
+        public static IExpression CreateExpression(Uri u, List<IExpression> args, IEnumerable<IExpressionFactory> factories)
         {
-            return CreateExpression(u, args, new Dictionary<String, ISparqlExpression>(), factories);
+            return CreateExpression(u, args, new Dictionary<String, IExpression>(), factories);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions
         /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories)
+        public static IExpression CreateExpression(Uri u, List<IExpression> args, Dictionary<String,IExpression> scalarArgs, IEnumerable<IExpressionFactory> factories)
         {
             if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.AbsoluteUri))
             {
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions
                 }
 
                 //One of the Supported XPath Cast functions
-                ISparqlExpression arg = args[0];
+                IExpression arg = args[0];
                 String cast = u.AbsoluteUri;
                 if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                 {
@@ -152,8 +152,8 @@ namespace VDS.RDF.Query.Expressions
             else
             {
                 //Try to use the Global Custom Factories to generate the Expression
-                ISparqlExpression expr = null;
-                foreach (ISparqlCustomExpressionFactory customFactory in _customFactories)
+                IExpression expr = null;
+                foreach (IExpressionFactory customFactory in _customFactories)
                 {
                     if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                     {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Expressions
                 }
 
                 //If we have any locally scoped factories then we can now use these to try and generate the Expression
-                foreach (ISparqlCustomExpressionFactory customFactory in factories)
+                foreach (IExpressionFactory customFactory in factories)
                 {
                     if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
                     {
@@ -173,16 +173,9 @@ namespace VDS.RDF.Query.Expressions
                 }
 
                 //If we're allowing Unknown functions return an UnknownFunction
-                if (Options.QueryAllowUnknownFunctions)
+                if (SparqlOptions.QueryAllowUnknownFunctions)
                 {
-                    if (args.Count == 0)
-                    {
-                        return new UnknownFunction(u);
-                    }
-                    else
-                    {
-                        return new UnknownFunction(u, args);
-                    }
+                    return args.Count == 0 ? new UnknownFunction(u) : new UnknownFunction(u, args);
                 }
 
                 //If we get here we haven't been able to create an expression so we error
@@ -194,10 +187,10 @@ namespace VDS.RDF.Query.Expressions
         /// Registers a Custom Expression Factory
         /// </summary>
         /// <param name="factory">A Custom Expression Factory</param>
-        public static void AddCustomFactory(ISparqlCustomExpressionFactory factory)
+        public static void AddCustomFactory(IExpressionFactory factory)
         {
             //Only register the factory if it is not already registered
-            if (!_customFactories.Any(f => f.GetType().Equals(factory.GetType())))
+            if (_customFactories.All(f => f.GetType() != factory.GetType()))
             {
                 _customFactories.Add(factory);
             }
@@ -206,7 +199,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Global Custom Expression Factories that are in use
         /// </summary>
-        public static IEnumerable<ISparqlCustomExpressionFactory> Factories
+        public static IEnumerable<IExpressionFactory> Factories
         {
             get
             {

@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// </summary>
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
-        public DivisionExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) 
+        public DivisionExpression(IExpression leftExpr, IExpression rightExpr) 
             : base(leftExpr, rightExpr) { }
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode a = this._leftExpr.Evaluate(solution, context);
+            IValuedNode b = this._rightExpr.Evaluate(solution, context);
 
             IValuedNode[] inputs = new IValuedNode[] { a, b };
             ISparqlOperator op = null;
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new DivisionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }

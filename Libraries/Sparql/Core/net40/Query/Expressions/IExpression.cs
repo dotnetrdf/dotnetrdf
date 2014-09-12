@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Expressions
     public interface INAryExpression
         : IExpression
     {
-        IEnumerable<IExpression> Arguments { get; }
+        IList<IExpression> Arguments { get; }
 
         IExpression Copy(IEnumerable<IExpression> arguments);
     }

@@ -60,17 +60,17 @@ namespace VDS.RDF.Query.Operators.Numeric
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply multiplication when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            EffectiveNumericType type = (EffectiveNumericType)ns.Max(n => (int)n.NumericType);
 
             switch (type)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return new LongNode(this.Multiply(ns.Select(n => n.AsInteger())));
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(this.Multiply(ns.Select(n => n.AsDecimal())));
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     return new FloatNode(this.Multiply(ns.Select(n => n.AsFloat())));
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(this.Multiply(ns.Select(n => n.AsDouble())));
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");

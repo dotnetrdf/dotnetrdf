@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// Creates a new Leviathan Cube Function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public CubeFunction(ISparqlExpression expr)
+        public CubeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,26 +51,26 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this._expr.Evaluate(solution, context);
             if (temp == null) throw new RdfQueryException("Cannot square a null");
 
             switch (temp.NumericType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     long l = temp.AsInteger();
                     return new LongNode(l * l * l);
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     decimal d = temp.AsDecimal();
                     return new DecimalNode(d * d * d);
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     float f = temp.AsFloat();
                     return new FloatNode(f * f * f);
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     double dbl = temp.AsDouble();
                     return new DoubleNode(Math.Pow(dbl, 3));
-                case SparqlNumericType.NaN:
+                case EffectiveNumericType.NaN:
                 default:
                     throw new RdfQueryException("Cannot square a non-numeric argument");
             }
@@ -111,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new CubeFunction(transformer.Transform(this._expr));
         }

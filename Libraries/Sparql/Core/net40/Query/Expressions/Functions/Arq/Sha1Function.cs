@@ -29,6 +29,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// Creates a new ARQ SHA1 Sum function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public Sha1Function(ISparqlExpression expr)
+        public Sha1Function(IExpression expr)
             : base(expr, new SHA1Managed()) { }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha1Function(transformer.Transform(this._expr));
         }

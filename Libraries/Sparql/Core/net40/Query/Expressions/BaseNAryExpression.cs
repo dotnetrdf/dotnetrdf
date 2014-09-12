@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -36,36 +37,29 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Abstract base class for Binary Expressions
     /// </summary>
-    public abstract class BaseBinaryExpression
-        : IBinaryExpression
+    public abstract class BaseNAryExpression
+        : INAryExpression
     {
         /// <summary>
         /// Creates a new Base Binary Expression
         /// </summary>
-        /// <param name="leftExpr">Left Expression</param>
-        /// <param name="rightExpr">Right Expression</param>
-        protected BaseBinaryExpression(IExpression leftExpr, IExpression rightExpr)
+        /// <param name="args">Arguments</param>
+        protected BaseNAryExpression(IEnumerable<IExpression> args)
         {
-            this.FirstArgument = leftExpr;
-            this.SecondArgument = rightExpr;
+            this.Arguments = (args != null ? args.ToList() : new List<IExpression>()).AsReadOnly();
         }
 
         /// <summary>
-        /// The sub-expressions of this Expression
+        /// The first argument of this expression
         /// </summary>
-        public IExpression FirstArgument { get; private set; }
-
-        /// <summary>
-        /// The sub-expressions of this Expression
-        /// </summary>
-        public IExpression SecondArgument { get; private set; }
+        public IList<IExpression> Arguments { get; private set; }
 
         public virtual IExpression Copy()
         {
-            return Copy(this.FirstArgument.Copy(), this.SecondArgument.Copy());
+            return Copy(this.Arguments.Select(a => a.Copy()));
         }
 
-        public abstract IExpression Copy(IExpression arg1, IExpression arg2);
+        public abstract IExpression Copy(IEnumerable<IExpression> args);
 
         /// <summary>
         /// Evaluates the expression
@@ -86,10 +80,19 @@ namespace VDS.RDF.Query.Expressions
             return ToString(new AlgebraFormatter());
         }
 
-        public string ToString(IAlgebraFormatter formatter)
+        public virtual string ToString(IAlgebraFormatter formatter)
         {
             String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
-            return String.Format("{0}({1}, {2})", f, this.FirstArgument.ToString(formatter), this.SecondArgument.ToString(formatter));
+            StringBuilder builder = new StringBuilder();
+            builder.Append(f);
+            builder.Append('(');
+            for (int i = 0; i < this.Arguments.Count; i++)
+            {
+                if (i > 0) builder.Append(", ");
+                builder.Append(this.Arguments[i].ToString(formatter));
+            }
+            builder.Append(')');
+            return builder.ToString();
         }
 
         public string ToPrefixString()
@@ -97,10 +100,19 @@ namespace VDS.RDF.Query.Expressions
             return ToPrefixString(new AlgebraFormatter());
         }
 
-        public string ToPrefixString(IAlgebraFormatter formatter)
+        public virtual string ToPrefixString(IAlgebraFormatter formatter)
         {
             String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
-            return String.Format("({0} {1} {2})", f, this.FirstArgument.ToPrefixString(formatter), this.SecondArgument.ToPrefixString(formatter));
+            StringBuilder builder = new StringBuilder();
+            builder.Append('(');
+            builder.Append(f);
+            for (int i = 0; i < this.Arguments.Count; i++)
+            {
+                if (i > 0) builder.Append(" ");
+                builder.Append(this.Arguments[i].ToPrefixString(formatter));
+            }
+            builder.Append(')');
+            return builder.ToString();
         }
 
         /// <summary>
@@ -108,10 +120,7 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         public virtual IEnumerable<String> Variables
         {
-            get
-            {
-                return this.FirstArgument.Variables.Concat(this.SecondArgument.Variables).Distinct();
-            }
+            get { return this.Arguments.SelectMany(a => a.Variables).Distinct(); }
         }
 
         /// <summary>
@@ -129,8 +138,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // Assume we can parallelise if both arguments can
-                return this.FirstArgument.CanParallelise && this.SecondArgument.CanParallelise;
+                // Assume we can parallelise if all arguments can
+                return this.Arguments.All(a => a.CanParallelise);
             }
         }
 
@@ -138,8 +147,8 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // Assume we are deterministic if both arguments are
-                return this.FirstArgument.IsDeterministic && this.SecondArgument.IsDeterministic;
+                // Assume we are deterministic if all arguments are
+                return this.Arguments.All(a => a.IsDeterministic);
             }
         }
 
@@ -147,12 +156,12 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                // If we are deterministic and both arguments are constant then assume we are constant
-                return this.IsDeterministic && this.FirstArgument.IsConstant && this.SecondArgument.IsConstant;
+                // If we are deterministic and all arguments are constant then assume we are constant
+                return this.IsDeterministic && this.Arguments.All(a => a.IsConstant);
             }
         }
 
-        public void Accept(IExpressionVisitor visitor)
+        public virtual void Accept(IExpressionVisitor visitor)
         {
             visitor.Visit(this);
         }
@@ -161,14 +170,15 @@ namespace VDS.RDF.Query.Expressions
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is BaseBinaryExpression)) return false;
+            if (!(other is BaseTernaryExpression)) return false;
 
-            return this.Equals((BaseBinaryExpression) other);
+            return this.Equals((BaseTernaryExpression) other);
         }
 
         public override int GetHashCode()
         {
-            return Tools.CombineHashCodes(this.Functor, this.FirstArgument, this.SecondArgument);
+            // ReSharper disable once PossiblyMistakenUseOfParamsMethod
+            return Tools.CombineHashCodes(this.Functor.AsEnumerable().Concat<object>(this.Arguments));
         }
     }
 }

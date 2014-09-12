@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -41,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// Creates a new Leviathan Log Function
         /// </summary>
         /// <param name="arg">Expression</param>
-        public LogFunction(ISparqlExpression arg)
+        public LogFunction(IExpression arg)
             : base(arg, new ConstantTerm(new DoubleNode(10)))
         {
             this._log10 = true;
@@ -52,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="arg">Expression</param>
         /// <param name="logBase">Log Base Expression</param>
-        public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
+        public LogFunction(IExpression arg, IExpression logBase)
             : base(arg, logBase) { }
 
         /// <summary>
@@ -61,14 +62,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode arg = this._leftExpr.Evaluate(context, bindingID);
+            IValuedNode arg = this._leftExpr.Evaluate(solution, context);
             if (arg == null) throw new RdfQueryException("Cannot log a null");
-            IValuedNode logBase = this._rightExpr.Evaluate(context, bindingID);
+            IValuedNode logBase = this._rightExpr.Evaluate(solution, context);
             if (logBase == null) throw new RdfQueryException("Cannot log to a null base");
 
-            if (arg.NumericType == SparqlNumericType.NaN || logBase.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot log when one/both arguments are non-numeric");
+            if (arg.NumericType == EffectiveNumericType.NaN || logBase.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot log when one/both arguments are non-numeric");
 
             return new DoubleNode(Math.Log(arg.AsDouble(), logBase.AsDouble()));
         }
@@ -116,7 +117,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._log10)
             {

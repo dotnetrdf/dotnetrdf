@@ -26,22 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates.Leviathan;
-using VDS.RDF.Query.Expressions.Functions.Leviathan;
 using VDS.RDF.Query.Expressions.Functions.Leviathan.Hash;
 using VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
-using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
     /// Expression Factory which generates Leviathan Function expressions
     /// </summary>
     public class LeviathanFunctionFactory
-        : ISparqlCustomExpressionFactory
+        : IExpressionFactory
     {
         /// <summary>
         /// Leviathan Function Namespace
@@ -162,7 +158,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<IExpression> args, Dictionary<String,IExpression> scalarArgs, out IExpression expr)
         {
             //If any Scalar Arguments are present then can't possibly be a Leviathan Function
             if (scalarArgs.Count > 0)
@@ -175,7 +171,7 @@ namespace VDS.RDF.Query.Expressions
             if (func.StartsWith(LeviathanFunctionFactory.LeviathanFunctionsNamespace))
             {
                 func = func.Substring(LeviathanFunctionFactory.LeviathanFunctionsNamespace.Length);
-                ISparqlExpression lvnFunc = null;
+                IExpression lvnFunc = null;
 
                 switch (func)
                 {

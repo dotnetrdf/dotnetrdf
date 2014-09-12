@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
@@ -38,7 +39,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// Creates a new Leviathan Radians to Degrees Function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public RadiansToDegreesFunction(ISparqlExpression expr)
+        public RadiansToDegreesFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -47,12 +48,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this._expr.Evaluate(solution, context);
             if (temp == null) throw new RdfQueryException("Cannot apply a numeric function to a null");
 
-            if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
+            if (temp.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
 
             return new DoubleNode(temp.AsDouble() * (180d / Math.PI));
         }
@@ -93,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new RadiansToDegreesFunction(transformer.Transform(this._expr));
         }

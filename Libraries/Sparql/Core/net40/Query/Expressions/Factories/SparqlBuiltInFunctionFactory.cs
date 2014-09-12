@@ -26,20 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
-using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Specifications;
 
-namespace VDS.RDF.Query.Expressions
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
     /// Expression Factory which generates SPARQL Function expressions
@@ -48,7 +46,7 @@ namespace VDS.RDF.Query.Expressions
     /// This supports the requirement of SPARQL 1.1 that all functions can be accessed via URI as well as by keyword.  This also means that SPARQL 1.1 functions can be used in SPARQL 1.0 mode by using their URIs instead of their keywords and they are then treated simply as extension functions
     /// </remarks>
     public class SparqlBuiltInFunctionFactory 
-        : ISparqlCustomExpressionFactory
+        : IExpressionFactory
     {
         /// <summary>
         /// Namespace Uri for SPARQL Built In Functions Namespace
@@ -63,7 +61,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArguments">Scalar Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<IExpression> args, Dictionary<string, IExpression> scalarArguments, out IExpression expr)
         {
             String func = u.ToString();
             if (func.StartsWith(SparqlFunctionsNamespace))
@@ -88,7 +86,7 @@ namespace VDS.RDF.Query.Expressions
 
                 //Q: Will there be special URIs for the DISTINCT modified forms of aggregates?
 
-                ISparqlExpression sparqlFunc = null;
+                IExpression sparqlFunc = null;
                 switch (func)
                 {
                     case SparqlSpecsHelper.SparqlKeywordAbs:

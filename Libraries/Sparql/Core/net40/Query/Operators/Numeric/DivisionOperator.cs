@@ -59,14 +59,14 @@ namespace VDS.RDF.Query.Operators.Numeric
         {
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply division when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            EffectiveNumericType type = (EffectiveNumericType)ns.Max(n => (int)n.NumericType);
 
             try
             {
                 switch (type)
                 {
-                    case SparqlNumericType.Integer:
-                    case SparqlNumericType.Decimal:
+                    case EffectiveNumericType.Integer:
+                    case EffectiveNumericType.Decimal:
                         //For Division Integers are treated as decimals
                         decimal d = this.Divide(ns.Select(n => n.AsDecimal()));
                         if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.Operators.Numeric
                             return new LongNode(Convert.ToInt64(d));
                         }
                         return new DecimalNode(d);
-                    case SparqlNumericType.Float:
+                    case EffectiveNumericType.Float:
                         return new FloatNode(this.Divide(ns.Select(n => n.AsFloat())));
-                    case SparqlNumericType.Double:
+                    case EffectiveNumericType.Double:
                         return new DoubleNode(this.Divide(ns.Select(n => n.AsDouble())));
                     default:
                         throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// Creates a new Leviathan SHA 256 Hash function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public Sha256HashFunction(ISparqlExpression expr)
+        public Sha256HashFunction(IExpression expr)
             : base(expr, new SHA256Managed()) { }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha256HashFunction(transformer.Transform(this._expr));
         }

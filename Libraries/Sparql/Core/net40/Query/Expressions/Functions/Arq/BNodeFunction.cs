@@ -28,6 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -41,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// Creates a new ARQ afn:bnode() function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public BNodeFunction(ISparqlExpression expr)
+        public BNodeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,15 +53,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode temp = this._expr.Evaluate(context, bindingID);
+            INode temp = this.Argument.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Blank)
                 {
-                    IBlankNode b = (IBlankNode)temp;
-                    return new StringNode(b.AnonID.ToString());
+                    return new StringNode(temp.AnonID.ToString());
                 }
                 else
                 {
@@ -72,26 +74,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -99,49 +81,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             get
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new BNodeFunction(transformer.Transform(this._expr));
-        }
-
-        /// <summary>
-        /// Gets whether the expression can be parallelized
-        /// </summary>
-        public override bool CanParallelise
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the arguments of the expression
-        /// </summary>
-        public override IEnumerable<ISparqlExpression> Arguments
-        {
-            get
-            {
-                return this._expr.AsEnumerable();
-            }
-        }
-
-        /// <summary>
-        /// Gets the variables in the expression
-        /// </summary>
-        public override IEnumerable<string> Variables
-        {
-            get
-            {
-                return this._expr.Variables;
             }
         }
     }

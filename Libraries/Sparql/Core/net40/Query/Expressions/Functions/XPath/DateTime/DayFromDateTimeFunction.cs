@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// Creates a new XPath Day from Date Time function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public DayFromDateTimeFunction(ISparqlExpression expr)
+        public DayFromDateTimeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new DayFromDateTimeFunction(transformer.Transform(this._expr));
         }

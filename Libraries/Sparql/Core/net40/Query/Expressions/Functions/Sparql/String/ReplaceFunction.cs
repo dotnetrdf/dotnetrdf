@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
@@ -38,17 +39,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the XPath fn:replace() function
     /// </summary>
     public class ReplaceFunction
-        : ISparqlExpression
+        : IExpression
     {
         private string _find = null;
         private string _replace = null;
         private RegexOptions _options = RegexOptions.None;
         private bool _fixedPattern = false;
         private bool _fixedReplace = false;
-        private ISparqlExpression _textExpr = null;
-        private ISparqlExpression _findExpr = null;
-        private ISparqlExpression _optionExpr = null;
-        private ISparqlExpression _replaceExpr = null;
+        private IExpression _textExpr = null;
+        private IExpression _findExpr = null;
+        private IExpression _optionExpr = null;
+        private IExpression _replaceExpr = null;
 
         /// <summary>
         /// Creates a new SPARQL Replace function
@@ -56,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="text">Text Expression</param>
         /// <param name="find">Search Expression</param>
         /// <param name="replace">Replace Expression</param>
-        public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace)
+        public ReplaceFunction(IExpression text, IExpression find, IExpression replace)
             : this(text, find, replace, null) { }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="find">Search Expression</param>
         /// <param name="replace">Replace Expression</param>
         /// <param name="options">Options Expression</param>
-        public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace, ISparqlExpression options)
+        public ReplaceFunction(IExpression text, IExpression find, IExpression replace, IExpression options)
         {
             this._textExpr = text;
 
@@ -140,7 +141,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    string ops = ((ILiteralNode)n).Value;
+                    string ops = (n).Value;
                     foreach (char c in ops.ToCharArray())
                     {
                         switch (c)
@@ -182,12 +183,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             //Configure Options
             if (this._optionExpr != null)
             {
-                this.ConfigureOptions(this._optionExpr.Evaluate(context, bindingID), true);
+                this.ConfigureOptions(this._optionExpr.Evaluate(solution, context), true);
             }
 
             //Compile the Regex if necessary
@@ -196,7 +197,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 //Regex is not pre-compiled
                 if (this._findExpr != null)
                 {
-                    IValuedNode p = this._findExpr.Evaluate(context, bindingID);
+                    IValuedNode p = this._findExpr.Evaluate(solution, context);
                     if (p != null)
                     {
                         if (p.NodeType == NodeType.Literal)
@@ -223,7 +224,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (this._replaceExpr != null)
                 {
-                    IValuedNode r = this._replaceExpr.Evaluate(context, bindingID);
+                    IValuedNode r = this._replaceExpr.Evaluate(solution, context);
                     if (r != null)
                     {
                         if (r.NodeType == NodeType.Literal)
@@ -247,7 +248,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
 
             //Execute the Regular Expression
-            IValuedNode textNode = this._textExpr.Evaluate(context, bindingID);
+            IValuedNode textNode = this._textExpr.Evaluate(solution, context);
             if (textNode == null)
             {
                 throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
@@ -256,7 +257,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
 
                 //Execute
-                ILiteralNode lit = (ILiteralNode)textNode;
+                INode lit = textNode;
                 if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
                 string text = lit.Value;
                 string output = Regex.Replace(text, this._find, this._replace, this._options);
@@ -364,17 +365,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
                 if (this._optionExpr != null)
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
+                    return new IExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
+                    return new IExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
                 }
             }
         }
@@ -395,7 +396,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._optionExpr != null)
             {

@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// Creates a new Leviathan Sine Function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public SineFunction(ISparqlExpression expr)
+        public SineFunction(IExpression expr)
             : base(expr, Math.Sin) { }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="inverse">Whether this should be the inverse function</param>
-        public SineFunction(ISparqlExpression expr, bool inverse)
+        public SineFunction(IExpression expr, bool inverse)
             : base(expr)
         {
             this._inverse = inverse;
@@ -103,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new SineFunction(transformer.Transform(this._expr), this._inverse);
         }

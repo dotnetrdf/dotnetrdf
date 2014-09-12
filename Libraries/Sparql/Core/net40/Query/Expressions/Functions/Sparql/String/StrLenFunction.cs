@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// Creates a new STRLEN() function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public StrLenFunction(ISparqlExpression expr)
+        public StrLenFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="stringLit">String Literal</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             return new LongNode(stringLit.Value.Length);
         }
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new StrLenFunction(transformer.Transform(this._expr));
         }

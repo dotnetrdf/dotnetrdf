@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -34,7 +35,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ e() function
     /// </summary>
     public class EFunction 
-        : ISparqlExpression
+        : IExpression
     {
         private IValuedNode _node = new DoubleNode(Math.E);
 
@@ -44,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return this._node;
         }
@@ -95,11 +96,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the arguments of the expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get 
             {
-                return Enumerable.Empty<ISparqlExpression>(); 
+                return Enumerable.Empty<IExpression>(); 
             }
         }
 
@@ -119,7 +120,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="transformer">Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return this;
         }

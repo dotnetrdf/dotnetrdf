@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -36,16 +37,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Represents the XPath fn:concat() function
     /// </summary>
     public class ConcatFunction
-        : ISparqlExpression
+        : IExpression
     {
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private List<IExpression> _exprs = new List<IExpression>();
 
         /// <summary>
         /// Creates a new XPath Concatenation function
         /// </summary>
         /// <param name="first">First Expression</param>
         /// <param name="second">Second Expression</param>
-        public ConcatFunction(ISparqlExpression first, ISparqlExpression second)
+        public ConcatFunction(IExpression first, IExpression second)
         {
             this._exprs.Add(first);
             this._exprs.Add(second);
@@ -55,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Concatenation function
         /// </summary>
         /// <param name="expressions">Enumeration of expressions</param>
-        public ConcatFunction(IEnumerable<ISparqlExpression> expressions)
+        public ConcatFunction(IEnumerable<IExpression> expressions)
         {
             this._exprs.AddRange(expressions);
         }
@@ -66,12 +67,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             StringBuilder output = new StringBuilder();
-            foreach (ISparqlExpression expr in this._exprs)
+            foreach (IExpression expr in this._exprs)
             {
-                IValuedNode temp = expr.Evaluate(context, bindingID);
+                IValuedNode temp = expr.Evaluate(solution, context);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument evaluates to a Null");
                 switch (temp.NodeType)
                 {
@@ -89,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Arguments the function applies to
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -168,7 +169,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             return new ConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
         }

@@ -28,6 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
@@ -35,16 +38,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     /// Class representing the SPARQL CALL() function
     /// </summary>
     public class CallFunction 
-        : ISparqlExpression
+        : IExpression
     {
-        private List<ISparqlExpression> _args = new List<ISparqlExpression>();
-        private Dictionary<string, ISparqlExpression> _functionCache = new Dictionary<string, ISparqlExpression>();
+        private List<IExpression> _args = new List<IExpression>();
+        private Dictionary<string, IExpression> _functionCache = new Dictionary<string, IExpression>();
 
         /// <summary>
         /// Creates a new COALESCE function with the given expressions as its arguments
         /// </summary>
         /// <param name="expressions">Argument expressions</param>
-        public CallFunction(IEnumerable<ISparqlExpression> expressions)
+        public CallFunction(IEnumerable<IExpression> expressions)
         {
             this._args.AddRange(expressions);
         }
@@ -55,16 +58,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             if (this._args.Count == 0) return null;
 
-            IValuedNode funcIdent = this._args[0].Evaluate(context, bindingID);
+            IValuedNode funcIdent = this._args[0].Evaluate(solution, context);
             if (funcIdent == null) throw new RdfQueryException("Function identifier is unbound");
             if (funcIdent.NodeType == NodeType.Uri)
             {
-                Uri funcUri = ((IUriNode)funcIdent).Uri;
-                ISparqlExpression func;
+                Uri funcUri = funcIdent.Uri;
+                IExpression func;
                 if (this._functionCache.TryGetValue(funcUri.AbsoluteUri, out func))
                 {
                     if (func == null) throw new RdfQueryException("Function identifier does not identify a known function");
@@ -74,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                     try
                     {
                         //Try to create the function and cache it - remember to respect the queries Expression Factories if present
-                        func = SparqlExpressionFactory.CreateExpression(funcUri, this._args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()));
+                        func = ExpressionFactory.CreateExpression(funcUri, this._args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<IExpressionFactory>()));
                         this._functionCache.Add(funcUri.AbsoluteUri, func);
                     }
                     catch
@@ -84,7 +87,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                     }
                 }
                 //Now invoke the function
-                return func.Evaluate(context, bindingID);
+                if (func == null) throw new RdfQueryException("No function " + funcUri.AbsoluteUri + " available to call");
+                return func.Evaluate(solution, context);
             }
             else
             {
@@ -126,17 +130,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public string Functor
@@ -150,7 +143,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get
             {
@@ -167,16 +160,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new CallFunction(this._args.Select(e => transformer.Transform(e)));
         }
     }
 }

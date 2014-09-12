@@ -24,11 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
@@ -38,16 +37,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
     public abstract class BaseHashFunction 
         : BaseUnaryExpression
     {
-        private HashAlgorithm _crypto;
+        private readonly HashAlgorithm _crypto;
 
         /// <summary>
         /// Creates a new Hash function
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="hash">Hash Algorithm to use</param>
-        public BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
+        protected BaseHashFunction(IExpression expr, HashAlgorithm hash)
             : base(expr)
         {
+            if (hash == null) throw new ArgumentNullException("hash");
             this._crypto = hash;
         }
 
@@ -57,9 +57,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp != null)
             {
                 switch (temp.NodeType)
@@ -69,17 +69,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
                     case NodeType.GraphLiteral:
                         throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
                     case NodeType.Literal:
-                        return new StringNode(this.Hash(((ILiteralNode)temp).Value));
+                        return new StringNode(this.Hash((temp).Value));
                     case NodeType.Uri:
                         return new StringNode(this.Hash(temp.AsString()));
                     default:
                         throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
                 }
             }
-            else
-            {
-                throw new RdfQueryException("Cannot calculate the Hash of a null");
-            }
+            throw new RdfQueryException("Cannot calculate the Hash of a null");
         }
 
         /// <summary>
@@ -89,11 +86,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         protected virtual string Hash(string input)
         {
-            Byte[] inputBytes, hashBytes;
             StringBuilder output = new StringBuilder();
 
-            inputBytes = Encoding.UTF8.GetBytes(input);
-            hashBytes = this._crypto.ComputeHash(inputBytes);
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            byte[] hashBytes = this._crypto.ComputeHash(inputBytes);
 
             for (int i = 0; i < hashBytes.Length; i++)
             {
@@ -101,23 +97,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             }
 
             return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
         }
     }
 }

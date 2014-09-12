@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// Creates a new SHA384() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public Sha384HashFunction(ISparqlExpression expr)
+        public Sha384HashFunction(IExpression expr)
             : base(expr, new SHA384Managed()) { }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha384HashFunction(transformer.Transform(this._expr));
         }

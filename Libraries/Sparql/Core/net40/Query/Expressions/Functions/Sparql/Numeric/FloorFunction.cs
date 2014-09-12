@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// Creates a new SPARQL FLOOR() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public FloorFunction(ISparqlExpression expr)
+        public FloorFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new FloorFunction(transformer.Transform(this._expr));
         }

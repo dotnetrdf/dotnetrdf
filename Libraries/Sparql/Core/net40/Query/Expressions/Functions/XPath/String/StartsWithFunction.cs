@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="prefixExpr">Prefix Expression</param>
-        public StartsWithFunction(ISparqlExpression stringExpr, ISparqlExpression prefixExpr)
+        public StartsWithFunction(IExpression stringExpr, IExpression prefixExpr)
             : base(stringExpr, prefixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(INode stringLit, INode arg)
         {
             if (stringLit.Value.Equals(string.Empty))
             {
@@ -104,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new StartsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }

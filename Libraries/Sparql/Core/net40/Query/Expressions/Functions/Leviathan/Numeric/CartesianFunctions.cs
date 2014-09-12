@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
@@ -35,9 +37,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
     /// Represents the Leviathan lfn:cartesian() function
     /// </summary>
     public class CartesianFunction
-        : ISparqlExpression
+        : IExpression
     {
-        private ISparqlExpression _x1, _y1, _z1, _x2, _y2, _z2;
+        private IExpression _x1, _y1, _z1, _x2, _y2, _z2;
         private bool _3d = false;
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="y1">Expression for Y Coordinate of 1st point</param>
         /// <param name="x2">Expression for X Coordinate of 2nd point</param>
         /// <param name="y2">Expression for Y Coordinate of 2nd point</param>
-        public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression x2, ISparqlExpression y2)
+        public CartesianFunction(IExpression x1, IExpression y1, IExpression x2, IExpression y2)
         {
             this._x1 = x1;
             this._y1 = y1;
@@ -64,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="x2">Expression for X Coordinate of 2nd point</param>
         /// <param name="y2">Expression for Y Coordinate of 2nd point</param>
         /// <param name="z2">Expression for Z Coordinate of 2nd point</param>
-        public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression z1, ISparqlExpression x2, ISparqlExpression y2, ISparqlExpression z2)
+        public CartesianFunction(IExpression x1, IExpression y1, IExpression z1, IExpression x2, IExpression y2, IExpression z2)
         {
             this._x1 = x1;
             this._y1 = y1;
@@ -82,16 +84,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             //Validate that all expressions are numeric expression
             if (this._3d)
             {
-                return this.CartesianDistance3D(context, bindingID);
+                return this.CartesianDistance3D(solution, context);
             }
             else
             {
-                return this.CartesianDistance2D(context, bindingID);
+                return this.CartesianDistance2D(solution, context);
             }
         }
 
@@ -101,15 +103,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        private IValuedNode CartesianDistance2D(SparqlEvaluationContext context, int bindingID)
+        private IValuedNode CartesianDistance2D(ISolution solution, IExpressionContext context)
         {
-            IValuedNode x1 = this._x1.Evaluate(context, bindingID);
+            IValuedNode x1 = this._x1.Evaluate(solution, context);
             if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = this._y1.Evaluate(context, bindingID);
+            IValuedNode y1 = this._y1.Evaluate(solution, context);
             if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = this._x2.Evaluate(context, bindingID);
+            IValuedNode x2 = this._x2.Evaluate(solution, context);
             if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = this._y2.Evaluate(context, bindingID);
+            IValuedNode y2 = this._y2.Evaluate(solution, context);
             if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
             double dX = x2.AsDouble() - x1.AsDouble();
@@ -124,19 +126,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        private IValuedNode CartesianDistance3D(SparqlEvaluationContext context, int bindingID)
+        private IValuedNode CartesianDistance3D(ISolution solution, IExpressionContext context)
         {
-            IValuedNode x1 = this._x1.Evaluate(context, bindingID);
+            IValuedNode x1 = this._x1.Evaluate(solution, context);
             if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = this._y1.Evaluate(context, bindingID);
+            IValuedNode y1 = this._y1.Evaluate(solution, context);
             if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z1 = this._z1.Evaluate(context, bindingID);
+            IValuedNode z1 = this._z1.Evaluate(solution, context);
             if (z1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = this._x2.Evaluate(context, bindingID);
+            IValuedNode x2 = this._x2.Evaluate(solution, context);
             if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = this._y2.Evaluate(context, bindingID);
+            IValuedNode y2 = this._y2.Evaluate(solution, context);
             if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z2 = this._z2.Evaluate(context, bindingID);
+            IValuedNode z2 = this._z2.Evaluate(solution, context);
             if (z2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
             double dX = x2.AsDouble() - x1.AsDouble();
@@ -194,17 +196,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function; 
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public string Functor
@@ -218,17 +209,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public IEnumerable<IExpression> Arguments
         {
             get 
             {
                 if (this._3d)
                 {
-                    return new ISparqlExpression[] { this._x1, this._y1, this._z1, this._x2, this._y2, this._z2 };
+                    return new IExpression[] { this._x1, this._y1, this._z1, this._x2, this._y2, this._z2 };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { this._x1, this._y1, this._x2, this._y2 };
+                    return new IExpression[] { this._x1, this._y1, this._x2, this._y2 };
                 }
             }
         }
@@ -256,7 +247,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public IExpression Transform(IExpressionTransformer transformer)
         {
             if (this._3d)
             {

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// Creates a new XPath Floor function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public FloorFunction(ISparqlExpression expr)
+        public FloorFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,15 +51,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this._expr.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
             {
 #if !SILVERLIGHT
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     try
                     {
                         return new LongNode(Convert.ToInt64(Math.Floor(a.AsDecimal())));
@@ -72,14 +73,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast floor value of integer to an integer", ex);
                     }
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(Math.Floor(a.AsDecimal()));
 #else
-                case SparqlNumericType.Integer:
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Integer:
+                case EffectiveNumericType.Decimal:
 #endif
 
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     try
                     {
                         return new FloatNode(Convert.ToSingle(Math.Floor(a.AsDouble())));
@@ -93,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast floor value of float to a float", ex);
                     }
 
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Floor(a.AsDouble()));
 
                 default:
@@ -137,7 +138,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new FloorFunction(transformer.Transform(this._expr));
         }

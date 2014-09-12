@@ -30,6 +30,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -43,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Normalize Space function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
-        public NormalizeSpaceFunction(ISparqlExpression stringExpr)
+        public NormalizeSpaceFunction(IExpression stringExpr)
             : base(stringExpr) { }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             string temp = stringLit.Value.Trim();
             Regex normalizeSpace = new Regex("\\s{2,}");
@@ -85,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new NormalizeSpaceFunction(transformer.Transform(this._expr));
         }

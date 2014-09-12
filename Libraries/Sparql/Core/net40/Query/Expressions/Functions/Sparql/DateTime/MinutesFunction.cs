@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// Creates a new SPARQL MINUTES() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public MinutesFunction(ISparqlExpression expr)
+        public MinutesFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new MinutesFunction(transformer.Transform(this._expr));
         }

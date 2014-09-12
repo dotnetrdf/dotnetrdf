@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
@@ -41,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// Creates a new XPath Absolute function
         /// </summary>
         /// <param name="expr">Expression</param>
-        public AbsFunction(ISparqlExpression expr)
+        public AbsFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,20 +52,20 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(context, bindingID);
+            IValuedNode a = this._expr.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
             {
-                case SparqlNumericType.Integer:
+                case EffectiveNumericType.Integer:
                     return new LongNode(Math.Abs(a.AsInteger()));
 
-                case SparqlNumericType.Decimal:
+                case EffectiveNumericType.Decimal:
                     return new DecimalNode(Math.Abs(a.AsDecimal()));
 
-                case SparqlNumericType.Float:
+                case EffectiveNumericType.Float:
                     try
                     {
                         return new FloatNode(Convert.ToSingle(Math.Abs(a.AsDouble())));
@@ -77,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                         throw new RdfQueryException("Unable to cast absolute value of float to a float", ex);
                     }
 
-                case SparqlNumericType.Double:
+                case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Abs(a.AsDouble()));
 
                 default:
@@ -95,17 +97,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor
@@ -114,16 +105,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new AbsFunction(transformer.Transform(this._expr));
         }
     }
 }

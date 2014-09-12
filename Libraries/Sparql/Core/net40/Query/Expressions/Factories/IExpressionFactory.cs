@@ -25,27 +25,38 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Operators.Numeric
+namespace VDS.RDF.Query.Expressions.Factories
 {
     /// <summary>
-    /// Abstract base class for numeric operators
+    /// Interface for implementing SPARQL custom expression factories which turn URI specified functions into SPARQL Expressions
     /// </summary>
-    public abstract class BaseNumericOperator
-        : BaseOperator
+    public interface IExpressionFactory
     {
         /// <summary>
-        /// Operator is applicable if at least one input and all inputs are numeric
+        /// Tries to Create a SPARQL Expression for a function with the given URI and set of arguments
         /// </summary>
-        /// <param name="ns">Inputs</param>
-        /// <returns></returns>
-        public override bool IsApplicable(params IValuedNode[] ns)
+        /// <param name="u">URI of the function</param>
+        /// <param name="args">List of Arguments</param>
+        /// <param name="scalarArguments">Dictionary of Scalar Arguments which are supportable by aggregates when Syntax is set to SPARQL 1.1 Extended</param>
+        /// <param name="expr">Resulting Expression if able to generate</param>
+        /// <returns>True if an expression is generated, false if not</returns>
+        bool TryCreateExpression(Uri u, List<IExpression> args, Dictionary<String,IExpression> scalarArguments, out IExpression expr);
+
+        /// <summary>
+        /// Gets the Extension Function URIs that this Factory provides
+        /// </summary>
+        IEnumerable<Uri> AvailableExtensionFunctions
         {
-            return ns != null && ns.Length > 0 && ns.All(n => n != null && n.NumericType != SparqlNumericType.NaN);
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Extension Aggregate URIs that this Factory provides
+        /// </summary>
+        IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get;
         }
     }
 }

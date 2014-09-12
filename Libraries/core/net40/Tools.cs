@@ -269,13 +269,33 @@ namespace VDS.RDF
         /// <param name="x">First Object</param>
         /// <param name="y">URI</param>
         /// <returns></returns>
-        /// <remarks>This overload is needed because the .Net hash code implementation for URIs is deficient for use for RDF since it treats URIs with the same fragment as being equivalent</remarks>
+        /// <remarks>This overload is needed because the .Net hash code implementation for URIs is deficient for use for RDF since it treats URIs with the same fragment as being equivalent (i.e. it excludes the fragment from the hash) whereas in RDF the fragment is significant</remarks>
         public static int CombineHashCodes(Object x, Uri y)
         {
             int hash = 17;
             hash = hash*31 + x.GetHashCode();
             hash = hash*31 + y.GetEnhancedHashCode();
             return hash;
+        }
+
+        public static int CombineHashCodes(params Object[] xs)
+        {
+            switch (xs.Length)
+            {
+                case 0:
+                    return 0;
+                case 1:
+                    return xs[0].GetHashCode();
+                case 2:
+                    return Tools.CombineHashCodes(xs[0], xs[1]);
+                default:
+                    int hash = 17;
+                    foreach (Object x in xs)
+                    {
+                        hash = hash*31 + x.GetHashCode();
+                    }
+                    return hash;
+            }
         }
 
         /// <summary>

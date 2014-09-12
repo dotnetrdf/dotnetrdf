@@ -23,10 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
@@ -41,7 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// Creates a new SPARQL ABS() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public AbsFunction(ISparqlExpression expr)
+        public AbsFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -53,25 +49,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
             {
                 return SparqlSpecsHelper.SparqlKeywordAbs;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordAbs + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
-        {
-            return new AbsFunction(transformer.Transform(this._expr));
         }
     }
 }

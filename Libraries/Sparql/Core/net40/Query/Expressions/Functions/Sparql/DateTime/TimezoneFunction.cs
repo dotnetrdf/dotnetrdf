@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// Creates a new SPARQL TIMEZONE() Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
-        public TimezoneFunction(ISparqlExpression expr)
+        public TimezoneFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = base.Evaluate(context, bindingID);
+            IValuedNode temp = base.Evaluate(solution, context);
 
             if (temp == null)
             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public override IExpression Transform(IExpressionTransformer transformer)
         {
             return new TimezoneFunction(transformer.Transform(this._expr));
         }
