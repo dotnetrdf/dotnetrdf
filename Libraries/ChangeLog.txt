@@ -6,6 +6,9 @@ Change Log
 -----
 
 Changed
+- Dependencies
+ - Json.Net upgraded to 6.0.5
+ - VDS.Common upgraded to 1.4.0
 - Core API
  - Nodes are no longer scoped to graphs
  - Simplified data models - INode, Triple, Quad, IGraph and IGraphStore
@@ -33,6 +36,9 @@ Changed
  - New IO Json module contains JSON based RDF IO implementations
  - New IO Html module contains HTML based RDF IO implementations
  - New SPARQL Core module contains SPARQL implementation
+- Query APIs
+ - Completely new IQuery, IElement and IAlgebra APIs
+ - Revised IExpression APIs
 
  Removed
  - ITripleStore was removed, use IGraphStore instead

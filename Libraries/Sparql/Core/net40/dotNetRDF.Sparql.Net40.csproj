@@ -36,8 +36,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common">
-      <HintPath>..\..\..\..\packages\VDS.Common.1.2.0\lib\net40-client\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.4.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\packages\VDS.Common.1.4.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -237,7 +238,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup />
   <ItemGroup>
     <Compile Include="Specifications\SparqlSyntax.cs" />

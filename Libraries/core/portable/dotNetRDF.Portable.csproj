@@ -155,18 +155,16 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="VDS.Common">
-      <HintPath>..\..\..\packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
+      <HintPath>..\..\..\packages\VDS.Common.1.4.0\lib\portable-net4+sl5+netcore45+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
@@ -377,6 +375,20 @@
     </Compile>
     <Compile Include="..\net40\Configuration\IConfigurationSerializable.cs">
       <Link>Configuration\IConfigurationSerializable.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\GraphExtensions.cs">
+      <Link>GraphExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\IQuadStore.cs">
+      <Link>Graphs\IQuadStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\ListExtensions.cs">
+      <Link>ListExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\LiteralExtensions.cs">
+      <Link>LiteralExtensions.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
