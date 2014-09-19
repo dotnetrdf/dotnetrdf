@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Conditional
 {
@@ -42,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="rightExpr">Right Hand Expression</param>
         public OrExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new OrExpression(arg1, arg2);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -53,78 +58,41 @@ namespace VDS.RDF.Query.Expressions.Conditional
             //Lazy Evaluation for efficiency
             try
             {
-                bool leftResult = this._leftExpr.Evaluate(solution, context).AsBoolean();
+                bool leftResult = this.FirstArgument.Evaluate(solution, context).AsBoolean();
                 if (leftResult)
                 {
                     //If the LHS is true it doesn't matter about any subsequent results
                     return new BooleanNode(true);
                 }
-                else
-                {
-                    //If the LHS is false then we have to evaluate the RHS
-                    return new BooleanNode(this._rightExpr.Evaluate(solution, context).AsBoolean());
-                }
+                //If the LHS is false then we have to evaluate the RHS
+                return new BooleanNode(this.SecondArgument.Evaluate(solution, context).AsBoolean());
             }
             catch (Exception ex)
             {
                 //If there's an Error on the LHS we return true only if the RHS evaluates to true
                 //Otherwise we throw the Error
-                bool rightResult = this._rightExpr.Evaluate(solution, context).AsSafeBoolean();
+                bool rightResult = this.SecondArgument.Evaluate(solution, context).AsSafeBoolean();
                 if (rightResult)
                 {
                     return new BooleanNode(true);
                 }
-                else
+                //Ensure the error we throw is a RdfQueryException so as not to cause issues higher up
+                if (ex is RdfQueryException)
                 {
-                    //Ensure the error we throw is a RdfQueryException so as not to cause issues higher up
-                    if (ex is RdfQueryException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Error evaluating OR expression", ex);
-                    }
+                    throw;
                 }
+                throw new RdfQueryException("Error evaluating OR expression", ex);
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._leftExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._leftExpr.ToString());
-            }
-            output.Append(" || ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._rightExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._rightExpr.ToString());
-            }
-            return output.ToString();
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is OrExpression)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
+            OrExpression expr = (OrExpression) other;
+            return this.FirstArgument.Equals(expr.FirstArgument) && this.SecondArgument.Equals(expr.SecondArgument);
         }
 
         /// <summary>
@@ -136,16 +104,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
             {
                 return "||";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new OrExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

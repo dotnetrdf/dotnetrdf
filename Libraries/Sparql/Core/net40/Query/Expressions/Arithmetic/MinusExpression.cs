@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Arithmetic
 {
@@ -44,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public MinusExpression(IExpression expr) 
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new MinusExpression(argument);
+        }
+
         /// <summary>
         /// Calculates the Numeric Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -52,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(solution, context);
+            IValuedNode a = this.Argument.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot apply unary minus to a null");
 
             switch (a.NumericType)
@@ -111,24 +114,14 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "-" + this._expr.ToString();
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is MinusExpression)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.UnaryOperator;
-            }
+            MinusExpression expr = (MinusExpression) other;
+            return this.Argument.Equals(expr.Argument);
         }
 
         /// <summary>
@@ -140,16 +133,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             {
                 return "-";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MinusExpression(transformer.Transform(this._expr));
         }
     }
 }

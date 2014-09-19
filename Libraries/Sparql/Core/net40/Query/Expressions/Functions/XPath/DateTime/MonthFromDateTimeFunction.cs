@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -55,13 +52,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             return new LongNode(Convert.ToInt64(dateTime.Month));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + this._expr.ToString() + ")";
+            return new MonthFromDateTimeFunction(argument);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is MonthFromDateTimeFunction)) return false;
+
+            MonthFromDateTimeFunction func = (MonthFromDateTimeFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -73,16 +76,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MonthFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 }

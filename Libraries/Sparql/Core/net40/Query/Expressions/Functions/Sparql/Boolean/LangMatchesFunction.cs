@@ -24,10 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -45,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public LangMatchesFunction(IExpression term, IExpression langRange)
             : base(term, langRange) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new LangMatchesFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -53,62 +57,37 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._leftExpr.Evaluate(solution, context);
-            INode langRange = this._rightExpr.Evaluate(solution, context);
+            INode result = this.FirstArgument.Evaluate(solution, context);
+            INode langRange = this.SecondArgument.Evaluate(solution, context);
 
             if (result == null)
             {
                 return new BooleanNode(false);
             }
-            else if (result.NodeType == NodeType.Literal)
-            {
-                if (langRange == null)
-                {
-                    return new BooleanNode(false);
-                }
-                else if (langRange.NodeType == NodeType.Literal)
-                {
-                    string range = (langRange).Value;
-                    string lang = (result).Value;
-
-                    if (range.Equals("*"))
-                    {
-                        return new BooleanNode(!lang.Equals(string.Empty));
-                    }
-                    else
-                    {
-                        return new BooleanNode(lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
-                    }
-                }
-                else
-                {
-                    return new BooleanNode(false);
-                }
-            }
-            else
+            if (result.NodeType != NodeType.Literal) return new BooleanNode(false);
+            if (langRange == null)
             {
                 return new BooleanNode(false);
             }
-        }
+            if (langRange.NodeType != NodeType.Literal) return new BooleanNode(false);
+            string range = (langRange).Value;
+            string lang = (result).Value;
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "LANGMATCHES(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
+            if (range.Equals("*"))
             {
-                return SparqlExpressionType.Function;
+                return new BooleanNode(!lang.Equals(string.Empty));
             }
+            return new BooleanNode(lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is LangMatchesFunction)) return false;
+
+            LangMatchesFunction func = (LangMatchesFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
         }
 
         /// <summary>
@@ -120,16 +99,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordLangMatches;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LangMatchesFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

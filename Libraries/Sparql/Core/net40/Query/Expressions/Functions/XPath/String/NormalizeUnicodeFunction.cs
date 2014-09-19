@@ -23,13 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -46,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         public NormalizeUnicodeFunction(IExpression stringExpr)
-            : base(stringExpr, null, true, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(stringExpr, null, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
         /// Creates a new XPath Normalize Unicode function
@@ -54,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringExpr">Expression</param>
         /// <param name="normalizationFormExpr">Normalization Form</param>
         public NormalizeUnicodeFunction(IExpression stringExpr, IExpression normalizationFormExpr)
-            : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(stringExpr, normalizationFormExpr, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal
@@ -78,51 +75,47 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return this.ValueInternal(stringLit);
             }
-            else
+            string normalized = stringLit.Value;
+
+            switch (arg.Value)
             {
-                string normalized = stringLit.Value;
-
-                switch (arg.Value)
-                {
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormC:
-                        normalized = normalized.Normalize();
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormD:
-                        normalized = normalized.Normalize(NormalizationForm.FormD);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormFull:
-                        throw new RdfQueryException(".Net does not support Fully Normalized Unicode Form");
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKC:
-                        normalized = normalized.Normalize(NormalizationForm.FormKC);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKD:
-                        normalized = normalized.Normalize(NormalizationForm.FormKD);
-                        break;
-                    case "":
-                        //No Normalization
-                        break;
-                    default:
-                        throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
-                }
-
-                return new StringNode(normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormC:
+                    normalized = normalized.Normalize();
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormD:
+                    normalized = normalized.Normalize(NormalizationForm.FormD);
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormFull:
+                    throw new RdfQueryException(".Net does not support Fully Normalized Unicode Form");
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormKC:
+                    normalized = normalized.Normalize(NormalizationForm.FormKC);
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormKD:
+                    normalized = normalized.Normalize(NormalizationForm.FormKD);
+                    break;
+                case "":
+                    //No Normalization
+                    break;
+                default:
+                    throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
             }
+
+            return new StringNode(normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
         {
-            if (this._arg != null)
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
-            }
-            else
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + this._expr.ToString() + ")";
-            }
+            return new NormalizeUnicodeFunction(arg1, arg2);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is NormalizeUnicodeFunction)) return false;
+
+            NormalizeUnicodeFunction func = (NormalizeUnicodeFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
         }
 
         /// <summary>
@@ -133,23 +126,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             get
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._arg != null)
-            {
-                return new NormalizeUnicodeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
-            }
-            else
-            {
-                return new NormalizeUnicodeFunction(transformer.Transform(this._expr));
             }
         }
     }

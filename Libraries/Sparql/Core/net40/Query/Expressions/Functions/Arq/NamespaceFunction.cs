@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
@@ -45,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public NamespaceFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new NamespaceFunction(argument);
+        }
+
         /// <summary>
         /// Gets the value of the function in the given Evaluation Context for the given Binding ID
         /// </summary>
@@ -53,50 +56,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode temp = this._expr.Evaluate(solution, context);
-            if (temp != null)
+            INode temp = this.Argument.Evaluate(solution, context);
+            if (temp == null) throw new RdfQueryException("Cannot find the Local Name for a null");
+            if (temp.NodeType != NodeType.Uri) throw new RdfQueryException("Cannot find the Local Name for a non-URI Node");
+            if (!temp.Uri.Fragment.Equals(String.Empty))
             {
-                if (temp.NodeType == NodeType.Uri)
-                {
-                    IUriNode u = (IUriNode)temp;
-                    if (!u.Uri.Fragment.Equals(String.Empty))
-                    {
-                        return new StringNode(u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('#') + 1));
-                    }
-                    else
-                    {
-                        return new StringNode(u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the Local Name for a non-URI Node");
-                }
+                return new StringNode(temp.Uri.AbsoluteUri.Substring(0, temp.Uri.AbsoluteUri.LastIndexOf('#') + 1));
             }
-            else
-            {
-                throw new RdfQueryException("Cannot find the Local Name for a null");
-            }
+            return new StringNode(temp.Uri.AbsoluteUri.Substring(0, temp.Uri.AbsoluteUri.LastIndexOf('/') + 1));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is NamespaceFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            NamespaceFunction func = (NamespaceFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -108,16 +85,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NamespaceFunction(transformer.Transform(this._expr));
         }
     }
 }

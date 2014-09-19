@@ -23,12 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -52,14 +49,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(INode stringLit)
         {
-            if (stringLit.DataType != null)
-            {
-                return new StringNode(stringLit.Value.ToLower(), stringLit.DataType);
-            }
-            else
-            {
-                return new StringNode(stringLit.Value.ToLower(), stringLit.Language);
-            }
+            if (stringLit.HasLanguage) return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture), stringLit.Language);
+            if (stringLit.HasDataType) return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture), stringLit.DataType);
+            return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture));
+        }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new LCaseFunction(argument);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is LCaseFunction)) return false;
+
+            LCaseFunction func = (LCaseFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -71,25 +78,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordLCase;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordLCase + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LCaseFunction(transformer.Transform(this._expr));
         }
     }
 }

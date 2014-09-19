@@ -27,6 +27,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
@@ -44,6 +46,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public NotInFunction(IExpression expr, IEnumerable<IExpression> set)
             : base(expr, set) { }
 
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            IEnumerable<IExpression> expressions = args as IList<IExpression> ?? args.ToList();
+            return new NotInFunction(expressions.First(), expressions.Skip(1));
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -52,40 +60,46 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(solution, context);
-            if (result != null)
+            INode result = this.Arguments[0].Evaluate(solution, context);
+            if (result == null) return new BooleanNode(true);
+            if (this.Arguments.Count == 1) return new BooleanNode(true);
+
+            //Have to use SPARQL Value Equality here
+            //If any expressions error and nothing in the set matches then an error is thrown
+            bool errors = false;
+            foreach (IExpression expr in this.Arguments.Skip(1))
             {
-                if (this._expressions.Count == 0) return new BooleanNode(true);
-
-                //Have to use SPARQL Value Equality here
-                //If any expressions error and nothing in the set matches then an error is thrown
-                bool errors = false;
-                foreach (IExpression expr in this._expressions)
+                try
                 {
-                    try
-                    {
-                        INode temp = expr.Evaluate(solution, context);
-                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(false);
-                    }
-                    catch
-                    {
-                        errors = true;
-                    }
+                    INode temp = expr.Evaluate(solution, context);
+                    if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(false);
                 }
-
-                if (errors)
+                catch
                 {
-                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
-                }
-                else
-                {
-                    return new BooleanNode(true);
+                    errors = true;
                 }
             }
-            else
+
+            if (errors)
             {
-                return new BooleanNode(true);
+                throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
             }
+            return new BooleanNode(true);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is NotInFunction)) return false;
+
+            NotInFunction func = (NotInFunction) other;
+            if (this.Arguments.Count != func.Arguments.Count) return false;
+            for (int i = 0; i < this.Arguments.Count; i++)
+            {
+                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -97,37 +111,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             {
                 return SparqlSpecsHelper.SparqlKeywordNotIn;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append(this._expr.ToString());
-            output.Append(" NOT IN (");
-            for (int i = 0; i < this._expressions.Count; i++)
-            {
-                output.Append(this._expressions[i].ToString());
-                if (i < this._expressions.Count - 1)
-                {
-                    output.Append(" , ");
-                }
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NotInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Conditional
 {
@@ -40,6 +41,11 @@ namespace VDS.RDF.Query.Expressions.Conditional
         public NotExpression(IExpression expr) 
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new NotExpression(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -48,27 +54,17 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return new BooleanNode(!this._expr.Evaluate(solution, context).AsSafeBoolean());
+            return new BooleanNode(!this.Argument.Evaluate(solution, context).AsSafeBoolean());
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "!" + this._expr.ToString();
-        }
+            if (ReferenceEquals(this, other)) return false;
+            if (other == null) return false;
+            if (!(other is NotExpression)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.UnaryOperator;
-            }
+            NotExpression expr = (NotExpression) other;
+            return this.Argument.Equals(expr.Argument);
         }
 
         /// <summary>
@@ -80,16 +76,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
             {
                 return "!";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new NotExpression(transformer.Transform(this._expr));
         }
     }
 }

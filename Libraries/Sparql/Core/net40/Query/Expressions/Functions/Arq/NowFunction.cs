@@ -26,9 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -36,10 +37,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ afn:now() function
     /// </summary>
     public class NowFunction 
-        : IExpression
+        : BaseNullaryExpression
     {
-        private SparqlQuery _currQuery;
-        private IValuedNode _node;
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is NowFunction;
+        }
 
         /// <summary>
         /// Gets the value of the function in the given Evaluation Context for the given Binding ID
@@ -49,40 +54,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns>
         /// Returns a constant Literal Node which is a Date Time typed Literal
         /// </returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            if (this._currQuery == null)
-            {
-                this._currQuery = context.Query;
-            }
-            if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
-            {
-                lock (this)
-                {
-                    if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
-                    {
-                        this._node = new DateTimeNode(DateTime.Now);
-                    }
-                }
-            }
-            return this._node;
+            return new DateTimeNode(context.ParentContext.EffectiveNow);
         }
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
+        public override IEnumerable<string> Variables
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            get { return Enumerable.Empty<String>(); }
         }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public virtual string Functor
+        public override string Functor
         {
             get
             {
@@ -93,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
@@ -101,45 +86,43 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool IsDeterministic
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Now + ">()";
+            get { return true; }
         }
 
-        /// <summary>
-        /// Gets the variables in the expression
-        /// </summary>
-        public IEnumerable<string> Variables
+        public override bool IsConstant
         {
-            get 
-            {
-                return Enumerable.Empty<string>();
-            }
+            get { return false; }
         }
 
-        /// <summary>
-        /// Gets the arguments of the expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
+        public override string ToString(IAlgebraFormatter formatter)
         {
-            get 
-            {
-                return Enumerable.Empty<IExpression>(); 
-            }
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("{0}()", formatter.FormatUri(this.Functor));
         }
 
-        /// <summary>
-        /// Returns the expression as there are no arguments to be transformed
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
+        public override string ToPrefixString(IAlgebraFormatter formatter)
         {
-            return this;
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("({0})", formatter.FormatUri(this.Functor));
+        }
+
+        public override IExpression Copy()
+        {
+            return new NowFunction();
+        }
+
+        public override bool Equals(object other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is NowFunction;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Functor.GetHashCode();
         }
     }
 }

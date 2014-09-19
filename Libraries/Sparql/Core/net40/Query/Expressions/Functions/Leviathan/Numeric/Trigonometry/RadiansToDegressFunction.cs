@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
@@ -42,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public RadiansToDegreesFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new RadiansToDegreesFunction(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -50,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(solution, context);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp == null) throw new RdfQueryException("Cannot apply a numeric function to a null");
 
             if (temp.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
@@ -58,13 +64,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             return new DoubleNode(temp.AsDouble() * (180d / Math.PI));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees + ">(" + this._expr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is RadiansToDegreesFunction)) return false;
+
+            RadiansToDegreesFunction func = (RadiansToDegreesFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -76,27 +83,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees;
             }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RadiansToDegreesFunction(transformer.Transform(this._expr));
         }
     }
 }

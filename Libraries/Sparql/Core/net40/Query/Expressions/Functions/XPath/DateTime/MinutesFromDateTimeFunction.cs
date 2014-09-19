@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -55,13 +52,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             return new LongNode(Convert.ToInt64(dateTime.Minute));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime + ">(" + this._expr.ToString() + ")";
+            return new MinutesFromDateTimeFunction(argument);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is MinutesFromDateTimeFunction)) return false;
+
+            MinutesFromDateTimeFunction func = (MinutesFromDateTimeFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -73,16 +76,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MinutesFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 }

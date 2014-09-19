@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -43,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public PowerFunction(IExpression arg1, IExpression arg2)
             : base(arg1, arg2) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new PowerFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -51,9 +57,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode arg = this._leftExpr.Evaluate(solution, context);
+            IValuedNode arg = this.FirstArgument.Evaluate(solution, context);
             if (arg == null) throw new RdfQueryException("Cannot raise a null to a power");
-            IValuedNode pow = this._rightExpr.Evaluate(solution, context);
+            IValuedNode pow = this.SecondArgument.Evaluate(solution, context);
             if (pow == null) throw new RdfQueryException("Cannot raise to a null power");
 
             if (arg.NumericType == EffectiveNumericType.NaN || pow.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot raise to a power when one/both arguments are non-numeric");
@@ -61,13 +67,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new DoubleNode(Math.Pow(arg.AsDouble(), pow.AsDouble()));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is PowerFunction)) return false;
+
+            PowerFunction func = (PowerFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
         }
 
         /// <summary>
@@ -79,27 +86,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power;
             }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new PowerFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

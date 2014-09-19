@@ -27,7 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -35,9 +37,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ pi() function
     /// </summary>
     public class PiFunction 
-        : IExpression
+        : BaseNullaryExpression
     {
-        private IValuedNode _node;
+        private readonly IValuedNode _node;
 
         /// <summary>
         /// Creates a new ARQ Pi function
@@ -47,30 +49,57 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             this._node = new DoubleNode(Math.PI);
         }
 
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is PiFunction;
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return this._node;
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(object other)
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi + ">()";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is PiFunction;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Functor.GetHashCode();
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("{0}()", formatter.FormatUri(this.Functor));
+        }
+
+        public override string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("({0})", formatter.FormatUri(this.Functor));
+        }
+
+        public override IExpression Copy()
+        {
+            return new PiFunction();
         }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {
@@ -81,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the variables in the expression
         /// </summary>
-        public IEnumerable<string> Variables
+        public override IEnumerable<string> Variables
         {
             get
             {
@@ -92,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
@@ -100,15 +129,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public SparqlExpressionType Type
+        public override bool IsDeterministic
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            get { return true; }
+        }
+
+        public override bool IsConstant
+        {
+            get { return true; }
         }
 
         /// <summary>
@@ -120,16 +148,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return Enumerable.Empty<IExpression>();
             }
-        }
-
-        /// <summary>
-        /// Returns the expression as there are no arguments to be transformed
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
         }
     }
 }

@@ -26,8 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
 {
@@ -35,15 +37,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
     /// Represents the SPARQL RAND() Function
     /// </summary>
     public class RandFunction
-        : IExpression
+        : BaseNullaryExpression
     {
-        private static Random _rnd = new Random();
+        private static readonly Random _rnd = new Random();
 
         /// <summary>
         /// Creates a new SPARQL RAND() Function
         /// </summary>
-        public RandFunction()
-            : base() { }
+        public RandFunction() { }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is RandFunction;
+        }
 
         /// <summary>
         /// Evaluates the expression
@@ -51,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             return new DoubleNode(_rnd.NextDouble());
         }
@@ -59,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <summary>
         /// Gets the Variables used in this Expression
         /// </summary>
-        public IEnumerable<string> Variables
+        public override IEnumerable<string> Variables
         {
             get
             {
@@ -68,31 +76,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         }
 
         /// <summary>
-        /// Gets the Type of this Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of this Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return Enumerable.Empty<IExpression>();
-            }
-        }
-
-        /// <summary>
         /// Gets whether an expression can safely be evaluated in parallel
         /// </summary>
-        public virtual bool CanParallelise
+        public override bool CanParallelise
         {
             get
             {
@@ -100,34 +86,54 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
             }
         }
 
+        public override bool IsDeterministic
+        {
+            get { return false; }
+        }
+
+        public override bool IsConstant
+        {
+            get { return false; }
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return System.String.Format("{0}()", this.Functor);
+        }
+
+        public override string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return System.String.Format("({0})", this.Functor);
+        }
+
+        public override IExpression Copy()
+        {
+            return new RandFunction();
+        }
+
+        public override bool Equals(object other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is RandFunction;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Functor.GetHashCode();
+        }
+
         /// <summary>
         /// Gets the Functor of this Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {
                 return SparqlSpecsHelper.SparqlKeywordRand;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordRand + "()";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return this;
         }
     }
 }

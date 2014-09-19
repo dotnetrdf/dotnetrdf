@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
@@ -46,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public MinFunction(IExpression arg1, IExpression arg2)
             : base(arg1, arg2) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new MinFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Gets the numeric value of the function in the given Evaluation Context for the given Binding ID
         /// </summary>
@@ -54,8 +57,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(solution, context);
-            IValuedNode b = this._rightExpr.Evaluate(solution, context);
+            IValuedNode a = this.FirstArgument.Evaluate(solution, context);
+            IValuedNode b = this.SecondArgument.Evaluate(solution, context);
 
             EffectiveNumericType type = (EffectiveNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
@@ -74,24 +77,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min + ">(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is MinFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            MinFunction func = (MinFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
         }
 
         /// <summary>
@@ -103,16 +96,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new MinFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }
