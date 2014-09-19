@@ -24,14 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions.Factories;
-#if !NO_WEB
-using System.Web;
-#endif
-using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
@@ -56,16 +51,38 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(INode stringLit)
         {
-            return new StringNode(HttpUtility.UrlEncode(stringLit.Value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            System.String input = stringLit.Value;
+            StringBuilder output = new StringBuilder();
+            foreach (char c in input.ToCharArray())
+            {
+                if (c >= 32 && c <= 126)
+                {
+                    output.Append(c);
+                }
+                else
+                {
+                    // Percent encode
+                    output.Append('%');
+                    output.Append(((int) c).ToString("X2"));
+                }
+            }
+
+            return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + this._expr.ToString() + ")";
+            return new EscapeHtmlUriFunction(argument);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is EscapeHtmlUriFunction)) return false;
+
+            EscapeHtmlUriFunction func = (EscapeHtmlUriFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -77,16 +94,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EscapeHtmlUriFunction(transformer.Transform(this._expr));
         }
     }
 }

@@ -23,11 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -51,41 +46,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
         /// </summary>
         /// <param name="context">Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             IValuedNode temp = this.Argument.Evaluate(solution, context);
-            if (temp != null)
+            if (temp == null) throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
+            if (temp.NodeType != NodeType.Literal) throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
+            if (!temp.HasDataType || temp.HasLanguage) return this.EvaluateInternal(temp);
+            if (temp.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
             {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    INode lit = temp;
-                    if (lit.DataType != null)
-                    {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            return this.EvaluateInternal(lit);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
-                        }
-                    }
-                    else
-                    {
-                        return this.EvaluateInternal(lit);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
+                return this.EvaluateInternal(temp);
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
+            throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
         }
 
         /// <summary>

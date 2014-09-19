@@ -24,9 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
@@ -53,39 +53,30 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             IValuedNode result = this._expr.Evaluate(solution, context);
-            if (result != null)
+            if (result == null) return new BooleanNode(false);
+            if (this._expressions.Count == 0) return new BooleanNode(false);
+
+            //Have to use SPARQL Value Equality here
+            //If any expressions error and nothing in the set matches then an error is thrown
+            bool errors = false;
+            foreach (IExpression expr in this._expressions)
             {
-                if (this._expressions.Count == 0) return new BooleanNode(false);
-
-                //Have to use SPARQL Value Equality here
-                //If any expressions error and nothing in the set matches then an error is thrown
-                bool errors = false;
-                foreach (IExpression expr in this._expressions)
+                try
                 {
-                    try
-                    {
-                        IValuedNode temp = expr.Evaluate(solution, context);
-                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(true);
-                    }
-                    catch
-                    {
-                        errors = true;
-                    }
+                    IValuedNode temp = expr.Evaluate(solution, context);
+                    if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(true);
                 }
-
-                if (errors)
+                catch
                 {
-                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
-                }
-                else
-                {
-                    return new BooleanNode(false);
+                    errors = true;
                 }
             }
-            else
+
+            if (errors)
             {
-                return new BooleanNode(false);
+                throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
             }
+            return new BooleanNode(false);
         }
 
         /// <summary>
@@ -97,39 +88,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             {
                 return SparqlSpecsHelper.SparqlKeywordIn;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
-            output.Append(this._expr.ToString());
-            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
-            output.Append(" IN (");
-            for (int i = 0; i < this._expressions.Count; i++)
-            {
-                output.Append(this._expressions[i].ToString());
-                if (i < this._expressions.Count - 1)
-                {
-                    output.Append(" , ");
-                }
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new InFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

@@ -24,10 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -38,16 +34,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Abstract Base class for XPath Binary String functions
     /// </summary>
     public abstract class BaseBinaryStringFunction
-        : IExpression
+        : BaseBinaryExpression
     {
-        /// <summary>
-        /// Expression the function applies over
-        /// </summary>
-        protected IExpression _expr;
-        /// <summary>
-        /// Argument expression
-        /// </summary>
-        protected IExpression _arg;
         /// <summary>
         /// Whether the argument can be null
         /// </summary>
@@ -62,14 +50,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="argExpr">Argument</param>
-        /// <param name="allowNullArgument">Whether the argument may be null</param>
         /// <param name="argumentTypeValidator">Type validator for the argument</param>
-        public BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
+        protected BaseBinaryStringFunction(IExpression stringExpr, IExpression argExpr, Func<Uri, bool> argumentTypeValidator)
+            : base(stringExpr, argExpr)
         {
-            this._expr = stringExpr;
-            this._arg = argExpr;
-            this._allowNullArgument = allowNullArgument;
-            if (this._arg == null && !this._allowNullArgument) throw new RdfParseException("Cannot create a XPath String Function which takes a String and a single argument since the expression for the argument is null");
             this._argumentTypeValidator = argumentTypeValidator;
         }
 
@@ -77,11 +61,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
         /// </summary>
         /// <param name="context">Context</param>
-        /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode temp = this._expr.Evaluate(solution, context);
+            INode temp = this.FirstArgument.Evaluate(solution, context);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
@@ -98,48 +81,33 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 }
 
                 //Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
-                if (this._arg == null)
+                if (this.SecondArgument == null)
                 {
                     return this.ValueInternal(temp);
                 }
-                else
+                //Need to validate the argument
+                INode tempArg = this.SecondArgument.Evaluate(solution, context);
+                if (tempArg != null)
                 {
-                    //Need to validate the argument
-                    INode tempArg = this._arg.Evaluate(solution, context);
-                    if (tempArg != null)
+                    if (tempArg.NodeType == NodeType.Literal)
                     {
-                        if (tempArg.NodeType == NodeType.Literal)
+                        INode litArg = tempArg;
+                        if (this._argumentTypeValidator(litArg.DataType))
                         {
-                            INode litArg = tempArg;
-                            if (this._argumentTypeValidator(litArg.DataType))
-                            {
-                                return this.ValueInternal(temp, litArg);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Unable to evaluate an XPath String function since the type of the argument is not supported by this function");
-                            }
+                            return this.ValueInternal(temp, litArg);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
-                        }
+                        throw new RdfQueryException("Unable to evaluate an XPath String function since the type of the argument is not supported by this function");
                     }
-                    else if (this._allowNullArgument)
-                    {
-                        //Null argument permitted so just invoke the non-argument version of the function
-                        return this.ValueInternal(temp);
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evaluate an XPath String function since the argument expression evaluated to a null and a null argument is not permitted by this function");
-                    }
+                    throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
                 }
+                if (this._allowNullArgument)
+                {
+                    //Null argument permitted so just invoke the non-argument version of the function
+                    return this.ValueInternal(temp);
+                }
+                throw new RdfQueryException("Unable to evaluate an XPath String function since the argument expression evaluated to a null and a null argument is not permitted by this function");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
+            throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
         }
 
         /// <summary>
@@ -153,10 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 throw new RdfQueryException("This XPath function requires a non-null argument in addition to an input string");
             }
-            else
-            {
-                throw new RdfQueryException("Derived classes which are functions which permit a null argument must override this method");
-            }
+            throw new RdfQueryException("Derived classes which are functions which permit a null argument must override this method");
         }
 
         /// <summary>
@@ -166,59 +131,5 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="arg">Argument</param>
         /// <returns></returns>
         public abstract IValuedNode ValueInternal(INode stringLit, INode arg);
-
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public virtual IEnumerable<string> Variables
-        {
-            get
-            {
-                if (this._arg == null)
-                {
-                    return this._expr.Variables;
-                }
-                else
-                {
-                    return this._expr.Variables.Concat(this._arg.Variables);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Functor of the Expression
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return new IExpression[] { this._expr, this._arg };
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise && this._arg.CanParallelise;
-            }
-        }
     }
 }

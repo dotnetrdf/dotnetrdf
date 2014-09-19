@@ -23,11 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -62,22 +57,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     //The Empty String ends with the Empty String
                     return new BooleanNode(true);
                 }
-                else
-                {
-                    //Empty String doesn't end with a non-empty string
-                    return new BooleanNode(false);
-                }
+                //Empty String doesn't end with a non-empty string
+                return new BooleanNode(false);
             }
-            else if (arg.Value.Equals(string.Empty))
+            if (arg.Value.Equals(string.Empty))
             {
                 //Any non-empty string ends with the empty string
                 return new BooleanNode(true);
             }
-            else
-            {
-                //Otherwise evalute the EndsWith
-                return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
-            }
+            //Otherwise evalute the EndsWith
+            return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
         }
 
         /// <summary>
@@ -98,16 +87,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EndsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 }

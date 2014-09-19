@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -42,16 +43,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public EFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new EFunction(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID"></param>
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(solution, context);
-            if (temp == null) throw new RdfQueryException("Cannot square root a null");
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
+            if (temp == null) throw new RdfQueryException("Cannot raise e to the power of a null");
 
             switch (temp.NumericType)
             {
@@ -60,19 +65,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 case EffectiveNumericType.Float:
                 case EffectiveNumericType.Double:
                     return new DoubleNode(Math.Pow(Math.E, temp.AsDouble()));
-                case EffectiveNumericType.NaN:
                 default:
-                    throw new RdfQueryException("Cannot square a non-numeric argument");
+                    throw new RdfQueryException("Cannot raise e to the power of a null");
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E + ">(" + this._expr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is EFunction)) return false;
+
+            EFunction func = (EFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -84,27 +89,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E;
             }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new EFunction(transformer.Transform(this._expr));
         }
     }
 }

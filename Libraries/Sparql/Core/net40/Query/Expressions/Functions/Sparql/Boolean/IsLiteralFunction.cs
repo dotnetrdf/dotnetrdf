@@ -23,11 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -44,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsLiteralFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IsLiteralFunction(argument);
+        }
+
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -52,35 +55,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(solution, context);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Literal);
-            }
+            INode result = this.Argument.Evaluate(solution, context);
+            return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Literal);
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "ISLITERAL(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IsLiteralFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            IsLiteralFunction func = (IsLiteralFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -92,16 +78,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordIsLiteral;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsLiteralFunction(transformer.Transform(this._expr));
         }
     }
 }

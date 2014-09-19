@@ -24,11 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -45,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         public IntegerCast(IExpression expr) 
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IntegerCast(argument);
+        }
+
         /// <summary>
         /// Casts the value of the inner Expression to an Integer
         /// </summary>
@@ -53,16 +57,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(solution, context);//.CoerceToInteger();
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             if (n == null)
             {
                 throw new RdfQueryException("Cannot cast a Null to a xsd:integer");
             }
-
-            ////New method should be much faster
-            //if (n is LongNode) return n;
-            //return new LongNode(n.AsInteger());
 
             switch (n.NodeType)
             {
@@ -78,37 +78,27 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     if (lit.DataType != null)
                     {
                         string dt = lit.DataType.AbsoluteUri;
-                        if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
+                        long i;
+                        if (XmlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
                             //Already a integer type so valid as a xsd:integer
-                            long i;
                             if (Int64.TryParse(lit.Value, out i))
                             {
                                 return new LongNode(i);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:integer");
-                            }
+                            throw new RdfQueryException("Invalid lexical form for xsd:integer");
                         }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
                             //DateTime cast forbidden
                             throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:integer");
                         }
-                        else
+                        if (Int64.TryParse(lit.Value, out i))
                         {
-                            Int64 i;
-                            if (Int64.TryParse(lit.Value, out i))
-                            {
-                                //Parsed OK
-                                return new LongNode(i);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
-                            }
+                            //Parsed OK
+                            return new LongNode(i);
                         }
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
                     }
                     else
                     {
@@ -118,23 +108,21 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             //Parsed OK
                             return new LongNode(i);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
-                        }
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:integer");
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeInteger + ">(" + this._expr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IntegerCast)) return false;
+
+            IntegerCast cast = (IntegerCast) other;
+            return this.Argument.Equals(cast.Argument);
         }
 
         /// <summary>
@@ -146,16 +134,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeInteger;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IntegerCast(transformer.Transform(this._expr));
         }
     }
 }

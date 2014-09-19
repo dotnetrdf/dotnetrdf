@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Sorting;
 
 namespace VDS.RDF.Query.Expressions.Comparison
 {
@@ -34,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
     public class GreaterThanExpression
         : BaseBinaryExpression
     {
-        private SparqlNodeComparer _comparer = new SparqlNodeComparer();
+        private readonly SparqlNodeComparer _comparer = new SparqlNodeComparer();
 
         /// <summary>
         /// Creates a new Greater Than Relational Expression
@@ -42,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <param name="leftExpr">Left Hand Expression</param>
         /// <param name="rightExpr">Right Hand Expression</param>
         public GreaterThanExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
+
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new GreaterThanExpression(arg1, arg2);
+        }
 
         /// <summary>
         /// Evaluates the expression
@@ -52,51 +59,23 @@ namespace VDS.RDF.Query.Expressions.Comparison
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             IValuedNode a, b;
-            a = this._leftExpr.Evaluate(solution, context);
-            b = this._rightExpr.Evaluate(solution, context);
+            a = this.FirstArgument.Evaluate(solution, context);
+            b = this.SecondArgument.Evaluate(solution, context);
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a > when one argument is Null");
 
-            int compare = this._comparer.Compare(a, b);//a.CompareTo(b);
+            int compare = this._comparer.Compare(a, b);
             return new BooleanNode(compare > 0);
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._leftExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._leftExpr.ToString());
-            }
-            output.Append(" > ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._rightExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._rightExpr.ToString());
-            }
-            return output.ToString();
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is GreaterThanExpression)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
+            GreaterThanExpression expr = (GreaterThanExpression) other;
+            return this.FirstArgument.Equals(expr.FirstArgument) && this.SecondArgument.Equals(expr.SecondArgument);
         }
 
         /// <summary>
@@ -108,16 +87,6 @@ namespace VDS.RDF.Query.Expressions.Comparison
             {
                 return ">";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new GreaterThanExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

@@ -24,12 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -44,26 +42,26 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// </summary>
         /// <param name="expr">Expression to be cast</param>
         public FloatCast(IExpression expr)
-            : base(expr) { }
+            : base(expr) {}
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new FloatCast(argument);
+        }
 
         /// <summary>
         /// Casts the value of the inner Expression to a Float
         /// </summary>
         /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Vinding ID</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(solution, context);//.CoerceToFloat();
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             if (n == null)
             {
                 throw new RdfQueryException("Cannot cast a Null to a xsd:float");
             }
-
-            //New method should be much faster
-            //if (n is FloatNode) return n;
-            //return new FloatNode(n.AsFloat());
 
             switch (n.NodeType)
             {
@@ -78,36 +76,27 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     INode lit = n;
                     if (lit.DataType != null)
                     {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
+                        float f;
+                        switch (lit.DataType.AbsoluteUri)
                         {
-                            float f;
-                            if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
-                            {
-                                //Parsed OK
-                                return new FloatNode(f);
-                            }
-                            else
-                            {
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                                if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
+                                {
+                                    //Parsed OK
+                                    return new FloatNode(f);
+                                }
                                 throw new RdfQueryException("Invalid lexical form for a xsd:float");
-                            }
-                        }
-                        else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            //DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
-                        }
-                        else
-                        {
-                            float f;
-                            if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
-                            {
-                                //Parsed OK
-                                return new FloatNode(f);
-                            }
-                            else
-                            {
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+
+                                //DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
+                            default:
+                                if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
+                                {
+                                    //Parsed OK
+                                    return new FloatNode(f);
+                                }
                                 throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                            }
                         }
                     }
                     else
@@ -118,23 +107,21 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             //Parsed OK
                             return new FloatNode(f);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                        }
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:float");
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + this._expr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is FloatCast)) return false;
+
+            FloatCast cast = (FloatCast) other;
+            return this.Argument.Equals(cast.Argument);
         }
 
         /// <summary>
@@ -142,20 +129,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeFloat;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new FloatCast(transformer.Transform(this._expr));
+            get { return XmlSpecsHelper.XmlSchemaDataTypeFloat; }
         }
     }
 }

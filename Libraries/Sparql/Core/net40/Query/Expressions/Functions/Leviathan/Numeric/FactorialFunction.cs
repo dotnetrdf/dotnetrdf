@@ -23,11 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
@@ -45,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public FactorialFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new FactorialFunction(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -53,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(solution, context);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
             long l = temp.AsInteger();
 
@@ -76,13 +78,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new LongNode(fac);
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial + ">(" + this._expr.ToString() + ")";
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is FactorialFunction)) return false;
+
+            FactorialFunction func = (FactorialFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -94,27 +97,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial;
             }
-        }
-
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new FactorialFunction(transformer.Transform(this._expr));
         }
     }
 }

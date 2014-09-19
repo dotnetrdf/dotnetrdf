@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
@@ -35,10 +37,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     /// Class representing the SPARQL IF function
     /// </summary>
     public class IfElseFunction 
-        : IExpression
+        : BaseTernaryExpression
     {
-        private IExpression _condition, _ifBranch, _elseBranch;
-
         /// <summary>
         /// Creates a new IF function
         /// </summary>
@@ -46,10 +46,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="ifBranch">Expression to evaluate if condition evaluates to true</param>
         /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error</param>
         public IfElseFunction(IExpression condition, IExpression ifBranch, IExpression elseBranch)
+            : base(condition, ifBranch, elseBranch) { }
+
+        public override IExpression Copy(IExpression arg1, IExpression arg2, IExpression arg3)
         {
-            this._condition = condition;
-            this._ifBranch = ifBranch;
-            this._elseBranch = elseBranch;
+            return new IfElseFunction(arg1, arg2, arg3);
         }
 
         /// <summary>
@@ -58,102 +59,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._condition.Evaluate(solution, context);
+            IValuedNode result = this.FirstArgument.Evaluate(solution, context);
 
             //Condition evaluated without error so we go to the appropriate branch of the IF ELSE
             //depending on whether it evaluated to true or false
-            if (result.AsSafeBoolean())
-            {
-                return this._ifBranch.Evaluate(solution, context);
-            }
-            else
-            {
-                return this._elseBranch.Evaluate(solution, context);
-            }
+            return result.AsSafeBoolean() ? this.SecondArgument.Evaluate(solution, context) : this.ThirdArgument.Evaluate(solution, context);
         }
 
-        /// <summary>
-        /// Gets the enumeration of variables used in the expression
-        /// </summary>
-        public IEnumerable<string> Variables
+        public override bool Equals(IExpression other)
         {
-            get 
-            {
-                return this._condition.Variables.Concat(this._ifBranch.Variables).Concat(this._elseBranch.Variables);
-            }
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IfElseFunction)) return false;
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append("IF (");
-            output.Append(this._condition.ToString());
-            output.Append(" , ");
-            output.Append(this._ifBranch.ToString());
-            output.Append(" , ");
-            output.Append(this._elseBranch.ToString());
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Expression Type
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            IfElseFunction func = (IfElseFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument) && this.ThirdArgument.Equals(func.ThirdArgument);
         }
 
         /// <summary>
         /// Gets the Functor for the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {
                 return SparqlSpecsHelper.SparqlKeywordIf;
             }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return new IExpression[] { this._condition, this._ifBranch, this._elseBranch };
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._condition.CanParallelise && this._ifBranch.CanParallelise && this._elseBranch.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), transformer.Transform(this._elseBranch));
         }
     }
 }

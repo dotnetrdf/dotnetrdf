@@ -23,10 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Engine;
+using System.Text;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
@@ -34,83 +35,33 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
     /// Abstract base class for SPARQL Functions which operate on Sets
     /// </summary>
     public abstract class BaseSetFunction
-        : INAryExpression
+        : BaseNAryExpression
     {
-        /// <summary>
-        /// Variable Expression Term that the Set function applies to
-        /// </summary>
-        protected IExpression _expr;
-        /// <summary>
-        /// Set that is used in the function
-        /// </summary>
-        protected List<IExpression> _expressions = new List<IExpression>();
-
         /// <summary>
         /// Creates a new SPARQL Set function
         /// </summary>
         /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
         protected BaseSetFunction(IExpression expr, IEnumerable<IExpression> set)
+            : base(expr.AsEnumerable().Concat(set))
         {
-            this._expr = expr;
-            this._expressions.AddRange(set);
+            if (this.Arguments.Count == 0) throw new ArgumentException("Requires at least one argument");
         }
 
-        /// <summary>
-        /// Gets the value of the function as evaluated for a given Binding in the given Context
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
-
-        /// <summary>
-        /// Gets the Variable the function applies to
-        /// </summary>
-        public IEnumerable<string> Variables
+        public sealed override string ToString(IAlgebraFormatter formatter)
         {
-            get
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this.Arguments[0].ToString(formatter));
+            builder.Append(' ');
+            builder.Append(this.Functor);
+            builder.Append(" (");
+            for (int i = 1; i < this.Arguments.Count; i++)
             {
-                return this._expr.Variables.Concat(from e in this._expressions
-                                                   from v in e.Variables
-                                                   select v);
+                if (i > 1) builder.Append(", ");
+                builder.Append(this.Arguments[i].ToString(formatter));
             }
+            builder.Append(')');
+            return builder.ToString();
         }
-
-        /// <summary>
-        /// Gets the Functor of the Expression
-        /// </summary>
-        public abstract string Functor
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Exception
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return this._expr.AsEnumerable<IExpression>().Concat(this._expressions);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
     }
 }

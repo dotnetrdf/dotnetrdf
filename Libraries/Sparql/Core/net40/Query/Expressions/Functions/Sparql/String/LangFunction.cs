@@ -23,11 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -44,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public LangFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new LangFunction(argument);
+        }
+
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
         /// </summary>
@@ -52,46 +55,28 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode result = this._expr.Evaluate(solution, context);
+            INode result = this.Argument.Evaluate(solution, context);
             if (result == null)
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of an NULL");
             }
-            else
+            switch (result.NodeType)
             {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        return new StringNode((result).Language);
-
-                    case NodeType.Uri:
-                    case NodeType.Blank:
-                    case NodeType.GraphLiteral:
-                    default:
-                        throw new RdfQueryException("Cannot return the Language Tag of Nodes which are not Literal Nodes");
-
-                }
+                case NodeType.Literal:
+                    return new StringNode((result).Language);
+                default:
+                    throw new RdfQueryException("Cannot return the Language Tag of Nodes which are not Literal Nodes");
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "LANG(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is LangFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            LangFunction func = (LangFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -103,16 +88,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordLang;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new LangFunction(transformer.Transform(this._expr));
         }
     }
 }

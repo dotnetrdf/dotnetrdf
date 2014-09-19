@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -40,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsNumericFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IsNumericFunction(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -48,19 +55,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._expr.Evaluate(solution, context);
+            IValuedNode result = this.Argument.Evaluate(solution, context);
             return new BooleanNode(result.NumericType != EffectiveNumericType.NaN);
         }
 
-        /// <summary>
-        /// Gets the Type of this Expression
-        /// </summary>
-        public override SparqlExpressionType Type
+        public override bool Equals(IExpression other)
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IsNumericFunction)) return false;
+
+            IsNumericFunction func = (IsNumericFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -72,25 +78,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordIsNumeric;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new IsNumericFunction(transformer.Transform(this._expr));
         }
     }
 }
