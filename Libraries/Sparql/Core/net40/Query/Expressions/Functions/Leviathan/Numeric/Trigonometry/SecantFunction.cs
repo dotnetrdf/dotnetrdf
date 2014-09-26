@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
@@ -37,16 +34,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class SecantFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
-        private static Func<double, double> _secant = (d => (1 / Math.Cos(d)));
-        private static Func<double, double> _arcsecant = (d => Math.Acos(1 / d));
+        private readonly bool _inverse;
+        private static readonly Func<double, double> _secant = (d => (1/Math.Cos(d)));
+        private static readonly Func<double, double> _arcsecant = (d => Math.Acos(1/d));
 
         /// <summary>
         /// Creates a new Leviathan Secant Function
         /// </summary>
         /// <param name="expr">Expression</param>
         public SecantFunction(IExpression expr)
-            : base(expr, _secant) { }
+            : base(expr, _secant) {}
 
         /// <summary>
         /// Creates a new Leviathan Secant Function
@@ -57,30 +54,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             : base(expr)
         {
             this._inverse = inverse;
-            if (this._inverse)
-            {
-                this._func = _arcsecant;
-            }
-            else
-            {
-                this._func = _secant;
-            }
+            this._func = this._inverse ? _arcsecant : _secant;
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            if (this._inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + this._expr.ToString() + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + this._expr.ToString() + ")";
-            }
+            return new SecantFunction(argument, this._inverse);
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is SecantFunction)) return false;
+
+            SecantFunction func = (SecantFunction) other;
+            // Include functor check because the same class can represent both the secant and inverse secant functions
+            return this.Functor.Equals(func.Functor) && this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -94,21 +84,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv;
                 }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec;
-                }
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SecantFunction(transformer.Transform(this._expr), this._inverse);
         }
     }
 }

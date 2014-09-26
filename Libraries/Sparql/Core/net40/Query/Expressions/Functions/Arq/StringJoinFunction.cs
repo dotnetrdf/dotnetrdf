@@ -27,10 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -38,12 +39,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// Represents the ARQ afn:strjoin() function which is a string concatenation function with a separator
     /// </summary>
     public class StringJoinFunction 
-        : IExpression
+        : BaseNAryExpression
     {
-        private IExpression _sep;
-        private String _separator;
-        private bool _fixedSeparator = false;
-        private List<IExpression> _exprs = new List<IExpression>();
+        private readonly String _separator;
+        private readonly bool _fixedSeparator = false;
 
         /// <summary>
         /// Creates a new ARQ String Join function
@@ -51,25 +50,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="sepExpr">Separator Expression</param>
         /// <param name="expressions">Expressions to concatentate</param>
         public StringJoinFunction(IExpression sepExpr, IEnumerable<IExpression> expressions)
+            : base(sepExpr.AsEnumerable().Concat(expressions))
         {
             if (sepExpr is ConstantTerm)
             {
-                IValuedNode temp = sepExpr.Evaluate(null, 0);
+                IValuedNode temp = sepExpr.Evaluate(null, null);
                 if (temp.NodeType == NodeType.Literal)
                 {
                     this._separator = temp.AsString();
                     this._fixedSeparator = true;
                 }
-                else
-                {
-                    this._sep = sepExpr;
-                }
             }
-            else
-            {
-                this._sep = sepExpr;
-            }
-            this._exprs.AddRange(expressions);
+        }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            IList<IExpression> arguments = args as IList<IExpression> ?? args.ToList();
+            return new StringJoinFunction(arguments.First(), arguments.Skip(1));
         }
 
         /// <summary>
@@ -78,12 +75,31 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            StringBuilder output = new StringBuilder();
-            for (int i = 0; i < this._exprs.Count; i++)
+            String sep;
+            if (this._fixedSeparator)
             {
-                IValuedNode temp = this._exprs[i].Evaluate(solution, context);
+                sep = this._separator;
+            }
+            else
+            {
+                IValuedNode sepNode = this.Arguments[0].Evaluate(solution, context);
+                if (sepNode == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
+                if (sepNode.NodeType == NodeType.Literal)
+                {
+                    sep = sepNode.Value;
+                }
+                else
+                {
+                    throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a non-Literal Node");
+                }
+            }
+
+            StringBuilder output = new StringBuilder();
+            for (int i = 1; i < this.Arguments.Count; i++)
+            {
+                IValuedNode temp = this.Arguments[i].Evaluate(solution, context);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
                 switch (temp.NodeType)
                 {
@@ -93,118 +109,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     default:
                         throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument is not a Literal Node");
                 }
-                if (i < this._exprs.Count - 1)
+                if (i < this.Arguments.Count - 1)
                 {
-                    if (this._fixedSeparator)
-                    {
-                        output.Append(this._separator);
-                    }
-                    else
-                    {
-                        IValuedNode sep = this._sep.Evaluate(solution, context);
-                        if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
-                        if (sep.NodeType == NodeType.Literal)
-                        {
-                            output.Append(sep.AsString());
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a non-Literal Node");
-                        }
-                    }
+                    output.Append(sep);
                 }
             }
 
             return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public IEnumerable<string> Variables
+        public override string Functor
         {
-            get
-            {
-                return (from expr in this._exprs
-                        from v in expr.Variables
-                        select v);
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append('<');
-            output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
-            output.Append(ArqFunctionFactory.StrJoin);
-            output.Append(">(");
-            output.Append(this._sep.ToString());
-            output.Append(",");
-            for (int i = 0; i < this._exprs.Count; i++)
-            {
-                output.Append(this._exprs[i].ToString());
-                if (i < this._exprs.Count - 1) output.Append(',');
-            }
-            output.Append(")");
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Functor of the Expression
-        /// </summary>
-        public String Functor
-        {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.StrJoin;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return this._sep.AsEnumerable().Concat(this._exprs);
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._sep.CanParallelise && this._exprs.All(e => e.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StringJoinFunction(transformer.Transform(this._sep), this._exprs.Select(e => transformer.Transform(e)));
+            get { return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.StrJoin; }
         }
     }
 }

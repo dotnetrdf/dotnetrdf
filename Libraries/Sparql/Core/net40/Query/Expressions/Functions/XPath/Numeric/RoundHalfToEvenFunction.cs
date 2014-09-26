@@ -23,12 +23,12 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using VDS.RDF.Query.Expressions.Factories;
-#if !SILVERLIGHT
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+#if !SILVERLIGHT
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Query.Expressions.Factories;
+using System;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
@@ -37,16 +37,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
     /// Represents the XPath fn:round() function
     /// </summary>
     public class RoundHalfToEvenFunction
-        : BaseUnaryExpression
+        : BaseNAryExpression
     {
-        private IExpression _precision;
-
         /// <summary>
         /// Creates a new XPath RoundHalfToEven function
         /// </summary>
         /// <param name="expr">Expression</param>
         public RoundHalfToEvenFunction(IExpression expr)
-            : base(expr) { }
+            : base(expr.AsEnumerable()) { }
 
         /// <summary>
         /// Creates a new XPath RoundHalfToEven function
@@ -54,9 +52,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <param name="expr">Expression</param>
         /// <param name="precision">Precision</param>
         public RoundHalfToEvenFunction(IExpression expr, IExpression precision)
-            : this(expr)
+            : base(new IExpression[] {expr, precision}) { }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
         {
-            this._precision = precision;
+            List<IExpression> arguments  = args.ToList();
+            if (arguments.Count == 0 || arguments.Count > 2) throw new ArgumentException("Requires 1/2 arguments");
+            return arguments.Count == 1 ? new RoundHalfToEvenFunction(arguments[0]) : new RoundHalfToEvenFunction(arguments[0], arguments[1]);
         }
 
         /// <summary>
@@ -67,13 +69,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(solution, context);
+            IValuedNode a = this.Arguments[0].Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             int p = 0;
-            if (this._precision != null)
+            if (this.Arguments.Count == 2)
             {
-                IValuedNode precision = this._precision.Evaluate(solution, context);
+                IValuedNode precision = this.Arguments[2].Evaluate(solution, context);
                 if (precision == null) throw new RdfQueryException("Cannot use a null precision for rounding");
                 try
                 {
@@ -116,24 +118,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is RoundHalfToEvenFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
+            RoundHalfToEvenFunction func = (RoundHalfToEvenFunction) other;
+            if (this.Arguments.Count != func.Arguments.Count) return false;
+            for (int i = 0; i < this.Arguments.Count; i++)
             {
-                return SparqlExpressionType.Function;
+                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -141,20 +138,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RoundHalfToEvenFunction(transformer.Transform(this._expr));
+            get { return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven; }
         }
     }
 }

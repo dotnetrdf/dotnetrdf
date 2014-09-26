@@ -24,11 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
@@ -44,7 +42,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         /// <param name="expr">Expression</param>
         public RoundFunction(IExpression expr)
-            : base(expr) { }
+            : base(expr) {}
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new RoundFunction(argument);
+        }
 
         /// <summary>
         /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID
@@ -54,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(solution, context);
+            IValuedNode a = this.Argument.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
@@ -65,18 +68,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
                 case EffectiveNumericType.Decimal:
 #if !SILVERLIGHT
-                    return new DecimalNode(null, Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
+                    return new DecimalNode(Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
 #else
-                    return new DecimalNode(null, Math.Round(a.AsDecimal()));
+                    return new DecimalNodeMath.Round(a.AsDecimal()));
 #endif
 
                 case EffectiveNumericType.Float:
                     try
                     {
 #if !SILVERLIGHT
-                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
+                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
 #else
-                        return new FloatNode(null, Convert.ToSingle(Math.Round(a.AsDouble()), CultureInfo.InvariantCulture));
+                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble()), CultureInfo.InvariantCulture));
 #endif
                     }
                     catch (RdfQueryException)
@@ -90,9 +93,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 
                 case EffectiveNumericType.Double:
 #if !SILVERLIGHT
-                    return new DoubleNode(null, Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
+                    return new DoubleNode(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
 #else
-                    return new DoubleNode(null, Math.Round(a.AsDouble()));
+                    return new DoubleNode(Math.Round(a.AsDouble()));
 #endif
 
                 default:
@@ -100,24 +103,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round + ">(" + this._expr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is RoundFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            RoundFunction func = (RoundFunction) other;
+            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>
@@ -125,20 +118,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new RoundFunction(transformer.Transform(this._expr));
+            get { return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round; }
         }
     }
 }

@@ -23,6 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !NO_NORM
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
@@ -30,13 +35,11 @@ using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
-#if !NO_NORM
-
     /// <summary>
     /// Represents the XPath fn:normalize-unicode() function
     /// </summary>
     public class NormalizeUnicodeFunction
-        : BaseBinaryStringFunction
+        : BaseNAryStringFunction
     {
         /// <summary>
         /// Creates a new XPath Normalize Unicode function
@@ -103,19 +106,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new StringNode(normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
-        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        public override IExpression Copy(IEnumerable<IExpression> args)
         {
-            return new NormalizeUnicodeFunction(arg1, arg2);
-        }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is NormalizeUnicodeFunction)) return false;
-
-            NormalizeUnicodeFunction func = (NormalizeUnicodeFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
+            List<IExpression> arguments = args.ToList();
+            if (arguments.Count == 0 || arguments.Count > 2) throw new ArgumentException("Requires 1/2 arguments");
+            return arguments.Count == 2 ? new NormalizeUnicodeFunction(arguments[0], arguments[1]) : new NormalizeUnicodeFunction(arguments[1]);
         }
 
         /// <summary>
@@ -129,6 +124,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
         }
     }
+}
 
 #endif
-}

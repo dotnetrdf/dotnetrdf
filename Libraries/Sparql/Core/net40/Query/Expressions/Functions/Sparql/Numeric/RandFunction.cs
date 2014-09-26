@@ -80,10 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// </summary>
         public override bool CanParallelise
         {
-            get
-            {
-                return true;
-            }
+            get { return false; }
         }
 
         public override bool IsDeterministic

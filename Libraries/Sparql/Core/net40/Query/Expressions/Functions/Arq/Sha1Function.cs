@@ -23,12 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
@@ -47,13 +42,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public Sha1Function(IExpression expr)
             : base(expr, new SHA1Managed()) { }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum + ">(" + this._expr.ToString() + ")";
+            return new Sha1Function(argument);
         }
 
         /// <summary>
@@ -65,16 +56,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new Sha1Function(transformer.Transform(this._expr));
         }
     }
 }

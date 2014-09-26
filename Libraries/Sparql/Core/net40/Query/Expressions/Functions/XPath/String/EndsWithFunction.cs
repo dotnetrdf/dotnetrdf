@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringExpr">Expression</param>
         /// <param name="suffixExpr">Suffix Expression</param>
         public EndsWithFunction(IExpression stringExpr, IExpression suffixExpr)
-            : base(stringExpr, suffixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(stringExpr, suffixExpr) { }
 
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(INode stringLit, INode arg)
+        protected override IValuedNode EvaluateInternal(IValuedNode stringLit, IValuedNode arg)
         {
             if (stringLit.Value.Equals(string.Empty))
             {
@@ -69,13 +69,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+            return new EndsWithFunction(arg1, arg2);
         }
 
         /// <summary>

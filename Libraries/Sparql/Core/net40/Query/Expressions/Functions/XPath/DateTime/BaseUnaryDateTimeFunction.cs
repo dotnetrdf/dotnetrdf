@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// Creates a new Unary XPath Date Time function
         /// </summary>
         /// <param name="expr"></param>
-        public BaseUnaryDateTimeFunction(IExpression expr)
+        protected BaseUnaryDateTimeFunction(IExpression expr)
             : base(expr) { }
 
         /// <summary>
@@ -55,10 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return this.ValueInternal(temp.AsDateTimeOffset());
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
-            }
+            throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
         }
 
         /// <summary>

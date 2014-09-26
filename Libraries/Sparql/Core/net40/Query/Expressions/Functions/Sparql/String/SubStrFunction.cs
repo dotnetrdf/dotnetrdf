@@ -26,10 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -37,9 +37,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL SUBSTR Function
     /// </summary>
     public class SubStrFunction
-        : IExpression
+        : BaseNAryExpression
     {
-        private IExpression _expr, _start, _length;
 
         /// <summary>
         /// Creates a new XPath Substring function
@@ -56,10 +55,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="startExpr">Start</param>
         /// <param name="lengthExpr">Length</param>
         public SubStrFunction(IExpression stringExpr, IExpression startExpr, IExpression lengthExpr)
+            : base(MakeArguments(stringExpr, startExpr, lengthExpr)) { }
+
+        private static IEnumerable<IExpression> MakeArguments(IExpression stringExpr, IExpression startExpr, IExpression lengthExpr)
         {
-            this._expr = stringExpr;
-            this._start = startExpr;
-            this._length = lengthExpr;
+            return lengthExpr != null ? new IExpression[] {stringExpr, startExpr, lengthExpr} : new IExpression[] {stringExpr, startExpr};
+        }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            List<IExpression> arguments = args.ToList();
+            if (arguments.Count < 2 || arguments.Count > 3) throw new ArgumentException("Requires 2/3 arguments");
+            return new SubStrFunction(arguments[0], arguments[1], arguments.Count == 3 ? arguments[2] : null);
         }
 
         /// <summary>
@@ -68,14 +75,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode input = this.CheckArgument(this._expr, solution, context);
-            IValuedNode start = this.CheckArgument(this._start, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+            INode input = this.CheckArgument(this.Arguments[0], solution, context);
+            IValuedNode start = this.CheckArgument(this.Arguments[1], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
-            if (this._length != null)
+            if (this.Arguments.Count == 2)
             {
-                IValuedNode length = this.CheckArgument(this._length, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+                IValuedNode length = this.CheckArgument(this.Arguments[2], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -88,82 +95,38 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     if (l < 1)
                     {
                         //If no/negative characters are being selected the empty string is returned
-                        if (input.DataType != null)
-                        {
-                            return new StringNode(string.Empty, input.DataType);
-                        }
-                        else
-                        {
-                            return new StringNode(string.Empty, input.Language);
-                        }
+                        return input.DataType != null ? new StringNode(string.Empty, input.DataType) : new StringNode(string.Empty, input.Language);
                     }
-                    else if ((s - 1) > input.Value.Length)
+                    if ((s - 1) > input.Value.Length)
                     {
                         //If the start is after the end of the string the empty string is returned
-                        if (input.DataType != null)
-                        {
-                            return new StringNode(string.Empty, input.DataType);
-                        }
-                        else
-                        {
-                            return new StringNode(string.Empty, input.Language);
-                        }
+                        return input.HasDataType ? new StringNode(string.Empty, input.DataType) : new StringNode(string.Empty, input.Language);
                     }
-                    else
+                    if (((s - 1) + l) > input.Value.Length)
                     {
-                        if (((s - 1) + l) > input.Value.Length)
-                        {
-                            //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(input.Value.Substring(s - 1), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(input.Value.Substring(s - 1), input.Language);
-                            }
-                        }
-                        else
-                        {
-                            //Otherwise do normal substring
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(input.Value.Substring(s - 1, l), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(input.Value.Substring(s - 1, l), input.Language);
-                            }
-                        }
+                        //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
+                        return input.HasDataType ? new StringNode(input.Value.Substring(s - 1), input.DataType) : new StringNode(input.Value.Substring(s - 1), input.Language);
                     }
+                    //Otherwise do normal substring
+                    return input.HasDataType ? new StringNode(input.Value.Substring(s - 1, l), input.DataType) : new StringNode(input.Value.Substring(s - 1, l), input.Language);
                 }
                 catch
                 {
                     throw new RdfQueryException("Unable to convert the Start/Length argument to an Integer");
                 }
             }
-            else
+            if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+
+            try
             {
-                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                int s = Convert.ToInt32(start.AsInteger());
+                if (s < 1) s = 1;
 
-                try
-                {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    if (s < 1) s = 1;
-
-                    if (input.DataType != null)
-                    {
-                        return new StringNode(input.Value.Substring(s - 1), input.DataType);
-                    }
-                    else
-                    {
-                        return new StringNode(input.Value.Substring(s - 1), input.Language);
-                    }
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start argument to an Integer");
-                }
+                return input.HasDataType ? new StringNode(input.Value.Substring(s - 1), input.DataType) : new StringNode(input.Value.Substring(s - 1), input.Language);
+            }
+            catch
+            {
+                throw new RdfQueryException("Unable to convert the Start argument to an Integer");
             }
         }
 
@@ -175,143 +138,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         private IValuedNode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context, Func<Uri, bool> argumentTypeValidator)
         {
             IValuedNode temp = expr.Evaluate(solution, context);
-            if (temp != null)
+            if (temp == null) throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions evaluated to null");
+            if (temp.NodeType != NodeType.Literal) throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a non-literal");
+            INode lit = temp;
+            if (lit.DataType != null)
             {
-                if (temp.NodeType == NodeType.Literal)
+                if (argumentTypeValidator(lit.DataType))
                 {
-                    INode lit = temp;
-                    if (lit.DataType != null)
-                    {
-                        if (argumentTypeValidator(lit.DataType))
-                        {
-                            //Appropriately typed literals are fine
-                            return temp;
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
-                    }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
-                    {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
-                        return temp;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute a substring as one of the argument expressions returned an untyped literal");
-                    }
+                    //Appropriately typed literals are fine
+                    return temp;
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a non-literal");
-                }
+                throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a typed literal with an invalid type");
             }
-            else
+            if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
             {
-                throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions evaluated to null");
+                //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                return temp;
             }
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                if (this._length != null)
-                {
-                    return this._expr.Variables.Concat(this._start.Variables).Concat(this._length.Variables);
-                }
-                else
-                {
-                    return this._expr.Variables.Concat(this._start.Variables);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (this._length != null)
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + this._expr.ToString() + "," + this._start.ToString() + "," + this._length.ToString() + ")";
-            }
-            else
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + this._expr.ToString() + "," + this._start.ToString() + ")";
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            throw new RdfQueryException("Unable to evalaute a substring as one of the argument expressions returned an untyped literal");
         }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {
                 return SparqlSpecsHelper.SparqlKeywordSubStr;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Function
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                if (this._length != null)
-                {
-                    return new IExpression[] { this._expr, this._start, this._length };
-                }
-                else
-                {
-                    return new IExpression[] { this._expr, this._start };
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise && this._start.CanParallelise && (this._length == null || this._length.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._length != null)
-            {
-                return new SubStrFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._length));
-            }
-            else
-            {
-                return new SubStrFunction(transformer.Transform(this._expr), transformer.Transform(this._start));
             }
         }
     }

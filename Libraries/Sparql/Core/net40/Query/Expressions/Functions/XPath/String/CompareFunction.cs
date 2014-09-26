@@ -23,10 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -44,26 +40,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="a">First Comparand</param>
         /// <param name="b">Second Comparand</param>
         public CompareFunction(IExpression a, IExpression b)
-            : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(a, b) {}
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument
-        /// </summary>
-        /// <param name="stringLit">Simple/String typed Literal</param>
-        /// <param name="arg">Argument</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(INode stringLit, INode arg)
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
         {
-            return new LongNode(string.Compare(stringLit.Value, arg.Value, Options.DefaultCulture, Options.DefaultComparisonOptions));
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+            return new CompareFunction(arg1, arg2);
         }
 
         /// <summary>
@@ -75,6 +56,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
             }
+        }
+
+        /// <summary>
+        /// Gets the Value of the function as applied to the given String Literal and Argument
+        /// </summary>
+        /// <param name="stringLit">Simple/String typed Literal</param>
+        /// <param name="arg">Argument</param>
+        /// <returns></returns>
+        protected override IValuedNode EvaluateInternal(IValuedNode stringLit, IValuedNode arg)
+        {
+            return new LongNode(string.Compare(stringLit.Value, arg.Value, Options.DefaultCulture, Options.DefaultComparisonOptions));
         }
     }
 }

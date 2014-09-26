@@ -23,15 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
-using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -39,18 +35,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Represents the XPath fn:replace() function
     /// </summary>
     public class ReplaceFunction
-        : IExpression
+        : Sparql.String.ReplaceFunction
     {
-        private string _find = null;
-        private string _replace = null;
-        private RegexOptions _options = RegexOptions.None;
-        private bool _fixedPattern = false;
-        private bool _fixedReplace = false;
-        private IExpression _textExpr = null;
-        private IExpression _findExpr = null;
-        private IExpression _optionExpr = null;
-        private IExpression _replaceExpr = null;
-
         /// <summary>
         /// Creates a new XPath Replace function
         /// </summary>
@@ -58,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="find">Search Expression</param>
         /// <param name="replace">Replace Expression</param>
         public ReplaceFunction(IExpression text, IExpression find, IExpression replace)
-            : this(text, find, replace, null) { }
+            : this(text, find, replace, null) {}
 
         /// <summary>
         /// Creates a new XPath Replace function
@@ -68,329 +54,40 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="replace">Replace Expression</param>
         /// <param name="options">Options Expression</param>
         public ReplaceFunction(IExpression text, IExpression find, IExpression replace, IExpression options)
+            : base(text, find, replace, options) {}
+
+        protected override IValuedNode CreateOutputNode(INode lit, string output)
         {
-            this._textExpr = text;
-
-            //Get the Pattern
-            if (find is ConstantTerm)
-            {
-                //If the Pattern is a Node Expression Term then it is a fixed Pattern
-                IValuedNode n = find.Evaluate(null, 0);
-                if (n.NodeType == NodeType.Literal)
-                {
-                    //Try to parse as a Regular Expression
-                    try
-                    {
-                        string p = n.AsString();
-                        Regex temp = new Regex(p);
-
-                        //It's a Valid Pattern
-                        this._fixedPattern = true;
-                        this._find = p;
-                    }
-                    catch
-                    {
-                        //No catch actions
-                    }
-                }
-            }
-            this._findExpr = find;
-
-            //Get the Replace
-            if (replace is ConstantTerm)
-            {
-                //If the Replace is a Node Expresison Term then it is a fixed Pattern
-                IValuedNode n = replace.Evaluate(null, 0);
-                if (n.NodeType == NodeType.Literal)
-                {
-                    this._replace = n.AsString();
-                    this._fixedReplace = true;
-                }
-            }
-            this._replaceExpr = replace;
-
-            //Get the Options
-            if (options != null)
-            {
-                if (options is ConstantTerm)
-                {
-                    this.ConfigureOptions(options.Evaluate(null, 0), false);
-                }
-                this._optionExpr = options;
-            }
-        }
-
-        /// <summary>
-        /// Configures the Options for the Regular Expression
-        /// </summary>
-        /// <param name="n">Node detailing the Options</param>
-        /// <param name="throwErrors">Whether errors should be thrown or suppressed</param>
-        private void ConfigureOptions(IValuedNode n, bool throwErrors)
-        {
-            //Start by resetting to no options
-            this._options = RegexOptions.None;
-
-            if (n == null)
-            {
-                if (throwErrors)
-                {
-                    throw new RdfQueryException("REGEX Options Expression does not produce an Options string");
-                }
-            }
-            else
-            {
-                if (n.NodeType == NodeType.Literal)
-                {
-                    string ops = n.AsString();
-                    foreach (char c in ops.ToCharArray())
-                    {
-                        switch (c)
-                        {
-                            case 'i':
-                                this._options |= RegexOptions.IgnoreCase;
-                                break;
-                            case 'm':
-                                this._options |= RegexOptions.Multiline;
-                                break;
-                            case 's':
-                                this._options |= RegexOptions.Singleline;
-                                break;
-                            case 'x':
-                                this._options |= RegexOptions.IgnorePatternWhitespace;
-                                break;
-                            default:
-                                if (throwErrors)
-                                {
-                                    throw new RdfQueryException("Invalid flag character '" + c + "' in Options string");
-                                }
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (throwErrors)
-                    {
-                        throw new RdfQueryException("REGEX Options Expression does not produce an Options string");
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
-        {
-            //Configure Options
-            if (this._optionExpr != null)
-            {
-                this.ConfigureOptions(this._optionExpr.Evaluate(solution, context), true);
-            }
-
-            //Compile the Regex if necessary
-            if (!this._fixedPattern)
-            {
-                //Regex is not pre-compiled
-                if (this._findExpr != null)
-                {
-                    IValuedNode p = this._findExpr.Evaluate(solution, context);
-                    if (p != null)
-                    {
-                        if (p.NodeType == NodeType.Literal)
-                        {
-                            this._find = p.AsString();
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot parse a Pattern String from a non-Literal Node");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Not a valid Pattern Expression");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Not a valid Pattern Expression or the fixed Pattern String was invalid");
-                }
-            }
-            //Compute the Replace if necessary
-            if (!this._fixedReplace)
-            {
-                if (this._replaceExpr != null)
-                {
-                    IValuedNode r = this._replaceExpr.Evaluate(solution, context);
-                    if (r != null)
-                    {
-                        if (r.NodeType == NodeType.Literal)
-                        {
-                            this._replace = r.AsString();
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot parse a Replace String from a non-Literal Node");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Not a valid Replace Expression");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Not a valid Replace Expression");
-                }
-            }
-
-            //Execute the Regular Expression
-            IValuedNode textNode = this._textExpr.Evaluate(solution, context);
-            if (textNode == null)
-            {
-                throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
-            }
-            if (textNode.NodeType == NodeType.Literal)
-            {
-                //Execute
-                string text = textNode.AsString();
-                string output = Regex.Replace(text, this._find, this._replace, this._options);
-                return new StringNode(output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append("<");
-            output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
-            output.Append(XPathFunctionFactory.Replace);
-            output.Append(">(");
-            output.Append(this._textExpr.ToString());
-            output.Append(",");
-            if (this._fixedPattern)
-            {
-                output.Append('"');
-                output.Append(this._find);
-                output.Append('"');
-            }
-            else
-            {
-                output.Append(this._findExpr.ToString());
-            }
-            output.Append(",");
-            if (this._fixedReplace)
-            {
-                output.Append('"');
-                output.Append(this._replace);
-                output.Append('"');
-            }
-            else if (this._replaceExpr != null)
-            {
-                output.Append(this._replaceExpr.ToString());
-            }
-            if (this._optionExpr != null)
-            {
-                output.Append("," + this._optionExpr.ToString());
-            }
-            output.Append(")");
-
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the enumeration of Variables involved in this Expression
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                List<string> vs = new List<string>();
-                if (this._textExpr != null) vs.AddRange(this._textExpr.Variables);
-                if (this._findExpr != null) vs.AddRange(this._findExpr.Variables);
-                if (this._replaceExpr != null) vs.AddRange(this._replaceExpr.Variables);
-                if (this._optionExpr != null) vs.AddRange(this._optionExpr.Variables);
-                return vs;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            return new StringNode(output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Replace;
-            }
+            get { return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Replace; }
         }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
+        public override IExpression Copy(IEnumerable<IExpression> args)
         {
-            get
-            {
-                if (this._optionExpr != null)
-                {
-                    return new IExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
-                }
-                else
-                {
-                    return new IExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
-                }
-            }
+            List<IExpression> argList = args.ToList();
+            return argList.Count == 3 ? new ReplaceFunction(argList[0], argList[1], argList[2]) : new ReplaceFunction(argList[0], argList[1], argList[2], argList[3]);
         }
 
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
+        public override bool Equals(IExpression other)
         {
-            get
-            {
-                return this._textExpr.CanParallelise && this._findExpr.CanParallelise && this._replaceExpr.CanParallelise && (this._optionExpr == null || this._optionExpr.CanParallelise);
-            }
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is ReplaceFunction)) return false;
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._optionExpr != null)
+            ReplaceFunction func = (ReplaceFunction)other;
+            if (this.Arguments.Count != func.Arguments.Count) return false;
+            for (int i = 0; i < this.Arguments.Count; i++)
             {
-                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr), transformer.Transform(this._optionExpr));
+                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
             }
-            else
-            {
-                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr));
-            }
+            return true;
         }
     }
 }

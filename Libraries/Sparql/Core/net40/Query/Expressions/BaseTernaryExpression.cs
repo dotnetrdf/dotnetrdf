@@ -82,7 +82,16 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
 
-        public abstract bool Equals(IExpression other);
+        public bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is ITernayExpression)) return false;
+            if (!this.Functor.Equals(other.Functor)) return false;
+
+            ITernayExpression expr = (ITernayExpression)other;
+            return this.FirstArgument.Equals(expr.FirstArgument) && this.SecondArgument.Equals(expr.SecondArgument) && this.ThirdArgument.Equals(expr.ThirdArgument);
+        }
 
         /// <summary>
         /// Gets the String representation of the Expression

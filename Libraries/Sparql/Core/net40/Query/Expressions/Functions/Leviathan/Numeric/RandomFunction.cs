@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -77,9 +75,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode min = this._leftExpr.Evaluate(solution, context);
+            IValuedNode min = this.FirstArgument.Evaluate(solution, context);
             if (min == null) throw new RdfQueryException("Cannot randomize with a null minimum");
-            IValuedNode max = this._rightExpr.Evaluate(solution, context);
+            IValuedNode max = this.SecondArgument.Evaluate(solution, context);
             if (max == null) throw new RdfQueryException("Cannot randomize with a null maximum");
 
             if (min.NumericType == EffectiveNumericType.NaN || max.NumericType == EffectiveNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
@@ -94,33 +92,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new DoubleNode(rnd);
         }
 
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append('<');
-            output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
-            output.Append(LeviathanFunctionFactory.Random);
-            output.Append(">(");
-            switch (this._args)
-            {
-                case 1:
-                    output.Append(this._rightExpr.ToString());
-                    break;
-                case 2:
-                    output.Append(this._leftExpr.ToString());
-                    output.Append(',');
-                    output.Append(this._rightExpr.ToString());
-                    break;
-            }
-            output.Append(')');
-            return output.ToString();
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
@@ -132,25 +103,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             }
         }
 
-        /// <summary>
-        /// Gets the type of the expression
-        /// </summary>
-        public override SparqlExpressionType Type
+        public override bool IsDeterministic
         {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            get { return false; }
         }
 
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
+        public override bool CanParallelise
         {
-            return new RandomFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            get { return false; }
+        }
+
+        public override bool IsConstant
+        {
+            get { return false; }
         }
     }
 }

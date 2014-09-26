@@ -24,10 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
@@ -45,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public StrDtFunction(IExpression stringExpr, IExpression dtExpr)
             : base(stringExpr, dtExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new StrDtFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
         /// </summary>
@@ -53,8 +57,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode s = this._leftExpr.Evaluate(solution, context);
-            INode dt = this._rightExpr.Evaluate(solution, context);
+            INode s = this.FirstArgument.Evaluate(solution, context);
+            INode dt = this.SecondArgument.Evaluate(solution, context);
 
             if (s != null)
             {
@@ -63,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                     Uri dtUri;
                     if (dt.NodeType == NodeType.Uri)
                     {
-                        dtUri = ((IUriNode)dt).Uri;
+                        dtUri = dt.Uri;
                     }
                     else
                     {
@@ -78,50 +82,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                             {
                                 return new StringNode(lit.Value, dtUri);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
-                            }
+                            throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
-                        }
+                        throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
-                    }
+                    throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a datatyped literal from a null string");
-                }
-            }
-            else
-            {
                 throw new RdfQueryException("Cannot create a datatyped literal from a null string");
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "STRDT(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            throw new RdfQueryException("Cannot create a datatyped literal from a null string");
         }
 
         /// <summary>
@@ -133,16 +102,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             {
                 return SparqlSpecsHelper.SparqlKeywordStrDt;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrDtFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

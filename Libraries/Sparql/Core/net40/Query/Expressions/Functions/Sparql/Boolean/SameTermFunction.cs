@@ -23,11 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
@@ -45,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public SameTermFunction(IExpression term1, IExpression term2)
             : base(term1, term2) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new SameTermFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -53,45 +56,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode a, b;
-            a = this._leftExpr.Evaluate(solution, context);
-            b = this._rightExpr.Evaluate(solution, context);
+            INode a = this.FirstArgument.Evaluate(solution, context);
+            INode b = this.SecondArgument.Evaluate(solution, context);
 
-            if (a == null)
-            {
-                if (b == null)
-                {
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    return new BooleanNode(false);
-                }
-            }
-            else
-            {
-                return new BooleanNode(a.Equals(b));
-            }
+            return new BooleanNode(EqualityHelper.AreNodesEqual(a, b));
         }
 
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IExpression other)
         {
-            return "SAMETERM(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
-        }
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is SameTermFunction)) return false;
 
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            SameTermFunction func = (SameTermFunction) other;
+            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
         }
 
         /// <summary>
@@ -103,16 +81,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return SparqlSpecsHelper.SparqlKeywordSameTerm;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SameTermFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

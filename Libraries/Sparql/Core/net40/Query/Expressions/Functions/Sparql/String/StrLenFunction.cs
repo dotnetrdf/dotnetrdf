@@ -23,12 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -55,6 +51,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             return new LongNode(stringLit.Value.Length);
         }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new StrLenFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
@@ -64,25 +65,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordStrLen;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrLenFunction(transformer.Transform(this._expr));
         }
     }
 }

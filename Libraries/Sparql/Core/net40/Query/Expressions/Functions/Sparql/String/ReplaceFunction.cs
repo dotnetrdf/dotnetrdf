@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using VDS.Common.Tries;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Primary;
@@ -257,18 +256,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 string text = lit.Value;
                 string output = Regex.Replace(text, this._find, this._replace, this._options);
 
-                if (lit.HasLanguage)
-                {
-                    return new StringNode(output, lit.Language);
-                    
-                }
-                if (lit.HasDataType)
-                {
-                    return new StringNode(output, lit.DataType);
-                }
-                return new StringNode(output);
+                return CreateOutputNode(lit, output);
             }
             throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
+        }
+
+        protected virtual IValuedNode CreateOutputNode(INode lit, string output)
+        {
+            if (lit.HasLanguage)
+            {
+                return new StringNode(output, lit.Language);
+            }
+            return lit.HasDataType ? new StringNode(output, lit.DataType) : new StringNode(output);
         }
 
         public override bool Equals(IExpression other)

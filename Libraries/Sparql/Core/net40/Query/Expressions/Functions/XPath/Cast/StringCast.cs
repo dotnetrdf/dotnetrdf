@@ -23,12 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -45,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         public StringCast(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new StringCast(argument);
+        }
+
         /// <summary>
         /// Casts the results of the inner expression to a Literal Node typed xsd:string
         /// </summary>
@@ -53,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this._expr.Evaluate(solution, context);
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             if (n == null)
             {
@@ -61,15 +63,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             }
 
             return new StringNode(n.AsString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeString + ">(" + this._expr.ToString() + ")";
         }
 
         /// <summary>
@@ -81,16 +74,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeString;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StringCast(transformer.Transform(this._expr));
         }
     }
 }

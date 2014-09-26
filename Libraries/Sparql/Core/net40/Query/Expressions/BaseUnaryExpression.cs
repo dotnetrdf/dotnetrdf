@@ -42,7 +42,16 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
 
-        public abstract bool Equals(IExpression other);
+        public bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is IUnaryExpression)) return false;
+            if (!this.Functor.Equals(other.Functor)) return false;
+
+            IUnaryExpression expr = (IUnaryExpression) other;
+            return this.Argument.Equals(expr.Argument);
+        }
 
         /// <summary>
         /// Gets the String representation of the Expression

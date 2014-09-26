@@ -226,6 +226,7 @@
     <Compile Include="Query\Expressions\Functions\XPath\Numeric\FloorFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\Numeric\RoundFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\Numeric\RoundHalfToEvenFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\BaseNAryStringFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\String\BaseBinaryStringFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\String\BaseUnaryStringFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\String\CompareFunction.cs" />

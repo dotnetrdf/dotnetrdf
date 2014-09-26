@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -58,13 +55,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             return new DecimalNode(seconds);
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + this._expr.ToString() + ")";
+            return new SecondsFromDateTimeFunction(argument);
         }
 
         /// <summary>
@@ -76,16 +69,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SecondsFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 }

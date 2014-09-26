@@ -23,12 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
@@ -44,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <param name="stringExpr">String Expression</param>
         /// <param name="langExpr">Language Expression</param>
         public StrLangFunction(IExpression stringExpr, IExpression langExpr)
-            : base(stringExpr, langExpr) { }
+            : base(stringExpr, langExpr) {}
 
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
@@ -54,90 +51,40 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode s = this._leftExpr.Evaluate(solution, context);
-            INode lang = this._rightExpr.Evaluate(solution, context);
+            INode s = this.FirstArgument.Evaluate(solution, context);
+            INode lang = this.SecondArgument.Evaluate(solution, context);
 
-            if (s != null)
+            if (s == null) throw new RdfQueryException("Cannot create a language specified literal from a null string");
+            if (lang == null) throw new RdfQueryException("Cannot create a language specified literal from a null string");
+            string langSpec;
+            if (lang.NodeType == NodeType.Literal)
             {
-                if (lang != null)
+                INode langLit = lang;
+                if (!langLit.HasDataType && !langLit.HasLanguage)
                 {
-                    string langSpec;
-                    if (lang.NodeType == NodeType.Literal)
-                    {
-                        INode langLit = lang;
-                        if (langLit.DataType == null)
-                        {
-                            langSpec = langLit.Value;
-                        }
-                        else
-                        {
-                            if (langLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                            {
-                                langSpec = langLit.Value;
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a language specified literal when the language is a non-string literal");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a language specified literal when the language is a non-literal Node");
-                    }
-                    if (s.NodeType == NodeType.Literal)
-                    {
-                        INode lit = s;
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                return new StringNode(lit.Value, langSpec);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a language specified literal from a language specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a language specified literal from a typed literal");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a language specified literal from a non-literal Node");
-                    }
+                    langSpec = langLit.Value;
                 }
                 else
                 {
-                    throw new RdfQueryException("Cannot create a language specified literal from a null string");
+                    if (langLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                    {
+                        langSpec = langLit.Value;
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Cannot create a language specified literal when the language is a non-string literal");
+                    }
                 }
             }
             else
             {
-                throw new RdfQueryException("Cannot create a language specified literal from a null string");
+                throw new RdfQueryException("Cannot create a language specified literal when the language is a non-literal Node");
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "STRLANG(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
+            if (s.NodeType != NodeType.Literal) throw new RdfQueryException("Cannot create a language specified literal from a non-literal Node");
+            INode lit = s;
+            if (lit.HasLanguage) throw new RdfQueryException("Cannot create a language specified literal from a language specified literal");
+            if (lit.HasDataType) throw new RdfQueryException("Cannot create a language specified literal from a typed literal");
+            return new StringNode(lit.Value, langSpec);
         }
 
         /// <summary>
@@ -145,20 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return SparqlSpecsHelper.SparqlKeywordStrLang;
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new StrLangFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+            get { return SparqlSpecsHelper.SparqlKeywordStrLang; }
         }
     }
 }

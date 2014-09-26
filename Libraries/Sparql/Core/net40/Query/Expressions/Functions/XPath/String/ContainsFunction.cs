@@ -23,11 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -45,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringExpr">Expression</param>
         /// <param name="searchExpr">Search Expression</param>
         public ContainsFunction(IExpression stringExpr, IExpression searchExpr)
-            : base(stringExpr, searchExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(stringExpr, searchExpr) { }
 
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument
@@ -53,32 +48,25 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(INode stringLit, INode arg)
+        protected override IValuedNode EvaluateInternal(IValuedNode stringLit, IValuedNode arg)
         {
             if (stringLit.Value.Equals(string.Empty))
             {
                 //Empty string cannot contain anything
                 return new BooleanNode(false);
             }
-            else if (arg.Value.Equals(string.Empty))
+            if (arg.Value.Equals(string.Empty))
             {
                 //Any non-empty string contains the empty string
                 return new BooleanNode(true);
             }
-            else
-            {
-                //Evalute the Contains
-                return new BooleanNode(stringLit.Value.Contains(arg.Value));
-            }
+            //Evalute the Contains
+            return new BooleanNode(stringLit.Value.Contains(arg.Value));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+            return new ContainsFunction(arg1, arg2);
         }
 
         /// <summary>

@@ -864,7 +864,7 @@ namespace VDS.RDF.Specifications
                                     Double dbl;
                                     if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
-                                        if (dbl == 0.0d || double.IsNaN(dbl))
+                                        if (dbl == 0.0d || Double.IsNaN(dbl))
                                         {
                                             //Zero/NaN gives EBV of false
                                             return false;
@@ -1407,7 +1407,7 @@ namespace VDS.RDF.Specifications
         public static DateTime ToDateTime(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Date Time");
-            return DateTime.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            return DateTime.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
         }
 
         /// <summary>
@@ -1419,7 +1419,7 @@ namespace VDS.RDF.Specifications
         public static DateTimeOffset ToDateTimeOffset(INode n)
         {
             if (n.DataType == null) throw new NodeValueException("Cannot convert an untyped Literal to a Date Time");
-            return DateTimeOffset.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            return DateTimeOffset.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
         }
 
         /// <summary>
@@ -1435,5 +1435,56 @@ namespace VDS.RDF.Specifications
         }
 
         #endregion
+
+        /// <summary>
+        /// Determines whether the Arguments are valid
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
+        public static bool IsValidStringArgumentPair(INode stringLit, INode argLit)
+        {
+            if (stringLit.HasLanguage)
+            {
+                // 1st Argument has a language tag
+                if (argLit.HasDataType && !argLit.HasLanguage)
+                {
+                    // If 2nd Argument is typed then must be xsd:string
+                    // to be valid
+                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                if (!argLit.HasLanguage || stringLit.Language.Equals(argLit.Language))
+                {
+                    // 2nd Argument must have no Language Tag OR same Language Tag in order to be valid
+                    return true;
+                }
+                //Otherwise Invalid
+                return false;
+            }
+            if (stringLit.HasDataType)
+            {
+                // 1st argument has a data type
+
+                // The data type must be an xsd:string or not valid
+                if (!stringLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+
+                if (argLit.HasDataType && !argLit.HasLanguage)
+                {
+                    // If 2nd argument has a DataType it must also be an xsd:string or not valid
+                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                // 2nd argument must have no language tag to be valid
+                return !argLit.HasLanguage;
+            }
+
+            // 1st argument is a plain literal
+            if (argLit.HasDataType)
+            {
+                // So 2nd argument must be xsd:string if typed
+                return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+            }
+            // 2nd literal cannot have a language tag to be valid
+            return !argLit.HasLanguage;
+        }
     }
 }
