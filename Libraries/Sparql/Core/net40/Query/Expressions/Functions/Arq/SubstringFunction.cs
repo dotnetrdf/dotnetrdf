@@ -26,28 +26,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
     /// Represents the ARQ afn:substring() function which is a sub-string with Java semantics
     /// </summary>
-    public class SubstringFunction 
-        : IExpression
+    public class SubstringFunction
+        : BaseNAryExpression
     {
-        private IExpression _expr, _start, _end;
-
         /// <summary>
         /// Creates a new ARQ substring function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="startExpr">Expression giving an index at which to start the substring</param>
         public SubstringFunction(IExpression stringExpr, IExpression startExpr)
-            : this(stringExpr, startExpr, null) { }
+            : this(stringExpr, startExpr, null) {}
 
         /// <summary>
         /// Creates a new ARQ substring function
@@ -56,10 +54,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="startExpr">Expression giving an index at which to start the substring</param>
         /// <param name="endExpr">Expression giving an index at which to end the substring</param>
         public SubstringFunction(IExpression stringExpr, IExpression startExpr, IExpression endExpr)
+            : base(MakeArguments(stringExpr, startExpr, endExpr)) {}
+
+        private static IEnumerable<IExpression> MakeArguments(IExpression stringExpr, IExpression startExpr, IExpression endExpr)
         {
-            this._expr = stringExpr;
-            this._start = startExpr;
-            this._end = endExpr;
+            return endExpr != null ? new IExpression[] {stringExpr, startExpr, endExpr} : new IExpression[] {stringExpr, startExpr};
+        }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            List<IExpression> arguments = args.ToList();
+            if (arguments.Count < 2 || arguments.Count > 3) throw new ArgumentException("Requires 2/3 arguments");
+            return new SubstringFunction(arguments[0], arguments[1], arguments.Count == 3 ? arguments[2] : null);
         }
 
         /// <summary>
@@ -68,14 +74,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode input = this.CheckArgument(this._expr, solution, context);
-            IValuedNode start = this.CheckArgument(this._start, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+            INode input = this.CheckArgument(this.Arguments[0], solution, context);
+            IValuedNode start = this.CheckArgument(this.Arguments[1], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
-            if (this._end != null)
+            if (this.Arguments.Count == 3)
             {
-                IValuedNode end = this.CheckArgument(this._end, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+                IValuedNode end = this.CheckArgument(this.Arguments[2], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(String.Empty)) return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -90,45 +96,36 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                         //If no/negative characters are being selected the empty string is returned
                         return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
-                    else if (s > input.Value.Length)
+                    if (s > input.Value.Length)
                     {
                         //If the start is after the end of the string the empty string is returned
                         return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
-                    else
+                    if (e > input.Value.Length)
                     {
-                        if (e > input.Value.Length)
-                        {
-                            //If the end is greater than the length of the string the string from the starts onwards is returned
-                            return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                        }
-                        else
-                        {
-                            //Otherwise do normal substring
-                            return new StringNode(input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                        }
+                        //If the end is greater than the length of the string the string from the starts onwards is returned
+                        return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
+                    //Otherwise do normal substring
+                    return new StringNode(input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 catch
                 {
                     throw new RdfQueryException("Unable to convert the Start/End argument to an Integer");
                 }
             }
-            else
+            if (input.Value.Equals(String.Empty)) return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+
+            try
             {
-                if (input.Value.Equals(String.Empty)) return new StringNode(String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                int s = Convert.ToInt32(start.AsInteger());
+                if (s < 0) s = 0;
 
-                try
-                {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    if (s < 0) s = 0;
-
-                    return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start argument to an Integer");
-                }
+                return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            }
+            catch
+            {
+                throw new RdfQueryException("Unable to convert the Start argument to an Integer");
             }
         }
 
@@ -140,144 +137,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         private IValuedNode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context, Func<Uri, bool> argumentTypeValidator)
         {
             IValuedNode temp = expr.Evaluate(solution, context);
-            if (temp != null)
+            if (temp == null) throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions evaluated to null");
+            if (temp.NodeType != NodeType.Literal) throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a non-literal");
+            INode lit = temp;
+            if (lit.DataType != null)
             {
-                if (temp.NodeType == NodeType.Literal)
+                if (argumentTypeValidator(lit.DataType))
                 {
-                    INode lit = temp;
-                    if (lit.DataType != null)
-                    {
-                        if (argumentTypeValidator(lit.DataType))
-                        {
-                            //Appropriately typed literals are fine
-                            return temp;
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
-                    }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
-                    {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
-                        return temp;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute an ARQ substring as one of the argument expressions returned an untyped literal");
-                    }
+                    //Appropriately typed literals are fine
+                    return temp;
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a non-literal");
-                }
+                throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a typed literal with an invalid type");
             }
-            else
+            if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
             {
-                throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions evaluated to null");
+                //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                return temp;
             }
+            throw new RdfQueryException("Unable to evalaute an ARQ substring as one of the argument expressions returned an untyped literal");
         }
 
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                if (this._end != null)
-                {
-                    return this._expr.Variables.Concat(this._start.Variables).Concat(this._end.Variables);
-                }
-                else
-                {
-                    return this._expr.Variables.Concat(this._start.Variables);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (this._end != null)
-            {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + "," + this._end.ToString() + ")";
-            }
-            else
-            {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + ")";
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public String Functor
+        public override String Functor
         {
-            get
-            {
-                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring;
-            }
+            get { return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring; }
         }
 
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                if (this._end != null)
-                {
-                    return new IExpression[] { this._expr, this._start, this._end };
-                }
-                else
-                {
-                    return new IExpression[] { this._end, this._start };
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise && this._start.CanParallelise && (this._end == null || this._end.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._end != null)
-            {
-                return new SubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._end));
-            }
-            else
-            {
-                return new SubstringFunction(transformer.Transform(this._end), transformer.Transform(this._start));
-            }
-        }
     }
 }

@@ -23,11 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
@@ -59,11 +57,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
                 //Unlike base function must error if no timezone component
                 throw new RdfQueryException("Cannot get the Timezone from a Date Time that does not have a timezone component");
             }
-            else
-            {
-                //Otherwise the base value is fine
-                return temp;
-            }
+            //Otherwise the base value is fine
+            return temp;
         }
 
         /// <summary>
@@ -75,25 +70,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
             {
                 return SparqlSpecsHelper.SparqlKeywordTimezone;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new TimezoneFunction(transformer.Transform(this._expr));
         }
     }
 }

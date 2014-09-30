@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Expressions
 
         public string ToString(IAlgebraFormatter formatter)
         {
-            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor));
             return String.Format("{0}({1}, {2}, {3})", f, this.FirstArgument.ToString(formatter), this.SecondArgument.ToString(formatter), this.ThirdArgument.ToString(formatter));
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions
 
         public string ToPrefixString(IAlgebraFormatter formatter)
         {
-            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor));
             return String.Format("({0} {1} {2} {3})", f, this.FirstArgument.ToPrefixString(formatter), this.SecondArgument.ToPrefixString(formatter), this.ThirdArgument.ToPrefixString(formatter));
         }
 

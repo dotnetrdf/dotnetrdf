@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions
 
         public virtual string ToString(IAlgebraFormatter formatter)
         {
-            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor));
             StringBuilder builder = new StringBuilder();
             builder.Append(f);
             builder.Append('(');
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Expressions
 
         public virtual string ToPrefixString(IAlgebraFormatter formatter)
         {
-            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : formatter.FormatUri(this.Functor);
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor));
             StringBuilder builder = new StringBuilder();
             builder.Append('(');
             builder.Append(f);

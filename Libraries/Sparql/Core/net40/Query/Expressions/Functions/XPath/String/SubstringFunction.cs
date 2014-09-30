@@ -39,17 +39,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     /// Represents the XPath fn:substring() function
     /// </summary>
     public class SubstringFunction
-        : IExpression
+        : BaseNAryExpression
     {
-        private IExpression _expr, _start, _length;
-
         /// <summary>
         /// Creates a new XPath Substring function
         /// </summary>
         /// <param name="stringExpr">Expression</param>
         /// <param name="startExpr">Start</param>
         public SubstringFunction(IExpression stringExpr, IExpression startExpr)
-            : this(stringExpr, startExpr, null) { }
+            : this(stringExpr, startExpr, null) {}
 
         /// <summary>
         /// Creates a new XPath Substring function
@@ -58,10 +56,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="startExpr">Start</param>
         /// <param name="lengthExpr">Length</param>
         public SubstringFunction(IExpression stringExpr, IExpression startExpr, IExpression lengthExpr)
+            : base(MakeArguments(stringExpr, startExpr, lengthExpr)) {}
+
+        private static IEnumerable<IExpression> MakeArguments(IExpression stringExpr, IExpression startExpr, IExpression lengthExpr)
         {
-            this._expr = stringExpr;
-            this._start = startExpr;
-            this._length = lengthExpr;
+            return lengthExpr != null ? new IExpression[] {stringExpr, startExpr, lengthExpr} : new IExpression[] {stringExpr, startExpr};
+        }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            List<IExpression> arguments = args.ToList();
+            if (arguments.Count < 2 || arguments.Count > 3) throw new ArgumentException("Requires 2/3 arguments");
+            return new SubstringFunction(arguments[0], arguments[1], arguments.Count == 3 ? arguments[2] : null);
         }
 
         /// <summary>
@@ -70,14 +76,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            INode input = this.CheckArgument(this._expr, solution, context);
-            IValuedNode start = this.CheckArgument(this._start, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+            INode input = this.CheckArgument(this.Arguments[0], solution, context);
+            IValuedNode start = this.CheckArgument(this.Arguments[1], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
-            if (this._length != null)
+            // NB - Remeber that XPath defines substring to use a 1 based index so have to adjust appropriately for .Net's 0 based index
+            if (this.Arguments.Count == 3)
             {
-                IValuedNode length = this.CheckArgument(this._length, solution, context, XPathFunctionFactory.AcceptNumericArguments);
+                IValuedNode length = this.CheckArgument(this.Arguments[2], solution, context, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -90,24 +97,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     //If no/negative characters are being selected the empty string is returned
                     return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
-                else if ((s - 1) > input.Value.Length)
+                if ((s - 1) > input.Value.Length)
                 {
                     //If the start is after the end of the string the empty string is returned
                     return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
-                else
+                if (((s - 1) + l) > input.Value.Length)
                 {
-                    if (((s - 1) + l) > input.Value.Length)
-                    {
-                        //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                        return new StringNode(input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
-                    else
-                    {
-                        //Otherwise do normal substring
-                        return new StringNode(input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
+                    //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
+                    return new StringNode(input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
+                //Otherwise do normal substring
+                return new StringNode(input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
             {
@@ -128,144 +129,33 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         private IValuedNode CheckArgument(IExpression expr, ISolution solution, IExpressionContext context, Func<Uri, bool> argumentTypeValidator)
         {
             IValuedNode temp = expr.Evaluate(solution, context);
-            if (temp != null)
+            if (temp == null) throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions evaluated to null");
+            if (temp.NodeType != NodeType.Literal) throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a non-literal");
+            INode lit = temp;
+            if (lit.DataType != null)
             {
-                if (temp.NodeType == NodeType.Literal)
+                if (argumentTypeValidator(lit.DataType))
                 {
-                    INode lit = temp;
-                    if (lit.DataType != null)
-                    {
-                        if (argumentTypeValidator(lit.DataType))
-                        {
-                            //Appropriately typed literals are fine
-                            return temp;
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
-                    }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
-                    {
-                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
-                        return temp;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute an XPath substring as one of the argument expressions returned an untyped literal");
-                    }
+                    //Appropriately typed literals are fine
+                    return temp;
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a non-literal");
-                }
+                throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
             }
-            else
+            if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
             {
-                throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions evaluated to null");
+                //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                return temp;
             }
+            throw new RdfQueryException("Unable to evalaute an XPath substring as one of the argument expressions returned an untyped literal");
         }
 
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                if (this._length != null)
-                {
-                    return this._expr.Variables.Concat(this._start.Variables).Concat(this._length.Variables);
-                }
-                else
-                {
-                    return this._expr.Variables.Concat(this._start.Variables);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            if (this._length != null)
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + "," + this._length.ToString() + ")";
-            }
-            else
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + ")";
-            }
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
 
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
-            get
-            {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                if (this._length != null)
-                {
-                    return new IExpression[] { this._expr, this._start, this._length };
-                }
-                else
-                {
-                    return new IExpression[] { this._expr, this._start };
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._expr.CanParallelise && this._start.CanParallelise && (this._length == null || this._length.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            if (this._length != null)
-            {
-                return new SubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._length));
-            }
-            else
-            {
-                return new SubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start));
-            }
+            get { return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring; }
         }
     }
 }

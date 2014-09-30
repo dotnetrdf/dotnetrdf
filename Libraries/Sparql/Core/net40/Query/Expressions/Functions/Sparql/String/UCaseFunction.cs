@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -52,14 +53,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(INode stringLit)
         {
-            if (stringLit.DataType != null)
-            {
-                return new StringNode(stringLit.Value.ToUpper(), stringLit.DataType);
-            }
-            else
-            {
-                return new StringNode(stringLit.Value.ToUpper(), stringLit.Language);
-            }
+            if (stringLit.HasLanguage) return new StringNode(stringLit.Value.ToUpper(Options.DefaultCulture), stringLit.Language);
+            return stringLit.HasDataType ? new StringNode(stringLit.Value.ToUpper(Options.DefaultCulture), stringLit.DataType) : new StringNode(stringLit.Value.ToUpper(Options.DefaultCulture));
+        }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new UCaseFunction(argument);
         }
 
         /// <summary>
@@ -72,25 +72,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 return SparqlSpecsHelper.SparqlKeywordUCase;
             }
         }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordUCase + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new UCaseFunction(transformer.Transform(this._expr));
-        }
-
     }
 }

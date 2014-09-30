@@ -26,8 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
@@ -40,19 +40,16 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </para>
     /// </remarks>
     public class UnknownFunction
-        : IExpression
+        : BaseNAryExpression
     {
-        private Uri _funcUri;
-        private List<IExpression> _args = new List<IExpression>();
+        private readonly Uri _funcUri;
 
         /// <summary>
         /// Creates a new Unknown Function that has no Arguments
         /// </summary>
         /// <param name="funcUri">Function URI</param>
         public UnknownFunction(Uri funcUri)
-        {
-            this._funcUri = funcUri;
-        }
+            : this(funcUri, Enumerable.Empty<IExpression>()) { }
 
         /// <summary>
         /// Creates a new Unknown Function that has a Single Argument
@@ -60,10 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="funcUri">Function URI</param>
         /// <param name="expr">Argument Expression</param>
         public UnknownFunction(Uri funcUri, IExpression expr)
-            : this(funcUri)
-        {
-            this._args.Add(expr);
-        }
+            : this(funcUri, expr.AsEnumerable()) { }
 
         /// <summary>
         /// Creates a new Unknown Function that has multiple Arguments
@@ -71,9 +65,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="funcUri">Function URI</param>
         /// <param name="exprs">Argument Expressions</param>
         public UnknownFunction(Uri funcUri, IEnumerable<IExpression> exprs)
-            : this(funcUri)
+            : base(exprs)
         {
-            this._args.AddRange(exprs);
+            this._funcUri = funcUri;
+        }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            return new UnknownFunction(this._funcUri, args);
         }
 
         /// <summary>
@@ -82,100 +81,20 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the Function
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get 
-            {
-                return (from arg in this._args
-                        from v in arg.Variables
-                        select v).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Expression Type
-        /// </summary>
-        public SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function; 
-            }
+            throw new RdfQueryException(string.Format("No implementation for {0} available", this._funcUri));
         }
 
         /// <summary>
         /// Gets the Function URI of the Expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get 
             {
                 return this._funcUri.ToString(); 
             }
-        }
-
-        /// <summary>
-        /// Gets the Arguments of the Expression
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return this._args; 
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._args.All(a => a.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append('<');
-            output.Append(this._funcUri.AbsoluteUri.Replace(">", "\\>"));
-            output.Append('>');
-            output.Append('(');
-            for (int i = 0; i < this._args.Count; i++)
-            {
-                output.Append(this._args[i].ToString());
-
-                if (i < this._args.Count - 1)
-                {
-                    output.Append(", ");
-                }
-            }
-            output.Append(')');
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new UnknownFunction(this._funcUri, this._args.Select(e => transformer.Transform(e)));
         }
     }
 }

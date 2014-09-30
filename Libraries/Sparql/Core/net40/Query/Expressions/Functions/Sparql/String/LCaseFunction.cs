@@ -50,23 +50,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         protected override IValuedNode EvaluateInternal(INode stringLit)
         {
             if (stringLit.HasLanguage) return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture), stringLit.Language);
-            if (stringLit.HasDataType) return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture), stringLit.DataType);
-            return new StringNode(stringLit.Value.ToLower(Options.DefaultCulture));
+            return stringLit.HasDataType ? new StringNode(stringLit.Value.ToLower(Options.DefaultCulture), stringLit.DataType) : new StringNode(stringLit.Value.ToLower(Options.DefaultCulture));
         }
 
         public override IExpression Copy(IExpression argument)
         {
             return new LCaseFunction(argument);
-        }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is LCaseFunction)) return false;
-
-            LCaseFunction func = (LCaseFunction) other;
-            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>

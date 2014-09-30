@@ -30,6 +30,7 @@ using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -45,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringExpr">Expression</param>
         /// <param name="findExpr">Search Expression</param>
         public SubstringBeforeFunction(IExpression stringExpr, IExpression findExpr)
-            : base(stringExpr, findExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
+            : base(stringExpr, findExpr) { }
 
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument
@@ -53,36 +54,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <param name="arg">Argument</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(INode stringLit, INode arg)
+        protected override IValuedNode EvaluateInternal(IValuedNode stringLit, IValuedNode arg)
         {
             if (arg.Value.Equals(string.Empty))
             {
                 //The substring before the empty string is the empty string
                 return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else
+            //Does the String contain the search string?
+            if (stringLit.Value.Contains(arg.Value))
             {
-                //Does the String contain the search string?
-                if (stringLit.Value.Contains(arg.Value))
-                {
-                    string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
-                    return new StringNode(result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                else
-                {
-                    //If it doesn't contain the search string the empty string is returned
-                    return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
+                // TODO This won't match the possibly user defined culture
+                string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value, StringComparison.InvariantCulture));
+                return new StringNode(result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+            //If it doesn't contain the search string the empty string is returned
+            return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
@@ -94,16 +81,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SubstringBeforeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 }

@@ -24,11 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
@@ -45,6 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         public TZFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new TZFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context
         /// </summary>
@@ -53,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode temp = this._expr.Evaluate(solution, context);
+            IValuedNode temp = this.Argument.Evaluate(solution, context);
             if (temp != null)
             {
                 DateTimeOffset dt = temp.AsDateTimeOffset();
@@ -67,30 +71,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
                     //If Zero it was specified as Z (which means UTC so zero offset)
                     return new StringNode("Z");
                 }
-                else
-                {
-                    //If the Offset is outside the range -14 to 14 this is considered invalid
-                    if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-                    //Otherwise it has an offset which is a given number of hours (and minutes)
-                    return new StringNode(dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate a Date Time function on a null argument");
-            }
-        }
+                //If the Offset is outside the range -14 to 14 this is considered invalid
+                if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-        /// <summary>
-        /// Gets the Type of this Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
+                //Otherwise it has an offset which is a given number of hours (and minutes)
+                return new StringNode(dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
             }
+            throw new RdfQueryException("Unable to evaluate a Date Time function on a null argument");
         }
 
         /// <summary>
@@ -102,25 +90,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
             {
                 return SparqlSpecsHelper.SparqlKeywordTz;
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return SparqlSpecsHelper.SparqlKeywordTz + "(" + this._expr.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new TZFunction(transformer.Transform(this._expr));
         }
     }
 }

@@ -23,13 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
@@ -53,16 +49,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(INode stringLit)
         {
-            return new StringNode(stringLit.Value.ToUpper(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(stringLit.Value.ToUpper(Options.DefaultCulture), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase + ">(" + this._expr.ToString() + ")";
+            return new UpperCaseFunction(argument);
         }
 
         /// <summary>
@@ -74,16 +66,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase;
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new UpperCaseFunction(transformer.Transform(this._expr));
         }
     }
 }

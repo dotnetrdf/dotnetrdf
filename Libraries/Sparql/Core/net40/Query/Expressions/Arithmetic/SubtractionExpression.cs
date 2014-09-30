@@ -23,11 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Query.Expressions.Arithmetic
@@ -46,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public SubtractionExpression(IExpression leftExpr, IExpression rightExpr) 
             : base(leftExpr, rightExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new SubtractionExpression(arg1, arg2);
+        }
+
         /// <summary>
         /// Calculates the Numeric Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -54,8 +56,8 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(solution, context);
-            IValuedNode b = this._rightExpr.Evaluate(solution, context);
+            IValuedNode a = this.FirstArgument.Evaluate(solution, context);
+            IValuedNode b = this.SecondArgument.Evaluate(solution, context);
 
             IValuedNode[] inputs = new IValuedNode[] { a, b };
             ISparqlOperator op = null;
@@ -63,66 +65,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             {
                 return op.Apply(inputs);
             }
-            else
-            {
-                throw new RdfQueryException("Cannot apply addition to the given inputs");
-            }
-
-            //if (a == null || b == null) throw new RdfQueryException("Cannot apply subtraction when one/both arguments are null");
-            
-            //EffectiveNumericType type = (EffectiveNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
-
-            //switch (type)
-            //{
-            //    case EffectiveNumericType.Integer:
-            //        return new LongNode(a.AsInteger() - b.AsInteger());
-            //    case EffectiveNumericType.Decimal:
-            //        return new DecimalNode(a.AsDecimal() - b.AsDecimal());
-            //    case EffectiveNumericType.Float:
-            //        return new FloatNode(a.AsFloat() - b.AsFloat());
-            //    case EffectiveNumericType.Double:
-            //        return new DoubleNode(a.AsDouble() - b.AsDouble());
-            //    default:
-            //        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            //}
-        }
-
-        /// <summary>
-        /// Gets the String representation of this Expression
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._leftExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._leftExpr.ToString());
-            }
-            output.Append(" - ");
-            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
-            {
-                output.Append("(" + this._rightExpr.ToString() + ")");
-            }
-            else
-            {
-                output.Append(this._rightExpr.ToString());
-            }
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.BinaryOperator;
-            }
+            throw new RdfQueryException("Cannot apply addition to the given inputs");
         }
 
         /// <summary>
@@ -134,16 +77,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             {
                 return "-";
             }
-        }
-
-        /// <summary>
-        /// Transforms the Expression using the given Transformer
-        /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
-        /// <returns></returns>
-        public override IExpression Transform(IExpressionTransformer transformer)
-        {
-            return new SubtractionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 }

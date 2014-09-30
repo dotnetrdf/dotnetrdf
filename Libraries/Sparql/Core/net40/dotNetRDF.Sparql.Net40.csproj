@@ -146,6 +146,7 @@
     <Compile Include="Query\Expressions\Arithmetic\MinusExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\MultiplicationExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\SubtractionExpression.cs" />
+    <Compile Include="Query\Expressions\BaseAlgebraExpression.cs" />
     <Compile Include="Query\Expressions\BaseNAryExpression.cs" />
     <Compile Include="Query\Expressions\BaseTernaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />

@@ -57,16 +57,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new LowerCaseFunction(argument);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is LowerCaseFunction)) return false;
-
-            LowerCaseFunction func = (LowerCaseFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
