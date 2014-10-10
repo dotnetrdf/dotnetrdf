@@ -24,9 +24,9 @@ namespace VDS.RDF.Query.Aggregation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is SumAccumulator)) return false;
+            if (!(other is AverageAccumulator)) return false;
 
-            SumAccumulator sum = (SumAccumulator) other;
+            AverageAccumulator sum = (AverageAccumulator) other;
             return this.Expression.Equals(sum.Expression);
         }
 
