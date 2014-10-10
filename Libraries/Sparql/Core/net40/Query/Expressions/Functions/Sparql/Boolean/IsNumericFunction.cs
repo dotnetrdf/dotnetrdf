@@ -59,16 +59,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return new BooleanNode(result.NumericType != EffectiveNumericType.NaN);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is IsNumericFunction)) return false;
-
-            IsNumericFunction func = (IsNumericFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of this Expression
         /// </summary>

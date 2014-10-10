@@ -55,7 +55,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="arg">Expression</param>
         /// <param name="logBase">Log Base Expression</param>
         public LogFunction(IExpression arg, IExpression logBase)
-            : base(arg, logBase) { }
+            : base(arg, logBase)
+        {
+            if (!(logBase is ConstantTerm)) return;
+            ConstantTerm logConst = (ConstantTerm) logBase;
+            if (logConst.Node.NodeType != NodeType.Literal) return;
+            if (logConst.Node.NumericType == EffectiveNumericType.NaN) return;
+            if (logConst.Node.AsInteger() == 10) this._log10 = true;
+        }
+
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new LogFunction(arg1, arg2);
+        }
 
         /// <summary>
         /// Evaluates the expression

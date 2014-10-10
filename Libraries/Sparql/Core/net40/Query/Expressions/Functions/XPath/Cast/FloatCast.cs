@@ -114,16 +114,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             }
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is FloatCast)) return false;
-
-            FloatCast cast = (FloatCast) other;
-            return this.Argument.Equals(cast.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

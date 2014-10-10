@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public AdditionExpression(IExpression leftExpr, IExpression rightExpr) 
             : base(leftExpr, rightExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new AdditionExpression(arg1, arg2);
+        }
+
         /// <summary>
         /// Calculates the Numeric Value of this Expression as evaluated for a given Binding
         /// </summary>
@@ -51,8 +56,8 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._leftExpr.Evaluate(solution, context);
-            IValuedNode b = this._rightExpr.Evaluate(solution, context);
+            IValuedNode a = this.FirstArgument.Evaluate(solution, context);
+            IValuedNode b = this.SecondArgument.Evaluate(solution, context);
 
             IValuedNode[] inputs = { a, b };
             ISparqlOperator op;

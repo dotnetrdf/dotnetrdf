@@ -26,9 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -62,10 +62,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         public override IEnumerable<string> Variables
         {
-            get
-            {
-                return Enumerable.Empty<System.String>(); 
-            }
+            get { return Enumerable.Empty<System.String>(); }
         }
 
         /// <summary>
@@ -73,21 +70,66 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         public virtual IEnumerable<IExpression> Arguments
         {
-            get 
-            { 
-                return Enumerable.Empty<IExpression>();
-            }
+            get { return Enumerable.Empty<IExpression>(); }
         }
 
         /// <summary>
         /// Returns whether the function can be parallelised
         /// </summary>
-        public override bool CanParallelise
+        public override sealed bool CanParallelise
         {
-            get 
-            {
-                return true;
-            }
+            get { return true; }
+        }
+
+        public override sealed bool IsConstant
+        {
+            get { return false; }
+        }
+
+        public override bool IsDeterministic
+        {
+            get { return false; }
+        }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is BaseUuidFunction)) return false;
+
+            BaseUuidFunction func = (BaseUuidFunction) other;
+            return this.Functor.Equals(func.Functor);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Functor.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return ToString(new AlgebraFormatter());
+        }
+
+        public override bool Equals(object other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is INullaryExpression)) return false;
+
+            return this.Equals((INullaryExpression) other);
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException();
+            return System.String.Format("{0}()", this.Functor);
+        }
+
+        public override string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException();
+            return System.String.Format("({0})", this.Functor.ToLowerInvariant());
         }
     }
 }

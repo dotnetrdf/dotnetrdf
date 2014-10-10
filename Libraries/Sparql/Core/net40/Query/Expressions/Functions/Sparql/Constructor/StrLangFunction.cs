@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public StrLangFunction(IExpression stringExpr, IExpression langExpr)
             : base(stringExpr, langExpr) {}
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new StrLangFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
         /// </summary>

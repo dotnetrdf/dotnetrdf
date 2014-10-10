@@ -103,16 +103,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             }
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is RoundFunction)) return false;
-
-            RoundFunction func = (RoundFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

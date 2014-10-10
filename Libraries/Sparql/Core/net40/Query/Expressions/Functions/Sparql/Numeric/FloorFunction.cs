@@ -50,15 +50,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
                 return SparqlSpecsHelper.SparqlKeywordFloor;
             }
         }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is FloorFunction)) return false;
-
-            FloorFunction func = (FloorFunction)other;
-            return this.Argument.Equals(func.Argument);
-        }
     }
 }

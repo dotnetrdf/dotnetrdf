@@ -23,11 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -38,17 +35,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     /// Represents the SPARQL CONCAT function
     /// </summary>
     public class ConcatFunction
-        : IExpression
+        : BaseNAryExpression
     {
-        private List<IExpression> _exprs = new List<IExpression>();
 
         /// <summary>
         /// Creates a new SPARQL Concatenation function
         /// </summary>
         /// <param name="expressions">Enumeration of expressions</param>
         public ConcatFunction(IEnumerable<IExpression> expressions)
+            : base(expressions) { }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
         {
-            this._exprs.AddRange(expressions);
+            return new ConcatFunction(args);
         }
 
         /// <summary>
@@ -57,14 +56,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="context">Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public IValuedNode Evaluate(ISolution solution, IExpressionContext context)
+        public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
             string langTag = null;
             bool allString = true;
             bool allSameTag = true;
 
             StringBuilder output = new StringBuilder();
-            foreach (IExpression expr in this._exprs)
+            foreach (IExpression expr in this.Arguments)
             {
                 INode temp = expr.Evaluate(solution, context);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
@@ -101,73 +100,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else if (allSameTag)
+            if (allSameTag)
             {
                 return new StringNode(output.ToString(), langTag);
             }
-            else
-            {
-                return new StringNode(output.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Gets the Arguments the function applies to
-        /// </summary>
-        public IEnumerable<IExpression> Arguments
-        {
-            get
-            {
-                return this._exprs;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
-        /// </summary>
-        public virtual bool CanParallelise
-        {
-            get
-            {
-                return this._exprs.All(e => e.CanParallelise);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the function
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                return (from expr in this._exprs
-                        from v in expr.Variables
-                        select v);
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append(SparqlSpecsHelper.SparqlKeywordConcat);
-            output.Append('(');
-            for (int i = 0; i < this._exprs.Count; i++)
-            {
-                output.Append(this._exprs[i].ToString());
-                if (i < this._exprs.Count - 1) output.Append(", ");
-            }
-            output.Append(")");
-            return output.ToString();
+            return new StringNode(output.ToString());
         }
 
         /// <summary>
         /// Gets the Functor of the expression
         /// </summary>
-        public string Functor
+        public override string Functor
         {
             get
             {

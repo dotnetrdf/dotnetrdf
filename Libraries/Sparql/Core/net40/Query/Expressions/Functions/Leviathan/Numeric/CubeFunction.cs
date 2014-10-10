@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
@@ -45,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="expr">Expression</param>
         public CubeFunction(IExpression expr)
             : base(expr) { }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new CubeFunction(argument);
+        }
 
         /// <summary>
         /// Evaluates the expression

@@ -61,16 +61,6 @@ namespace VDS.RDF.Query.Expressions.Comparison
             return new BooleanNode(SparqlSpecsHelper.Equality(x, y));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is EqualsExpression)) return false;
-
-            EqualsExpression expr = (EqualsExpression) other;
-            return this.FirstArgument.Equals(expr.FirstArgument) && this.SecondArgument.Equals(expr.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

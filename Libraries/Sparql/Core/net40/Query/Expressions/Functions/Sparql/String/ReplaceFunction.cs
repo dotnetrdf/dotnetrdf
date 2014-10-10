@@ -270,22 +270,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             return lit.HasDataType ? new StringNode(output, lit.DataType) : new StringNode(output);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is ReplaceFunction)) return false;
-
-            ReplaceFunction func = (ReplaceFunction) other;
-            if (this.Arguments.Count != func.Arguments.Count) return false;
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
-            }
-            return true;
-        }
-
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

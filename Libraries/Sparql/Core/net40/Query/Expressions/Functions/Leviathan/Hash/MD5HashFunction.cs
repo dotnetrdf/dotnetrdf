@@ -50,16 +50,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
             return new MD5HashFunction(argument);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is MD5HashFunction)) return false;
-
-            MD5HashFunction func = (MD5HashFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

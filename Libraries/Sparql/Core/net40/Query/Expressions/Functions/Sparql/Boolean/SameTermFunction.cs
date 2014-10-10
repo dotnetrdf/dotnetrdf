@@ -62,16 +62,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return new BooleanNode(EqualityHelper.AreNodesEqual(a, b));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is SameTermFunction)) return false;
-
-            SameTermFunction func = (SameTermFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

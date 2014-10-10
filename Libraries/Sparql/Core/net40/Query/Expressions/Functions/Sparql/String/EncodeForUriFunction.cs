@@ -53,6 +53,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             return new StringNode(Uri.EscapeUriString(stringLit.Value));
         }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            new EncodeForUriFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

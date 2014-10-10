@@ -74,20 +74,5 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             List<IExpression> argList = args.ToList();
             return argList.Count == 3 ? new ReplaceFunction(argList[0], argList[1], argList[2]) : new ReplaceFunction(argList[0], argList[1], argList[2], argList[3]);
         }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is ReplaceFunction)) return false;
-
-            ReplaceFunction func = (ReplaceFunction)other;
-            if (this.Arguments.Count != func.Arguments.Count) return false;
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
-            }
-            return true;
-        }
     }
 }

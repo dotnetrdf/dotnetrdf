@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -45,8 +41,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// Creates a new XPath Boolean Cast Function Expression
         /// </summary>
         /// <param name="expr">Expression to be cast</param>
-        public BooleanCast(IExpression expr) 
-            : base(expr) { }
+        public BooleanCast(IExpression expr)
+            : base(expr) {}
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new BooleanCast(argument);
+        }
 
         /// <summary>
         /// Casts the value of the inner Expression to a Boolean
@@ -56,16 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode n = this.Argument.Evaluate(solution, context);//.CoerceToBoolean();
-
-            //if (n == null)
-            //{
-            //    throw new RdfQueryException("Cannot cast a Null to a xsd:boolean");
-            //}
-
-            ////New method should be much faster
-            //if (n is BooleanNode) return n;
-            //return new BooleanNode(null, n.AsBoolean());
+            IValuedNode n = this.Argument.Evaluate(solution, context);
 
             switch (n.NodeType)
             {
@@ -90,10 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             {
                                 return new BooleanNode(b);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
-                            }
+                            throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
                         }
 
                         //Cast based on Numeric Type
@@ -105,19 +94,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 Decimal dec;
                                 if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
-                                    if (dec.Equals(Decimal.Zero))
-                                    {
-                                        return new BooleanNode(false);
-                                    }
-                                    else
-                                    {
-                                        return new BooleanNode(true);
-                                    }
+                                    return dec.Equals(Decimal.Zero) ? new BooleanNode(false) : new BooleanNode(true);
                                 }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
-                                }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
 
                             case EffectiveNumericType.Double:
                                 Double dbl;
@@ -127,33 +106,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     {
                                         return new BooleanNode(false);
                                     }
-                                    else
-                                    {
-                                        return new BooleanNode(true);
-                                    }
+                                    return new BooleanNode(true);
                                 }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double as an intermediate stage in casting to a xsd:boolean");
-                                }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double as an intermediate stage in casting to a xsd:boolean");
 
                             case EffectiveNumericType.Integer:
                                 Int64 i;
                                 if (Int64.TryParse(lit.Value, out i))
                                 {
-                                    if (i == 0)
-                                    {
-                                        return new BooleanNode(false);
-                                    }
-                                    else
-                                    {
-                                        return new BooleanNode(true);
-                                    }
+                                    return i == 0 ? new BooleanNode(false) : new BooleanNode(true);
                                 }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer as an intermediate stage in casting to a xsd:boolean");
-                                }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer as an intermediate stage in casting to a xsd:boolean");
 
                             case EffectiveNumericType.NaN:
                                 if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
@@ -161,35 +124,25 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     //DateTime cast forbidden
                                     throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:boolean");
                                 }
-                                else
+                                Boolean b;
+                                if (Boolean.TryParse(lit.Value, out b))
                                 {
-                                    Boolean b;
-                                    if (Boolean.TryParse(lit.Value, out b))
-                                    {
-                                        return new BooleanNode(b);
-                                    }
-                                    else
-                                    {
-                                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                                    }
+                                    return new BooleanNode(b);
                                 }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
 
                             default:
                                 throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
                         }
                     }
-                    else
+                {
+                    Boolean b;
+                    if (Boolean.TryParse(lit.Value, out b))
                     {
-                        Boolean b;
-                        if (Boolean.TryParse(lit.Value, out b))
-                        {
-                            return new BooleanNode(b);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                        }
+                        return new BooleanNode(b);
                     }
+                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
+                }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
             }
@@ -200,10 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// </summary>
         public override string Functor
         {
-            get
-            {
-                return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
-            }
+            get { return XmlSpecsHelper.XmlSchemaDataTypeBoolean; }
         }
     }
 }

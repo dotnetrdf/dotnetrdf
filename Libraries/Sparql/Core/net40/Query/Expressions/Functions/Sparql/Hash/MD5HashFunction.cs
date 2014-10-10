@@ -53,16 +53,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
                 return SparqlSpecsHelper.SparqlKeywordMD5;
             }
         }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is MD5HashFunction)) return false;
-
-            MD5HashFunction func = (MD5HashFunction)other;
-            return this.Argument.Equals(func.Argument);
-        }
     }
 #endif
 }

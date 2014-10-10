@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -44,6 +45,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public InFunction(IExpression expr, IEnumerable<IExpression> set)
             : base(expr, set) { }
 
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            IList<IExpression> arguments = args as IList<IExpression> ?? args.ToList();
+            return new InFunction(arguments.First(), arguments.Skip(1));
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -52,14 +59,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode result = this._expr.Evaluate(solution, context);
+            IValuedNode result = this.Arguments[0].Evaluate(solution, context);
             if (result == null) return new BooleanNode(false);
-            if (this._expressions.Count == 0) return new BooleanNode(false);
+            if (this.Arguments.Count == 1) return new BooleanNode(false);
 
             //Have to use SPARQL Value Equality here
             //If any expressions error and nothing in the set matches then an error is thrown
             bool errors = false;
-            foreach (IExpression expr in this._expressions)
+            foreach (IExpression expr in this.Arguments.Skip(1))
             {
                 try
                 {

@@ -54,16 +54,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return new BooleanNode(this.Argument.Evaluate(solution, context) != null);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is BoundFunction)) return false;
-
-            BoundFunction bound = (BoundFunction) other;
-            return this.Argument.Equals(bound.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

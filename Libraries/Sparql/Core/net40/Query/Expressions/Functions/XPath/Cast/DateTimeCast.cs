@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         public DateTimeCast(IExpression expr) 
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DateTimeCast(argument);
+        }
+
         /// <summary>
         /// Casts the value of the inner Expression to a Date Time
         /// </summary>

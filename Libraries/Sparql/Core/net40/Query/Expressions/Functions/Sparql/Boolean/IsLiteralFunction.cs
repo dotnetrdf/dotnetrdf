@@ -59,16 +59,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Literal);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is IsLiteralFunction)) return false;
-
-            IsLiteralFunction func = (IsLiteralFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

@@ -62,17 +62,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             return new SecantFunction(argument, this._inverse);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is SecantFunction)) return false;
-
-            SecantFunction func = (SecantFunction) other;
-            // Include functor check because the same class can represent both the secant and inverse secant functions
-            return this.Functor.Equals(func.Functor) && this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
@@ -37,9 +34,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class CosecantFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
-        private static Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
-        private static Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
+        private readonly bool _inverse = false;
+        private static readonly Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
+        private static readonly Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
 
         /// <summary>
         /// Creates a new Leviathan Cosecant Function
@@ -57,30 +54,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             : base(expr)
         {
             this._inverse = inverse;
-            if (this._inverse)
-            {
-                this._func = _arccosecant;
-            }
-            else
-            {
-                this._func = _cosecant;
-            }
+            this._func = this._inverse ? _arccosecant : _cosecant;
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            if (this._inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + this._expr.ToString() + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + this._expr.ToString() + ")";
-            }
+            return new CosecantFunction(argument, this._inverse);
         }
 
         /// <summary>
@@ -94,10 +73,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv;
                 }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec;
-                }
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec;
             }
         }
     }

@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -47,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <param name="expr">Expression to be cast</param>
         public DoubleCast(IExpression expr) 
             : base(expr) { }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DoubleCast(argument);
+        }
 
         /// <summary>
         /// Casts the value of the inner Expression to a Double

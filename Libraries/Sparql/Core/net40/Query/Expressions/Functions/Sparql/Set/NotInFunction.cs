@@ -87,21 +87,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             return new BooleanNode(true);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is NotInFunction)) return false;
-
-            NotInFunction func = (NotInFunction) other;
-            if (this.Arguments.Count != func.Arguments.Count) return false;
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
-            }
-            return true;
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

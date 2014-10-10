@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Grouping;
@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
         : BaseNAryExpression, IAggregateExpression
     {
         protected BaseAggregate()
-            : base(null) {}
+            : base(Enumerable.Empty<IExpression>()) {}
 
         protected BaseAggregate(IEnumerable<IExpression> args) 
             : base(args) {}
@@ -41,9 +41,5 @@ namespace VDS.RDF.Query.Expressions.Aggregates
         }
 
         public abstract IAccumulator CreateAccumulator();
-
-        public abstract override bool Equals(Object other);
-
-        public abstract override int GetHashCode();
     }
 }

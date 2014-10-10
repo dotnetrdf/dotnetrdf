@@ -114,16 +114,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             }
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is MinusExpression)) return false;
-
-            MinusExpression expr = (MinusExpression) other;
-            return this.Argument.Equals(expr.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

@@ -53,6 +53,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             return stringLit.Value.Contains(argLit.Value);
         }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new ContainsFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

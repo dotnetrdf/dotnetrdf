@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
@@ -46,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public AbsFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new AbsFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID
         /// </summary>
@@ -54,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            IValuedNode a = this._expr.Evaluate(solution, context);
+            IValuedNode a = this.Argument.Evaluate(solution, context);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
             switch (a.NumericType)
@@ -85,15 +87,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute + ">(" + this._expr.ToString() + ")";
         }
 
         /// <summary>

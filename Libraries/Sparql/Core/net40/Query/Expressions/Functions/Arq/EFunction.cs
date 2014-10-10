@@ -24,9 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -37,6 +40,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         : BaseNullaryExpression
     {
         private readonly IValuedNode _node = new DoubleNode(Math.E);
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is EFunction;
+        }
 
         /// <summary>
         /// Evaluates the function
@@ -49,13 +59,38 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             return this._node;
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IEnumerable<string> Variables
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E + ">()";
+            get { return Enumerable.Empty<string>(); }
+        }
+
+        public override bool Equals(object other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            return other is EFunction;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Functor.GetHashCode();
+        }
+
+        public override string ToString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("<{0}>()", formatter.FormatUri(this.Functor));
+        }
+
+        public override string ToPrefixString(IAlgebraFormatter formatter)
+        {
+            if (formatter == null) throw new ArgumentNullException("formatter");
+            return String.Format("(<{0}>)", formatter.FormatUri(this.Functor));
+        }
+
+        public override IExpression Copy()
+        {
+            return new EFunction();
         }
 
         /// <summary>
@@ -78,6 +113,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return true;
             }
+        }
+
+        public override bool IsDeterministic
+        {
+            get { return true; }
+        }
+
+        public override bool IsConstant
+        {
+            get { return true; }
         }
     }
 }

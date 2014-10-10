@@ -67,16 +67,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new DoubleNode(Math.Sqrt(Math.Pow(x.AsDouble(), 2) + Math.Pow(y.AsDouble(), 2)));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is PythagoreanDistanceFunction)) return false;
-
-            PythagoreanDistanceFunction func = (PythagoreanDistanceFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

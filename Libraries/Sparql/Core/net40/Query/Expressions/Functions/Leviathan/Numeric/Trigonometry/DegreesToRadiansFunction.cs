@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public DegreesToRadiansFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DegreesToRadiansFunction(argument);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>

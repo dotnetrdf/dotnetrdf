@@ -70,16 +70,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             }
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is EFunction)) return false;
-
-            EFunction func = (EFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

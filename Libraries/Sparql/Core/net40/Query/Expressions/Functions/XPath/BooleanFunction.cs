@@ -23,10 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
@@ -45,6 +41,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <param name="expr">Expression to compute the Effective Boolean Value of</param>
         public BooleanFunction(IExpression expr)
             : base(expr) { }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new BooleanFunction(argument);
+        }
 
         /// <summary>
         /// Evaluates the expression

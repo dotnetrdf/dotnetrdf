@@ -118,21 +118,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             }
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is RoundHalfToEvenFunction)) return false;
-
-            RoundHalfToEvenFunction func = (RoundHalfToEvenFunction) other;
-            if (this.Arguments.Count != func.Arguments.Count) return false;
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
-            }
-            return true;
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

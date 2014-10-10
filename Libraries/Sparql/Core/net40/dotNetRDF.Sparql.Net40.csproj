@@ -204,6 +204,7 @@
     <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SecantFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SineFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\TangentFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\UnknownFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\BooleanFunction.cs" />
     <Compile Include="Query\Expressions\Functions\XPath\Cast\BaseCast.cs" />

@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public DivisionExpression(IExpression leftExpr, IExpression rightExpr) 
             : base(leftExpr, rightExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new DivisionExpression(arg1, arg2);
+        }
+
         /// <summary>
         /// Calculates the Numeric Value of this Expression as evaluated for a given Binding
         /// </summary>

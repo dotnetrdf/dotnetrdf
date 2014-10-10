@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions.Factories;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
@@ -37,9 +34,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class CotangentFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
-        private static Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
-        private static Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
+        private readonly bool _inverse = false;
+        private static readonly Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
+        private static readonly Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
 
         /// <summary>
         /// Creates a new Leviathan Cotangent Function
@@ -67,20 +64,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             }
         }
 
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override IExpression Copy(IExpression argument)
         {
-            if (this._inverse)
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + this._expr.ToString() + ")";
-            }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + this._expr.ToString() + ")";
-            }
+            return new CotangentFunction(argument, this._inverse);
         }
 
         /// <summary>
@@ -94,10 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv;
                 }
-                else
-                {
-                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
-                }
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
             }
         }
     }

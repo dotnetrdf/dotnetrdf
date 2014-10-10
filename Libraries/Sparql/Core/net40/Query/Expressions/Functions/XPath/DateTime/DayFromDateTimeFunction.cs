@@ -52,6 +52,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             return new LongNode(Convert.ToInt64(dateTime.Day));
         }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DayFromDateTimeFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

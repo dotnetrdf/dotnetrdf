@@ -23,12 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions.Factories;
 
@@ -47,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public BNodeFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new BNodeFunction(argument);
+        }
+
         /// <summary>
         /// Gets the value of the function in the given Evaluation Context for the given Binding ID
         /// </summary>
@@ -62,15 +62,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 {
                     return new StringNode(temp.AnonID.ToString());
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the BNode Label for a non-Blank Node");
-                }
+                throw new RdfQueryException("Cannot find the BNode Label for a non-Blank Node");
             }
-            else
-            {
-                throw new RdfQueryException("Cannot find the BNode Label for a null");
-            }
+            throw new RdfQueryException("Cannot find the BNode Label for a null");
         }
 
         /// <summary>

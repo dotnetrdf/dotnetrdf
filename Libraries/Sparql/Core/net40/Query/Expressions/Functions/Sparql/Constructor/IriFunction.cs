@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public IriFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new IriFunction(argument);
+        }
+
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
         /// </summary>

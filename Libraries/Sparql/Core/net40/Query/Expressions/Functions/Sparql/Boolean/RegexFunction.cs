@@ -229,21 +229,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return this._regex != null ? new BooleanNode(this._regex.IsMatch(text)) : new BooleanNode(Regex.IsMatch(text, this._pattern, this._options));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is RegexFunction)) return false;
-
-            RegexFunction func = (RegexFunction)other;
-            if (this.Arguments.Count != func.Arguments.Count) return false;
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (!this.Arguments[i].Equals(func.Arguments[i])) return false;
-            }
-            return true;
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

@@ -80,16 +80,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return new BooleanNode(lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is LangMatchesFunction)) return false;
-
-            LangMatchesFunction func = (LangMatchesFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

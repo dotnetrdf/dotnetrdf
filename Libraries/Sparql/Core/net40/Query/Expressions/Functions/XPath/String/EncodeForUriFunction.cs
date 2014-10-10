@@ -58,16 +58,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new EncodeForUriFunction(argument);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is EncodeForUriFunction)) return false;
-
-            EncodeForUriFunction func = (EncodeForUriFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

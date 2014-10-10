@@ -63,16 +63,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new DoubleNode(1d / d);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is ReciprocalFunction)) return false;
-
-            ReciprocalFunction func = (ReciprocalFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

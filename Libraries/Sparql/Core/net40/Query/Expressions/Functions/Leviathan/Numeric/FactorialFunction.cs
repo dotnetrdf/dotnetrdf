@@ -59,7 +59,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
             long l = temp.AsInteger();
 
-            if (l == 0) return new LongNode(0);
+            // Factorial of 0 is 1
+            if (l == 0) return new LongNode(1);
             long fac = 1;
             if (l > 0)
             {
@@ -70,22 +71,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             }
             else
             {
-                for (long i = l; i < -1; i++)
-                {
-                    fac = fac * i;
-                }
+                throw new RdfQueryException("Cannot evaluate factorial of a negative number");
             }
             return new LongNode(fac);
-        }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is FactorialFunction)) return false;
-
-            FactorialFunction func = (FactorialFunction) other;
-            return this.Argument.Equals(func.Argument);
         }
 
         /// <summary>

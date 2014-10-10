@@ -55,15 +55,5 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         {
             return new MinutesFunction(argument);
         }
-
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is MinutesFunction)) return false;
-
-            MinutesFunction func = (MinutesFunction)other;
-            return this.Argument.Equals(func.Argument);
-        }
     }
 }

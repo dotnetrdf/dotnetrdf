@@ -68,16 +68,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             throw new RdfQueryException("Cannot apply multiplication to the given inputs");
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is MultiplicationExpression)) return false;
-
-            MultiplicationExpression expr = (MultiplicationExpression) other;
-            return this.FirstArgument.Equals(expr.FirstArgument) && this.SecondArgument.Equals(expr.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

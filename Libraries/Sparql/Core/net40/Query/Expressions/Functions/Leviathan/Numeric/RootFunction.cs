@@ -67,16 +67,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             return new DoubleNode(Math.Pow(arg.AsDouble(), (1d / root.AsDouble())));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is RootFunction)) return false;
-
-            RootFunction func = (RootFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

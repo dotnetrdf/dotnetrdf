@@ -37,8 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
     public class RandomFunction
         : BaseBinaryExpression
     {
-        private Random _rnd = new Random();
-        private int _args = 0;
+        private readonly Random _rnd = new Random();
 
         /// <summary>
         /// Creates a new Leviathan Random Function
@@ -51,10 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="max">Maximum</param>
         public RandomFunction(IExpression max)
-            : base(new ConstantTerm(new DoubleNode(0)), max)
-        {
-            this._args = 1;
-        }
+            : base(new ConstantTerm(new DoubleNode(0)), max) { }
 
         /// <summary>
         /// Creates a new Leviathan Random Function
@@ -62,9 +58,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="min">Minumum</param>
         /// <param name="max">Maximum</param>
         public RandomFunction(IExpression min, IExpression max)
-            : base(min, max)
+            : base(min, max) { }
+
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
         {
-            this._args = 2;
+            return new RandomFunction(arg1, arg2);
         }
 
         /// <summary>

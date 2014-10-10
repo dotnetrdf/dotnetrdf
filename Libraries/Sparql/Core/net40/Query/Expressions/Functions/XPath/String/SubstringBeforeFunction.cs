@@ -72,6 +72,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new SubstringBeforeFunction(arg1, arg2);
+        }
+
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

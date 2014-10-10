@@ -23,11 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -47,6 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public DataTypeFunction(IExpression expr)
             : base(expr) {}
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DataTypeFunction(argument);
+        }
+
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
         /// </summary>
@@ -60,31 +60,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
             }
-            else
+            switch (result.NodeType)
             {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        INode lit = result;
-                        if (lit.DataType == null)
+                case NodeType.Literal:
+                    INode lit = result;
+                    if (lit.DataType == null)
+                    {
+                        if (!lit.Language.Equals(string.Empty))
                         {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                throw new RdfQueryException("Cannot return the Data Type URI of Language Specified Literals in SPARQL 1.0");
-                            }
-                            else
-                            {
-                                return new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
+                            throw new RdfQueryException("Cannot return the Data Type URI of Language Specified Literals in SPARQL 1.0");
                         }
-                        else
-                        {
-                            return new UriNode(lit.DataType);
-                        }
+                        return new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    }
+                    return new UriNode(lit.DataType);
 
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
+                default:
+                    throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
             }
         }
 
@@ -132,6 +123,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 default:
                     throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
             }
+        }
+
+        public override IExpression Copy(IExpression argument)
+        {
+            return new DataType11Function(argument);
         }
     }
 }

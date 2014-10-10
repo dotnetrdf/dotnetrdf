@@ -57,16 +57,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             return new HoursFromDateTimeFunction(argument);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is HoursFromDateTimeFunction)) return false;
-
-            HoursFromDateTimeFunction func = (HoursFromDateTimeFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

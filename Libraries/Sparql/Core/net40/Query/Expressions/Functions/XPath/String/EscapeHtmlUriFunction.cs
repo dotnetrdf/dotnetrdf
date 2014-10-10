@@ -74,16 +74,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             return new EscapeHtmlUriFunction(argument);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is EscapeHtmlUriFunction)) return false;
-
-            EscapeHtmlUriFunction func = (EscapeHtmlUriFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

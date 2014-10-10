@@ -45,6 +45,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public ConcatFunction(IEnumerable<IExpression> expressions)
             : base(expressions) { }
 
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            return new ConcatFunction(args);
+        }
+
         /// <summary>
         /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
         /// </summary>

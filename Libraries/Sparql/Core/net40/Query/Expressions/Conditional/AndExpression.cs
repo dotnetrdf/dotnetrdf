@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 
@@ -46,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="rightExpr">Right Hand Expression</param>
         public AndExpression(IExpression leftExpr, IExpression rightExpr) : base(leftExpr, rightExpr) { }
 
+        public override IExpression Copy(IExpression arg1, IExpression arg2)
+        {
+            return new AndExpression(arg1, arg2);
+        }
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -57,38 +59,29 @@ namespace VDS.RDF.Query.Expressions.Conditional
             //Lazy Evaluation for Efficiency
             try
             {
-                bool leftResult = this._leftExpr.Evaluate(solution, context).AsBoolean();
+                bool leftResult = this.FirstArgument.Evaluate(solution, context).AsBoolean();
                 if (!leftResult)
                 {
                     //If the LHS is false then no subsequent results matter
                     return new BooleanNode(false);
                 }
-                else
-                {
-                    //If the LHS is true then we have to continue by evaluating the RHS
-                    return new BooleanNode(this._rightExpr.Evaluate(solution, context).AsBoolean());
-                }
+                //If the LHS is true then we have to continue by evaluating the RHS
+                return new BooleanNode(this.SecondArgument.Evaluate(solution, context).AsBoolean());
             }
             catch (Exception ex)
             {
                 //If we encounter an error on the LHS then we return false only if the RHS is false
                 //Otherwise we error
-                bool rightResult = this._rightExpr.Evaluate(solution, context).AsSafeBoolean();
+                bool rightResult = this.SecondArgument.Evaluate(solution, context).AsSafeBoolean();
                 if (!rightResult)
                 {
                     return new BooleanNode(false);
                 }
-                else
+                if (ex is RdfQueryException)
                 {
-                    if (ex is RdfQueryException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Error evaluating AND expression", ex);
-                    }
+                    throw;
                 }
+                throw new RdfQueryException("Error evaluating AND expression", ex);
             }
         }
 

@@ -68,16 +68,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             return result.AsSafeBoolean() ? this.SecondArgument.Evaluate(solution, context) : this.ThirdArgument.Evaluate(solution, context);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is IfElseFunction)) return false;
-
-            IfElseFunction func = (IfElseFunction) other;
-            return this.FirstArgument.Equals(func.FirstArgument) && this.SecondArgument.Equals(func.SecondArgument) && this.ThirdArgument.Equals(func.ThirdArgument);
-        }
-
         /// <summary>
         /// Gets the Functor for the Expression
         /// </summary>

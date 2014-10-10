@@ -64,16 +64,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             return new DoubleNode(temp.AsDouble() * (180d / Math.PI));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is RadiansToDegreesFunction)) return false;
-
-            RadiansToDegreesFunction func = (RadiansToDegreesFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

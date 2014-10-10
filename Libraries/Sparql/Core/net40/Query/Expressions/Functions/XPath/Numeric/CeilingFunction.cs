@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public CeilingFunction(IExpression expr)
             : base(expr) { }
 
+        public override IExpression Copy(IExpression argument)
+        {
+            return new CeilingFunction(argument);
+        }
+
         /// <summary>
         /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID
         /// </summary>

@@ -63,16 +63,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Blank);
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is IsBlankFunction)) return false;
-
-            IsBlankFunction blank = (IsBlankFunction) other;
-            return this.Argument.Equals(blank.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

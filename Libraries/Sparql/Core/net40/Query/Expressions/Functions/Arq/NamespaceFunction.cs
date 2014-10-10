@@ -66,16 +66,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             return new StringNode(temp.Uri.AbsoluteUri.Substring(0, temp.Uri.AbsoluteUri.LastIndexOf('/') + 1));
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return true;
-            if (other == null) return false;
-            if (!(other is NamespaceFunction)) return false;
-
-            NamespaceFunction func = (NamespaceFunction) other;
-            return this.Argument.Equals(func.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>

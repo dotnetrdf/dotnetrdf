@@ -57,16 +57,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
             return new BooleanNode(!this.Argument.Evaluate(solution, context).AsSafeBoolean());
         }
 
-        public override bool Equals(IExpression other)
-        {
-            if (ReferenceEquals(this, other)) return false;
-            if (other == null) return false;
-            if (!(other is NotExpression)) return false;
-
-            NotExpression expr = (NotExpression) other;
-            return this.Argument.Equals(expr.Argument);
-        }
-
         /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
