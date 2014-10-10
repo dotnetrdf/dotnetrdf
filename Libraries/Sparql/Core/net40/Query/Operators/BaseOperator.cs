@@ -23,13 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Operators
 {
@@ -68,10 +64,10 @@ namespace VDS.RDF.Query.Operators
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode op = context.NextSubject;
-            INode opClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
+            INode opClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.ClassSparqlOperator));
 
             context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), opClass);
-            context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(this.GetType().AssemblyQualifiedName));
+            context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationVocabulary.PropertyType)), context.Graph.CreateLiteralNode(this.GetType().AssemblyQualifiedName));
         }
     }
 }

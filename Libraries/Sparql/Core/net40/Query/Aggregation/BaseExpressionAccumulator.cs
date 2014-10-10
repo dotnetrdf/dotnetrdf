@@ -2,8 +2,9 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Grouping;
 
-namespace VDS.RDF.Query.Grouping
+namespace VDS.RDF.Query.Aggregation
 {
     public abstract class BaseExpressionAccumulator
         : IAccumulator

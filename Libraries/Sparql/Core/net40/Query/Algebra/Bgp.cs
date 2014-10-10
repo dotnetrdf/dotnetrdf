@@ -94,6 +94,11 @@ namespace VDS.RDF.Query.Algebra
             return builder.ToString();
         }
 
+        public IAlgebra Copy()
+        {
+            return this.Copy(this.TriplePatterns);
+        }
+
         public IAlgebra Copy(IEnumerable<Triple> triplePatterns)
         {
             return new Bgp(triplePatterns);

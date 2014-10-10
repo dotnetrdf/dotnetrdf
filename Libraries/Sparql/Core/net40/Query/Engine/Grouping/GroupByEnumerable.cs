@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Aggregation;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Grouping;
 

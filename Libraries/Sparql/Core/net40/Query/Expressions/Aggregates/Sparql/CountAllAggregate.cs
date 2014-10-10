@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using VDS.RDF.Query.Aggregation;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Specifications;
 
-namespace VDS.RDF.Query.Expressions.Aggregates
+namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 {
     public class CountAllAggregate
         : BaseAggregate

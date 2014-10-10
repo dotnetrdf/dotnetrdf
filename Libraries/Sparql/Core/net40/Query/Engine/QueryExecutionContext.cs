@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using VDS.Common.Collections;
 using VDS.RDF.Graphs;
@@ -54,6 +55,9 @@ namespace VDS.RDF.Query.Engine
                 this.DefaultGraphs = new MaterializedImmutableView<INode>(datasetDefaultGraphs);
                 this.NamedGraphs = new MaterializedImmutableView<INode>(datasetNamedGraphs);
             }
+
+            // Make sure to use a concurrent dictionary because in principal things could choose to share state while executing in parallel
+            this.SharedObjects = new ConcurrentDictionary<string, object>();
         }
 
         public INode ActiveGraph { get; private set; }
@@ -80,5 +84,7 @@ namespace VDS.RDF.Query.Engine
                 return this._now.Value;
             }
         }
+
+        public IDictionary<string, object> SharedObjects { get; private set; }
     }
 }

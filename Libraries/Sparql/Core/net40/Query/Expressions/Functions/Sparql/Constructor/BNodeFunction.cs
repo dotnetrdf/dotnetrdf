@@ -23,7 +23,10 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Specifications;
@@ -34,20 +37,29 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
     /// Class representing the SPARQL BNODE() function
     /// </summary>
     public class BNodeFunction 
-        : BaseUnaryExpression
+        : BaseNAryExpression
     {
+        private IExpressionContext _currentContext = null;
+        private IBlankNodeGenerator _generator;
+
         /// <summary>
         /// Creates a new BNode Function
         /// </summary>
         public BNodeFunction()
-            : base(null) { }
+            : base(Enumerable.Empty<IExpression>()) { }
 
         /// <summary>
         /// Creates a new BNode Function
         /// </summary>
         /// <param name="expr">Argument Expression</param>
         public BNodeFunction(IExpression expr)
-            : base(expr) { }
+            : base(expr.AsEnumerable()) { }
+
+        public override IExpression Copy(IEnumerable<IExpression> args)
+        {
+            List<IExpression> arguments = args.ToList();
+            return arguments.Count > 0 ? new BNodeFunction(arguments[0]) : new BNodeFunction();
+        }
 
         /// <summary>
         /// Gets the value of the expression as evaluated in a given Context for a given Binding
@@ -57,69 +69,36 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override IValuedNode Evaluate(ISolution solution, IExpressionContext context)
         {
-            this._funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
-
-            if (this._funcContext == null)
+            // Clear the cache if the expression context has changed
+            if (!ReferenceEquals(context, this._currentContext))
             {
-                this._funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
-            }
-            else if (this._funcContext.CurrentInput != context.InputMultiset.GetHashCode())
-            {
-                //Clear the Context
-                this._funcContext.BlankNodes.Clear();
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
+                this._currentContext = context;
+                this._generator = null;
             }
 
-            if (this._expr == null)
+            // Get the generator
+            // We use a random derived generator which is seeded from the reference hash of the current context
+            // This ensures that BNode generation is aligned across all instances of a function for a given context and
+            // that functions in different contexts are unlikely to collide hash codes even when given the same inputs
+            if (this._generator == null)
+            {
+                this._generator = new RandomDerivedBlankNodeGenerator(RuntimeHelpers.GetHashCode(this._currentContext));
+            }
+
+            if (this.Arguments.Count == 0)
             {
                 //If no argument then always a fresh BNode
-                return this._funcContext.Graph.CreateBlankNode().AsValuedNode();
+                return new BlankNode(Guid.NewGuid());
             }
-            else
-            {
-                INode temp = this._expr.Evaluate(solution, context);
-                if (temp != null)
-                {
-                    if (temp.NodeType == NodeType.Literal)
-                    {
-                        INode lit = temp;
 
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                if (!this._funcContext.BlankNodes.ContainsKey(bindingID))
-                                {
-                                    this._funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
-                                }
+            // Otherwise a single argument whose value is used to derive a GUID for the Blank Node ID
+            IValuedNode n = this.Arguments[0].Evaluate(solution, context);
+            if (n == null) throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
+            if (n.NodeType != NodeType.Literal) throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
+            if (n.HasDataType) throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
+            if (n.HasLanguage) throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
 
-                                if (!this._funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
-                                {
-                                    this._funcContext.BlankNodes[bindingID].Add(lit.Value, this._funcContext.Graph.CreateBlankNode());
-                                }
-                                return this._funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
-                }
-            }
+            return new BlankNode(this._generator.GetGuid(n.Value));
         }
 
         /// <summary>

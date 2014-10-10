@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Aggregation;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Grouping;
 

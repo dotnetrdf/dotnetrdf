@@ -50,9 +50,6 @@
     <Compile Include="IRdfReader.cs" />
     <Compile Include="IRdfWriter.cs" />
     <Compile Include="MimeTypeDefinition.cs" />
-    <Compile Include="Nodes\MappedBlankNodeGenerator.cs" />
-    <Compile Include="Nodes\RandomDerivedBlankNodeGenerator.cs" />
-    <Compile Include="Nodes\IBlankNodeGenerator.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />

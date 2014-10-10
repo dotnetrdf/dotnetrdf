@@ -23,12 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Operators.DateTime
 {
@@ -45,7 +42,7 @@ namespace VDS.RDF.Query.Operators.DateTime
         /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {
-            return !Options.StrictOperators
+            return !SparqlOptions.StrictOperators
                    && ns != null
                    && ns.Length > 0
                    && ns.All(n => n != null && (n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration)));

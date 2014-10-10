@@ -101,8 +101,11 @@
     <Compile Include="LiteralExtensions.cs" />
     <Compile Include="Nodes\DateNode.cs" />
     <Compile Include="Nodes\FastNodeComparer.cs" />
+    <Compile Include="Nodes\IBlankNodeGenerator.cs" />
+    <Compile Include="Nodes\MappedBlankNodeGenerator.cs" />
     <Compile Include="Nodes\NodeType.cs" />
     <Compile Include="Nodes\EffectiveNumericType.cs" />
+    <Compile Include="Nodes\RandomDerivedBlankNodeGenerator.cs" />
     <Compile Include="Nodes\SignedByteNode.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
     <Compile Include="Collections\GraphCollection.cs" />

@@ -56,6 +56,12 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="formatter">Formatter</param>
         /// <returns></returns>
         String ToString(IAlgebraFormatter formatter);
+
+        /// <summary>
+        /// Creates an exact copy of the algebra
+        /// </summary>
+        /// <returns></returns>
+        IAlgebra Copy();
     }
 
     /// <summary>

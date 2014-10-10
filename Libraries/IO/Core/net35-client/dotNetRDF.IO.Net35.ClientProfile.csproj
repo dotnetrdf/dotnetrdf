@@ -95,15 +95,6 @@
     <Compile Include="..\net40\MimeTypeDefinition.cs">
       <Link>MimeTypeDefinition.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Nodes\MappedBlankNodeGenerator.cs">
-      <Link>Nodes\MappedBlankNodeGenerator.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Nodes\RandomDerivedBlankNodeGenerator.cs">
-      <Link>Nodes\RandomDerivedBlankNodeGenerator.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Nodes\IBlankNodeGenerator.cs">
-      <Link>Nodes\IBlankNodeGenerator.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Parsing\BaseGZipParser.cs">
       <Link>Parsing\BaseGZipParser.cs</Link>
     </Compile>

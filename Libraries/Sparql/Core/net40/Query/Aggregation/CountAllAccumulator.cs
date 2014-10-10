@@ -2,7 +2,7 @@
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Grouping
+namespace VDS.RDF.Query.Aggregation
 {
     public class CountAllAccumulator
         : IAccumulator

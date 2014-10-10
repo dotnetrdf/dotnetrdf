@@ -234,11 +234,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                         }
                         break;
                     case XPathFunctionFactory.Concat:
-                        if (args.Count == 2)
-                        {
-                            xpathFunc = new ConcatFunction(args.First(), args.Last());
-                        }
-                        else if (args.Count > 2)
+                        if (args.Count >= 2)
                         {
                             xpathFunc = new ConcatFunction(args);
                         }

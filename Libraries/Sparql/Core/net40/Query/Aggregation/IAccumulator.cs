@@ -3,7 +3,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Grouping
+namespace VDS.RDF.Query.Aggregation
 {
     /// <summary>
     /// Interface for accumulators which are used to caculate aggregates in a streaming fashion

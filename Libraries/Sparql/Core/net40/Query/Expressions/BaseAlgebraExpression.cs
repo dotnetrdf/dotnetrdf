@@ -63,9 +63,13 @@ namespace VDS.RDF.Query.Expressions
             builder.Append(SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor)));
             builder.Append(this.Algebra.ToString(formatter));
             builder.Append(')');
+            return builder.ToString();
         }
 
-        public abstract IExpression Copy();
+        public IExpression Copy()
+        {
+            return Copy(this.Algebra.Copy());
+        }
 
         public abstract IValuedNode Evaluate(ISolution set, IExpressionContext context);
 
@@ -76,9 +80,7 @@ namespace VDS.RDF.Query.Expressions
             if (!(other is IAlgebraExpression)) return false;
 
             IAlgebraExpression expr = (IAlgebraExpression) other;
-            if (!this.Functor.Equals(expr.Functor)) return false;
-
-            return this.Algebra.Equals(expr.Algebra);
+            return this.Functor.Equals(expr.Functor) && this.Algebra.Equals(expr.Algebra);
         }
 
         public abstract IExpression Copy(IAlgebra algebra);

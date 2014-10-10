@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Aggregation;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Grouping;

@@ -55,5 +55,10 @@ namespace VDS.RDF.Query.Engine
         /// Must return a constant value throughout the life of the execution, may be late bound i.e. does not need to be initialized until the first time it is accessed
         /// </remarks>
         DateTimeOffset EffectiveNow { get; }
+
+        /// <summary>
+        /// Gets the dictionary of shared object which can be used to share state for the lifetime of the execution
+        /// </summary>
+        IDictionary<String, Object> SharedObjects { get; } 
     }
 }

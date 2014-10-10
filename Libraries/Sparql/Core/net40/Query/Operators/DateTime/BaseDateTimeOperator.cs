@@ -31,6 +31,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Operators.DateTime
 {
@@ -47,7 +48,7 @@ namespace VDS.RDF.Query.Operators.DateTime
         /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {
-            return !Options.StrictOperators 
+            return !SparqlOptions.StrictOperators 
                    && ns != null
                    && ns.Length == 2
                    && ns.All(n => n!= null) 

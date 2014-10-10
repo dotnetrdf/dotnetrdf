@@ -9,6 +9,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Aggregates;
+using VDS.RDF.Query.Expressions.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Results;
 using VDS.RDF.Query.Sorting;

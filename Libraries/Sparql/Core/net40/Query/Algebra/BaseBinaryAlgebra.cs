@@ -21,6 +21,12 @@ namespace VDS.RDF.Query.Algebra
         public IAlgebra Lhs { get; private set; }
 
         public IAlgebra Rhs { get; private set; }
+
+        public IAlgebra Copy()
+        {
+            return this.Copy(this.Lhs.Copy(), this.Rhs.Copy());
+        }
+
         public abstract IAlgebra Copy(IAlgebra lhs, IAlgebra rhs);
 
         public abstract IEnumerable<string> ProjectedVariables { get; }

@@ -42,9 +42,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <summary>
         /// Creates a new EXISTS/NOT EXISTS function
         /// </summary>
-        /// <param name="pattern">Graph Pattern</param>
+        /// <param name="algebra">Algebra expression</param>
         /// <param name="mustExist">Whether this is an EXIST</param>
         public ExistsFunction(IAlgebra algebra, bool mustExist)
+            : base(algebra)
         {
             this._mustExist = mustExist;
         }
@@ -59,27 +60,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
         public override bool IsDeterministic
         {
-            get { throw new System.NotImplementedException(); }
+            get { return true; }
         }
 
         public override bool IsConstant
         {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override string ToString(IAlgebraFormatter formatter)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override string ToPrefixString(IAlgebraFormatter formatter)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override IExpression Copy()
-        {
-            throw new System.NotImplementedException();
+            get { return false; }
         }
 
         public override IValuedNode Evaluate(ISolution set, IExpressionContext context)
@@ -97,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
         public override IExpression Copy(IAlgebra algebra)
         {
-            throw new System.NotImplementedException();
+            return new ExistsFunction(algebra, this._mustExist);
         }
     }
 }

@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 if (options is ConstantTerm)
                 {
-                    this.ConfigureOptions(options.Evaluate(null, 0), false);
+                    this.ConfigureOptions(options.Evaluate(null, null), false);
                     this._fixedOptions = true;
                     if (this._fixedPattern) this._regex = new Regex(this._pattern, this._options);
                 }
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public override IExpression Copy(IEnumerable<IExpression> args)
         {
             List<IExpression> argList = args.ToList();
-            return argList.Count == 3 ? new RegexFunction(argList[0], argList[1], argList[2]) : new RegexFunction(argList[0], argList[1], argList[2], argList[3]);
+            return argList.Count == 3 ? new RegexFunction(argList[0], argList[1], argList[2]) : new RegexFunction(argList[0], argList[1]);
         }
 
         /// <summary>

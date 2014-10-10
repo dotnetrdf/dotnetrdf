@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Collections\AddDistinctEnumerable.cs" />
     <Compile Include="Collections\AddIfEmptyEnumerable.cs" />
+    <Compile Include="Collections\ReferenceEqualityComparer.cs" />
     <Compile Include="Collections\OmitAllEnumerable.cs" />
     <Compile Include="Collections\ReducedEnumerable.cs" />
     <Compile Include="Collections\ReversedComparer.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Collections\WrapperEnumerable.cs" />
     <Compile Include="Collections\WrapperEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Aggregation\AverageAccumulator.cs" />
     <Compile Include="Query\Algebra\BaseBinaryAlgebra.cs" />
     <Compile Include="Query\Algebra\BaseUnaryAlgebra.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
@@ -138,9 +140,11 @@
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\Aggregates\BaseAggregate.cs" />
-    <Compile Include="Query\Expressions\Aggregates\SampleAggregate.cs" />
-    <Compile Include="Query\Expressions\Aggregates\CountAggregate.cs" />
-    <Compile Include="Query\Expressions\Aggregates\CountAllAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\SampleAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\CountAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\CountAllAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\AverageAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\SumAggregate.cs" />
     <Compile Include="Query\Expressions\Arithmetic\AdditionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\DivisionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\MinusExpression.cs" />
@@ -315,11 +319,12 @@
     <Compile Include="Query\Expressions\Transforms\ExprTransformSubstitute.cs" />
     <Compile Include="Query\Expressions\Transforms\IExpressionTransform.cs" />
     <Compile Include="Query\Expressions\Visitors\CollectAggregatesVisitor.cs" />
-    <Compile Include="Query\Grouping\BaseExpressionAccumulator.cs" />
-    <Compile Include="Query\Grouping\CountAccumulator.cs" />
-    <Compile Include="Query\Grouping\CountAllAccumulator.cs" />
-    <Compile Include="Query\Grouping\IAccumulator.cs" />
-    <Compile Include="Query\Grouping\SampleAccumulator.cs" />
+    <Compile Include="Query\Aggregation\BaseExpressionAccumulator.cs" />
+    <Compile Include="Query\Aggregation\CountAccumulator.cs" />
+    <Compile Include="Query\Aggregation\CountAllAccumulator.cs" />
+    <Compile Include="Query\Aggregation\IAccumulator.cs" />
+    <Compile Include="Query\Aggregation\SampleAccumulator.cs" />
+    <Compile Include="Query\Aggregation\SumAccumulator.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />

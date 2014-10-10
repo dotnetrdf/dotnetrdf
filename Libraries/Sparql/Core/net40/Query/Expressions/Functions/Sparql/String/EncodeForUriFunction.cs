@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
         public override IExpression Copy(IExpression argument)
         {
-            new EncodeForUriFunction(argument);
+            return new EncodeForUriFunction(argument);
         }
 
         /// <summary>
