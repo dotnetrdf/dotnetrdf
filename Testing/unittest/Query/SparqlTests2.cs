@@ -1311,37 +1311,92 @@ WHERE
         }
 
         [Test]
-        public void SparqlSubQueryGraphInteractionCore416()
+        public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
-            TripleStore store = new TripleStore();
-            store.LoadFromFile(@"resources\core-416.trig");
-
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
-            //SparqlFormatter formatter = new SparqlFormatter();
-            //Console.WriteLine(formatter.Format(q));
-
-            ISparqlDataset dataset = AsDataset(store);
-
-            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            TimeSpan total = new TimeSpan();
-            for (int i = 0; i < 10; i++)
+            try
             {
-                Console.WriteLine("Starting query run " + i + " of " + 10);
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.IsNotNull(results);
+                Options.UsePLinqEvaluation = false;
 
-                if (q.QueryExecutionTime != null)
+                TripleStore store = new TripleStore();
+                store.LoadFromFile(@"resources\core-416.trig");
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+                //SparqlFormatter formatter = new SparqlFormatter();
+                //Console.WriteLine(formatter.Format(q));
+
+                ISparqlDataset dataset = AsDataset(store);
+
+                //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                TimeSpan total = new TimeSpan();
+                const int totalRuns = 1000;
+                for (int i = 0; i < totalRuns; i++)
                 {
-                    Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
-                    total = total + q.QueryExecutionTime.Value;
-                }
-                TestTools.ShowResults(results);
-                Assert.AreEqual(4, results.Count);
-            }
+                    Console.WriteLine("Starting query run " + i + " of " + totalRuns);
+                    SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                    Assert.IsNotNull(results);
 
-            Console.WriteLine("Total ExecutionT Time: " + total);
-            Assert.IsTrue(total < new TimeSpan(0, 0, 1));
+                    if (q.QueryExecutionTime != null)
+                    {
+                        Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                        total = total + q.QueryExecutionTime.Value;
+                    }
+                    if (results.Count != 4) TestTools.ShowResults(results);
+                    Assert.AreEqual(4, results.Count);
+                }
+
+                Console.WriteLine("Total Execution Time: " + total);
+                Assert.IsTrue(total < new TimeSpan(0, 0, 1*(totalRuns/10)));
+            }
+            finally
+            {
+                Options.UsePLinqEvaluation = true;
+            }
+        }
+
+        [Test]
+        public void SparqlSubQueryGraphInteractionCore416_Parallel()
+        {
+            try
+            {
+                Options.UsePLinqEvaluation = true;
+
+                TripleStore store = new TripleStore();
+                store.LoadFromFile(@"resources\core-416.trig");
+
+                SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+                Console.WriteLine(q.ToAlgebra().ToString());
+                //SparqlFormatter formatter = new SparqlFormatter();
+                //Console.WriteLine(formatter.Format(q));
+
+                ISparqlDataset dataset = AsDataset(store);
+
+                //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                TimeSpan total = new TimeSpan();
+                const int totalRuns = 1000;
+                for (int i = 0; i < totalRuns; i++)
+                {
+                    Console.WriteLine("Starting query run " + i + " of " + totalRuns);
+                    SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                    Assert.IsNotNull(results);
+
+                    if (q.QueryExecutionTime != null)
+                    {
+                        Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                        total = total + q.QueryExecutionTime.Value;
+                    }
+                    if (results.Count != 4) TestTools.ShowResults(results);
+                    Assert.AreEqual(4, results.Count);
+                }
+
+                Console.WriteLine("Total Execution Time: " + total);
+                Assert.IsTrue(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
+            }
+            finally
+            {
+                Options.UsePLinqEvaluation = true;
+            }
         }
     }
 }
