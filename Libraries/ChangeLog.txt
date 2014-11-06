@@ -10,6 +10,10 @@ Changed
  - Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 - Build
  - Ensure AssemblyVersion is synchronised properly with NuGet package versions (CORE-426)
+- Dependencies
+ - Upgrade VDS.Common to 1.4.0
+ - Upgrade Json.Net to 6.0.6
+ - Upgrade HtmlAgilityPack to 1.4.9
 
 1.0.6
 -----
