@@ -38,6 +38,8 @@
       </group>
     </dependencies>
     <releaseNotes>
+- Ensure AssemblyVersion's are synced with NuGet package versions (CORE-426)
+- Bug fix for missing ToString() on UUID() and StrUUID() functions (CORE-427)
 - Bug fix for corner case SPARQL parsing bug involving BIND (CORE-428)
     </releaseNotes>
   </metadata>
