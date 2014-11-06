@@ -1310,6 +1310,8 @@ WHERE
             }
         }
 
+#if !PORTABLE
+
         [Test]
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
@@ -1398,5 +1400,7 @@ WHERE
                 Options.UsePLinqEvaluation = true;
             }
         }
+
+#endif
     }
 }
