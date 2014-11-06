@@ -13,7 +13,6 @@ Changed
 - Dependencies
  - Upgrade VDS.Common to 1.4.0
  - Upgrade Json.Net to 6.0.6
- - Upgrade HtmlAgilityPack to 1.4.9
 
 1.0.6
 -----
