@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.6
+Version 1.0.7
 
 dotNetRDF Project 2009-14
 dotnetrdf-develop@lists.sf.net
@@ -23,18 +23,18 @@ rdfConvert
 rdfEditor (Not available under Mono)
 
 rdfOptStats
-   
+
 rdfQuery
 
 rdfServer
 
 rdfServerGUI
- 
-rdfWebDeploy
-- Fix a bug with it trying to deploy/test for the presence of incorrect DLLs (TOOLS-424)
 
-soh 
+rdfWebDeploy
+
+soh
 
 SparqlGUI
 
 StoreManager
+

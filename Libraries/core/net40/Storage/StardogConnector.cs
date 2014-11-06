@@ -717,15 +717,15 @@ namespace VDS.RDF.Storage
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = this._activeTrans ?? this.BeginTransaction();
 
-                HttpWebRequest request;
-                if (!graphUri.Equals(String.Empty))
-                {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + HttpUtility.UrlEncode(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                }
-                else
-                {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                }
+                HttpWebRequest request = this.CreateRequest(
+                    this._kb + "/" + tID + "/clear/",
+                    MimeTypesHelper.Any,
+                    "POST",
+                    new Dictionary<string, string>(){
+                        { "graph-uri", graphUri.Equals(String.Empty) ? "DEFAULT" : graphUri }
+                    }
+                );
+
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
                 Tools.HttpDebugRequest(request);
@@ -1427,15 +1427,16 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
-                if (!graphUri.Equals(String.Empty))
-                {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + HttpUtility.UrlEncode(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                }
-                else
-                {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                }
+
+                HttpWebRequest request= this.CreateRequest(
+                    this._kb + "/" + tID + "/clear/", 
+                    MimeTypesHelper.Any, 
+                    "POST",
+                    new Dictionary<string, string>(){
+                        { "graph-uri", graphUri.Equals(String.Empty) ? "DEFAULT" : graphUri }
+                    }
+                );
+
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
                 Tools.HttpDebugRequest(request);
@@ -1644,7 +1645,7 @@ namespace VDS.RDF.Storage
         {
             //Build the Request Uri
             String requestUri = this._baseUri + servicePath + "?";
-
+            
             if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
             {
                 foreach (String p in requestParams.Keys)

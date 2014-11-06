@@ -37,6 +37,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -522,6 +523,124 @@ SELECT * WHERE
                 Assert.IsTrue(parseEx.Message.Contains("?p"));
                 Assert.IsTrue(parseEx.Message.Contains("?o"));
             }
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_1()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { SELECT * WHERE { } }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_2()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    OPTIONAL { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_3()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { } UNION { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_4()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    MINUS { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_5()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingCore427_1()
+        {
+            const String query = "SELECT (UUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(UUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(UUID"));
+        }
+
+        [Test]
+        public void SparqlParsingCore427_2()
+        {
+            const String query = "SELECT (StrUUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(STRUUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(STRUUID"));
         }
     }
 }
