@@ -525,7 +525,7 @@ SELECT * WHERE
         }
 
         [Test]
-        public void SparqlParsingComplexCore428()
+        public void SparqlParsingComplexCore428_1()
         {
             // Distilled from CORE-428 report
             const String query = @"SELECT *
@@ -534,6 +534,78 @@ WHERE
   OPTIONAL 
   {
     { SELECT * WHERE { } }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_2()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    OPTIONAL { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_3()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { } UNION { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_4()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    MINUS { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_5()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { }
     BIND('test' AS ?test)
   }
 }";
