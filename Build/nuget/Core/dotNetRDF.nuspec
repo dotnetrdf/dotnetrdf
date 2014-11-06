@@ -38,7 +38,7 @@
       </group>
     </dependencies>
     <releaseNotes>
-
+- Bug fix for corner case SPARQL parsing bug involving BIND (CORE-428)
     </releaseNotes>
   </metadata>
 </package>

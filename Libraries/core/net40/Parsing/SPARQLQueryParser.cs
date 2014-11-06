@@ -1320,6 +1320,7 @@ namespace VDS.RDF.Parsing
 
                             case Token.BIND:
                                 //BIND Clause
+                                context.Tokens.Dequeue();
                                 this.TryParseBindAssignment(context, pattern);
                                 break;
 

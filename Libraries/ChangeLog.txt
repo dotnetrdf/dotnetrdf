@@ -6,6 +6,7 @@
 
 Changed
 - Bug Fixes
+ - Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 1.0.6
 -----
