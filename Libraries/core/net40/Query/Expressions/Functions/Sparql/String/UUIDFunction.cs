@@ -57,6 +57,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 return SparqlSpecsHelper.SparqlKeywordUUID;
             }
         }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordUUID + "()";
+        }
     }
 
     /// <summary>
@@ -84,6 +89,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordStrUUID;
             }
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordStrUUID + "()";
         }
     }
 }

@@ -6,6 +6,7 @@
 
 Changed
 - Bug Fixes
+ - Missing ToString() on UUID() and StrUUID() functions (CORE-427)
  - Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 1.0.6

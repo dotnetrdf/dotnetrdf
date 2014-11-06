@@ -37,6 +37,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -612,6 +613,34 @@ WHERE
 
             // Should be a valid query
             this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingCore427_1()
+        {
+            const String query = "SELECT (UUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(UUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(UUID"));
+        }
+
+        [Test]
+        public void SparqlParsingCore427_2()
+        {
+            const String query = "SELECT (StrUUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(STRUUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(STRUUID"));
         }
     }
 }
