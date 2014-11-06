@@ -523,5 +523,23 @@ SELECT * WHERE
                 Assert.IsTrue(parseEx.Message.Contains("?o"));
             }
         }
+
+        [Test]
+        public void SparqlParsingComplexCore428()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { SELECT * WHERE { } }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
     }
 }
