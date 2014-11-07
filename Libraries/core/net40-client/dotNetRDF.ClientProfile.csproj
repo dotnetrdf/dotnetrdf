@@ -2382,7 +2382,6 @@
     <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
     <Compile Include="..\net40\Query\Algebra\SetDistinctnessComparer.cs">
       <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
@@ -2523,3 +2522,4 @@
     </Compile>
   </ItemGroup>
 </Project>
+

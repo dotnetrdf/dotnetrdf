@@ -936,8 +936,8 @@
       <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PreBuildEvent>echo "$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
+

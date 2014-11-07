@@ -641,7 +641,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
     <Compile Include="..\..\unittest\Configuration\ConfigurationLoaderInstanceTests.cs">
       <Link>Configuration\ConfigurationLoaderInstanceTests.cs</Link>
@@ -742,3 +741,4 @@
     </None>
   </ItemGroup>
 </Project>
+

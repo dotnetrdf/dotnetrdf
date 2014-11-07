@@ -2407,7 +2407,6 @@
       <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
     </Compile>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\BindAssignmentVariableNamePart.cs">
       <Link>Query\Builder\BindAssignmentVariableNamePart.cs</Link>
@@ -2554,3 +2553,4 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
+
