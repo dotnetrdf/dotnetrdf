@@ -1154,6 +1154,11 @@ WHERE
         [Test]
         public void SparqlFilterLazyDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
             query.CommandText = "SELECT * WHERE {?s ?p ?label . FILTER(ISLITERAL(?label) && LANGMATCHES(LANG(?label), \"en\")) } LIMIT 5";

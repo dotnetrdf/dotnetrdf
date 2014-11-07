@@ -110,6 +110,11 @@ namespace VDS.RDF.Update
         [Test]
         public void SparqlUpdateLoad()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             TripleStore store = new TripleStore();
 
             LoadCommand loadLondon = new LoadCommand(new Uri("http://dbpedia.org/resource/London"));

@@ -430,6 +430,11 @@ namespace VDS.RDF.Storage
         [Test]
         public void StorageFusekiUpdate()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;

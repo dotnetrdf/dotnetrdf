@@ -410,6 +410,11 @@ namespace VDS.RDF.Storage
         [Test]
         public void StorageSesameSparqlUpdate1()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             sesame.Update(@"DROP GRAPH <http://example.org/sparqlUpdateLoad>;
 LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>;

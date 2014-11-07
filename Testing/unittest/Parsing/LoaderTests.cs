@@ -116,6 +116,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
@@ -201,6 +206,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingUriLoaderDBPedia1()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
@@ -228,6 +238,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingUriLoaderDBPedia2()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             IGraph g = new Graph();
             UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
 
@@ -243,6 +258,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingUriLoaderDBPedia3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {

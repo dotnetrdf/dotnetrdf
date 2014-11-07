@@ -144,6 +144,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;
@@ -197,6 +202,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlDbPediaDotIssue()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;
@@ -573,6 +583,11 @@ WHERE
         [Test]
         public void SparqlSimpleQuery1()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             TripleStore store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
