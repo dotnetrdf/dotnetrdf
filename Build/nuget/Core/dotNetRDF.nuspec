@@ -15,22 +15,22 @@
       <group targetFramework="net35-client">
         <dependency id="VDS.Common" version="[1.4.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.6" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
         <dependency id="VDS.Common" version="[1.4.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.6" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
         <dependency id="VDS.Common" version="[1.4.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.6" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
         <dependency id="VDS.Common" version="[1.4.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.6" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
         <dependency id="VDS.Common" version="[1.4.0]" />
@@ -41,7 +41,8 @@
 - Ensure AssemblyVersion's are synced with NuGet package versions (CORE-426)
 - Bug fix for missing ToString() on UUID() and StrUUID() functions (CORE-427)
 - Bug fix for corner case SPARQL parsing bug involving BIND (CORE-428)
-- Update all dependencies to latest versions where possible
+- Bug fix for RDF/XML output under MonoTouch
+- Update dependencies to latest versions
     </releaseNotes>
   </metadata>
 </package>

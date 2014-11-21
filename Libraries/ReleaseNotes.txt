@@ -192,7 +192,7 @@ NB - Dates are given UK style as dd/mm/yyyy
 
 8/8/2014 - Release of Version 1.0.6 (Build 1.0.6.3421)
 
-?/10/2014 - Release of Version 1.0.7 (Build 1.0.7.?)
+21/11/2014 - Release of Version 1.0.7 (Build 1.0.7.3471)
 
 Acknowledgements
 ----------------

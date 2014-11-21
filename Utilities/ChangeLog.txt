@@ -25,6 +25,7 @@ rdfEditor (Not available under Mono)
 rdfOptStats
 
 rdfQuery
+- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 rdfServer
 
@@ -35,6 +36,7 @@ rdfWebDeploy
 soh
 
 SparqlGUI
+- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 StoreManager
-
+- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
