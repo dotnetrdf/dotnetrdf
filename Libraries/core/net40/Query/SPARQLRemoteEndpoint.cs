@@ -494,15 +494,15 @@ namespace VDS.RDF.Query
                 foreach (String defaultGraph in this._defaultGraphUris)
                 {
                     if (defaultGraph.Equals(String.Empty)) continue;
-                    queryUri.Append("&default-graph-uri=");
-                    queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
+                    postData.Append("&default-graph-uri=");
+                    postData.Append(HttpUtility.UrlEncode(defaultGraph));
                 }
                 //Add the Named Graph URI(s)
                 foreach (String namedGraph in this._namedGraphUris)
                 {
                     if (namedGraph.Equals(String.Empty)) continue;
-                    queryUri.Append("&named-graph-uri=");
-                    queryUri.Append(HttpUtility.UrlEncode(namedGraph));
+                    postData.Append("&named-graph-uri=");
+                    postData.Append(HttpUtility.UrlEncode(namedGraph));
                 }
 
                 httpResponse = this.ExecuteQuery(this.Uri, postData.ToString(), acceptHeader);

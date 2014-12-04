@@ -8,6 +8,7 @@ Changed
 - Bug Fixes
  - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
  - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+ - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
 
 1.0.7
 -----
