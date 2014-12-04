@@ -414,10 +414,6 @@ namespace VDS.RDF.Parsing
 }";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
-
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
@@ -434,10 +430,38 @@ namespace VDS.RDF.Parsing
 }";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
+        }
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_03()
+        {
+            // Test case based off of CORE-432 - invalid URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""uri"",  ""value"" : ""http://an invalid uri"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_04()
+        {
+            // Test case based off of CORE-432 - invalid URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""literal"",  ""value"" : ""Literal with invalid datatype"", ""datatype"" : ""http://an invalid uri"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
         }
     }
 }

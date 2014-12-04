@@ -45,13 +45,17 @@ namespace VDS.RDF.Parsing
 
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
+        }
 
-            TestTools.ShowResults(results);
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlTsv03()
+        {
+            // Invalid URI - CORE-432
+            const String data = "?x\t?y\n"
+                                + "<http://x a bad uri>\t<y>\n";
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(2, results.Variables.Count());
-            CheckVariables(results, "x", "y");
-            Assert.AreEqual(1, results.Results.Count);
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
         }
     }
 }

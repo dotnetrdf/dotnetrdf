@@ -135,10 +135,6 @@ namespace VDS.RDF.Writing
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
-
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
@@ -157,10 +153,42 @@ namespace VDS.RDF.Writing
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
+        }
 
-            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(2, results.Variables.Count());
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlXmlCore432_03()
+        {
+            // Test case based off of CORE-432 - invalid URI in XML
+            const String data = @"<?xml version=""1.0""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""x"" />
+    <variable name=""y"" />
+  </head>
+  <results>
+    <result><binding name=""x""><uri>http://an invalid uri</uri></binding></result>
+  </results>
+</sparql>";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlXmlCore432_04()
+        {
+            // Test case based off of CORE-432 - invalid URI in XML
+            const String data = @"<?xml version=""1.0""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""x"" />
+    <variable name=""y"" />
+  </head>
+  <results>
+    <result><binding name=""x""><literal datatype=""http://an invalid uri"">Literal with invalid datatype URI</literal></binding></result>
+  </results>
+</sparql>";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
         }
     }
 }
