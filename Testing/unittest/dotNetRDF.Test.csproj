@@ -124,6 +124,7 @@
     <Compile Include="Core\TripleCollectionTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\SparqlCsvTests.cs" />
     <Compile Include="Parsing\Suites\BaseDatasetParserSuite.cs" />
     <Compile Include="Parsing\Suites\BaseParserSuite.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
@@ -4699,4 +4700,3 @@
   <ItemGroup />
   <ItemGroup />
 </Project>
-

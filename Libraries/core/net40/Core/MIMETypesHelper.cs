@@ -249,7 +249,7 @@ namespace VDS.RDF
         /// Whether MIME Type Definitions have been initialised
         /// </summary>
         private static bool _init = false;
-        private static Object _initLock = new Graph();
+        private static readonly Object _initLock = new Graph();
 
         /// <summary>
         /// Checks whether something is a valid MIME Type
