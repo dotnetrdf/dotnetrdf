@@ -386,7 +386,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.Input.Name.Equals("uri"))
             {
-                return context.Handler.CreateUriNode(UriFactory.Create(context.Input.ReadElementContentAsString()));
+                return ParserHelper.TryResolveUri(context, context.Input.ReadElementContentAsString());
             }
             else if (context.Input.Name.Equals("literal"))
             {
@@ -409,7 +409,7 @@ namespace VDS.RDF.Parsing
                         else if (context.Input.Name.Equals("datatype"))
                         {
                             //Data Type is specified
-                            dt = UriFactory.Create(context.Input.Value);
+                            dt = ((IUriNode) ParserHelper.TryResolveUri(context, context.Input.Value)).Uri;
                         }
                         else
                         {
