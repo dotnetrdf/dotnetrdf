@@ -206,6 +206,7 @@ namespace VDS.RDF.Parsing
                         }
 
                     case Token.PLAINLITERAL:
+                    case Token.LITERAL:
                         if (expectComma) throw ParserHelper.Error("Unexpected Variable, expected a comma between each Variable", next);
                         context.Variables.Add(next.Value);
                         if (!context.Handler.HandleVariable(next.Value)) ParserHelper.Stop();

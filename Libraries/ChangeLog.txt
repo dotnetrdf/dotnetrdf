@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+1.0.8
+-----
+
+Changed
+- Bug Fixes
+ - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+
 1.0.7
 -----
 
