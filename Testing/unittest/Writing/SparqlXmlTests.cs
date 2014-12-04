@@ -24,19 +24,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Writing
 {
     [TestFixture]
     public class SparqlXmlTests
     {
+        private readonly SparqlXmlParser _parser = new SparqlXmlParser();
+
         [Test]
         public void WritingSparqlXmlWithNulls()
         {
@@ -117,6 +117,50 @@ namespace VDS.RDF.Writing
             {
                 Assert.Fail("Query did not return a Result Set as expected");
             }
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlXmlCore432_01()
+        {
+            // Test case based off of CORE-432 - relative URI in XML
+            const String data = @"<?xml version=""1.0""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""x"" />
+    <variable name=""y"" />
+  </head>
+  <results>
+    <result><binding name=""x""><uri>relative</uri></binding></result>
+  </results>
+</sparql>";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(2, results.Variables.Count());
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlXmlCore432_02()
+        {
+            // Test case based off of CORE-432 - relative URI in XML
+            const String data = @"<?xml version=""1.0""?>
+<sparql xmlns=""http://www.w3.org/2005/sparql-results#"">
+  <head>
+    <variable name=""x"" />
+    <variable name=""y"" />
+  </head>
+  <results>
+    <result><binding name=""x""><literal datatype=""relative"">value</literal></binding></result>
+  </results>
+</sparql>";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(2, results.Variables.Count());
         }
     }
 }
