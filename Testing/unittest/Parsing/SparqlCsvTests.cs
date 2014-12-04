@@ -29,6 +29,8 @@ http://x,http://y
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
+            TestTools.ShowResults(results);
+
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.AreEqual(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
@@ -46,10 +48,34 @@ http://x,http://y
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
 
+            TestTools.ShowResults(results);
+
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.AreEqual(2, results.Variables.Count());
             CheckVariables(results, "x", "y");
             Assert.AreEqual(1, results.Results.Count);
+        }
+
+        [Test]
+        public void ParsingSparqlCsv03()
+        {
+            // Invalid URI - CORE-432
+            // As CSV is lossy and doesn't distinguish between URIs and literals we treat it as a literal
+            const String data = @"""x"",""y""
+http://x a bad uri,http://y
+";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(2, results.Variables.Count());
+            CheckVariables(results, "x", "y");
+            Assert.AreEqual(1, results.Results.Count);
+
+            INode n = results.Results[0]["x"];
+            Assert.IsNotNull(n);
+            Assert.AreEqual(NodeType.Literal, n.NodeType);
         }
     }
 }

@@ -273,7 +273,7 @@ namespace VDS.RDF.Parsing
                             try
                             {
                                 //Guessing a URI if starts with common URI prefix
-                                value = context.Handler.CreateUriNode(UriFactory.Create(lexicalForm));
+                                value = ParserHelper.TryResolveUri(context, next);
                             }
                             catch
                             {

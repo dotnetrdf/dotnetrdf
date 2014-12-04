@@ -399,5 +399,69 @@ namespace VDS.RDF.Parsing
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
         }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_01()
+        {
+            // Test case based off of CORE-432 - relative URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""uri"",  ""value"" : ""relative"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_02()
+        {
+            // Test case based off of CORE-432 - relative URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""literal"",  ""value"" : ""Literal with relative datatype"", ""datatype"" : ""relative"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_03()
+        {
+            // Test case based off of CORE-432 - invalid URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""uri"",  ""value"" : ""http://an invalid uri"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonCore432_04()
+        {
+            // Test case based off of CORE-432 - invalid URI in JSON
+            const String data = @"{ 
+  ""head"": { ""vars"": [ ""x"", ""y"" ] },
+  ""results"" : {
+   ""bindings"" : [ 
+    { ""x"" : { ""type"" : ""literal"",  ""value"" : ""Literal with invalid datatype"", ""datatype"" : ""http://an invalid uri"" } }
+   ],
+  }
+}";
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+        }
     }
 }
