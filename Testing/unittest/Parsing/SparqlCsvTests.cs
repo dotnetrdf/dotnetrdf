@@ -11,6 +11,14 @@ namespace VDS.RDF.Parsing
     {
         private readonly SparqlCsvParser _parser = new SparqlCsvParser();
 
+        private void CheckVariables(SparqlResultSet results, params String[] vars)
+        {
+            foreach (String var in vars)
+            {
+                Assert.IsTrue(results.Variables.Contains(var), "Missing variable ?" + var);
+            }
+        }
+
         [Test]
         public void ParsingSparqlCsv01()
         {
@@ -23,6 +31,7 @@ http://x,http://y
 
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.AreEqual(2, results.Variables.Count());
+            CheckVariables(results, "x", "y");
             Assert.AreEqual(1, results.Results.Count);
         }
 
@@ -39,6 +48,7 @@ http://x,http://y
 
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.AreEqual(2, results.Variables.Count());
+            CheckVariables(results, "x", "y");
             Assert.AreEqual(1, results.Results.Count);
         }
     }
