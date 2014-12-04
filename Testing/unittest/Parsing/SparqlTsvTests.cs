@@ -7,9 +7,9 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     [TestFixture]
-    public class SparqlCsvTests
+    public class SparqlTsvTests
     {
-        private readonly SparqlCsvParser _parser = new SparqlCsvParser();
+        private readonly SparqlTsvParser _parser = new SparqlTsvParser();
 
         private void CheckVariables(SparqlResultSet results, params String[] vars)
         {
@@ -20,11 +20,10 @@ namespace VDS.RDF.Parsing
         }
 
         [Test]
-        public void ParsingSparqlCsv01()
+        public void ParsingSparqlTsv01()
         {
-            const String data = @"x,y
-http://x,http://y
-";
+            const String data = "?x\t?y\n"
+                                + "<http://x>\t<http://y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
@@ -37,13 +36,12 @@ http://x,http://y
             Assert.AreEqual(1, results.Results.Count);
         }
 
-        [Test]
-        public void ParsingSparqlCsv02()
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlTsv02()
         {
-            // Header row has quoting - CORE-433
-            const String data = @"""x"",""y""
-http://x,http://y
-";
+            // Relative URI - CORE-432
+            const String data = "?x\t?y\n"
+                                + "<http://x>\t<y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
             this._parser.Load(results, new StringReader(data));
