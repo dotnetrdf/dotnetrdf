@@ -41,6 +41,7 @@ namespace VDS.RDF.Utilities.Editor
         /// Find
         /// </summary>
         Find,
+
         /// <summary>
         /// Find and Replace
         /// </summary>
@@ -56,6 +57,7 @@ namespace VDS.RDF.Utilities.Editor
         /// Current Document
         /// </summary>
         CurrentDocument,
+
         /// <summary>
         /// Selection
         /// </summary>
@@ -101,83 +103,47 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the scope
         /// </summary>
-        public FindAndReplaceScope Scope
-        {
-            get;
-            set;
-        }
+        public FindAndReplaceScope Scope { get; set; }
 
         /// <summary>
         /// Gets/Sets the find text
         /// </summary>
-        public String FindText
-        {
-            get;
-            set;
-        }
+        public String FindText { get; set; }
 
         /// <summary>
         /// Gets/Sets the replace text
         /// </summary>
-        public String ReplaceText
-        {
-            get;
-            set;
-        }
+        public String ReplaceText { get; set; }
 
         /// <summary>
         /// Gets/Sets whether to match case
         /// </summary>
-        public bool MatchCase
-        {
-            get;
-            set;
-        }
+        public bool MatchCase { get; set; }
 
         /// <summary>
         /// Gets/Sets whether to match the whole word
         /// </summary>
-        public bool MatchWholeWord
-        {
-            get;
-            set;
-        }
+        public bool MatchWholeWord { get; set; }
 
         /// <summary>
         /// Gets/Sets whether to use regex
         /// </summary>
-        public bool UseRegex
-        {
-            get;
-            set;
-        }
+        public bool UseRegex { get; set; }
 
         /// <summary>
         /// Gets/Sets whether to search upwards instead of downwards in a document
         /// </summary>
-        public bool SearchUp
-        {
-            get;
-            set;
-        }
+        public bool SearchUp { get; set; }
 
         /// <summary>
         /// Gets/Sets recent find text
         /// </summary>
-        public BindingList<String> RecentFindTexts
-        {
-            get;
-            set;
-        }
+        public BindingList<String> RecentFindTexts { get; set; }
 
         /// <summary>
         /// Gets/Sets recent replace text
         /// </summary>
-        public BindingList<String> RecentReplaceTexts
-        {
-            get;
-            set;
-        }
+        public BindingList<String> RecentReplaceTexts { get; set; }
 
         /// <summary>
         /// Finds the first occurrence of the currently configured search in the given text editor
@@ -232,11 +198,15 @@ namespace VDS.RDF.Utilities.Editor
             String find = this.FindText;
 
             //Validate Regex
+            Regex regex = null;
+            RegexOptions regexOps = this.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
+            regexOps |= RegexOptions.Multiline;
+            regexOps |= RegexOptions.CultureInvariant;
             if (this.UseRegex)
             {
                 try
                 {
-                    Regex.IsMatch(String.Empty, find);
+                    regex = new Regex(find, regexOps);
                 }
                 catch (Exception ex)
                 {
@@ -255,14 +225,13 @@ namespace VDS.RDF.Utilities.Editor
             int pos;
             int length = find.Length;
             StringComparison compareMode = this.MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-            RegexOptions regexOps = this.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
 
             if (this.SearchUp)
             {
                 //Search portion of Document prior to current position
                 if (this.UseRegex)
                 {
-                    MatchCollection ms = Regex.Matches(editor.Text.Substring(0, start), find, regexOps);
+                    MatchCollection ms = regex.Matches(editor.Text.Substring(0, start));
                     if (ms.Count == 0)
                     {
                         pos = -1;
@@ -284,7 +253,7 @@ namespace VDS.RDF.Utilities.Editor
                 start += editor.SelectionLength;
                 if (this.UseRegex)
                 {
-                    Match m = Regex.Match(editor.Text.Substring(start), find, regexOps);
+                    Match m = regex.Match(editor.Text.Substring(start));
                     if (!m.Success)
                     {
                         pos = -1;
@@ -302,55 +271,47 @@ namespace VDS.RDF.Utilities.Editor
             }
 
             //If we've found the position of the next highlight it and return true otherwise return false
-            if (pos > -1)
-            {
-                //Check we meet any document range restrictions
-                if (pos < minPos || pos > maxPos)
-                {
-                    editor.CaretOffset = pos;
-                    editor.SelectionStart = pos;
-                    editor.SelectionLength = length;
-                    return this.FindNext(editor, minPos, maxPos);
-                }
+            if (pos <= -1) return false;
 
-                //If Matching on whole word ensure that their are boundaries before and after the match
-                if (this.MatchWholeWord)
-                {
-                    //Check boundary before
-                    if (pos > 0)
-                    {
-                        char c = editor.Text[pos - 1];
-                        if (Char.IsLetterOrDigit(c))
-                        {
-                            //Not a boundary so adjust start position and recurse
-                            editor.CaretOffset = pos + length;
-                            if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
-                            return this.FindNext(editor);
-                        }
-                    }
-                    //Check boundary after
-                    if (pos + length < editor.Text.Length - 1)
-                    {
-                        char c = editor.Text[pos + length];
-                        if (Char.IsLetterOrDigit(c))
-                        {
-                            //Not a boundary so adjust start position and recurse
-                            editor.CaretOffset = pos + length - 1;
-                            if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
-                            return this.FindNext(editor);
-                        }
-                    }
-                }
-
-                editor.Select(pos, length);
-                editor.CaretOffset = pos;
-                editor.ScrollToLine(editor.GetLineByOffset(pos));
-                return true;
-            }
-            else
+            //Check we meet any document range restrictions
+            if (pos < minPos || pos > maxPos)
             {
                 return false;
             }
+
+            //If Matching on whole word ensure that their are boundaries before and after the match
+            if (this.MatchWholeWord)
+            {
+                //Check boundary before
+                if (pos > 0)
+                {
+                    char c = editor.Text[pos - 1];
+                    if (Char.IsLetterOrDigit(c))
+                    {
+                        //Not a boundary so adjust start position and recurse
+                        editor.CaretOffset = pos + length;
+                        if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
+                        return this.FindNext(editor);
+                    }
+                }
+                //Check boundary after
+                if (pos + length < editor.Text.Length - 1)
+                {
+                    char c = editor.Text[pos + length];
+                    if (Char.IsLetterOrDigit(c))
+                    {
+                        //Not a boundary so adjust start position and recurse
+                        editor.CaretOffset = pos + length - 1;
+                        if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
+                        return this.FindNext(editor);
+                    }
+                }
+            }
+
+            editor.Select(pos, length);
+            editor.CaretOffset = pos;
+            editor.ScrollToLine(editor.GetLineByOffset(pos));
+            return true;
         }
 
         /// <summary>
@@ -457,6 +418,7 @@ namespace VDS.RDF.Utilities.Editor
                     editor.SelectionLength = replace.Length;
                     editor.CaretOffset = editor.SelectionStart;
 
+                    minPos = editor.SelectionStart + editor.SelectionLength + 1;
                     maxPos += diff;
                 }
             }
