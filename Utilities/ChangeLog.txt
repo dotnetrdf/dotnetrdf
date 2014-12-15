@@ -21,11 +21,11 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
+- Fix bug with Replace All hanging when using continually matching regular expression (TOOLS-436)
 
 rdfOptStats
 
 rdfQuery
-- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 rdfServer
 
@@ -36,7 +36,5 @@ rdfWebDeploy
 soh
 
 SparqlGUI
-- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
 
 StoreManager
-- Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
