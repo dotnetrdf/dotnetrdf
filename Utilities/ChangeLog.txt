@@ -21,6 +21,7 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
+- Fix bug with capture groups not honoured in replace text when using regular expression (TOOLS-435)
 - Fix bug with Replace All hanging when using continually matching regular expression (TOOLS-436)
 
 
