@@ -262,64 +262,67 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("Unexpected Element <" + graphEl.Name + "> encountered, only <graph> elements are permitted within a <TriX> element");
             }
 
-            //Check whether this Graph is actually asserted
-            if (graphEl.Attributes.GetNamedItem("asserted") != null)
+            if (graphEl.HasChildNodes)
             {
-                bool asserted = true;
-                if (Boolean.TryParse(graphEl.Attributes["asserted"].Value, out asserted))
+                //Check whether this Graph is actually asserted
+                if (graphEl.Attributes.GetNamedItem("asserted") != null)
                 {
-                    //Don't process this Graph further if it is not being asserted
-                    //i.e. it is only (potentially) being quoted
-                    if (!asserted)
+                    bool asserted = true;
+                    if (Boolean.TryParse(graphEl.Attributes["asserted"].Value, out asserted))
                     {
-                        this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
-                        return;
+                        //Don't process this Graph further if it is not being asserted
+                        //i.e. it is only (potentially) being quoted
+                        if (!asserted)
+                        {
+                            this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
+                            return;
+                        }
                     }
                 }
-            }
 
-            //See if we get an <id>/<uri> node to name the Graph
-            bool skipFirst = true;
-            XmlNode nameEl = graphEl.FirstChild;
+                //See if we get an <id>/<uri> node to name the Graph
+                bool skipFirst = true;
+                XmlNode nameEl = graphEl.FirstChild;
 
-            //Watch out for Comments and other non-Element nodes
-            if (nameEl.NodeType != XmlNodeType.Element)
-            {
-                foreach (XmlNode n in graphEl.ChildNodes)
+                //Watch out for Comments and other non-Element nodes
+                if (nameEl.NodeType != XmlNodeType.Element)
                 {
-                    if (n.NodeType == XmlNodeType.Element)
+                    foreach (XmlNode n in graphEl.ChildNodes)
                     {
-                        nameEl = n;
-                        break;
+                        if (n.NodeType == XmlNodeType.Element)
+                        {
+                            nameEl = n;
+                            break;
+                        }
                     }
                 }
-            }
 
-            //Process the name into a Graph Uri and create the Graph and add it to the Store
-            Uri graphUri;
-            if (nameEl.Name.Equals("uri"))
-            {
-                //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                graphUri = UriFactory.Create(Tools.ResolveUri(nameEl.InnerText, String.Empty));
-            }
-            else
-            {
-                skipFirst = false;
-                graphUri = null;
-            }
-
-            //Process the Child Nodes of the <graph> element to yield Triples
-            foreach (XmlNode triple in graphEl.ChildNodes)
-            {
-                //Remember to ignore anything that isn't an element i.e. comments and processing instructions
-                if (triple.NodeType == XmlNodeType.Element)
+                //Process the name into a Graph Uri and create the Graph and add it to the Store
+                Uri graphUri;
+                if (nameEl.Name.Equals("uri"))
                 {
-                    if (skipFirst)
+                    //TODO: Add support for reading Base Uri from xml:base attributes in the file
+                    graphUri = UriFactory.Create(Tools.ResolveUri(nameEl.InnerText, String.Empty));
+                }
+                else
+                {
+                    skipFirst = false;
+                    graphUri = null;
+                }
+
+                //Process the Child Nodes of the <graph> element to yield Triples
+                foreach (XmlNode triple in graphEl.ChildNodes)
+                {
+                    //Remember to ignore anything that isn't an element i.e. comments and processing instructions
+                    if (triple.NodeType == XmlNodeType.Element)
                     {
-                        skipFirst = false;
-                        continue;
+                        if (skipFirst)
+                        {
+                            skipFirst = false;
+                            continue;
+                        }
+                        this.TryParseTriple(triple, handler, graphUri);
                     }
-                    this.TryParseTriple(triple, handler, graphUri);
                 }
             }
         }
@@ -594,67 +597,71 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("Unexpected Element <" + reader.Name + "> encountered, only <graph> elements are permitted within a <TriX> element");
             }
-
-            //Check whether this Graph is actually asserted
-            for (int i = 0; i < reader.AttributeCount; i++)
+            //If we've got an empty graph, we can safely ignore it.
+            if (!reader.IsEmptyElement)
             {
-                reader.MoveToNextAttribute();
-                if (reader.Name.Equals("asserted"))
+
+                //Check whether this Graph is actually asserted
+                for (int i = 0; i < reader.AttributeCount; i++)
                 {
-                    bool asserted = true;
-                    if (Boolean.TryParse(reader.Value, out asserted))
+                    reader.MoveToNextAttribute();
+                    if (reader.Name.Equals("asserted"))
                     {
-                        //Don't process this Graph further if it is not being asserted
-                        //i.e. it is only (potentially) being quoted
-                        if (!asserted)
+                        bool asserted = true;
+                        if (Boolean.TryParse(reader.Value, out asserted))
                         {
-                            this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
-                            return;
+                            //Don't process this Graph further if it is not being asserted
+                            //i.e. it is only (potentially) being quoted
+                            if (!asserted)
+                            {
+                                this.RaiseWarning("A Graph is marked as not asserted in the TriX input.  This Graph will not be parsed, if you reserialize the input the information contained in it will not be preserved");
+                                return;
+                            }
                         }
                     }
                 }
-            }
 
-            //See if we get an <id>/<uri> node to name the Graph
-            reader.Read();
-            IGraph g = null;
-            Uri graphUri = null;
-            if (reader.NodeType == XmlNodeType.Element)
-            {
-                //Process the name into a Graph Uri and create the Graph and add it to the Store
-                if (reader.Name.Equals("uri"))
-                {
-                    //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                    graphUri = new Uri(Tools.ResolveUri(reader.ReadInnerXml(), String.Empty));
-                }
-            }
-
-            //If the next element is a </graph> then this is an empty graph and we should return
-            if (reader.NodeType == XmlNodeType.EndElement)
-            {
-                if (reader.Name.Equals("graph"))
-                {
-                    return;
-                }
-                else
-                {
-                    throw Error("Unexpected </" + reader.Name + "> encountered, either <triple> elements or a </graph> was expected", reader);
-                }
-            }
-
-            //Process the Child Nodes of the <graph> element to yield Triples
-            do
-            {
-                //Remember to ignore anything that isn't an element i.e. comments and processing instructions
+                //See if we get an <id>/<uri> node to name the Graph
+                reader.Read();
+                IGraph g = null;
+                Uri graphUri = null;
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    this.TryParseTriple(reader, handler, graphUri);
+                    //Process the name into a Graph Uri and create the Graph and add it to the Store
+                    if (reader.Name.Equals("uri"))
+                    {
+                        //TODO: Add support for reading Base Uri from xml:base attributes in the file
+                        graphUri = new Uri(Tools.ResolveUri(reader.ReadInnerXml(), String.Empty));
+                    }
                 }
 
-                reader.Read();
-            } while (reader.NodeType != XmlNodeType.EndElement);
+                //If the next element is a </graph> then this is an empty graph and we should return
+                if (reader.NodeType == XmlNodeType.EndElement)
+                {
+                    if (reader.Name.Equals("graph"))
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        throw Error("Unexpected </" + reader.Name + "> encountered, either <triple> elements or a </graph> was expected", reader);
+                    }
+                }
 
-            if (!reader.Name.Equals("graph")) throw Error("Expected a </graph> but a </" + reader.Name + "> was encountered", reader);
+                //Process the Child Nodes of the <graph> element to yield Triples
+                do
+                {
+                    //Remember to ignore anything that isn't an element i.e. comments and processing instructions
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        this.TryParseTriple(reader, handler, graphUri);
+                    }
+
+                    reader.Read();
+                } while (reader.NodeType != XmlNodeType.EndElement);
+
+                if (!reader.Name.Equals("graph")) throw Error("Expected a </graph> but a </" + reader.Name + "> was encountered", reader);
+            }
         }
 
         private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphUri)
