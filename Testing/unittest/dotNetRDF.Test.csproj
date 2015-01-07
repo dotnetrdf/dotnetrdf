@@ -3376,6 +3376,15 @@
     <Content Include="resources\core-421\test3.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\core-439\data.trig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-439\good-query.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\core-439\bad-query.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

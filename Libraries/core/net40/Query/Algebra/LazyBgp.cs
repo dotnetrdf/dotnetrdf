@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
@@ -33,6 +34,7 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -47,10 +49,9 @@ namespace VDS.RDF.Query.Algebra
     /// A Lazy BGP can only contain concrete Triple Patterns and/or FILTERs and not any of other the specialised Triple Pattern classes
     /// </para>
     /// </remarks>
-    public class LazyBgp 
-        : IBgp
+    public class LazyBgp
+        : Bgp
     {
-        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
         private int _requiredResults = -1;
 
         /// <summary>
@@ -103,92 +104,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the number of Triple Patterns in the BGP
-        /// </summary>
-        public int PatternCount
-        {
-            get
-            {
-                return this._triplePatterns.Count;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Triple Patterns in the BGP
-        /// </summary>
-        public IEnumerable<ITriplePattern> TriplePatterns
-        {
-            get
-            {
-                return this._triplePatterns;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the Algebra
-        /// </summary>
-        public IEnumerable<String> Variables
-        {
-            get
-            {
-                return (from tp in this._triplePatterns
-                        from v in tp.Variables
-                        select v).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
-        /// </summary>
-        public IEnumerable<string> FixedVariables
-        {
-            get
-            {
-                return (from tp in this._triplePatterns
-                        from v in tp.FixedVariables
-                        select v).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
-        /// </summary>
-        public IEnumerable<string> FloatingVariables
-        {
-            get
-            {
-                // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<String> floating = from tp in this._triplePatterns
-                                               from v in tp.FloatingVariables
-                                               select v;
-                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
-                return floating.Where(v => !fixedVars.Contains(v)).Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets whether the BGP is the emtpy BGP
-        /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return (this._triplePatterns.Count == 0);
-            }
-        }
-
-        /// <summary>
         /// Evaluates the BGP against the Evaluation Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             bool halt;
-            BaseMultiset results;
+            BaseMultiset results = null;
             int origRequired = this._requiredResults;
 
-            //May need to detect the actual
+            //May need to detect the actual amount of required results if not specified at instantation
             if (this._requiredResults < 0)
             {
                 if (context.Query != null)
@@ -218,17 +144,28 @@ namespace VDS.RDF.Query.Algebra
                             this._requiredResults = -1;
                         }
                     }
+                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + this._requiredResults);
                 }
             }
 
-            if (this._requiredResults != 0)
+            switch (this._requiredResults)
             {
-                results = this.StreamingEvaluate(context, 0, out halt);
-                if (results is Multiset && results.IsEmpty) results = new NullMultiset();
-            }
-            else
-            {
-                results = new NullMultiset();
+                case -1:
+                    // If required results is everything just use normal evaluation as otherwise 
+                    // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
+                    return base.Evaluate(context);
+                case 0:
+                    // Don't need any results
+                    results = new NullMultiset();
+                    break;
+                default:
+                    // Do streaming evaluation
+                    if (this._requiredResults != 0)
+                    {
+                        results = this.StreamingEvaluate(context, 0, out halt);
+                        if (results is Multiset && results.IsEmpty) results = new NullMultiset();
+                    }
+                    break;
             }
             this._requiredResults = origRequired;
 
@@ -239,6 +176,9 @@ namespace VDS.RDF.Query.Algebra
 
         private BaseMultiset StreamingEvaluate(SparqlEvaluationContext context, int pattern, out bool halt)
         {
+            //Remember to check for Timeouts during Lazy Evaluation
+            context.CheckTimeout();
+
             halt = false;
 
             //Handle Empty BGPs
@@ -252,8 +192,8 @@ namespace VDS.RDF.Query.Algebra
 
             //Determine whether the Pattern modifies the existing Input rather than joining to it
             bool modifies = (this._triplePatterns[pattern].PatternType == TriplePatternType.Filter);
-            bool extended = (pattern > 0 && this._triplePatterns[pattern-1].PatternType == TriplePatternType.BindAssignment);
-            bool modified = (pattern > 0 && this._triplePatterns[pattern-1].PatternType == TriplePatternType.Filter);
+            bool extended = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
+            bool modified = (pattern > 0 && this._triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
 
             //Set up the Input and Output Multiset appropriately
             switch (pattern)
@@ -293,8 +233,8 @@ namespace VDS.RDF.Query.Algebra
                             //Normal Join
                             initialInput = context.InputMultiset.Join(context.OutputMultiset);
                         }
-                    } 
-                    else 
+                    }
+                    else
                     {
                         initialInput = context.OutputMultiset;
                     }
@@ -312,7 +252,7 @@ namespace VDS.RDF.Query.Algebra
             if (temp.PatternType == TriplePatternType.Match)
             {
                 //Find the first Triple which matches the Pattern
-                IMatchTriplePattern tp = (IMatchTriplePattern)temp;
+                IMatchTriplePattern tp = (IMatchTriplePattern) temp;
                 IEnumerable<Triple> ts = tp.GetTriples(context);
 
                 //In the case that we're lazily evaluating an optimisable ORDER BY then
@@ -332,7 +272,9 @@ namespace VDS.RDF.Query.Algebra
                             else
                             {
                                 //Can't get a comparer so can't optimise
-                                this._requiredResults = -1;
+                                // Thus required results is everything so just use normal evaluation as otherwise 
+                                // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
+                                return base.Evaluate(context);
                             }
                         }
                     }
@@ -340,9 +282,6 @@ namespace VDS.RDF.Query.Algebra
 
                 foreach (Triple t in ts)
                 {
-                    //Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
                     if (tp.Accepts(context, t))
                     {
                         resultsFound++;
@@ -431,14 +370,11 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (temp.PatternType == TriplePatternType.Filter)
             {
-                IFilterPattern filter = (IFilterPattern)temp;
+                IFilterPattern filter = (IFilterPattern) temp;
                 ISparqlExpression filterExpr = filter.Filter.Expression;
 
                 if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
                 {
-                    //Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
                     //Filter is Disjoint so determine whether it has any affect or not
                     if (filter.Variables.Any())
                     {
@@ -484,12 +420,9 @@ namespace VDS.RDF.Query.Algebra
                             return new Multiset();
                         }
                     }
-                } 
+                }
                 else
                 {
-                    //Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
                     //Test each solution found so far against the Filter and eliminate those that evalute to false/error
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
@@ -500,7 +433,7 @@ namespace VDS.RDF.Query.Algebra
                                 //If evaluates to true then add to output
                                 context.OutputMultiset.Add(context.InputMultiset[id].Copy());
                             }
-                        } 
+                        }
                         catch (RdfQueryException)
                         {
                             //Error means we ignore the solution
@@ -509,7 +442,7 @@ namespace VDS.RDF.Query.Algebra
 
                     //Remember to check for Timeouts during Lazy Evaluation
                     context.CheckTimeout();
-                    
+
                     //Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
                     if (pattern < this._triplePatterns.Count - 1)
@@ -533,7 +466,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (temp is BindPattern)
             {
-                BindPattern bind = (BindPattern)temp;
+                BindPattern bind = (BindPattern) temp;
                 ISparqlExpression bindExpr = bind.AssignExpression;
                 String bindVar = bind.VariableName;
 
@@ -543,9 +476,6 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    //Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
                     //Compute the Binding for every value
                     context.OutputMultiset.AddVariable(bindVar);
                     foreach (ISet s in context.InputMultiset.Sets)
@@ -596,6 +526,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
+                //Remember to check for Timeouts during Lazy Evaluation
+                context.CheckTimeout();
+
                 //Generate the final output and return it
                 if (!modifies)
                 {
@@ -621,33 +554,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyBgp()";
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            SparqlQuery q = new SparqlQuery();
-            q.RootGraphPattern = this.ToGraphPattern();
-            q.Optimise();
-            return q;
-        }
-
-        /// <summary>
-        /// Converts the BGP to a Graph Pattern
-        /// </summary>
-        /// <returns></returns>
-        public GraphPattern ToGraphPattern()
-        {
-            GraphPattern p = new GraphPattern();
-            foreach (ITriplePattern tp in this._triplePatterns)
-            {
-                p.AddTriplePattern(tp);
-            }
-            return p;
+            return "LazyBgp(" + this._requiredResults + ")";
         }
     }
 
@@ -698,14 +605,14 @@ namespace VDS.RDF.Query.Algebra
             if (this._lhs is Extend || this._rhs is Extend) initialInput = new IdentityMultiset();
 
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs); //this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult.Count >= this._requiredResults || this._requiredResults == -1)
             {
                 //Only evaluate the RHS if the LHS didn't yield sufficient results
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(this._rhs); //this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -725,10 +632,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<String> Variables
         {
-            get
-            {
-                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
-            }
+            get { return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct(); }
         }
 
         /// <summary>
@@ -761,10 +665,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra Lhs
         {
-            get
-            {
-                return this._lhs;
-            }
+            get { return this._lhs; }
         }
 
         /// <summary>
@@ -772,10 +673,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra Rhs
         {
-            get
-            {
-                return this._rhs;
-            }
+            get { return this._rhs; }
         }
 
         /// <summary>

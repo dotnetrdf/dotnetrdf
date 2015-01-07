@@ -1,0 +1,13 @@
+﻿prefix hydra: <http://www.w3.org/ns/hydra/core#>
+prefix dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?member ?title
+{
+  GRAPH <http://localhost:17899/brochures>  
+  {
+    <http://localhost:17899/brochures> hydra:member ?member .
+    ?member dcterms:title ?title .
+  }
+}
+OFFSET 0
+LIMIT 10
