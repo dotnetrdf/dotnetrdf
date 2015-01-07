@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Algebra
     public class Bgp
         : IBgp
     {
-        private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
         /// Creates a new empty BGP
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             if (this._triplePatterns.Count > 0)
             {
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
         /// Converts the Algebra back to a SPARQL Query
         /// </summary>
         /// <returns></returns>
-        public SparqlQuery ToQuery()
+        public virtual SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
             q.RootGraphPattern = this.ToGraphPattern();
@@ -247,7 +247,7 @@ namespace VDS.RDF.Query.Algebra
         /// Converts the BGP to a Graph Pattern
         /// </summary>
         /// <returns></returns>
-        public GraphPattern ToGraphPattern()
+        public virtual GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
             foreach (ITriplePattern tp in this._triplePatterns)

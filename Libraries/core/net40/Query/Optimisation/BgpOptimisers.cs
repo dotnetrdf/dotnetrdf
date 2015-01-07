@@ -104,7 +104,6 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
-            //return false;
             return q.Limit > 0
                    && !q.HasDistinctModifier
                    && (q.OrderBy == null || q.IsOptimisableOrderBy)
