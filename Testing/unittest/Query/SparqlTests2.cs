@@ -1445,6 +1445,25 @@ WHERE
             Assert.AreEqual(10, results.Count);
         }
 
+        [Test, Timeout(5000)]
+        public void SparqlInfiniteLoopCore439_03()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-439\data.trig");
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\from-query.rq");
+            //q.Timeout = 3000;
+            Console.WriteLine(q.ToAlgebra().ToString());
+
+            ISparqlDataset dataset = AsDataset(store);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            Assert.AreEqual(10, results.Count);
+        }
+
 #endif
     }
 }
