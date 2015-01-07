@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
@@ -218,6 +219,7 @@ namespace VDS.RDF.Query.Algebra
                             this._requiredResults = -1;
                         }
                     }
+                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + this._requiredResults);
                 }
             }
 
@@ -621,7 +623,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyBgp()";
+            return "LazyBgp(" + this._requiredResults + ")";
         }
 
         /// <summary>
