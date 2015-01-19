@@ -10,6 +10,7 @@ Changed
  - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
  - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
  - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+ - Fix typo in MIME type definitions for NTriples
 
 1.0.7
 -----

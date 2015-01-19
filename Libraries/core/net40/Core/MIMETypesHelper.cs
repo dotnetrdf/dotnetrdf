@@ -85,7 +85,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        internal static string[] NTriples = { "application/ntriples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
+        internal static string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads
