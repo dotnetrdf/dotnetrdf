@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query.Sorting
         public IComparer<ISolution> CreateComparer(IExpressionContext context)
         {
             IComparer<ISolution> comparer = new ExpressionValueComparer(this.Expression, context, new SparqlOrderingComparer());
-            return this.IsAscending ? comparer : new InvertedComparer<ISolution>(comparer);
+            return this.IsAscending ? comparer : new ReversedComparer<ISolution>(comparer);
         }
 
         public override string ToString()

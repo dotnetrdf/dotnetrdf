@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Expressions.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
@@ -102,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case SparqlSpecsHelper.SparqlKeywordAvg:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new AverageAggregate(args.First()));
+                            sparqlFunc = new AverageAggregate(args.First());
                         }
                         else
                         {
@@ -170,7 +171,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                         //Q: What will the URIs be for the special forms of COUNT?
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new CountAggregate(args.First()));
+                            sparqlFunc = new CountAggregate(args.First());
                         }
                         else
                         {
@@ -222,11 +223,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                         {
                             if (scalarArguments.ContainsKey(SparqlSpecsHelper.SparqlKeywordSeparator))
                             {
-                                sparqlFunc = new AggregateTerm(new GroupConcatAggregate(args.First(), scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator]));
+                                sparqlFunc = new GroupConcatAggregate(args.First(), scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator]);
                             }
                             else
                             {
-                                sparqlFunc = new AggregateTerm(new GroupConcatAggregate(args.First()));
+                                sparqlFunc = new GroupConcatAggregate(args.First());
                             }
                         }
                         else
@@ -347,7 +348,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case SparqlSpecsHelper.SparqlKeywordMax:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new MaxAggregate(args.First()));
+                            sparqlFunc = new MaxAggregate(args.First());
                         }
                         else
                         {
@@ -371,7 +372,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case SparqlSpecsHelper.SparqlKeywordMin:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new MinAggregate(args.First()));
+                            sparqlFunc = new MinAggregate(args.First());
                         }
                         else
                         {
@@ -445,7 +446,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case SparqlSpecsHelper.SparqlKeywordSample:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new SampleAggregate(args.First()));
+                            sparqlFunc = new SampleAggregate(args.First());
                         }
                         else
                         {
@@ -587,7 +588,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case SparqlSpecsHelper.SparqlKeywordSum:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateTerm(new SumAggregate(args.First()));
+                            sparqlFunc = new SumAggregate(args.First());
                         }
                         else
                         {

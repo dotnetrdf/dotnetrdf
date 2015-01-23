@@ -22,7 +22,7 @@ namespace VDS.RDF.Query.Aggregation
             return this.Expression.Equals(sample.Expression);
         }
 
-        protected override void Accumulate(IValuedNode value)
+        protected internal override void Accumulate(IValuedNode value)
         {
             // Ignore null values
             if (value == null) return;

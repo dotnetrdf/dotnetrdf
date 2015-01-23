@@ -2,7 +2,6 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Grouping;
 
 namespace VDS.RDF.Query.Aggregation
 {
@@ -25,7 +24,7 @@ namespace VDS.RDF.Query.Aggregation
 
         public abstract bool Equals(IAccumulator other);
 
-        public void Accumulate(ISolution solution, IExpressionContext context)
+        public virtual void Accumulate(ISolution solution, IExpressionContext context)
         {
             try
             {
@@ -37,8 +36,8 @@ namespace VDS.RDF.Query.Aggregation
             }
         }
 
-        protected abstract void Accumulate(IValuedNode value);
+        protected abstract internal void Accumulate(IValuedNode value);
 
-        public virtual IValuedNode AccumulatedResult { get; protected set; }
+        public virtual IValuedNode AccumulatedResult { get; protected internal set; }
     }
 }

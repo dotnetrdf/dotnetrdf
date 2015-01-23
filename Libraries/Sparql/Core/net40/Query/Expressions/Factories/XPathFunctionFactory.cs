@@ -69,14 +69,14 @@ namespace VDS.RDF.Query.Expressions.Factories
                             NormalizeUnicode = "normalize-unicode",
                             UpperCase = "upper-case",
                             LowerCase = "lower-case",
-                            EncodeForURI = "encode-for-uri",
+                            EncodeForUri = "encode-for-uri",
                             SubstringBefore = "substring-before",
                             SubstringAfter = "substring-after",
                             Replace = "replace",
                             Translate = "translate",
                             Compare = "compare",
                             StringJoin = "string-join",
-                            EscapeHtmlURI = "escape-html-uri";
+                            EscapeHtmlUri = "escape-html-uri";
 
         /// <summary>
         /// Constants representing the XPath Boolean constructor functions
@@ -132,9 +132,9 @@ namespace VDS.RDF.Query.Expressions.Factories
                                             NormalizeUnicode,
                                             UpperCase,
                                             LowerCase,
-                                            EncodeForURI,
+                                            EncodeForUri,
                                             Replace,
-                                            EscapeHtmlURI,
+                                            EscapeHtmlUri,
                                             Absolute,
                                             Ceiling,
                                             Floor,
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                             throw new RdfParseException("Incorrect number of arguments for the XPath day-from-dateTime() function");
                         }
                         break;
-                    case XPathFunctionFactory.EncodeForURI:
+                    case XPathFunctionFactory.EncodeForUri:
                         if (args.Count == 1)
                         {
                             xpathFunc = new EncodeForUriFunction(args.First());
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.Expressions.Factories
                         }
                         break;
 #if !NO_WEB
-                    case XPathFunctionFactory.EscapeHtmlURI:
+                    case XPathFunctionFactory.EscapeHtmlUri:
                         if (args.Count == 1)
                         {
                             xpathFunc = new EscapeHtmlUriFunction(args.First());
@@ -468,11 +468,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case XPathFunctionFactory.StringJoin:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new AggregateTerm(new StringJoinAggregate(args.First()));
+                            xpathFunc = new StringJoinAggregate(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            xpathFunc = new AggregateTerm(new StringJoinAggregate(args.First(), args.Last()));
+                            xpathFunc = new StringJoinAggregate(args.First(), args.Last());
                         }
                         else
                         {

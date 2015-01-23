@@ -30,7 +30,7 @@ namespace VDS.RDF.Query.Aggregation
             return this.Expression.Equals(sum.Expression);
         }
 
-        protected override void Accumulate(IValuedNode value)
+        protected internal override void Accumulate(IValuedNode value)
         {
             if (value == null) return;
 
@@ -42,15 +42,13 @@ namespace VDS.RDF.Query.Aggregation
             // Put the total back into the first entry in our arguments array for next time
             this._sum = this._adder.Apply(this._args);
             this._args[0] = this._sum;
-
-            // TODO Should the count increment for any non-null value?
             this._count++;
         }
 
         public override IValuedNode AccumulatedResult
         {
             get { return this._divisor.Apply(this._sum, new LongNode(this._count)); }
-            protected set { throw new NotSupportedException("Averages are calculated on the fly from the accumulated sum and count"); }
+            protected internal set { throw new NotSupportedException("Averages are calculated on the fly from the accumulated sum and count"); }
         }
     }
 }

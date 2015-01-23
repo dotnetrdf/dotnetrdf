@@ -53,6 +53,9 @@
     <Compile Include="Collections\WrapperEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Aggregation\AverageAccumulator.cs" />
+    <Compile Include="Query\Aggregation\SortingAccumulator.cs" />
+    <Compile Include="Query\Aggregation\DistinctAccumulator.cs" />
+    <Compile Include="Query\Aggregation\GroupConcatAccumulator.cs" />
     <Compile Include="Query\Algebra\BaseBinaryAlgebra.cs" />
     <Compile Include="Query\Algebra\BaseUnaryAlgebra.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
@@ -140,6 +143,10 @@
     <Compile Include="Query\Engine\Joins\Workers\WrapperJoinWorker.cs" />
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\Aggregates\BaseAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\CountDistinctAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\GroupConcatAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\MinAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\MaxAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\SampleAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\CountAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\CountAllAggregate.cs" />
@@ -364,7 +371,6 @@
     <Compile Include="Query\Results\IMutableResultRow.cs" />
     <Compile Include="Query\Results\IMutableTabularResults.cs" />
     <Compile Include="Query\Results\IRandomAccessTabularResults.cs" />
-    <Compile Include="Query\Sorting\InvertedComparer.cs" />
     <Compile Include="Query\Sorting\ExpressionValueComparer.cs" />
     <Compile Include="Query\Sorting\SortCondition.cs" />
     <Compile Include="Query\Sorting\ISortCondition.cs" />

@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlUri;
             }
         }
     }

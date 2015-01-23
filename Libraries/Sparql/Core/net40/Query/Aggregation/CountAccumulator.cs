@@ -1,6 +1,5 @@
 ﻿using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Grouping;
 
 namespace VDS.RDF.Query.Aggregation
 {
@@ -16,10 +15,13 @@ namespace VDS.RDF.Query.Aggregation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            return other is CountAccumulator;
+            if (!(other is CountAccumulator)) return false;
+
+            CountAccumulator count = (CountAccumulator) other;
+            return this.Expression.Equals(count.Expression);
         }
 
-        protected override void Accumulate(IValuedNode value)
+        protected internal override void Accumulate(IValuedNode value)
         {
             if (value == null) return;
             this._count++;

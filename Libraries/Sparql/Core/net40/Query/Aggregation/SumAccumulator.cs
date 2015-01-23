@@ -26,7 +26,7 @@ namespace VDS.RDF.Query.Aggregation
             return this.Expression.Equals(sum.Expression);
         }
 
-        protected override void Accumulate(IValuedNode value)
+        protected internal override void Accumulate(IValuedNode value)
         {
             if (value == null) return;
 

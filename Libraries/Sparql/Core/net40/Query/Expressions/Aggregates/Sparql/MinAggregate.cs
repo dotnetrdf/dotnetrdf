@@ -1,29 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Collections;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Aggregation;
+using VDS.RDF.Query.Sorting;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 {
-    public class AverageAggregate
+    public class MinAggregate
         : BaseAggregate
     {
-        public AverageAggregate(IExpression arg)
-            : base(arg.AsEnumerable()) { }
+        public MinAggregate(IExpression expr)
+            : base(expr.AsEnumerable()) { }
 
         public override IExpression Copy(IEnumerable<IExpression> args)
         {
-            return new AverageAggregate(args.First());
+            return new MinAggregate(args.First());
         }
 
         public override string Functor
         {
-            get { return SparqlSpecsHelper.SparqlKeywordAvg; }
+            get { return SparqlSpecsHelper.SparqlKeywordMin; }
         }
 
         public override IAccumulator CreateAccumulator()
         {
-            return new AverageAccumulator(this.Arguments[0]);
+            return new SortingAccumulator(this.Arguments[0], new ReversedComparer<IValuedNode>(new SparqlOrderingComparer()));
         }
     }
 }

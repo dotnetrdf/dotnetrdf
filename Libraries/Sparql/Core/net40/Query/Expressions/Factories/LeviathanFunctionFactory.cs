@@ -178,11 +178,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.All:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new AllAggregate(args.First()));
+                            lvnFunc = new AllAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new AllAggregate(args.Last(), true));
+                            lvnFunc = new AllAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -192,11 +192,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.Any:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new AnyAggregate(args.First()));
+                            lvnFunc = new AnyAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new AnyAggregate(args.Last(), true));
+                            lvnFunc = new AnyAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -298,11 +298,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.Median:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new MedianAggregate(args.First()));
+                            lvnFunc = new MedianAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new MedianAggregate(args.Last(), true));
+                            lvnFunc = new MedianAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -312,11 +312,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.Mode:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new ModeAggregate(args.First()));
+                            lvnFunc = new ModeAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new ModeAggregate(args.Last(), true));
+                            lvnFunc = new ModeAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -326,11 +326,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.None:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new NoneAggregate(args.First()));
+                            lvnFunc = new NoneAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new NoneAggregate(args.Last(), true));
+                            lvnFunc = new NoneAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -340,11 +340,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.NumericMax:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new NumericMaxAggregate(args.First()));
+                            lvnFunc = new NumericMaxAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new NumericMaxAggregate(args.Last(), true));
+                            lvnFunc = new NumericMaxAggregate(args.Last(), true);
                         }
                         else
                         {
@@ -354,11 +354,11 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case LeviathanFunctionFactory.NumericMin:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateTerm(new NumericMinAggregate(args.First()));
+                            lvnFunc = new NumericMinAggregate(args.First());
                         }
                         else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new AggregateTerm(new NumericMinAggregate(args.Last(), true));
+                            lvnFunc = new NumericMinAggregate(args.Last(), true);
                         }
                         else
                         {

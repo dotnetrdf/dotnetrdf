@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI;
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForUri;
             }
         }
     }
