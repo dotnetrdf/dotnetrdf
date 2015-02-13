@@ -63,13 +63,12 @@ namespace VDS.RDF.Query.Expressions.Aggregates
             StringBuilder builder = new StringBuilder();
             builder.Append('(');
             builder.Append(this.Functor.ToLowerInvariant());
-            builder.Append(')');
             foreach (IExpression expr in this.Arguments)
             {
                 builder.Append(' ');
                 builder.Append(expr.ToPrefixString(formatter));
             }
-            builder.Append("))");
+            builder.Append(')');
             return builder.ToString();
         }
     }

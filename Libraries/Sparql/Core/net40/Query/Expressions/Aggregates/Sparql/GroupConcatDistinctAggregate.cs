@@ -7,13 +7,13 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 {
-    public class GroupConcatAggregate
-        : BaseAggregate
+    public class GroupConcatDistinctAggregate
+        : BaseDistinctAggregate
     {
-        public GroupConcatAggregate(IExpression expr)
+        public GroupConcatDistinctAggregate(IExpression expr)
             : this(expr, null) {}
 
-        public GroupConcatAggregate(IExpression expr, IExpression separatorExpr)
+        public GroupConcatDistinctAggregate(IExpression expr, IExpression separatorExpr)
             : base(MakeArguments(expr, separatorExpr)) {}
 
         private static IEnumerable<IExpression> MakeArguments(IExpression expr, IExpression separatorExpr)
@@ -24,7 +24,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
         public override IExpression Copy(IEnumerable<IExpression> args)
         {
             List<IExpression> exprs = args.ToList();
-            return exprs.Count == 1 ? new GroupConcatAggregate(exprs[0], null) : new GroupConcatAggregate(exprs[0], exprs[1]);
+            return exprs.Count == 1 ? new GroupConcatDistinctAggregate(exprs[0], null) : new GroupConcatDistinctAggregate(exprs[0], exprs[1]);
         }
 
         public override string Functor
@@ -34,14 +34,14 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 
         public override IAccumulator CreateAccumulator()
         {
-            return this.Arguments.Count > 1 ? new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1]) : new GroupConcatAccumulator(this.Arguments[0]);
+            return this.Arguments.Count > 1 ? new DistinctAccumulator(new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1])) : new DistinctAccumulator(new GroupConcatAccumulator(this.Arguments[0]));
         }
 
         public override string ToString(IAlgebraFormatter formatter)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(this.Functor.ToLowerInvariant());
-            builder.Append('(');
+            builder.Append("(DISTINCT ");
             for (int i = 0; i < this.Arguments.Count - 1; i++)
             {
                 if (i > 0) builder.Append(", ");
@@ -61,6 +61,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
             StringBuilder builder = new StringBuilder();
             builder.Append('(');
             builder.Append(this.Functor.ToLowerInvariant());
+            builder.Append(" distinct");
             if (this.Arguments.Count > 1)
             {
                 builder.Append(" (separator ");

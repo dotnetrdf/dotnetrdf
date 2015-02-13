@@ -148,6 +148,7 @@
     <Compile Include="Query\Expressions\Aggregates\Sparql\AverageDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\CountAllDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\CountDistinctAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Sparql\GroupConcatDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\GroupConcatAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\MinDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\MaxDistinctAggregate.cs" />
