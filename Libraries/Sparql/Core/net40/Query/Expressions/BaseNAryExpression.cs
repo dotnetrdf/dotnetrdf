@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public abstract IValuedNode Evaluate(ISolution solution, IExpressionContext context);
 
-        public bool Equals(IExpression other)
+        public virtual bool Equals(IExpression other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
@@ -120,10 +120,9 @@ namespace VDS.RDF.Query.Expressions
             StringBuilder builder = new StringBuilder();
             builder.Append('(');
             builder.Append(f);
-            for (int i = 0; i < this.Arguments.Count; i++)
-            {
-                if (i > 0) builder.Append(" ");
-                builder.Append(this.Arguments[i].ToPrefixString(formatter));
+            foreach (IExpression arg in this.Arguments) {
+                builder.Append(" ");
+                builder.Append(arg.ToPrefixString(formatter));
             }
             builder.Append(')');
             return builder.ToString();

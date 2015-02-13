@@ -1,16 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Aggregation;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 {
     public class CountDistinctAggregate
-        : CountAggregate
+        : BaseDistinctAggregate
     {
-        public CountDistinctAggregate(IExpression arg) 
-            : base(arg) {}
+
+        public CountDistinctAggregate(IExpression arg)
+            : base(arg.AsEnumerable()) { }
+
+        public override string Functor
+        {
+            get { return SparqlSpecsHelper.SparqlKeywordCount; }
+        }
 
         public override IAccumulator CreateAccumulator()
         {
@@ -19,9 +24,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 
         public override IExpression Copy(IEnumerable<IExpression> arguments)
         {
-            return new CountAggregate(arguments.FirstOrDefault());
+            return new CountDistinctAggregate(arguments.FirstOrDefault());
         }
-
-        // TODO Need to override string formatting to include DISTINCT keyword
     }
 }
