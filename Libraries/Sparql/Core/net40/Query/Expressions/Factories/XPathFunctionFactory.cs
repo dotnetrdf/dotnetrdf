@@ -468,10 +468,12 @@ namespace VDS.RDF.Query.Expressions.Factories
                     case XPathFunctionFactory.StringJoin:
                         if (args.Count == 1)
                         {
+                            // TODO Produce DISTINCT form where appropriate
                             xpathFunc = new StringJoinAggregate(args.First());
                         }
                         else if (args.Count == 2)
                         {
+                            // TODO Produce DISTINCT form where appropriate
                             xpathFunc = new StringJoinAggregate(args.First(), args.Last());
                         }
                         else

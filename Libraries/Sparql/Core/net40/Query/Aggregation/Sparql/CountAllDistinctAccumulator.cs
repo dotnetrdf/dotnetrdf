@@ -3,7 +3,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Engine;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Aggregation
+namespace VDS.RDF.Query.Aggregation.Sparql
 {
     public class CountAllDistinctAccumulator
         : IAccumulator

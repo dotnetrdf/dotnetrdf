@@ -1,28 +1,32 @@
-﻿using VDS.RDF.Nodes;
+﻿using System;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Operators.Numeric;
 
-namespace VDS.RDF.Query.Aggregation
+namespace VDS.RDF.Query.Aggregation.Sparql
 {
-    public class SumAccumulator
+    public class AverageAccumulator
         : BaseExpressionAccumulator
     {
         private readonly AdditionOperator _adder = new AdditionOperator();
+        private readonly DivisionOperator _divisor = new DivisionOperator();
         private readonly IValuedNode[] _args = new IValuedNode[2];
+        private IValuedNode _sum = new LongNode(0);
+        private long _count = 0;
 
-        public SumAccumulator(IExpression expr)
-            : base(expr, new LongNode(0))
+        public AverageAccumulator(IExpression expr)
+            : base(expr)
         {
-            this._args[0] = this.AccumulatedResult;
+            this._args[0] = this._sum;
         }
 
         public override bool Equals(IAccumulator other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is SumAccumulator)) return false;
+            if (!(other is AverageAccumulator)) return false;
 
-            SumAccumulator sum = (SumAccumulator) other;
+            AverageAccumulator sum = (AverageAccumulator) other;
             return this.Expression.Equals(sum.Expression);
         }
 
@@ -36,8 +40,15 @@ namespace VDS.RDF.Query.Aggregation
 
             // If so go ahead and accumulate it
             // Put the total back into the first entry in our arguments array for next time
-            this.AccumulatedResult = this._adder.Apply(this._args);
-            this._args[0] = this.AccumulatedResult;
+            this._sum = this._adder.Apply(this._args);
+            this._args[0] = this._sum;
+            this._count++;
+        }
+
+        public override IValuedNode AccumulatedResult
+        {
+            get { return this._divisor.Apply(this._sum, new LongNode(this._count)); }
+            protected internal set { base.AccumulatedResult = value; }
         }
     }
 }

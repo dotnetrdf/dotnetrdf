@@ -17,6 +17,7 @@ namespace VDS.RDF.Query.Aggregation
         protected BaseExpressionAccumulator(IExpression expr, IValuedNode initialValue)
             : this(expr)
         {
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             this.AccumulatedResult = initialValue;
         }
 
@@ -36,8 +37,15 @@ namespace VDS.RDF.Query.Aggregation
             }
         }
 
-        protected abstract internal void Accumulate(IValuedNode value);
+        /// <summary>
+        /// Accumulates the actual value of evaluating the expression
+        /// </summary>
+        /// <param name="value">Value, will be null if the expression evaluated to an error</param>
+        protected internal abstract void Accumulate(IValuedNode value);
 
+        /// <summary>
+        /// Gets/Sets the accumulated result
+        /// </summary>
         public virtual IValuedNode AccumulatedResult { get; protected internal set; }
     }
 }

@@ -2,7 +2,7 @@
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Aggregation
+namespace VDS.RDF.Query.Aggregation.Sparql
 {
     public class SampleAccumulator
         : BaseExpressionAccumulator
@@ -32,11 +32,10 @@ namespace VDS.RDF.Query.Aggregation
             {
                 this.AccumulatedResult = value;
             }
-
-            // Otherwise randomly decide whether to take the new value
-            // 50/50 chance we take the new value
-            if (this._random.NextDouble() >= 0.5)
+            else if (this._random.NextDouble() >= 0.5)
             {
+                // Otherwise randomly decide whether to take the new value
+                // 50/50 chance we take the new value
                 this.AccumulatedResult = value;
             }
         }

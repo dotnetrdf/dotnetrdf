@@ -3,6 +3,7 @@ using System.Linq;
 using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Aggregation;
+using VDS.RDF.Query.Aggregation.Sparql;
 using VDS.RDF.Query.Sorting;
 using VDS.RDF.Specifications;
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Aggregation;
+using VDS.RDF.Query.Aggregation.Sparql;
 using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
@@ -34,7 +35,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 
         public override IAccumulator CreateAccumulator()
         {
-            return this.Arguments.Count > 1 ? new DistinctAccumulator(new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1])) : new DistinctAccumulator(new GroupConcatAccumulator(this.Arguments[0]));
+            return this.Arguments.Count > 1 ? new DistinctShortCircuitAccumulator(new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1])) : new DistinctShortCircuitAccumulator(new GroupConcatAccumulator(this.Arguments[0]));
         }
 
         public override string ToString(IAlgebraFormatter formatter)

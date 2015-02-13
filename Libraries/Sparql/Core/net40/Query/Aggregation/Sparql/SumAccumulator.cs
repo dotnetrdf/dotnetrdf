@@ -1,32 +1,28 @@
-﻿using System;
-using VDS.RDF.Nodes;
+﻿using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Operators.Numeric;
 
-namespace VDS.RDF.Query.Aggregation
+namespace VDS.RDF.Query.Aggregation.Sparql
 {
-    public class AverageAccumulator
+    public class SumAccumulator
         : BaseExpressionAccumulator
     {
         private readonly AdditionOperator _adder = new AdditionOperator();
-        private readonly DivisionOperator _divisor = new DivisionOperator();
         private readonly IValuedNode[] _args = new IValuedNode[2];
-        private IValuedNode _sum = new LongNode(0);
-        private long _count = 0;
 
-        public AverageAccumulator(IExpression expr)
-            : base(expr)
+        public SumAccumulator(IExpression expr)
+            : base(expr, new LongNode(0))
         {
-            this._args[0] = this._sum;
+            this._args[0] = this.AccumulatedResult;
         }
 
         public override bool Equals(IAccumulator other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is AverageAccumulator)) return false;
+            if (!(other is SumAccumulator)) return false;
 
-            AverageAccumulator sum = (AverageAccumulator) other;
+            SumAccumulator sum = (SumAccumulator) other;
             return this.Expression.Equals(sum.Expression);
         }
 
@@ -40,15 +36,8 @@ namespace VDS.RDF.Query.Aggregation
 
             // If so go ahead and accumulate it
             // Put the total back into the first entry in our arguments array for next time
-            this._sum = this._adder.Apply(this._args);
-            this._args[0] = this._sum;
-            this._count++;
-        }
-
-        public override IValuedNode AccumulatedResult
-        {
-            get { return this._divisor.Apply(this._sum, new LongNode(this._count)); }
-            protected internal set { throw new NotSupportedException("Averages are calculated on the fly from the accumulated sum and count"); }
+            this.AccumulatedResult = this._adder.Apply(this._args);
+            this._args[0] = this.AccumulatedResult;
         }
     }
 }

@@ -6,7 +6,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Aggregation
 {
     /// <summary>
-    /// An accumulate that accumulates a single value decided which value to keep based on a given comparer
+    /// An accumulator that accumulates a single value decided which value to keep based on a given comparer
     /// </summary>
     public class SortingAccumulator
         : BaseExpressionAccumulator

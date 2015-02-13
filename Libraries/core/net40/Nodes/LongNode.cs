@@ -24,9 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Expressions;
+using System.Globalization;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Nodes
@@ -64,7 +62,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="value">Long value</param>
         public LongNode(long value)
-            : this(value, value.ToString()) { }
+            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the long value

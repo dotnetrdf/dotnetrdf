@@ -6,13 +6,12 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Specifications;
 
-namespace VDS.RDF.Query.Aggregation
+namespace VDS.RDF.Query.Aggregation.Sparql
 {
     public class GroupConcatAccumulator
-        : BaseExpressionAccumulator
+        : BaseShortCircuitExpressionAccumulator
     {
         private readonly StringBuilder _builder = new StringBuilder();
-        private bool _error = false;
         private String _lang = null;
         private bool _allString = true, _allSameLang = true;
         private long _count = 0;
@@ -23,6 +22,7 @@ namespace VDS.RDF.Query.Aggregation
         public GroupConcatAccumulator(IExpression expr, IExpression separatorExpr)
             : base(expr, new StringNode(""))
         {
+            ShortCircuit = false;
             try
             {
                 IValuedNode sep = separatorExpr.Evaluate(new Solution(), null);
@@ -46,21 +46,12 @@ namespace VDS.RDF.Query.Aggregation
             return this.Expression.Equals(groupConcat.Expression) && this.Separator.Equals(groupConcat.Separator);
         }
 
-        public override void Accumulate(ISolution solution, IExpressionContext context)
-        {
-            // Can skip evaluation if already seen an error as the end result will be an error
-            if (this._error) return;
-
-            // Otherwise evalue expression and try and accumulate
-            base.Accumulate(solution, context);
-        }
-
         protected internal override void Accumulate(IValuedNode value)
         {
             this._count++;
             if (value == null || value.NodeType != NodeType.Literal)
             {
-                this._error = true;
+                this.ShortCircuit = true;
                 return;
             }
 
@@ -103,15 +94,14 @@ namespace VDS.RDF.Query.Aggregation
             }
             catch
             {
-                this._error = true;
+                this.ShortCircuit = true;
             }
         }
 
-        public override IValuedNode AccumulatedResult
+        protected override IValuedNode ActualResult
         {
             get
             {
-                if (this._error) return null;
                 if (this._count == 0) return base.AccumulatedResult;
                 if (this._allSameLang && this._lang != null)
                 {
@@ -119,7 +109,10 @@ namespace VDS.RDF.Query.Aggregation
                 }
                 return this._allString ? new StringNode(this._builder.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)) : new StringNode(this._builder.ToString());
             }
-            protected internal set { throw new NotSupportedException("Group concatentations final value is calculated on the fly from the accumulated strings"); }
+            set
+            {
+                throw new NotSupportedException("Group concatentations final value is calculated on the fly from the accumulated strings");
+            }
         }
     }
 }

@@ -772,156 +772,120 @@ namespace VDS.RDF.Specifications
         /// <returns></returns>
         public static bool EffectiveBooleanValue(INode n)
         {
+            // TODO Add a variant of this that works directly on IValuedNode
+
             if (n == null)
             {
                 //Nulls give Type Error
                 throw new NodeValueException("Cannot calculate the Effective Boolean Value of a null value");
             }
-            else
+            if (n.NodeType == NodeType.Literal)
             {
-                if (n.NodeType == NodeType.Literal)
-                {
-                    INode lit = (INode)n;
+                INode lit = (INode)n;
 
-                    if (lit.DataType == null)
+                if (lit.DataType == null)
+                {
+                    if (lit.Value == String.Empty)
                     {
-                        if (lit.Value == String.Empty)
+                        //Empty String Literals have EBV of False
+                        return false;
+                    }
+                    //Non-Empty String Literals have EBV of True
+                    return true;
+                }
+                //EBV is dependent on the Data Type for Typed Literals
+                String dt = lit.DataType.ToString();
+
+                if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                {
+                    //Boolean Typed Literal
+                    bool b = false;
+                    if (Boolean.TryParse(lit.Value, out b))
+                    {
+                        //Valid Booleans have EBV of their value
+                        return b;
+                    }
+                    //Invalid Booleans have EBV of false
+                    return false;
+                }
+                if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                {
+                    //String Typed Literal
+                    if (lit.Value == String.Empty)
+                    {
+                        //Empty String Literals have EBV of False
+                        return false;
+                    }
+                    //Non-Empty String Literals have EBV of True
+                    return true;
+                }
+                //Is it a Number?
+                EffectiveNumericType numType = GetNumericTypeFromDataTypeUri(dt);
+                switch (numType)
+                {
+                    case EffectiveNumericType.Decimal:
+                        //Should be a decimal
+                        Decimal dec;
+                        if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                         {
-                            //Empty String Literals have EBV of False
-                            return false;
-                        }
-                        else
-                        {
-                            //Non-Empty String Literals have EBV of True
+                            if (dec == Decimal.Zero)
+                            {
+                                //Zero gives EBV of false
+                                return false;
+                            }
+                            //Non-Zero gives EBV of true
                             return true;
                         }
-                    }
-                    else
-                    {
-                        //EBV is dependent on the Data Type for Typed Literals
-                        String dt = lit.DataType.ToString();
+                        //Invalid Numerics have EBV of false
+                        return false;
 
-                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                    case EffectiveNumericType.Float:
+                    case EffectiveNumericType.Double:
+                        //Should be a double
+                        Double dbl;
+                        if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                         {
-                            //Boolean Typed Literal
-                            bool b = false;
-                            if (Boolean.TryParse(lit.Value, out b))
+                            if (dbl == 0.0d || Double.IsNaN(dbl))
                             {
-                                //Valid Booleans have EBV of their value
-                                return b;
-                            }
-                            else
-                            {
-                                //Invalid Booleans have EBV of false
+                                //Zero/NaN gives EBV of false
                                 return false;
                             }
+                            //Non-Zero gives EBV of true
+                            return true;
                         }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        //Invalid Numerics have EBV of false
+                        return false;
+
+                    case EffectiveNumericType.Integer:
+                        //Should be an Integer
+                        long l;
+                        if (Int64.TryParse(lit.Value, out l))
                         {
-                            //String Typed Literal
-                            if (lit.Value == String.Empty)
+                            if (l == 0)
                             {
-                                //Empty String Literals have EBV of False
+                                //Zero gives EBV of false
                                 return false;
                             }
-                            else
-                            {
-                                //Non-Empty String Literals have EBV of True
-                                return true;
-                            }
+                            //Non-Zero gives EBV of true
+                            return true;
                         }
-                        else
-                        {
-                            //Is it a Number?
-                            EffectiveNumericType numType = GetNumericTypeFromDataTypeUri(dt);
-                            switch (numType)
-                            {
-                                case EffectiveNumericType.Decimal:
-                                    //Should be a decimal
-                                    Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
-                                    {
-                                        if (dec == Decimal.Zero)
-                                        {
-                                            //Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            //Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Invalid Numerics have EBV of false
-                                        return false;
-                                    }
+                        //Invalid Numerics have EBV of false
+                        return false;
 
-                                case EffectiveNumericType.Float:
-                                case EffectiveNumericType.Double:
-                                    //Should be a double
-                                    Double dbl;
-                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
-                                    {
-                                        if (dbl == 0.0d || Double.IsNaN(dbl))
-                                        {
-                                            //Zero/NaN gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            //Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Invalid Numerics have EBV of false
-                                        return false;
-                                    }
+                    case EffectiveNumericType.NaN:
+                        //If not a Numeric Type then Type error
+                        throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
 
-                                case EffectiveNumericType.Integer:
-                                    //Should be an Integer
-                                    long l;
-                                    if (Int64.TryParse(lit.Value, out l))
-                                    {
-                                        if (l == 0)
-                                        {
-                                            //Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            //Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case EffectiveNumericType.NaN:
-                                    //If not a Numeric Type then Type error
-                                    throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-
-                                default:
-                                    //Shouldn't hit this case but included to keep compiler happy
-                                    throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    //Non-Literal Nodes give type error
-                    throw new NodeValueException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
+                    default:
+                        //Shouldn't hit this case but included to keep compiler happy
+                        throw new NodeValueException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
                 }
             }
+
+            //Non-Literal Nodes give type error
+            throw new NodeValueException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
         }
-       
+
         #region Equality/Inequality
 
         /// <summary>

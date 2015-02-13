@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Aggregation;
+using VDS.RDF.Query.Aggregation.Sparql;
 using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
