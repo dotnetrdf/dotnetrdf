@@ -81,16 +81,16 @@ namespace VDS.RDF.Query.Compiler
                 }
             }
 
-            // Project Expressions
-            if (projections.Count > 0)
-            {
-                algebra = Extend.Create(algebra, projections);
-            }
-
             // HAVING
             if (query.HavingConditions != null && query.HavingConditions.Any())
             {
                 algebra = Filter.Create(algebra, query.HavingConditions);
+            }
+
+            // Project Expressions
+            if (projections.Count > 0)
+            {
+                algebra = Extend.Create(algebra, projections);
             }
 
             // VALUES

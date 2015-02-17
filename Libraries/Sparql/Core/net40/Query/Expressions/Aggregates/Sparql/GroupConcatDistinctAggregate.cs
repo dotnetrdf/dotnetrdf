@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
 
         public override IAccumulator CreateAccumulator()
         {
-            return this.Arguments.Count > 1 ? new DistinctShortCircuitAccumulator(new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1])) : new DistinctShortCircuitAccumulator(new GroupConcatAccumulator(this.Arguments[0]));
+            return new DistinctShortCircuitAccumulator(this.Arguments.Count > 1 ? new GroupConcatAccumulator(this.Arguments[0], this.Arguments[1]) : new GroupConcatAccumulator(this.Arguments[0]));
         }
 
         public override string ToString(IAlgebraFormatter formatter)

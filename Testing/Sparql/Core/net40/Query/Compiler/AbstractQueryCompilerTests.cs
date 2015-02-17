@@ -11,6 +11,7 @@ using VDS.RDF.Query.Elements;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Aggregates;
 using VDS.RDF.Query.Expressions.Aggregates.Sparql;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Results;
@@ -911,6 +912,40 @@ namespace VDS.RDF.Query.Compiler
             Assert.AreEqual(2, group.Aggregators.Count);
             Assert.AreEqual(query.Projections.First().Value, group.Aggregators.First().Key);
             Assert.AreEqual(query.Projections.Last().Value, group.Aggregators.Last().Key);
+        }
+
+        [Test]
+        public void QueryCompilerHaving1()
+        {
+            IQueryCompiler compiler = new DefaultQueryCompiler();
+
+            IQuery query = new Query();
+            query.AddProjectExpression("x", new CountAllAggregate());
+            query.HavingConditions.Add(new GreaterThanExpression(new CountAllAggregate(), new ConstantTerm(new LongNode(100))));
+
+            IAlgebra algebra = compiler.Compile(query);
+            Console.WriteLine(algebra.ToString());
+
+            Assert.IsInstanceOf(typeof(Project), algebra);
+            Project project = (Project) algebra;
+            Assert.AreEqual(1, project.Projections.Count);
+            Assert.IsTrue(project.Projections.Contains("x"));
+
+            Assert.IsInstanceOf(typeof(Extend), project.InnerAlgebra);
+            Extend extend = (Extend)project.InnerAlgebra;
+            Assert.AreEqual(1, extend.Assignments.Count);
+            Assert.AreEqual(query.Projections.First().Key, extend.Assignments.First().Key);
+
+            Assert.IsInstanceOf(typeof(Filter), extend.InnerAlgebra);
+            Filter having = (Filter)extend.InnerAlgebra;
+            // Should not be equal because the 
+            Assert.AreNotEqual(having.Expressions.First(), query.HavingConditions[0]);
+
+            Assert.IsInstanceOf(typeof(GroupBy), having.InnerAlgebra);
+            GroupBy group = (GroupBy)having.InnerAlgebra;
+            Assert.AreEqual(0, group.GroupExpressions.Count);
+            Assert.AreEqual(1, group.Aggregators.Count);
+            Assert.AreEqual(query.Projections.First().Value, group.Aggregators.First().Key);
         }
     }
 

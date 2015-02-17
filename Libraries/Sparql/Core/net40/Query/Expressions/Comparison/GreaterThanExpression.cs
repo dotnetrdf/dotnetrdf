@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
     /// Class representing Relational Greater Than Expressions
     /// </summary>
     public class GreaterThanExpression
-        : BaseBinaryExpression
+        : BaseBinaryOperator
     {
         private readonly SparqlNodeComparer _comparer = new SparqlNodeComparer();
 

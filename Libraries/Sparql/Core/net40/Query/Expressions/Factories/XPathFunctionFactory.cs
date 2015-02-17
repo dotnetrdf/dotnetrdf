@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Expressions.Aggregates.XPath;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;

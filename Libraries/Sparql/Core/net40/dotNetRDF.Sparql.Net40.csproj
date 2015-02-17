@@ -53,6 +53,7 @@
     <Compile Include="Collections\WrapperEnumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Aggregation\DistinctShortCircuitAccumulator.cs" />
+    <Compile Include="Query\Aggregation\Leviathan\MedianAccumulator.cs" />
     <Compile Include="Query\Aggregation\Leviathan\ModeAccumulator.cs" />
     <Compile Include="Query\Aggregation\Leviathan\NoneAccumulator.cs" />
     <Compile Include="Query\Aggregation\Leviathan\AnyAccumulator.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Query\Aggregation\Sparql\CountAllDistinctAccumulator.cs" />
     <Compile Include="Query\Aggregation\SortingAccumulator.cs" />
     <Compile Include="Query\Aggregation\DistinctAccumulator.cs" />
+    <Compile Include="Query\Aggregation\XPath\GroupConcatAccumulator.cs" />
     <Compile Include="Query\Aggregation\Sparql\GroupConcatAccumulator.cs" />
     <Compile Include="Query\Algebra\BaseBinaryAlgebra.cs" />
     <Compile Include="Query\Algebra\BaseUnaryAlgebra.cs" />
@@ -152,6 +154,9 @@
     <Compile Include="Query\Engine\QueryExecutionContext.cs" />
     <Compile Include="Query\Expressions\Aggregates\BaseDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\BaseAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Leviathan\MedianDistinctAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Leviathan\MedianAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\Leviathan\ModeDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Leviathan\ModeAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Leviathan\NoneAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Leviathan\AnyAggregate.cs" />
@@ -174,12 +179,15 @@
     <Compile Include="Query\Expressions\Aggregates\Sparql\AverageAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\SumDistinctAggregate.cs" />
     <Compile Include="Query\Expressions\Aggregates\Sparql\SumAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\XPath\StringJoinDistinctAggregate.cs" />
+    <Compile Include="Query\Expressions\Aggregates\XPath\StringJoinAggregate.cs" />
     <Compile Include="Query\Expressions\Arithmetic\AdditionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\DivisionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\MinusExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\MultiplicationExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\SubtractionExpression.cs" />
     <Compile Include="Query\Expressions\BaseAlgebraExpression.cs" />
+    <Compile Include="Query\Expressions\BaseBinaryOperator.cs" />
     <Compile Include="Query\Expressions\BaseNAryExpression.cs" />
     <Compile Include="Query\Expressions\BaseTernaryExpression.cs" />
     <Compile Include="Query\Expressions\BaseBinaryExpression.cs" />
