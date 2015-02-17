@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF.Portable.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -28,7 +28,6 @@
     <DefineConstants>TRACE;DEBUG;PORTABLE;NO_DATAEXTENSIONS;NO_FULLTEXT, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE, NO_XMLENTITIES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +36,6 @@
     <DefineConstants>TRACE;PORTABLE;NO_DATAEXTENSIONS;NO_FULLTEXT, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -47,7 +45,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
