@@ -39,22 +39,38 @@ GROUP BY ?s
 HAVING (COUNT(?p) = 1)
 ";
 
+        private const string ReplaceHavingWorkaroundQuery = @"
+SELECT (SAMPLE(?o) AS ?sampled) (REPLACE(?sampled, ""1"", ""2"") AS ?oo)
+WHERE
+{
+    ?s ?p ?o
+}
+GROUP BY ?s
+HAVING (COUNT(?p) = 1)
+";
+
         [Test]
-        public void SparqlFunctionsReplaceTest()
+        public void SparqlFunctionsReplace()
         {
             Test(ReplaceQuery);
         }
 
         [Test]
-        public void SparqlFunctionsHavingTest()
+        public void SparqlFunctionsHaving()
         {
             Test(HavingQuery);
         }
 
         [Test]
-        public void SparqlFunctionsReplaceHavingTest()
+        public void SparqlFunctionsReplaceHaving1()
         {
             Test(ReplaceHavingQuery);
+        }
+
+        [Test]
+        public void SparqlFunctionsReplaceHaving2()
+        {
+            Test(ReplaceHavingWorkaroundQuery);
         }
 
         private static void Test(string query)
@@ -68,7 +84,12 @@ HAVING (COUNT(?p) = 1)
 
             using (SparqlResultSet resultSet = (SparqlResultSet)storage.Query(query))
             {
+                TestTools.ShowResults(resultSet);
                 Assert.AreEqual(1, resultSet.Count);
+
+                SparqlResult result = resultSet[0];
+                Assert.IsTrue(result.HasBoundValue("oo"));
+                Assert.AreEqual(graph.CreateLiteralNode("2"), result["oo"]);
             }
         }
     }
