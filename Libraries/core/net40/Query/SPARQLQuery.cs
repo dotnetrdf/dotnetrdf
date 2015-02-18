@@ -1274,6 +1274,9 @@ namespace VDS.RDF.Query
                         algebra = new GroupBy(algebra, this._groupBy, this._vars.Where(v => v.IsAggregate));
                     }
 
+                    //Add HAVING clause immediately after the grouping
+                    if (this._having != null) algebra = new Having(algebra, this._having);
+
                     //After grouping we do projection
                     //We introduce an Extend for each Project Expression
                     foreach (SparqlVariable var in this._vars)
@@ -1283,9 +1286,6 @@ namespace VDS.RDF.Query
                             algebra = new Extend(algebra, var.Projection, var.Name);
                         }
                     }
-
-                    //Add HAVING clause after the projection
-                    if (this._having != null) algebra = new Having(algebra, this._having);
 
                     //We can then Order our results
                     //We do ordering before we do Select but after Project so we can order by any of

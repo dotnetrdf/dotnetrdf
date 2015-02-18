@@ -58,7 +58,7 @@ HAVING (COUNT(?p) = 1)
         [Test]
         public void SparqlFunctionsHaving()
         {
-            Test(HavingQuery);
+            Test(HavingQuery, "1");
         }
 
         [Test]
@@ -75,6 +75,12 @@ HAVING (COUNT(?p) = 1)
 
         private static void Test(string query)
         {
+            Test(query, "2");
+        }
+
+        private static void Test(string query, string literal)
+
+        {
             IGraph graph = new Graph();
             graph.LoadFromString(TestData);
 
@@ -82,14 +88,14 @@ HAVING (COUNT(?p) = 1)
             store.Add(graph);
             IQueryableStorage storage = new InMemoryManager(store);
 
-            using (SparqlResultSet resultSet = (SparqlResultSet)storage.Query(query))
+            using (SparqlResultSet resultSet = (SparqlResultSet) storage.Query(query))
             {
                 TestTools.ShowResults(resultSet);
                 Assert.AreEqual(1, resultSet.Count);
 
                 SparqlResult result = resultSet[0];
                 Assert.IsTrue(result.HasBoundValue("oo"));
-                Assert.AreEqual(graph.CreateLiteralNode("2"), result["oo"]);
+                Assert.AreEqual(graph.CreateLiteralNode(literal), result["oo"]);
             }
         }
     }
