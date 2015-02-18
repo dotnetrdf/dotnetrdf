@@ -1411,7 +1411,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
+    <copy todir="Build/nuget/Core/lib/portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
         <include name="dotNetRDF.*" />
         <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->

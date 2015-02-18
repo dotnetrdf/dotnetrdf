@@ -11,6 +11,11 @@ Changed
  - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
  - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
  - Fix typo in MIME type definitions for NTriples
+- Build
+ - Upgrade PCL build to Profile 328
+- Dependencies
+ - Upgrade VDS.Common to 1.5.0
+ - Upgrade Json.Net to 6.0.8
 
 1.0.7
 -----

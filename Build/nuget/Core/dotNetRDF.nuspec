@@ -13,36 +13,38 @@
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>       
       <group targetFramework="net35-client">
-        <dependency id="VDS.Common" version="[1.4.0]" />
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
-        <dependency id="VDS.Common" version="[1.4.0]" />
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
-        <dependency id="VDS.Common" version="[1.4.0]" />
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="VDS.Common" version="[1.4.0]" />
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-        <dependency id="VDS.Common" version="[1.4.0]" />
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
       </group>
     </dependencies>
     <releaseNotes>
-- Ensure AssemblyVersion's are synced with NuGet package versions (CORE-426)
-- Bug fix for missing ToString() on UUID() and StrUUID() functions (CORE-427)
-- Bug fix for corner case SPARQL parsing bug involving BIND (CORE-428)
-- Bug fix for RDF/XML output under MonoTouch
-- Update dependencies to latest versions
+- Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+- SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+- Accessing remote SPARQL endpoints could fail to include default and named graph parameters if POSTing the queries (CORE-434)
+- Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+- Fix typo in MIME type definitions for NTriples
+- Upgrade PCL build to Profile 328
+- Upgrade Dependencies to latest versions
     </releaseNotes>
   </metadata>
 </package>
