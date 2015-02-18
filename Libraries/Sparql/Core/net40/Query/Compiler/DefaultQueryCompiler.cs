@@ -32,24 +32,25 @@ namespace VDS.RDF.Query.Compiler
 
             // Extract out any aggregators
             List<KeyValuePair<String, IExpression>> projections = new List<KeyValuePair<String, IExpression>>();
-            ISet<IAggregateExpression> aggregates = new HashSet<IAggregateExpression>();
             IDictionary<IExpression, IExpression> aggSubstitutions = new Dictionary<IExpression, IExpression>();
+
+            // Collect the aggregates and generate the temporary variables for them
+            CollectAggregatesVisitor collector = new CollectAggregatesVisitor();
+            ISet<IAggregateExpression> aggregates = collector.Collect(query.Projections.Where(kvp => kvp.Value != null).Select(kvp => kvp.Value));
+            if (aggregates.Count > 0)
+            {
+                long next = 0;
+                foreach (IAggregateExpression agg in aggregates)
+                {
+                    aggSubstitutions.Add(agg, new VariableTerm("." + next));
+                    next++;
+                }
+            }
+            ExprTransformMultipleSubstitute exprTransformer = new ExprTransformMultipleSubstitute(aggSubstitutions);
+            ApplyExpressionTransformVisitor exprTransformVisitor = new ApplyExpressionTransformVisitor(exprTransformer);
+
             if (query.Projections != null)
             {
-                // Collect the aggregates and generate the temporary variables for them
-                CollectAggregatesVisitor collector = new CollectAggregatesVisitor();
-                aggregates = collector.Collect(query.Projections.Where(kvp => kvp.Value != null).Select(kvp => kvp.Value));
-                if (aggregates.Count > 0)
-                {
-                    long next = 0;
-                    foreach (IAggregateExpression agg in aggregates)
-                    {
-                        aggSubstitutions.Add(agg, new VariableTerm("." + next));
-                        next++;
-                    }
-                }
-                ExprTransformMultipleSubstitute exprTransformer = new ExprTransformMultipleSubstitute(aggSubstitutions);
-
                 // Build the projections substituting temporary variables for aggregates where necessary
                 foreach (KeyValuePair<String, IExpression> kvp in query.Projections)
                 {
@@ -61,8 +62,7 @@ namespace VDS.RDF.Query.Compiler
                     else
                     {
                         // Need to substitute any aggregates for variables
-                        ApplyExpressionTransformVisitor visitor = new ApplyExpressionTransformVisitor(exprTransformer);
-                        projections.Add(new KeyValuePair<string, IExpression>(kvp.Key, visitor.Transform(kvp.Value)));
+                        projections.Add(new KeyValuePair<string, IExpression>(kvp.Key, exprTransformVisitor.Transform(kvp.Value)));
                     }
                 }
             }
@@ -84,7 +84,20 @@ namespace VDS.RDF.Query.Compiler
             // HAVING
             if (query.HavingConditions != null && query.HavingConditions.Any())
             {
-                algebra = Filter.Create(algebra, query.HavingConditions);
+                if (aggSubstitutions.Count > 0)
+                {
+                    // Need to substitute any aggregates for variables
+                    List<IExpression> havingExprs = new List<IExpression>();
+                    foreach (IExpression condition in query.HavingConditions)
+                    {
+                        havingExprs.Add(exprTransformVisitor.Transform(condition));
+                    }
+                    algebra = Filter.Create(algebra, havingExprs);
+                }
+                else
+                {
+                    algebra = Filter.Create(algebra, query.HavingConditions);
+                }
             }
 
             // Project Expressions

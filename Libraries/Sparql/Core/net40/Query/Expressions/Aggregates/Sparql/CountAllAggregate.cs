@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using VDS.RDF.Query.Aggregation;
 using VDS.RDF.Query.Aggregation.Sparql;
-using VDS.RDF.Query.Grouping;
 using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
@@ -33,5 +32,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates.Sparql
         {
             return Copy();
         }
+
+        // TODO Needs to override ToString()
     }
 }

@@ -71,5 +71,22 @@ namespace VDS.RDF.Query.Expressions.Aggregates
             builder.Append(')');
             return builder.ToString();
         }
+
+        public override bool Equals(IExpression other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (!(other is INAryExpression)) return false;
+            if (!this.Functor.Equals(other.Functor)) return false;
+            if (other is BaseDistinctAggregate) return false;
+
+            INAryExpression expr = (INAryExpression)other;
+            if (this.Arguments.Count != expr.Arguments.Count) return false;
+            for (int i = 0; i < this.Arguments.Count; i++)
+            {
+                if (!this.Arguments[i].Equals(expr.Arguments[i])) return false;
+            }
+            return true;
+        }
     }
 }

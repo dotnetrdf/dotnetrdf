@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions
 
         public virtual string ToString(IAlgebraFormatter formatter)
         {
-            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor.ToLowerInvariant() : String.Format("<{0}>", formatter.FormatUri(this.Functor));
+            String f = SparqlSpecsHelper.IsFunctionKeyword11(this.Functor) ? this.Functor : String.Format("<{0}>", formatter.FormatUri(this.Functor));
             StringBuilder builder = new StringBuilder();
             builder.Append(f);
             builder.Append('(');
@@ -183,15 +183,17 @@ namespace VDS.RDF.Query.Expressions
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (!(other is BaseTernaryExpression)) return false;
+            if (!(other is BaseNAryExpression)) return false;
 
-            return this.Equals((BaseTernaryExpression) other);
+            return this.Equals((BaseNAryExpression) other);
         }
 
         public override int GetHashCode()
         {
-            // ReSharper disable once PossiblyMistakenUseOfParamsMethod
-            return Tools.CombineHashCodes(this.Functor.AsEnumerable().Concat<object>(this.Arguments));
+            List<Object> values = new List<object>();
+            values.Add(this.Functor);
+            if (this.Arguments.Count > 0) values.AddRange(this.Arguments);
+            return Tools.CombineHashCodes(values.ToArray());
         }
     }
 }

@@ -20,7 +20,7 @@ namespace VDS.RDF.Query.Expressions.Aggregates
         public override string ToString(IAlgebraFormatter formatter)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(this.Functor.ToLowerInvariant());
+            builder.Append(this.Functor);
             builder.Append("(DISTINCT ");
             for (int i = 0; i < this.Arguments.Count; i++)
             {

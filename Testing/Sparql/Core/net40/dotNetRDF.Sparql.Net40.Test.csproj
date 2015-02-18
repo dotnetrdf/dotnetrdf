@@ -56,6 +56,7 @@
     <Compile Include="Query\Engine\Joins\CrossProductTests.cs" />
     <Compile Include="Query\Engine\Joins\HashJoinTests.cs" />
     <Compile Include="Query\Engine\Joins\LoopJoinTests.cs" />
+    <Compile Include="Query\Expressions\Aggregates\AggregateComparisonTests.cs" />
     <Compile Include="Query\Expressions\Transforms\AbstractAlgebraTransformTests.cs" />
     <Compile Include="Query\Expressions\Transforms\ExpressionMultipleSubstituteTests.cs" />
     <Compile Include="Query\Processors\AbstractQueryProcessorTests.cs" />
@@ -83,6 +84,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
