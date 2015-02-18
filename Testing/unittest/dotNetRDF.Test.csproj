@@ -198,6 +198,7 @@
     <Compile Include="Query\SparqlParsingComplex.cs" />
     <Compile Include="Query\SparqlProcessorsWithHandlersTests.cs" />
     <Compile Include="Query\SparqlQueryTests.cs" />
+    <Compile Include="Query\SparqlReplaceTest.cs" />
     <Compile Include="Query\SparqlTests.cs" />
     <Compile Include="Query\SparqlTests2.cs" />
     <Compile Include="Query\StrictOptimiserTest.cs" />
