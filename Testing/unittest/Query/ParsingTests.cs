@@ -643,10 +643,20 @@ WHERE
             Assert.IsTrue(formattedString.Contains("(STRUUID"));
         }
 
-        [Test]
-        public void TestParseUriContainingASpace()
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingIllegalWhitespaceInUris()
         {
             const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+            var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
+            var subjectMatch = pattern.Subject as NodeMatchPattern;
+            Assert.AreEqual(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
+        }
+        
+        [Test]
+        public void SparqlParsingEscapedWhitespaceInUris()
+        {
+            const string query = "SELECT * WHERE { <http://example.com/foo%20bar> a <http://example.com/foo%20type> }";
             SparqlQuery q = this._parser.ParseFromString(query);
             var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
             var subjectMatch = pattern.Subject as NodeMatchPattern;
