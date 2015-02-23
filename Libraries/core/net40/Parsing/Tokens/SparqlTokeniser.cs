@@ -707,8 +707,8 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (Char.IsWhiteSpace(next))
                     {
-                        //Ignore White Space inside URIs
-                        this.SkipCharacter();
+                        // White space is illegal in URIs
+                        throw Error("Illegal white space in URI '" + this.Value + "'");
                     }
                     else if (next == '\\')
                     {
