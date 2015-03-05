@@ -1,0 +1,27 @@
+using VDS.RDF.Query.Spin.Core;
+using VDS.RDF.Query.Spin.SparqlUtil;
+using VDS.RDF.Query.Spin.Model.IO;
+
+namespace VDS.RDF.Query.Spin.Model
+{
+
+
+    public class DropImpl : UpdateImpl, IDropResource
+    {
+
+        public DropImpl(INode node, SpinProcessor graph)
+            : base(node, graph)
+        {
+
+        }
+
+
+        override public void printSPINRDF(ISparqlPrinter p)
+        {
+            p.printKeyword("DROP");
+            p.print(" ");
+            printSilent(p);
+            printGraphDefaultNamedOrAll(p);
+        }
+    }
+}
