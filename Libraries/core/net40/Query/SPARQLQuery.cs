@@ -373,7 +373,7 @@ namespace VDS.RDF.Query
             {
                 return this._rootGraphPattern;
             }
-            internal set
+            set
             {
                 this._rootGraphPattern = value;
             }
@@ -434,7 +434,7 @@ namespace VDS.RDF.Query
             {
                 return this._having;
             }
-            internal set
+            set
             {
                 this._having = value;
             }

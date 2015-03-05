@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Node this Term represents
         /// </summary>
-        internal IValuedNode Node
+        public IValuedNode Node
         {
             get { return _node; }
         }

@@ -30,6 +30,7 @@ using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 
@@ -51,6 +52,7 @@ namespace VDS.RDF.Query.Patterns
         private bool _isService = false;
         private bool _isSilent = false;
         private IToken _graphSpecifier = null;
+        private IToken _activeGraph = null;
         private readonly List<GraphPattern> _graphPatterns = new List<GraphPattern>();
         private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
         private readonly List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
@@ -62,7 +64,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Creates a new Graph Pattern
         /// </summary>
-        internal GraphPattern()
+        public GraphPattern()
         {
         }
 
@@ -75,7 +77,7 @@ namespace VDS.RDF.Query.Patterns
             this._break = gp._break;
             this._broken = gp._broken;
             this._filter = gp._filter;
-            this._graphPatterns.AddRange(gp._graphPatterns);
+            this._graphPatterns.AddRange(gp._graphPatterns.Select(cgp => cgp.Clone())); // Cloning is made necessary since each graph pattern has to maintain its children ActiveGraph separately
             this._graphSpecifier = gp._graphSpecifier;
             this._isExists = gp._isExists;
             this._isFiltered = gp._isFiltered;
@@ -101,24 +103,36 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks
         /// </summary>
         /// <param name="p">Triple Pattern</param>
-        internal void AddTriplePattern(ITriplePattern p)
+        public void AddTriplePattern(ITriplePattern p)
         {
-            if (this._break)
+            switch (p.PatternType)
             {
-                if (this._broken)
-                {
-                    this._graphPatterns.Last().AddTriplePattern(p);
-                }
-                else
-                {
-                    GraphPattern breakPattern = new GraphPattern();
-                    breakPattern.AddTriplePattern(p);
-                    this._graphPatterns.Add(breakPattern);
-                }
-            }
-            else
-            {
-                this._triplePatterns.Add(p);
+                case TriplePatternType.BindAssignment:
+                case TriplePatternType.LetAssignment:
+                    this.AddAssignment((IAssignmentPattern)p);
+                    break;
+                case TriplePatternType.Filter:
+                    this.AddFilter(((IFilterPattern)p).Filter);
+                    break;
+                default:
+                    if (this._break)
+                    {
+                        if (this._broken)
+                        {
+                            this._graphPatterns.Last().AddTriplePattern(p);
+                        }
+                        else
+                        {
+                            GraphPattern breakPattern = new GraphPattern();
+                            breakPattern.AddTriplePattern(p);
+                            this._graphPatterns.Add(breakPattern);
+                        }
+                    }
+                    else
+                    {
+                        this._triplePatterns.Add(p);
+                    }
+                    break;
             }
         }
 
@@ -126,7 +140,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds an Assignment to the Graph Pattern respecting any BGP breaks
         /// </summary>
         /// <param name="p">Assignment Pattern</param>
-        internal void AddAssignment(IAssignmentPattern p)
+        public void AddAssignment(IAssignmentPattern p)
         {
             if (this._break)
             {
@@ -152,7 +166,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a Filter to the Graph Pattern
         /// </summary>
         /// <param name="filter">Filter</param>
-        internal void AddFilter(ISparqlFilter filter)
+        public void AddFilter(ISparqlFilter filter)
         {
             this._isFiltered = true;
             this._unplacedFilters.Add(filter);
@@ -172,8 +186,12 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a child Graph Pattern to the Graph Pattern respecting any BGP breaks
         /// </summary>
         /// <param name="p">Graph Pattern</param>
-        internal void AddGraphPattern(GraphPattern p)
+        public void AddGraphPattern(GraphPattern p)
         {
+            if (!p.IsGraph)
+            {
+                p._activeGraph = this._activeGraph;
+            }
             if (this._break)
             {
                 if (this._broken)
@@ -452,7 +470,7 @@ namespace VDS.RDF.Query.Patterns
                 else if (this._filter is ChainFilter)
                 {
                     //Add to the Filter Chain
-                    ((ChainFilter) this._filter).Add(value);
+                    ((ChainFilter)this._filter).Add(value);
                 }
                 else
                 {
@@ -463,15 +481,36 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets/Sets the Active Graph that this Graph Pattern is evaluated against
+        /// </summary>
+        /// <remarks>
+        /// When set, the value is set recursively for any non GraphGraphPattern child
+        /// TODO check what about to do with the SERVICE specifiers 
+        /// </remarks>
+        public IToken ActiveGraph
+        {
+            get { return this._activeGraph; }
+            internal set
+            {
+                this._activeGraph = value;
+                foreach (GraphPattern cgp in this.ChildGraphPatterns.Where(gp => !gp.IsGraph))
+                {
+                    cgp.ActiveGraph = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets the Graph Specifier that applies to this Graph Pattern
         /// </summary>
         /// <remarks>
+        /// This property also sets the ActiveGraph for the pattern.
         /// This property is also used internally for SERVICE specifiers to save adding an additional property unnecessarily
         /// </remarks>
         public IToken GraphSpecifier
         {
             get { return this._graphSpecifier; }
-            internal set { this._graphSpecifier = value; }
+            internal set { this._graphSpecifier = value; if (IsGraph) this.ActiveGraph = value; }
         }
 
         /// <summary>
