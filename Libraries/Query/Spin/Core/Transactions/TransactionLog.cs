@@ -18,10 +18,15 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
     /// </summary>
     internal class TransactionLog
     {
-        internal const String URI_PREFIX = "tag:dotnetrdf.org:transactions:";
+        internal const String URI_PREFIX = "tag:dotnetrdf.org:transactions#";
 
         internal const String URI_INFIX_ADDITIONS = ":additions:";
         internal const String URI_INFIX_REMOVALS = ":removals:";
+
+        internal static readonly IUriNode ConcurrentAssertionsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "concurrentAssertionsForGraph"));
+        internal static readonly IUriNode ConcurrentRemovalsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "concurrentRemovalsForGraph"));
+        internal static readonly IUriNode PendingAssertionsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "pendingAssertionsForGraph"));
+        internal static readonly IUriNode PendingRemovalsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "pendingRemovalsForGraph"));
 
         // The patterns for the transaction additions and removals Uris to a graph
         internal const String URI_PATTERN_ADDITIONS = "STR(?txUri) ,'" + URI_INFIX_ADDITIONS + "', ENCODE_FOR_URI(STR(?graphBaseUri))";
@@ -30,20 +35,20 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
         /// <summary>
         /// The distributed transaction log's graph Uri
         /// </summary>
-        private static Uri _graphUri = UriFactory.Create(URI_PREFIX + "log");
+        internal static Uri TRANSACTION_LOG_URI = UriFactory.Create(URI_PREFIX + "log");
 
         /// <summary>
         /// A reference of locally managed transactions
         /// </summary>
         private Dictionary<Uri, BaseSpinTransaction> _transactions = new Dictionary<Uri, BaseSpinTransaction>(RDFHelper.uriComparer);
 
-        private BaseSpinWrappedStorage _connection;
+        private FeaturedSparqlProcessor _connection;
 
         /// <summary>
         /// Creates a new TransactioLog object for the storage
         /// </summary>
         /// <param name="connection"></param>
-        internal TransactionLog(BaseSpinWrappedStorage connection)
+        internal TransactionLog(FeaturedSparqlProcessor connection)
         {
             _connection = connection;
         }
@@ -74,13 +79,13 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
          *      trans:updates       references a graph the transaction is currently trying to update 
          */
         // Notifies a transaction start to the log
-        private String TX_START = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ _graphUri.ToString() +" { ?txUri trans:startedAt ?txTimestamp . } } WHERE { BIND (NOW() as ?txTimestamp) FILTER NOT EXISTS { GRAPH "+ _graphUri.ToString() +" { ?txUri trans:startedAt ?anyPriorTime . } } } ";
+        private String TX_START = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri trans:startedAt ?txTimestamp . } } WHERE { BIND (NOW() as ?txTimestamp) FILTER NOT EXISTS { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri trans:startedAt ?anyPriorTime . } } } ";
 
         // Notifies a update to a graph for the transaction
-        private String TX_WRITE = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ _graphUri.ToString() +" { ?txUri a trans:Commitable . ?txUri trans:updated ?sourceGraph . } } ";
+        private String TX_WRITE = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri a trans:Commitable . ?txUri trans:updated ?sourceGraph . } } ";
 
         // Notifies a rollback the transaction
-        private String TX_ROLLBACK = "DELETE WHERE { GRAPH "+ _graphUri.ToString() +" { ?txUri ?p ?o . } }";
+        private String TX_ROLLBACK = "DELETE WHERE { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri ?p ?o . } }";
 
         // Applies a transaction updates to the store and updates the transaction log
         // TODO decide whether we want to impact concurrent transactions temporary graphs to provide for proper serialized isolation ?
@@ -106,7 +111,7 @@ DELETE {
 }
 INSERT {
     # write transaction log event for this transaction
-    GRAPH "+ _graphUri.ToString() +@" {
+    GRAPH "+ TRANSACTION_LOG_URI.ToString() +@" {
         ?txUri trans:committedAt ?txTimestamp .
     }
     # add assertions to the original graph
@@ -164,7 +169,7 @@ INSERT {
         private String GARBAGE_COLLECTION = @"
 PREFIX trans: <urn:transactions#>
 SELECT * WHERE {
-  GRAPH "+ _graphUri.ToString() +@" {
+  GRAPH "+ TRANSACTION_LOG_URI.ToString() +@" {
     ?txUri trans:committedAt ?committed .
     ?txUri trans:updates ?g .
     BIND (IRI(CONCAT(str(?txUri) ,':removals:', str(?g))) as ?gRemovals)

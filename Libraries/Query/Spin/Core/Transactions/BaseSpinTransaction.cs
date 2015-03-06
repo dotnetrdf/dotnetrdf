@@ -28,18 +28,18 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
 
         private Dictionary<Uri, GraphMonitor> _graphs = new Dictionary<Uri, GraphMonitor>(RDFHelper.uriComparer);
 
-        internal BaseSpinTransaction(BaseSpinWrappedStorage storage)
+        internal BaseSpinTransaction(FeaturedSparqlProcessor storage)
             : this(storage, UriFactory.Create(TransactionLog.URI_PREFIX + Guid.NewGuid().ToString()))
         {
         }
 
-        internal BaseSpinTransaction(BaseSpinWrappedStorage storage, Uri txUri)
+        internal BaseSpinTransaction(FeaturedSparqlProcessor storage, Uri txUri)
         {
             _txUri = txUri;
-            _logger = storage.TransactionLog;
+            //_logger = storage.TransactionLog;
 
             // Subscribe to the storage's transactionLog events
-            _logger.Committed += Transaction_Committed;
+            //_logger.Committed += Transaction_Committed;
         }
 
         internal Uri BaseUri {

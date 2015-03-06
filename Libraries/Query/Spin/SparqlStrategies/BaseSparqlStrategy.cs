@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Spin.Core;
 
 namespace VDS.RDF.Query.Spin.SparqlStrategies
 {
@@ -13,9 +14,16 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
 
         public abstract bool IsRequiredBy(Connection context);
 
-        //public event SparqlQueryEvent DefaultGraphAdded;
-        //public event SparqlQueryEvent NamedGraphAdded;
-        //public event SparqlQueryEvent GraphPatternAdded;
+
+        internal void Rewrite(SparqlCommand commands)
+        {
+            foreach (SparqlCommandUnit command in commands.Units)
+            {
+                Rewrite(command);
+            }
+        }
+
+        internal abstract void Rewrite(SparqlCommandUnit command);
 
     }
 
