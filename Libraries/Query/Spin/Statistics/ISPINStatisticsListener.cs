@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Spin.Statistics
      * 
      * @author Holger Knublauch
      */
-    public interface ISPINStatisticsListener
+    public interface ISpinStatisticsListener
     {
 
         /**

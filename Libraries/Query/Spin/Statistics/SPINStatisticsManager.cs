@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using VDS.Common.References;
 
 namespace VDS.RDF.Query.Spin.Statistics
 {
@@ -15,22 +18,25 @@ namespace VDS.RDF.Query.Spin.Statistics
      * 
      * @author Holger Knublauch
      */
-    public class SPINStatisticsManager
+    // TODO change IsXXX into get/set properties
+    public class SpinStatisticsManager
     {
 
-        private static SPINStatisticsManager _singleton = new SPINStatisticsManager();
+        private static ThreadIsolatedReference<SpinStatisticsManager> _singleton = new ThreadIsolatedReference<SpinStatisticsManager>();
 
         /**
          * Gets the singleton instance of this class.
          * @return the SPINStatisticsManager (never null)
          */
-        public static SPINStatisticsManager get()
+        public static SpinStatisticsManager Get()
         {
-            return _singleton;
+            if (_singleton.Value == null) _singleton.Value = new SpinStatisticsManager();
+            _singleton.Value.SetRecording(Options.RecordStatistics);
+            return _singleton.Value;
         }
 
 
-        private HashSet<ISPINStatisticsListener> _listeners = new HashSet<ISPINStatisticsListener>();
+        private HashSet<ISpinStatisticsListener> _listeners = new HashSet<ISpinStatisticsListener>();
 
         private bool _recording;
 
@@ -39,10 +45,10 @@ namespace VDS.RDF.Query.Spin.Statistics
         private bool _recordingSPINFunctions;
 
         //TODO: check for thread safety and synchronization. If order is not an issue, use System.Collections.Concurrent.ConcurrentBag instead
-        private List<SPINStatistics> stats = new List<SPINStatistics>();
+        private List<SpinStatistics> stats = new List<SpinStatistics>();
 
 
-        public void addListener(ISPINStatisticsListener listener)
+        public void AddListener(ISpinStatisticsListener listener)
         {
             _listeners.Add(listener);
         }
@@ -55,12 +61,24 @@ namespace VDS.RDF.Query.Spin.Statistics
          * @param values  the statistics to add
          */
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void add(IEnumerable<SPINStatistics> values)
+        public void Add(SpinStatistics value)
         {
-            addSilently(values);
-            notifyListeners();
+            if (_recording)
+            {
+                AddSilently(value);
+                NotifyListeners();
+            }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Add(IEnumerable<SpinStatistics> values)
+        {
+            if (_recording)
+            {
+                AddSilently(values);
+                NotifyListeners();
+            }
+        }
 
         /**
          * Adds new statistics without notifying listeners.
@@ -68,82 +86,102 @@ namespace VDS.RDF.Query.Spin.Statistics
          * to prevent the unnecessary creation of SPINStatistics objects.
          * @param values  the statistics to add
          */
-        public void addSilently(IEnumerable<SPINStatistics> values)
+        public void AddSilently(IEnumerable<SpinStatistics> values)
         {
-            foreach (SPINStatistics s in values)
+            if (_recording)
             {
-                stats.Add(s);
+                foreach (SpinStatistics s in values)
+                {
+                    AddSilently(s);
+                }
             }
         }
 
+        public void AddSilently(SpinStatistics value)
+        {
+            if (_recording)
+            {
+                stats.Add(value);
+            }
+        }
 
         /**
          * Gets all previously added statistics.
          * @return the statistics
          */
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public List<SPINStatistics> getStatistics()
+        public List<SpinStatistics> GetStatistics()
         {
             return stats;
         }
 
+        public TimeSpan TotalDuration {
+            get {
+                long ticks = 0;
+                foreach (SpinStatistics stat in stats.Where(s => s.Label == "Query Execution"))
+                {
+                    ticks += stat.Duration.Ticks;
+                }
+                return new TimeSpan(ticks);
+            }
+        }
 
-        public bool isRecording()
+        public bool IsRecording()
         {
             return _recording;
         }
 
 
-        public bool isRecordingNativeFunctions()
+        public bool IsRecordingNativeFunctions()
         {
             return _recordingNativeFunctions;
         }
 
 
-        public bool isRecordingSPINFunctions()
+        public bool IsRecordingSPINFunctions()
         {
             return _recordingSPINFunctions;
         }
 
 
-        public void removeListener(ISPINStatisticsListener listener)
+        public void RemoveListener(ISpinStatisticsListener listener)
         {
             _listeners.Remove(listener);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void reset()
+        public void Reset()
         {
             stats.Clear();
-            notifyListeners();
+            NotifyListeners();
         }
 
 
         /**
          * Notifies all registered SPINStatisticsListeners so that they can refresh themselves.
          */
-        public void notifyListeners()
+        public void NotifyListeners()
         {
-            foreach (ISPINStatisticsListener listener in new List<ISPINStatisticsListener>(_listeners))
+            foreach (ISpinStatisticsListener listener in new List<ISpinStatisticsListener>(_listeners))
             {
                 listener.statisticsUpdated();
             }
         }
 
 
-        public void setRecording(bool value)
+        public void SetRecording(bool value)
         {
             this._recording = value;
         }
 
 
-        public void setRecordingNativeFunctions(bool value)
+        public void SetRecordingNativeFunctions(bool value)
         {
             this._recordingNativeFunctions = value;
         }
 
 
-        public void setRecordingSPINFunctions(bool value)
+        public void SetRecordingSPINFunctions(bool value)
         {
             this._recordingSPINFunctions = value;
         }

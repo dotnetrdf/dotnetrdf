@@ -13,8 +13,8 @@ namespace VDS.RDF.Query.Spin.Statistics
      * 
      * @author Holger Knublauch
      */
-
-    public class SPINStatistics
+    // Replace the GetXXX function with properties
+    public class SpinStatistics
     {
 
         private INode _context;
@@ -27,6 +27,7 @@ namespace VDS.RDF.Query.Spin.Statistics
 
         private DateTime _startTime;
 
+        private int _resultCount = -1;
 
         /**
          * Creates a new SPINStatistics object.
@@ -36,43 +37,70 @@ namespace VDS.RDF.Query.Spin.Statistics
          * @param startTime  the start time of execution (for ordering)
          * @param context  the INode that for example was holding the spin:rule
          */
-        public SPINStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context)
+        public SpinStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context)
+            :this(label, queryText, duration, startTime, context, -1)
+        { 
+        }
+
+        public SpinStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context, int resultCount)
         {
             this._context = context;
             this._duration = duration;
             this._label = label;
             this._queryText = queryText;
             this._startTime = startTime;
+            this._resultCount = resultCount;
+        }
+
+        public INode Context
+        {
+            get
+            {
+                return _context;
+            }
         }
 
 
-        public INode getContext()
+        public TimeSpan Duration
         {
-            return _context;
+            get
+            {
+                return _duration;
+            }
         }
 
 
-        public TimeSpan getDuration()
+        public String Label
         {
-            return _duration;
+            get
+            {
+                return _label;
+            }
         }
 
 
-        public String getLabel()
+        public String QueryText
         {
-            return _label;
+            get
+            {
+                return _queryText;
+            }
         }
 
-
-        public String getQueryText()
+        public int ResultCount
         {
-            return _queryText;
+            get
+            {
+                return _resultCount;
+            }
         }
 
-
-        public DateTime getStartTime()
+        public DateTime StartTime
         {
-            return _startTime;
+            get
+            {
+                return _startTime;
+            }
         }
     }
 }
