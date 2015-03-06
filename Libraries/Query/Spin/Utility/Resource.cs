@@ -22,9 +22,9 @@ namespace VDS.RDF.Query.Spin.Utility
         #region "Basic resource wrapper implementation "
 
         private INode _sourceNode;
-        private SpinProcessor _model;
+        private SpinModel _model;
 
-        internal static SpinResource Get(INode node, SpinProcessor spinModel)
+        internal static SpinResource Get(INode node, SpinModel spinModel)
         {
             if (node == null) return null;
             if (node is SpinResource && ((IResource)node).GetModel() == spinModel)
@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Spin.Utility
             return new SpinResource(node, spinModel);
         }
 
-        protected SpinResource(INode node, SpinProcessor spinModel)
+        protected SpinResource(INode node, SpinModel spinModel)
         {
             _sourceNode = node;
             _model = spinModel;
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Utility
             return _sourceNode;
         }
 
-        public SpinProcessor GetModel()
+        public SpinModel GetModel()
         {
             return _model;
         }
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Spin.Utility
             }
             else
             {
-                constructor = cls.GetConstructor(new Type[] { typeof(INode), typeof(SpinProcessor) });
+                constructor = cls.GetConstructor(new Type[] { typeof(INode), typeof(SpinModel) });
                 constructors[cls] = constructor;
             }
             return (IResource)constructor.Invoke(new object[] { _sourceNode, _model });
