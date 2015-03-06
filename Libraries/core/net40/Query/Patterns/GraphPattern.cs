@@ -72,12 +72,22 @@ namespace VDS.RDF.Query.Patterns
         /// Creates a new Graph Pattern copied from an existing Graph Pattern
         /// </summary>
         /// <param name="gp">Graph Pattern</param>
-        internal GraphPattern(GraphPattern gp)
+        public GraphPattern(GraphPattern gp)
+            : this(gp, false)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new Graph Pattern copied from an existing Graph Pattern
+        /// </summary>
+        /// <param name="gp">Graph Pattern</param>
+        /// <param name="shallow">Whether or not make a shallow copy of the pattern (defaults to false)</param>
+        public GraphPattern(GraphPattern gp, bool shallow)
         {
             this._break = gp._break;
             this._broken = gp._broken;
             this._filter = gp._filter;
-            this._graphPatterns.AddRange(gp._graphPatterns.Select(cgp => cgp.Clone())); // Cloning is made necessary since each graph pattern has to maintain its children ActiveGraph separately
+            if (!shallow) this._graphPatterns.AddRange(gp._graphPatterns.Select(cgp => cgp.Clone())); // Cloning is made necessary since each graph pattern has to maintain its children ActiveGraph separately
             this._graphSpecifier = gp._graphSpecifier;
             this._isExists = gp._isExists;
             this._isFiltered = gp._isFiltered;
@@ -92,7 +102,7 @@ namespace VDS.RDF.Query.Patterns
             //Copy Triple Patterns across
             //Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
             //reoptimising a pattern with already placed filters and assignments can lead to strange results
-            this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
+            if (!shallow) this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
             this._unplacedAssignments.AddRange(gp._unplacedAssignments);
             this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
             this._unplacedFilters.AddRange(gp._unplacedFilters);

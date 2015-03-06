@@ -17,24 +17,13 @@ namespace VDS.RDF.Query
     {
 
         /// <summary>
-        /// Returns a clone of a GraphPattern instance with or without its children.
+        /// Returns a shallow or full clone of a GraphPattern instance
         /// </summary>
         /// <param name="source"></param>
         /// <param name="inDepth"></param>
         /// <returns></returns>
-        public static GraphPattern Clone(this GraphPattern source, bool inDepth = true) {
-            if (inDepth) return new GraphPattern(source);
-            GraphPattern output = new GraphPattern();
-            output.GraphSpecifier = source.GraphSpecifier;
-            output.IsExists = source.IsExists;
-            output.IsGraph = source.IsGraph;
-            output.IsMinus = source.IsMinus;
-            output.IsNotExists = source.IsExists;
-            output.IsOptional = source.IsOptional;
-            output.IsService = source.IsService;
-            output.IsSilent = source.IsSilent;
-            output.IsUnion = source.IsUnion;
-            return output;
+        public static GraphPattern Clone(this GraphPattern source, bool shallow = false) {
+            return new GraphPattern(source, shallow);
         }
 
         /// <summary>
@@ -42,7 +31,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsMinus(this GraphPattern source)
+        public static GraphPattern WithinMinus(this GraphPattern source)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsMinus = true;
@@ -55,7 +44,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsOptional(this GraphPattern source)
+        public static GraphPattern WithinOptional(this GraphPattern source)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsOptional = true;
@@ -68,7 +57,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sources"></param>
         /// <returns></returns>
-        public static GraphPattern AsUnion(this IEnumerable<GraphPattern> sources)
+        public static GraphPattern ToUnionGraphPattern(this IEnumerable<GraphPattern> sources)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsUnion = true;
@@ -81,7 +70,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsGraph(this GraphPattern source, IToken token)
+        public static GraphPattern WithinGraph(this GraphPattern source, IToken token)
         {
             GraphPattern gp;
             if (source.IsService) return source; // is this correct ?
@@ -105,9 +94,9 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsGraph(this GraphPattern source, String varName)
+        public static GraphPattern WithinGraph(this GraphPattern source, String varName)
         {
-            return AsGraph(source, new VariableToken("?" + varName, 0, 0, 0));
+            return WithinGraph(source, new VariableToken("?" + varName, 0, 0, 0));
         }
 
         /// <summary>
@@ -115,9 +104,9 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsGraph(this GraphPattern source, Uri graphUri)
+        public static GraphPattern WithinGraph(this GraphPattern source, Uri graphUri)
         {
-            return AsGraph(source, new UriToken("<" + graphUri.ToString() + ">", 0, 0, 0));
+            return WithinGraph(source, new UriToken("<" + graphUri.ToString() + ">", 0, 0, 0));
         }
 
         /// <summary>
@@ -125,7 +114,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern AsService(Uri serviceUri, GraphPattern source)
+        public static GraphPattern WithinService(Uri serviceUri, GraphPattern source)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsService = true;
@@ -139,7 +128,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static GraphPattern ToGraphPattern(this ITriplePattern tp) {
+        public static GraphPattern AsGraphPattern(this ITriplePattern tp) {
             GraphPattern gp = new GraphPattern();
             gp.AddTriplePattern(tp);
             return gp;

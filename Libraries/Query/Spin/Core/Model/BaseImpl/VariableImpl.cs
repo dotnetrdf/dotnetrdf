@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class VariableImpl : AbstractSPINResource, IVariableResource
     {
 
-        public VariableImpl(INode node, SpinProcessor spinModel)
+        public VariableImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

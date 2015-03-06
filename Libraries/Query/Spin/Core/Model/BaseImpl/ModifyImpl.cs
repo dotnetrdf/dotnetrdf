@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ModifyImpl : UpdateImpl, IModifyResource
     {
 
-        public ModifyImpl(INode node, SpinProcessor graph)
+        public ModifyImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
         }

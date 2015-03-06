@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class SPINInstanceImpl : SpinResource, ISPINInstanceResource
     {
 
-        public SPINInstanceImpl(INode node, SpinProcessor spinModel)
+        public SPINInstanceImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

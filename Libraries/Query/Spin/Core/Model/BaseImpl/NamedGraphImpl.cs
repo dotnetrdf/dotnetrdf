@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class NamedGraphImpl : ElementImpl, INamedGraphResource
     {
 
-        public NamedGraphImpl(INode node, SpinProcessor spinModel)
+        public NamedGraphImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class SubQueryImpl : ElementImpl, ISubQueryResource
     {
 
-        public SubQueryImpl(INode node, SpinProcessor spinModel)
+        public SubQueryImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

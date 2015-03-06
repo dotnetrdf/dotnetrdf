@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class FilterImpl : ElementImpl, IFilterResource
     {
 
-        public FilterImpl(INode node, SpinProcessor spinModel)
+        public FilterImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

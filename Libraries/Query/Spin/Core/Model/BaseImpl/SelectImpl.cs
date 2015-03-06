@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class SelectImpl : QueryImpl, ISelectResource
     {
 
-        public SelectImpl(INode node, SpinProcessor spinModel)
+        public SelectImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

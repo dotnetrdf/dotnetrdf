@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class DeleteDataImpl : UpdateImpl, IDeleteDataResource
     {
 
-        public DeleteDataImpl(INode node, SpinProcessor graph)
+        public DeleteDataImpl(INode node, SpinModel graph)
             :base(node, graph)
         {
             

@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class FunctionImpl : ModuleImpl, IFunctionResource
     {
 
-        public FunctionImpl(INode node, SpinProcessor spinModel)
+        public FunctionImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

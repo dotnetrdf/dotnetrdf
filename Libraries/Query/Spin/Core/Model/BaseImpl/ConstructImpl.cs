@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ConstructImpl : QueryImpl, IConstructResource
     {
 
-        public ConstructImpl(INode node, SpinProcessor spinModel)
+        public ConstructImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

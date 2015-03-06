@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class NotExistsImpl : ElementImpl, INotExistsResource
     {
 
-        public NotExistsImpl(INode node, SpinProcessor spinModel)
+        public NotExistsImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

@@ -4,14 +4,14 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.LibraryOntology;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.Core
 {
 
-
+    // TODO convert this into a sparqlQuery registry
     /**
      * A singleton that keeps track of all registered SPIN functions
      * and templates.  For example, in TopBraid this is populated by
@@ -27,7 +27,7 @@ namespace VDS.RDF.Query.Spin.Core
          * Remembers all function definitions (in their original Model) so that they
          * can be retrieved later.
          */
-        private static Dictionary<Uri, IFunction> functions = new Dictionary<Uri, IFunction>(RDFUtil.uriComparer);
+        private static Dictionary<Uri, IFunctionResource> functions = new Dictionary<Uri, IFunctionResource>(RDFUtil.uriComparer);
 
         /**
          * Remembers the source object (e.g. file) that a Function has been loaded from.
@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Spin.Core
          * Remembers all template definitions (in their original Model) so that they
          * can be retrieved later.
          */
-        private static Dictionary<Uri, ITemplate> templates = new Dictionary<Uri, ITemplate>(RDFUtil.uriComparer);
+        private static Dictionary<Uri, ITemplateResource> templates = new Dictionary<Uri, ITemplateResource>(RDFUtil.uriComparer);
 
         /**
          * Sets the SPINModuleRegistry to another value.
@@ -58,9 +58,9 @@ namespace VDS.RDF.Query.Spin.Core
          *               locally defined functions (currently not used)
          * @return the Function or null if none was found
          */
-        public static IFunction getFunction(Uri uri, SpinProcessor model)
+        public static IFunctionResource getFunction(Uri uri, SpinProcessor model)
         {
-            IFunction function = null;
+            IFunctionResource function = null;
             if (functions.ContainsKey(uri))
             {
                 function = functions[uri];
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             if (model != null)
             {
-                function = (IFunction)Resource.Get(RDFUtil.CreateUriNode(uri), model).As(typeof(FunctionImpl));
+                function = (IFunctionResource)SpinResource.Get(RDFUtil.CreateUriNode(uri), model).As(typeof(FunctionImpl));
                 if (function.hasProperty(RDF.PropertyType, SPIN.ClassFunction))
                 {
                     return function;
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Spin.Core
          * Gets a Collection of all registered Functions.
          * @return the Templates
          */
-        public static IEnumerable<IFunction> getFunctions()
+        public static IEnumerable<IFunctionResource> getFunctions()
         {
             return functions.Values;
         }
@@ -99,18 +99,18 @@ namespace VDS.RDF.Query.Spin.Core
         public static HashSet<SpinProcessor> getModels()
         {
             HashSet<SpinProcessor> spinModels = new HashSet<SpinProcessor>();
-            foreach (IFunction function in SPINModuleRegistry.getFunctions())
+            foreach (IFunctionResource function in SPINModuleRegistry.getFunctions())
             {
                 spinModels.Add(function.getModel());
             }
-            foreach (ITemplate template in SPINModuleRegistry.getTemplates())
+            foreach (ITemplateResource template in SPINModuleRegistry.getTemplates())
             {
                 spinModels.Add(template.getModel());
             }
             return spinModels;
         }
 
-        public static Object getSource(IFunction function)
+        public static Object getSource(IFunctionResource function)
         {
             if (sources.ContainsKey(function))
             {
@@ -126,14 +126,14 @@ namespace VDS.RDF.Query.Spin.Core
          * @param model  an (optional) Model that should also be used for look up
          * @return a Template or null
          */
-        public static ITemplate getTemplate(Uri uri, SpinProcessor model)
+        public static ITemplateResource getTemplate(Uri uri, SpinProcessor model)
         {
             if (model != null)
             {
-                IResource r = Resource.Get(RDFUtil.CreateUriNode(uri), model);
+                IResource r = SpinResource.Get(RDFUtil.CreateUriNode(uri), model);
                 if (r.hasProperty(RDF.PropertyType, SPIN.ClassTemplate))
                 {
-                    return (ITemplate)r.As(typeof(TemplateImpl));
+                    return (ITemplateResource)r.As(typeof(TemplateImpl));
                 }
             }
             if (templates.ContainsKey(uri))
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Spin.Core
          * Gets a Collection of all registered Templates.
          * @return the Templates
          */
-        public static IEnumerable<ITemplate> getTemplates()
+        public static IEnumerable<ITemplateResource> getTemplates()
         {
             return templates.Values;
         }
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Spin.Core
          * @param source  an optional source for the function (e.g. a File)
          * @param addARQFunction  true to also add an entry to the ARQ function registry
          */
-        public static void register(IFunction function, Object source, bool addARQFunction)
+        public static void register(IFunctionResource function, Object source, bool addARQFunction)
         {
             functions[function.Uri] = function;
             if (source != null)
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Spin.Core
          * SPARQL string.</b>
          * @param template  the Template (must be a URI resource)
          */
-        public static void register(ITemplate template)
+        public static void register(ITemplateResource template)
         {
             templates[template.Uri] = template;
         }
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.Spin.Core
          * then it will only be replaced if it is also a SPINARQFunction.
          * @param spinFunction  the function to register
          */
-        protected static void registerARQFunction(IFunction spinFunction)
+        protected static void registerARQFunction(IFunctionResource spinFunction)
         {
             //TODO
             //FunctionFactory oldFF = FunctionRegistry.get().get(spinFunction.Uri);
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query.Spin.Core
          * then it will only be replaced if it is also a SPINARQPFunction.
          * @param function  the function to register
          */
-        public static void registerARQPFunction(IFunction function)
+        public static void registerARQPFunction(IFunctionResource function)
         {
             //TODO
             if (function.hasProperty(SPIN.PropertyBody))
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query.Spin.Core
         {
             foreach (IResource resource in model.GetAllInstances(SPIN.ClassFunction))
             {
-                IFunction function = SPINFactory.asFunction(resource);
+                IFunctionResource function = SPINFactory.asFunction(resource);
                 register(function, function.getSource().Graph, true);
             }
         }
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query.Spin.Core
             {
                 if (resource.isUri())
                 {
-                    ITemplate template = (ITemplate)resource.As(typeof(TemplateImpl));
+                    ITemplateResource template = (ITemplateResource)resource.As(typeof(TemplateImpl));
                     register(template);
                     ExtraPrefixes.Add(template);
                 }

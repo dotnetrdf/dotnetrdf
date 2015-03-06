@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class AskImpl : QueryImpl, IAskResource
     {
 
-        public AskImpl(INode node, SpinProcessor spinModel)
+        public AskImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

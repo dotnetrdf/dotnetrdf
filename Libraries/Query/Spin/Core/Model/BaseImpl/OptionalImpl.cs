@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class OptionalImpl : ElementImpl, IOptionalResource
     {
 
-        public OptionalImpl(INode node, SpinProcessor spinModel)
+        public OptionalImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

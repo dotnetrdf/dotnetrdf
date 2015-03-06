@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ArgumentImpl : AbstractAttributeImpl, IArgumentResource
     {
 
-        public ArgumentImpl(INode node, SpinProcessor spinModel)
+        public ArgumentImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

@@ -11,7 +11,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ServiceImpl : ElementImpl, IServiceResource
     {
 
-        public ServiceImpl(INode node, SpinProcessor spinModel)
+        public ServiceImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

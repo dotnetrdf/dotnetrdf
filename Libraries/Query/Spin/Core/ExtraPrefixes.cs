@@ -4,7 +4,7 @@
  *******************************************************************************/
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF;
 
@@ -58,8 +58,8 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static void Add(IResource resource)
         {
-            if (!resource.isUri() || resource.getSource().Graph == null) return;
-            INamespaceMapper mapper = resource.getSource().Graph.NamespaceMap;
+            if (!resource.IsUri() || resource.AsNode().Graph == null) return;
+            INamespaceMapper mapper = resource.AsNode().Graph.NamespaceMap;
             String prefix;
             if (mapper.ReduceToQName(resource.Uri.ToString(), out prefix))
             {

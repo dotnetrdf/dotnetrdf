@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class DropImpl : UpdateImpl, IDropResource
     {
 
-        public DropImpl(INode node, SpinProcessor graph)
+        public DropImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
 

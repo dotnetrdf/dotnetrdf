@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class DeleteWhereImpl : UpdateImpl, IDeleteWhereResource
     {
 
-        public DeleteWhereImpl(INode node, SpinProcessor graph)
+        public DeleteWhereImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
 

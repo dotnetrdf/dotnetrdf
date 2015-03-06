@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class BindImpl : ElementImpl, IBindResource
     {
 
-        public BindImpl(INode node, SpinProcessor spinModel)
+        public BindImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

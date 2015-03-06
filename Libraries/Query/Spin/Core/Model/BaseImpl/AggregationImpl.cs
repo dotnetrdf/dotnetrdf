@@ -18,7 +18,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class AggregationImpl : AbstractSPINResource, IAggregationResource
     {
 
-        public AggregationImpl(INode node, SpinProcessor spinModel)
+        public AggregationImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

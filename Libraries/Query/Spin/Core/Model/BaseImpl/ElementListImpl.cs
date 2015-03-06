@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ElementListImpl : ElementImpl, IElementListResource
     {
 
-        public ElementListImpl(INode node, SpinProcessor spinModel)
+        public ElementListImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

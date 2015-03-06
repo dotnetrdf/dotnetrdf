@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class TriplePathImpl : TupleImpl, ITriplePathResource
     {
 
-        public TriplePathImpl(INode node, SpinProcessor spinModel)
+        public TriplePathImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

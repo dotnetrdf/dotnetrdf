@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Spin.Model
     public abstract class TupleImpl : AbstractSPINResource
     {
 
-        public TupleImpl(INode node, SpinProcessor spinModel)
+        public TupleImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 
@@ -79,13 +79,13 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
 
-        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p)
+        public static void print(SpinModel model, IResource node, ISparqlPrinter p)
         {
             print(model, node, p, false);
         }
 
 
-        public static void print(SpinProcessor model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
+        public static void print(SpinModel model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
         {
             // TODO find the good tests ?????
             if (!node.IsLiteral())

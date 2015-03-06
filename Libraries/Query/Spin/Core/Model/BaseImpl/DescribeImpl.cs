@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class DescribeImpl : QueryImpl, IDescribeResource
     {
 
-        public DescribeImpl(INode node, SpinProcessor spinModel)
+        public DescribeImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

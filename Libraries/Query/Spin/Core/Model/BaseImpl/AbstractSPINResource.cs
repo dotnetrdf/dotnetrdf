@@ -23,7 +23,7 @@ namespace VDS.RDF.Query.Spin.Model
         public const String INDENTATION = " ";
 
 
-        public AbstractSPINResource(INode node, SpinProcessor spinModel)
+        public AbstractSPINResource(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

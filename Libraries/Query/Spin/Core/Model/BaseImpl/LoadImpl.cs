@@ -8,7 +8,7 @@ namespace  VDS.RDF.Query.Spin.Model {
 
 public class LoadImpl : UpdateImpl, ILoadResource {
 
-    public LoadImpl(INode node, SpinProcessor spinModel)
+    public LoadImpl(INode node, SpinModel spinModel)
         : base(node, spinModel)
     {
 		

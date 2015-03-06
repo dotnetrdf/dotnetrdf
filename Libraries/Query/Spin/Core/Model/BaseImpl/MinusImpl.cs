@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class MinusImpl : ElementImpl, IMinusResource
     {
 
-        public MinusImpl(INode node, SpinProcessor spinModel)
+        public MinusImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

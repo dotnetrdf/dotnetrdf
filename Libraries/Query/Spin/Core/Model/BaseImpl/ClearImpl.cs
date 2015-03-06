@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ClearImpl : UpdateImpl, IClearResource
     {
 
-        public ClearImpl(INode node, SpinProcessor graph)
+        public ClearImpl(INode node, SpinModel graph)
             :base(node, graph)
         {
             

@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class CreateImpl : UpdateImpl, ICreateResource
     {
 
-        public CreateImpl(INode node, SpinProcessor graph)
+        public CreateImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
         }

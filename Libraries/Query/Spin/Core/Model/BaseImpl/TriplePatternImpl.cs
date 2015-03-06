@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class TriplePatternImpl : TripleImpl, ITriplePatternResource
     {
 
-        public TriplePatternImpl(INode node, SpinProcessor spinModel)
+        public TriplePatternImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

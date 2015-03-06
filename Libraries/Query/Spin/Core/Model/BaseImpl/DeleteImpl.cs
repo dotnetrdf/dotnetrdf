@@ -11,7 +11,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class DeleteImpl : UpdateImpl, IDeleteResource
     {
 
-        public DeleteImpl(INode node, SpinProcessor graph)
+        public DeleteImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
             

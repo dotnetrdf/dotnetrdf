@@ -8,7 +8,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class TemplateImpl : ModuleImpl, ITemplateResource
     {
 
-        public TemplateImpl(INode node, SpinProcessor spinModel)
+        public TemplateImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

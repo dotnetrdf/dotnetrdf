@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class InsertImpl : UpdateImpl, IInsertResource
     {
 
-        public InsertImpl(INode node, SpinProcessor graph)
+        public InsertImpl(INode node, SpinModel graph)
             :base(node, graph)
         {
             

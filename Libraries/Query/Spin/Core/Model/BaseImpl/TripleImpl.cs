@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Spin.Model
     public abstract class TripleImpl : TupleImpl
     {
 
-        public TripleImpl(INode node, SpinProcessor spinModel)
+        public TripleImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

@@ -22,7 +22,7 @@ namespace VDS.RDF.Query.Spin.Model
     {
 
         INode AsNode();
-        SpinProcessor GetModel();
+        SpinModel GetModel();
 
         bool IsUri();
         bool IsBlank();

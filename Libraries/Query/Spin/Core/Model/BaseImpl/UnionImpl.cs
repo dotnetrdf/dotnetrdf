@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class UnionImpl : ElementImpl, IUnionResource
     {
 
-        public UnionImpl(INode node, SpinProcessor spinModel)
+        public UnionImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
 

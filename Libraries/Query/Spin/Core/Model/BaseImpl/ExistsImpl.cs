@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Spin.Model
     public class ExistsImpl : ElementImpl, IExistsResource
     {
 
-        public ExistsImpl(INode node, SpinProcessor spinModel)
+        public ExistsImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }

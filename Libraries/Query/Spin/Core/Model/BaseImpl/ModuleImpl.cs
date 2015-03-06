@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Spin.Model
     {
 
 
-        public ModuleImpl(INode node, SpinProcessor spinModel)
+        public ModuleImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
