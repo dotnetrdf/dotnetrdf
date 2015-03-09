@@ -1,0 +1,19 @@
+﻿@prefix Frame: <http://www.adamslair.net/ontology/storygen/frame/>.
+@prefix Knowledge: <http://www.adamslair.net/ontology/storygen/knowledge/>.
+ 
+######### Abstract Concepts #########
+   
+Frame:Animal
+    Knowledge:HasAttribute     Knowledge:Actor;
+    Knowledge:Text             "Animal"@en.
+ 
+######### Non-Abstract Things / Instances #########
+   
+Frame:Sheep
+    Knowledge:IsA              Frame:Animal;
+    Knowledge:Text             "Sheep"@en.
+ 
+Frame:Wolf
+    Knowledge:IsA              Frame:Animal;
+    Knowledge:Text             "Wolf"@en;
+    Knowledge:PredatorOf       Frame:Sheep.
