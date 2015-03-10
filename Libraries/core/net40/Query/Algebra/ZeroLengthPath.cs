@@ -90,11 +90,6 @@ namespace VDS.RDF.Query.Algebra
                                 x.Add(objVar, x[objVar]);
                                 context.OutputMultiset.Add(x);
                             }
-
-                            //ts = (from s in context.InputMultiset.Sets
-                            //      where s[subjVar] != null && s[objVar] != null
-                            //      from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
-                            //      select t);
                         }
                         else
                         {
