@@ -12,6 +12,7 @@ Changed
  - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
  - Fix typo in MIME type definitions for NTriples
  - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
 - Build
  - Upgrade PCL build to Profile 328
 - Dependencies

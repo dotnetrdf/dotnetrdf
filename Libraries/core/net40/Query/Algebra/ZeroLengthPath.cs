@@ -69,7 +69,6 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = new Multiset();
 
             //Determine the Triples to which this applies
-            IEnumerable<Triple> ts = null;
             if (subjVar != null)
             {
                 //Subject is a Variable
@@ -81,19 +80,26 @@ namespace VDS.RDF.Query.Algebra
                         //Object is a Variable
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
-                            //Object is Bound
-                            ts = (from s in context.InputMultiset.Sets
-                                  where s[subjVar] != null && s[objVar] != null
-                                  from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
-                                  select t);
+                            //Both Subject and Object are Bound
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && this.PathStart.Accepts(context, x[subjVar]) && this.PathEnd.Accepts(context, x[objVar])))
+                            {
+                                ISet x = new Set();
+                                x.Add(subjVar, x[subjVar]);
+                                context.OutputMultiset.Add(x);
+                                x = new Set();
+                                x.Add(objVar, x[objVar]);
+                                context.OutputMultiset.Add(x);
+                            }
                         }
                         else
                         {
-                            //Object is Unbound
-                            ts = (from s in context.InputMultiset.Sets
-                                  where s[subjVar] != null
-                                  from t in context.Data.GetTriplesWithSubject(s[subjVar])
-                                  select t);
+                            //Subject is bound but Object is Unbound
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && this.PathStart.Accepts(context, x[subjVar])))
+                            {
+                                ISet x = s.Copy();
+                                x.Add(objVar, x[subjVar]);
+                                context.OutputMultiset.Add(x);
+                            }
                         }
                     }
                     else
@@ -119,15 +125,17 @@ namespace VDS.RDF.Query.Algebra
                         //Object is a Variable
                         if (context.InputMultiset.ContainsVariable(objVar))
                         {
-                            //Object is Bound
-                            ts = (from s in context.InputMultiset.Sets
-                                  where s[objVar] != null
-                                  from t in context.Data.GetTriplesWithObject(s[objVar])
-                                  select t);
+                            //Object is Bound but Subject is unbound
+                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && this.PathEnd.Accepts(context, x[objVar])))
+                            {
+                                ISet x = s.Copy();
+                                x.Add(subjVar, x[objVar]);
+                                context.OutputMultiset.Add(x);
+                            }
                         }
                         else
                         {
-                            //Object is Unbound
+                            //Subject and Object are Unbound
                             HashSet<INode> nodes = new HashSet<INode>();
                             foreach (Triple t in context.Data.Triples)
                             {
@@ -185,42 +193,6 @@ namespace VDS.RDF.Query.Algebra
                 throw new RdfQueryException("Reached unexpected point of ZeroLengthPath evaluation");
             }
 
-            //Get the Matches only if we haven't already generated the output
-            if (ts != null)
-            {
-                HashSet<KeyValuePair<INode, INode>> matches = new HashSet<KeyValuePair<INode, INode>>();
-                foreach (Triple t in ts)
-                {
-                    if (this.PathStart.Accepts(context, t.Subject) && this.PathEnd.Accepts(context, t.Object))
-                    {
-                        matches.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
-                    }
-                }
-
-                //Generate the Output based on the mathces
-                if (matches.Count == 0)
-                {
-                    context.OutputMultiset = new NullMultiset();
-                }
-                else
-                {
-                    if (this.PathStart.VariableName == null && this.PathEnd.VariableName == null)
-                    {
-                        context.OutputMultiset = new IdentityMultiset();
-                    }
-                    else
-                    {
-                        context.OutputMultiset = new Multiset();
-                        foreach (KeyValuePair<INode, INode> m in matches)
-                        {
-                            Set s = new Set();
-                            if (subjVar != null) s.Add(subjVar, m.Key);
-                            if (objVar != null) s.Add(objVar, m.Value);
-                            context.OutputMultiset.Add(s);
-                        }
-                    }
-                }
-            }
             return context.OutputMultiset;
         }
 

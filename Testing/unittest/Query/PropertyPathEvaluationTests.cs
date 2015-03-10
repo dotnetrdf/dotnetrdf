@@ -556,6 +556,67 @@ select ?superclass where {
             SparqlResultSet rset = (SparqlResultSet)results;
             Assert.AreEqual(2, rset.Count);
         }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore441ZeroOrMorePath()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources\core-441\data.ttl");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\star-path.rq");
+            Console.WriteLine(query.ToAlgebra().ToString());
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(query);
+            Assert.NotNull(results);
+            TestTools.ShowResults(results);
+
+            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            SparqlResultSet rset = (SparqlResultSet)results;
+            Assert.AreEqual(1, rset.Count);
+            Assert.AreEqual(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore441OneOrMorePath()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources\core-441\data.ttl");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\plus-path.rq");
+            Console.WriteLine(query.ToAlgebra().ToString());
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(query);
+            Assert.NotNull(results);
+            TestTools.ShowResults(results);
+
+            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            SparqlResultSet rset = (SparqlResultSet)results;
+            Assert.AreEqual(0, rset.Count);
+        }
+
+        [Test]
+        public void SparqlPropertyPathEvaluationCore441NoPath()
+        {
+            IGraph g = new Graph();
+            g.LoadFromFile(@"resources\core-441\data.ttl");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\no-path.rq");
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(query);
+            Assert.NotNull(results);
+            TestTools.ShowResults(results);
+
+            Assert.IsInstanceOf(typeof(SparqlResultSet), results);
+            SparqlResultSet rset = (SparqlResultSet)results;
+            Assert.AreEqual(1, rset.Count);
+            Assert.AreEqual(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+        }
 #endif
     }
 }
