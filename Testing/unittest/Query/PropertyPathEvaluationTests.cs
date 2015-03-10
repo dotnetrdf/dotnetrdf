@@ -595,8 +595,7 @@ select ?superclass where {
 
             Assert.IsInstanceOf(typeof(SparqlResultSet), results);
             SparqlResultSet rset = (SparqlResultSet)results;
-            Assert.AreEqual(1, rset.Count);
-            Assert.AreEqual(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+            Assert.AreEqual(0, rset.Count);
         }
 
         [Test]

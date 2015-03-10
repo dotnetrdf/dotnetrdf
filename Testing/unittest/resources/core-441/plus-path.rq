@@ -4,6 +4,6 @@ PREFIX  Knowledge: <http://www.adamslair.net/ontology/storygen/knowledge/>
 SELECT ?obj ?prey
 WHERE
 {
-?obj Knowledge:IsA* ?prey .
+?obj Knowledge:IsA+ ?prey .
 Frame:Wolf Knowledge:PredatorOf ?prey .
 }
