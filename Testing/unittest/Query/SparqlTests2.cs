@@ -1587,6 +1587,21 @@ WHERE
             Assert.AreEqual(10, results.Count);
         }
 
+        [Test]
+        public void SparqlSubQueryOrderByLimitInteractionCore437()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            InMemoryDataset dataset = new InMemoryDataset(g);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-437.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+
+            TestTools.ShowResults(results);
+        }
+
 #endif
     }
 }

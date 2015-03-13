@@ -217,6 +217,10 @@ namespace VDS.RDF.Query.Algebra
         {
             int p = id / this._partitionSize;
             this._partitions[p].Remove(id);
+            if (this._orderedIDs != null)
+            {
+                this._orderedIDs.Remove(id);
+            }
             this._cacheInvalid = true;
         }
 

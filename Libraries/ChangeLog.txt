@@ -9,9 +9,11 @@ Changed
  - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
  - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
  - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
+ - Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
  - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
  - Fix typo in MIME type definitions for NTriples
  - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
 - Build
  - Upgrade PCL build to Profile 328
 - Dependencies

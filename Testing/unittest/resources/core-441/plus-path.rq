@@ -1,0 +1,9 @@
+﻿PREFIX  Frame: <http://www.adamslair.net/ontology/storygen/frame/>
+PREFIX  Knowledge: <http://www.adamslair.net/ontology/storygen/knowledge/>
+ 
+SELECT ?obj ?prey
+WHERE
+{
+?obj Knowledge:IsA+ ?prey .
+Frame:Wolf Knowledge:PredatorOf ?prey .
+}
