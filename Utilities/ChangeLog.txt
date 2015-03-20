@@ -3,9 +3,9 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.7
+Version 1.0.8
 
-dotNetRDF Project 2009-14
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 Change Log
@@ -21,13 +21,19 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
-- Fix bug with capture groups not honoured in replace text when using regular expression (TOOLS-435)
-- Fix bug with Replace All hanging when using continually matching regular expression (TOOLS-436)
-
+ - Fix bug with capture groups not honoured in replace text when using regular expression (TOOLS-435)
+ - Fix bug with Replace All hanging when using continually matching regular expression (TOOLS-436)
 
 rdfOptStats
 
 rdfQuery
+ - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+ - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+ - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
+ - Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
+ - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+ - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
 
 rdfServer
 
@@ -36,7 +42,22 @@ rdfServerGUI
 rdfWebDeploy
 
 soh
+ - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
 
 SparqlGUI
+ - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+ - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+ - Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
+ - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+ - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
 
 StoreManager
+ - Fix typo in MIME type definitions for NTriples
+ - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+ - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+ - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
+ - Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
+ - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+ - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
