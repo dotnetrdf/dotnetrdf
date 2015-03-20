@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 1.0.8
+Version 1.0.9
 
 dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
