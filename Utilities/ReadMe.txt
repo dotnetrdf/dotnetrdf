@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-dotNetRDF Project 2009-14
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 Usage

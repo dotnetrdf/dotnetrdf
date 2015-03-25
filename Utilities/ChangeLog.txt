@@ -3,9 +3,9 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 1.0.7
+Version 1.0.9
 
-dotNetRDF Project 2009-14
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 Change Log
@@ -21,9 +21,6 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
-- Fix bug with capture groups not honoured in replace text when using regular expression (TOOLS-435)
-- Fix bug with Replace All hanging when using continually matching regular expression (TOOLS-436)
-
 
 rdfOptStats
 
@@ -40,3 +37,4 @@ soh
 SparqlGUI
 
 StoreManager
+

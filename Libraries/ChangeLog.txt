@@ -1,6 +1,12 @@
 ﻿Change Log
 ==========
 
+1.0.9
+-----
+
+Changed
+- Bug Fixes
+
 1.0.8
 -----
 

@@ -10,7 +10,7 @@ This package contains the Core Library for the following .Net profiles:
 - .Net 4.0 Client Profile
 - .Net 3.5
 - .Net 3.5 Client Profile
-- Portable Class Library Profile 136
+- Portable Class Library Profile 328
 
 It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
@@ -28,7 +28,7 @@ for the following .Net profiles:
 
 Please see the Release Notes for usage details and Known Issues
 
-dotNetRDF Project 2009-14
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 See Acknowledgements.txt for full list of developers and contributors
