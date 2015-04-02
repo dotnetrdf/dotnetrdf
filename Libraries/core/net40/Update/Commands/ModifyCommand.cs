@@ -39,7 +39,7 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents the SPARQL Update INSERT/DELETE command
     /// </summary>
-    public class ModifyCommand 
+    public class ModifyCommand
         : BaseModificationCommand
     {
         private readonly GraphPattern _deletePattern, _insertPattern, _wherePattern;
@@ -55,7 +55,7 @@ namespace VDS.RDF.Update.Commands
             : base(SparqlUpdateCommandType.Modify)
         {
             if (!this.IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-
+            if (deletions == null && insertions == null) throw new SparqlUpdateException("MODIFY commands must have either a DELETE or INSERT template or both");
             this._deletePattern = deletions;
             this._insertPattern = insertions;
             this._wherePattern = where;
@@ -144,7 +144,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the pattern used for deletions
         /// </summary>
-        public GraphPattern DeletePattern
+        public override GraphPattern DeletePattern
         {
             get
             {
@@ -155,7 +155,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the pattern used for insertions
         /// </summary>
-        public GraphPattern InsertPattern
+        public override GraphPattern InsertPattern
         {
             get
             {
@@ -166,7 +166,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the pattern used for the WHERE clause
         /// </summary>
-        public GraphPattern WherePattern
+        public override GraphPattern WherePattern
         {
             get
             {
@@ -511,10 +511,20 @@ namespace VDS.RDF.Update.Commands
                 output.Append(this._graphUri.AbsoluteUri.Replace(">", "\\>"));
                 output.AppendLine(">");
             }
-            output.AppendLine("DELETE");
-            output.AppendLine(this._deletePattern.ToString());
-            output.AppendLine("INSERT");
-            output.AppendLine(this._insertPattern.ToString());
+            if (this._deletePattern != null)
+            {
+                output.AppendLine("DELETE ");
+                //if (_deletePattern.ChildGraphPatterns.Count <= 1) output.AppendLine("{");
+                output.AppendLine(this._deletePattern.ToString());
+                //if (_deletePattern.ChildGraphPatterns.Count <= 1) output.AppendLine("}");
+            }
+            if (this._insertPattern != null)
+            {
+                output.AppendLine("INSERT ");
+                //if (_insertPattern.ChildGraphPatterns.Count <= 1) output.AppendLine("{");
+                output.AppendLine(this._insertPattern.ToString());
+                //if (_insertPattern.ChildGraphPatterns.Count <= 1) output.AppendLine("}");
+            }
             if (this._usingUris != null)
             {
                 foreach (Uri u in this._usingUris)
@@ -529,7 +539,7 @@ namespace VDS.RDF.Update.Commands
                     output.AppendLine("USING NAMED <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
             }
-            output.AppendLine("WHERE");
+            output.AppendLine("WHERE ");
             output.AppendLine(this._wherePattern.ToString());
             return output.ToString();
         }

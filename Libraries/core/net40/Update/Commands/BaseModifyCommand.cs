@@ -135,6 +135,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         protected bool IsValidDeletePattern(GraphPattern p, bool top)
         {
+            if (p == null) return true;
             if (p.IsGraph)
             {
                 //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
@@ -153,5 +154,20 @@ namespace VDS.RDF.Update.Commands
                 return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
             }
         }
+
+        /// <summary>
+        /// Gets the pattern used for deletions
+        /// </summary>
+        public abstract GraphPattern DeletePattern { get; }
+
+        /// <summary>
+        /// Gets the pattern used for insertions
+        /// </summary>
+        public abstract GraphPattern InsertPattern { get; }
+
+        /// <summary>
+        /// Gets the pattern used for the WHERE clause
+        /// </summary>
+        public abstract GraphPattern WherePattern { get; }
     }
 }

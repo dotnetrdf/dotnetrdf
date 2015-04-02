@@ -131,9 +131,20 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets the pattern used for deletions
+        /// </summary>
+        public override GraphPattern DeletePattern
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Gets the pattern used for insertions
         /// </summary>
-        public GraphPattern InsertPattern
+        public override GraphPattern InsertPattern
         {
             get
             {
@@ -144,7 +155,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the pattern used for the WHERE clause
         /// </summary>
-        public GraphPattern WherePattern
+        public override GraphPattern WherePattern
         {
             get
             {
