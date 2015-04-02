@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Patterns
             this._broken = gp._broken;
             this._filter = gp._filter;
             if (!shallow) this._graphPatterns.AddRange(gp._graphPatterns.Select(cgp => cgp.Clone())); // Cloning is made necessary since each graph pattern has to maintain its children ActiveGraph separately
-            this._graphSpecifier = gp._graphSpecifier;
+            this.GraphSpecifier = gp._graphSpecifier;
             this._isExists = gp._isExists;
             this._isFiltered = gp._isFiltered;
             this._isGraph = gp._isGraph;
@@ -499,7 +499,11 @@ namespace VDS.RDF.Query.Patterns
         /// </remarks>
         public IToken ActiveGraph
         {
-            get { return this._activeGraph; }
+            get
+            {
+                if (IsGraph) return this.GraphSpecifier;
+                return this._activeGraph;
+            }
             internal set
             {
                 this._activeGraph = value;
@@ -615,9 +619,24 @@ namespace VDS.RDF.Query.Patterns
             {
                 return (from tp in this._triplePatterns
                         from v in tp.Variables
-                        select v).Concat(from gp in this._graphPatterns
+                        select v)
+                        .Concat(from gp in this._graphPatterns
                                          from v in gp.Variables
                                          select v).Distinct();
+            }
+        }
+
+        public IEnumerable<IToken> GraphSpecifiers
+        { 
+            get {
+                HashSet<IToken> graphVars = new HashSet<IToken>();
+                if (IsGraph) {
+                    graphVars.Add(_graphSpecifier);
+                }
+                foreach (GraphPattern gp in _graphPatterns) {
+                    graphVars.UnionWith(gp.GraphSpecifiers);
+                }
+                return graphVars;
             }
         }
 
