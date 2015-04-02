@@ -449,7 +449,7 @@ namespace VDS.RDF.Query
             {
                 return this._bindings;
             }
-            internal set
+            set
             {
                 this._bindings = value;
             }
