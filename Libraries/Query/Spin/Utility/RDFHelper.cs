@@ -16,10 +16,13 @@ namespace VDS.RDF.Query.Spin.Utility
         public static String NON_CONFLICT_PREFIX = Guid.NewGuid().ToString().Substring(0, 4) + "_";
         private static long _tempVariablesCount = 0;
 
+
         private readonly static FastNodeComparer _nodeComparer = new FastNodeComparer();
         internal readonly static UriComparer uriComparer = new UriComparer();
         internal readonly static IEqualityComparer<Triple> tripleEqualityComparer = new TripleEqualityComparer();
         internal readonly static NodeFactory nodeFactory = new NodeFactory();
+
+        public static readonly IUriNode RdfNull = nodeFactory.CreateUriNode(UriFactory.Create("tmp:dotnetrdf.org:NULL"));
 
         #region Aliasing utility
 

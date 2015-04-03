@@ -32,7 +32,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         public const String RES_URI = BASE_URI + ":";
         public const String PREFIX = "trans";
 
-        public readonly static Uri NoGraph = UriFactory.Create("tmp:dotnetrdf.org:nil");
+        public readonly static Uri NoGraph = RDFHelper.RdfNull.Uri;
 
         public readonly static IUriNode ClassTransaction = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Transaction"));
         public readonly static IUriNode ClassConcurrentAssertionsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "ConcurrentAssertionsGraph")); // use this as a class ?
@@ -177,6 +177,7 @@ WHERE {
             command.SetParameter("concurrentRemovals", DOTNETRDF_TRANS.ClassConcurrentRemovalsGraph);
             command.SetParameter("affectsGraph", DOTNETRDF_TRANS.PropertyAffectsGraph);
             command.SetParameter("transUri", RDFHelper.CreateUriNode(connection.Uri));
+            command.SetParameter("RdfNull", RDFHelper.RdfNull);
 
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
             IEnumerable<Uri> affectedGraphs = metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri);
@@ -232,11 +233,11 @@ WHERE {
             FILTER NOT EXISTS { ?concurrentTrans @committedAt ?anyDate . }
         }
     }    
-    BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentAssertionsFor#', STR(?g))), <tmp:dotnetrdf.org:blackhole>) as ?concurrentA)
-    BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentRemovalsFor#', STR(?g))), <tmp:dotnetrdf.org:blackhole>) as ?concurrentR)
+    BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentAssertionsFor#', STR(?g))), @RdfNull) as ?concurrentA)
+    BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentRemovalsFor#', STR(?g))), @RdfNull) as ?concurrentR)
 };
 
-DROP SILENT GRAPH <tmp:dotnetrdf.org:blackhole>;
+DROP SILENT GRAPH @RdfNull;
 ";
 
                 storage.Update(command.ToString());
@@ -315,6 +316,7 @@ WHERE {
             command.SetParameter("transUri", RDFHelper.CreateUriNode(context.ParentContext.Uri));
             command.SetParameter("cmdID", RDFHelper.CreateLiteralNode(context.ID));
             command.SetParameter("transID", RDFHelper.CreateLiteralNode(context.ParentContext.ID));
+            command.SetParameter("RdfNull", RDFHelper.RdfNull);
 
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
             IEnumerable<Uri> affectedGraphs = metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri);
@@ -361,12 +363,12 @@ WHERE {
             ?cmdPendingR @affectsGraph ?g .
             GRAPH ?cmdPendingR { ?cmdPendingR_S  ?cmdPendingR_P  ?cmdPendingR_O . }
         }
-        BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingA), @cmdID, @transID)), <tmp:dotnetrdf.org:blackhole>) as ?transPendingA)
-        BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingR), @cmdID, @transID)), <tmp:dotnetrdf.org:blackhole>) as ?transPendingR)
+        BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingA), @cmdID, @transID)), @RdfNull) as ?transPendingA)
+        BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingR), @cmdID, @transID)), @RdfNull) as ?transPendingR)
     }    
 };
 
-DROP SILENT GRAPH <tmp:dotnetrdf.org:blackhole>;
+DROP SILENT GRAPH @RdfNull;
 ";
 
                 storage.Update(command.ToString());
@@ -392,6 +394,7 @@ WHERE {
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
             command.SetParameter("hasScope", DOTNETRDF_TRANS.PropertyHasScope);
             command.SetParameter("consumerUri", RDFHelper.CreateUriNode(context.Uri));
+            command.SetParameter("RdfNull", RDFHelper.RdfNull);
 
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
             StringBuilder usingNamedSB = new StringBuilder();
@@ -437,10 +440,10 @@ WHERE {
             }
         }
     }
-    BIND (COALESCE(?tempGraph, <tmp:dotnetrdf.org:blackhole>) as ?tempTarget)
+    BIND (COALESCE(?tempGraph, @RdfNull) as ?tempTarget)
 };
 
-DROP SILENT GRAPH <tmp:dotnetrdf.org:blackhole>;
+DROP SILENT GRAPH @RdfNull;
 ";
 
             storage.Update(command.ToString());

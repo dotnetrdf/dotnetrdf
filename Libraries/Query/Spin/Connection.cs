@@ -5,6 +5,7 @@ using System.Security.Principal;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Core.Runtime;
+using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Update;
@@ -51,6 +52,7 @@ namespace VDS.RDF.Query.Spin
         private IQueryableStorage _underlyingStorage;
         private ConnectionState _state = ConnectionState.Closed;
         private IPrincipal _currentUser;
+        private Dictionary<string, object> _parameters = new Dictionary<string, object>();
 
         #region Public implementation (IDbConnection-like)
 
@@ -98,6 +100,34 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
+        public object this[String name]
+        {
+            get
+            {
+                if (_parameters.ContainsKey(name)) return _parameters[name];
+                return null;
+            }
+            set
+            {
+                _parameters[name] = value;
+            }
+
+        }
+
+        internal void AssignParameters(SparqlParameterizedString command) {
+            foreach (String paramName in ((Dictionary<String, INode>)command.Parameters).Keys)
+            {
+                object value = this[paramName];
+                if (value != null)
+                {
+                }
+                else
+                {
+                    command.SetParameter(paramName, RDFHelper.RdfNull);
+                }
+            }
+        }
+
         public void Close()
         {
             MakeDisposable();
@@ -139,8 +169,8 @@ namespace VDS.RDF.Query.Spin
         {
             if (State != ConnectionState.Open) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
-            // TODO replace connection env parameters 
             // in time, we should replace them by function calls for possible query caching
+            AssignParameters(commandText);
             SparqlCommand command = CreateCommand(_queryParser.ParseFromString(commandText));
             //_state = ConnectionState.Executing;
             return command.ExecuteReader();
@@ -180,8 +210,8 @@ namespace VDS.RDF.Query.Spin
         {
             if (State != ConnectionState.Open) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlUpdate);
-            // TODO replace connection env parameters 
             // in time, we should replace them by function calls for possible query caching
+            AssignParameters(commandText); 
             SparqlCommand command = CreateCommand(_updateParser.ParseFromString(commandText));
             //_state = ConnectionState.Executing;
             command.ExecuteNonQuery();
