@@ -61,10 +61,18 @@
     <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Transactions">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -73,261 +81,289 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common">
+      <HintPath>..\..\..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constraints\ConstraintExtensions.cs" />
-    <Compile Include="Constraints\ConstraintViolation.cs" />
-    <Compile Include="Constraints\ObjectPropertyPath.cs" />
-    <Compile Include="Constraints\SimplePropertyPath.cs" />
-    <Compile Include="Constraints\SubjectPropertyPath.cs" />
-    <Compile Include="Constructors\ConstructorExtensions.cs" />
-    <Compile Include="Core\Aggregations.cs" />
-    <Compile Include="Core\SPINImports.cs" />
-    <Compile Include="Core\SPINLabels.cs">
+    <Compile Include="Connection.cs" />
+    <Compile Include="Core\Aggregations.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Inference\InferenceExtensions.cs" />
-    <Compile Include="Model\ISPINFactory.cs" />
-    <Compile Include="Model\IAbstractAttribute.cs">
+    <Compile Include="AssemblyDiscovery\MetadataAttributes.cs" />
+    <Compile Include="Core\SparqlFeaturesProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IAggregation.cs">
+    <Compile Include="Core\Constraints\ConstraintExtensions.cs" />
+    <Compile Include="Core\Constraints\ConstraintViolation.cs" />
+    <Compile Include="Core\Constraints\ObjectPropertyPath.cs" />
+    <Compile Include="Core\Constraints\SimplePropertyPath.cs" />
+    <Compile Include="Core\Constraints\SubjectPropertyPath.cs" />
+    <Compile Include="Core\Constructors\ConstructorExtensions.cs" />
+    <Compile Include="Core\ISpinContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IArgument.cs">
+    <Compile Include="Core\Runtime\BaseTemporaryGraphConsumer.cs" />
+    <Compile Include="Core\Runtime\Uris.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IAsk.cs">
+    <Compile Include="Core\SparqlCommandClasses.cs" />
+    <Compile Include="Core\SparqlRewriteStrategyChain.cs" />
+    <Compile Include="Core\SpinModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IAttribute.cs">
+    <Compile Include="Core\Caching\ResourceCache.cs" />
+    <Compile Include="Core\Model\SPINLabels.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IBind.cs">
+    <Compile Include="Core\Runtime\Factories\SpinFactory.cs" />
+    <Compile Include="Core\Runtime\SpinMagicPropertyCall.cs" />
+    <Compile Include="Core\Transactions\TransactionLog.cs" />
+    <Compile Include="Core\Runtime\Registries\InMemoryGraphsRegistry.cs" />
+    <Compile Include="Core\Runtime\SpinFunctionCall.cs" />
+    <Compile Include="Core\SpinPropertyFunctionFactory.cs" />
+    <Compile Include="Core\Runtime\Registries\SPINImports.cs" />
+    <Compile Include="Core\Inference\InferenceExtensions.cs" />
+    <Compile Include="OntologyHelpers\SD.cs" />
+    <Compile Include="Core\Model\ISPINFactory.cs" />
+    <Compile Include="Core\Model\IAbstractAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ICommand.cs">
+    <Compile Include="Core\Model\IAggregation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ICommandWithWhere.cs">
+    <Compile Include="Core\Model\IArgument.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IConstruct.cs">
+    <Compile Include="Core\Model\IAsk.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IDescribe.cs">
+    <Compile Include="Core\Model\IAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IElement.cs">
+    <Compile Include="Core\Model\IBind.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IElementGroup.cs">
+    <Compile Include="Core\Model\ICommand.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IElementList.cs">
+    <Compile Include="Core\Model\ICommandWithWhere.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IExists.cs">
+    <Compile Include="Core\Model\IConstruct.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IFilter.cs">
+    <Compile Include="Core\Model\IDescribe.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IFunction.cs">
+    <Compile Include="Core\Model\IElement.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IFunctionCall.cs">
+    <Compile Include="Core\Model\IElementGroup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IMinus.cs">
+    <Compile Include="Core\Model\IElementList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IModule.cs">
+    <Compile Include="Core\Model\IExists.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IModuleCall.cs">
+    <Compile Include="Core\Model\IFilter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\BaseImpl\AbstractAttributeImpl.cs" />
-    <Compile Include="Model\BaseImpl\AbstractSPINResource.cs" />
-    <Compile Include="Model\BaseImpl\AggregationImpl.cs" />
-    <Compile Include="Model\BaseImpl\ArgumentImpl.cs" />
-    <Compile Include="Model\BaseImpl\AskImpl.cs" />
-    <Compile Include="Model\BaseImpl\AttributeImpl.cs" />
-    <Compile Include="Model\BaseImpl\BindImpl.cs" />
-    <Compile Include="Model\BaseImpl\ConstructImpl.cs" />
-    <Compile Include="Model\BaseImpl\DescribeImpl.cs" />
-    <Compile Include="Model\BaseImpl\ElementImpl.cs" />
-    <Compile Include="Model\BaseImpl\ElementListImpl.cs" />
-    <Compile Include="Model\BaseImpl\ExistsImpl.cs" />
-    <Compile Include="Model\BaseImpl\FilterImpl.cs" />
-    <Compile Include="Model\BaseImpl\FunctionCallImpl.cs" />
-    <Compile Include="Model\BaseImpl\FunctionImpl.cs" />
-    <Compile Include="Model\BaseImpl\MinusImpl.cs" />
-    <Compile Include="Model\BaseImpl\ModuleCallImpl.cs" />
-    <Compile Include="Model\BaseImpl\ModuleImpl.cs" />
-    <Compile Include="Model\BaseImpl\NamedGraphImpl.cs" />
-    <Compile Include="Model\BaseImpl\NotExistsImpl.cs" />
-    <Compile Include="Model\BaseImpl\OptionalImpl.cs" />
-    <Compile Include="Model\BaseImpl\QueryImpl.cs" />
-    <Compile Include="Model\BaseImpl\SelectImpl.cs" />
-    <Compile Include="Model\BaseImpl\ServiceImpl.cs" />
-    <Compile Include="Model\BaseImpl\SPINInstanceImpl.cs" />
-    <Compile Include="Model\BaseImpl\SubQueryImpl.cs" />
-    <Compile Include="Model\BaseImpl\TemplateCallImpl.cs" />
-    <Compile Include="Model\BaseImpl\TemplateImpl.cs" />
-    <Compile Include="Model\BaseImpl\TripleImpl.cs" />
-    <Compile Include="Model\BaseImpl\TriplePathImpl.cs" />
-    <Compile Include="Model\BaseImpl\TriplePatternImpl.cs" />
-    <Compile Include="Model\BaseImpl\TripleTemplateImpl.cs" />
-    <Compile Include="Model\BaseImpl\TupleImpl.cs" />
-    <Compile Include="Model\BaseImpl\UnionImpl.cs" />
-    <Compile Include="Model\BaseImpl\ValuesImpl.cs" />
-    <Compile Include="Model\BaseImpl\VariableImpl.cs" />
-    <Compile Include="Model\INamedGraph.cs">
+    <Compile Include="Core\Model\IFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\INotExists.cs">
+    <Compile Include="Core\Model\IFunctionCall.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IOptional.cs">
+    <Compile Include="Core\Model\IMinus.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IResource.cs">
+    <Compile Include="Core\Model\IModule.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ISelect.cs">
+    <Compile Include="Core\Model\IModuleCall.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IService.cs">
+    <Compile Include="Core\Model\BaseImpl\AbstractAttributeImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\AbstractSPINResource.cs" />
+    <Compile Include="Core\Model\BaseImpl\AggregationImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ArgumentImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\AskImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\AttributeImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\BindImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ConstructImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\DescribeImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ElementImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ElementListImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ExistsImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\FilterImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\FunctionCallImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\FunctionImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\MinusImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ModuleCallImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ModuleImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\NamedGraphImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\NotExistsImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\OptionalImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\QueryImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\SelectImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ServiceImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\SPINInstanceImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\SubQueryImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TemplateCallImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TemplateImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TripleImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TriplePathImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TriplePatternImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TripleTemplateImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\TupleImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\UnionImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ValuesImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\VariableImpl.cs" />
+    <Compile Include="Core\Model\INamedGraph.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ISolutionModifierQuery.cs">
+    <Compile Include="Core\Model\INotExists.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ISPINInstance.cs">
+    <Compile Include="Core\Model\IOptional.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ISpinQuery.cs">
+    <Compile Include="Core\Model\IResource.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ISubQuery.cs">
+    <Compile Include="Core\Model\ISelect.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITemplate.cs">
+    <Compile Include="Core\Model\IService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITemplateCall.cs">
+    <Compile Include="Core\Model\ISolutionModifierQuery.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITriple.cs">
+    <Compile Include="Core\Model\ISPINInstance.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITriplePath.cs">
+    <Compile Include="Core\Model\ISpinQuery.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITriplePattern.cs">
+    <Compile Include="Core\Model\ISubQuery.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\ITripleTemplate.cs">
+    <Compile Include="Core\Model\ITemplate.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IUnion.cs">
+    <Compile Include="Core\Model\ITemplateCall.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IValues.cs">
+    <Compile Include="Core\Model\ITriple.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IVariable.cs">
+    <Compile Include="Core\Model\ITriplePath.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IPrintable.cs">
+    <Compile Include="Core\Model\ITriplePattern.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\Model\ITripleTemplate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Model\IUnion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Model\IValues.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Model\IVariable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Model\IPrintable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Security\IGraphAccessManager.cs" />
+    <Compile Include="Access\SpinAccessViolation.cs" />
+    <Compile Include="SparqlStrategies\BaseSparqlStrategy.cs" />
+    <Compile Include="SparqlStrategies\TransactionSupportStrategy.cs" />
     <Compile Include="SparqlTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SparqlTemplates.resx</DependentUpon>
     </Compile>
-    <Compile Include="Model\QueryOrTemplateCall.cs">
+    <Compile Include="Core\Model\QueryOrTemplateCall.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\SPINFactory.cs" />
-    <Compile Include="Model\IClear.cs" />
-    <Compile Include="Model\ICreate.cs" />
-    <Compile Include="Model\IDelete.cs" />
-    <Compile Include="Model\IDeleteData.cs" />
-    <Compile Include="Model\IDeleteWhere.cs" />
-    <Compile Include="Model\IDrop.cs" />
-    <Compile Include="Model\IInsert.cs" />
-    <Compile Include="Model\IInsertData.cs" />
-    <Compile Include="Model\ILoad.cs" />
-    <Compile Include="Model\IModify.cs" />
-    <Compile Include="Model\BaseImpl\ClearImpl.cs" />
-    <Compile Include="Model\BaseImpl\CreateImpl.cs" />
-    <Compile Include="Model\BaseImpl\DeleteDataImpl.cs" />
-    <Compile Include="Model\BaseImpl\DeleteImpl.cs" />
-    <Compile Include="Model\BaseImpl\DeleteWhereImpl.cs" />
-    <Compile Include="Model\BaseImpl\DropImpl.cs" />
-    <Compile Include="Model\BaseImpl\InsertDataImpl.cs" />
-    <Compile Include="Model\BaseImpl\InsertImpl.cs" />
-    <Compile Include="Model\BaseImpl\LoadImpl.cs" />
-    <Compile Include="Model\BaseImpl\ModifyImpl.cs" />
-    <Compile Include="Model\BaseImpl\UpdateImpl.cs" />
-    <Compile Include="Model\IUpdate.cs" />
+    <Compile Include="Core\Model\ResourceFactory.cs" />
+    <Compile Include="Core\Model\IClear.cs" />
+    <Compile Include="Core\Model\ICreate.cs" />
+    <Compile Include="Core\Model\IDelete.cs" />
+    <Compile Include="Core\Model\IDeleteData.cs" />
+    <Compile Include="Core\Model\IDeleteWhere.cs" />
+    <Compile Include="Core\Model\IDrop.cs" />
+    <Compile Include="Core\Model\IInsert.cs" />
+    <Compile Include="Core\Model\IInsertData.cs" />
+    <Compile Include="Core\Model\ILoad.cs" />
+    <Compile Include="Core\Model\IModify.cs" />
+    <Compile Include="Core\Model\BaseImpl\ClearImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\CreateImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\DeleteDataImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\DeleteImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\DeleteWhereImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\DropImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\InsertDataImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\InsertImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\LoadImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\ModifyImpl.cs" />
+    <Compile Include="Core\Model\BaseImpl\UpdateImpl.cs" />
+    <Compile Include="Core\Model\IUpdate.cs" />
     <Compile Include="Progress\NullProgressMonitor.cs" />
     <Compile Include="Progress\IProgressMonitor.cs" />
     <Compile Include="Progress\IRunnableWithProgress.cs" />
     <Compile Include="Progress\SimpleProgressMonitor.cs" />
-    <Compile Include="SparqlUtil\BaseSparqlPrinter.cs" />
-    <Compile Include="SparqlUtil\ISparqlPrinter.cs" />
-    <Compile Include="SpinWrappedDataset.cs">
+    <Compile Include="Core\Model\IO\BaseSparqlPrinter.cs" />
+    <Compile Include="Core\Model\IO\ISparqlPrinter.cs" />
+    <Compile Include="SpinVariableTable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Statistics\SPINStatistics.cs" />
-    <Compile Include="Statistics\ISPINStatisticsListener.cs" />
-    <Compile Include="Statistics\SPINStatisticsManager.cs" />
+    <Compile Include="Statistics\SpinStatistics.cs" />
+    <Compile Include="Statistics\ISpinStatisticsListener.cs" />
+    <Compile Include="Statistics\SpinStatisticsManager.cs" />
     <Compile Include="Core\ExtraPrefixes.cs" />
-    <Compile Include="Core\SPINModuleRegistry.cs" />
-    <Compile Include="LibraryOntology\ARG.cs">
+    <Compile Include="OntologyHelpers\ARG.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\RDFx.cs">
+    <Compile Include="OntologyHelpers\RDFx.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SP.cs">
+    <Compile Include="OntologyHelpers\SP.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SPIN.cs">
+    <Compile Include="OntologyHelpers\SPIN.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SPINMAP.cs">
+    <Compile Include="OntologyHelpers\SPINMAP.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SPL.cs">
+    <Compile Include="OntologyHelpers\SPL.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SPR.cs">
+    <Compile Include="OntologyHelpers\SPR.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LibraryOntology\SPRA.cs">
+    <Compile Include="OntologyHelpers\SPRA.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SpinProcessor.cs" />
-    <Compile Include="SparqlUtil\SpinSyntax.cs" />
-    <Compile Include="Util\InternalUris.cs" />
-    <Compile Include="SpinWrappedGraph.cs" />
-    <Compile Include="Util\PrefixMappings.cs" />
-    <Compile Include="Util\SpinDatasetDescription.cs" />
-    <Compile Include="Util\Resource.cs">
+    <Compile Include="Core\Model\IO\SpinSyntax.cs" />
+    <Compile Include="Core\Options.cs" />
+    <Compile Include="Utility\Resource.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpinException.cs" />
-    <Compile Include="SpinVariableTable.cs" />
-    <Compile Include="Uris.cs" />
-    <Compile Include="Util\QuerySolutionMap.cs" />
-    <Compile Include="Util\RDFUtil.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="OntologyHelpers\RDFUris.cs" />
+    <Compile Include="Utility\RDFHelper.cs" />
+    <Compile Include="Utility\UriHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="spin-sparql-syntax.ttl" />
@@ -359,12 +395,21 @@
     <None Include="dotNetRDF.snk" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Core\Compilation\" />
+    <Folder Include="Core\Context\" />
+    <Folder Include="Core\Writing\" />
+    <Folder Include="SparqlUtil\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SparqlTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SparqlTemplates.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -375,4 +420,3 @@
   </Target>
   -->
 </Project>
-

@@ -234,6 +234,28 @@ WHERE {
 	BIND (IF(NOT EXISTS { ?s a ?supC . }, ?supC, ?__unbound__) as ?newSupC) .
 }</value>
   </data>
+  <data name="NegatedSetExpansionTemplate" xml:space="preserve">
+    <value>{ @@forwardTriplePattern  
+	FILTER (?p not in (@@forwardProperties)) .
+	MINUS { @@inverseTriplePattern FILTER (?p in (@@inverseProperties)) }
+}
+UNION
+{ @@inverseTriplePattern  
+	FILTER (?p not in (@@inverseProperties)) .
+	MINUS { @@forwardTriplePattern FILTER (?p in (@@forwardProperties)) }
+}</value>
+  </data>
+  <data name="PropertyPathPreProcessingTemplate" xml:space="preserve">
+    <value>INSERT {
+	@@pathCompilationResult
+} 
+@@dataset
+WHERE {
+	@@inlineData
+	{}
+	@@pathCompilePatterns
+}</value>
+  </data>
   <data name="SetExecutionContext" xml:space="preserve">
     <value>PREFIX dnr:&lt;dotnetrdf-spin:&gt;
 DELETE {
@@ -253,6 +275,50 @@ WHERE {
 		@resourceRestriction dnr:executionRestrictedTo ?s .
 	} .
 	?s a ?class .
+}</value>
+  </data>
+  <data name="SimpleTriplePatternExpansionTemplate" xml:space="preserve">
+    <value>PREFIX dnr:&lt;dotnetrdf-spin:&gt;
+GRAPH ?g { 
+	@@filters
+	?s ?p ?o . 
+}</value>
+  </data>
+  <data name="TransactionalTriplePatternExpansionTemplate" xml:space="preserve">
+    <value>PREFIX dnr:&lt;dotnetrdf-spin:&gt;
+{ 
+	@@inlineData
+	GRAPH ?g { 
+		@@filters
+		?s ?p ?o . 
+		FILTER NOT EXISTS { GRAPH &lt;runtime:updates(?g)&gt; { ?s dnr:resetsProperty ?p . }} 
+	} . 
+} 
+UNION 
+{ 
+	@@inlineData
+	GRAPH &lt;runtime:updates(?g)&gt; { 
+		@@filters
+		?s ?p ?o . 
+		FILTER (!sameTerm(?p, dnr:resetsProperty)) .
+	} 
+}
+UNION{ 
+	@@inlineData
+	GRAPH &lt;runtime:entailments(?g)&gt; { 
+		@@filters
+		?s ?p ?o . 
+		FILTER NOT EXISTS { GRAPH &lt;runtime:entailments_updates(?g)&gt; { ?s dnr:resetsProperty ?p . }} 
+	} . 
+} 
+UNION 
+{ 
+	@@inlineData
+	GRAPH &lt;runtime:entailments_updates(?g)&gt; { 
+		@@filters
+		?s ?p ?o . 
+		FILTER (!sameTerm(?p, dnr:resetsProperty)) .
+	} 
 }</value>
   </data>
 </root>

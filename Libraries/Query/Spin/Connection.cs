@@ -2,24 +2,49 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Security.Principal;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Spin.Core;
+using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
-using System.Transactions;
-using VDS.RDF.Query.Spin.Core.Transactions;
-using VDS.RDF.Query.Spin.Utility;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Spin
 {
     // TODO check the state for the connection on each method
+    // TODO decide who is responsible for state maintenance (=> SparqlCommand class... ?)
+
+    #region Event args and delegates
+
+    internal class ConnectionEventArgs : EventArgs
+    {
+        internal ConnectionEventArgs()
+            : base()
+        {
+        }
+    }
 
     /// <summary>
-    /// The Connection class  a client's connection to a SPIN capable RDF storage <todo>or SPARQLEndpoint</todo>.
-    /// It provides for session variables management, transaction and isolation. 
+    /// Delegate Type for SparqlCommand events
     /// </summary>
-    public class Connection
-        : IUpdateableStorage, ITransactionalStorage
+    /// <param name="sender">Originator of the Event</param>
+    /// <param name="args">Triple Event Arguments</param>
+    internal delegate void ConnectionEventHandler(Object sender, ConnectionEventArgs args);
+
+    #endregion
+
+    /// <summary>
+    /// The Connection class wraps a client's connection to a SPIN capable or enhanced RDF storage <todo>or SPARQLEndpoint</todo>.
+    /// It provides for session variables management and ACID access to the storage.
+    /// </summary>
+    /// <remarks>
+    /// To ensure the storage's data consistency, any access should be wrapped by instances of this class. Direct access is to be prohibited by any necessary mean.
+    /// </remarks>
+    public sealed class Connection
+        : BaseTemporaryGraphConsumer, IUpdateableStorage, ITransactionalStorage
     {
+        private static SparqlQueryParser _queryParser = new SparqlQueryParser();
+        private static SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
         private String _id = Guid.NewGuid().ToString().Replace("-", "");
 
@@ -27,22 +52,24 @@ namespace VDS.RDF.Query.Spin
         private ConnectionState _state = ConnectionState.Closed;
         private IPrincipal _currentUser;
 
-        #region Public implementation
+        #region Public implementation (IDbConnection-like)
 
         public Connection()
+            : base()
         {
+            //Uri = UriFactory.Create(BaseTemporaryGraphConsumer.NS_URI + "connection:" + _id);
         }
 
         public void Open(IQueryableStorage storage)
         {
-            UnderlyingStorage = storage;
+            _underlyingStorage = storage;
             _state = ConnectionState.Open;
         }
 
         // 
         public void Open(IQueryableStorage storage, string userId, System.Security.SecureString password)
         {
-            UnderlyingStorage = storage;
+            _underlyingStorage = storage;
             _state = ConnectionState.Open;
 
         }
@@ -71,23 +98,32 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
-        internal String ID {
-            get {
-                return _id;
-            }
-        }
-
-        internal Uri Uri { 
-            get {
-                return UriFactory.Create(TransactionLog.URI_PREFIX + ID);
-            }
-        }
         public void Close()
         {
-            UnderlyingStorage = null;
+            MakeDisposable();
+            _underlyingStorage = null;
+            // free all temporary reources
             _state = ConnectionState.Closed;
         }
 
+        internal SparqlCommand CreateCommand(SparqlQuery query)
+        {
+            SparqlCommand command = new SparqlCommand(this, query);
+            return command;
+        }
+
+        internal SparqlCommand CreateCommand(SparqlUpdateCommandSet updateSet)
+        {
+            SparqlCommand command = new SparqlCommand(this, updateSet);
+            return command;
+        }
+
+        #region Events
+
+        internal event ConnectionEventHandler Committed;
+        internal event ConnectionEventHandler Rolledback;
+
+        #endregion
 
         #region IUpdateableStorage implementation
 
@@ -101,64 +137,74 @@ namespace VDS.RDF.Query.Spin
 
         public object Query(string sparqlQuery)
         {
-            SparqlCommand command = new SparqlCommand();
-            command.Connection = this;
-            return command.ExecuteReader(sparqlQuery);
+            if (State != ConnectionState.Open) throw new ConnectionStateException();
+            SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
+            // TODO replace connection env parameters 
+            // in time, we should replace them by function calls for possible query caching
+            SparqlCommand command = CreateCommand(_queryParser.ParseFromString(commandText));
+            //_state = ConnectionState.Executing;
+            return command.ExecuteReader();
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            SparqlProcessor.Query(this, rdfHandler, resultsHandler, sparqlQuery);
+            throw new NotImplementedException();
         }
 
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            SparqlProcessor.LoadGraph(this, g, graphUri);
+            throw new NotImplementedException();
         }
 
         public void LoadGraph(IGraph g, string graphUri)
         {
-            SparqlProcessor.LoadGraph(this, g, graphUri);
+            throw new NotImplementedException();
         }
 
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
-            SparqlProcessor.LoadGraph(this, handler, graphUri);
+            throw new NotImplementedException();
         }
 
         public void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            SparqlProcessor.LoadGraph(this, handler, graphUri);
+            throw new NotImplementedException();
         }
 
         public void SaveGraph(IGraph g)
         {
-            SparqlProcessor.SaveGraph(this, g);
+            throw new NotImplementedException();
         }
 
         public void Update(string sparqlUpdate)
         {
-            SparqlProcessor.Update(this, sparqlUpdate);
+            if (State != ConnectionState.Open) throw new ConnectionStateException();
+            SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlUpdate);
+            // TODO replace connection env parameters 
+            // in time, we should replace them by function calls for possible query caching
+            SparqlCommand command = CreateCommand(_updateParser.ParseFromString(commandText));
+            //_state = ConnectionState.Executing;
+            command.ExecuteNonQuery();
         }
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            SparqlProcessor.UpdateGraph(this, graphUri, additions, removals);
+            throw new NotImplementedException();
         }
 
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            SparqlProcessor.UpdateGraph(this, graphUri, additions, removals);
+            throw new NotImplementedException();
         }
 
         public void DeleteGraph(Uri graphUri)
         {
-            SparqlProcessor.DeleteGraph(this, graphUri);
+            throw new NotImplementedException();
         }
 
         public void DeleteGraph(string graphUri)
         {
-            SparqlProcessor.DeleteGraph(this, graphUri);
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Uri> ListGraphs()
@@ -210,8 +256,6 @@ namespace VDS.RDF.Query.Spin
 
         #region ITransactionalStorage implementation
 
-        private Dictionary<Uri, GraphMonitor> _graphs = new Dictionary<Uri, GraphMonitor>(RDFHelper.uriComparer);
-
         public void Begin()
         {
             if (UnderlyingStorage is ITransactionalStorage)
@@ -230,9 +274,10 @@ namespace VDS.RDF.Query.Spin
             {
                 ((ITransactionalStorage)UnderlyingStorage).Commit();
             }
-            else
+            ConnectionEventHandler handler = Committed;
+            if (handler != null)
             {
-                throw new NotImplementedException("TODO provide delegated transaction handling");
+                handler.Invoke(this, new ConnectionEventArgs());
             }
         }
 
@@ -242,9 +287,10 @@ namespace VDS.RDF.Query.Spin
             {
                 ((ITransactionalStorage)UnderlyingStorage).Rollback();
             }
-            else
+            ConnectionEventHandler handler = Rolledback;
+            if (handler != null)
             {
-                throw new NotImplementedException("TODO provide delegated transaction handling");
+                handler.Invoke(this, new ConnectionEventArgs());
             }
         }
 
@@ -255,23 +301,20 @@ namespace VDS.RDF.Query.Spin
 
         #region Internal implementation
 
-        internal IQueryableStorage UnderlyingStorage
+        internal override IQueryableStorage UnderlyingStorage
         {
             get
             {
                 return _underlyingStorage;
             }
-            private set
-            {
-                _underlyingStorage = value;
-            }
         }
 
-        internal FeaturedSparqlProcessor SparqlProcessor
+        // TODO check what to do for update and cleaning of concurrent additions/removals graphs
+        internal override BaseTemporaryGraphConsumer ParentContext
         {
             get
             {
-                return FeaturedSparqlProcessor.Get(this);
+                return null;
             }
         }
 

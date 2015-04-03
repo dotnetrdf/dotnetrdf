@@ -1,70 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Transactions;
+using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query.Spin.Core.Transactions
 {
 
-    internal delegate void TransactionEventHandler(BaseSpinTransaction sender, TransactionEventArgs args);
-
+    // TODO relocate this and deprecate the namespace ?
     /// <summary>
-    /// The transactionLog class is responsible to log and track transactional events in a centralized distributed graph
-    /// Transaction rewriting strategy should be provided by this class
-    /// Make the methods static
+    /// The transactionLog class is responsible to log and track transactional events in a centralized distributed graph on a specific storage
     /// </summary>
     internal class TransactionLog
     {
-        internal const String URI_PREFIX = "tag:dotnetrdf.org:transactions#";
-
-        internal const String URI_INFIX_ADDITIONS = ":additions:";
-        internal const String URI_INFIX_REMOVALS = ":removals:";
-
-        internal static readonly IUriNode ConcurrentAssertionsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "concurrentAssertionsForGraph"));
-        internal static readonly IUriNode ConcurrentRemovalsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "concurrentRemovalsForGraph"));
-        internal static readonly IUriNode PendingAssertionsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "pendingAssertionsForGraph"));
-        internal static readonly IUriNode PendingRemovalsForGraph = RDFHelper.CreateUriNode(UriFactory.Create(TransactionLog.URI_PREFIX + "pendingRemovalsForGraph"));
-
-        // The patterns for the transaction additions and removals Uris to a graph
-        internal const String URI_PATTERN_ADDITIONS = "STR(?txUri) ,'" + URI_INFIX_ADDITIONS + "', ENCODE_FOR_URI(STR(?graphBaseUri))";
-        internal const String URI_PATTERN_REMOVALS = "STR(?txUri) ,'" + URI_INFIX_REMOVALS + "', ENCODE_FOR_URI(STR(?graphBaseUri))";
 
         /// <summary>
         /// The distributed transaction log's graph Uri
         /// </summary>
-        internal static Uri TRANSACTION_LOG_URI = UriFactory.Create(URI_PREFIX + "log");
+        internal static Uri TRANSACTION_LOG_URI = UriFactory.Create(DOTNETRDF_TRANS.BASE_URI + "-log");
 
         /// <summary>
         /// A reference of locally managed transactions
         /// </summary>
-        private Dictionary<Uri, BaseSpinTransaction> _transactions = new Dictionary<Uri, BaseSpinTransaction>(RDFHelper.uriComparer);
+        //private Dictionary<Uri, BaseSpinTransaction> _transactions = new Dictionary<Uri, BaseSpinTransaction>(RDFHelper.uriComparer);
 
-        private FeaturedSparqlProcessor _connection;
-
-        /// <summary>
-        /// Creates a new TransactioLog object for the storage
-        /// </summary>
-        /// <param name="connection"></param>
-        internal TransactionLog(FeaturedSparqlProcessor connection)
-        {
-            _connection = connection;
-        }
-
-        /// <summary>
-        /// Returns the latest snapshot Uri of a given graph for the connection
-        /// </summary>
-        /// <param name="graphUri"></param>
-        /// <returns></returns>
-        internal Uri GetSnapshotUri(Connection connection, Uri graphUri) {
-            return graphUri;
+        // TODO make this threaded while the connection's State is either Fetching or Executing
+        internal static void Ping(Connection connection) { 
+            if (!(connection.UnderlyingStorage is IUpdateableStorage)) return;
+            IUpdateableStorage storage = (IUpdateableStorage)connection.UnderlyingStorage;
+            SparqlParameterizedString pingCommand = new SparqlParameterizedString(@"
+WITH @transactionLog
+DELETE {
+    ?s @lastAccessUri ?lastAccessDate .
+}
+INSERT {
+    ?s @lastAccessUri ?now .
+    ?s @startedAtUri ?startdDate .
+}
+WHERE {
+    BIND (NOW() as ?now)
+    OPTIONAL {
+        ?s @lastAccessUri ?lastAccessDate .
+    }
+    OPTIONAL {
+        FILTER NOT EXISTS { ?s @startedAtUri ?startDate . }
+        BIND (?now as ?startdDate)
+    }
+}
+");
+            pingCommand.SetParameter("transactionLog", RDFHelper.CreateUriNode(TRANSACTION_LOG_URI));
+            pingCommand.SetParameter("lastAccessUri", DOTNETRDF_TRANS.PropertyLastAccess);
+            pingCommand.SetParameter("startedAtUri", DOTNETRDF_TRANS.PropertyStartedAt);
+            pingCommand.SetVariable("s", RDFHelper.CreateUriNode(connection.Uri));
+            storage.Update(pingCommand.ToString());
         }
 
         #region events
 
-        internal event TransactionEventHandler Committed;
+
+        //internal event TransactionEventHandler Committed;
 
         #endregion
 
@@ -79,18 +72,18 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
          *      trans:updates       references a graph the transaction is currently trying to update 
          */
         // Notifies a transaction start to the log
-        private String TX_START = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri trans:startedAt ?txTimestamp . } } WHERE { BIND (NOW() as ?txTimestamp) FILTER NOT EXISTS { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri trans:startedAt ?anyPriorTime . } } } ";
+        private SparqlParameterizedString TX_START = new SparqlParameterizedString("PREFIX trans: <urn:transactions#> INSERT { GRAPH @transactionLog { ?txUri trans:startedAt ?txTimestamp . } } WHERE { BIND (NOW() as ?txTimestamp) FILTER NOT EXISTS { GRAPH @transactionLog { ?txUri trans:startedAt ?anyPriorTime . } } } ");
 
         // Notifies a update to a graph for the transaction
-        private String TX_WRITE = "PREFIX trans: <urn:transactions#> INSERT { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri a trans:Commitable . ?txUri trans:updated ?sourceGraph . } } ";
+        private SparqlParameterizedString TX_WRITE = new SparqlParameterizedString("PREFIX trans: <urn:transactions#> INSERT { GRAPH @transactionLog { ?txUri a trans:Commitable . ?txUri trans:updated ?sourceGraph . } } ");
 
         // Notifies a rollback the transaction
-        private String TX_ROLLBACK = "DELETE WHERE { GRAPH "+ TRANSACTION_LOG_URI.ToString() +" { ?txUri ?p ?o . } }";
+        private SparqlParameterizedString TX_ROLLBACK = new SparqlParameterizedString("DELETE WHERE { GRAPH @transactionLog { ?txUri ?p ?o . } }");
 
         // Applies a transaction updates to the store and updates the transaction log
         // TODO decide whether we want to impact concurrent transactions temporary graphs to provide for proper serialized isolation ?
         //      This should be done only for read-only transactions, write transaction should always use the real up-to-date graphs with their explicit changes so SPIN pipeline is effective throughout the store.
-        private String TX_COMMIT = @"
+        private SparqlParameterizedString TX_COMMIT =new SparqlParameterizedString(@"
 PREFIX trans: <urn:transactions#>
 
 # Makes writes conditional by checking whether there is a concurrent transaction commit pending
@@ -111,7 +104,7 @@ DELETE {
 }
 INSERT {
     # write transaction log event for this transaction
-    GRAPH "+ TRANSACTION_LOG_URI.ToString() +@" {
+    GRAPH @transactionLog {
         ?txUri trans:committedAt ?txTimestamp .
     }
     # add assertions to the original graph
@@ -163,13 +156,13 @@ INSERT {
 		# TODO define what those patterns may encompass: would a list of triples patterns used by updates be sufficient ?
 	}
 }
-";
+");
 
         // Selects resources involved by any committed transaction that is not concurrent to a running transaction.
-        private String GARBAGE_COLLECTION = @"
+        private SparqlParameterizedString GARBAGE_COLLECTION = new SparqlParameterizedString(@"
 PREFIX trans: <urn:transactions#>
 SELECT * WHERE {
-  GRAPH "+ TRANSACTION_LOG_URI.ToString() +@" {
+  GRAPH @transactionLog {
     ?txUri trans:committedAt ?committed .
     ?txUri trans:updates ?g .
     BIND (IRI(CONCAT(str(?txUri) ,':removals:', str(?g))) as ?gRemovals)
@@ -181,7 +174,7 @@ SELECT * WHERE {
     }
   }
 }
-";
+");
 
         #endregion
     }

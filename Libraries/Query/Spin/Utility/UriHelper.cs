@@ -5,6 +5,9 @@ using System.Text;
 
 namespace VDS.RDF.Query.Spin.Utility
 {
+    /// <summary>
+    /// Add support methods for a iis: uri scheme
+    /// </summary>
     public static class UriHelper
     {
         /// <summary>

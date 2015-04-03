@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Spin.Core.Runtime;
-using VDS.RDF.Query.Spin.SparqlStrategies;
+using VDS.RDF.Query.Spin.Core.Transactions;
+using VDS.RDF.Query.Spin.Utility;
+using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
@@ -13,34 +14,160 @@ namespace VDS.RDF.Query.Spin.Core
 {
     // Perhaps make one of this classes public one day to be consistent with other equivalent .Net APIs
     // => may this be ambiguous because of different processing of query and updates ? 
-
+    [Flags]
     public enum SparqlCommandType
     {
-        SparqlQuery = 0,
-        SparqlUpdate = 1,
-        SparqlInternal = 2
+        Unknown = 0,
+        SparqlQuery = 1,
+        SparqlUpdate = 2,
+        SparqlInternal = 4
+    }
+
+    #region Event args and delegates
+
+    public class SparqlExecutableEventArgs : EventArgs
+    {
+        internal SparqlExecutableEventArgs()
+            : base()
+        {
+        }
     }
 
     /// <summary>
-    /// 
+    /// Delegate Type for SparqlCommand events
     /// </summary>
-    /// <remarks>
-    /// </remarks>
-    public class SparqlCommand
+    /// <param name="sender">Originator of the Event</param>
+    /// <param name="args">Triple Event Arguments</param>
+    internal delegate void SparqlExecutableEventHandler(Object sender, SparqlExecutableEventArgs args);
+
+    public abstract class SparqlExecutable
+        : BaseTemporaryGraphConsumer
     {
-        private static SparqlQueryParser _parser = new SparqlQueryParser();
 
-        private String _commandText;
-        private Connection _connection;
-        private FeaturedSparqlProcessor _processor;
-        private SparqlRewriteStrategy _rewriteStrategy = null;
+        internal event SparqlExecutableEventHandler ExecutionStarted;
+        internal event SparqlExecutableEventHandler Failed;
+        internal SparqlExecutableEventHandler Succeeded;
 
-        private List<SparqlCommandUnit> _commands = new List<SparqlCommandUnit>();
-
-        internal SparqlCommand()
+        protected void RaiseExecutionStarted(SparqlExecutableEventArgs args)
         {
+            SparqlExecutableEventHandler handler = ExecutionStarted;
+            if (handler != null)
+            {
+                handler.Invoke(this, args);
+            }
         }
 
+        protected void RaiseExecutionFailed(SparqlExecutableEventArgs args)
+        {
+            SparqlExecutableEventHandler handler = Failed;
+            if (handler != null)
+            {
+                handler.Invoke(this, args);
+            }
+        }
+
+        protected void RaiseExecutionSucceeded(SparqlExecutableEventArgs args)
+        {
+            SparqlExecutableEventHandler handler = Succeeded;
+            if (handler != null)
+            {
+                handler.Invoke(this, args);
+            }
+        }
+
+        internal abstract Connection Connection { get; set; }
+    }
+
+    #endregion
+
+    // TODO perhaps find a better name to avoid confusion with the original Sparql namespace ?
+
+    /// <summary>
+    /// The SparqlCommand class acts as a wrapper for ACID execution of several sparql query/update commands.
+    /// </summary>
+    /// <remarks>
+    /// TODO define how to handle temporary resources and execution errors/failures cases
+    ///         NOTE: similar temporary resources may occur during a full transaction or a full command
+    ///             for optimisation, it may be advisable to create a class to handle such cases to alleviate execution units pre/post processing
+    ///             perhaps use a similar framework that is used for caching with dependancies ?
+    /// TODO use the SpinStatistics namespace
+    /// </remarks>
+    public class SparqlCommand
+        : SparqlExecutable
+    {
+        private Connection _connection;
+        private SparqlFeaturesProvider _processor;
+        private SparqlRewriteStrategyChain _rewriteStrategy = null;
+
+        private String _commandText;
+        private object _command;
+        private bool _isReady = false;
+
+        private List<SparqlCommandUnit> _executionUnits = new List<SparqlCommandUnit>();
+
+        private SparqlCommand(Connection connection)
+        {
+            Connection = connection;
+        }
+
+        internal SparqlCommand(Connection connection, SparqlQuery query)
+            : this(connection)
+        {
+            Command = query;
+            CommandType = SparqlCommandType.SparqlQuery;
+            Prepare();
+        }
+
+        internal SparqlCommand(Connection connection, SparqlUpdateCommandSet updateSet)
+            : this(connection)
+        {
+            Command = updateSet;
+            CommandType = SparqlCommandType.SparqlUpdate;
+            Prepare();
+        }
+
+        #region public API
+
+        internal override Connection Connection
+        {
+            get
+            {
+                return _connection;
+            }
+            set
+            {
+                _isReady = false;
+                _connection = value;
+                _processor = SparqlFeaturesProvider.Get(value);
+                _rewriteStrategy = _processor.GetRewriteStrategyFor(this);
+                Prepare();
+            }
+        }
+
+        private object Command
+        {
+            get
+            {
+                return _command;
+            }
+            set
+            {
+                _command = value;
+                if (value != null)
+                {
+                    _commandText = value.ToString();
+                }
+                else
+                {
+                    _commandText = "";
+                    CommandType = SparqlCommandType.Unknown;
+                }
+            }
+        }
+
+        internal SparqlCommandType CommandType { get; private set; }
+
+        // TODO handle a public set ?
         public String CommandText
         {
             get
@@ -49,44 +176,48 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-        internal SparqlCommandType CommandType { get; private set; }
+        internal void Prepare()
+        {
+            if (_isReady) return;
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            _executionUnits.Clear();
+            switch (CommandType)
+            {
+                case SparqlCommandType.SparqlQuery:
+                    SparqlCommandUnit queryWrapper = new SparqlCommandUnit(this, (SparqlQuery)Command);
+                    _executionUnits.Add(queryWrapper);
+                    _rewriteStrategy.Rewrite(queryWrapper);
+                    _isReady = true;
+                    break;
+                case SparqlCommandType.SparqlUpdate:
+                    foreach (SparqlUpdateCommand update in ((SparqlUpdateCommandSet)Command).Commands)
+                    {
+                        SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, update);
+                        _executionUnits.Add(updateWrapper);
+                        _rewriteStrategy.Rewrite(updateWrapper);
+                    }
+                    _isReady = true;
+                    break;
+            }
+            timer.Stop();
+            CompilationTime = timer.Elapsed;
+        }
 
-        internal IEnumerable<SparqlCommandUnit> Units
+        internal override IQueryableStorage UnderlyingStorage
         {
             get
             {
-                return _commands.AsReadOnly();
+                return Connection.UnderlyingStorage;
             }
         }
 
-        internal Connection Connection
+        internal override BaseTemporaryGraphConsumer ParentContext
         {
             get
             {
-                return _connection;
+                return Connection;
             }
-            set
-            {
-                _connection = value;
-                _processor = FeaturedSparqlProcessor.Get(value);
-                _rewriteStrategy = null;
-            }
-        }
-
-        internal void AddUnit(SparqlUpdateCommand update)
-        {
-            SparqlCommandUnit command = new SparqlCommandUnit(this, update);
-            if (_commands.Count == 0) CommandType = SparqlCommandType.SparqlUpdate;
-            _commands.Add(command);
-            _rewriteStrategy.Rewrite(command);
-        }
-
-        internal void AddUnit(SparqlQuery query)
-        {
-            SparqlCommandUnit command = new SparqlCommandUnit(this, query);
-            if (_commands.Count == 0) CommandType = SparqlCommandType.SparqlQuery;
-            _commands.Add(command);
-            _rewriteStrategy.Rewrite(command);
         }
 
         /// <summary>
@@ -95,156 +226,282 @@ namespace VDS.RDF.Query.Spin.Core
         /// <param name="sparqlQuery"></param>
         /// <returns></returns>
         /// TODO envision some query cache ?
-        internal object ExecuteReader(string sparqlQuery)
+        /// TODO embed the query execution with a rdfHandler/sparqlResultHandler to allow for local evaluation of extension functions
+        internal object ExecuteReader()
         {
-            _commandText = sparqlQuery;
-            if (_connection.State != System.Data.ConnectionState.Open) throw new ConnectionStateException();
-            if (_rewriteStrategy == null) _rewriteStrategy = _processor.GetRewriteStrategyFor(this);
-            SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
-            // TODO replace connection env parameters by function calls for correct parsing and query caching possibility
-            AddUnit(_parser.ParseFromString(commandText));
-            return null;
+            Prepare();
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            object queryResult = null;
+            RaiseExecutionStarted(new SparqlExecutableEventArgs());
+            try
+            {
+                foreach (SparqlCommandUnit unit in _executionUnits)
+                {
+                    queryResult = unit.Execute();
+                }
+                RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
+            }
+            catch (Exception any)
+            {
+                RaiseExecutionFailed(new SparqlExecutableEventArgs());
+                throw any;
+            }
+            finally
+            {
+                MakeDisposable();
+                //CleanUp();
+            }
+            timer.Stop();
+            ExecutionTime = timer.Elapsed;
+            return queryResult;
         }
+
+        // Should we return something ?
+        internal void ExecuteNonQuery()
+        {
+            Prepare();
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            IUpdateableStorage storage = (IUpdateableStorage)Connection.UnderlyingStorage;
+            RaiseExecutionStarted(new SparqlExecutableEventArgs());
+            try
+            {
+                foreach (SparqlCommandUnit unit in _executionUnits)
+                {
+                    unit.Execute();
+                }
+                RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
+            }
+            catch (Exception any)
+            {
+                RaiseExecutionFailed(new SparqlExecutableEventArgs());
+                throw any;
+            }
+            finally
+            {
+                MakeDisposable();
+                //CleanUp();
+            }
+            timer.Stop();
+            ExecutionTime = timer.Elapsed;
+        }
+
+        #endregion
+
+        #region Internal implementation
+
+        // This is not really clean
+        internal SparqlCommandUnit CreateInternalUnit(SparqlUpdateCommand update)
+        {
+            SparqlCommandUnit command = new SparqlCommandUnit(this, update, SparqlCommandType.SparqlInternal | SparqlCommandType.SparqlUpdate);
+            _rewriteStrategy.Rewrite(command);
+            return command;
+        }
+
+        #endregion
+
+        #region Command statistics
+
+        public TimeSpan? CompilationTime { get; private set; }
+        public TimeSpan? ExecutionTime { get; private set; }
+
+        #endregion
 
     }
 
     /// <summary>
-    /// A single command of a Sparql Batch
+    /// A single internal command of a Sparql ACID batch
     /// </summary>
     internal class SparqlCommandUnit
+        : SparqlExecutable
     {
-        internal static String ASSERT = "assetions";
-        internal static String RETRACT = "removals";
 
-        internal static String ASSERTIONS_PREFIX = "tag:dotnetrdf.org:" + ASSERT + ":";
-        internal static String REMOVALS_PREFIX = "tag:dotnetrdf.org:" + RETRACT + ":";
+        private readonly Connection _connection;
+        private SparqlQuery _query = null;
+        private SparqlUpdateCommand _updateCommand;
 
-        private String _id = Guid.NewGuid().ToString().Replace("-", "");
+        private List<SparqlCommandUnit> _preProcessingUnits = new List<SparqlCommandUnit>();
 
-        private Dictionary<IToken, IToken> _unitRemovalTokens = new Dictionary<IToken, IToken>();
-        private Dictionary<IToken, IToken> _unitAdditionTokens = new Dictionary<IToken, IToken>();
+        private HashSet<Uri> _defaultGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
+        private HashSet<Uri> _namedGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
+
+        private SparqlCommandUnit(SparqlCommand context)
+        {
+            //Uri = UriFactory.Create(BaseTemporaryGraphConsumer.NS_URI + "command-unit:" + ID);
+            Context = context;
+            _connection = context.Connection;
+        }
 
         internal SparqlCommandUnit(SparqlCommand context, SparqlQuery query)
+            : this(context)
         {
-            Context = context;
             CommandType = SparqlCommandType.SparqlQuery;
-            Query = query;
+            _query = query;
+            _defaultGraphs.UnionWith(query.DefaultGraphs);
+            _namedGraphs.UnionWith(query.NamedGraphs);
+        }
+
+        internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update, SparqlCommandType mode)
+            : this(context)
+        {
+            CommandType = mode;
+            _updateCommand = update;
+            if (update is BaseModificationCommand)
+            {
+                _defaultGraphs.Clear();
+                _namedGraphs.Clear();
+                _defaultGraphs.UnionWith(((BaseModificationCommand)update).UsingUris);
+                _namedGraphs.UnionWith(((BaseModificationCommand)update).UsingNamedUris);
+            }
         }
 
         internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update)
-        {
-            Context = context;
-            CommandType = SparqlCommandType.SparqlUpdate;
-            UpdateCommand = update;
-        }
+            : this(context, update, SparqlCommandType.SparqlUpdate)
+        { }
 
-        internal String ID
+        internal override Connection Connection
         {
             get
             {
-                return _id;
-            }
-        }
-
-        internal String UnitAssertionsPrefix
-        {
-            get
-            {
-                return ASSERTIONS_PREFIX + this.ID + "#";
-            }
-        }
-
-        internal String UnitRemovalsPrefix
-        {
-            get
-            {
-                return REMOVALS_PREFIX + this.ID + "#";
-            }
-        }
-
-        /// <summary>
-        /// Returns the graph this command unit adds assertions to for the given token
-        /// </summary>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        /// TODO find a way to unify the output with the expression used in the TransactionSupportStrategy
-        internal String GetAssertionsGraph(IToken graph = null)
-        {
-            switch (graph.TokenType)
-            {
-                case Token.VARIABLE:
-                    return graph.Value.Substring(1) + "_" + ASSERT + this.ID;
-                case Token.URI:
-                    return ASSERTIONS_PREFIX + this.ID + "#" + Uri.EscapeDataString(graph.Value.Substring(1, graph.Value.Length - 2));
-                default:
-                    throw new ArgumentException("Invalid token. Expected a graph IRI or variable");
-            }
-        }
-
-        internal String GetRemovalsGraph(IToken graph = null)
-        {
-            switch (graph.TokenType)
-            {
-                case Token.VARIABLE:
-                    return graph.Value.Substring(1) + "_" + RETRACT + this.ID;
-                default:
-                    return REMOVALS_PREFIX + this.ID + "#" + Uri.EscapeDataString(graph.Value.Substring(1, graph.Value.Length - 2));
-            }
-        }
-
-        internal Connection Connection
-        {
-            get
-            {
-                return Context.Connection;
+                return _connection;
             }
             set
             {
-                Context.Connection = value;
+            }
+        }
+
+        internal override IQueryableStorage UnderlyingStorage
+        {
+            get
+            {
+                return Connection.UnderlyingStorage;
+            }
+        }
+
+        internal override BaseTemporaryGraphConsumer ParentContext
+        {
+            get
+            {
+                return Context;
             }
         }
 
         internal SparqlCommand Context { get; private set; }
-        internal SparqlCommandType CommandType { get; private set; }
-        internal SparqlQuery Query { get; private set; }
-        internal SparqlUpdateCommand UpdateCommand { get; private set; }
 
+        internal SparqlCommandType CommandType { get; private set; }
+
+        public SparqlQuery Query
+        {
+            get
+            {
+                return _query;
+            }
+            internal set
+            {
+                _query = value;
+            }
+        }
+
+        public SparqlUpdateCommand UpdateCommand
+        {
+            get
+            {
+                return _updateCommand;
+            }
+            internal set
+            {
+                _updateCommand = value;
+            }
+        }
+
+        internal object Execute()
+        {
+            object queryResult = null;
+            RaiseExecutionStarted(new SparqlExecutableEventArgs());
+            try
+            {
+                // Relocate this into a ExecutionStarted event handler
+                TransactionLog.Ping(Connection);
+
+                foreach (SparqlCommandUnit pre in PreProcessingUnits)
+                {
+                    pre.Execute();
+                }
+                // TODO add the named and default graphs into the transaction log
+                if (CommandType.HasFlag(SparqlCommandType.SparqlQuery))
+                {
+                    queryResult = Connection.UnderlyingStorage.Query(Query.ToString());
+                }
+                else
+                {
+                    ((IUpdateableStorage)Connection.UnderlyingStorage).Update(UpdateCommand.ToString());
+                }
+                RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
+            }
+            catch (Exception any)
+            {
+                RaiseExecutionFailed(new SparqlExecutableEventArgs());
+                throw any;
+            }
+            finally
+            {
+                MakeDisposable();
+                //CleanUp();
+            }
+            return queryResult;
+        }
+
+        /// <summary>
+        /// Returns the list of preprocessing commands required to evaluate this unit
+        /// </summary>
+        /// <remarks>Eventually this list may be used by the full command to allow results caching during the whole processing</remarks>
+        /// <returns></returns>
+        /// TODO refactor this as a single CompilationUnit
+        internal IEnumerable<SparqlCommandUnit> PreProcessingUnits
+        {
+            get
+            {
+                return (from u in _preProcessingUnits
+                        select u);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Default Graph URIs for the CommandUnit
+        /// </summary>
         internal IEnumerable<Uri> DefaultGraphs
         {
             get
             {
-                switch (CommandType)
-                {
-                    case SparqlCommandType.SparqlQuery:
-                        return Query.DefaultGraphs;
-                    case SparqlCommandType.SparqlUpdate:
-                        if (UpdateCommand is BaseModificationCommand)
-                        {
-                            return ((BaseModificationCommand)UpdateCommand).UsingUris;
-                        }
-                        break;
-                }
-                return new List<Uri>();
+                return _defaultGraphs;
+                /*return (from u in this._defaultGraphs
+                        select u);*/
             }
         }
 
+        /// <summary>
+        /// Gets the Named Graph URIs for the CommandUnit
+        /// </summary>
         internal IEnumerable<Uri> NamedGraphs
         {
             get
             {
-                switch (CommandType)
-                {
-                    case SparqlCommandType.SparqlQuery:
-                        return Query.NamedGraphs;
-                    case SparqlCommandType.SparqlUpdate:
-                        if (UpdateCommand is BaseModificationCommand)
-                        {
-                            return ((BaseModificationCommand)UpdateCommand).UsingNamedUris;
-                        }
-                        break;
-                }
-                return new List<Uri>();
+                return _namedGraphs;
+                /*return (from u in this._namedGraphs
+                        select u);*/
             }
+        }
+
+        internal void AddPreProcessingUnit(SparqlParameterizedString update)
+        {
+            AddPreProcessingUnit(new SparqlUpdateParser().ParseFromString(update).Commands.First());
+        }
+
+        internal void AddPreProcessingUnit(SparqlUpdateCommand update)
+        {
+            SparqlCommandUnit command = Context.CreateInternalUnit(update);
+            _preProcessingUnits.Add(command);
         }
 
     }

@@ -13,13 +13,21 @@ namespace VDS.RDF.Query.Spin.Utility
     public static class RDFHelper
     {
 
-        public static String UI_TEMPVAR_PREFIX = "spinVar_" + Guid.NewGuid().ToString().Substring(0, 4) + "_";
+        public static String NON_CONFLICT_PREFIX = Guid.NewGuid().ToString().Substring(0, 4) + "_";
         private static long _tempVariablesCount = 0;
 
         private readonly static FastNodeComparer _nodeComparer = new FastNodeComparer();
         internal readonly static UriComparer uriComparer = new UriComparer();
         internal readonly static IEqualityComparer<Triple> tripleEqualityComparer = new TripleEqualityComparer();
         internal readonly static NodeFactory nodeFactory = new NodeFactory();
+
+        #region Aliasing utility
+
+        public static String NewVarName(String baseName = "") {
+            return NON_CONFLICT_PREFIX + baseName + (_tempVariablesCount++).ToString();
+        }
+
+#endregion
 
         #region UriComparison shortcuts
 
@@ -124,9 +132,9 @@ namespace VDS.RDF.Query.Spin.Utility
             return nodeFactory.CreateVariableNode(name);
         }
 
-        public static IVariableNode CreateTempVariableNode()
+        public static IVariableNode CreateTempVariableNode(String name ="")
         {
-            return nodeFactory.CreateVariableNode(UI_TEMPVAR_PREFIX + (_tempVariablesCount++).ToString());
+            return nodeFactory.CreateVariableNode(NewVarName(name));
         }
 
         public static IBlankNode CreateBlankNode()
