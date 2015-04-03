@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                MakeDisposable();
+                RaiseDisposable();
                 //CleanUp();
             }
             timer.Stop();
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                MakeDisposable();
+                RaiseDisposable();
                 //CleanUp();
             }
             timer.Stop();
@@ -446,7 +446,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                MakeDisposable();
+                RaiseDisposable();
                 //CleanUp();
             }
             return queryResult;

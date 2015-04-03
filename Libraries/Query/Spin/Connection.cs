@@ -42,6 +42,7 @@ namespace VDS.RDF.Query.Spin
     /// To ensure the storage's data consistency, any access should be wrapped by instances of this class. Direct access is to be prohibited by any necessary mean.
     /// </remarks>
     /// TODO complete the IUpdateableStorage implementation
+    /// TODO complete session parameters assignation
     public sealed class Connection
         : BaseTemporaryGraphConsumer, IUpdateableStorage, ITransactionalStorage
     {
@@ -131,7 +132,8 @@ namespace VDS.RDF.Query.Spin
 
         public void Close()
         {
-            MakeDisposable();
+            RaiseDisposable();
+            _parameters.Clear();
             _underlyingStorage = null;
             // free all temporary reources
             _state = ConnectionState.Closed;
