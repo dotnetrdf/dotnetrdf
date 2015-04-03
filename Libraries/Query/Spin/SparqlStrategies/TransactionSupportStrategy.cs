@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we don not have to create concurrentUpdates graphs if the graph has not been used
     ///     => for a future optimized process, the strategy would also reference triple patterns read for each graph
     /// TODO make the rewritter used even for transactional storage so we can rewrite the inserts into temporary graphs for possible constraint checking
-    /// TODO modifier la gestion d'événements pour n'ajouter les handlers qu'au déclenchement de l'execution pour mieux pouvoir supprimer la référence et les ecoutes au MakeDisposable
+    /// TODO checkproof the event attach/detach cycle depending on whether the object is reusable or not
     /// </remarks>
     public sealed class TransactionSupportStrategy
         : BaseSparqlRewriteStrategy
@@ -257,6 +257,11 @@ DROP SILENT GRAPH @RdfNull;
          */
         internal void Connection_Disposed(Object sender)
         {
+            Connection connection = (Connection)sender;
+            connection.Committed -= this.Connection_Committed;
+            connection.Rolledback -= this.Connection_Rolledback;
+            connection.Disposable -= this.TransactionObject_Disposable;
+            command.Connection.Disposable -= this.Connection_Disposed;
         }
 
         /* SparqlCommand.ExecutionStarted
@@ -272,6 +277,8 @@ DROP SILENT GRAPH @RdfNull;
             command.Connection.Rolledback += this.Connection_Rolledback;
             command.Connection.Disposable -= this.TransactionObject_Disposable;
             command.Connection.Disposable += this.TransactionObject_Disposable;
+            command.Connection.Disposable -= this.Connection_Disposed;
+            command.Connection.Disposable += this.Connection_Disposed;
 
             command.Failed += this.SparqlCommand_ExecutionInterrupted;
             command.Succeeded += this.SparqlCommand_ExecutionEnded;
@@ -381,9 +388,16 @@ DROP SILENT GRAPH @RdfNull;
         internal void TransactionObject_Disposable(Object sender)
         {
             BaseTemporaryGraphConsumer context = (BaseTemporaryGraphConsumer)sender;
+            if (context is SparqlExecutable)
+            {
+                SparqlExecutable command = (SparqlExecutable)context;
+                //command.ExecutionStarted -= this.SparqlCommand_ExecutionStarted;
+                command.Failed -= this.SparqlCommand_ExecutionInterrupted;
+                command.Succeeded -= this.SparqlCommand_ExecutionEnded;
+            }
+            context.Disposable -= this.TransactionObject_Disposable;
             IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
-            // Clear the commands temporary graphs 
-            // TODO replace the loadGraph with a direct query
+            // Clear any commands temporary graphs and reference
             SparqlParameterizedString command = new SparqlParameterizedString(@"
 SELECT DISTINCT ?tempGraph 
 FROM @transactionLog 
@@ -447,6 +461,10 @@ DROP SILENT GRAPH @RdfNull;
 ";
 
             storage.Update(command.ToString());
+            if (_commandMetas.ContainsKey(context.ID))
+            {
+                _commandMetas.Remove(context.ID);
+            }
         }
 
         #region Unused

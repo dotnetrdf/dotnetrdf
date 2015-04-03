@@ -41,6 +41,7 @@ namespace VDS.RDF.Query.Spin
     /// <remarks>
     /// To ensure the storage's data consistency, any access should be wrapped by instances of this class. Direct access is to be prohibited by any necessary mean.
     /// </remarks>
+    /// TODO complete the IUpdateableStorage implementation
     public sealed class Connection
         : BaseTemporaryGraphConsumer, IUpdateableStorage, ITransactionalStorage
     {
