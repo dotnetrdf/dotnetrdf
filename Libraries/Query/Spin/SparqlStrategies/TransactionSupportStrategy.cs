@@ -272,8 +272,8 @@ DROP SILENT GRAPH <tmp:dotnetrdf.org:blackhole>;
             command.Connection.Disposable -= this.TransactionObject_Disposable;
             command.Connection.Disposable += this.TransactionObject_Disposable;
 
-            //command.Failed += this.SparqlCommand_ExecutionInterrupted;
-            if(command is SparqlCommand) command.Succeeded += this.SparqlCommand_ExecutionEnded;
+            command.Failed += this.SparqlCommand_ExecutionInterrupted;
+            command.Succeeded += this.SparqlCommand_ExecutionEnded;
             command.Disposable += this.TransactionObject_Disposable;
 
             if (_commandMetas.ContainsKey(command.ID) && _commandMetas[command.ID] != null)
@@ -305,7 +305,6 @@ FROM @transactionLog
 WHERE {
     ?tempGraph @requiredBy @commandUri .
     ?tempGraph @affectsGraph ?affectedGraph
-# TODO ajouter un filtre pour supprimer les graphes vides;
 }");
             command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
