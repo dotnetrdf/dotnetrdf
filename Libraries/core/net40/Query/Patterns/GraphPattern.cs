@@ -102,11 +102,14 @@ namespace VDS.RDF.Query.Patterns
             //Copy Triple Patterns across
             //Assignments and Filters are copied into the unplaced lists so the new pattern can be reoptimised if it gets modified since
             //reoptimising a pattern with already placed filters and assignments can lead to strange results
-            if (!shallow) this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
-            this._unplacedAssignments.AddRange(gp._unplacedAssignments);
-            this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
-            this._unplacedFilters.AddRange(gp._unplacedFilters);
-            this._unplacedFilters.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.Filter).OfType<IFilterPattern>().Select(fp => fp.Filter));
+            if (!shallow)
+            {
+                this._triplePatterns.AddRange(gp._triplePatterns.Where(tp => tp.PatternType != TriplePatternType.BindAssignment && tp.PatternType != TriplePatternType.LetAssignment && tp.PatternType != TriplePatternType.Filter));
+                this._unplacedAssignments.AddRange(gp._unplacedAssignments);
+                this._unplacedAssignments.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.BindAssignment || tp.PatternType == TriplePatternType.LetAssignment).OfType<IAssignmentPattern>());
+                this._unplacedFilters.AddRange(gp._unplacedFilters);
+                this._unplacedFilters.AddRange(gp._triplePatterns.Where(tp => tp.PatternType == TriplePatternType.Filter).OfType<IFilterPattern>().Select(fp => fp.Filter));
+            }
         }
 
         /// <summary>
@@ -724,12 +727,14 @@ namespace VDS.RDF.Query.Patterns
                     String temp = gp.ToString();
                     if (!temp.Contains('\n'))
                     {
-                        if (gp.HasModifier) temp = "{ " + temp + " }";
+                        //if (gp.HasModifier) 
+                            temp = "{ " + temp + " }";
                         output.Append(temp + " ");
                     }
                     else
                     {
-                        if (gp.HasModifier) temp = "{\n" + temp + "\n}";
+                        //if (gp.HasModifier) 
+                        temp = "{\n" + temp + "\n}";
                         output.AppendLineIndented(temp, 2);
                     }
                     if (i < this._graphPatterns.Count - 1)
@@ -789,7 +794,7 @@ namespace VDS.RDF.Query.Patterns
                 output.Append("MINUS ");
             }
 
-            output.Append("{ ");
+            if (HasModifier) output.Append("{ ");
             bool linebreaks = ((this._triplePatterns.Count + this._graphPatterns.Count + this._unplacedAssignments.Count) > 1) || this._isFiltered;
             if (linebreaks)
             {
@@ -881,7 +886,7 @@ namespace VDS.RDF.Query.Patterns
                 output.Append(filter.ToString());
                 if (linebreaks) output.AppendLine();
             }
-            output.Append("}");
+            if (HasModifier) output.Append("}");
 
             return output.ToString();
         }

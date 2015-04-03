@@ -426,7 +426,9 @@ namespace VDS.RDF.Update.Commands
                 output.AppendLine(">");
             }
             output.AppendLine("INSERT");
+            output.AppendLine("{");
             output.AppendLine(this._insertPattern.ToString());
+            output.AppendLine("}");
             if (this._usingUris != null)
             {
                 foreach (Uri u in this._usingUris)
@@ -441,8 +443,9 @@ namespace VDS.RDF.Update.Commands
                     output.AppendLine("USING NAMED <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
             }
-            output.AppendLine("WHERE");
+            output.AppendLine("WHERE {");
             output.AppendLine(this._wherePattern.ToString());
+            output.AppendLine("}");
             return output.ToString();
         }
     }

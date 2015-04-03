@@ -514,16 +514,16 @@ namespace VDS.RDF.Update.Commands
             if (this._deletePattern != null)
             {
                 output.AppendLine("DELETE ");
-                //if (_deletePattern.ChildGraphPatterns.Count <= 1) output.AppendLine("{");
+                output.AppendLine("{");
                 output.AppendLine(this._deletePattern.ToString());
-                //if (_deletePattern.ChildGraphPatterns.Count <= 1) output.AppendLine("}");
+                output.AppendLine("}");
             }
             if (this._insertPattern != null)
             {
                 output.AppendLine("INSERT ");
-                //if (_insertPattern.ChildGraphPatterns.Count <= 1) output.AppendLine("{");
+                output.AppendLine("{");
                 output.AppendLine(this._insertPattern.ToString());
-                //if (_insertPattern.ChildGraphPatterns.Count <= 1) output.AppendLine("}");
+                output.AppendLine("}");
             }
             if (this._usingUris != null)
             {
@@ -539,8 +539,9 @@ namespace VDS.RDF.Update.Commands
                     output.AppendLine("USING NAMED <" + u.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
             }
-            output.AppendLine("WHERE ");
+            output.AppendLine("WHERE {");
             output.AppendLine(this._wherePattern.ToString());
+            output.AppendLine("}");
             return output.ToString();
         }
     }

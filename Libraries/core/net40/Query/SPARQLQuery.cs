@@ -1121,6 +1121,7 @@ namespace VDS.RDF.Query
                     break;
             }
 
+            output.AppendLine("{");
             if (this._rootGraphPattern != null)
             {
                 if (this._rootGraphPattern.IsEmpty && (int)this._type >= (int)SparqlQueryType.Select)
@@ -1131,15 +1132,16 @@ namespace VDS.RDF.Query
                 }
                 else if (this._rootGraphPattern.HasModifier)
                 {
-                    output.AppendLine("{");
+                    //output.AppendLine("{");
                     output.AppendLine(this._rootGraphPattern.ToString());
-                    output.AppendLine("}");
+                    //output.AppendLine("}");
                 }
                 else
                 {
                     output.AppendLine(this._rootGraphPattern.ToString());
                 }
             }
+            output.AppendLine("}");
 
             if (this._groupBy != null)
             {
