@@ -69,6 +69,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     /// TODO make the rewritter used even for transactional storage so we can rewrite the inserts into temporary graphs for possible constraint checking
     /// TODO checkproof the event attach/detach cycle depending on whether the object is reusable or not
     /// </remarks>
+    /// TODO later if performance problems dur to the transactionLog graph size, segment it into command logs ...
     public sealed class TransactionSupportStrategy
         : BaseSparqlRewriteStrategy
     {
@@ -261,7 +262,7 @@ DROP SILENT GRAPH @RdfNull;
             connection.Committed -= this.Connection_Committed;
             connection.Rolledback -= this.Connection_Rolledback;
             connection.Disposable -= this.TransactionObject_Disposable;
-            command.Connection.Disposable -= this.Connection_Disposed;
+            connection.Disposable -= this.Connection_Disposed;
         }
 
         /* SparqlCommand.ExecutionStarted
@@ -390,10 +391,10 @@ DROP SILENT GRAPH @RdfNull;
             BaseTemporaryGraphConsumer context = (BaseTemporaryGraphConsumer)sender;
             if (context is SparqlExecutable)
             {
-                SparqlExecutable command = (SparqlExecutable)context;
-                //command.ExecutionStarted -= this.SparqlCommand_ExecutionStarted;
-                command.Failed -= this.SparqlCommand_ExecutionInterrupted;
-                command.Succeeded -= this.SparqlCommand_ExecutionEnded;
+                SparqlExecutable executable = (SparqlExecutable)context;
+                //executable.ExecutionStarted -= this.SparqlCommand_ExecutionStarted;
+                executable.Failed -= this.SparqlCommand_ExecutionInterrupted;
+                executable.Succeeded -= this.SparqlCommand_ExecutionEnded;
             }
             context.Disposable -= this.TransactionObject_Disposable;
             IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
