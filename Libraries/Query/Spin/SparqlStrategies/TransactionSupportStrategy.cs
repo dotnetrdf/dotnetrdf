@@ -264,8 +264,8 @@ DROP SILENT GRAPH @RdfNull;
             Connection connection = (Connection)sender;
             connection.Committed -= this.Connection_Committed;
             connection.Rolledback -= this.Connection_Rolledback;
-            connection.Disposable -= this.TransactionObject_Disposable;
-            connection.Disposable -= this.Connection_Disposed;
+            connection.Released -= this.TransactionObject_Disposable;
+            connection.Released -= this.Connection_Disposed;
         }
 
         /* SparqlCommand.ExecutionStarted
@@ -279,14 +279,14 @@ DROP SILENT GRAPH @RdfNull;
             command.Connection.Committed += this.Connection_Committed;
             command.Connection.Rolledback -= this.Connection_Rolledback;
             command.Connection.Rolledback += this.Connection_Rolledback;
-            command.Connection.Disposable -= this.TransactionObject_Disposable;
-            command.Connection.Disposable += this.TransactionObject_Disposable;
-            command.Connection.Disposable -= this.Connection_Disposed;
-            command.Connection.Disposable += this.Connection_Disposed;
+            command.Connection.Released -= this.TransactionObject_Disposable;
+            command.Connection.Released += this.TransactionObject_Disposable;
+            command.Connection.Released -= this.Connection_Disposed;
+            command.Connection.Released += this.Connection_Disposed;
 
             command.Failed += this.SparqlCommand_ExecutionInterrupted;
             command.Succeeded += this.SparqlCommand_ExecutionEnded;
-            command.Disposable += this.TransactionObject_Disposable;
+            command.Released += this.TransactionObject_Disposable;
 
             if (_commandMetas.ContainsKey(command.ID) && _commandMetas[command.ID] != null)
             {
@@ -404,7 +404,7 @@ DROP SILENT GRAPH @RdfNull;
         */
         internal void TransactionObject_Disposable(Object sender)
         {
-            BaseTemporaryGraphConsumer context = (BaseTemporaryGraphConsumer)sender;
+            SparqlTemporaryResourceMediator context = (SparqlTemporaryResourceMediator)sender;
             if (context is SparqlExecutable)
             {
                 SparqlExecutable executable = (SparqlExecutable)context;
@@ -412,7 +412,7 @@ DROP SILENT GRAPH @RdfNull;
                 executable.Failed -= this.SparqlCommand_ExecutionInterrupted;
                 executable.Succeeded -= this.SparqlCommand_ExecutionEnded;
             }
-            context.Disposable -= this.TransactionObject_Disposable;
+            context.Released -= this.TransactionObject_Disposable;
             IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
             // Clear any commands temporary graphs and reference
             SparqlParameterizedString command = new SparqlParameterizedString(@"

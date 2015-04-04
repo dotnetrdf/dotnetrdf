@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Spin.Core
     internal delegate void SparqlExecutableEventHandler(Object sender, SparqlExecutableEventArgs args);
 
     public abstract class SparqlExecutable
-        : BaseTemporaryGraphConsumer
+        : SparqlTemporaryResourceMediator
     {
 
         internal event SparqlExecutableEventHandler ExecutionStarted;
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-        internal override BaseTemporaryGraphConsumer ParentContext
+        internal override SparqlTemporaryResourceMediator ParentContext
         {
             get
             {
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                RaiseDisposable();
+                RaiseReleased();
                 //CleanUp();
             }
             timer.Stop();
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                RaiseDisposable();
+                RaiseReleased();
                 //CleanUp();
             }
             timer.Stop();
@@ -379,7 +379,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-        internal override BaseTemporaryGraphConsumer ParentContext
+        internal override SparqlTemporaryResourceMediator ParentContext
         {
             get
             {
@@ -446,7 +446,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             finally
             {
-                RaiseDisposable();
+                RaiseReleased();
                 //CleanUp();
             }
             return queryResult;

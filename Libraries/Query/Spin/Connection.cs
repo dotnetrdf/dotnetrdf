@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin
     /// TODO complete the IUpdateableStorage implementation
     /// TODO complete session parameters assignation
     public sealed class Connection
-        : BaseTemporaryGraphConsumer, IUpdateableStorage, ITransactionalStorage
+        : SparqlTemporaryResourceMediator, IUpdateableStorage, ITransactionalStorage
     {
         private static SparqlQueryParser _queryParser = new SparqlQueryParser();
         private static SparqlUpdateParser _updateParser = new SparqlUpdateParser();
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Spin
 
         public void Close()
         {
-            RaiseDisposable();
+            RaiseReleased();
             _parameters.Clear();
             _underlyingStorage = null;
             // free all temporary reources
@@ -343,7 +343,7 @@ namespace VDS.RDF.Query.Spin
         }
 
         // TODO check what to do for update and cleaning of concurrent additions/removals graphs
-        internal override BaseTemporaryGraphConsumer ParentContext
+        internal override SparqlTemporaryResourceMediator ParentContext
         {
             get
             {
