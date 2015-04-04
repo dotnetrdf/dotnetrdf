@@ -15,12 +15,12 @@ namespace VDS.RDF.Query.Spin.Core
     // Perhaps make one of this classes public one day to be consistent with other equivalent .Net APIs
     // => may this be ambiguous because of different processing of query and updates ? 
     [Flags]
-    public enum SparqlCommandType
+    public enum SparqlExecutableType
     {
         Unknown = 0,
         SparqlQuery = 1,
         SparqlUpdate = 2,
-        SparqlInternal = 4
+        SparqlInternal = 4, // Reserved for internal use
     }
 
     #region Event args and delegates
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Spin.Core
             : this(connection)
         {
             Command = query;
-            CommandType = SparqlCommandType.SparqlQuery;
+            CommandType = SparqlExecutableType.SparqlQuery;
             Prepare();
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Spin.Core
             : this(connection)
         {
             Command = updateSet;
-            CommandType = SparqlCommandType.SparqlUpdate;
+            CommandType = SparqlExecutableType.SparqlUpdate;
             Prepare();
         }
 
@@ -160,12 +160,12 @@ namespace VDS.RDF.Query.Spin.Core
                 else
                 {
                     _commandText = "";
-                    CommandType = SparqlCommandType.Unknown;
+                    CommandType = SparqlExecutableType.Unknown;
                 }
             }
         }
 
-        internal SparqlCommandType CommandType { get; private set; }
+        internal SparqlExecutableType CommandType { get; private set; }
 
         // TODO handle a public set ?
         public String CommandText
@@ -184,13 +184,13 @@ namespace VDS.RDF.Query.Spin.Core
             _executionUnits.Clear();
             switch (CommandType)
             {
-                case SparqlCommandType.SparqlQuery:
+                case SparqlExecutableType.SparqlQuery:
                     SparqlCommandUnit queryWrapper = new SparqlCommandUnit(this, (SparqlQuery)Command);
                     _executionUnits.Add(queryWrapper);
                     _rewriteStrategy.Rewrite(queryWrapper);
                     _isReady = true;
                     break;
-                case SparqlCommandType.SparqlUpdate:
+                case SparqlExecutableType.SparqlUpdate:
                     foreach (SparqlUpdateCommand update in ((SparqlUpdateCommandSet)Command).Commands)
                     {
                         SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, update);
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Spin.Core
         // This is not really clean
         internal SparqlCommandUnit CreateInternalUnit(SparqlUpdateCommand update)
         {
-            SparqlCommandUnit command = new SparqlCommandUnit(this, update, SparqlCommandType.SparqlInternal | SparqlCommandType.SparqlUpdate);
+            SparqlCommandUnit command = new SparqlCommandUnit(this, update, SparqlExecutableType.SparqlInternal | SparqlExecutableType.SparqlUpdate);
             _rewriteStrategy.Rewrite(command);
             return command;
         }
@@ -336,13 +336,13 @@ namespace VDS.RDF.Query.Spin.Core
         internal SparqlCommandUnit(SparqlCommand context, SparqlQuery query)
             : this(context)
         {
-            CommandType = SparqlCommandType.SparqlQuery;
+            CommandType = SparqlExecutableType.SparqlQuery;
             _query = query;
             _defaultGraphs.UnionWith(query.DefaultGraphs);
             _namedGraphs.UnionWith(query.NamedGraphs);
         }
 
-        internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update, SparqlCommandType mode)
+        internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update, SparqlExecutableType mode)
             : this(context)
         {
             CommandType = mode;
@@ -357,7 +357,7 @@ namespace VDS.RDF.Query.Spin.Core
         }
 
         internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update)
-            : this(context, update, SparqlCommandType.SparqlUpdate)
+            : this(context, update, SparqlExecutableType.SparqlUpdate)
         { }
 
         internal override Connection Connection
@@ -389,7 +389,7 @@ namespace VDS.RDF.Query.Spin.Core
 
         internal SparqlCommand Context { get; private set; }
 
-        internal SparqlCommandType CommandType { get; private set; }
+        internal SparqlExecutableType CommandType { get; private set; }
 
         public SparqlQuery Query
         {
@@ -429,7 +429,7 @@ namespace VDS.RDF.Query.Spin.Core
                     pre.Execute();
                 }
                 // TODO add the named and default graphs into the transaction log
-                if (CommandType.HasFlag(SparqlCommandType.SparqlQuery))
+                if (CommandType.HasFlag(SparqlExecutableType.SparqlQuery))
                 {
                     queryResult = Connection.UnderlyingStorage.Query(Query.ToString());
                 }

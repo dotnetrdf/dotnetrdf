@@ -62,14 +62,17 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     ///     => issuing the graphs to allow for any constraint checking at commit
     /// </summary>
     /// <remarks>
+    /// TODO provide for correct handing of SparqlCommand interruptions regarding to the pendingUpdate graphs :
+    ///     => this means either copying the current pendingUpdates graph into the SparqlCommand's ccope at Execution Start for any read graph/pattern
+    ///     => modify the Triple pattern rewriting to include both the Transaction's and SparqlCommand's pendingUpdates graph int the filtering.
     /// TODO relocate the events' sparql template for better maintenance
     /// TODO add a transaction isolation level property to the connection that is either SERIALIZABLE or READ_COMMITTED for the contraints check processing
-    /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we don not have to create concurrentUpdates graphs if the graph has not been used
+    /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we do not have to create concurrentUpdates graphs if the graph has not been used
     ///     => for a future optimized process, the strategy would also reference triple patterns read for each graph
     /// TODO make the rewritter used even for transactional storage so we can rewrite the inserts into temporary graphs for possible constraint checking
     /// TODO checkproof the event attach/detach cycle depending on whether the object is reusable or not
     /// </remarks>
-    /// TODO later if performance problems dur to the transactionLog graph size, segment it into command logs ...
+    /// TODO later if performance problems occur due to the transactionLog graph size, segment it into command logs and keep only transaction and commands dependancy triple into the global log...
     public sealed class TransactionSupportStrategy
         : BaseSparqlRewriteStrategy
     {
@@ -287,9 +290,22 @@ DROP SILENT GRAPH @RdfNull;
 
             if (_commandMetas.ContainsKey(command.ID) && _commandMetas[command.ID] != null)
             {
-                // First add a dependancy to the command's parent context
+                // First add a dependency to the command's parent context for possible garbage collection in case of crash
                 _commandMetas[command.ID].Assert(RDFHelper.CreateUriNode(command.Uri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(command.ParentContext.Uri));
+                // Then adds the commands metas
                 command.UnderlyingStorage.UpdateGraph(TransactionLog.TRANSACTION_LOG_URI, _commandMetas[command.ID].Triples, null);
+                // For SparqlCommand, copy the read transaction's pendingUpdate graphs into the Command's scope to provide for correct handling of Command's interruption if needed
+                if (command is SparqlCommand)
+                {
+                    IUpdateableStorage storage = (IUpdateableStorage)command.UnderlyingStorage;
+                    SparqlParameterizedString graphCopy = new SparqlParameterizedString("COPY GRAPH @sourceUri TO @targetUri");
+                    foreach (IUriNode targetGraph in _commandMetas[command.ID].GetTriplesWithPredicate(DOTNETRDF_TRANS.PropertyAffectsGraph).Select(t => (IUriNode)t.Subject))
+                    {
+                        graphCopy.SetParameter("targetUri", targetGraph);
+                        graphCopy.SetParameter("sourceUri", RDFHelper.CreateUriNode(UriFactory.Create(targetGraph.Uri.ToString().Replace(command.ID, command.Connection.ID))));
+                        storage.Update(graphCopy.ToString());
+                    }
+                }
             }
         }
 
@@ -567,12 +583,12 @@ DROP SILENT GRAPH @RdfNull;
                 // TODO minor optimisation : handle this at the end of the rewriting so unused graphs are trimed out (i.e. graphs that are used only in compiled property paths)
                 //_namedGraphs.UnionWith(_command.DefaultGraphs.Union(_command.NamedGraphs));
 
-                if (_command.CommandType.HasFlag(SparqlCommandType.SparqlQuery))
+                if (_command.CommandType.HasFlag(SparqlExecutableType.SparqlQuery))
                 {
                     SparqlQuery rewrittenQuery = RewriteQuery(_command.Query);
                     _command.Query = rewrittenQuery;
                 }
-                else if (_command.CommandType.HasFlag(SparqlCommandType.SparqlUpdate))
+                else if (_command.CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
                 {
                     SparqlUpdateCommand sparqlUpdate = _command.UpdateCommand;
                     // TODO tranform all updates into a BaseModifyCommand
@@ -691,7 +707,7 @@ DROP SILENT GRAPH @RdfNull;
 
                 // Then perform the rewriting
                 wherePattern = RewriteReadGraphPattern(wherePattern);
-                if (!_command.CommandType.HasFlag(SparqlCommandType.SparqlInternal))
+                if (!_command.CommandType.HasFlag(SparqlExecutableType.SparqlInternal))
                 {
                     GraphPattern sourceDeletePattern = deletePattern;
                     GraphPattern sourceInsertPattern = insertPattern;
@@ -956,9 +972,9 @@ DROP SILENT GRAPH @RdfNull;
                 }
                 if (isWriting)
                 {
-                    additionalGraphUri = String.Format(TransactionSupportStrategy.PENDING_ASSERTIONS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Connection.ID });//_command.Connection.Uri.ToString() + ":pendingAdditionsFor#";
+                    additionalGraphUri = String.Format(TransactionSupportStrategy.PENDING_ASSERTIONS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Context.ID });//_command.Connection.Uri.ToString() + ":pendingAdditionsFor#";
                     pendingAssertionsGraph = GetGraphAssignement(activeGraph, "pendingA", additionalGraphUri);
-                    additionalGraphUri = String.Format(TransactionSupportStrategy.PENDING_REMOVALS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Connection.ID });//_command.Connection.Uri.ToString() + ":pendingRemovalsFor#";
+                    additionalGraphUri = String.Format(TransactionSupportStrategy.PENDING_REMOVALS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Context.ID });//_command.Connection.Uri.ToString() + ":pendingRemovalsFor#";
                     pendingRemovalsGraph = GetGraphAssignement(activeGraph, "pendingR", additionalGraphUri);
                 }
 
@@ -1288,7 +1304,7 @@ DROP SILENT GRAPH @RdfNull;
             private void BuildDependencies()
             {
 
-                // Handles the command's source dataset for execution only
+                // Handles the command's source dataset
                 List<Triple> commandMetas =
                     _command.DefaultGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), DOTNETRDF_TRANS.PropertyHasDefaultGraph, RDFHelper.CreateUriNode(graphUri)))
                     .Union(
@@ -1296,7 +1312,7 @@ DROP SILENT GRAPH @RdfNull;
                     ).ToList();
                 _transactionalEventsListener.AddMetas(_command.ID, commandMetas);
 
-                if (_command.CommandType.HasFlag(SparqlCommandType.SparqlInternal)) return;
+                if (_command.CommandType.HasFlag(SparqlExecutableType.SparqlInternal)) return;
 
                 // Handles the properties' compilation
                 if (_compiledProperties.Count > 0)
