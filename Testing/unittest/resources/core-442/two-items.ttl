@@ -1,0 +1,2 @@
+﻿<http://test> a <http://Test> ;
+            <http://test/predicate> ( <http://test/id/1> <http://test/id/2> ) .

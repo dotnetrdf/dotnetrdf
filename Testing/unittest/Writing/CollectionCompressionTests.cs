@@ -467,5 +467,48 @@ namespace VDS.RDF.Writing
 
             this.CheckCompressionRoundTrip(g);
         }
+
+#if !NO_FILE
+
+        [Test]
+        public void WritingCollectionCompressionCore442_01()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"resources\core-442\one-item.ttl");
+
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+            WriterHelper.FindCollections(context);
+            Assert.AreEqual(1, context.Collections.Count, "Expected 1 collection");
+
+            this.CheckCompressionRoundTrip(g);
+        }
+
+        [Test]
+        public void WritingCollectionCompressionCore442_02()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"resources\core-442\two-items.ttl");
+
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+            WriterHelper.FindCollections(context);
+            Assert.AreEqual(1, context.Collections.Count, "Expected 1 collection");
+
+            this.CheckCompressionRoundTrip(g);
+        }
+
+        [Test]
+        public void WritingCollectionCompressionCore442_03()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile(@"resources\core-442\three-items.ttl");
+
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+            WriterHelper.FindCollections(context);
+            Assert.AreEqual(1, context.Collections.Count, "Expected 1 collection");
+
+            this.CheckCompressionRoundTrip(g);
+        }
+
+#endif
     }
 }
