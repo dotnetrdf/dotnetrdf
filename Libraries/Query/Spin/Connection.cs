@@ -12,16 +12,35 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Spin
 {
-    // TODO check the state for the connection on each method
-    // TODO decide who is responsible for state maintenance (=> SparqlCommand class... ?)
+    // TODO do we really need a connection state ? If yes : 
+    //  => check the state for the connection on each method
+    //  => decide where and how to maintain it correctly
 
     #region Event args and delegates
 
-    internal class ConnectionEventArgs : EventArgs
+    public class ConnectionEventArgs : EventArgs
     {
         internal ConnectionEventArgs()
             : base()
         {
+        }
+    }
+
+    public class GraphsChangedEventArgs : ConnectionEventArgs
+    {
+
+        private IEnumerable<Uri> _changedGraphs;
+
+        internal GraphsChangedEventArgs(IEnumerable<Uri> graphUris)
+            : base()
+        {
+            _changedGraphs = graphUris;
+        }
+
+        public IEnumerable<Uri> GraphUris {
+            get {
+                return _changedGraphs;
+            }
         }
     }
 
@@ -30,7 +49,7 @@ namespace VDS.RDF.Query.Spin
     /// </summary>
     /// <param name="sender">Originator of the Event</param>
     /// <param name="args">Triple Event Arguments</param>
-    internal delegate void ConnectionEventHandler(Object sender, ConnectionEventArgs args);
+    public delegate void ConnectionEventHandler(Object sender, ConnectionEventArgs args);
 
     #endregion
 
@@ -42,7 +61,9 @@ namespace VDS.RDF.Query.Spin
     /// To ensure the storage's data consistency, any access should be wrapped by instances of this class. Direct access is to be prohibited by any necessary mean.
     /// </remarks>
     /// TODO complete the IUpdateableStorage implementation
-    /// TODO complete session parameters assignation
+    /// TODO complete session parameters assignation using objects
+    /// TODO define events to allow dynamic changes to the internal components
+    ///     => either during the connection for local changes or at commit for concurrent connections
     public sealed class Connection
         : SparqlTemporaryResourceMediator, IUpdateableStorage, ITransactionalStorage
     {
@@ -56,7 +77,7 @@ namespace VDS.RDF.Query.Spin
         private IPrincipal _currentUser;
         private Dictionary<string, object> _parameters = new Dictionary<string, object>();
 
-        #region Public implementation (IDbConnection-like)
+        #region Public implementation (amap IDbConnection-like)
 
         public Connection()
             : base()
@@ -170,13 +191,15 @@ namespace VDS.RDF.Query.Spin
 
         public object Query(string sparqlQuery)
         {
-            if (State != ConnectionState.Open) throw new ConnectionStateException();
+            if (!State.HasFlag(ConnectionState.Open)) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
             // in time, we should replace them by function calls for possible query caching
             AssignParameters(commandText);
             SparqlCommand command = CreateCommand(_queryParser.ParseFromString(commandText));
-            //_state = ConnectionState.Executing;
-            return command.ExecuteReader();
+            _state.WithFlag(ConnectionState.Executing);
+            object result = command.ExecuteReader();
+            _state.WithoutFlag(ConnectionState.Executing);
+            return result;
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
@@ -211,13 +234,14 @@ namespace VDS.RDF.Query.Spin
 
         public void Update(string sparqlUpdate)
         {
-            if (State != ConnectionState.Open) throw new ConnectionStateException();
+            if (!State.HasFlag(ConnectionState.Open)) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlUpdate);
             // in time, we should replace them by function calls for possible query caching
             AssignParameters(commandText); 
             SparqlCommand command = CreateCommand(_updateParser.ParseFromString(commandText));
-            //_state = ConnectionState.Executing;
+            _state.WithFlag(ConnectionState.Executing);
             command.ExecuteNonQuery();
+            _state.WithoutFlag(ConnectionState.Executing);
         }
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
@@ -353,5 +377,48 @@ namespace VDS.RDF.Query.Spin
 
         #endregion
 
+        #region Events and helpers
+
+        ///// <summary>
+        ///// Event which is raised when a Graph is added
+        ///// </summary>
+        //event TripleStoreEventHandler GraphAdded;
+
+        ///// <summary>
+        ///// Event which is raised when a Graph is removed
+        ///// </summary>
+        //event TripleStoreEventHandler GraphRemoved;
+
+        /// <summary>
+        /// Event which is raised when a Graphs contents changes
+        /// </summary>
+        protected event ConnectionEventHandler GraphsChanged;
+
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphsChanged">GraphsChanged</see> event
+        /// </summary>
+        /// <param name="args">List of the changed graphs' uri</param>
+        /// TODO handle the fact that until commit, only the current connection should listen to this event...
+        ///     => emit different events or handle different scoping like here and in TransactionLog/RuntimeLog ?
+        internal void RaiseGraphsChanged(IEnumerable<Uri> args)
+        {
+            ConnectionEventHandler d = this.GraphsChanged;
+            if (d != null)
+            {
+                d.Invoke(this, new GraphsChangedEventArgs(args));
+            }
+        }
+
+        ///// <summary>
+        ///// Event which is raised when a Graph is cleared
+        ///// </summary>
+        //event TripleStoreEventHandler GraphCleared;
+
+        ///// <summary>
+        ///// Event which is raised when a Graph has a merge operation performed on it
+        ///// </summary>
+        //event TripleStoreEventHandler GraphMerged;
+
+        #endregion
     }
 }

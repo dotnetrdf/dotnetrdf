@@ -17,10 +17,9 @@ namespace VDS.RDF.Query.Spin.Core
     [Flags]
     public enum SparqlExecutableType
     {
-        Unknown = 0,
-        SparqlQuery = 1,
-        SparqlUpdate = 2,
-        SparqlInternal = 4, // Reserved for internal use
+        SparqlQuery = 0, // the default
+        SparqlUpdate = 1,
+        SparqlInternal = 2 // Reserved for internal use (currently only PropertyPath compilation; those internal units should be filtered out by some strategies like SPIN...)
     }
 
     #region Event args and delegates
@@ -40,6 +39,9 @@ namespace VDS.RDF.Query.Spin.Core
     /// <param name="args">Triple Event Arguments</param>
     internal delegate void SparqlExecutableEventHandler(Object sender, SparqlExecutableEventArgs args);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class SparqlExecutable
         : SparqlTemporaryResourceMediator
     {
@@ -76,6 +78,7 @@ namespace VDS.RDF.Query.Spin.Core
         }
 
         internal abstract Connection Connection { get; set; }
+
     }
 
     #endregion
@@ -128,6 +131,12 @@ namespace VDS.RDF.Query.Spin.Core
 
         #region public API
 
+        private bool IsRunnable {
+            get {
+                return !String.IsNullOrEmpty(CommandText);
+            }
+        }
+
         internal override Connection Connection
         {
             get
@@ -160,14 +169,14 @@ namespace VDS.RDF.Query.Spin.Core
                 else
                 {
                     _commandText = "";
-                    CommandType = SparqlExecutableType.Unknown;
+                    CommandType = SparqlExecutableType.SparqlQuery;
                 }
             }
         }
 
         internal SparqlExecutableType CommandType { get; private set; }
 
-        // TODO handle a public set ?
+        // TODO handle a public set that directly handles the query type ?
         public String CommandText
         {
             get
@@ -178,27 +187,21 @@ namespace VDS.RDF.Query.Spin.Core
 
         internal void Prepare()
         {
-            if (_isReady) return;
+            if (_isReady || !IsRunnable) return;
             Stopwatch timer = new Stopwatch();
             timer.Start();
             _executionUnits.Clear();
-            switch (CommandType)
+            if (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
             {
-                case SparqlExecutableType.SparqlQuery:
-                    SparqlCommandUnit queryWrapper = new SparqlCommandUnit(this, (SparqlQuery)Command);
-                    _executionUnits.Add(queryWrapper);
-                    _rewriteStrategy.Rewrite(queryWrapper);
-                    _isReady = true;
-                    break;
-                case SparqlExecutableType.SparqlUpdate:
-                    foreach (SparqlUpdateCommand update in ((SparqlUpdateCommandSet)Command).Commands)
-                    {
-                        SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, update);
-                        _executionUnits.Add(updateWrapper);
-                        _rewriteStrategy.Rewrite(updateWrapper);
-                    }
-                    _isReady = true;
-                    break;
+                foreach (SparqlUpdateCommand update in ((SparqlUpdateCommandSet)Command).Commands)
+                {
+                    _executionUnits.Add(CreateUnit(update));
+                }
+                _isReady = true;
+            }
+            else {
+                _executionUnits.Add(CreateUnit((SparqlQuery)Command));
+                _isReady = true;
             }
             timer.Stop();
             CompilationTime = timer.Elapsed;
@@ -229,6 +232,7 @@ namespace VDS.RDF.Query.Spin.Core
         /// TODO embed the query execution with a rdfHandler/sparqlResultHandler to allow for local evaluation of extension functions
         internal object ExecuteReader()
         {
+            if (!IsRunnable) throw new InvalidOperationException();
             Prepare();
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -260,6 +264,7 @@ namespace VDS.RDF.Query.Spin.Core
         // Should we return something ?
         internal void ExecuteNonQuery()
         {
+            if (!IsRunnable) throw new InvalidOperationException(); 
             Prepare();
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -291,12 +296,18 @@ namespace VDS.RDF.Query.Spin.Core
 
         #region Internal implementation
 
-        // This is not really clean
-        internal SparqlCommandUnit CreateInternalUnit(SparqlUpdateCommand update)
+        internal SparqlCommandUnit CreateUnit(SparqlQuery query, SparqlExecutableType flags = SparqlExecutableType.SparqlQuery)
         {
-            SparqlCommandUnit command = new SparqlCommandUnit(this, update, SparqlExecutableType.SparqlInternal | SparqlExecutableType.SparqlUpdate);
-            _rewriteStrategy.Rewrite(command);
-            return command;
+            SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, query, flags);
+            _rewriteStrategy.Rewrite(updateWrapper);
+            return updateWrapper;
+        }
+
+        internal SparqlCommandUnit CreateUnit(SparqlUpdateCommand update, SparqlExecutableType flags = SparqlExecutableType.SparqlUpdate)
+        {
+            SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, update, flags);
+            _rewriteStrategy.Rewrite(updateWrapper);
+            return updateWrapper;
         }
 
         #endregion
@@ -311,7 +322,7 @@ namespace VDS.RDF.Query.Spin.Core
     }
 
     /// <summary>
-    /// A single internal command of a Sparql ACID batch
+    /// A single sparql query of update in a SparqlCommand batch
     /// </summary>
     internal class SparqlCommandUnit
         : SparqlExecutable
@@ -321,22 +332,19 @@ namespace VDS.RDF.Query.Spin.Core
         private SparqlQuery _query = null;
         private SparqlUpdateCommand _updateCommand;
 
-        private List<SparqlCommandUnit> _preProcessingUnits = new List<SparqlCommandUnit>();
-
         private HashSet<Uri> _defaultGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
         private HashSet<Uri> _namedGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
 
         private SparqlCommandUnit(SparqlCommand context)
         {
-            //Uri = UriFactory.Create(BaseTemporaryGraphConsumer.NS_URI + "command-unit:" + ID);
             Context = context;
             _connection = context.Connection;
         }
 
-        internal SparqlCommandUnit(SparqlCommand context, SparqlQuery query)
+        internal SparqlCommandUnit(SparqlCommand context, SparqlQuery query, SparqlExecutableType mode)
             : this(context)
         {
-            CommandType = SparqlExecutableType.SparqlQuery;
+            CommandType = mode.WithoutFlag(SparqlExecutableType.SparqlUpdate);
             _query = query;
             _defaultGraphs.UnionWith(query.DefaultGraphs);
             _namedGraphs.UnionWith(query.NamedGraphs);
@@ -345,7 +353,7 @@ namespace VDS.RDF.Query.Spin.Core
         internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update, SparqlExecutableType mode)
             : this(context)
         {
-            CommandType = mode;
+            CommandType = mode.WithFlag(SparqlExecutableType.SparqlUpdate);
             _updateCommand = update;
             if (update is BaseModificationCommand)
             {
@@ -424,18 +432,14 @@ namespace VDS.RDF.Query.Spin.Core
                 // Relocate this into a ExecutionStarted event handler
                 TransactionLog.Ping(Connection);
 
-                foreach (SparqlCommandUnit pre in PreProcessingUnits)
-                {
-                    pre.Execute();
-                }
-                // TODO add the named and default graphs into the transaction log
-                if (CommandType.HasFlag(SparqlExecutableType.SparqlQuery))
-                {
-                    queryResult = Connection.UnderlyingStorage.Query(Query.ToString());
-                }
-                else
+                if (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
                 {
                     ((IUpdateableStorage)Connection.UnderlyingStorage).Update(UpdateCommand.ToString());
+                }
+                else {
+                    // TODO refactor this using a special IRdfHandler and ISparqlResultHandler to allow for streaming and dynamic events dispatch to the monitors
+                    // TODO handle custom PropertyFunctions execution
+                    queryResult = Connection.UnderlyingStorage.Query(Query.ToString());
                 }
                 RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
             }
@@ -447,24 +451,8 @@ namespace VDS.RDF.Query.Spin.Core
             finally
             {
                 RaiseReleased();
-                //CleanUp();
             }
             return queryResult;
-        }
-
-        /// <summary>
-        /// Returns the list of preprocessing commands required to evaluate this unit
-        /// </summary>
-        /// <remarks>Eventually this list may be used by the full command to allow results caching during the whole processing</remarks>
-        /// <returns></returns>
-        /// TODO refactor this as a single CompilationUnit
-        internal IEnumerable<SparqlCommandUnit> PreProcessingUnits
-        {
-            get
-            {
-                return (from u in _preProcessingUnits
-                        select u);
-            }
         }
 
         /// <summary>
@@ -491,17 +479,6 @@ namespace VDS.RDF.Query.Spin.Core
                 /*return (from u in this._namedGraphs
                         select u);*/
             }
-        }
-
-        internal void AddPreProcessingUnit(SparqlParameterizedString update)
-        {
-            AddPreProcessingUnit(new SparqlUpdateParser().ParseFromString(update).Commands.First());
-        }
-
-        internal void AddPreProcessingUnit(SparqlUpdateCommand update)
-        {
-            SparqlCommandUnit command = Context.CreateInternalUnit(update);
-            _preProcessingUnits.Add(command);
         }
 
     }

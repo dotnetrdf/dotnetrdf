@@ -7,14 +7,8 @@ namespace VDS.RDF.Query.Spin.Core
 {
 
     /// <summary>
-    /// 
+    /// This class 
     /// </summary>
-    /// <remarks>Due to how some IStorageProvider are implemented see StardogConnector transaction implementation) there is no advantage to encapsulate the storage.
-    /// We should instead provide direct implementation for ISParqlQueryProcessor/ISparqlUpdateProcessor interfaces </remarks>
-    /// <remarks>Required SPARQL interpretation strategies should be determined by exporation/configuration of the underlying storage capabilities
-    /// For instance: 
-    /// => Stardog provides some native transactional support so there is no need for a TransactionalRewritingStrategy
-    /// </remarks>
     internal class SparqlFeaturesProvider
     {
 
@@ -24,7 +18,7 @@ namespace VDS.RDF.Query.Spin.Core
         }
 
         /// <summary>
-        /// Returns a FeaturedSparqlProcessor for the current connection
+        /// Returns the SparqlFeaturesProvider instance required for the given connection
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -41,7 +35,7 @@ namespace VDS.RDF.Query.Spin.Core
         /// </summary>
         private List<Type> _rewritingStrategyChain = new List<Type>();
 
-        private List<Type> _evaluationStrategyChain = new List<Type>();
+        //private List<Type> _evaluationStrategyChain = new List<Type>();
 
         private SparqlFeaturesProvider()
         {

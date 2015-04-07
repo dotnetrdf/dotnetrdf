@@ -6,7 +6,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Query.Spin.Core.Transactions
 {
 
-    // TODO relocate this and deprecate the namespace ?
+    // TODO refactor this into a RuntimeLog to signify more independence from the transactional handling ?
     /// <summary>
     /// The transactionLog class is responsible to log and track transactional events in a centralized distributed graph on a specific storage
     /// </summary>
