@@ -2521,4 +2521,13 @@
       <Link>Configuration\IConfigurationLoader.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\ExternalHelpers\SparqlAPIExtensions.cs">
+      <Link>Query\ExternalHelpers\SparqlAPIExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

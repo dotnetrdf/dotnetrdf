@@ -9,12 +9,15 @@ using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Update;
+using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin
 {
     // TODO do we really need a connection state ? If yes : 
     //  => check the state for the connection on each method
     //  => decide where and how to maintain it correctly
+
+    // TODO handle possible Spin configuration changes and define the policy to adopt in such cases pertaining to the current transaction if updates have been performed
 
     #region Event args and delegates
 
@@ -37,8 +40,10 @@ namespace VDS.RDF.Query.Spin
             _changedGraphs = graphUris;
         }
 
-        public IEnumerable<Uri> GraphUris {
-            get {
+        public IEnumerable<Uri> GraphUris
+        {
+            get
+            {
                 return _changedGraphs;
             }
         }
@@ -87,6 +92,7 @@ namespace VDS.RDF.Query.Spin
 
         public void Open(IQueryableStorage storage)
         {
+            if (State.HasFlag(ConnectionState.Open)) Close();
             _underlyingStorage = storage;
             _state = ConnectionState.Open;
         }
@@ -137,7 +143,8 @@ namespace VDS.RDF.Query.Spin
 
         }
 
-        internal void AssignParameters(SparqlParameterizedString command) {
+        internal void AssignParameters(SparqlParameterizedString command)
+        {
             foreach (String paramName in ((Dictionary<String, INode>)command.Parameters).Keys)
             {
                 object value = this[paramName];
@@ -174,6 +181,7 @@ namespace VDS.RDF.Query.Spin
 
         #region Events
 
+        // TODO split events between internal pre event and public complete event
         internal event ConnectionEventHandler Committed;
         internal event ConnectionEventHandler Rolledback;
 
@@ -193,18 +201,27 @@ namespace VDS.RDF.Query.Spin
         {
             if (!State.HasFlag(ConnectionState.Open)) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
-            // in time, we should replace them by function calls for possible query caching
+            // in time, we should replace parameters by function calls for possible query caching
             AssignParameters(commandText);
             SparqlCommand command = CreateCommand(_queryParser.ParseFromString(commandText));
+
+            object results;
             _state.WithFlag(ConnectionState.Executing);
-            object result = command.ExecuteReader();
+            results = command.ExecuteReader();
             _state.WithoutFlag(ConnectionState.Executing);
-            return result;
+            return results;
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            throw new NotImplementedException();
+            if (!State.HasFlag(ConnectionState.Open)) throw new ConnectionStateException();
+            SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlQuery);
+            // in time, we should replace parameters by function calls for possible query caching
+            AssignParameters(commandText);
+            SparqlCommand command = CreateCommand(_queryParser.ParseFromString(commandText));
+            _state.WithFlag(ConnectionState.Executing);
+            command.ExecuteReader(rdfHandler, resultsHandler);
+            _state.WithoutFlag(ConnectionState.Executing);
         }
 
         public void LoadGraph(IGraph g, Uri graphUri)
@@ -224,11 +241,12 @@ namespace VDS.RDF.Query.Spin
 
         public void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            throw new NotImplementedException();
+            LoadGraph(handler, UriFactory.Create(graphUri));
         }
 
         public void SaveGraph(IGraph g)
         {
+            // TODO create a CLEAR command and serialize the graph into a ModifyCommand
             throw new NotImplementedException();
         }
 
@@ -236,8 +254,8 @@ namespace VDS.RDF.Query.Spin
         {
             if (!State.HasFlag(ConnectionState.Open)) throw new ConnectionStateException();
             SparqlParameterizedString commandText = new SparqlParameterizedString(sparqlUpdate);
-            // in time, we should replace them by function calls for possible query caching
-            AssignParameters(commandText); 
+            // in time, we should replace parameters by function calls for possible query caching
+            AssignParameters(commandText);
             SparqlCommand command = CreateCommand(_updateParser.ParseFromString(commandText));
             _state.WithFlag(ConnectionState.Executing);
             command.ExecuteNonQuery();
@@ -246,7 +264,8 @@ namespace VDS.RDF.Query.Spin
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            // TODO tranform the additions and removals into GraphGraphPatterns and create a modify command
+
         }
 
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
@@ -256,12 +275,13 @@ namespace VDS.RDF.Query.Spin
 
         public void DeleteGraph(Uri graphUri)
         {
-            throw new NotImplementedException();
+            DropCommand command = new DropCommand(graphUri);
+            Update(command.ToString());
         }
 
         public void DeleteGraph(string graphUri)
         {
-            throw new NotImplementedException();
+            DeleteGraph(UriFactory.Create(graphUri));
         }
 
         public IEnumerable<Uri> ListGraphs()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Query.Spin.Core.Transactions;
 using VDS.RDF.Query.Spin.Utility;
@@ -10,10 +11,14 @@ using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
+// TODO relocate this into the Runtime namespace ?
+
 namespace VDS.RDF.Query.Spin.Core
 {
     // Perhaps make one of this classes public one day to be consistent with other equivalent .Net APIs
     // => may this be ambiguous because of different processing of query and updates ? 
+
+    // TODO check wether we need to make more versatile flags when implementing other rewriting strategies
     [Flags]
     public enum SparqlExecutableType
     {
@@ -93,6 +98,7 @@ namespace VDS.RDF.Query.Spin.Core
     ///         NOTE: similar temporary resources may occur during a full transaction or a full command
     ///             for optimisation, it may be advisable to create a class to handle such cases to alleviate execution units pre/post processing
     ///             perhaps use a similar framework that is used for caching with dependancies ?
+    /// TODO define a ReturnType/ResultType property to bind the correct result handlers 
     /// TODO use the SpinStatistics namespace
     /// </remarks>
     public class SparqlCommand
@@ -131,8 +137,10 @@ namespace VDS.RDF.Query.Spin.Core
 
         #region public API
 
-        private bool IsRunnable {
-            get {
+        private bool IsRunnable
+        {
+            get
+            {
                 return !String.IsNullOrEmpty(CommandText);
             }
         }
@@ -199,7 +207,8 @@ namespace VDS.RDF.Query.Spin.Core
                 }
                 _isReady = true;
             }
-            else {
+            else
+            {
                 _executionUnits.Add(CreateUnit((SparqlQuery)Command));
                 _isReady = true;
             }
@@ -223,26 +232,49 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
+        internal object ExecuteReader()
+        {
+            switch (((SparqlQuery)_command).QueryType)
+            {
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    SparqlResultSet results = new SparqlResultSet();
+                    ExecuteReader(null, new ResultSetHandler((SparqlResultSet)results));
+                    return results;
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    IGraph g = new Graph();
+                    ExecuteReader(new GraphHandler(g), null);
+                    return g;
+                default:
+                    throw new RdfQueryException("Cannot process unknown query types");
+            }
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sparqlQuery"></param>
         /// <returns></returns>
-        /// TODO envision some query cache ?
-        /// TODO embed the query execution with a rdfHandler/sparqlResultHandler to allow for local evaluation of extension functions
-        internal object ExecuteReader()
+        internal void ExecuteReader(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
         {
-            if (!IsRunnable) throw new InvalidOperationException();
+            if (!IsRunnable || CommandType.HasFlag(SparqlExecutableType.SparqlUpdate)) throw new InvalidOperationException("This command can not return a reader");
             Prepare();
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            object queryResult = null;
             RaiseExecutionStarted(new SparqlExecutableEventArgs());
             try
             {
                 foreach (SparqlCommandUnit unit in _executionUnits)
                 {
-                    queryResult = unit.Execute();
+                    unit.Execute(rdfHandler, resultsHandler);
                 }
                 RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
             }
@@ -258,13 +290,12 @@ namespace VDS.RDF.Query.Spin.Core
             }
             timer.Stop();
             ExecutionTime = timer.Elapsed;
-            return queryResult;
         }
 
         // Should we return something ?
         internal void ExecuteNonQuery()
         {
-            if (!IsRunnable) throw new InvalidOperationException(); 
+            if (!IsRunnable) throw new InvalidOperationException();
             Prepare();
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -324,6 +355,10 @@ namespace VDS.RDF.Query.Spin.Core
     /// <summary>
     /// A single sparql query of update in a SparqlCommand batch
     /// </summary>
+    /// TODO some SPARQL queries may be reworked in a way that they required special result handling (thinking of local evaluation of custom PropertyFunctions here that would get the arguments back and compute the result locally)
+    /// => we could also do this the other way around to allow for simpler support of Update commands that required those function computations
+    ///     thus we also provide a serviceend point here for local computation and wrap the property function call into a SERVICE GraphPattern
+    ///     => these function must cannot use blank nodes parameters
     internal class SparqlCommandUnit
         : SparqlExecutable
     {
@@ -357,16 +392,10 @@ namespace VDS.RDF.Query.Spin.Core
             _updateCommand = update;
             if (update is BaseModificationCommand)
             {
-                _defaultGraphs.Clear();
-                _namedGraphs.Clear();
                 _defaultGraphs.UnionWith(((BaseModificationCommand)update).UsingUris);
                 _namedGraphs.UnionWith(((BaseModificationCommand)update).UsingNamedUris);
             }
         }
-
-        internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update)
-            : this(context, update, SparqlExecutableType.SparqlUpdate)
-        { }
 
         internal override Connection Connection
         {
@@ -399,33 +428,40 @@ namespace VDS.RDF.Query.Spin.Core
 
         internal SparqlExecutableType CommandType { get; private set; }
 
-        public SparqlQuery Query
+        internal SparqlQuery Query
         {
             get
             {
                 return _query;
             }
-            internal set
+            set
             {
                 _query = value;
             }
         }
 
-        public SparqlUpdateCommand UpdateCommand
+        internal SparqlUpdateCommand UpdateCommand
         {
             get
             {
                 return _updateCommand;
             }
-            internal set
+            set
             {
                 _updateCommand = value;
             }
         }
 
-        internal object Execute()
+        internal void Execute()
         {
-            object queryResult = null;
+            if (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
+            {
+                Execute(null, null);
+            }
+        }
+
+        internal void Execute(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
+        {
             RaiseExecutionStarted(new SparqlExecutableEventArgs());
             try
             {
@@ -436,10 +472,13 @@ namespace VDS.RDF.Query.Spin.Core
                 {
                     ((IUpdateableStorage)Connection.UnderlyingStorage).Update(UpdateCommand.ToString());
                 }
-                else {
-                    // TODO refactor this using a special IRdfHandler and ISparqlResultHandler to allow for streaming and dynamic events dispatch to the monitors
-                    // TODO handle custom PropertyFunctions execution
-                    queryResult = Connection.UnderlyingStorage.Query(Query.ToString());
+                else
+                {
+                    // TODO handle custom PropertyFunctions evaluation: maybe we can wrap the whole query in a service clause an run a local leviathan engine instead ?
+                    //  => problems : 1/ determine the service Uri from a IQueryableStorage object
+                    //                2/ ensure that multiple service calls will handle blank nodes correctly
+                    // TODO find a way to decouple the client's handlers and any internal required handler
+                    Connection.UnderlyingStorage.Query(rdfHandler, resultsHandler, Query.ToString());
                 }
                 RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
             }
@@ -452,7 +491,6 @@ namespace VDS.RDF.Query.Spin.Core
             {
                 RaiseReleased();
             }
-            return queryResult;
         }
 
         /// <summary>

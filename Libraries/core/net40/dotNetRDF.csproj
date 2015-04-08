@@ -180,6 +180,7 @@
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
     <Compile Include="Query\Builder\IQueryBuilder.cs" />
+    <Compile Include="Query\ExternalHelpers\SparqlAPIExtensions.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />

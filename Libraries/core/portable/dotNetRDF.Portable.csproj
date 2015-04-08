@@ -2552,4 +2552,13 @@
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\ExternalHelpers\SparqlAPIExtensions.cs">
+      <Link>Query\ExternalHelpers\SparqlAPIExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

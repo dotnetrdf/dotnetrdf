@@ -103,7 +103,7 @@
     <Compile Include="Core\ISpinContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Runtime\BaseTemporaryGraphConsumer.cs" />
+    <Compile Include="Core\Runtime\SparqlTemporaryResourceMediator.cs" />
     <Compile Include="Core\Runtime\Uris.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -285,6 +285,7 @@
     <Compile Include="Core\Security\IGraphAccessManager.cs" />
     <Compile Include="Access\SpinAccessViolation.cs" />
     <Compile Include="SparqlStrategies\BaseSparqlStrategy.cs" />
+    <Compile Include="SparqlStrategies\SpinSupportStrategy.cs" />
     <Compile Include="SparqlStrategies\TransactionSupportStrategy.cs" />
     <Compile Include="SparqlTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -356,6 +357,10 @@
     </Compile>
     <Compile Include="Core\Model\IO\SpinSyntax.cs" />
     <Compile Include="Core\Options.cs" />
+    <Compile Include="Swp\Options.cs" />
+    <Compile Include="Swp\SwpServer.cs" />
+    <Compile Include="Swp\TemplateHelpers.cs" />
+    <Compile Include="Utility\FlaggedEnumExtensions.cs" />
     <Compile Include="Utility\Resource.cs">
       <SubType>Code</SubType>
     </Compile>

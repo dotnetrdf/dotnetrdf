@@ -57,22 +57,19 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
 
     /// <summary>
     /// This rewrite Strategy is responsible for :
-    ///     => maintaining commands ACID property
+    ///     => handling commands ACIDity
     ///     => providing full Serializable isolation to the clients during transaction.
     ///     => issuing the graphs to allow for any constraint checking at commit
     /// </summary>
     /// <remarks>
-    /// TODO provide for correct handing of SparqlCommand interruptions regarding to the pendingUpdate graphs :
-    ///     => this means either copying the current pendingUpdates graph into the SparqlCommand's ccope at Execution Start for any read graph/pattern
-    ///     => modify the Triple pattern rewriting to include both the Transaction's and SparqlCommand's pendingUpdates graph int the filtering.
-    /// TODO relocate the events' sparql template for better maintenance
+    /// TODO relocate the events' sparql template sowhere for better maintenance
     /// TODO add a transaction isolation level property to the connection that is either SERIALIZABLE or READ_COMMITTED for the contraints check processing
     /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we do not have to create concurrentUpdates graphs if the graph has not been used
     ///     => for a future optimized process, the strategy would also reference triple patterns read for each graph
     /// TODO make the rewritter used even for transactional storage so we can rewrite the inserts into temporary graphs for possible constraint checking
     /// TODO checkproof the event attach/detach cycle depending on whether the object is reusable or not
     /// </remarks>
-    /// TODO later if performance problems occur due to the transactionLog graph size, segment it into command logs and keep only transaction and commands dependancy triple into the global log...
+    /// TODO later it may be cleaner to segment the split command metas bewteen the trnasaction log for command dependencies and a dedicated graph for graph dependencies
     public sealed class TransactionSupportStrategy
         : BaseSparqlRewriteStrategy
     {
@@ -138,11 +135,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             new CommandRewriter(this).Rewrite(command);
         }
 
-        private class UnboundGraphException
-            : Exception
-        {
-        }
-
         internal void AddMetas(String objectRef, IEnumerable<Triple> metas)
         {
             IGraph objectMetas = (_commandMetas.ContainsKey(objectRef)) ? _commandMetas[objectRef] : null;
@@ -159,7 +151,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         /* Connection.Committed
          * => update the graphs using connection's pending additions/removals graphs
          */
-        internal void Connection_Committed(Object sender, ConnectionEventArgs args)
+        internal void OnConnectionCommitted(Object sender, ConnectionEventArgs args)
         {
             Connection connection = (Connection)sender;
             IUpdateableStorage storage = (IUpdateableStorage)connection.UnderlyingStorage;
@@ -169,7 +161,7 @@ SELECT DISTINCT ?tempGraph ?affectedGraph
 FROM @transactionLog 
 WHERE {
     ?tempGraph @requiredBy @transUri .
-    ?tempGraph @affectsGraph ?affectedGraph
+    ?tempGraph @affectsGraph ?affectedGraph .
     FILTER (!sameTerm(?tempGraph, @RdfNull))
 }");
             command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
@@ -256,20 +248,20 @@ DROP SILENT GRAPH @RdfNull;
         /* Connection.Rolledback
          * => nothing to to
          */
-        internal void Connection_Rolledback(Object sender, ConnectionEventArgs args)
+        internal void OnConnectionRolledBack(Object sender, ConnectionEventArgs args)
         {
         }
 
         /* Connection.Disposed
          * => clear all connection's resources
          */
-        internal void Connection_Disposed(Object sender)
+        internal void DetachFromConnection(Object sender)
         {
             Connection connection = (Connection)sender;
-            connection.Committed -= this.Connection_Committed;
-            connection.Rolledback -= this.Connection_Rolledback;
-            connection.Released -= this.TransactionObject_Disposable;
-            connection.Released -= this.Connection_Disposed;
+            connection.Committed -= this.OnConnectionCommitted;
+            connection.Rolledback -= this.OnConnectionRolledBack;
+            connection.Released -= this.OnMediatorReleased;
+            connection.Released -= this.DetachFromConnection;
         }
 
         /* SparqlCommand.ExecutionStarted
@@ -279,18 +271,18 @@ DROP SILENT GRAPH @RdfNull;
         {
             SparqlExecutable command = (SparqlExecutable)sender;
             // TODO make this cleaner ?
-            command.Connection.Committed -= this.Connection_Committed;
-            command.Connection.Committed += this.Connection_Committed;
-            command.Connection.Rolledback -= this.Connection_Rolledback;
-            command.Connection.Rolledback += this.Connection_Rolledback;
-            command.Connection.Released -= this.TransactionObject_Disposable;
-            command.Connection.Released += this.TransactionObject_Disposable;
-            command.Connection.Released -= this.Connection_Disposed;
-            command.Connection.Released += this.Connection_Disposed;
+            command.Connection.Committed -= this.OnConnectionCommitted;
+            command.Connection.Committed += this.OnConnectionCommitted;
+            command.Connection.Rolledback -= this.OnConnectionRolledBack;
+            command.Connection.Rolledback += this.OnConnectionRolledBack;
+            command.Connection.Released -= this.OnMediatorReleased;
+            command.Connection.Released += this.OnMediatorReleased;
+            command.Connection.Released -= this.DetachFromConnection;
+            command.Connection.Released += this.DetachFromConnection;
 
-            command.Failed += this.SparqlCommand_ExecutionInterrupted;
-            command.Succeeded += this.SparqlCommand_ExecutionEnded;
-            command.Released += this.TransactionObject_Disposable;
+            command.Failed += this.OnCommandFailure;
+            command.Succeeded += this.OnCommandSuccess;
+            command.Released += this.OnMediatorReleased;
 
             if (_commandMetas.ContainsKey(command.ID) && _commandMetas[command.ID] != null)
             {
@@ -302,7 +294,7 @@ DROP SILENT GRAPH @RdfNull;
                 if (command is SparqlCommand)
                 {
                     IUpdateableStorage storage = (IUpdateableStorage)command.UnderlyingStorage;
-                    SparqlParameterizedString graphCopy = new SparqlParameterizedString("COPY GRAPH @sourceUri TO @targetUri");
+                    SparqlParameterizedString graphCopy = new SparqlParameterizedString("COPY SILENT GRAPH @sourceUri TO @targetUri");
                     foreach (IUriNode targetGraph in _commandMetas[command.ID].GetTriplesWithPredicate(DOTNETRDF_TRANS.PropertyAffectsGraph).Select(t => (IUriNode)t.Subject))
                     {
                         graphCopy.SetParameter("targetUri", targetGraph);
@@ -316,14 +308,14 @@ DROP SILENT GRAPH @RdfNull;
         /* SparqlCommand.ExecutionInterrupted
          * => clear the command's pending assertions/removals
         */
-        internal void SparqlCommand_ExecutionInterrupted(Object sender, SparqlExecutableEventArgs args)
+        internal void OnCommandFailure(Object sender, SparqlExecutableEventArgs args)
         {
         }
 
         /* SparqlCommand.ExecutionEnded
          * => copy the command's pending assertions/removals to the connection ones
         */
-        internal void SparqlCommand_ExecutionEnded(Object sender, SparqlExecutableEventArgs args)
+        internal void OnCommandSuccess(Object sender, SparqlExecutableEventArgs args)
         {
             SparqlExecutable context = (SparqlExecutable)sender;
             IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
@@ -347,6 +339,7 @@ WHERE {
             command.SetParameter("transID", RDFHelper.CreateLiteralNode(context.ParentContext.ID));
             command.SetParameter("RdfNull", RDFHelper.RdfNull);
 
+            // TODO use a SparqlResultHandler to build at once the usingNamedSB
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
             IEnumerable<Uri> affectedGraphs = metas.Results.Select(r => ((IUriNode)r.Value("affectedGraph")).Uri).Distinct();
             IEnumerable<Uri> pendingUpdatesGraphs = metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri);
@@ -403,7 +396,8 @@ DROP SILENT GRAPH @RdfNull;
 
                 storage.Update(command.ToString());
                 // on full command completion, notify the associated connection that some graphs have changed
-                if (context is SparqlCommand) {
+                if (context is SparqlCommand)
+                {
                     context.Connection.RaiseGraphsChanged(affectedGraphs);
                 }
             }
@@ -411,19 +405,19 @@ DROP SILENT GRAPH @RdfNull;
 
         /* SparqlCommand.Disposed
          * => Release all the command's temporary resources
-         * TODO take into account that transactions may need to notify distributed listener that some graphs have changed at commit
+         * TODO check whether this is called correctly under normal circumstances
         */
-        internal void TransactionObject_Disposable(Object sender)
+        internal void OnMediatorReleased(Object sender)
         {
             SparqlTemporaryResourceMediator context = (SparqlTemporaryResourceMediator)sender;
             if (context is SparqlExecutable)
             {
                 SparqlExecutable executable = (SparqlExecutable)context;
                 //executable.ExecutionStarted -= this.SparqlCommand_ExecutionStarted;
-                executable.Failed -= this.SparqlCommand_ExecutionInterrupted;
-                executable.Succeeded -= this.SparqlCommand_ExecutionEnded;
+                executable.Failed -= this.OnCommandFailure;
+                executable.Succeeded -= this.OnCommandSuccess;
             }
-            context.Released -= this.TransactionObject_Disposable;
+            context.Released -= this.OnMediatorReleased;
             IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
             // Clear any commands temporary graphs and reference
             SparqlParameterizedString command = new SparqlParameterizedString(@"
@@ -496,62 +490,21 @@ DROP SILENT GRAPH @RdfNull;
             }
         }
 
-        #region Unused
-
-        //        /* SparqlCommandUnit.ExecutionStarted
-        //         * => update the transactionLog graph to register the command's dataset and it's temporary resources
-        //         */
-        //        internal void SparqlCommandUnit_ExecutionStarted(Object sender, SparqlCommandEventArgs args)
-        //        {
-        //            BaseTemporaryGraphConsumer command = (BaseTemporaryGraphConsumer)sender;
-        //            if (_listeningTo.ContainsKey(command.ID) && _listeningTo[command.ID] != null)
-        //            {
-        //                command.UnderlyingStorage.UpdateGraph(TransactionLog.TRANSACTION_LOG_URI, _listeningTo[command.ID].Triples, null);
-        //            }
-        //        }
-
-        //        /* SparqlCommandUnit.ExecutionInterrupted
-        //        */
-        //        internal void SparqlCommandUnit_ExecutionInterrupted(Object sender, SparqlCommandEventArgs args)
-        //        {
-        //        }
-
-        //        /* SparqlCommandUnit.ExecutionEnded
-        //        */
-        //        internal void SparqlCommandUnit_ExecutionEnded(Object sender, SparqlCommandEventArgs args)
-        //        {
-        //        }
-
-        //        /* SparqlCommandUnit.Disposed
-        //         * => Release all the command's temporary resources
-        //        */
-        //        internal void SparqlCommandUnit_Disposed(Object sender)
-        //        {
-        //#if !DEBUG
-        //            // TODO also clear the temporary graphs
-        //            SparqlCommandUnit command = (SparqlCommandUnit)sender;
-        //            if (_listeningTo.ContainsKey(command.ID) && _listeningTo[command.ID] != null)
-        //            {
-        //                command.UnderlyingStorage.UpdateGraph(TransactionLog.TRANSACTION_LOG_URI, null, _listeningTo[command.ID].Triples);
-        //            }
-        //#endif
-        //        }
-
-        #endregion
-
-
         #endregion
 
         /// <summary>
         /// A unitary command rewriter helper to help local context maintenance
         /// </summary>
+        /// TODO provide differenciation between concurrent and pending assertions and deletions
         private class CommandRewriter
         {
 
             private static int _pptyIndex = 0;
+
             // We make this one static so it can be shared in a thread
             // TODO find a way to make it shareable throughout the framework
             private static Dictionary<INode, String> _compiledPropertyVarMap = new Dictionary<INode, String>();
+
             private static IToken DEFAULT_GRAPH = new FromKeywordToken(0, 0);
             private static IToken NAMED_GRAPH = new FromNamedKeywordToken(0, 0);
 
@@ -770,11 +723,12 @@ DROP SILENT GRAPH @RdfNull;
             /// <remarks>TODO notify the TransactionLog class for graphs read</remarks>
             private GraphPattern RewriteReadGraphPattern(GraphPattern gp)
             {
+                // SERVICE graph patterns are not to be rewritten
                 if (gp.IsService) return gp;
-                GraphPattern output = gp.Clone(true);
+                GraphPattern output;// = gp.Clone(true);
                 if (gp.IsGraph || gp.IsSubQuery || !gp.HasModifier)
                 { // If gp is neither a GraphGraphPattern nor a Bgp we use a shallow copy of gp and add gp rewritten childGraphPattern to it
-                    //output = new GraphPattern();
+                    output = new GraphPattern();
                     if (gp.IsGraph)
                     {
                         _activeGraph = gp.GraphSpecifier;
@@ -798,7 +752,7 @@ DROP SILENT GRAPH @RdfNull;
                 }
                 else
                 {
-                    //output = gp.Clone(true);
+                    output = gp.Clone(true);
                 }
                 // Rewrites the child graphPatterns
                 foreach (GraphPattern cgp in gp.ChildGraphPatterns)
@@ -887,51 +841,45 @@ DROP SILENT GRAPH @RdfNull;
 
             private void HandleITriplePattern(SparqlCommandUnit _command, GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
-                try
+
+                switch (pattern.PatternType)
                 {
-                    switch (pattern.PatternType)
-                    {
-                        case TriplePatternType.SubQuery:
-                            // Provide correct graph restriction filter by re-initialize graph Tokens for the subquery;
-                            _defaultGraphVarTokens.Push(new HashSet<IToken>());
-                            _namedGraphVarTokens.Push(new HashSet<IToken>());
-                            //_directGraphTokens.Push(new Dictionary<String, IToken>());
-                            _compilationGraphVarTokens.Push(new HashSet<IToken>());
-                            SparqlQuery subQuery = RewriteQuery(((SubQueryPattern)pattern).SubQuery);
-                            // TODO assign graph bindings to the subQuery
-                            output.AddTriplePattern(new SubQueryPattern(subQuery));
-                            _defaultGraphVarTokens.Pop();
-                            _namedGraphVarTokens.Pop();
-                            //_directGraphTokens.Pop();
-                            _compilationGraphVarTokens.Pop();
-                            break;
+                    // TODO test subquery rewriting
+                    case TriplePatternType.SubQuery:
+                        // Provide correct graph variable mappings for the subquery;
+                        _defaultGraphVarTokens.Push(new HashSet<IToken>());
+                        _namedGraphVarTokens.Push(new HashSet<IToken>());
+                        _compilationGraphVarTokens.Push(new HashSet<IToken>());
 
-                        case TriplePatternType.Match:
-                            RewriteTriplePattern(output, source, (TriplePattern)pattern);
-                            break;
+                        SparqlQuery subQuery = RewriteQuery(((SubQueryPattern)pattern).SubQuery);
+                        output.AddTriplePattern(new SubQueryPattern(subQuery));
 
-                        case TriplePatternType.Path:
-                            HandlePropertyPathPattern(output, source, (PropertyPathPattern)pattern);
-                            break;
+                        _defaultGraphVarTokens.Pop();
+                        _namedGraphVarTokens.Pop();
+                        _compilationGraphVarTokens.Pop();
+                        break;
 
-                        case TriplePatternType.PropertyFunction:
-                            HandlePropertyFunctionPattern(_command, output, source, (PropertyFunctionPattern)pattern);
-                            break;
+                    case TriplePatternType.Match:
+                        RewriteTriplePattern(output, source, (TriplePattern)pattern);
+                        break;
 
-                        default:
-                            output.AddTriplePattern(pattern);
-                            break;
-                    }
-                }
-                catch (UnboundGraphException any)
-                {
-                    throw any;
+                    case TriplePatternType.Path:
+                        HandlePropertyPathPattern(output, source, (PropertyPathPattern)pattern);
+                        break;
+
+                    case TriplePatternType.PropertyFunction:
+                        HandlePropertyFunctionPattern(_command, output, source, (PropertyFunctionPattern)pattern);
+                        break;
+
+                    default:
+                        output.AddTriplePattern(pattern);
+                        break;
                 }
             }
 
             private void RewriteTriplePattern(GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
-                bool isWriting = false;
+                bool isWriting = true;
                 IToken activeGraph = source.ActiveGraph;
                 // Check wether the pattern use the default graph
                 if (activeGraph == null)
@@ -940,15 +888,12 @@ DROP SILENT GRAPH @RdfNull;
                     _defaultGraphVarTokens.Peek().Add(activeGraph);
                 }
 
+                // TODO later optimisation, try to determine if the current connection requires isolation or has pending updated for the active graph
                 if (IsDefaultGraph(activeGraph))
                 {
-                    // TODO determine if the current connection updated one of the default graphs
-                    isWriting = false;
                 }
                 else
                 {
-                    // TODO determine if the current connection updated one of the named graphs
-                    isWriting = false;
                 }
 
                 // Variables for the rewritten pattern
