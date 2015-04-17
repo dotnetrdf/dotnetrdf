@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Query.Expressions.Primary;
@@ -313,6 +314,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 else
                 {
                     return new ISparqlExpression[] { this._textExpr, this._patternExpr };
+                }
+            }
+            set
+            {
+                this._textExpr = value.FirstOrDefault();
+                this._patternExpr = value.Skip(1).FirstOrDefault();
+                if (this._optionExpr != null)
+                {
+                    this._optionExpr = value.Skip(2).FirstOrDefault();
                 }
             }
         }

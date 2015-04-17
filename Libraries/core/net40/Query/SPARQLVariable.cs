@@ -150,6 +150,10 @@ namespace VDS.RDF.Query
             {
                 return this._expr;
             }
+            set
+            {
+                this._expr = value;
+            }
         }
         
         /// <summary>

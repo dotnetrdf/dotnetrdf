@@ -143,6 +143,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 return this._expressions;
             }
+            set
+            {
+                this._expressions = value.ToList();
+            }
         }
 
         /// <summary>

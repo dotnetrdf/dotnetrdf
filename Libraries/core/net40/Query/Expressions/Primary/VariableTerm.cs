@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Primary
                 this._name = this._name.Substring(1);
             }
         }
-        
+
         /// <summary>
         /// Evaluates the expression
         /// </summary>
@@ -115,6 +115,9 @@ namespace VDS.RDF.Query.Expressions.Primary
             get
             {
                 return Enumerable.Empty<ISparqlExpression>();
+            }
+            set
+            {
             }
         }
 

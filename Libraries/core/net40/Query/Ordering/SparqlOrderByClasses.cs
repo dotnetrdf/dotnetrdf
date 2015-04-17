@@ -128,6 +128,7 @@ namespace VDS.RDF.Query.Ordering
         public abstract ISparqlExpression Expression
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -286,6 +287,10 @@ namespace VDS.RDF.Query.Ordering
             get
             {
                 return new VariableTerm(this._varname); 
+            }
+            set
+            {
+                this._varname = ((VariableTerm)value).Variables.FirstOrDefault();
             }
         }
 
@@ -505,6 +510,9 @@ namespace VDS.RDF.Query.Ordering
             get
             {
                 return this._expr;
+            }
+            set {
+                this._expr = value;
             }
         }
 

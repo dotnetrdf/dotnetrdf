@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         public IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 return (from arg in this._args
                         from v in arg.Variables
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                return SparqlExpressionType.Function; 
+                return SparqlExpressionType.Function;
             }
         }
 
@@ -116,9 +116,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         public string Functor
         {
-            get 
+            get
             {
-                return this._funcUri.ToString(); 
+                return this._funcUri.ToString();
             }
         }
 
@@ -129,7 +129,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                return this._args; 
+                return this._args;
+            }
+            set
+            {
+                this._args = value.ToList();
             }
         }
 

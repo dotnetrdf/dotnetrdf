@@ -98,6 +98,7 @@ namespace VDS.RDF.Query.Grouping
         public abstract ISparqlExpression Expression
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -257,7 +258,7 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         public override IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 if (this._child == null)
                 {
@@ -291,9 +292,13 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         public override ISparqlExpression Expression
         {
-            get 
+            get
             {
-                return new VariableTerm(this._name); 
+                return new VariableTerm(this._name);
+            }
+            set
+            {
+                this._name = ((VariableTerm)value).Variables.FirstOrDefault();
             }
         }
 
@@ -527,9 +532,13 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         public override ISparqlExpression Expression
         {
-            get 
+            get
             {
                 return this._expr;
+            }
+            set
+            {
+                this._expr = value;
             }
         }
 

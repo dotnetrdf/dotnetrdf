@@ -145,6 +145,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return this._expr.AsEnumerable();
             }
+            set
+            {
+                this._expr = value.FirstOrDefault();
+            }
         }
 
         /// <summary>

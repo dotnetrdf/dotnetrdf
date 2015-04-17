@@ -95,6 +95,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return this._exprs;
             }
+            set {
+                this._exprs = value.ToList();
+            }
         }
 
         /// <summary>

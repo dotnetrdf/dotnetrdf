@@ -106,6 +106,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             {
                 return this._expr.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
             }
+            set
+            {
+                this._expr = value.FirstOrDefault();
+                this._expressions = value.Skip(1).ToList();
+            }
         }
 
         /// <summary>

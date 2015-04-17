@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Expressions.Primary
     /// <summary>
     /// Class for representing the Distinct Modifier
     /// </summary>
-    public class DistinctModifier 
+    public class DistinctModifier
         : ISparqlExpression
     {
         /// <summary>
@@ -89,6 +89,9 @@ namespace VDS.RDF.Query.Expressions.Primary
             get
             {
                 return Enumerable.Empty<ISparqlExpression>();
+            }
+            set
+            {
             }
         }
 

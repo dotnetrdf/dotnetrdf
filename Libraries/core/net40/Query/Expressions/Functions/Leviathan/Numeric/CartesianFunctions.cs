@@ -231,6 +231,31 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                     return new ISparqlExpression[] { this._x1, this._y1, this._x2, this._y2 };
                 }
             }
+            set 
+            {
+                IEnumerable<ISparqlExpression> args = value.Take(6);
+                if (args.Count()==6)
+                {
+                    this._3d = true;
+                    this._x1 = value.FirstOrDefault();
+                    this._y1 = value.Skip(1).FirstOrDefault();
+                    this._z1 = value.Skip(2).FirstOrDefault();
+                    this._x2 = value.Skip(3).FirstOrDefault();
+                    this._y2 = value.Skip(4).FirstOrDefault();
+                    this._z2 = value.Skip(5).FirstOrDefault();
+                }
+                else if (args.Count() == 4)
+                {
+                    this._3d = false;
+                    this._x1 = value.FirstOrDefault();
+                    this._y1 = value.Skip(1).FirstOrDefault();
+                    this._x2 = value.Skip(2).FirstOrDefault();
+                    this._y2 = value.Skip(3).FirstOrDefault();
+                }
+                else {
+                    throw new ArgumentException("Wrong number of arguments. 4 or 6 expected");
+                }
+            }
         }
 
         /// <summary>

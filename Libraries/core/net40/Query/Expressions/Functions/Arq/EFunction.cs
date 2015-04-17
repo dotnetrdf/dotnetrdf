@@ -101,6 +101,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return Enumerable.Empty<ISparqlExpression>(); 
             }
+            set
+            {
+            }
         }
 
         /// <summary>

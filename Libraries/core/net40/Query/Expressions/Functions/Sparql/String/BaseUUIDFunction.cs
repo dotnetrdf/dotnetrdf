@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return Enumerable.Empty<System.String>(); 
+                return Enumerable.Empty<System.String>();
             }
         }
 
@@ -73,8 +73,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public virtual SparqlExpressionType Type
         {
             get
-            { 
-                return SparqlExpressionType.Function; 
+            {
+                return SparqlExpressionType.Function;
             }
         }
 
@@ -91,9 +91,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         public virtual IEnumerable<ISparqlExpression> Arguments
         {
-            get 
-            { 
+            get
+            {
                 return Enumerable.Empty<ISparqlExpression>();
+            }
+            set
+            {
             }
         }
 
@@ -112,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// </summary>
         public virtual bool CanParallelise
         {
-            get 
+            get
             {
                 return true;
             }

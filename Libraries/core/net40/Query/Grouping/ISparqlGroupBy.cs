@@ -83,6 +83,7 @@ namespace VDS.RDF.Query.Grouping
         ISparqlExpression Expression
         {
             get;
+            set;
         }
 
         /// <summary>

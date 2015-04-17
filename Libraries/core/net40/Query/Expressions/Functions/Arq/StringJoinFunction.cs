@@ -183,6 +183,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return this._sep.AsEnumerable().Concat(this._exprs);
             }
+            set
+            {
+                this._sep = value.FirstOrDefault();
+                this._exprs = value.Skip(1).ToList();
+            }
         }
 
         /// <summary>

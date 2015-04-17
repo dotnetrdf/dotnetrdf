@@ -94,6 +94,9 @@ namespace VDS.RDF.Query.Aggregates
             {
                 return this._expr;
             }
+            set {
+                this._expr = value;
+            }
         }
 
         /// <summary>
@@ -129,6 +132,10 @@ namespace VDS.RDF.Query.Aggregates
             get
             {
                 return this._expr.AsEnumerable();
+            }
+            set
+            {
+                this._expr = value.FirstOrDefault();
             }
         }
     }

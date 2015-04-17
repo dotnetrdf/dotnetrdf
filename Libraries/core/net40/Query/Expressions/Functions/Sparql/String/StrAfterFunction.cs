@@ -261,6 +261,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return new ISparqlExpression[] { this._stringExpr, this._startsExpr };
             }
+            set
+            {
+                this._stringExpr = value.FirstOrDefault();
+                this._startsExpr = value.Skip(1).FirstOrDefault();
+            }
         }
 
         /// <summary>

@@ -157,6 +157,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return this._expr.AsEnumerable();
             }
+            set
+            {
+                this._expr = value.FirstOrDefault();
+            }
         }
 
         /// <summary>

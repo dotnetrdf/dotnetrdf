@@ -362,6 +362,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
                 }
             }
+            set
+            {
+                this._textExpr = value.FirstOrDefault();
+                this._findExpr = value.Skip(1).FirstOrDefault();
+                this._replaceExpr = value.Skip(2).FirstOrDefault();
+                this._replaceExpr = value.Skip(3).FirstOrDefault();
+            }
         }
 
         /// <summary>

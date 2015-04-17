@@ -140,6 +140,7 @@ namespace VDS.RDF.Query.Expressions
         IEnumerable<ISparqlExpression> Arguments
         {
             get;
+            set;
         }
 
         /// <summary>

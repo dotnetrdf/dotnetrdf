@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     /// <summary>
     /// Represents the ARQ afn:now() function
     /// </summary>
-    public class NowFunction 
+    public class NowFunction
         : ISparqlExpression
     {
         private SparqlQuery _currQuery;
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         public IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 return Enumerable.Empty<string>();
             }
@@ -125,9 +125,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
-            get 
+            get
             {
-                return Enumerable.Empty<ISparqlExpression>(); 
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+            set
+            {
             }
         }
 

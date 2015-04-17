@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
         public SubQueryPattern(SparqlQuery subquery)
         {
             this._subquery = subquery;
-            
+
             //Get the Variables this query projects out
             foreach (SparqlVariable var in this._subquery.Variables)
             {

@@ -90,6 +90,9 @@ namespace VDS.RDF.Query.Expressions.Primary
             {
                 return Enumerable.Empty<ISparqlExpression>();
             }
+            set
+            {
+            }
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     /// <summary>
     /// Class representing the SPARQL CALL() function
     /// </summary>
-    public class CallFunction 
+    public class CallFunction
         : ISparqlExpression
     {
         private List<ISparqlExpression> _args = new List<ISparqlExpression>();
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// </summary>
         public IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 return (from e in this._args
                         from v in e.Variables
@@ -155,6 +155,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             get
             {
                 return this._args;
+            }
+            set
+            {
+                this._args = value.ToList();
             }
         }
 

@@ -249,6 +249,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     return new ISparqlExpression[] { this._end, this._start };
                 }
             }
+            set
+            {
+                this._expr = value.FirstOrDefault();
+                this._start = value.Skip(1).FirstOrDefault();
+                this._end = value.Skip(2).FirstOrDefault();
+            }
         }
 
         /// <summary>

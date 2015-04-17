@@ -217,6 +217,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return new ISparqlExpression[] { this._expr, this._arg };
             }
+            set {
+                this._expr = value.FirstOrDefault();
+                this._arg = value.LastOrDefault();
+            }
         }
 
         /// <summary>

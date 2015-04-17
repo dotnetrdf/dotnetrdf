@@ -102,6 +102,9 @@ namespace VDS.RDF.Query.Expressions
             {
                 return this._expr.AsEnumerable();
             }
+            set {
+                this._expr = value.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -194,6 +197,11 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
+            }
+            set {
+                IEnumerable<ISparqlExpression> args = value.Take(2); 
+                this._leftExpr = args.FirstOrDefault();
+                this._rightExpr = args.LastOrDefault();
             }
         }
 

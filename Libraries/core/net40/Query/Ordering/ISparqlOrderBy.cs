@@ -87,6 +87,7 @@ namespace VDS.RDF.Query.Ordering
         ISparqlExpression Expression
         {
             get;
+            set;
         }
 
         /// <summary>

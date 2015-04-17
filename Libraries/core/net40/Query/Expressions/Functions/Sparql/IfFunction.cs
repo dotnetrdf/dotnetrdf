@@ -133,6 +133,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 return new ISparqlExpression[] { this._condition, this._ifBranch, this._elseBranch };
             }
+            set {
+                IEnumerable<ISparqlExpression> args = value.Take(3); 
+                this._condition = args.FirstOrDefault(); 
+                this._ifBranch = args.Skip(1).FirstOrDefault();
+                this._elseBranch = args.LastOrDefault();
+            }
         }
 
         /// <summary>

@@ -284,6 +284,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     return new ISparqlExpression[] { this._expr, this._start };
                 }
             }
+            set
+            {
+                this._expr = value.FirstOrDefault();
+                this._start = value.Skip(1).FirstOrDefault();
+                this._length = value.Skip(2).FirstOrDefault();
+            }
         }
 
         /// <summary>

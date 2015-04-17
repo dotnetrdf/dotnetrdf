@@ -104,6 +104,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             {
                 return this._expr.AsEnumerable();
             }
+            set 
+            {
+                this._expr = value.First();
+            }
         }
 
         /// <summary>

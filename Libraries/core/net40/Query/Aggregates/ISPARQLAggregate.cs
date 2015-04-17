@@ -56,6 +56,7 @@ namespace VDS.RDF.Query.Aggregates
         ISparqlExpression Expression
         {
             get;
+            set;
         }
 
         /// <summary>

@@ -87,6 +87,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
             {
                 return Enumerable.Empty<ISparqlExpression>();
             }
+            set 
+            {
+            }
         }
 
         /// <summary>

@@ -302,6 +302,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return new ISparqlExpression[] { new GraphPatternTerm(this._pattern) };
             }
+            set {
+                this._pattern = ((GraphPatternTerm)value.FirstOrDefault()).Pattern;
+            }
         }
 
         /// <summary>

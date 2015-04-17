@@ -118,6 +118,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return this._exprs;
             }
+            set
+            {
+                this._exprs = value.ToList();
+            }
         }
 
         /// <summary>
