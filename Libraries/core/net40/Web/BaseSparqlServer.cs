@@ -118,7 +118,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessQueryRequest(HttpContext context)
         {
-            if (this._config.QueryProcessor == null)
+            if (!this._config.QueriesEnabled)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                 return;
@@ -434,7 +434,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessUpdateRequest(HttpContext context)
         {
-            if (this._config.UpdateProcessor == null)
+            if (!this._config.UpdatesEnabled)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                 return;
@@ -673,7 +673,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessProtocolRequest(HttpContext context)
         {
-            if (this._config.ProtocolProcessor == null)
+            if (!this._config.HttpProtocolEnabled)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
                 return;

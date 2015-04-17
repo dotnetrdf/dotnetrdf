@@ -64,6 +64,16 @@ namespace VDS.RDF.Web.Configuration.Server
 
         #region Query Variables and Properties
 
+        protected bool _queriesEnabled = false;
+
+        public bool QueriesEnabled
+        {
+            get
+            {
+                return _queriesEnabled;
+            }
+        }
+
         /// <summary>
         /// Default Graph Uri for queries
         /// </summary>
@@ -267,6 +277,16 @@ namespace VDS.RDF.Web.Configuration.Server
 
         #region Update Variables and Properties
 
+        protected bool _updatesEnabled = false;
+
+        public bool UpdatesEnabled
+        {
+            get
+            {
+                return _updatesEnabled;
+            }
+        }
+
         /// <summary>
         /// Whether Update Form should be shown
         /// </summary>
@@ -302,6 +322,16 @@ namespace VDS.RDF.Web.Configuration.Server
 
         #region Protocol Variables and Properties
 
+        protected bool _httpProtocolEnabled = false;
+
+        public bool HttpProtocolEnabled
+        {
+            get
+            {
+                return _httpProtocolEnabled;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -328,6 +358,7 @@ namespace VDS.RDF.Web.Configuration.Server
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
             if (procNode != null)
             {
+                _queriesEnabled = true;
                 Object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlQueryProcessor)
                 {
@@ -437,6 +468,7 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode != null)
             {
+                _updatesEnabled = true;
                 Object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlUpdateProcessor)
                 {
@@ -444,6 +476,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
                 else
                 {
+                    // Relocate this in the property Get implementation
                     throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:updateProcessor property which cannot be loaded as an object which implements the ISparqlUpdateProcessor interface");
                 }
             }
@@ -468,6 +501,7 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode != null)
             {
+                _httpProtocolEnabled = true;
                 Object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlHttpProtocolProcessor)
                 {
@@ -479,10 +513,10 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            if (this._queryProcessor == null && this._updateProcessor == null && this._protocolProcessor == null)
-            {
-                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
-            }
+            //if (!this.QueriesEnabled && !this.UpdatesEnabled && !this.HttpProtocolEnabled)
+            //{
+            //    throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
+            //}
 
             //Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
@@ -590,7 +624,7 @@ namespace VDS.RDF.Web.Configuration.Server
     /// <summary>
     /// Concrete implementation of a Handler Configuration for SPARQL Servers
     /// </summary>
-    public class SparqlServerConfiguration 
+    public class SparqlServerConfiguration
         : BaseSparqlServerConfiguration
     {
         /// <summary>
