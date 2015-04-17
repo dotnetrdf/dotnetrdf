@@ -362,6 +362,9 @@
     <Compile Include="Swp\Options.cs" />
     <Compile Include="Swp\SwpServer.cs" />
     <Compile Include="Swp\TemplateHelpers.cs" />
+    <Compile Include="Utility\FlaggedEnumExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utility\Resource.cs">
       <SubType>Code</SubType>
     </Compile>
