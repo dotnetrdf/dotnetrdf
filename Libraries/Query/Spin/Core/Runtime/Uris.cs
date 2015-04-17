@@ -6,17 +6,6 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Spin.Core.Runtime
 {
 
-    //public static class DCTerms
-    //{
-
-    //    public readonly static String NS_URI = "http://purl.org/dc/terms/";
-
-    //    public readonly static IUriNode PropertyCreated = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "created"));
-    //    public readonly static IUriNode PropertyModified = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "modified"));
-    //    public readonly static IUriNode PropertyIsRequiredBy = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "isRequiredBy"));
-
-    //}
-
     // TODO merge this with DOTNETRDF_TRANS
     public static class SpinRuntime
     {

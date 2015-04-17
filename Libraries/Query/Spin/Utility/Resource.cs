@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Spin.Utility
         public String UniqueIdentifier 
         {
             get {
-                return GetModel().BaseUri.ToString() + "#" + HttpUtility.UrlEncode(Uri.ToString());
+                return GetModel().GetHashCode().ToString() + "#" + HttpUtility.UrlEncode(Uri.ToString());
             }
         }
 
@@ -98,6 +98,7 @@ namespace VDS.RDF.Query.Spin.Utility
 
         // A constructor cache to optimize half of the reflection work
         private static Dictionary<Type, ConstructorInfo> constructors = new Dictionary<Type, ConstructorInfo>();
+
         public IResource As(Type cls)
         {
             ConstructorInfo constructor;

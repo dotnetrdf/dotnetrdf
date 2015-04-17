@@ -12,6 +12,7 @@ using VDS.RDF.Query.Spin.Utility;
 namespace VDS.RDF.Query.Spin.Model
 {
     // TODO take advantage of the new automated Uri/Class Mapping features to simplify resource instantiation methods
+
     /// <summary>
     /// A singleton class that is used to work with SPIN API resources, and to do corresponding tests
     /// </summary>

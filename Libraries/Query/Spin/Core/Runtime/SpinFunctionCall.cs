@@ -106,8 +106,7 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
             }
             protected set
             {
-                _resultVariable = RDFHelper.CreateTempVariableNode();
-                QueryTemplate.SetVariable(value, _resultVariable);
+                _resultVariable = RDFHelper.CreateVariableNode(value);
             }
         }
 
@@ -117,12 +116,12 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
         /// Gets the expanded Sparql patterns/subquery for the fuction
         /// </summary>
         /// <returns></returns>
-        public SubQueryPattern ToSparql()
+        public object ToSparql()
         {
             if (QueryTemplate == null) return null;
             foreach (KeyValuePair<String, INode> localVariable in QueryTemplate.Variables.Where(kv=>kv.Value==null).ToList()) {
                 int argIndex = ArgumentNames.IndexOf(localVariable.Key);
-                if (argIndex > 0)
+                if (argIndex >= 0)
                 {
                     BindArgument(argIndex, _arguments[argIndex]);
                 }
@@ -130,7 +129,17 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
                     QueryTemplate.SetVariable(localVariable.Key, RDFHelper.CreateTempVariableNode());
                 }
             }
-            return new SubQueryPattern(_parser.ParseFromString(QueryTemplate));
+            SparqlQuery query = _parser.ParseFromString(QueryTemplate).AsSubQuery();
+            ResultVariable = query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name).FirstOrDefault();
+            if (query.HasSolutionModifier)
+            {
+                // TODO add the arguments as outputVariables for correct join in case the subquery is to be kept
+                return new SubQueryPattern(query);
+            }
+            else { 
+                // We do not use a subquery by return the graph pattern
+                return query.RootGraphPattern;
+            }
         }
 
         private void BindArgument(int index, ISparqlExpression value)

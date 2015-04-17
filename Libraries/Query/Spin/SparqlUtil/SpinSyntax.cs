@@ -37,8 +37,8 @@ using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
-using VDS.RDF.Query.Spin.LibraryOntology;
-using VDS.RDF.Query.Spin.Util;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
@@ -130,18 +130,18 @@ namespace VDS.RDF.Query.Spin
 
                             if (v.IsAggregate)
                             {
-                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
+                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.DatatypeString.Uri));
                                 g.Assert(var, SP.PropertyExpression, v.Aggregate.ToSpinRdf(g, varTable));
                             }
                             else if (v.IsProjection)
                             {
-                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
+                                g.Assert(var, SP.PropertyAs, g.CreateLiteralNode(v.Name, XSD.DatatypeString.Uri));
                                 //TODO check for this
                                 //g.Assert(var, SP.expression, v.Projection.ToSpinRdf(query.RootGraphPattern, g, varTable));
                             }
                             else
                             {
-                                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(v.Name, XSD.string_.Uri));
+                                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(v.Name, XSD.DatatypeString.Uri));
                             }
                         }
                         g.Assert(vars, RDF.PropertyRest, RDF.Nil);
@@ -157,11 +157,11 @@ namespace VDS.RDF.Query.Spin
                 {
                     case SparqlQueryType.SelectAllDistinct:
                     case SparqlQueryType.SelectDistinct:
-                        g.Assert(root, SP.PropertyDistinct, RDFUtil.TRUE);
+                        g.Assert(root, SP.PropertyDistinct, RDFHelper.TRUE);
                         break;
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectReduced:
-                        g.Assert(root, SP.PropertyReduced, RDFUtil.TRUE);
+                        g.Assert(root, SP.PropertyReduced, RDFHelper.TRUE);
                         break;
                 }
             }
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(add.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(add.SourceUri));
                     }
                     if (add.DestinationUri == null)
                     {
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(add.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(add.DestinationUri));
                     }
                     break;
                 case SparqlUpdateCommandType.Clear:
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((ClearCommand)query).TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(((ClearCommand)query).TargetUri));
                     }
                     break;
                 case SparqlUpdateCommandType.Copy:
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(copy.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(copy.SourceUri));
                     }
                     if (copy.DestinationUri == null)
                     {
@@ -261,7 +261,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(copy.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(copy.DestinationUri));
                     }                
                     break;
                 case SparqlUpdateCommandType.Create:
@@ -273,7 +273,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(create.TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(create.TargetUri));
                     }
                     break;
                 case SparqlUpdateCommandType.Delete:
@@ -281,7 +281,7 @@ namespace VDS.RDF.Query.Spin
                     DeleteCommand delete = (DeleteCommand)query;
                     if (delete.GraphUri != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(delete.GraphUri));
+                        g.Assert(root, SP.PropertyWith, RDFHelper.CreateUriNode(delete.GraphUri));
                     }
                     // TODO handle the usings
                     g.Assert(root, SP.PropertyDeletePattern, delete.DeletePattern.ToSpinRdf(g, varTable));
@@ -300,16 +300,16 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(drop.TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(drop.TargetUri));
                     }
-                    g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((DropCommand)query).TargetUri));
+                    g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(((DropCommand)query).TargetUri));
                     break;
                 case SparqlUpdateCommandType.Insert:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     InsertCommand insert = (InsertCommand)query;
                     if (insert.GraphUri != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(insert.GraphUri));
+                        g.Assert(root, SP.PropertyWith, RDFHelper.CreateUriNode(insert.GraphUri));
                     }
                     g.Assert(root, SP.PropertyInsertPattern, insert.InsertPattern.ToSpinRdf(g, varTable));
                     g.Assert(root, SP.PropertyWhere, insert.WherePattern.ToSpinRdf(g, varTable));
@@ -327,7 +327,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(load.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(load.SourceUri));
                     }
                     if (load.TargetUri == null)
                     {
@@ -335,7 +335,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(load.TargetUri));
+                        g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(load.TargetUri));
                     }                
                     break;
                 case SparqlUpdateCommandType.Modify:
@@ -343,7 +343,7 @@ namespace VDS.RDF.Query.Spin
                     ModifyCommand modify = (ModifyCommand)query;
                     if (modify.GraphUri != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(modify.GraphUri));
+                        g.Assert(root, SP.PropertyWith, RDFHelper.CreateUriNode(modify.GraphUri));
                     }
                     if (modify.DeletePattern != null)
                     {
@@ -364,7 +364,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(move.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(move.SourceUri));
                     }
                     if (move.DestinationUri == null)
                     {
@@ -372,7 +372,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(move.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(move.DestinationUri));
                     }                
                     break;
                 case SparqlUpdateCommandType.Unknown:
@@ -528,7 +528,7 @@ namespace VDS.RDF.Query.Spin
                 g.Assert(p, RDF.PropertyType, SP.ClassLet);
                 INode var = g.CreateBlankNode();
                 g.Assert(p, SP.PropertyVariable, var);
-                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.string_.Uri));
+                g.Assert(var, SP.PropertyVarName, g.CreateLiteralNode(((LetPattern)pattern).VariableName, XSD.DatatypeString.Uri));
                 g.Assert(p, SP.PropertyExpression, ((LetPattern)pattern).AssignExpression.ToSpinRdf(g, varTable));
             }
             else if (pattern is BindPattern)
@@ -551,7 +551,7 @@ namespace VDS.RDF.Query.Spin
             {
                 //i = g.CreateUriNode(new Uri(SPIN.NS_URI + "_" + item.VariableName));
                 i = varTable[item.VariableName];
-                g.Assert(i, SP.PropertyVarName, g.CreateLiteralNode(item.VariableName, XSD.string_.Uri));
+                g.Assert(i, SP.PropertyVarName, g.CreateLiteralNode(item.VariableName, XSD.DatatypeString.Uri));
             }
             else if (item is BlankNodePattern)
             {

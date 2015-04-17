@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
 
         static SPIN() {
-            // Force initialization
+            // TODO Force initialization through the SPINImports class
             //GetModel();
         }
 

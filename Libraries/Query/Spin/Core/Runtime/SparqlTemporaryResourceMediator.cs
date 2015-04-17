@@ -10,33 +10,32 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query.Spin.Core.Runtime
 {
-    // TODO provide for better/safer/simpler event handling
+    #region Events handlers
+
     internal delegate void ReleasedEventHandler(Object sender);
 
-    // TODO refactor this into a marker interface with events only and maybe sparql command remplates to do the work.
-    // Each rewriter will be responsible on handling these events (even if it seems less performant?) :
-    //  => ExecutionStarted
-    //  => ExecutionInterrupted
-    //  => ExecutionEnded
-    //  => Disposed
+    #endregion
 
     /// <summary>
-    /// 
+    /// A base class for resources that require or emit temporary graphs in the underlying storage
     /// </summary>
     /// <remarks>
-    /// Under normal circumstances, this class should automatically release its temporary graphs at Dispose
-    /// It should also be responsible to update the transaction log so temproray graphs can be garbage-collected manually on process failures
-    /// => this implies updating the transaction log with meta informations like lastUpdates/lastRead...
+    /// Under normal circumstances, this class should notify listeners to release its temporary graphs on Dispose if not sooner
     /// </remarks>
     /// TODO allow to create a direct instance for potential garbage collection in case of crash recovery
-    ///     => make the class unabstract
-    /// TODO refactor this to provide better code isolation
     public abstract class SparqlTemporaryResourceMediator
         : IDisposable
     {
         internal event ReleasedEventHandler Released;
 
+        /// <summary>
+        /// The base namespace prefix for temporary resources and vocabulary
+        /// </summary>
         public const String BASE_URI = "tmp:dotnetrdf.org";
+
+        /// <summary>
+        /// The Uri prefix for temporary resources
+        /// </summary>
         public const String NS_URI = BASE_URI + ":";
 
         private readonly String _id = Guid.NewGuid().ToString().Replace("-", "");
