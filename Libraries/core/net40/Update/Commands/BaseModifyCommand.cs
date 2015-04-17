@@ -101,7 +101,7 @@ namespace VDS.RDF.Update.Commands
             {
                 return this._graphUri;
             }
-            internal set
+            set
             {
                 this._graphUri = value;
             }
