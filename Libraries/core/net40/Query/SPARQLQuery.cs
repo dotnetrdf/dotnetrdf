@@ -684,6 +684,9 @@ namespace VDS.RDF.Query
             {
                 return this._subquery;
             }
+            internal set {
+                this._subquery = value;
+            }
         }
 
         /// <summary>
@@ -747,7 +750,7 @@ namespace VDS.RDF.Query
         /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph</param>
         protected internal void AddVariable(String name, bool isResultVar)
         {
-            String var = name.Substring(1);
+            String var = name.StartsWith("?") ? name.Substring(1) : name;
             if ((int)this._type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
             if (!this._vars.Any(v => v.Name.Equals(var)))

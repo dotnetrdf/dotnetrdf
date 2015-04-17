@@ -16,6 +16,12 @@ namespace VDS.RDF.Query
     public static class SparqlAPIExtensions
     {
 
+        public static SparqlQuery AsSubQuery(this SparqlQuery original) {
+            SparqlQuery copy = original.Copy();
+            copy.IsSubQuery = true;
+            return copy;
+        }
+
         public static SparqlQuery CopyWithExplicitVariables(this SparqlQuery original)
         {
             SparqlQuery copy = original.Copy();
