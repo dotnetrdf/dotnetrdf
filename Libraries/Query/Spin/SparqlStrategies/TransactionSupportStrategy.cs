@@ -14,6 +14,7 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Query.Spin.Core.Transactions;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -62,6 +63,8 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     ///     => issuing the graphs to allow for any constraint checking at commit
     /// </summary>
     /// <remarks>
+    /// TODO provide Sparql1.1 ServiceDescription informations about this module.
+    /// 
     /// TODO relocate the events' sparql template sowhere for better maintenance
     /// TODO add a transaction isolation level property to the connection that is either SERIALIZABLE or READ_COMMITTED for the contraints check processing
     /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we do not have to create concurrentUpdates graphs if the graph has not been used
@@ -71,8 +74,17 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     /// </remarks>
     /// TODO later it may be cleaner to segment the split command metas bewteen the trnasaction log for command dependencies and a dedicated graph for graph dependencies
     public sealed class TransactionSupportStrategy
-        : BaseSparqlRewriteStrategy
+        : ISparqlHandlingStrategy
     {
+        private static readonly IUriNode RESOURCE = RDFHelper.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/spin/sparqlStrategies#FullTransactionSupport"));
+        //private static readonly IGraph SD_CONTRIBUTION = new Graph();
+
+        //static TransactionSupportStrategy()
+        //{
+        //    // TODO initialise the SD_CONTRIBUTION graph better;
+        //    SD_CONTRIBUTION.Assert(RESOURCE, RDF.PropertyType, SD.ClassFeature);
+        //}
+
 
         // TODO refactor templates using named parameters instead of indexed
         /// <summary>
@@ -106,27 +118,38 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         /// <remarks>{1}: graph Token (either Uri/Variable/NAMED/DEFAULT</remarks>
         public static String PENDING_REMOVALS_GRAPH_PREFIX_TEMPLATE = "tmp:dotnetrdf.org:{0}:pendingRemovalsFor#";
 
-        private static Dictionary<String, IGraph> _commandMetas = new Dictionary<string, IGraph>();
+        private static Dictionary<String, IGraph> _commandMetas = new Dictionary<String, IGraph>();
+
+        // Maintain a list of graph changed or updated per connection to optimize rewriting
+        // TODO checkproof the isolationRequirement management since it should be event driven and may occur during the rewriting process
+        private static Dictionary<String, HashSet<Uri>> _isolationRequirements = new Dictionary<String, HashSet<Uri>>();
+        private static Dictionary<String, HashSet<Uri>> _updatedGraphs = new Dictionary<String, HashSet<Uri>>();
 
         public TransactionSupportStrategy()
         {
         }
 
-        /// <summary>
-        /// Returns whether the strategy is required for the underlying storage
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns>The strategy is used for non transactional updateable storages</returns>
-        public override bool IsRequiredBy(Connection context)
+        #region ISparqlSDPlugin members
+
+        public INode Resource
         {
-#if DEBUG
-            return true;
-#else
-            return (context.UnderlyingStorage is IUpdateableStorage && !(context.UnderlyingStorage is ITransactionalStorage));
-#endif
+            get
+            {
+                return RESOURCE;
+            }
         }
 
-        internal override void Rewrite(SparqlCommandUnit command)
+        public IGraph SparqlSDContribution
+        {
+            get
+            {
+                return new Graph();
+            }
+        }
+
+        #endregion
+
+        public void Handle(SparqlCommandUnit command)
         {
             command.Context.ExecutionStarted -= this.SparqlCommand_ExecutionStarted;
             command.Context.ExecutionStarted += this.SparqlCommand_ExecutionStarted;
@@ -144,6 +167,42 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                 _commandMetas[objectRef] = objectMetas;
             }
             objectMetas.Assert(metas);
+        }
+
+        internal bool RequiresIsolationFor(SparqlCommandUnit command, IToken graphToken)
+        {
+            // TODO handle possible temp graphs references
+            switch (graphToken.TokenType)
+            {
+                case Token.DEFAULT:
+                    return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Intersect(command.DefaultGraphs).Any();
+                case Token.NAMED:
+                    return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Intersect(command.NamedGraphs).Any();
+                case Token.URI:
+                    return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Contains(UriFactory.Create(graphToken.Value));
+                case Token.VARIABLE:
+                    return false;
+                default:
+                    throw new ArgumentException("Invalid token type.");
+            }
+        }
+
+        internal bool RequiresUpdatesFor(SparqlCommandUnit command, IToken graphToken)
+        {
+            // TODO handle possible temp graphs references
+            switch (graphToken.TokenType)
+            {
+                case Token.DEFAULT:
+                    return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Intersect(command.DefaultGraphs).Any();
+                case Token.NAMED:
+                    return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Intersect(command.NamedGraphs).Any();
+                case Token.URI:
+                    return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Contains(UriFactory.Create(graphToken.Value));
+                case Token.VARIABLE:
+                    return false;
+                default:
+                    throw new ArgumentException("Invalid token type.");
+            }
         }
 
         #region Event handlers
@@ -252,6 +311,13 @@ DROP SILENT GRAPH @RdfNull;
         {
         }
 
+        /* Connection.Rolledback
+         * => nothing to to
+         */
+        internal void OnStorageGraphsChanged(Object sender, ConnectionEventArgs args)
+        {
+        }
+
         /* Connection.Disposed
          * => clear all connection's resources
          */
@@ -262,6 +328,15 @@ DROP SILENT GRAPH @RdfNull;
             connection.Rolledback -= this.OnConnectionRolledBack;
             connection.Released -= this.OnMediatorReleased;
             connection.Released -= this.DetachFromConnection;
+
+            if (_isolationRequirements.ContainsKey(connection.ID))
+            {
+                _isolationRequirements.Remove(connection.ID);
+            }
+            if (_updatedGraphs.ContainsKey(connection.ID))
+            {
+                _updatedGraphs.Remove(connection.ID);
+            }
         }
 
         /* SparqlCommand.ExecutionStarted
@@ -270,7 +345,9 @@ DROP SILENT GRAPH @RdfNull;
         internal void SparqlCommand_ExecutionStarted(Object sender, SparqlExecutableEventArgs args)
         {
             SparqlExecutable command = (SparqlExecutable)sender;
-            // TODO make this cleaner ?
+            // TODO centralize connection events bindings into another method
+            command.Connection.GraphsChanged -= this.OnStorageGraphsChanged;
+            command.Connection.GraphsChanged += this.OnStorageGraphsChanged;
             command.Connection.Committed -= this.OnConnectionCommitted;
             command.Connection.Committed += this.OnConnectionCommitted;
             command.Connection.Rolledback -= this.OnConnectionRolledBack;
@@ -398,7 +475,20 @@ DROP SILENT GRAPH @RdfNull;
                 // on full command completion, notify the associated connection that some graphs have changed
                 if (context is SparqlCommand)
                 {
-                    context.Connection.RaiseGraphsChanged(affectedGraphs);
+                    // References the graph as updated for the associated connection
+                    HashSet<Uri> updatedGraphs;
+                    if (!_updatedGraphs.ContainsKey(context.Connection.ID))
+                    {
+                        updatedGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
+                        _updatedGraphs[context.Connection.ID] = updatedGraphs;
+                    }
+                    else
+                    {
+                        updatedGraphs = _updatedGraphs[context.Connection.ID];
+                    }
+                    updatedGraphs.UnionWith(affectedGraphs);
+                    // Then make the connection notify its listeners
+                    context.Connection.RaiseGraphsUpdated(affectedGraphs);
                 }
             }
         }
@@ -508,8 +598,8 @@ DROP SILENT GRAPH @RdfNull;
             private static IToken DEFAULT_GRAPH = new FromKeywordToken(0, 0);
             private static IToken NAMED_GRAPH = new FromNamedKeywordToken(0, 0);
 
-            private TransactionSupportStrategy _transactionalEventsListener;
-            private readonly bool _requiresIsolation;
+            private TransactionSupportStrategy _monitor;
+            private readonly bool _simulateIsolation;
             private SparqlCommandUnit _command;
 
             private IToken _activeGraph;
@@ -524,10 +614,10 @@ DROP SILENT GRAPH @RdfNull;
             private Stack<HashSet<IToken>> _namedGraphVarTokens = new Stack<HashSet<IToken>>();
             private Stack<HashSet<IToken>> _compilationGraphVarTokens = new Stack<HashSet<IToken>>();
 
-            internal CommandRewriter(TransactionSupportStrategy transactionalEventsListener, bool requiresIsolation = true)
+            internal CommandRewriter(TransactionSupportStrategy transactionalEventsListener, bool simulateIsolation = true)
             {
-                _transactionalEventsListener = transactionalEventsListener;
-                _requiresIsolation = requiresIsolation;
+                _monitor = transactionalEventsListener;
+                _simulateIsolation = simulateIsolation;
 
                 _namedGraphs.Add(TransactionLog.TRANSACTION_LOG_URI);
                 _defaultGraphVarTokens.Push(new HashSet<IToken>());
@@ -634,7 +724,7 @@ DROP SILENT GRAPH @RdfNull;
             /// TODO handle the DESCRIBE case (that one will be tricky :( )
             private SparqlQuery RewriteQuery(SparqlQuery query)
             {
-                SparqlQuery rewrittenQuery = query.CopyWithExplicitVariables();
+                SparqlQuery rewrittenQuery = query.Copy();
                 GraphPattern rewrittenPattern = RewriteReadGraphPattern(rewrittenQuery.RootGraphPattern);
                 GraphPattern commandPattern = AddGraphBindings(new HashSet<GraphPattern>() { rewrittenPattern });
                 commandPattern.AddGraphPattern(rewrittenPattern);
@@ -747,7 +837,7 @@ DROP SILENT GRAPH @RdfNull;
                     }
                     foreach (ITriplePattern pattern in gp.TriplePatterns.ToList())
                     {
-                        HandleITriplePattern(_command, output, gp, pattern);
+                        HandleITriplePattern(output, gp, pattern);
                     }
                 }
                 else
@@ -758,25 +848,21 @@ DROP SILENT GRAPH @RdfNull;
                 foreach (GraphPattern cgp in gp.ChildGraphPatterns)
                 {
                     GraphPattern rCgp = RewriteReadGraphPattern(cgp);
-                    if (!rCgp.HasModifier)
-                    {
-                        output.TriplePatterns.AddRange(rCgp.TriplePatterns);
-                        output.ChildGraphPatterns.AddRange(rCgp.ChildGraphPatterns);
-                        ((List<IAssignmentPattern>)output.UnplacedAssignments).AddRange(rCgp.UnplacedAssignments);
-                        ((List<ISparqlFilter>)output.UnplacedFilters).AddRange(rCgp.UnplacedFilters);
-                    }
-                    else
-                    {
-                        output.AddGraphPattern(rCgp);
-                    }
+                    output.AddGraphPattern(rCgp);
                 }
-                foreach (BindPattern bp in gp.UnplacedAssignments)
+                // Since we replace triplePatterns with GraphPatterns, we need to push UnplacedXX in a separate GraphPattern to preserve their original order
+                if (gp.UnplacedAssignments.Any() || gp.UnplacedFilters.Any())
                 {
-                    output.AddAssignment(bp);
-                }
-                foreach (ISparqlFilter fp in gp.UnplacedFilters)
-                {
-                    output.AddFilter(fp);
+                    GraphPattern ensurePatternBreak = new GraphPattern();
+                    foreach (BindPattern bp in gp.UnplacedAssignments)
+                    {
+                        ensurePatternBreak.AddAssignment(bp);
+                    }
+                    foreach (ISparqlFilter fp in gp.UnplacedFilters)
+                    {
+                        ensurePatternBreak.AddFilter(fp);
+                    }
+                    output.AddGraphPattern(ensurePatternBreak);
                 }
                 return output;
             }
@@ -803,7 +889,7 @@ DROP SILENT GRAPH @RdfNull;
                 { // Handles insert and delete triplepatterns
                     _activeGraph = template.ActiveGraph;
                     // TODO check whether we can use variables that map to the default graph
-                    if (IsDefaultGraph(_activeGraph)) throw new NotSupportedException("Cannot currently update a default graph.");
+                    if (IsDefaultGraph(_activeGraph)) throw new NotSupportedException("Cannot currently update the default graph.");
 
                     IToken outputGraphToken, assertionsGraphToken, removalsGraphToken;
                     switch (_activeGraph.TokenType)
@@ -839,7 +925,7 @@ DROP SILENT GRAPH @RdfNull;
                 }
             }
 
-            private void HandleITriplePattern(SparqlCommandUnit _command, GraphPattern output, GraphPattern source, ITriplePattern pattern)
+            private void HandleITriplePattern(GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
 
                 switch (pattern.PatternType)
@@ -868,7 +954,7 @@ DROP SILENT GRAPH @RdfNull;
                         break;
 
                     case TriplePatternType.PropertyFunction:
-                        HandlePropertyFunctionPattern(_command, output, source, (PropertyFunctionPattern)pattern);
+                        HandlePropertyFunctionPattern(output, source, (PropertyFunctionPattern)pattern);
                         break;
 
                     default:
@@ -879,21 +965,12 @@ DROP SILENT GRAPH @RdfNull;
 
             private void RewriteTriplePattern(GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
-                bool isWriting = true;
                 IToken activeGraph = source.ActiveGraph;
                 // Check wether the pattern use the default graph
                 if (activeGraph == null)
                 {
                     activeGraph = CreateLocalToken();
                     _defaultGraphVarTokens.Peek().Add(activeGraph);
-                }
-
-                // TODO later optimisation, try to determine if the current connection requires isolation or has pending updated for the active graph
-                if (IsDefaultGraph(activeGraph))
-                {
-                }
-                else
-                {
                 }
 
                 // Variables for the rewritten pattern
@@ -926,7 +1003,9 @@ DROP SILENT GRAPH @RdfNull;
                 String additionalGraphUri;
                 GraphPattern trimmedGraph = bgp.Clone();
 
-                if (_requiresIsolation)
+                bool requiresIsolation = _simulateIsolation; // DO NOT include this until concurrency is fully operational: && _monitor.RequiresIsolationFor(_command, activeGraph);
+                bool isWriting = _monitor.RequiresUpdatesFor(_command, activeGraph);
+                if (requiresIsolation)
                 {
                     additionalGraphUri = String.Format(TransactionSupportStrategy.CONCURRENT_ASSERTIONS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Connection.ID });//_command.Connection.Uri.ToString() + ":concurrentAdditionsFor#";
                     concurrentAssertionsGraph = GetGraphAssignement(activeGraph, "concurrentA", additionalGraphUri);
@@ -941,12 +1020,12 @@ DROP SILENT GRAPH @RdfNull;
                     pendingRemovalsGraph = GetGraphAssignement(activeGraph, "pendingR", additionalGraphUri);
                 }
 
-                if (_requiresIsolation) trimmedGraph.AddGraphPattern(GetBoundGraphFilteredPattern(bgp, concurrentAssertionsGraph).WithinMinus());
+                if (requiresIsolation) trimmedGraph.AddGraphPattern(GetBoundGraphFilteredPattern(bgp, concurrentAssertionsGraph).WithinMinus());
                 if (pendingRemovalsGraph != null) trimmedGraph.AddGraphPattern(GetBoundGraphFilteredPattern(bgp, pendingRemovalsGraph).WithinMinus());
                 trimmedGraph = trimmedGraph.WithinGraph(activeGraph);
                 unions.Add(trimmedGraph);
 
-                if (_requiresIsolation)
+                if (requiresIsolation)
                 {
                     GraphPattern trimmedConcurrentRemovals = bgp.Clone();
                     if (pendingRemovalsGraph != null) trimmedConcurrentRemovals.AddGraphPattern(GetBoundGraphFilteredPattern(bgp, pendingRemovalsGraph).WithinMinus());
@@ -1045,7 +1124,7 @@ DROP SILENT GRAPH @RdfNull;
             }
 
             // We do nothing here, we will add a DistributedEvaluationRewriteStrategy class later
-            private void HandlePropertyFunctionPattern(SparqlCommandUnit _command, GraphPattern output, GraphPattern source, PropertyFunctionPattern pattern)
+            private void HandlePropertyFunctionPattern(GraphPattern output, GraphPattern source, PropertyFunctionPattern pattern)
             {
                 RewriteTriplePattern(output, source, pattern);
             }
@@ -1219,7 +1298,7 @@ DROP SILENT GRAPH @RdfNull;
                         }
                     }
                     IEnumerable<Uri> additionalGraphs = ComputeGraphBindings(sourceGraphVar, sourceGraphUris, new List<BindPattern>() { bp });
-                    // TODO refactor this
+                    // TODO refactor this to handle it directly in the cases
                     if (additionalGraph.Contains("pending"))
                     {
                         IEnumerable<Triple> pendingUpdateGraphs = additionalGraphs
@@ -1229,7 +1308,7 @@ DROP SILENT GRAPH @RdfNull;
                                 new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
                                 new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("pendingA") ? DOTNETRDF_TRANS.ClassPendingAssertionsGraph: DOTNETRDF_TRANS.ClassPendingRemovalsGraph)
                             });
-                        _transactionalEventsListener.AddMetas(_command.Context.ID, pendingUpdateGraphs);
+                        _monitor.AddMetas(_command.Context.ID, pendingUpdateGraphs);
                     }
                     else if (additionalGraph.Contains("concurrent"))
                     {
@@ -1240,7 +1319,7 @@ DROP SILENT GRAPH @RdfNull;
                                 new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
                                 new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("concurrentA") ? DOTNETRDF_TRANS.ClassPendingAssertionsGraph: DOTNETRDF_TRANS.ClassPendingRemovalsGraph)
                             });
-                        _transactionalEventsListener.AddMetas(_command.Connection.ID, concurrentUpdateGraphs);
+                        _monitor.AddMetas(_command.Connection.ID, concurrentUpdateGraphs);
                     }
                     else
                     {
@@ -1250,7 +1329,7 @@ DROP SILENT GRAPH @RdfNull;
                                 new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Uri)),
                                 new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, DOTNETRDF_TRANS.ClassTemporaryGraph)
                             });
-                        _transactionalEventsListener.AddMetas(_command.ID, temporaryGraphs);
+                        _monitor.AddMetas(_command.ID, temporaryGraphs);
                     }
                     _namedGraphs.UnionWith(additionalGraphs);
                     root.AddAssignment(bp);
@@ -1273,7 +1352,7 @@ DROP SILENT GRAPH @RdfNull;
                     .Union(
                         _command.NamedGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), DOTNETRDF_TRANS.PropertyHasNamedGraph, RDFHelper.CreateUriNode(graphUri)))
                     ).ToList();
-                _transactionalEventsListener.AddMetas(_command.ID, commandMetas);
+                _monitor.AddMetas(_command.ID, commandMetas);
 
                 if (_command.CommandType.HasFlag(SparqlExecutableType.SparqlInternal)) return;
 
