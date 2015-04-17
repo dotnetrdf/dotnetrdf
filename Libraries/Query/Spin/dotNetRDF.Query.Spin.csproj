@@ -87,11 +87,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyDiscovery\MetadataAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Connection.cs" />
     <Compile Include="Core\Aggregations.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AssemblyDiscovery\MetadataAttributes.cs" />
     <Compile Include="Core\Runtime\Factories\SpinFactory.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -122,7 +124,6 @@
     <Compile Include="Core\SpinModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Caching\ResourceCache.cs" />
     <Compile Include="Core\Model\SPINLabels.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -285,8 +286,6 @@
     <Compile Include="Core\Model\IPrintable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Security\IGraphAccessManager.cs" />
-    <Compile Include="Access\SpinAccessViolation.cs" />
     <Compile Include="SparqlStrategies\ISparqlHandlingStrategy.cs" />
     <Compile Include="SparqlStrategies\SpinSupportStrategy.cs" />
     <Compile Include="SparqlStrategies\TransactionSupportStrategy.cs" />
@@ -363,7 +362,6 @@
     <Compile Include="Swp\Options.cs" />
     <Compile Include="Swp\SwpServer.cs" />
     <Compile Include="Swp\TemplateHelpers.cs" />
-    <Compile Include="Utility\FlaggedEnumExtensions.cs" />
     <Compile Include="Utility\Resource.cs">
       <SubType>Code</SubType>
     </Compile>
