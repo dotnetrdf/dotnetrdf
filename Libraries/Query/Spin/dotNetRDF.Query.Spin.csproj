@@ -65,6 +65,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -91,24 +92,33 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AssemblyDiscovery\MetadataAttributes.cs" />
-    <Compile Include="Core\SparqlFeaturesProvider.cs">
+    <Compile Include="Core\Runtime\Factories\SpinFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Constraints\ConstraintExtensions.cs" />
-    <Compile Include="Core\Constraints\ConstraintViolation.cs" />
-    <Compile Include="Core\Constraints\ObjectPropertyPath.cs" />
-    <Compile Include="Core\Constraints\SimplePropertyPath.cs" />
-    <Compile Include="Core\Constraints\SubjectPropertyPath.cs" />
-    <Compile Include="Core\Constructors\ConstructorExtensions.cs" />
-    <Compile Include="Core\ISpinContext.cs">
+    <Compile Include="Core\Runtime\Registries\InMemoryGraphsRegistry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Runtime\SparqlTemporaryResourceMediator.cs" />
+    <Compile Include="Core\Runtime\Registries\SPINImports.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runtime\SpinFunctionCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runtime\SpinMagicPropertyCall.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\Runtime\Uris.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OntologyHelpers\SPINx.cs" />
+    <Compile Include="SparqlUtil\ISparqlSDPlugin.cs" />
+    <Compile Include="SparqlUtil\SpinSyntax.cs" />
+    <Compile Include="ConfigurationObjectFactory.cs" />
+    <Compile Include="SpinStorageProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Runtime\SparqlTemporaryResourceMediator.cs" />
     <Compile Include="Core\SparqlCommandClasses.cs" />
-    <Compile Include="Core\SparqlRewriteStrategyChain.cs" />
     <Compile Include="Core\SpinModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,14 +126,7 @@
     <Compile Include="Core\Model\SPINLabels.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Runtime\Factories\SpinFactory.cs" />
-    <Compile Include="Core\Runtime\SpinMagicPropertyCall.cs" />
     <Compile Include="Core\Transactions\TransactionLog.cs" />
-    <Compile Include="Core\Runtime\Registries\InMemoryGraphsRegistry.cs" />
-    <Compile Include="Core\Runtime\SpinFunctionCall.cs" />
-    <Compile Include="Core\SpinPropertyFunctionFactory.cs" />
-    <Compile Include="Core\Runtime\Registries\SPINImports.cs" />
-    <Compile Include="Core\Inference\InferenceExtensions.cs" />
     <Compile Include="OntologyHelpers\SD.cs" />
     <Compile Include="Core\Model\ISPINFactory.cs" />
     <Compile Include="Core\Model\IAbstractAttribute.cs">
@@ -284,7 +287,7 @@
     </Compile>
     <Compile Include="Core\Security\IGraphAccessManager.cs" />
     <Compile Include="Access\SpinAccessViolation.cs" />
-    <Compile Include="SparqlStrategies\BaseSparqlStrategy.cs" />
+    <Compile Include="SparqlStrategies\ISparqlHandlingStrategy.cs" />
     <Compile Include="SparqlStrategies\SpinSupportStrategy.cs" />
     <Compile Include="SparqlStrategies\TransactionSupportStrategy.cs" />
     <Compile Include="SparqlTemplates.Designer.cs">
@@ -369,6 +372,10 @@
     <Compile Include="OntologyHelpers\RDFUris.cs" />
     <Compile Include="Utility\RDFHelper.cs" />
     <Compile Include="Utility\UriHelper.cs" />
+    <Compile Include="Web\Configuration\SparqlEndpointConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\SparqlEndpointServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="spin-sparql-syntax.ttl" />
@@ -403,8 +410,6 @@
   <ItemGroup>
     <Folder Include="Core\Compilation\" />
     <Folder Include="Core\Context\" />
-    <Folder Include="Core\Writing\" />
-    <Folder Include="SparqlUtil\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SparqlTemplates.resx">
