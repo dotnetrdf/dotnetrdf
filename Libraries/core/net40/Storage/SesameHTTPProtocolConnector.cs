@@ -1160,7 +1160,6 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request.KeepAlive = true;
 
             //Add Credentials if needed
             if (this._hasCredentials)
