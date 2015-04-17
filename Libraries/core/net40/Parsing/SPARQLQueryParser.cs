@@ -3382,6 +3382,7 @@ namespace VDS.RDF.Parsing
                     throw ParserHelper.Error("A BIND assignment is attempting to bind to the variable ?" + bind.VariableName + " but this variable is already in use earlier in the Graph pattern", next);
                 }
 
+                context.Query.AddVariable(next.Value);
                 if (Options.QueryOptimisation)
                 {
                     p.AddAssignment(bind);
