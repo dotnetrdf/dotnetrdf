@@ -93,6 +93,7 @@ namespace VDS.RDF.Storage
         {
             get;
         }
+
     }
 
     /// <summary>
@@ -113,6 +114,14 @@ namespace VDS.RDF.Storage
         /// </para>
         /// </remarks>
         IStorageServer ParentServer
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Get a SPARQL 1.1 ServiceDescription graph from the Store
+        /// </summary>
+        IGraph ServiceDescription
         {
             get;
         }

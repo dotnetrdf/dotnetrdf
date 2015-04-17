@@ -351,7 +351,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    
+
                     StreamReader data = new StreamReader(response.GetResponseStream());
                     String ctype = response.ContentType;
                     try
@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
-                    
+
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
@@ -686,7 +686,7 @@ namespace VDS.RDF.Storage
                 }
 
                 HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
-                
+
                 Tools.HttpDebugRequest(request);
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
@@ -1160,6 +1160,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
+            request.KeepAlive = true;
 
             //Add Credentials if needed
             if (this._hasCredentials)

@@ -337,6 +337,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets a SPARQL 1.1 ServiceDescription graph from the Storage
+        /// </summary>
+        public override IGraph ServiceDescription
+        {
+            get
+            {
+                throw new NotSupportedException("SPARQL 1.1 ServiceDescription is not supported");
+            }
+        }
+
+        /// <summary>
         /// Gets the Source File this manager represents a read-only view of
         /// </summary>
         [Description("The Source File from which the dataset originates")]

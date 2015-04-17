@@ -137,6 +137,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets a SPARQL 1.1 ServiceDescription graph from the Storage
+        /// </summary>
+        public virtual IGraph ServiceDescription
+        {
+            get
+            {
+                throw new NotSupportedException("SPARQL 1.1 ServiceDescription is not supported");
+            }
+        }
+
+        /// <summary>
         /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response
         /// </summary>
         /// <remarks>
