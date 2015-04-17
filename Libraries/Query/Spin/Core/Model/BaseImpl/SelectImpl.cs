@@ -95,10 +95,7 @@ namespace VDS.RDF.Query.Spin.Model
                         ((IPrintable)var).Print(p);
                         p.print(")");
                     }
-                    if (vit.MoveNext())
-                    {
-                        p.print(" ");
-                    }
+                    p.print(" ");
                 }
             }
             printStringFrom(p);

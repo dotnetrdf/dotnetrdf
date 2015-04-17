@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Query.Spin.Core.Transactions;
+using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -94,6 +96,8 @@ namespace VDS.RDF.Query.Spin.Core
     /// The SparqlCommand class acts as a wrapper for ACID execution of several sparql query/update commands.
     /// </summary>
     /// <remarks>
+    /// TODO try to postopone rewriting just before execution so we can profit better from dynamic commands events
+    /// TODO try to handle eventual parameters passing through a special function that would be evaluated for the query just prior to execution
     /// TODO define how to handle temporary resources and execution errors/failures cases
     ///         NOTE: similar temporary resources may occur during a full transaction or a full command
     ///             for optimisation, it may be advisable to create a class to handle such cases to alleviate execution units pre/post processing
@@ -105,8 +109,6 @@ namespace VDS.RDF.Query.Spin.Core
         : SparqlExecutable
     {
         private Connection _connection;
-        private SparqlFeaturesProvider _processor;
-        private SparqlRewriteStrategyChain _rewriteStrategy = null;
 
         private String _commandText;
         private object _command;
@@ -155,8 +157,6 @@ namespace VDS.RDF.Query.Spin.Core
             {
                 _isReady = false;
                 _connection = value;
-                _processor = SparqlFeaturesProvider.Get(value);
-                _rewriteStrategy = _processor.GetRewriteStrategyFor(this);
                 Prepare();
             }
         }
@@ -329,15 +329,15 @@ namespace VDS.RDF.Query.Spin.Core
 
         internal SparqlCommandUnit CreateUnit(SparqlQuery query, SparqlExecutableType flags = SparqlExecutableType.SparqlQuery)
         {
-            SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, query, flags);
-            _rewriteStrategy.Rewrite(updateWrapper);
-            return updateWrapper;
+            SparqlCommandUnit queryWrapper = new SparqlCommandUnit(this, query, flags);
+            _connection.StorageProvider.Handle(queryWrapper);
+            return queryWrapper;
         }
 
         internal SparqlCommandUnit CreateUnit(SparqlUpdateCommand update, SparqlExecutableType flags = SparqlExecutableType.SparqlUpdate)
         {
             SparqlCommandUnit updateWrapper = new SparqlCommandUnit(this, update, flags);
-            _rewriteStrategy.Rewrite(updateWrapper);
+            _connection.StorageProvider.Handle(updateWrapper);
             return updateWrapper;
         }
 
@@ -359,7 +359,7 @@ namespace VDS.RDF.Query.Spin.Core
     /// => we could also do this the other way around to allow for simpler support of Update commands that required those function computations
     ///     thus we also provide a serviceend point here for local computation and wrap the property function call into a SERVICE GraphPattern
     ///     => these function must cannot use blank nodes parameters
-    internal class SparqlCommandUnit
+    public class SparqlCommandUnit
         : SparqlExecutable
     {
 
@@ -379,8 +379,11 @@ namespace VDS.RDF.Query.Spin.Core
         internal SparqlCommandUnit(SparqlCommand context, SparqlQuery query, SparqlExecutableType mode)
             : this(context)
         {
-            CommandType = mode.WithoutFlag(SparqlExecutableType.SparqlUpdate);
-            _query = query;
+            CommandType = mode.RemoveFlag(SparqlExecutableType.SparqlUpdate);
+            _query = query.CopyWithExplicitVariables();
+            _query.PropertyFunctionFactories = new List<IPropertyFunctionFactory>() { SpinModel.Get(Connection) };
+            _query.Optimise();
+
             _defaultGraphs.UnionWith(query.DefaultGraphs);
             _namedGraphs.UnionWith(query.NamedGraphs);
         }
@@ -388,7 +391,7 @@ namespace VDS.RDF.Query.Spin.Core
         internal SparqlCommandUnit(SparqlCommand context, SparqlUpdateCommand update, SparqlExecutableType mode)
             : this(context)
         {
-            CommandType = mode.WithFlag(SparqlExecutableType.SparqlUpdate);
+            CommandType = mode.SetFlag(SparqlExecutableType.SparqlUpdate);
             _updateCommand = update;
             if (update is BaseModificationCommand)
             {
@@ -462,15 +465,24 @@ namespace VDS.RDF.Query.Spin.Core
 
         internal void Execute(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
         {
+            // Handle any parameter from the current connection
+            SparqlParameterizedString parameterizedCommand = new SparqlParameterizedString(
+                (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate)) ? UpdateCommand.ToString() : Query.ToString()
+                );
+            foreach (String param in ((Dictionary<String, INode>)parameterizedCommand.Parameters).Keys)
+            {
+                parameterizedCommand.SetParameter(param, Connection[param]);
+            }
+            // Do the command execution
             RaiseExecutionStarted(new SparqlExecutableEventArgs());
             try
             {
-                // Relocate this into a ExecutionStarted event handler
+                // Relocate this into a separated thread ?
                 TransactionLog.Ping(Connection);
 
                 if (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
                 {
-                    ((IUpdateableStorage)Connection.UnderlyingStorage).Update(UpdateCommand.ToString());
+                    ((IUpdateableStorage)Connection.UnderlyingStorage).Update(parameterizedCommand.ToString());
                 }
                 else
                 {
@@ -478,7 +490,7 @@ namespace VDS.RDF.Query.Spin.Core
                     //  => problems : 1/ determine the service Uri from a IQueryableStorage object
                     //                2/ ensure that multiple service calls will handle blank nodes correctly
                     // TODO find a way to decouple the client's handlers and any internal required handler
-                    Connection.UnderlyingStorage.Query(rdfHandler, resultsHandler, Query.ToString());
+                    Connection.UnderlyingStorage.Query(rdfHandler, resultsHandler, parameterizedCommand.ToString());
                 }
                 RaiseExecutionSucceeded(new SparqlExecutableEventArgs());
             }
