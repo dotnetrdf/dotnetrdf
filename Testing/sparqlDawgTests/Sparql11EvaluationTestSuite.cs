@@ -1290,8 +1290,9 @@ namespace dotNetRDFTest
                     if (c != 0) break;
 
                     //If variable names are same then compare values
-                    INode xValue = x[xVars[i]];
-                    INode yValue = y[xVars[i]];
+                    INode xValue, yValue;
+                    x.TryGetValue(xVars[i], out xValue);
+                    x.TryGetValue(yVars[i], out yValue);
                     c = this._nodeComparer.Compare(xValue, yValue);
                     if (c != 0) break;
                 }
