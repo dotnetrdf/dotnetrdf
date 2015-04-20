@@ -167,8 +167,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 lock (this._sets)
                 {
-                    this._counter++;
-                    id = this._counter;
+                    //this._counter++;
+                    id = this._counter++;
                     this._sets.Add(id, s);
                     s.ID = id;
                 }
@@ -183,8 +183,8 @@ namespace VDS.RDF.Query.Algebra
             else
             {
 #endif
-                this._counter++;
-                id = this._counter;
+                //this._counter++;
+                id = this._counter++;
                 this._sets.Add(id, s);
                 s.ID = id;
 

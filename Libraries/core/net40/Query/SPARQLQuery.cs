@@ -1248,7 +1248,7 @@ namespace VDS.RDF.Query
             //If we have a top level VALUES clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
-                algebra = Join.CreateJoin(algebra, new Bindings(this._bindings));
+                algebra = Join.CreateJoin(new Bindings(this._bindings), algebra);
             }
 
             //Then we apply any optimisers followed by relevant solution modifiers
