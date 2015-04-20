@@ -60,10 +60,12 @@ namespace VDS.RDF.Query.Spin
             SpinModel.Register(this, (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode), spinImports);
         }
 
-        public Connection GetConnection() { 
-            IQueryableStorage storage = (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode);
-            
-            return new Connection(this, storage);
+        public Connection GetConnection() {
+            IStorageProvider storage = (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode);
+            if (!(storage is IUpdateableStorage)) {
+                throw new DotNetRdfConfigurationException("A SpinStorageProvider underlying storage must support SPARQL 1.1 Updates.");
+            }
+            return new Connection(this, (IUpdateableStorage)storage);
         }
 
 

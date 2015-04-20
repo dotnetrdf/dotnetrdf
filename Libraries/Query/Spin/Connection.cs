@@ -114,10 +114,8 @@ namespace VDS.RDF.Query.Spin
         private Dictionary<string, INode> _parameters = new Dictionary<string, INode>();
 
         /// <summary>
+        /// A client connection to a SPIN-capable wrapped storage
         /// </summary>
-        /// <remarks>
-        /// To simplify handling and configuration, the constructor is made internal so connections can only be obtained through a BaseSpinStorageServer.GetStore call
-        /// </remarks>
         /// <param name="server"></param>
         /// <param name="storage"></param>
         internal Connection(SpinStorageProvider server, IQueryableStorage storage)
@@ -125,9 +123,8 @@ namespace VDS.RDF.Query.Spin
         {
             _sparqlHandler = server;
             _storage = storage;
-            // TODO can we directly get/build a SpinModel here to configure the Sparql parsers ?
             SpinModel model = SpinModel.Get(this);
-            _queryParser.ExpressionFactories = new List<ISparqlCustomExpressionFactory>() {model};
+            _queryParser.ExpressionFactories = new List<ISparqlCustomExpressionFactory>() { model };
             _updateParser.ExpressionFactories = new List<ISparqlCustomExpressionFactory>() { model };
         }
 
