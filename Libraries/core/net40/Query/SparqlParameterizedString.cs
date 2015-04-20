@@ -26,13 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using System.Text;
 
 namespace VDS.RDF.Query
 {
@@ -84,13 +84,13 @@ namespace VDS.RDF.Query
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
 
-        private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
 
-        private static Regex BaseNamespacePattern = new Regex("BASE\\s*<([^>]+)>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex NamespacePrefixPattern = new Regex("PREFIX\\s+([\\w\\-_]+):\\s*<([^>]+)>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex ParamCapturePattern = new Regex("((?<!@)@)([\\w\\-_]+)(?=[^\\w]|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex VarCapturePattern = new Regex("([?$])([\\w\\-_]+)(?=[^\\w]|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex BaseNamespacePattern = new Regex("BASE\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex NamespacePrefixPattern = new Regex("PREFIX\\s+([\\w\\-_]+):\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex ParamCapturePattern = new Regex("((?<!@)@)([\\w\\-_]+)(?=[^\\w]|$)", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex VarCapturePattern = new Regex("([?$])([\\w\\-_]+)(?=[^\\w]|$)", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Creates a new empty parameterized String
