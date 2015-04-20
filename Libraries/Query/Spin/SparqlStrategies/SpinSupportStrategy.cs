@@ -308,15 +308,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                 GraphPattern rewritenPattern = pattern.Clone(true);
                 foreach (GraphPattern o in rewrittenPatterns.Where(o => o is GraphPattern).ToList())
                 {
-                    if (o.HasModifier)
-                    {
-                        rewritenPattern.AddGraphPattern((GraphPattern)o);
-                    }
-                    else {
-                        rewritenPattern.TriplePatterns.AddRange(o.TriplePatterns);
-                        ((List<IAssignmentPattern>)rewritenPattern.UnplacedAssignments).AddRange(o.UnplacedAssignments);
-                        ((List<ISparqlFilter>)rewritenPattern.UnplacedFilters).AddRange(o.UnplacedFilters);
-                    }
+                    rewritenPattern.AddGraphPattern((GraphPattern)o);
                 }
                 foreach (object o in rewrittenPatterns.Where(o => !(o is GraphPattern)))
                 {
@@ -329,7 +321,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         // appends the filter to the pattern
                         rewritenPattern.AddFilter((ISparqlFilter)o);
                     }
-                    }
+                }
                 return new List<object>() { rewritenPattern };
             }
 
