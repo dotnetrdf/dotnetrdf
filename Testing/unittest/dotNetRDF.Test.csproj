@@ -201,6 +201,9 @@
     <Compile Include="Query\SparqlReplaceTest.cs" />
     <Compile Include="Query\SparqlTests.cs" />
     <Compile Include="Query\SparqlTests2.cs" />
+    <Compile Include="Query\Spin\BaseTransactionSupportTests.cs" />
+    <Compile Include="Query\Spin\InMemory\TransactionSupportTests.cs" />
+    <Compile Include="Query\Spin\Sesame\TransactionSupportTests.cs" />
     <Compile Include="Query\StrictOptimiserTest.cs" />
     <Compile Include="Query\VariableSubstitutionTests.cs" />
     <Compile Include="Query\ViewTests.cs" />
@@ -239,6 +242,10 @@
     <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
       <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
       <Name>dotNetRDF.Query.FullText</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Query\Spin\dotNetRDF.Query.Spin.csproj">
+      <Project>{61a9bccd-75a5-4292-ba42-e971214419a3}</Project>
+      <Name>dotNetRDF.Query.Spin</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -3405,6 +3412,7 @@
     <None Include="resources\core-441\star-path.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="resources\spin.ttl" />
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -4693,6 +4701,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Query\Spin\Web\" />
     <Folder Include="resources\nquads\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
