@@ -270,6 +270,11 @@ USING NAMED @transactionLog
 WHERE {
     BIND (now() as ?commitTime)
     GRAPH @transactionLog {
+        OPTIONAL {
+            ?concurrentTrans @startedAt ?startDate .
+            FILTER (!sameTerm(?concurrentTrans, @transUri))
+            FILTER NOT EXISTS { ?concurrentTrans @committedAt ?anyDate . }
+        }
         OPTIONAL 
         {
             ?pendingA @requiredBy @transUri .
@@ -284,12 +289,7 @@ WHERE {
             ?pendingR @affectsGraph ?g .
             GRAPH ?pendingR { ?pendingR_S  ?pendingR_P  ?pendingR_O . }
         }
-        OPTIONAL {
-            ?concurrentTrans @startedAt ?startDate .
-            FILTER (!sameTerm(?concurrentTrans, @transUri))
-            FILTER NOT EXISTS { ?concurrentTrans @committedAt ?anyDate . }
-        }
-    }    
+   }    
     BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentAssertionsFor#', STR(?g))), @RdfNull) as ?concurrentA)
     BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentRemovalsFor#', STR(?g))), @RdfNull) as ?concurrentR)
 };
@@ -515,7 +515,12 @@ SELECT DISTINCT ?tempGraph
 FROM @transactionLog 
 WHERE {
     ?tempGraph @requiredBy @consumerUri .
-    FILTER (!sameTerm(?tempGraph, @RdfNull))
+    # to clear any reference to temp graphs
+    # the graph must not be referenced by another consumer
+    FILTER (NOT EXISTS {
+        ?tempGraph @requiredBy ?concurrentConsumer .
+        FILTER (!sameTerm(@consumerUri, ?concurrentConsumer))
+    })
 }");
             command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
@@ -524,53 +529,30 @@ WHERE {
             command.SetParameter("RdfNull", RDFHelper.RdfNull);
 
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
-            StringBuilder usingNamedSB = new StringBuilder();
+            StringBuilder dropGraphsSB = new StringBuilder();
+            StringBuilder releasableResourceFilter = new StringBuilder();
+            releasableResourceFilter.AppendLine("@consumerUri");
             foreach (Uri graphUri in metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri))
             {
-                usingNamedSB.AppendLine("USING NAMED <" + graphUri.ToString() + ">");
+                releasableResourceFilter.AppendLine(", <" + graphUri.ToString() + ">");
+                dropGraphsSB.AppendLine("DROP SILENT GRAPH <" + graphUri.ToString() + ">;");
             }
             command.CommandText = @"
 DELETE {
     GRAPH @transactionLog {
-        @consumerUri ?p ?o .
-        ?tempGraph @requiredBy @consumerUri .
-        ?tempGraph ?tmpGraphP ?tmpGraphO .
-    }
-    GRAPH ?tempTarget {
-        ?tmpGraphTS ?tmpGraphTP ?tmpGraphTO .
+        ?garbagedResource ?p ?o .
     }
 }
 USING NAMED @transactionLog 
-" + usingNamedSB.ToString() + @"
 WHERE {
     GRAPH @transactionLog {
-        # To clear all consumer properties
-        @consumerUri ?p ?o .
-        # To remove graph dependency
-        OPTIONAL {
-            ?tempGraph @requiredBy @consumerUri .
-            # to clear any reference to the temp graph
-            OPTIONAL {
-                # the graph must not be referenced by another consumer
-                FILTER (NOT EXISTS {
-                    ?tempGraph @requiredBy ?concurrentConsumer .
-                    FILTER (!sameTerm(@consumerUri, ?concurrentConsumer))
-                })
-                # to clear the temp graph properties
-                ?tempGraph ?tmpGraphP ?tmpGraphO 
-                # to clear any temp graph contents
-                OPTIONAL {
-                    GRAPH ?tempGraph {
-                        ?tmpGraphTS ?tmpGraphTP ?tmpGraphTO .
-                    } 
-                }
-            }
-        }
+        ?garbagedResource ?p ?o .
+        FILTER (?garbagedResource IN(" + releasableResourceFilter.ToString() + @"))
     }
-    BIND (COALESCE(?tempGraph, @RdfNull) as ?tempTarget)
 };
 
-DROP SILENT GRAPH @RdfNull;
+" + dropGraphsSB.ToString() + @"
+#DROP SILENT GRAPH @RdfNull;
 ";
 
             storage.Update(command.ToString());
