@@ -29,23 +29,27 @@ namespace VDS.RDF.Query.Spin.Core.Transactions
             IUpdateableStorage storage = (IUpdateableStorage)connection.UnderlyingStorage;
             SparqlParameterizedString pingCommand = new SparqlParameterizedString(@"
 WITH @transactionLog
+INSERT {
+    ?s @startedAtUri ?startdDate .
+}
+WHERE {
+    FILTER NOT EXISTS { ?s @startedAtUri ?anyStartDate . }
+    BIND (NOW() as ?startdDate)
+};
+
+WITH @transactionLog
 DELETE {
     ?s @lastAccessUri ?lastAccessDate .
 }
 INSERT {
     ?s @lastAccessUri ?now .
-    ?s @startedAtUri ?startdDate .
 }
 WHERE {
     BIND (NOW() as ?now)
     OPTIONAL {
         ?s @lastAccessUri ?lastAccessDate .
     }
-    OPTIONAL {
-        FILTER NOT EXISTS { ?s @startedAtUri ?startDate . }
-        BIND (?now as ?startdDate)
-    }
-}
+};
 ");
             pingCommand.SetParameter("transactionLog", RDFHelper.CreateUriNode(TRANSACTION_LOG_URI));
             pingCommand.SetParameter("lastAccessUri", DOTNETRDF_TRANS.PropertyLastAccess);
