@@ -1,36 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Paths;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Utility
 {
     public static class RDFHelper
     {
-
         public static String NON_CONFLICT_PREFIX = Guid.NewGuid().ToString().Substring(0, 4) + "_";
         private static long _tempVariablesCount = 0;
-
 
         private readonly static FastNodeComparer _nodeComparer = new FastNodeComparer();
         internal readonly static UriComparer uriComparer = new UriComparer();
         internal readonly static IEqualityComparer<Triple> tripleEqualityComparer = new TripleEqualityComparer();
         internal readonly static NodeFactory nodeFactory = new NodeFactory();
 
-        public static readonly IUriNode RdfNull = nodeFactory.CreateUriNode(UriFactory.Create("tmp:dotnetrdf.org:NULL"));
-
         #region Aliasing utility
 
-        public static String NewVarName(String baseName = "") {
+        public static String NewVarName(String baseName = "")
+        {
             return NON_CONFLICT_PREFIX + baseName + (_tempVariablesCount++).ToString();
         }
 
-#endregion
+        #endregion Aliasing utility
 
         #region UriComparison shortcuts
 
@@ -62,7 +57,7 @@ namespace VDS.RDF.Query.Spin.Utility
             return _nodeComparer.Equals(node1, node2);
         }
 
-        #endregion
+        #endregion UriComparison shortcuts
 
         #region NodeFactory shortcuts
 
@@ -70,43 +65,45 @@ namespace VDS.RDF.Query.Spin.Utility
         internal static List<HashSet<Uri>> GetPropertyPathItems(ISparqlPath path)
         {
             List<HashSet<Uri>> predicates = new List<HashSet<Uri>>() { new HashSet<Uri>(uriComparer), new HashSet<Uri>(uriComparer) };
-             if (path is AlternativePath)
-             {
-                 AlternativePath altPath = (AlternativePath)path;
-                 List<HashSet<Uri>> results = GetPropertyPathItems(altPath.LhsPath);
-                 predicates[0].UnionWith(results[0]);
-                 predicates[1].UnionWith(results[1]);
-                 results = GetPropertyPathItems(altPath.RhsPath);
-                 predicates[0].UnionWith(results[0]);
-                 predicates[1].UnionWith(results[1]);
-             }
-             else if (path is NegatedSet) {
-                 NegatedSet negSet = (NegatedSet)path;
-                 predicates[1].UnionWith(negSet.Properties.Select(ppty => ((IUriNode)ppty.Predicate).Uri).Union(negSet.InverseProperties.Select(ppty => ((IUriNode)ppty.Predicate).Uri)));
-             }
-             else if (path is SequencePath) {
-                 SequencePath stepPath = (SequencePath)path;
-                 List<HashSet<Uri>> results = GetPropertyPathItems(stepPath.LhsPath);
-                 predicates[0].UnionWith(results[0]);
-                 predicates[1].UnionWith(results[1]);
-                 results = GetPropertyPathItems(stepPath.RhsPath);
-                 predicates[0].UnionWith(results[0]);
-                 predicates[1].UnionWith(results[1]);
-             }
-             else if (path is Property)
-             {
-                 Property singlePath = (Property)path;
-                 predicates[0].Add(((IUriNode)singlePath.Predicate).Uri);
-             }
-             else if (path is BaseUnaryPath)
-             {
-                 BaseUnaryPath unaryPath = (BaseUnaryPath)path;
-                 List<HashSet<Uri>> results = GetPropertyPathItems(unaryPath.Path);
-                 predicates[0].UnionWith(results[0]);
-                 predicates[1].UnionWith(results[1]);
-             }
-             return predicates;
-         }
+            if (path is AlternativePath)
+            {
+                AlternativePath altPath = (AlternativePath)path;
+                List<HashSet<Uri>> results = GetPropertyPathItems(altPath.LhsPath);
+                predicates[0].UnionWith(results[0]);
+                predicates[1].UnionWith(results[1]);
+                results = GetPropertyPathItems(altPath.RhsPath);
+                predicates[0].UnionWith(results[0]);
+                predicates[1].UnionWith(results[1]);
+            }
+            else if (path is NegatedSet)
+            {
+                NegatedSet negSet = (NegatedSet)path;
+                predicates[1].UnionWith(negSet.Properties.Select(ppty => ((IUriNode)ppty.Predicate).Uri).Union(negSet.InverseProperties.Select(ppty => ((IUriNode)ppty.Predicate).Uri)));
+            }
+            else if (path is SequencePath)
+            {
+                SequencePath stepPath = (SequencePath)path;
+                List<HashSet<Uri>> results = GetPropertyPathItems(stepPath.LhsPath);
+                predicates[0].UnionWith(results[0]);
+                predicates[1].UnionWith(results[1]);
+                results = GetPropertyPathItems(stepPath.RhsPath);
+                predicates[0].UnionWith(results[0]);
+                predicates[1].UnionWith(results[1]);
+            }
+            else if (path is Property)
+            {
+                Property singlePath = (Property)path;
+                predicates[0].Add(((IUriNode)singlePath.Predicate).Uri);
+            }
+            else if (path is BaseUnaryPath)
+            {
+                BaseUnaryPath unaryPath = (BaseUnaryPath)path;
+                List<HashSet<Uri>> results = GetPropertyPathItems(unaryPath.Path);
+                predicates[0].UnionWith(results[0]);
+                predicates[1].UnionWith(results[1]);
+            }
+            return predicates;
+        }
 
         public static INode GetNode(PatternItem item)
         {
@@ -120,7 +117,7 @@ namespace VDS.RDF.Query.Spin.Utility
             }
             else if (item is BlankNodePattern)
             {
-                return CreateVariableNode("_bNodeVar_"+ item.VariableName.Replace("_:", ""));
+                return CreateVariableNode("_bNodeVar_" + item.VariableName.Replace("_:", ""));
             }
             return null;
         }
@@ -135,7 +132,7 @@ namespace VDS.RDF.Query.Spin.Utility
             return nodeFactory.CreateVariableNode(name);
         }
 
-        public static IVariableNode CreateTempVariableNode(String name ="")
+        public static IVariableNode CreateTempVariableNode(String name = "")
         {
             return nodeFactory.CreateVariableNode(NewVarName(name));
         }
@@ -173,6 +170,7 @@ namespace VDS.RDF.Query.Spin.Utility
         internal static HashSet<Uri> otherDatatypeURIs = new HashSet<Uri>(uriComparer);
 
         private static bool _isFullyInitialized = false;
+
         private static void Initialize()
         {
             if (_isFullyInitialized) return;
@@ -229,11 +227,11 @@ namespace VDS.RDF.Query.Spin.Utility
             return CreateLiteralNode("" + value, XSD.DatatypeInteger.Uri);
         }
 
-
         /**
          * Gets a List of all datatype URIs.
          * @return a List the datatype URIs
          */
+
         internal static List<Uri> GetDatatypeURIs()
         {
             Initialize();
@@ -244,18 +242,17 @@ namespace VDS.RDF.Query.Spin.Utility
             return list;
         }
 
-
         /**
          * Checks if a given URI is a numeric datatype URI.
          * @param datatypeURI  the URI of the datatype to test
          * @return true if so
          */
+
         internal static bool IsNumeric(Uri datatypeURI)
         {
             Initialize();
             return numericDatatypeURIs.Contains(datatypeURI);
         }
-
 
         /**
          * Checks if a given INode represents a system XSD datatype such as xsd:int.
@@ -263,6 +260,7 @@ namespace VDS.RDF.Query.Spin.Utility
          * @param node  the node to test
          * @return true if node is a datatype
          */
+
         internal static bool IsSystemDatatype(INode node)
         {
             Initialize();
@@ -276,9 +274,10 @@ namespace VDS.RDF.Query.Spin.Utility
             }
         }
 
-        #endregion
+        #endregion NodeFactory shortcuts
 
         // TODO complete Literal helper functions
+
         #region Literal nodes utility
 
         public static int? AsInteger(object value, int? defaultValue = null)
@@ -305,8 +304,9 @@ namespace VDS.RDF.Query.Spin.Utility
             return ((IValuedNode)value).AsString();
         }
 
-        public static bool? AsBoolean(object value, bool? defaultValue=null) {
-            if (value==null) return defaultValue;
+        public static bool? AsBoolean(object value, bool? defaultValue = null)
+        {
+            if (value == null) return defaultValue;
             if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
             if (!(value is IValuedNode)) return defaultValue;
             return ((IValuedNode)value).AsBoolean();
@@ -320,6 +320,6 @@ namespace VDS.RDF.Query.Spin.Utility
             return ((IValuedNode)value).AsFloat();
         }
 
-        #endregion 
+        #endregion Literal nodes utility
     }
 }

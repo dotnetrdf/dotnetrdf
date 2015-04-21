@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
     public class DescribeImpl : QueryImpl, IDescribeResource
     {
-
         public DescribeImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
@@ -31,7 +28,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return results;
         }
-
 
         override public void printSPINRDF(ISparqlPrinter context)
         {
@@ -77,6 +73,5 @@ namespace VDS.RDF.Query.Spin.Model
         {
             // TODO Auto-generated method stub
         }
-
     }
 }

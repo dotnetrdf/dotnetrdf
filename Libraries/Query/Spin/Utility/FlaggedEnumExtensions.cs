@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Query.Spin.Utility
 {
     /// <summary>
-    /// Extension that provide simple flag matching for Enums 
+    /// Extension that provide simple flag matching for Enums
     /// </summary>
     public static class FlagEnumExtensions
     {
-
         /// <summary>
         /// Returns wether the value match the given flags
         /// </summary>
@@ -75,6 +71,5 @@ namespace VDS.RDF.Query.Spin.Utility
                         ), ex);
             }
         }
-
     }
 }

@@ -1,19 +1,15 @@
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
     public class ConstructImpl : QueryImpl, IConstructResource
     {
-
         public ConstructImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public List<ITripleTemplateResource> getTemplates()
         {

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.Model.IO;
 using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Spin.Core.Runtime
 {

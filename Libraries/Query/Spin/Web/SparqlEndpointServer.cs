@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Web;
 using VDS.RDF.Configuration;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Web.Configuration;
 using VDS.RDF.Web;
 using VDS.RDF.Web.Configuration;
@@ -11,7 +9,6 @@ using VDS.RDF.Web.Configuration.Server;
 
 namespace VDS.RDF.Query.Spin.Web
 {
-
     /// <summary>
     /// A direct SparqlEndpoint implementation that wraps the SPIN framework around a RDF storage
     /// </summary>
@@ -25,7 +22,6 @@ namespace VDS.RDF.Query.Spin.Web
     public class SparqlEndpointServer
         : VDS.RDF.Web.BaseSparqlServer
     {
-
         private String _cachePath;
 
         // TODO define the policy for connection management
@@ -125,7 +121,5 @@ namespace VDS.RDF.Query.Spin.Web
             _connection.Open();
             _connection.Update(cmds);
         }
-
     }
-
 }

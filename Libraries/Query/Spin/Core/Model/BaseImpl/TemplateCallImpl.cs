@@ -1,24 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class TemplateCallImpl : ModuleCallImpl, ITemplateCallResource
     {
-
         public TemplateCallImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
 
         public Dictionary<IArgumentResource, IResource> getArgumentsMap()
@@ -44,7 +39,6 @@ namespace VDS.RDF.Query.Spin.Model
             return map;
         }
 
-
         public Dictionary<IResource, IResource> getArgumentsMapByProperties()
         {
             Dictionary<IResource, IResource> map = new Dictionary<IResource, IResource>();
@@ -67,7 +61,6 @@ namespace VDS.RDF.Query.Spin.Model
 
             return map;
         }
-
 
         public Dictionary<String, IResource> getArgumentsMapByVarNames()
         {
@@ -92,8 +85,9 @@ namespace VDS.RDF.Query.Spin.Model
             return map;
         }
 
+        /*override*/
 
-        /*override*/ public Dictionary<String, IResource> getInitialBinding()
+        public Dictionary<String, IResource> getInitialBinding()
         {
             Dictionary<String, IResource> map = new Dictionary<String, IResource>();
             Dictionary<String, IResource> input = getArgumentsMapByVarNames();
@@ -105,16 +99,14 @@ namespace VDS.RDF.Query.Spin.Model
             return map;
         }
 
-
         override public IModuleResource getModule()
         {
             return getTemplate();
         }
 
-
         public String getQueryString()
         {
-            // TODO 
+            // TODO
             //Dictionary<String, IResource> map = getArgumentsMapByVarNames();
             //StringSparqlPrinter p = new StringSparqlPrinter(new StringBuilder(), map);
             //ITemplate template = getTemplate();
@@ -123,7 +115,6 @@ namespace VDS.RDF.Query.Spin.Model
             //return p.getString();
             return String.Empty;
         }
-
 
         public ITemplateResource getTemplate()
         {
@@ -138,11 +129,9 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         override public void Print(ISparqlPrinter p)
         {
             // TODO Auto-generated method stub
-
         }
 
         public SparqlQuery createQueryExecution(IEnumerable<Uri> dataset)

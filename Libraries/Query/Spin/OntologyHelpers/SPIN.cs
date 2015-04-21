@@ -1,31 +1,29 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.OntologyHelpers
 {
-
     /**
      * Vocabulary of the SPIN Modeling Vocabulary.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public class SPIN
     {
-
         public const String BASE_URI = "http://spinrdf.org/spin";
 
         public const String NS_URI = BASE_URI + "#";
 
         public const String PREFIX = "spin";
 
-
         public const String THIS_VAR_NAME = "this";
-
 
         public readonly static IUriNode ClassAskTemplate = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "AskTemplate"));
 
@@ -64,7 +62,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
         public readonly static IUriNode ClassTemplates = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Templates"));
 
         public readonly static IUriNode ClassUpdateTemplate = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "UpdateTemplate"));
-
 
         public readonly static IUriNode PropertyAbstract = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "abstract"));
 
@@ -112,7 +109,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
         public readonly static IUriNode PropertyViolationSource = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "violationSource"));
 
-
         public readonly static IUriNode Property_arg1 = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "_arg1"));
 
         public readonly static IUriNode Property_arg2 = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "_arg2"));
@@ -125,17 +121,19 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
         public readonly static IUriNode Property_this = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "_this"));
 
-
-        static SPIN() {
+        static SPIN()
+        {
             // TODO Force initialization through the SPINImports class
             //GetModel();
         }
 
-
         private static Graph model;
+
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static Graph GetModel() {
-            if(model == null) {
+        public static Graph GetModel()
+        {
+            if (model == null)
+            {
                 model = new Graph();
                 model.BaseUri = UriFactory.Create(BASE_URI);
                 model.LoadFromUri(UriFactory.Create(BASE_URI), new VDS.RDF.Parsing.RdfXmlParser());

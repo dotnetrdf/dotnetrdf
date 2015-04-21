@@ -1,61 +1,60 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using VDS.RDF;
-using VDS.RDF.Query;
+
 namespace VDS.RDF.Query.Spin.Model
 {
-
     /**
      * A template call.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public interface ITemplateCallResource : IModuleCallResource
     {
-
         /**
          * Creates a QueryExecution that can be used to execute the associated query
          * with the correct variable bindings.
          * @param dataset  the Dataset to operate on
          * @return the QueryExecution
          */
-        SparqlQuery createQueryExecution(IEnumerable<Uri> dataset);
 
+        SparqlQuery createQueryExecution(IEnumerable<Uri> dataset);
 
         /**
          * Gets a Map from ArgumentDescriptors to RDFNodes.
          * @return a Map from ArgumentDescriptors to RDFNodes
          */
-        Dictionary<IArgumentResource, IResource> getArgumentsMap();
 
+        Dictionary<IArgumentResource, IResource> getArgumentsMap();
 
         /**
          * Gets a Map from Properties to RDFNodes derived from the
          * ArgumentDescriptors.
          * @return a Map from Properties to RDFNodes
          */
-        Dictionary<IResource, IResource> getArgumentsMapByProperties();
 
+        Dictionary<IResource, IResource> getArgumentsMapByProperties();
 
         /**
          * Gets a Map from variable names to RDFNodes derived from the
          * ArgumentDescriptors.
          * @return a Map from variable names to RDFNodes
          */
-        Dictionary<String, IResource> getArgumentsMapByVarNames();
 
+        Dictionary<String, IResource> getArgumentsMapByVarNames();
 
         /**
          * Gets the name-value pairs of the template call's arguments as a Jena-friendly
          * initial binding object.
          * @return the initial binding
          */
-        Dictionary<String, IResource> getInitialBinding();
 
+        Dictionary<String, IResource> getInitialBinding();
 
         /**
          * Gets this template call as a parsable SPARQL string, with all
@@ -67,13 +66,14 @@ namespace VDS.RDF.Query.Spin.Model
          *              initial bindings mapping, then feed the QueryExecution with
          *              that initial binding for execution.
          */
-        String getQueryString();
 
+        String getQueryString();
 
         /**
          * Gets the associated Template, from the SPINModules registry.
          * @return the template
          */
+
         ITemplateResource getTemplate();
     }
 }

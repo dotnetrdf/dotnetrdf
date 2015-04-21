@@ -1,24 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.Model;
 using System.Web;
+using VDS.RDF.Query.Spin.Utility;
 
-namespace VDS.RDF.Query.Spin.Utility
+namespace VDS.RDF.Query.Spin.Model
 {
     /// <summary>
     /// A utility class that wraps dotNetRDF Nodes with the same interface as the Jena Resource classes
     /// </summary>
     public class SpinResource : IResource, IComparable<IResource>, IEquatable<IResource>
     {
-
         #region "Basic resource wrapper implementation "
 
         private INode _sourceNode;
@@ -59,9 +57,10 @@ namespace VDS.RDF.Query.Spin.Utility
             return _sourceNode is ILiteralNode;
         }
 
-        public String UniqueIdentifier 
+        public String UniqueIdentifier
         {
-            get {
+            get
+            {
                 return GetModel().GetHashCode().ToString() + "#" + HttpUtility.UrlEncode(Uri.ToString());
             }
         }
@@ -74,7 +73,8 @@ namespace VDS.RDF.Query.Spin.Utility
                 {
                     return ((IUriNode)_sourceNode).Uri;
                 }
-                else if (IsBlank()) {
+                else if (IsBlank())
+                {
                     return UriFactory.Create("_:" + ((IBlankNode)_sourceNode).InternalID);
                 }
                 return null;
@@ -190,6 +190,7 @@ namespace VDS.RDF.Query.Spin.Utility
         }
 
         /* To simplify subsequent code and calls, we consider chaining cases where property is null */
+
         public Triple GetProperty(INode property)
         {
             if (property != null)
@@ -252,7 +253,6 @@ namespace VDS.RDF.Query.Spin.Utility
             return RDFHelper.AsString(GetLiteral(property));
         }
 
-
         public IResource InferRDFNode(INode property)
         {
             IResource existing = GetObject(property);
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query.Spin.Utility
             }
         }
 
-        #endregion
+        #endregion "Basic resource wrapper implementation "
 
         #region "INode implementation "
 
@@ -407,6 +407,6 @@ namespace VDS.RDF.Query.Spin.Utility
             _sourceNode.WriteXml(writer);
         }
 
-        #endregion
+        #endregion "INode implementation "
     }
 }

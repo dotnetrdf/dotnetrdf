@@ -20,40 +20,6 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin.SparqlStrategies
 {
-    #region Transaction support vocabulary
-
-    // TODO relocate this into the Runtime namespace
-    public static class DOTNETRDF_TRANS
-    {
-
-        public const String BASE_URI = "tmp:dotnetrdf.org:transactions";
-        public const String NS_URI = BASE_URI + "#";
-        public const String RES_URI = BASE_URI + ":";
-        public const String PREFIX = "trans";
-
-        public readonly static Uri NoGraph = RDFHelper.RdfNull.Uri;
-
-        public readonly static IUriNode ClassTransaction = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Transaction"));
-        public readonly static IUriNode ClassConcurrentAssertionsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "ConcurrentAssertionsGraph")); // use this as a class ?
-        public readonly static IUriNode ClassConcurrentRemovalsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "ConcurrentRemovalsGraph"));
-        public readonly static IUriNode ClassPendingAssertionsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "PendingAssertionsGraph"));
-        public readonly static IUriNode ClassPendingRemovalsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "PendingRemovalsGraph"));
-        public readonly static IUriNode ClassTemporaryGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "TemporaryGraph"));
-
-        public readonly static IUriNode PropertyAffectsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "affectsGraph"));
-        public readonly static IUriNode PropertyCommittedAt = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "committedAt"));
-        public readonly static IUriNode PropertyHasDefaultGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasDefaultGraph"));
-        public readonly static IUriNode PropertyHasNamedGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasNamedGraph"));
-        public readonly static IUriNode PropertyHasScope = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasScope"));
-        public readonly static IUriNode PropertyLastAccess = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "lastAccess"));
-        public readonly static IUriNode PropertyMonitors = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "monitors"));
-        public readonly static IUriNode PropertyRequiredBy = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "requiredBy"));
-        public readonly static IUriNode PropertyStartedAt = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "startedAt"));
-
-    }
-
-    #endregion
-
     /// <summary>
     /// This rewrite Strategy is responsible for :
     ///     => handling commands ACIDity
@@ -62,19 +28,39 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     /// </summary>
     /// <remarks>
     /// TODO provide Sparql1.1 ServiceDescription informations about this module.
-    /// 
-    /// TODO relocate the events' sparql template sowhere for better maintenance
+    ///
     /// TODO add a transaction isolation level property to the connection that is either SERIALIZABLE or READ_COMMITTED for the contraints check processing
     /// TODO alleviate the transaction commit by reference graphs that are read by a concurrent connection so we do not have to create concurrentUpdates graphs if the graph has not been used
-    ///     => for a future optimized process, the strategy would also reference triple patterns read for each graph
-    /// TODO make the rewritter used even for transactional storage so we can rewrite the inserts into temporary graphs for possible constraint checking
-    /// TODO checkproof the event attach/detach cycle depending on whether the object is reusable or not
+    ///     => for a future optimized process, the strategy could also reference triple patterns read for each graph
     /// </remarks>
     /// TODO later it may be cleaner to segment the split command metas bewteen the trnasaction log for command dependencies and a dedicated graph for graph dependencies
     public sealed class TransactionSupportStrategy
         : ISparqlHandlingStrategy
     {
+        #region Transaction-related Uris
+
+        public const String BASE_URI = RuntimeHelper.BASE_URI + ":transactions";
+        public const String NS_URI = BASE_URI + "#";
+
+        // TODO define a better Uri
         private static readonly IUriNode RESOURCE = RDFHelper.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/spin/sparqlStrategies#FullTransactionSupport"));
+
+        public readonly static IUriNode ClassTransaction = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Transaction"));
+        public readonly static IUriNode ClassConcurrentAssertionsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "ConcurrentAssertionsGraph")); // use this as a class ?
+        public readonly static IUriNode ClassConcurrentRemovalsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "ConcurrentRemovalsGraph"));
+        public readonly static IUriNode ClassPendingAssertionsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "PendingAssertionsGraph"));
+        public readonly static IUriNode ClassPendingRemovalsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "PendingRemovalsGraph"));
+
+        public readonly static IUriNode PropertyAffectsGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "affectsGraph"));
+        public readonly static IUriNode PropertyCommittedAt = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "committedAt"));
+        public readonly static IUriNode PropertyHasDefaultGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasDefaultGraph"));
+        public readonly static IUriNode PropertyHasNamedGraph = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasNamedGraph"));
+
+        //UNUSED public readonly static IUriNode PropertyHasScope = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "hasScope"));
+        public readonly static IUriNode PropertyMonitors = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "monitors"));
+
+        #endregion Transaction-related Uris
+
         //private static readonly IGraph SD_CONTRIBUTION = new Graph();
 
         //static TransactionSupportStrategy()
@@ -83,34 +69,37 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         //    SD_CONTRIBUTION.Assert(RESOURCE, RDF.PropertyType, SD.ClassFeature);
         //}
 
-
         // TODO refactor templates using named parameters instead of indexed
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <remarks>{0}: command ID</remarks>
         /// <remarks>{1}: predicate mapped ID</remarks>
         public static String COMPILATION_GRAPH_PREFIX_TEMPLATE = "tmp:dotnetrdf.org:{0}:compiledPattern:{1}#";
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <remarks>{0}: connection ID</remarks>
         /// <remarks>{1}: graph Token (either Uri/Variable/NAMED/DEFAULT</remarks>
         public static String CONCURRENT_ASSERTIONS_GRAPH_PREFIX_TEMPLATE = "tmp:dotnetrdf.org:{0}:concurrentAssertionsFor#";
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <remarks>{0}: connection ID</remarks>
         /// <remarks>{1}: graph Token (either Uri/Variable/NAMED/DEFAULT</remarks>
         public static String CONCURRENT_REMOVALS_GRAPH_PREFIX_TEMPLATE = "tmp:dotnetrdf.org:{0}:concurrentRemovalsFor#";
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <remarks>{0}: connection ID or Command ID</remarks>
         /// <remarks>{1}: graph Token (either Uri/Variable/NAMED/DEFAULT</remarks>
         public static String PENDING_ASSERTIONS_GRAPH_PREFIX_TEMPLATE = "tmp:dotnetrdf.org:{0}:pendingAdditionsFor#";
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <remarks>{0}: connection ID or Command ID</remarks>
         /// <remarks>{1}: graph Token (either Uri/Variable/NAMED/DEFAULT</remarks>
@@ -121,6 +110,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         // Maintain a list of graph changed or updated per connection to optimize rewriting
         // TODO checkproof the isolationRequirement management since it should be event driven and may occur during the rewriting process
         private static Dictionary<String, HashSet<Uri>> _isolationRequirements = new Dictionary<String, HashSet<Uri>>();
+
         private static Dictionary<String, HashSet<Uri>> _updatedGraphs = new Dictionary<String, HashSet<Uri>>();
 
         public TransactionSupportStrategy()
@@ -145,7 +135,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             }
         }
 
-        #endregion
+        #endregion ISparqlSDPlugin members
 
         public void Handle(SparqlCommandUnit command)
         {
@@ -167,24 +157,30 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             objectMetas.Assert(metas);
         }
 
-        internal bool RequiresIsolationFor(SparqlCommandUnit command, IToken graphToken)
+        // yet unused, provisioned for possible optimisation
+        private bool RequiresIsolationFor(SparqlCommandUnit command, IToken graphToken)
         {
             // TODO handle possible temp graphs references
             switch (graphToken.TokenType)
             {
                 case Token.DEFAULT:
                     return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Intersect(command.DefaultGraphs).Any();
+
                 case Token.NAMED:
                     return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Intersect(command.NamedGraphs).Any();
+
                 case Token.URI:
                     return _isolationRequirements.ContainsKey(command.Connection.ID) && _isolationRequirements[command.Connection.ID].Contains(UriFactory.Create(graphToken.Value));
+
                 case Token.VARIABLE:
                     return false;
+
                 default:
                     throw new ArgumentException("Invalid token type.");
             }
         }
 
+        // yet unused, provisioned for possible optimisation
         internal bool RequiresUpdatesFor(SparqlCommandUnit command, IToken graphToken)
         {
             // TODO handle possible temp graphs references
@@ -192,12 +188,16 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             {
                 case Token.DEFAULT:
                     return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Intersect(command.DefaultGraphs).Any();
+
                 case Token.NAMED:
                     return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Intersect(command.NamedGraphs).Any();
+
                 case Token.URI:
                     return _updatedGraphs.ContainsKey(command.Connection.ID) && _updatedGraphs[command.Connection.ID].Contains(UriFactory.Create(graphToken.Value));
+
                 case Token.VARIABLE:
                     return false;
+
                 default:
                     throw new ArgumentException("Invalid token type.");
             }
@@ -208,6 +208,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         /* Connection.Committed
          * => update the graphs using connection's pending additions/removals graphs
          */
+
         internal void OnConnectionCommitted(Object sender, ConnectionEventArgs args)
         {
             Connection connection = (Connection)sender;
@@ -215,23 +216,23 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             // Apply changes to the graph
             SparqlParameterizedString command = new SparqlParameterizedString(@"
 SELECT DISTINCT ?tempGraph ?affectedGraph
-FROM @transactionLog 
+FROM @monitorLog
 WHERE {
     ?tempGraph @requiredBy @transUri .
     ?tempGraph @affectsGraph ?affectedGraph .
     FILTER (!sameTerm(?tempGraph, @RdfNull))
 }");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
-            command.SetParameter("committedAt", DOTNETRDF_TRANS.PropertyCommittedAt);
-            command.SetParameter("startedAt", DOTNETRDF_TRANS.PropertyStartedAt);
-            command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
-            command.SetParameter("pendingAssertions", DOTNETRDF_TRANS.ClassPendingAssertionsGraph);
-            command.SetParameter("pendingRemovals", DOTNETRDF_TRANS.ClassPendingRemovalsGraph);
-            command.SetParameter("concurrentAssertions", DOTNETRDF_TRANS.ClassConcurrentAssertionsGraph);
-            command.SetParameter("concurrentRemovals", DOTNETRDF_TRANS.ClassConcurrentRemovalsGraph);
-            command.SetParameter("affectsGraph", DOTNETRDF_TRANS.PropertyAffectsGraph);
+            command.SetParameter("monitorLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
+            command.SetParameter("committedAt", PropertyCommittedAt);
+            command.SetParameter("startedAt", RuntimeHelper.PropertyStartedAt);
+            command.SetParameter("requiredBy", RuntimeHelper.PropertyRequiredBy);
+            command.SetParameter("pendingAssertions", ClassPendingAssertionsGraph);
+            command.SetParameter("pendingRemovals", ClassPendingRemovalsGraph);
+            command.SetParameter("concurrentAssertions", ClassConcurrentAssertionsGraph);
+            command.SetParameter("concurrentRemovals", ClassConcurrentRemovalsGraph);
+            command.SetParameter("affectsGraph", PropertyAffectsGraph);
             command.SetParameter("transUri", RDFHelper.CreateUriNode(connection.Uri));
-            command.SetParameter("RdfNull", RDFHelper.RdfNull);
+            command.SetParameter("RdfNull", RuntimeHelper.BLACKHOLE);
 
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
             IEnumerable<Uri> affectedGraphs = metas.Results.Select(r => ((IUriNode)r.Value("affectedGraph")).Uri).Distinct();
@@ -250,11 +251,11 @@ DELETE {
     GRAPH ?concurrentR { ?pendingA_S  ?pendingA_P  ?pendingA_O . }
 }
 INSERT {
-    GRAPH @transactionLog { 
-        @transUri @committedAt ?commitTime . 
+    GRAPH @monitorLog {
+        @transUri @committedAt ?commitTime .
         ?concurrentA a @concurrentAssertions .     # is this necessary ?
         ?concurrentA @affectsGraph ?g .                 # is this necessary ?
-        ?concurrentA @requiredBy ?concurrentTrans . 
+        ?concurrentA @requiredBy ?concurrentTrans .
         ?concurrentR a @concurrentRemovals .       # is this necessary ?
         ?concurrentR @affectsGraph ?g .                 # is this necessary ?
         ?concurrentR @requiredBy ?concurrentTrans .
@@ -263,31 +264,31 @@ INSERT {
     GRAPH ?concurrentA { ?pendingA_S  ?pendingA_P  ?pendingA_O . }
     GRAPH ?concurrentR { ?pendingR_S  ?pendingR_P  ?pendingR_O . }
 }
-USING NAMED @transactionLog 
+USING NAMED @monitorLog
 " + usingNamedSB.ToString() + @"
 WHERE {
     BIND (now() as ?commitTime)
-    GRAPH @transactionLog {
+    GRAPH @monitorLog {
         OPTIONAL {
             ?concurrentTrans @startedAt ?startDate .
             FILTER (!sameTerm(?concurrentTrans, @transUri))
             FILTER NOT EXISTS { ?concurrentTrans @committedAt ?anyDate . }
         }
-        OPTIONAL 
+        OPTIONAL
         {
             ?pendingA @requiredBy @transUri .
             ?pendingA a @pendingAssertions .
             ?pendingA @affectsGraph ?g .
             GRAPH ?pendingA { ?pendingA_S  ?pendingA_P  ?pendingA_O . }
         }
-        OPTIONAL 
+        OPTIONAL
         {
             ?pendingR @requiredBy @transUri .
             ?pendingR a @pendingRemovals .
             ?pendingR @affectsGraph ?g .
             GRAPH ?pendingR { ?pendingR_S  ?pendingR_P  ?pendingR_O . }
         }
-   }    
+   }
     BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentAssertionsFor#', STR(?g))), @RdfNull) as ?concurrentA)
     BIND (COALESCE(IRI(CONCAT(STR(?concurrentTrans), ':concurrentRemovalsFor#', STR(?g))), @RdfNull) as ?concurrentR)
 };
@@ -301,10 +302,10 @@ DROP SILENT GRAPH @RdfNull;
             }
         }
 
-
         /* Connection.Rolledback
          * => nothing to to
          */
+
         internal void OnConnectionRolledBack(Object sender, ConnectionEventArgs args)
         {
         }
@@ -312,6 +313,7 @@ DROP SILENT GRAPH @RdfNull;
         /* Connection.Rolledback
          * => nothing to to
          */
+
         internal void OnStorageGraphsChanged(Object sender, ConnectionEventArgs args)
         {
         }
@@ -319,6 +321,7 @@ DROP SILENT GRAPH @RdfNull;
         /* Connection.Disposed
          * => clear all connection's resources
          */
+
         internal void DetachFromConnection(Object sender)
         {
             Connection connection = (Connection)sender;
@@ -340,6 +343,7 @@ DROP SILENT GRAPH @RdfNull;
         /* SparqlCommand.ExecutionStarted
          * => copy the connection's pending assertions/removals to the command ones
          */
+
         internal void SparqlCommand_ExecutionStarted(Object sender, SparqlExecutableEventArgs args)
         {
             SparqlExecutable command = (SparqlExecutable)sender;
@@ -362,7 +366,7 @@ DROP SILENT GRAPH @RdfNull;
             if (_commandMetas.ContainsKey(command.ID) && _commandMetas[command.ID] != null)
             {
                 // First add a dependency to the command's parent context for possible garbage collection in case of crash
-                _commandMetas[command.ID].Assert(RDFHelper.CreateUriNode(command.Uri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(command.ParentContext.Uri));
+                _commandMetas[command.ID].Assert(RDFHelper.CreateUriNode(command.Uri), RuntimeHelper.PropertyRequiredBy, RDFHelper.CreateUriNode(command.ParentContext.Uri));
                 // Then adds the commands metas
                 command.UnderlyingStorage.UpdateGraph(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI, _commandMetas[command.ID].Triples, null);
                 // For SparqlCommand, copy the read transaction's pendingUpdate graphs into the Command's scope to provide for correct handling of Command's interruption if needed
@@ -370,7 +374,7 @@ DROP SILENT GRAPH @RdfNull;
                 {
                     IUpdateableStorage storage = (IUpdateableStorage)command.UnderlyingStorage;
                     SparqlParameterizedString graphCopy = new SparqlParameterizedString("COPY SILENT GRAPH @sourceUri TO @targetUri");
-                    foreach (IUriNode targetGraph in _commandMetas[command.ID].GetTriplesWithPredicate(DOTNETRDF_TRANS.PropertyAffectsGraph).Select(t => (IUriNode)t.Subject))
+                    foreach (IUriNode targetGraph in _commandMetas[command.ID].GetTriplesWithPredicate(PropertyAffectsGraph).Select(t => (IUriNode)t.Subject))
                     {
                         graphCopy.SetParameter("targetUri", targetGraph);
                         graphCopy.SetParameter("sourceUri", RDFHelper.CreateUriNode(UriFactory.Create(targetGraph.Uri.ToString().Replace(command.ID, command.Connection.ID))));
@@ -383,6 +387,7 @@ DROP SILENT GRAPH @RdfNull;
         /* SparqlCommand.ExecutionInterrupted
          * => clear the command's pending assertions/removals
         */
+
         internal void OnCommandFailure(Object sender, SparqlExecutableEventArgs args)
         {
         }
@@ -390,6 +395,7 @@ DROP SILENT GRAPH @RdfNull;
         /* SparqlCommand.ExecutionEnded
          * => copy the command's pending assertions/removals to the connection ones
         */
+
         internal void OnCommandSuccess(Object sender, SparqlExecutableEventArgs args)
         {
             SparqlExecutable context = (SparqlExecutable)sender;
@@ -397,22 +403,22 @@ DROP SILENT GRAPH @RdfNull;
             // Append command updates to the transaction's
             SparqlParameterizedString command = new SparqlParameterizedString(@"
 SELECT DISTINCT ?tempGraph ?affectedGraph
-FROM @transactionLog 
+FROM @monitorLog
 WHERE {
     ?tempGraph @requiredBy @commandUri .
     ?tempGraph @affectsGraph ?affectedGraph
     FILTER (!sameTerm(?tempGraph, @RdfNull))
 }");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
-            command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
-            command.SetParameter("pendingAssertions", DOTNETRDF_TRANS.ClassPendingAssertionsGraph);
-            command.SetParameter("pendingRemovals", DOTNETRDF_TRANS.ClassPendingRemovalsGraph);
-            command.SetParameter("affectsGraph", DOTNETRDF_TRANS.PropertyAffectsGraph);
+            command.SetParameter("monitorLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
+            command.SetParameter("requiredBy", RuntimeHelper.PropertyRequiredBy);
+            command.SetParameter("pendingAssertions", ClassPendingAssertionsGraph);
+            command.SetParameter("pendingRemovals", ClassPendingRemovalsGraph);
+            command.SetParameter("affectsGraph", PropertyAffectsGraph);
             command.SetParameter("commandUri", RDFHelper.CreateUriNode(context.Uri));
             command.SetParameter("transUri", RDFHelper.CreateUriNode(context.ParentContext.Uri));
             command.SetParameter("cmdID", RDFHelper.CreateLiteralNode(context.ID));
             command.SetParameter("transID", RDFHelper.CreateLiteralNode(context.ParentContext.ID));
-            command.SetParameter("RdfNull", RDFHelper.RdfNull);
+            command.SetParameter("RdfNull", RuntimeHelper.BLACKHOLE);
 
             // TODO use a SparqlResultHandler to build at once the usingNamedSB
             SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
@@ -431,7 +437,7 @@ DELETE {
     GRAPH ?transPendingR { ?cmdPendingA_S  ?cmdPendingA_P  ?cmdPendingA_O . }
 }
 INSERT {
-    GRAPH @transactionLog {
+    GRAPH @monitorLog {
         ?transPendingA a @pendingAssertions .
         ?transPendingA @affectsGraph ?g .
         ?transPendingA @requiredBy @transUri .
@@ -442,19 +448,19 @@ INSERT {
     GRAPH ?transPendingA { ?cmdPendingA_S  ?cmdPendingA_P  ?cmdPendingA_O . }
     GRAPH ?transPendingR { ?cmdPendingR_S  ?cmdPendingR_P  ?cmdPendingR_O . }
 }
-USING NAMED @transactionLog 
+USING NAMED @monitorLog
 " + usingNamedSB.ToString() + @"
 WHERE {
-    GRAPH @transactionLog {
+    GRAPH @monitorLog {
         @commandUri @requiredBy @transUri .
-        OPTIONAL 
+        OPTIONAL
         {
             ?cmdPendingA @requiredBy @commandUri .
             ?cmdPendingA a @pendingAssertions .
             ?cmdPendingA @affectsGraph ?g .
             GRAPH ?cmdPendingA { ?cmdPendingA_S  ?cmdPendingA_P  ?cmdPendingA_O . }
         }
-        OPTIONAL 
+        OPTIONAL
         {
             ?cmdPendingR @requiredBy @commandUri .
             ?cmdPendingR a @pendingRemovals .
@@ -463,7 +469,7 @@ WHERE {
         }
         BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingA), @cmdID, @transID)), @RdfNull) as ?transPendingA)
         BIND (COALESCE(IRI(REPLACE(STR(?cmdPendingR), @cmdID, @transID)), @RdfNull) as ?transPendingR)
-    }    
+    }
 };
 
 DROP SILENT GRAPH @RdfNull;
@@ -495,6 +501,7 @@ DROP SILENT GRAPH @RdfNull;
          * => Release all the command's temporary resources
          * TODO check whether this is called correctly under normal circumstances
         */
+
         internal void OnMediatorReleased(Object sender)
         {
             SparqlTemporaryResourceMediator context = (SparqlTemporaryResourceMediator)sender;
@@ -506,69 +513,20 @@ DROP SILENT GRAPH @RdfNull;
                 executable.Succeeded -= this.OnCommandSuccess;
             }
             context.Released -= this.OnMediatorReleased;
-            IUpdateableStorage storage = (IUpdateableStorage)context.UnderlyingStorage;
-            // Clear any commands temporary graphs and reference
-            SparqlParameterizedString command = new SparqlParameterizedString(@"
-SELECT DISTINCT ?tempGraph 
-FROM @transactionLog 
-WHERE {
-    ?tempGraph @requiredBy @consumerUri .
-    # to clear any reference to temp graphs
-    # the graph must not be referenced by another consumer
-    FILTER (NOT EXISTS {
-        ?tempGraph @requiredBy ?concurrentConsumer .
-        FILTER (!sameTerm(@consumerUri, ?concurrentConsumer))
-    })
-}");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
-            command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
-            command.SetParameter("hasScope", DOTNETRDF_TRANS.PropertyHasScope);
-            command.SetParameter("consumerUri", RDFHelper.CreateUriNode(context.Uri));
-            command.SetParameter("RdfNull", RDFHelper.RdfNull);
-
-            SparqlResultSet metas = (SparqlResultSet)storage.Query(command.ToString());
-            StringBuilder dropGraphsSB = new StringBuilder();
-            StringBuilder releasableResourceFilter = new StringBuilder();
-            releasableResourceFilter.AppendLine("@consumerUri");
-            foreach (Uri graphUri in metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri))
-            {
-                releasableResourceFilter.AppendLine(", <" + graphUri.ToString() + ">");
-                dropGraphsSB.AppendLine("DROP SILENT GRAPH <" + graphUri.ToString() + ">;");
-            }
-            command.CommandText = @"
-DELETE {
-    GRAPH @transactionLog {
-        ?garbagedResource ?p ?o .
-    }
-}
-USING NAMED @transactionLog 
-WHERE {
-    GRAPH @transactionLog {
-        ?garbagedResource ?p ?o .
-        FILTER (?garbagedResource IN(" + releasableResourceFilter.ToString() + @"))
-    }
-};
-
-" + dropGraphsSB.ToString() + @"
-#DROP SILENT GRAPH @RdfNull;
-";
-
-            storage.Update(command.ToString());
             if (_commandMetas.ContainsKey(context.ID))
             {
                 _commandMetas.Remove(context.ID);
             }
         }
 
-        #endregion
+        #endregion Event handlers
 
         /// <summary>
-        /// A unitary command rewriter helper to help local context maintenance
+        /// A local class to maintain the rewriting current context
         /// </summary>
         /// TODO provide differenciation between concurrent and pending assertions and deletions
         private class CommandRewriter
         {
-
             private static int _pptyIndex = 0;
 
             // We make this one static so it can be shared in a thread
@@ -603,13 +561,12 @@ WHERE {
                 _defaultGraphVarTokens.Push(new HashSet<IToken>());
                 _namedGraphVarTokens.Push(new HashSet<IToken>());
                 _compilationGraphVarTokens.Push(new HashSet<IToken>());
-
             }
 
             #region Rewriting methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// TODO handle the all the query/update types
             internal void Rewrite(SparqlCommandUnit command)
@@ -629,44 +586,53 @@ WHERE {
                         case SparqlUpdateCommandType.Load:
                         case SparqlUpdateCommandType.Modify:
                             break;
+
                         case SparqlUpdateCommandType.Add:
                             SparqlParameterizedString addTemplate = new SparqlParameterizedString("INSERT { GRAPH @targetUri { ?s ?p ?o . } } USING NAMED @targetUri USING NAMED @sourceUri WHERE { GRAPH @sourceUri { ?s ?p ?o . } }");
                             addTemplate.SetParameter("targetUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).DestinationUri));
                             addTemplate.SetParameter("sourceUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).SourceUri));
                             sparqlUpdate = new SparqlUpdateParser().ParseFromString(addTemplate).Commands.First();
                             break;
+
                         case SparqlUpdateCommandType.Clear:
                             SparqlParameterizedString clearTemplate = new SparqlParameterizedString("DELETE { GRAPH @targetUri { ?s ?p ?o . } } USING NAMED @targetUri WHERE { GRAPH @targetUri { ?s ?p ?o . } . }");
                             clearTemplate.SetParameter("targetUri", RDFHelper.CreateUriNode(((ClearCommand)sparqlUpdate).TargetUri));
                             sparqlUpdate = new SparqlUpdateParser().ParseFromString(clearTemplate).Commands.First();
                             break;
+
                         case SparqlUpdateCommandType.Drop:
                             SparqlParameterizedString dropTemplate = new SparqlParameterizedString("DELETE { GRAPH @targetUri { ?s ?p ?o . } } USING NAMED @targetUri WHERE { GRAPH @targetUri { ?s ?p ?o . } . }");
                             dropTemplate.SetParameter("targetUri", RDFHelper.CreateUriNode(((DropCommand)sparqlUpdate).TargetUri));
                             sparqlUpdate = new SparqlUpdateParser().ParseFromString(dropTemplate).Commands.First();
                             // TODO add a real drop command on commit
                             break;
+
                         case SparqlUpdateCommandType.Copy:
                             SparqlParameterizedString copyTemplate = new SparqlParameterizedString("DELETE { GRAPH @targetUri { ?ts ?tp ?to . } } INSERT { GRAPH @targetUri { ?s ?p ?o . } } USING NAMED @targetUri USING NAMED @sourceUri WHERE { OPTIONAL { GRAPH @targetUri { ?ts ?tp ?to . } } . OPTIONAL { GRAPH @sourceUri { ?s ?p ?o . } } }");
                             copyTemplate.SetParameter("targetUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).DestinationUri));
                             copyTemplate.SetParameter("sourceUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).SourceUri));
                             sparqlUpdate = new SparqlUpdateParser().ParseFromString(copyTemplate).Commands.First();
                             break;
+
                         case SparqlUpdateCommandType.Create:
                             sparqlUpdate = null;
                             break;
+
                         case SparqlUpdateCommandType.InsertData:
                             sparqlUpdate = new ModifyCommand(null, ((InsertDataCommand)sparqlUpdate).DataPattern, new GraphPattern());
                             break;
+
                         case SparqlUpdateCommandType.DeleteData:
                             sparqlUpdate = new ModifyCommand(((DeleteDataCommand)sparqlUpdate).DataPattern, null, new GraphPattern());
                             break;
+
                         case SparqlUpdateCommandType.Move:
                             SparqlParameterizedString moveTemplate = new SparqlParameterizedString("DELETE { GRAPH @targetUri { ?ts ?tp ?to . } GRAPH @sourceUri { ?s ?p ?o . } } INSERT { GRAPH @targetUri { ?s ?p ?o . } } USING NAMED @targetUri USING NAMED @sourceUri WHERE { OPTIONAL { GRAPH @targetUri { ?ts ?tp ?to . } } . OPTIONAL { GRAPH @sourceUri { ?s ?p ?o . } } }");
                             moveTemplate.SetParameter("targetUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).DestinationUri));
                             moveTemplate.SetParameter("sourceUri", RDFHelper.CreateUriNode(((CopyCommand)sparqlUpdate).SourceUri));
                             sparqlUpdate = new SparqlUpdateParser().ParseFromString(moveTemplate).Commands.First();
                             break;
+
                         default:
                             sparqlUpdate = null;
                             break;
@@ -697,7 +663,7 @@ WHERE {
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="query"></param>
             /// <returns></returns>
@@ -724,10 +690,11 @@ WHERE {
                 return rewrittenQuery;
             }
 
-            /* TODO add the written graphs meta triples : 
+            /* TODO add the written graphs meta triples :
              *  => @outputGraphVar AffectsGraphUri sourceGraph
              *  => @outputGraphVar a trans:PendingAssertionsGraph | trans:PendingRemovalssGraph
              */
+
             private BaseModificationCommand RewriteModificationCommand(BaseModificationCommand update)
             {
                 // Normalize the update command through translation of the With keyword
@@ -786,8 +753,8 @@ WHERE {
             /// Expands a graph pattern for simulated transactional support
             /// </summary>
             /// <example>
-            /// 
-            /// </example> 
+            ///
+            /// </example>
             /// <param name="gp">The graph pattern to expand</param>
             /// <returns>the expanded graph pattern</returns>
             /// <remarks>TODO notify the TransactionLog class for graphs read</remarks>
@@ -808,9 +775,11 @@ WHERE {
                             case Token.VARIABLE:
                                 _namedGraphVarTokens.Peek().Add(gp.GraphSpecifier);
                                 break;
+
                             case Token.URI:
                                 _activeGraph = gp.GraphSpecifier;
                                 break;
+
                             default:
                                 throw new ArgumentException("Invalid token. Expected a graph IRI or variable");
                         }
@@ -877,9 +846,11 @@ WHERE {
                         case Token.VARIABLE:
                             outputGraphToken = _activeGraph;
                             break;
+
                         case Token.URI:
                             outputGraphToken = _activeGraph;
                             break;
+
                         default:
                             throw new ArgumentException("Invalid token. Expected a graph IRI or variable");
                     }
@@ -907,7 +878,6 @@ WHERE {
 
             private void HandleITriplePattern(GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
-
                 switch (pattern.PatternType)
                 {
                     // TODO test subquery rewriting
@@ -956,22 +926,22 @@ WHERE {
                 // Variables for the rewritten pattern
                 // Create the replacement pattern that provides full isolation
                 GraphPattern bgp = pattern.AsGraphPattern();
-                /* If requiring isolation, the replacement pattern is 
+                /* If requiring isolation, the replacement pattern is
                  * ?cmd :namedGraph|:defaultGraph ?g
                  * BIND (... as ?cA) BIND (... as ?cR) BIND (... as ?pA) BIND (... as ?pR)
                  * { GRAPH ?g { ?s ?p ?o . MINUS { FILTER BOUND(?cA) GRAPH ?cA { ?s ?p ?o .} } MINUS { FILTER BOUND(?pR) GRAPH ?pR { ?s ?p ?o .} } } }
-                 * UNION 
+                 * UNION
                  * { FILTER BOUND(?cR) GRAPH ?cR { ?s ?p ?o . MINUS { FILTER BOUND(?pR) GRAPH ?pR { ?s ?p ?o .} } } }
-                 * UNION 
+                 * UNION
                  * { FILTER BOUND(?pA) GRAPH ?pA { ?s ?p ?o } }
                  */
-                /* Or 
+                /* Or
                  * ?cmd :namedGraph|:defaultGraph ?g
                  * BIND (... as ?cA) BIND (... as ?cR) BIND (... as ?pA) BIND (... as ?pR)
                  * { GRAPH ?g { ?s ?p ?o . FILTER (!BOUND(?cA) || NOT EXISTS {GRAPH ?cA { ?s ?p ?o .} }) FILTER (!BOUND(?pR) || NOT EXISTS { GRAPH ?pR { ?s ?p ?o .} }) } }
-                 * UNION 
+                 * UNION
                  * { FILTER BOUND(?cR) GRAPH ?cR { ?s ?p ?o . FILTER (!BOUND(?pR) || NOT EXISTS { GRAPH ?pR { ?s ?p ?o .} }) } }
-                 * UNION 
+                 * UNION
                  * { FILTER BOUND(?pA) GRAPH ?pA { ?s ?p ?o } }
                  */
                 // TODO if performance issues, check which pattern yields best performances between MINUS and FILTER NOT EXISTS
@@ -1109,7 +1079,7 @@ WHERE {
                 RewriteTriplePattern(output, source, pattern);
             }
 
-            #endregion
+            #endregion Rewriting methods
 
             #region Utilities
 
@@ -1147,7 +1117,6 @@ WHERE {
                 return output;
             }
 
-
             private IToken GetGraphAssignement(IToken sourceGraph, String resultVarPrefix, String valuePrefix)
             {
                 ISparqlExpression sourceTerm;
@@ -1158,14 +1127,17 @@ WHERE {
                         varName = sourceGraph.Value.Substring(1);
                         sourceTerm = new VariableTerm(varName);
                         break;
+
                     case Token.URI:
                         varName = CreateLocalToken("Iri").Value.Substring(1);
                         sourceTerm = new ConstantTerm(RDFHelper.CreateUriNode(UriFactory.Create(sourceGraph.Value)));
                         break;
+
                     case Token.FROM: // MUST be used only for property compiled graphs
                         varName = new DefaultKeywordToken(0, 0).Value;
                         sourceTerm = new ConstantTerm(varName.ToLiteral(RDFHelper.nodeFactory));
                         break;
+
                     default:
                         throw new ArgumentException("Invalid token. Expected a graph IRI or variable");
                 }
@@ -1173,7 +1145,7 @@ WHERE {
                 IToken outputGraphToken = new VariableToken("?" + resultVarPrefix + "_" + varName, 0, 0, 0);
                 if (!_graphBindingsExpressions.ContainsKey(outputGraphVar))
                 {
-                    BindPattern graphBindingPattern = new BindPattern(outputGraphVar, new IriFunction(new ConcatFunction(new List<ISparqlExpression> { 
+                    BindPattern graphBindingPattern = new BindPattern(outputGraphVar, new IriFunction(new ConcatFunction(new List<ISparqlExpression> {
                         new ConstantTerm(valuePrefix.ToLiteral(RDFHelper.nodeFactory)),
                         new StrFunction(sourceTerm)
                     })));
@@ -1183,7 +1155,7 @@ WHERE {
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="sourceVar"></param>
             /// <param name="sourceGraph"></param>
@@ -1216,11 +1188,11 @@ WHERE {
                 return boundGraphs;
             }
 
-            #endregion
+            #endregion Utilities
 
             #region Command compilation
 
-            // TODO handle the scoping of the additional graphs 
+            // TODO handle the scoping of the additional graphs
             //      => transactions updates graphs scoped to the connection
             //      => temporary graphs scoped to the command
             private GraphPattern AddGraphBindings(IEnumerable<GraphPattern> rewrittenPatterns)
@@ -1242,7 +1214,7 @@ WHERE {
                     _namedGraphs.UnionWith(_command.NamedGraphs);
                     foreach (String varName in usedNamedGraphVariables)
                     {
-                        root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(DOTNETRDF_TRANS.PropertyHasNamedGraph), new VariablePattern(varName)));
+                        root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(PropertyHasNamedGraph), new VariablePattern(varName)));
                     }
                 }
                 if (usedDefaultGraphVariables.Any())
@@ -1250,7 +1222,7 @@ WHERE {
                     _namedGraphs.UnionWith(_command.DefaultGraphs);
                     foreach (String varName in usedDefaultGraphVariables)
                     {
-                        root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(DOTNETRDF_TRANS.PropertyHasDefaultGraph), new VariablePattern(varName)));
+                        root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(PropertyHasDefaultGraph), new VariablePattern(varName)));
                     }
                 }
 
@@ -1272,7 +1244,7 @@ WHERE {
                             // Quite specific case : the graph that source the compilation is not directly referenced in the command
                             if (!usedNamedGraphVariables.Contains(sourceGraphVar))
                             {
-                                root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(DOTNETRDF_TRANS.PropertyHasNamedGraph), new VariablePattern(sourceGraphVar)));
+                                root.AddTriplePattern(new TriplePattern(new NodeMatchPattern(RDFHelper.CreateUriNode(commandUri)), new NodeMatchPattern(PropertyHasNamedGraph), new VariablePattern(sourceGraphVar)));
                             }
                             sourceGraphUris = _command.NamedGraphs;
                         }
@@ -1284,9 +1256,9 @@ WHERE {
                         IEnumerable<Triple> pendingUpdateGraphs = additionalGraphs
                             .SelectMany(
                             graphUri => new HashSet<Triple>() {
-                                new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Context.Uri)),
-                                new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
-                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("pendingA") ? DOTNETRDF_TRANS.ClassPendingAssertionsGraph: DOTNETRDF_TRANS.ClassPendingRemovalsGraph)
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RuntimeHelper.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Context.Uri)),
+                                new Triple(RDFHelper.CreateUriNode(graphUri), PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("pendingA") ? ClassPendingAssertionsGraph: ClassPendingRemovalsGraph)
                             });
                         _monitor.AddMetas(_command.Context.ID, pendingUpdateGraphs);
                     }
@@ -1295,9 +1267,9 @@ WHERE {
                         IEnumerable<Triple> concurrentUpdateGraphs = additionalGraphs
                             .SelectMany(
                             graphUri => new HashSet<Triple>() {
-                                new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Connection.Uri)),
-                                new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
-                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("concurrentA") ? DOTNETRDF_TRANS.ClassPendingAssertionsGraph: DOTNETRDF_TRANS.ClassPendingRemovalsGraph)
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RuntimeHelper.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Connection.Uri)),
+                                new Triple(RDFHelper.CreateUriNode(graphUri), PropertyAffectsGraph, RDFHelper.CreateUriNode(UriFactory.Create(graphUri.Fragment.Substring(1)))), // TODO replace this with (graphUri, updates, originalGraphUri)
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, additionalGraph.Contains("concurrentA") ? ClassPendingAssertionsGraph: ClassPendingRemovalsGraph)
                             });
                         _monitor.AddMetas(_command.Connection.ID, concurrentUpdateGraphs);
                     }
@@ -1306,8 +1278,8 @@ WHERE {
                         IEnumerable<Triple> temporaryGraphs = additionalGraphs
                             .SelectMany(
                             graphUri => new HashSet<Triple>() {
-                                new Triple(RDFHelper.CreateUriNode(graphUri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Uri)),
-                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, DOTNETRDF_TRANS.ClassTemporaryGraph)
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RuntimeHelper.PropertyRequiredBy, RDFHelper.CreateUriNode(_command.Uri)),
+                                new Triple(RDFHelper.CreateUriNode(graphUri), RDF.PropertyType, RuntimeHelper.ClassTemporaryGraph)
                             });
                         _monitor.AddMetas(_command.ID, temporaryGraphs);
                     }
@@ -1319,18 +1291,17 @@ WHERE {
 
             /// <summary>
             /// Creates preprocessing units for the command.
-            /// Units will : 
-            ///     => update the transactionLog by attaching named/default graphs used by the rewritten sparql command
+            /// Units will :
+            ///     => update the monitorLog by attaching named/default graphs used by the rewritten sparql command
             ///     => create the required property compilation graphs (if any)
             /// </summary>
             private void BuildDependencies()
             {
-
                 // Handles the command's source dataset
                 List<Triple> commandMetas =
-                    _command.DefaultGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), DOTNETRDF_TRANS.PropertyHasDefaultGraph, RDFHelper.CreateUriNode(graphUri)))
+                    _command.DefaultGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), PropertyHasDefaultGraph, RDFHelper.CreateUriNode(graphUri)))
                     .Union(
-                        _command.NamedGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), DOTNETRDF_TRANS.PropertyHasNamedGraph, RDFHelper.CreateUriNode(graphUri)))
+                        _command.NamedGraphs.Select(graphUri => new Triple(RDFHelper.CreateUriNode(_command.Uri), PropertyHasNamedGraph, RDFHelper.CreateUriNode(graphUri)))
                     ).ToList();
                 _monitor.AddMetas(_command.ID, commandMetas);
 
@@ -1421,9 +1392,7 @@ WHERE {
                 }
             }
 
-            #endregion
+            #endregion Command compilation
         }
-
     }
-
 }

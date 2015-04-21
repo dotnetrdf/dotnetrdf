@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace VDS.RDF.Query.Spin.SparqlUtil
+﻿namespace VDS.RDF.Query.Spin.SparqlUtil
 {
-    interface ISparqlSDPlugin
+    internal interface ISparqlSDPlugin
     {
         INode Resource { get; }
 

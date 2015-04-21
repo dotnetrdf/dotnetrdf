@@ -1,23 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class ElementListImpl : ElementImpl, IElementListResource
     {
-
         public ElementListImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         private int addListMembers(List<IElementResource> elements, int i, List<IResource> members)
         {
@@ -60,7 +54,6 @@ namespace VDS.RDF.Query.Spin.Model
             return i;
         }
 
-
         public List<IElementResource> getElements()
         {
             List<IElementResource> results = new List<IElementResource>();
@@ -79,7 +72,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return results;
         }
-
 
         private bool nextIsMatchingVarPattern(ITriplePatternResource main, List<IElementResource> elements, int i)
         {
@@ -111,7 +103,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return false;
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -155,7 +146,6 @@ namespace VDS.RDF.Query.Spin.Model
                 p.println();
             }
         }
-
 
         // Special treatment of nested rdf:Lists
         private int printTriplePattern(List<IElementResource> elements, int i, ISparqlPrinter p)
@@ -213,7 +203,6 @@ namespace VDS.RDF.Query.Spin.Model
             return i;
         }
 
-
         private void printRDFList(ISparqlPrinter p, List<IResource> members)
         {
             p.print("(");
@@ -224,7 +213,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             p.print(" )");
         }
-
 
         public String toString()
         {

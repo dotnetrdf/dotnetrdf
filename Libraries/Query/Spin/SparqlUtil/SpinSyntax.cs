@@ -15,8 +15,8 @@ to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -26,14 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Filters;
-using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
@@ -44,14 +41,12 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin
 {
-
     // TODO rename this class to SPINFactory
     /// <summary>
     /// Static class containing Extension Methods used to serialize SPARQL Queries into the SPIN RDF Syntax
     /// </summary>
     public static class SpinSyntax
     {
-
         public static IGraph ToSpinRdf(this SparqlQuery query)
         {
             Graph g = new Graph();
@@ -92,6 +87,7 @@ namespace VDS.RDF.Query.Spin
                 case SparqlQueryType.SelectReduced:
                     g.Assert(root, RDF.PropertyType, SP.ClassSelect);
                     break;
+
                 case SparqlQueryType.Unknown:
                     throw new SpinException("Unknown query types cannot be represented in SPIN RDF Syntax");
             }
@@ -159,6 +155,7 @@ namespace VDS.RDF.Query.Spin
                     case SparqlQueryType.SelectDistinct:
                         g.Assert(root, SP.PropertyDistinct, RDFHelper.TRUE);
                         break;
+
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectReduced:
                         g.Assert(root, SP.PropertyReduced, RDFHelper.TRUE);
@@ -195,7 +192,6 @@ namespace VDS.RDF.Query.Spin
             return root;
         }
 
-
         public static IGraph ToSpinRdf(this SparqlUpdateCommand query)
         {
             Graph g = new Graph();
@@ -205,7 +201,7 @@ namespace VDS.RDF.Query.Spin
             return g;
         }
 
-        // TODO handle the defaultGraph case 
+        // TODO handle the defaultGraph case
         internal static INode ToSpinRdf(this SparqlUpdateCommand query, IGraph g)
         {
             INode root = g.CreateBlankNode();
@@ -233,6 +229,7 @@ namespace VDS.RDF.Query.Spin
                         g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(add.DestinationUri));
                     }
                     break;
+
                 case SparqlUpdateCommandType.Clear:
                     g.Assert(root, RDF.PropertyType, SP.ClassClear);
                     if (((ClearCommand)query).TargetUri == null)
@@ -244,6 +241,7 @@ namespace VDS.RDF.Query.Spin
                         g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(((ClearCommand)query).TargetUri));
                     }
                     break;
+
                 case SparqlUpdateCommandType.Copy:
                     g.Assert(root, RDF.PropertyType, SP.ClassCopy);
                     CopyCommand copy = (CopyCommand)query;
@@ -262,12 +260,13 @@ namespace VDS.RDF.Query.Spin
                     else
                     {
                         g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(copy.DestinationUri));
-                    }                
+                    }
                     break;
+
                 case SparqlUpdateCommandType.Create:
                     g.Assert(root, RDF.PropertyType, SP.ClassCreate);
                     CreateCommand create = (CreateCommand)query;
-                    if (create.TargetUri== null)
+                    if (create.TargetUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
@@ -276,6 +275,7 @@ namespace VDS.RDF.Query.Spin
                         g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(create.TargetUri));
                     }
                     break;
+
                 case SparqlUpdateCommandType.Delete:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     DeleteCommand delete = (DeleteCommand)query;
@@ -287,10 +287,12 @@ namespace VDS.RDF.Query.Spin
                     g.Assert(root, SP.PropertyDeletePattern, delete.DeletePattern.ToSpinRdf(g, varTable));
                     g.Assert(root, SP.PropertyWhere, delete.WherePattern.ToSpinRdf(g, varTable));
                     break;
+
                 case SparqlUpdateCommandType.DeleteData:
                     g.Assert(root, RDF.PropertyType, SP.ClassDeleteData);
                     g.Assert(root, SP.PropertyData, ((DeleteDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
                     break;
+
                 case SparqlUpdateCommandType.Drop:
                     g.Assert(root, RDF.PropertyType, SP.ClassDrop);
                     DropCommand drop = (DropCommand)query;
@@ -304,6 +306,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     g.Assert(root, SP.PropertyGraphIRI, RDFHelper.CreateUriNode(((DropCommand)query).TargetUri));
                     break;
+
                 case SparqlUpdateCommandType.Insert:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     InsertCommand insert = (InsertCommand)query;
@@ -314,10 +317,12 @@ namespace VDS.RDF.Query.Spin
                     g.Assert(root, SP.PropertyInsertPattern, insert.InsertPattern.ToSpinRdf(g, varTable));
                     g.Assert(root, SP.PropertyWhere, insert.WherePattern.ToSpinRdf(g, varTable));
                     break;
+
                 case SparqlUpdateCommandType.InsertData:
                     g.Assert(root, RDF.PropertyType, SP.ClassInsertData);
                     g.Assert(root, SP.PropertyData, ((InsertDataCommand)query).DataPattern.ToSpinRdf(g, varTable));
                     break;
+
                 case SparqlUpdateCommandType.Load:
                     g.Assert(root, RDF.PropertyType, SP.ClassLoad);
                     LoadCommand load = (LoadCommand)query;
@@ -336,8 +341,9 @@ namespace VDS.RDF.Query.Spin
                     else
                     {
                         g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(load.TargetUri));
-                    }                
+                    }
                     break;
+
                 case SparqlUpdateCommandType.Modify:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     ModifyCommand modify = (ModifyCommand)query;
@@ -355,6 +361,7 @@ namespace VDS.RDF.Query.Spin
                     }
                     g.Assert(root, SP.PropertyWhere, modify.WherePattern.ToSpinRdf(g, varTable));
                     break;
+
                 case SparqlUpdateCommandType.Move:
                     g.Assert(root, RDF.PropertyType, SP.ClassMove);
                     MoveCommand move = (MoveCommand)query;
@@ -373,8 +380,9 @@ namespace VDS.RDF.Query.Spin
                     else
                     {
                         g.Assert(root, SP.PropertyInto, RDFHelper.CreateUriNode(move.DestinationUri));
-                    }                
+                    }
                     break;
+
                 case SparqlUpdateCommandType.Unknown:
                     throw new NotSupportedException("Unkown SPARQL update query encountered " + query.ToString());
                     break;
@@ -654,8 +662,10 @@ namespace VDS.RDF.Query.Spin
                 case Token.QNAME:
                 case Token.URI:
                     return ParserHelper.TryResolveUri(g, t);
+
                 case Token.VARIABLE:
                     return varTable[t.Value];
+
                 default:
                     throw new SpinException("Unable to convert a Graph/Service Specifier which is not a QName/URI/Variable to SPIN RDF Syntax");
             }

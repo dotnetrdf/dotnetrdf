@@ -1,20 +1,14 @@
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class DeleteDataImpl : UpdateImpl, IDeleteDataResource
     {
-
         public DeleteDataImpl(INode node, SpinModel graph)
-            :base(node, graph)
+            : base(node, graph)
         {
-            
         }
-
 
         override public void printSPINRDF(ISparqlPrinter p)
         {
@@ -23,6 +17,5 @@ namespace VDS.RDF.Query.Spin.Model
             p.printKeyword("DATA");
             printTemplates(p, SP.PropertyData, null, true, null);
         }
-
     }
 }

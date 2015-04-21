@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Query.Spin.AssemblyDiscovery
 {
-
     /// <summary>
     /// Marks the assembly as containing SPIN implementations and extensions for automated loading
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Assembly)]
-    class SpinExtensionsAssembly
+    internal class SpinExtensionsAssembly
         : System.Attribute
     {
         public SpinExtensionsAssembly()
@@ -22,7 +18,7 @@ namespace VDS.RDF.Query.Spin.AssemblyDiscovery
     /// Assigns the Uri of the RdfsClass that the Class implements
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    class ImplementsRDFSClass
+    internal class ImplementsRDFSClass
         : System.Attribute
     {
         private String _classUri;
@@ -34,7 +30,8 @@ namespace VDS.RDF.Query.Spin.AssemblyDiscovery
 
         public String ClassUri
         {
-            get {
+            get
+            {
                 return _classUri;
             }
         }
@@ -44,7 +41,7 @@ namespace VDS.RDF.Query.Spin.AssemblyDiscovery
     /// Assigns the Uri of the RdfsClass that the Class implements
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    class ImplementsRDFSNamespace
+    internal class ImplementsRDFSNamespace
         : System.Attribute
     {
         private String _namespaceUri;

@@ -1,8 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
+
 namespace VDS.RDF.Query.Spin.Model
 {
     /**
@@ -10,6 +12,7 @@ namespace VDS.RDF.Query.Spin.Model
      *
      * @author Holger Knublauch
      */
+
     [Obsolete()]
     public interface IDeleteResource : IUpdateResource
     {

@@ -1,21 +1,14 @@
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class UnionImpl : ElementImpl, IUnionResource
     {
-
         public UnionImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -40,7 +33,6 @@ namespace VDS.RDF.Query.Spin.Model
                 }
             }
         }
-
 
         //override public void visit(IElementVisitor visitor)
         //{

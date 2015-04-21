@@ -1,24 +1,18 @@
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class ValuesImpl : ElementImpl, IValuesResource
     {
-
         public ValuesImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         public List<Dictionary<String, IResource>> getBindings()
         {
@@ -47,7 +41,6 @@ namespace VDS.RDF.Query.Spin.Model
             return bindings;
         }
 
-
         public List<String> getVarNames()
         {
             List<String> results = new List<String>();
@@ -58,7 +51,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return results;
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -123,7 +115,6 @@ namespace VDS.RDF.Query.Spin.Model
             p.printIndentation(p.getIndentation());
             p.print("}");
         }
-
 
         //override public void visit(IElementVisitor visitor)
         //{

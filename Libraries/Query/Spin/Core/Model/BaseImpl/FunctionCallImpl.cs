@@ -1,33 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class FunctionCallImpl : ModuleCallImpl, IFunctionCallResource
     {
-
         private static String SP_ARG = SP.PropertyArg.ToString();
-
 
         public FunctionCallImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public List<IResource> getArguments()
         {
@@ -41,7 +32,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return results;
         }
-
 
         private IResource[] getArgumentProperties(Dictionary<IResource, IResource> values)
         {
@@ -79,7 +69,6 @@ namespace VDS.RDF.Query.Spin.Model
             return ps;
         }
 
-
         public Dictionary<IResource, IResource> getArgumentsMap()
         {
             /*sealed*/
@@ -96,10 +85,8 @@ namespace VDS.RDF.Query.Spin.Model
             return values;
         }
 
-
         public IResource getFunction()
         {
-
             // Need to iterate over rdf:types - some may have been inferred
             // Return the most specific type, i.e. the one that does not have
             // any subclasses
@@ -148,7 +135,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         override public IModuleResource getModule()
         {
             IResource function = getFunction();
@@ -162,7 +148,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         private String getSymbol(IResource function)
         {
             if (function != null)
@@ -172,12 +157,10 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         public static bool isSetOperator(String symbol)
         {
             return "IN".Equals(symbol) || "NOT IN".Equals(symbol);
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -200,8 +183,7 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
-        void printOperator(ISparqlPrinter p, String op, List<IResource> args)
+        private void printOperator(ISparqlPrinter p, String op, List<IResource> args)
         {
             if (p.isNested())
             {
@@ -243,15 +225,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
-        void printExistsOrNotExists(ISparqlPrinter p, String symbol)
+        private void printExistsOrNotExists(ISparqlPrinter p, String symbol)
         {
             p.print(symbol);
             printNestedElementList(p, SP.PropertyElements);
         }
 
-
-        void printFunction(ISparqlPrinter p, IResource function, List<IResource> args)
+        private void printFunction(ISparqlPrinter p, IResource function, List<IResource> args)
         {
             printFunctionQName(p, function);
             p.print("(");
@@ -267,7 +247,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             p.print(")");
         }
-
 
         private void printFunctionQName(ISparqlPrinter p, IResource function)
         {

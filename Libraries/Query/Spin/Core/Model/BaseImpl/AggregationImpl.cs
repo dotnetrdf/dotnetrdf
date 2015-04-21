@@ -1,28 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.SparqlUtil;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class AggregationImpl : AbstractSPINResource, IAggregationResource
     {
-
         public AggregationImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public IVariableResource getAs()
         {
@@ -37,12 +32,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public INode getExpression()
         {
             return GetObject(SP.PropertyExpression);
         }
-
 
         public bool isDistinct()
         {
@@ -51,7 +44,6 @@ namespace VDS.RDF.Query.Spin.Model
 
         override public void Print(ISparqlPrinter p)
         {
-
             IVariableResource asVar = getAs();
             if (asVar != null)
             {

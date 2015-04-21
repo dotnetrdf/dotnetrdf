@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Utility;
-
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -18,7 +18,6 @@ namespace VDS.RDF.Query.Spin.Model
     /// </summary>
     public class ResourceFactory
     {
-
         /**
          * Attempts to cast a given INode into an Aggregation.
          * Resources that have an aggregation type as their rdf:type
@@ -26,6 +25,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param resource  the INode to cast
          * @return the Aggregation or null if INode is not a well-formed aggregation
          */
+
         public static IAggregationResource asAggregation(IResource resource)
         {
             if (resource == null) return null;
@@ -53,7 +53,6 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         public static IArgumentResource asArgument(IResource resource)
         {
             if (resource == null) return null;
@@ -66,6 +65,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param resource  the INode to cast
          * @return resource cast into the best possible type or null
          */
+
         public static ICommandResource asCommand(IResource resource)
         {
             if (resource == null) return null;
@@ -80,13 +80,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Checks whether a given INode represents a SPARQL element, and returns
          * an instance of a subclass of Element if so.
          * @param resource  the INode to check
          * @return INode as an Element or null if resource is not an element
          */
+
         public static IElementResource asElement(IResource resource)
         {
             if (resource == null) return null;
@@ -154,7 +154,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Returns the most specific Java instance for a given INode.
          * If the node is an aggregation, it will be returned as instance of
@@ -166,6 +165,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param node  the node to cast
          * @return node or node as a Function or Variable
          */
+
         public static IResource asExpression(IResource resource)
         {
             if (resource == null) return null;
@@ -190,20 +190,19 @@ namespace VDS.RDF.Query.Spin.Model
             return resource;
         }
 
-
         /**
          * Converts a given INode into a Function instance.
          * No other tests are done.
          * @param resource  the INode to convert
          * @return the Function
          */
+
         public static IFunctionResource asFunction(IResource resource)
         {
             if (resource == null) return null;
             if (resource.CanAs(SPIN.ClassFunction)) return (IFunctionResource)resource.As(typeof(FunctionImpl));
             return null;
         }
-
 
         /**
          * Checks if a given INode might represent a Function call, and if
@@ -213,17 +212,18 @@ namespace VDS.RDF.Query.Spin.Model
          * assumed that this function is called after other options have been
          * exhausted.  For example, in order to test whether a resource is a
          * variable or a function call, the variable test must be done first
-         * as it is more specific than these test conditions 
+         * as it is more specific than these test conditions
          * @param resource  the INode to test
          * @return resource as a Function or null if resource cannot be cast
          */
+
         public static IFunctionCallResource asFunctionCall(IResource resource)
         {
             if (resource == null) return null;
             if (resource is IBlankNode)
             {
                 IResource t = resource.GetResource(RDF.PropertyType);
-                if (t != null && !RDFHelper.SameTerm(SP.ClassVariable,t))
+                if (t != null && !RDFHelper.SameTerm(SP.ClassVariable, t))
                 {
                     return (IFunctionCallResource)resource.As(typeof(FunctionCallImpl));
                 }
@@ -231,13 +231,13 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         /**
          * Checks if a given INode is a SPIN query, and returns an
-         * instance of a subclass of Query if so. 
+         * instance of a subclass of Query if so.
          * @param resource  the INode to test
          * @return resource as a Query or null
          */
+
         public static IQueryResource asQuery(IResource resource)
         {
             if (resource == null) return null;
@@ -263,19 +263,18 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Converts a given INode into a Template instance.
          * No other tests are done.
          * @param resource  the INode to convert
          * @return the Template
          */
+
         public static ITemplateResource asTemplate(IResource resource)
         {
             if (resource == null) return null;
             return (ITemplateResource)resource.As(typeof(TemplateImpl));
         }
-
 
         /**
          * Checks whether a given INode can be cast into TemplateCall, and returns
@@ -283,15 +282,16 @@ namespace VDS.RDF.Query.Spin.Model
          * @param node  the node to convert
          * @return an instance of TemplateCall or null
          */
+
         public static ITemplateCallResource asTemplateCall(IResource resource)
         {
             if (resource == null) return null;
             if (!resource.IsLiteral())
             {
-                IResource t= resource.GetResource(RDF.PropertyType);
-                if (t!=null && t.IsUri())
+                IResource t = resource.GetResource(RDF.PropertyType);
+                if (t != null && t.IsUri())
                 {
-                    ITemplateResource template =  t.GetModel().GetTemplate(t.Uri);
+                    ITemplateResource template = t.GetModel().GetTemplate(t.Uri);
                     if (template != null)
                     {
                         return (ITemplateCallResource)resource.As(typeof(TemplateCallImpl));
@@ -301,13 +301,13 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         /**
          * Checks whether a given INode can be converted into a TriplePattern, and if yes,
          * returns an instance of TriplePattern.
          * @param node  the node to test
          * @return node as TriplePattern or null
          */
+
         public static ITriplePatternResource asTriplePattern(IResource resource)
         {
             if (resource == null) return null;
@@ -321,13 +321,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Checks if a given INode is a subclass of sp:Update and
          * casts it into the most specific Java class possible.
          * @param resource  the INode to cast
          * @return the Update or null if resource cannot be cast
          */
+
         public static IUpdateResource asUpdate(IResource resource)
         {
             if (resource == null) return null;
@@ -377,7 +377,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Checks whether a given INode can be cast into a Variable and - if yes -
          * converts it into an instance of Variable.  The INode must have a value
@@ -385,6 +384,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param node  the node to check
          * @return resource as a Variable or null
          */
+
         public static IVariableResource asVariable(IResource resource)
         {
             if (resource == null) return null;
@@ -398,7 +398,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Creates an spl:Argument with a given property and value type.
          * The new Argument resource will be a blank node in a given Model.
@@ -408,6 +407,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param optional  true if the Argument shall be optional
          * @return the new Argument
          */
+
         public static IArgumentResource createArgument(SpinModel model, INode argProperty, INode argType, bool optional)
         {
             IArgumentResource a = (IArgumentResource)model.CreateResource(SPL.ClassArgument).As(typeof(ArgumentImpl));
@@ -426,7 +426,6 @@ namespace VDS.RDF.Query.Spin.Model
             return a;
         }
 
-
         /**
          * Creates a new spl:Attribute as a blank node in a given Model.
          * @param model  the Model to create the attribute in
@@ -436,9 +435,10 @@ namespace VDS.RDF.Query.Spin.Model
          * @param maxCount  the maximum cardinality or null
          * @return a new Attribute
          */
+
         public static IAttributeResource createAttribute(SpinModel model, INode argProperty, INode argType, int minCount, int maxCount)
         {
-            IAttributeResource a =(IAttributeResource) model.CreateResource(SPL.ClassAttribute).As(typeof(AttributeImpl));
+            IAttributeResource a = (IAttributeResource)model.CreateResource(SPL.ClassAttribute).As(typeof(AttributeImpl));
             if (argProperty != null)
             {
                 a.AddProperty(SPL.PropertyPredicate, argProperty);
@@ -458,20 +458,19 @@ namespace VDS.RDF.Query.Spin.Model
             return a;
         }
 
-
         /**
          * Creates an Ask query for a given WHERE clause.
          * @param model  the Model to create the Ask (blank node) in
          * @param where  the elements of the WHERE clause
          * @return the new Ask query
          */
+
         public static IAskResource createAsk(SpinModel model, IElementListResource where)
         {
             IAskResource ask = (IAskResource)model.CreateResource(SP.ClassAsk).As(typeof(AskImpl));
             ask.AddProperty(SP.PropertyWhere, where);
             return ask;
         }
-
 
         /**
          * Creates a Bind in a given Model as a blank node.
@@ -480,6 +479,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param expression  the expression
          * @return a new Bind instance
          */
+
         public static IBindResource createBind(SpinModel model, IVariableResource variable, INode expression)
         {
             IBindResource bind = (IBindResource)model.CreateResource(SP.ClassBind).As(typeof(BindImpl));
@@ -494,13 +494,13 @@ namespace VDS.RDF.Query.Spin.Model
             return bind;
         }
 
-
         /**
          * Creates a new ElementList in a given Model.
          * @param model  the Model to create the ElementList in
          * @param elements  the elements (may be empty)
          * @return a new ElementList (may be rdf:nil)
          */
+
         public static IElementListResource createElementList(SpinModel model, IElementResource[] elements)
         {
             if (elements.Length > 0)
@@ -513,13 +513,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Creates a new ElementList in a given Model.
          * @param model  the Model to create the ElementList in
          * @param elements  the elements (may be empty)
          * @return a new ElementList (may be rdf:nil)
          */
+
         public static IElementListResource createElementList(SpinModel model, IEnumerator<IElementResource> elements)
         {
             if (elements.MoveNext())
@@ -533,13 +533,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Creates a new Exists as a blank node in a given Model.
          * @param model  the Model to create the EXISTS in
          * @param elements  the elements of the EXISTS
          * @return a new Exists
          */
+
         public static IExistsResource createExists(SpinModel model, IElementListResource elements)
         {
             IExistsResource notExists = (IExistsResource)model.CreateResource(SP.ClassExists).As(typeof(ExistsImpl));
@@ -547,20 +547,19 @@ namespace VDS.RDF.Query.Spin.Model
             return notExists;
         }
 
-
         /**
          * Creates a Filter from a given expression.
          * @param model  the Model to create the (blank node) Filter in
          * @param expression  the expression node (not null)
          * @return a new Filter
          */
+
         public static IFilterResource createFilter(SpinModel model, INode expression)
         {
             IFilterResource filter = (IFilterResource)model.CreateResource(SP.ClassFilter).As(typeof(FilterImpl));
             filter.AddProperty(SP.PropertyExpression, expression);
             return filter;
         }
-
 
         /**
          * Creates a new Function call, which is basically an instance of the
@@ -569,11 +568,11 @@ namespace VDS.RDF.Query.Spin.Model
          * @param function  the function class (must be a URI resource)
          * @return a new instance of function
          */
+
         public static IFunctionCallResource createFunctionCall(SpinModel model, INode function)
         {
             return (IFunctionCallResource)model.CreateResource(function).As(typeof(FunctionCallImpl));
         }
-
 
         /**
          * Creates a new Minus as a blank node in a given Model.
@@ -581,13 +580,13 @@ namespace VDS.RDF.Query.Spin.Model
          * @param elements  the elements of the MINUS
          * @return a new Minus
          */
+
         public static IMinusResource createMinus(SpinModel model, IElementListResource elements)
         {
             IMinusResource minus = (IMinusResource)model.CreateResource(SP.ClassMinus).As(typeof(MinusImpl));
             minus.AddProperty(SP.PropertyElements, elements);
             return minus;
         }
-
 
         /**
          * Creates a new NamedGraph element as a blank node in a given Model.
@@ -596,14 +595,14 @@ namespace VDS.RDF.Query.Spin.Model
          * @param elements  the elements in the NamedGraph
          * @return a new NamedGraph
          */
+
         public static INamedGraphResource createNamedGraph(SpinModel model, INode graphNameNode, IResource elements)
         {
-            INamedGraphResource result =(INamedGraphResource) model.CreateResource(SP.ClassNamedGraph).As(typeof(NamedGraphImpl));
+            INamedGraphResource result = (INamedGraphResource)model.CreateResource(SP.ClassNamedGraph).As(typeof(NamedGraphImpl));
             result.AddProperty(SP.PropertyGraphNameNode, graphNameNode);
             result.AddProperty(SP.PropertyElements, elements);
             return result;
         }
-
 
         /**
          * Creates a new NotExists as a blank node in a given Model.
@@ -611,6 +610,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param elements  the elements of the NOT EXISTS
          * @return a new NotExists
          */
+
         public static INotExistsResource createNotExists(SpinModel model, IElementListResource elements)
         {
             INotExistsResource notExists = (INotExistsResource)model.CreateResource(SP.ClassNotExists).As(typeof(NotExistsImpl));
@@ -618,20 +618,19 @@ namespace VDS.RDF.Query.Spin.Model
             return notExists;
         }
 
-
         /**
-         * Creates a new Optional as a blank node in a given Model. 
+         * Creates a new Optional as a blank node in a given Model.
          * @param model  the Model to create the OPTIONAL in
          * @param elements  the elements of the OPTIONAL
          * @return a new Optional
          */
+
         public static IOptionalResource createOptional(SpinModel model, IElementListResource elements)
         {
             IOptionalResource optional = (IOptionalResource)model.CreateResource(SP.ClassOptional).As(typeof(OptionalImpl));
             optional.AddProperty(SP.PropertyElements, elements);
             return optional;
         }
-
 
         public static IServiceResource createService(SpinModel model, INode serviceURI, IElementListResource elements)
         {
@@ -641,13 +640,13 @@ namespace VDS.RDF.Query.Spin.Model
             return service;
         }
 
-
         /**
          * Creates a new SubQuery as a blank node in a given Model.
          * @param model  the Model to create the SubQuery in
          * @param subQuery  the nested query
          * @return a new SubQuery
          */
+
         public static ISubQueryResource createSubQuery(SpinModel model, IQueryResource subQuery)
         {
             ISubQueryResource result = (ISubQueryResource)model.CreateResource(SP.ClassSubQuery).As(typeof(SubQueryImpl));
@@ -655,19 +654,18 @@ namespace VDS.RDF.Query.Spin.Model
             return result;
         }
 
-
         /**
          * Creates a new TemplateCall as a blank node instance of a given template.
          * @param model  the Model to create a template call in
          * @param template  the template class
          * @return the new TemplateCall or null
          */
+
         public static ITemplateCallResource createTemplateCall(SpinModel model, INode template)
         {
             ITemplateCallResource templateCall = (ITemplateCallResource)model.CreateResource(template).As(typeof(TemplateCallImpl));
             return templateCall;
         }
-
 
         /**
          * Creates a new TriplePath as a blank node in a given Model.
@@ -677,6 +675,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param object  the object (not null)
          * @return a new TriplePath
          */
+
         public static ITriplePathResource createTriplePath(SpinModel model, INode subject, INode path, INode obj)
         {
             ITriplePathResource triplePath = (ITriplePathResource)model.CreateResource(SP.ClassTriplePath).As(typeof(TriplePathImpl));
@@ -686,7 +685,6 @@ namespace VDS.RDF.Query.Spin.Model
             return triplePath;
         }
 
-
         /**
          * Creates a new TriplePattern as a blank node in a given Model.
          * @param model  the Model to create the pattern in
@@ -695,6 +693,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param object  the object (not null)
          * @return a new TriplePattern
          */
+
         public static ITriplePatternResource createTriplePattern(SpinModel model, INode subject, INode predicate, INode obj)
         {
             // No rdf:type sp:TriplePattern needed - engine looks for sp:predicate
@@ -705,13 +704,13 @@ namespace VDS.RDF.Query.Spin.Model
             return triplePattern;
         }
 
-
         /**
          * Creates a new UNION element as a blank node in a given Model.
          * @param model  the Model to create the Union in
          * @param elements  the elements
          * @return a new Union
          */
+
         public static IUnionResource createUnion(SpinModel model, IElementListResource elements)
         {
             IUnionResource union = (IUnionResource)model.CreateResource(SP.ClassUnion).As(typeof(UnionImpl));
@@ -719,14 +718,14 @@ namespace VDS.RDF.Query.Spin.Model
             return union;
         }
 
-
         // TODO Should not be needed since we would rely on the underlying storage capabilities
-        /** 
+        /**
          * Creates a new Values element.
          * @param model  the Model to create the Values in
          * @param data  the Table providing the actual data
          * @return a new Values
          */
+
         public static IValuesResource createValues(SpinModel model, SparqlResultSet data, bool untyped)
         {
             IResource blank = untyped ? model.CreateResource() : model.CreateResource(SP.ClassValues);
@@ -768,20 +767,19 @@ namespace VDS.RDF.Query.Spin.Model
             return values;
         }
 
-
         /**
          * Creates a new Variable as a blank node in a given Model.
          * @param model  the Model
          * @param varName  the name of the variable
          * @return the Variable
          */
+
         public static IVariableResource createVariable(SpinModel model, String varName)
         {
             IVariableResource variable = (IVariableResource)model.CreateResource(SP.ClassVariable).As(typeof(VariableImpl));
             variable.AddProperty(SP.PropertyVarName, RDFHelper.CreateLiteralNode(varName));
             return variable;
         }
-
 
         /**
          * Gets an spl:Attribute defined for a given property on a given class.
@@ -790,6 +788,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param property  the property
          * @return the Attribute or null if none is found
          */
+
         public static IAttributeResource getAttribute(IResource cls, INode property)
         {
             IEnumerator<Triple> it = cls.ListProperties(SPIN.PropertyConstraint).GetEnumerator();
@@ -809,13 +808,13 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         /**
          * Gets the most appopriate metaclass to wrap a given Command into a
          * Template.  For example, for an Ask query, this will return spin:AskTemplate.
          * @param command  the Command, cast into the best possible subclass
          * @return the Template metaclass
          */
+
         public static INode getTemplateMetaClass(ICommandResource command)
         {
             if (command is IAskResource)
@@ -840,18 +839,17 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Checks whether a given module has been declared abstract using
          * <code>spin:abstract</code.
          * @param module  the module to test
          * @return true if abstract
          */
+
         public static bool isAbstract(IResource module)
         {
             return module.HasProperty(SPIN.PropertyAbstract, RDFHelper.TRUE);
         }
-
 
         /**
          * Checks if a given INode can be cast into an ElementList.
@@ -860,6 +858,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param resource  the resource to test
          * @return true if resource is an element list
          */
+
         public static bool isElementList(IResource resource)
         {
             if (resource.IsUri() && RDFHelper.SameTerm(RDF.Nil, resource))
@@ -884,13 +883,13 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         /**
          * Checks if a given INode is an instance of a class that has
          * type spin:Module (or its subclasses such as spin:Function).
          * @param resource  the INode to check
          * @return true  if resource is a Module
          */
+
         public static bool isModuleInstance(IResource resource)
         {
             foreach (IResource type in resource.GetObjects(RDF.PropertyType))
@@ -903,17 +902,16 @@ namespace VDS.RDF.Query.Spin.Model
             return false;
         }
 
-
         /**
          * Checks if a given INode is spin:query or a sub-property of it.
          * @param predicate  the INode to test
          * @return true if predicate is a query property
          */
+
         public static bool isQueryProperty(IResource predicate)
         {
-            return RDFHelper.SameTerm(SPIN.PropertyQuery,predicate) || predicate.HasProperty(RDFS.PropertySubPropertyOf, SPIN.PropertyQuery);
+            return RDFHelper.SameTerm(SPIN.PropertyQuery, predicate) || predicate.HasProperty(RDFS.PropertySubPropertyOf, SPIN.PropertyQuery);
         }
-
 
         /**
          * Checks whether a given INode is a TemplateCall.  The condition for this
@@ -923,18 +921,19 @@ namespace VDS.RDF.Query.Spin.Model
          * @param node  the INode to check
          * @return true if node is a TemplateCall
          */
+
         public static bool isTemplateCall(IResource node)
         {
             ITemplateCallResource templateCall = asTemplateCall(node);
             return templateCall != null && templateCall.getTemplate() != null;
         }
 
-
         /**
          * Checks whether a given INode is a variable.
          * @param node  the node to check
          * @return true if node is a variable
          */
+
         public static bool isVariable(IResource node)
         {
             return asVariable(node) != null;

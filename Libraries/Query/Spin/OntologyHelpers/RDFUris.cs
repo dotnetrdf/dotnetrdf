@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Spin
     public static class XSD
     {
         public readonly static String NS_URI = NamespaceMapper.XMLSCHEMA;
-        public readonly static IUriNode DatatypeString = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI +"string"));
+        public readonly static IUriNode DatatypeString = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "string"));
 
         public readonly static IUriNode DatatypeDecimal = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "decimal"));
         public readonly static IUriNode DatatypeDuration = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "duration"));
@@ -51,7 +51,6 @@ namespace VDS.RDF.Query.Spin
         public readonly static IUriNode DatatypeTime = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "time"));
         public readonly static IUriNode DatatypeToken = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "token"));
         public readonly static IUriNode DatatypeBoolean = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "boolean"));
-   
     }
 
     public static class RDF
@@ -59,7 +58,8 @@ namespace VDS.RDF.Query.Spin
         public readonly static String NS_URI = NamespaceMapper.RDF;
 
         //public readonly static IUriNode ClassResource = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Resource"));
-        public readonly static IUriNode ClassProperty = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Property")); 
+        public readonly static IUriNode ClassProperty = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Property"));
+
         public readonly static IUriNode ClassHTML = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "HTML"));
         public readonly static IUriNode ClassPlainLiteral = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "PlainLiteral"));
         public readonly static IUriNode ClassXMLLiteral = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "XMLLiteral"));
@@ -124,5 +124,4 @@ namespace VDS.RDF.Query.Spin
         public readonly static IUriNode Thing = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Thing"));
         public readonly static IUriNode PropertyVersionInfo = RDFHelper.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyVersionInfo));
     }
-
 }

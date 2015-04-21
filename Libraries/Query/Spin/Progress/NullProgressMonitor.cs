@@ -1,4 +1,5 @@
 using System;
+
 namespace VDS.RDF.Query.Spin.Progress
 {
     /// <summary>
@@ -8,7 +9,6 @@ namespace VDS.RDF.Query.Spin.Progress
     /// <author>Holger Knublauch</author>
     public class NullProgressMonitor : IProgressMonitor
     {
-
         private bool canceled;
 
         public bool isCanceled()

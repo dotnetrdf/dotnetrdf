@@ -1,26 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     /**
      * A singleton that is used to render resources into strings.
-     * By default this displays qnames (if possible). 
+     * By default this displays qnames (if possible).
      * Can be changed, for example, to switch to displaying rdfs:labels
      * instead of qnames etc.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public class SPINLabels
     {
-
         /**
          * Gets a "human-readable" label for a given Resource.
          * This checks for any existing rdfs:label, otherwise falls back to
@@ -28,6 +25,7 @@ namespace VDS.RDF.Query.Spin.Model
          * @param resource
          * @return the label (never null)
          */
+
         public static String getCustomizedLabel(IResource resource)
         {
             String label = resource.GetString(RDFS.PropertyLabel);
@@ -38,12 +36,12 @@ namespace VDS.RDF.Query.Spin.Model
             return getLabel(resource);
         }
 
-
         /**
          * Gets the label for a given Resource.
          * @param resource  the Resource to get the label of
          * @return the label (never null)
          */
+
         public static String getLabel(INode resource)
         {
             if (resource is IUriNode)

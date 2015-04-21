@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
 
 using System;
@@ -10,15 +10,14 @@ using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.OntologyHelpers
 {
-
     /**
      * Vocabulary of the SPIN SPARQL Syntax schema.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public class SP
     {
-
         public const String BASE_URI = "http://spinrdf.org/sp";
 
         public const String NS_URI = BASE_URI + "#";
@@ -28,7 +27,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
         public const String VAR_NS = "http://spinrdf.org/var#";
 
         public const String VAR_PREFIX = "var";
-
 
         public readonly static IUriNode ClassAdd = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Add"));
 
@@ -151,7 +149,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
         public readonly static IUriNode ClassVariable = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Variable"));
 
-
         public readonly static IUriNode PropertyAll = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "all"));
 
         public readonly static IUriNode PropertyArg = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "arg"));
@@ -262,7 +259,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
         public readonly static IUriNode PropertyWith = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "with"));
 
-
         public readonly static IUriNode PropertyBound = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "bound"));
 
         public readonly static IUriNode PropertyEq = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "eq"));
@@ -290,6 +286,7 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
         public readonly static IUriNode PropertyGeq = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "geq"));
 
         private static Graph model;
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static Graph GetModel()
         {
@@ -308,7 +305,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
             //GetModel();
             //SP.init(BuiltinPersonalities.model);
         }
-
 
         /**
          * Checks whether the SP ontology is used in a given Model.
@@ -335,7 +331,7 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
                 String subString = varName.Substring(3);
                 try
                 {
-                    return Int32.Parse(subString) -1;
+                    return Int32.Parse(subString) - 1;
                 }
                 catch (Exception t)
                 {
@@ -349,7 +345,6 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 		SP.init(BuiltinPersonalities.model);
     }
 
-    
     //@SuppressWarnings("deprecation")
 	private static void init(Personality<INode> p) {
     	p.Add(Aggregation, new SimpleImplementation(SPL.Argument, AggregationImpl));
@@ -392,26 +387,18 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
     	p.Add(Values, new SimpleImplementation(Values, ValuesImpl));
     	p.Add(Variable, new SimpleImplementation(Variable, VariableImpl));
     }
-    
-    
 
-    
     public static INode getArgProperty(int index) {
     	return RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "arg" + index);
     }
-    
-    
+
     public static INode getArgProperty(String varName) {
     	return RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + varName);
     }
-    
-    
-	
-	
+
 	public static String getURI() {
         return NS_URI;
     }
-
 
 	public static void toStringElementList(StringBuilder buffer, INode resource) {
 		RDFList list = resource.As(RDFList);

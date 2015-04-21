@@ -1,25 +1,20 @@
 using System;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttributeResource
     {
-
         public AbstractAttributeImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
 
-
         public IResource getPredicate()
         {
             IResource r = GetResource(SPL.PropertyPredicate);
-            if (r!=null && r.IsUri())
+            if (r != null && r.IsUri())
             {
                 return r;
             }
@@ -29,12 +24,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public IResource getValueType()
         {
             return GetObject(SPL.PropertyValueType);
         }
-
 
         public String getComment()
         {

@@ -1,22 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 
 namespace VDS.RDF.Query.Spin.Statistics
 {
-
     /**
      * A wrapper to record the execution time of a given Query
      * for statistical purposes.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     // Replace the GetXXX function with properties
     public class SpinStatistics
     {
-
         private INode _context;
 
         private TimeSpan _duration;
@@ -37,9 +37,10 @@ namespace VDS.RDF.Query.Spin.Statistics
          * @param startTime  the start time of execution (for ordering)
          * @param context  the INode that for example was holding the spin:rule
          */
+
         public SpinStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context)
-            :this(label, queryText, duration, startTime, context, -1)
-        { 
+            : this(label, queryText, duration, startTime, context, -1)
+        {
         }
 
         public SpinStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context, int resultCount)
@@ -60,7 +61,6 @@ namespace VDS.RDF.Query.Spin.Statistics
             }
         }
 
-
         public TimeSpan Duration
         {
             get
@@ -69,7 +69,6 @@ namespace VDS.RDF.Query.Spin.Statistics
             }
         }
 
-
         public String Label
         {
             get
@@ -77,7 +76,6 @@ namespace VDS.RDF.Query.Spin.Statistics
                 return _label;
             }
         }
-
 
         public String QueryText
         {

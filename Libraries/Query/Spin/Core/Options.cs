@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace VDS.RDF.Query.Spin
+﻿namespace VDS.RDF.Query.Spin
 {
     public static class Options
     {
-
         private static bool _useCaching = false;
         private static bool _emulateSpinProcessing = true;
         private static bool _autoCommitTransactions = true;
@@ -62,7 +56,7 @@ namespace VDS.RDF.Query.Spin
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Statistics can be recorded only if EmulateSpinProcessing is set to true 
+        /// Statistics can be recorded only if EmulateSpinProcessing is set to true
         /// </para>
         /// </remarks>
         public static bool RecordStatistics
@@ -76,6 +70,5 @@ namespace VDS.RDF.Query.Spin
                 _recordStatistics = value;
             }
         }
-
     }
 }

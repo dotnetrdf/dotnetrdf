@@ -2,33 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Configuration;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Query.Spin
 {
-
     /// <summary>
-    /// This class is responsible for 
+    /// This class is responsible for
     ///     => defining which SPARQL strategy handlers are necessary for a specific server and version
     ///     => creating the Connection objects to a specific store through the GetStore method.
     /// </summary>
     /// <remarks>
-    /// TODO replace manual registration by the configuration then rename it finally to SpinStorageProvider 
+    /// TODO replace manual registration by the configuration then rename it finally to SpinStorageProvider
     /// </remarks>
     public class SpinStorageProvider
         : ISparqlSDPlugin
     {
-
         private static readonly IUriNode PropertySparqlStrategy = RDFHelper.CreateUriNode(UriFactory.Create(ConfigurationLoader.ConfigurationNamespace + "sparqlStrategy"));
-
 
         private IGraph _configurationGraph;
         private INode _thisConfigurationNode;
@@ -60,14 +54,15 @@ namespace VDS.RDF.Query.Spin
             SpinModel.Register(this, (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode), spinImports);
         }
 
-        public Connection GetConnection() {
+        public Connection GetConnection()
+        {
             IStorageProvider storage = (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode);
-            if (!(storage is IUpdateableStorage)) {
+            if (!(storage is IUpdateableStorage))
+            {
                 throw new DotNetRdfConfigurationException("A SpinStorageProvider underlying storage must support SPARQL 1.1 Updates.");
             }
             return new Connection(this, (IUpdateableStorage)storage);
         }
-
 
         internal void Handle(SparqlCommandUnit command)
         {
@@ -79,8 +74,10 @@ namespace VDS.RDF.Query.Spin
 
         #region ISparqlSDPlugin members
 
-        public INode Resource {
-            get {
+        public INode Resource
+        {
+            get
+            {
                 return _thisConfigurationNode;
             }
         }
@@ -100,7 +97,6 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
-        #endregion
-
+        #endregion ISparqlSDPlugin members
     }
 }

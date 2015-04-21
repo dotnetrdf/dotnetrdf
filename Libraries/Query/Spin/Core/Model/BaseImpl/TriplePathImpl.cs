@@ -1,30 +1,22 @@
 using System;
 using VDS.RDF.Query.Paths;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class TriplePathImpl : TupleImpl, ITriplePathResource
     {
-
         public TriplePathImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         //public void visit(IElementVisitor visitor)
         //{
         //    visitor.visit(this);
         //}
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -59,7 +51,6 @@ namespace VDS.RDF.Query.Spin.Model
                 p.print(str);
             }
         }
-
 
         private ISparqlPath createPath(IResource path)
         {
@@ -132,7 +123,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return null;
             }
         }
-
 
         private ISparqlPath createPath(IResource subject, INode predicate)
         {

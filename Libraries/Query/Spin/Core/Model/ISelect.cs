@@ -1,21 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
-using VDS.RDF;
+
 using System.Collections.Generic;
+
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     /**
      * A SELECT query.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public interface ISelectResource : ISolutionModifierQueryResource
     {
-
         /**
          * Gets a list of result variables, or null if we have a star
          * results list.  Note that the "variables" may in fact be
@@ -26,20 +25,21 @@ namespace VDS.RDF.Query.Spin.Model
          * <code>sp:expression</code>, representing AS expressions.
          * @return the result "variables"
          */
-        List<IResource> getResultVariables();
 
+        List<IResource> getResultVariables();
 
         /**
          * Checks is this query has the DISTINCT flag set.
          * @return true if distinct
          */
-        bool isDistinct();
 
+        bool isDistinct();
 
         /**
          * Checks if this query has the REDUCED flag set.
          * @return true if reduced
          */
+
         bool isReduced();
     }
 }

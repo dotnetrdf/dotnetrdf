@@ -1,29 +1,23 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.SparqlUtil;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class SelectImpl : QueryImpl, ISelectResource
     {
-
         public SelectImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public List<IResource> getResultVariables()
         {
@@ -35,12 +29,10 @@ namespace VDS.RDF.Query.Spin.Model
             return results;
         }
 
-
         public bool isDistinct()
         {
             return HasProperty(SP.PropertyDistinct, RDFHelper.TRUE);
         }
-
 
         public bool isReduced()
         {
@@ -107,7 +99,6 @@ namespace VDS.RDF.Query.Spin.Model
             printValues(p);
         }
 
-
         private void printGroupBy(ISparqlPrinter p)
         {
             List<IResource> groupBy = getList(SP.PropertyGroupBy);
@@ -126,7 +117,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         private void printHaving(ISparqlPrinter p)
         {
             List<IResource> havings = getList(SP.PropertyHaving);
@@ -144,7 +134,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         private void printProjectExpression(ISparqlPrinter p, IVariableResource var)
         {
             p.print("((");
@@ -157,6 +146,5 @@ namespace VDS.RDF.Query.Spin.Model
             p.print(var.ToString());
             p.print(")");
         }
-
     }
 }

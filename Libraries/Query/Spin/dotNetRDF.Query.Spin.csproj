@@ -44,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\dotNetRDF.Query.Spin.XML</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -97,9 +98,6 @@
     <Compile Include="Core\Runtime\Factories\SpinFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Runtime\Registries\InMemoryGraphsRegistry.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\Runtime\Registries\SPINImports.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -109,7 +107,7 @@
     <Compile Include="Core\Runtime\SpinMagicPropertyCall.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Runtime\Uris.cs">
+    <Compile Include="Core\Runtime\RuntimeHelper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OntologyHelpers\SPINx.cs" />
@@ -362,7 +360,7 @@
     <Compile Include="Utility\FlaggedEnumExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utility\Resource.cs">
+    <Compile Include="Core\Model\SpinResource.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

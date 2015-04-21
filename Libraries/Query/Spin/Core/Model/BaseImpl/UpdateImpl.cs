@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public abstract class UpdateImpl : AbstractSPINResource, IUpdateResource
     {
-
         public UpdateImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
-
         }
 
         public IElementListResource getWhere()
@@ -36,7 +31,6 @@ namespace VDS.RDF.Query.Spin.Model
             return HasProperty(SP.PropertySilent, RDFHelper.TRUE);
         }
 
-
         override public void Print(ISparqlPrinter p)
         {
             String text = GetString(SP.PropertyText);
@@ -50,9 +44,7 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public abstract void printSPINRDF(ISparqlPrinter p);
-
 
         protected void printGraphDefaultNamedOrAll(ISparqlPrinter p)
         {
@@ -76,7 +68,6 @@ namespace VDS.RDF.Query.Spin.Model
                 p.printKeyword("ALL");
             }
         }
-
 
         protected void printGraphIRIs(ISparqlPrinter p, String keyword)
         {
@@ -105,7 +96,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         protected void printSilent(ISparqlPrinter p)
         {
             if (isSilent())
@@ -114,7 +104,6 @@ namespace VDS.RDF.Query.Spin.Model
                 p.print(" ");
             }
         }
-
 
         protected bool printTemplates(ISparqlPrinter p, INode predicate, String keyword, bool force, IResource graphIRI)
         {
@@ -176,7 +165,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return false;
             }
         }
-
 
         protected void printWhere(ISparqlPrinter p)
         {

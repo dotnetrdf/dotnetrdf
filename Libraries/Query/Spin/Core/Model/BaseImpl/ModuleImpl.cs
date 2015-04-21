@@ -1,22 +1,17 @@
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
     public class ModuleImpl : AbstractSPINResource, IModuleResource
     {
-
-
         public ModuleImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public List<IArgumentResource> getArguments(bool ordered)
         {
@@ -28,7 +23,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IEnumerable<IResource> classes = GetModel().GetAllSuperClasses(this, true);
                 foreach (IResource cls in classes)
                 {
-                    it =cls.ListProperties(SPIN.PropertyConstraint).GetEnumerator();
+                    it = cls.ListProperties(SPIN.PropertyConstraint).GetEnumerator();
                     while (it.MoveNext())
                     {
                         Triple s = it.Current;
@@ -67,10 +62,11 @@ namespace VDS.RDF.Query.Spin.Model
         }
 
         /**
-         * 
+         *
          * @param constaint is a statement whose subject is a class, and whose predicate is SPIN.constraint
          * @param results
          */
+
         private void addArgumentFromConstraint(Triple constraint, List<IArgumentResource> results)
         {
             if (constraint.Object is IBlankNode)
@@ -86,7 +82,7 @@ namespace VDS.RDF.Query.Spin.Model
                         {
                             results.Add(ResourceFactory.asArgument(SpinResource.Get(constraint.Object, GetModel())));
                         }
-                        else if (!RDFHelper.SameTerm(SPL.ClassAttribute,typeS.Object))
+                        else if (!RDFHelper.SameTerm(SPL.ClassAttribute, typeS.Object))
                         {
                             if (SpinResource.Get(typeS.Object, GetModel()).HasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
                             {
@@ -102,7 +98,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public Dictionary<String, IArgumentResource> getArgumentsMap()
         {
             Dictionary<String, IArgumentResource> results = new Dictionary<String, IArgumentResource>();
@@ -117,7 +112,6 @@ namespace VDS.RDF.Query.Spin.Model
             return results;
         }
 
-
         public ICommandResource getBody()
         {
             IResource node = GetResource(SPIN.PropertyBody);
@@ -131,18 +125,15 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public String getComment()
         {
             return GetString(RDFS.PropertyComment);
         }
 
-
         public bool isAbstract()
         {
             return ResourceFactory.isAbstract(this);
         }
-
 
         override public void Print(ISparqlPrinter p)
         {

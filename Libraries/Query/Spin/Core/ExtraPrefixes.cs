@@ -1,26 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
-using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model;
-using VDS.RDF;
 
 namespace VDS.RDF.Query.Spin.Core
 {
-
-
     /**
      * Manages extra prefixes that are always available even if not
      * explicitly declared.  Examples include fn and Jena's afn.
-     * 
+     *
      * @author Holger Knublauch
      */
+
     public static class ExtraPrefixes
     {
-
         private static NamespaceMapper map = new NamespaceMapper();
 
         static ExtraPrefixes()
@@ -33,7 +29,6 @@ namespace VDS.RDF.Query.Spin.Core
             map.AddNamespace("tops", UriFactory.Create("http://www.topbraid.org/tops#"));
         }
 
-
         /**
          * Programmatically adds a new prefix to be regarded as an "extra"
          * prefix.  These are prefixes that are assumed to be valid even if
@@ -42,6 +37,7 @@ namespace VDS.RDF.Query.Spin.Core
          * @param prefix  the prefix to add
          * @param namespace  the namespace to add
          */
+
         public static void Add(String prefix, String namespaceUri)
         {
             if (!map.HasNamespace(prefix))
@@ -50,12 +46,12 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-
         /**
          * Attempts to add an extra prefix for a given Resource.
          * This does nothing if the prefix does not exist or is empty.
          * @param resource  the resource to get the namespace of
          */
+
         public static void Add(IResource resource)
         {
             if (!resource.IsUri() || resource.AsNode().Graph == null) return;
@@ -68,12 +64,12 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-
         /**
          * Gets a Map from prefixes to namespaces.
          * The result should be treated as read-only.
          * @return the extra prefixes
          */
+
         public static INamespaceMapper getExtraPrefixes()
         {
             return map;

@@ -1,17 +1,14 @@
 using System;
-using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
     public class ArgumentImpl : AbstractAttributeImpl, IArgumentResource
     {
-
         public ArgumentImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public int? getArgIndex()
         {
@@ -26,12 +23,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public INode getDefaultValue()
         {
             return GetObject(SPL.PropertyDefaultValue);
         }
-
 
         public String getVarName()
         {
@@ -45,7 +40,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return null;
             }
         }
-
 
         public bool IsOptional()
         {

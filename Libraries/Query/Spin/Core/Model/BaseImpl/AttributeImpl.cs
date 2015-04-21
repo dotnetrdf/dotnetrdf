@@ -1,29 +1,23 @@
-using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class AttributeImpl : AbstractAttributeImpl, IAttributeResource
     {
-
         public AttributeImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public bool IsOptional()
         {
             return getMinCount() == 0;
         }
 
-
         public INode getDefaultValue()
         {
             return GetObject(SPL.PropertyDefaultValue);
         }
-
 
         public int? getMaxCount()
         {
@@ -37,7 +31,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return null;
             }
         }
-
 
         public int getMinCount()
         {

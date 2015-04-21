@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
-using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Core.Runtime;
-using VDS.RDF.Query.Spin.Core.Runtime.Registries;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Update;
@@ -40,7 +37,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
     public sealed class SpinSupportStrategy
         : ISparqlHandlingStrategy
     {
-
         private static readonly IUriNode RESOURCE = RDFHelper.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/spin/sparqlStrategies#SpinSupport"));
 
         static SpinSupportStrategy()
@@ -55,9 +51,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         public SpinSupportStrategy()
         {
         }
-
-        #region TODO events handlers
-        #endregion
 
         #region ISparqlSDPlugin members
 
@@ -81,18 +74,19 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             }
         }
 
-        #endregion
+        #endregion ISparqlSDPlugin members
 
         public void Handle(SparqlCommandUnit command)
         {
             new CommandRewriter(this, SpinModel.Get(command.Connection)).Rewrite(command);
         }
 
-        #region Event handlers
+        #region TODO Events handling
 
         /* Connection.Committed
          * => update the graphs using connection's pending additions/removals graphs
          */
+
         internal void OnConnectionCommitted(Object sender, ConnectionEventArgs args)
         {
         }
@@ -101,10 +95,10 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
         {
         }
 
-        #endregion
+        #endregion TODO Events handling
 
         /// <summary>
-        /// A unitary command rewriter helper to help local context maintenance
+        /// A local class to maintain the rewriting current context
         /// </summary>
         /// TODO whether we can define a lightweight base class (if not already provided by dotNetRDF (check with Rob) ?
         private class CommandRewriter
@@ -124,7 +118,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
             #region Rewriting methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// TODO handle the all the query/update types
             internal void Rewrite(SparqlCommandUnit command)
@@ -145,6 +139,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         case SparqlUpdateCommandType.InsertData:
                         case SparqlUpdateCommandType.DeleteData:
                             break;
+
                         case SparqlUpdateCommandType.Add:
                         case SparqlUpdateCommandType.Clear:
                         case SparqlUpdateCommandType.Copy:
@@ -169,7 +164,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                     RewriteQuery(_command.Query);
                 }
             }
-
 
             private void RewriteQuery(SparqlQuery query)
             {
@@ -285,7 +279,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
 
             private IEnumerable<object> Rewrite(GraphPattern pattern)
             {
-                // TODO find a way to preserve order of rewritten patterns 
+                // TODO find a way to preserve order of rewritten patterns
                 List<object> rewrittenPatterns = new List<object>();
                 // TODO use organization of the graph pattern
                 if (pattern == null) return rewrittenPatterns;
@@ -367,7 +361,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         {
                             transformedPatterns.Add(rewritten);
                         }
-
                     }
                     transformedPatterns.Add(assignmentPattern);
                 }
@@ -410,7 +403,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                     {
                         transformedPatterns.Add(rewritten);
                     }
-
                 }
                 return transformedPatterns;
             }
@@ -591,13 +583,16 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                             }
                         }
                         break;
+
                     case SparqlExpressionType.GraphOperator:
                         Rewrite(((Expressions.Primary.GraphPatternTerm)expression.Arguments.First()).Pattern);
                         transformedPatterns.Add(expression);
                         break;
+
                     case SparqlExpressionType.Primary:
                         transformedPatterns.Add(expression);
                         break;
+
                     case SparqlExpressionType.Aggregate:
                     case SparqlExpressionType.UnaryOperator:
                         List<ISparqlExpression> opArg = (List<ISparqlExpression>)expression.Arguments.ToList();
@@ -618,6 +613,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         ((BaseUnaryExpression)expression).Arguments = opArg;
                         transformedPatterns.Add(expression);
                         break;
+
                     case SparqlExpressionType.BinaryOperator:
                         List<ISparqlExpression> opArgs = (List<ISparqlExpression>)expression.Arguments.ToList();
                         for (int i = 0, l = opArgs.Count; i < l; i++)
@@ -637,12 +633,14 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         ((BaseBinaryExpression)expression).Arguments = opArgs;
                         transformedPatterns.Add(expression);
                         break;
+
                     case SparqlExpressionType.SetOperator:
                         foreach (ISparqlExpression arg in expression.Arguments.Skip(1))
                         {
                             transformedPatterns.AddRange(Rewrite(arg));
                         }
                         break;
+
                     default:
                         transformedPatterns.Add(expression);
                         break;
@@ -650,10 +648,7 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                 return transformedPatterns;
             }
 
-            #endregion
-
+            #endregion Rewriting methods
         }
-
     }
-
 }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using VDS.RDF.Query.Spin.Core.Runtime;
-using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 
@@ -14,14 +10,15 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
 
     internal delegate void ReleasedEventHandler(Object sender);
 
-    #endregion
+    #endregion Events handlers
 
     /// <summary>
-    /// A base class for resources that require or emit temporary graphs in the underlying storage
+    /// A base class for objects that require or emit temporary graphs in the underlying storage
     /// </summary>
     /// <remarks>
     /// Under normal circumstances, this class should notify listeners to release its temporary graphs on Dispose if not sooner
     /// </remarks>
+    /// TODO try to define an API to make temporary resources declaration and dependency management simpler
     /// TODO allow to create a direct instance for potential garbage collection in case of crash recovery
     public abstract class SparqlTemporaryResourceMediator
         : IDisposable
@@ -38,10 +35,9 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
         /// </summary>
         public const String NS_URI = BASE_URI + ":";
 
-        private readonly String _id = Guid.NewGuid().ToString().Replace("-", "");
+        public const String RES_URI = BASE_URI + "#";
 
-        // TODO use a graph instead to allow for simpler additions and management ?
-        //private HashSet<String> _tempGraphs = new HashSet<String>();
+        private readonly String _id = Guid.NewGuid().ToString().Replace("-", "");
 
         internal String ID
         {
@@ -51,23 +47,79 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
             }
         }
 
-        // TODO check whether we let the derived class define their Uris ?
         public Uri Uri
         {
             get
             {
-                return UriFactory.Create(SparqlTemporaryResourceMediator.NS_URI + _id);
+                return UriFactory.Create(NS_URI + _id);
             }
         }
 
-        internal abstract IQueryableStorage UnderlyingStorage { get; }
+        internal abstract IUpdateableStorage UnderlyingStorage { get; }
 
         internal abstract SparqlTemporaryResourceMediator ParentContext { get; }
 
         internal void RaiseReleased()
         {
+            // first notify all listeners
             ReleasedEventHandler handler = Released;
-            if (handler!=null) Released.Invoke(this);
+            try
+            {
+                if (handler != null) Released.Invoke(this);
+            }
+            finally
+            {
+                // then clean the StorageRuntimeMonitorGraph
+
+                // Get any reference to graphs owned solely by the mediator
+                SparqlParameterizedString command = new SparqlParameterizedString(@"
+                    SELECT DISTINCT ?tempGraph
+                    FROM @monitorLog
+                    WHERE {
+                        ?tempGraph @requiredBy @consumerUri .
+                        # to clear any reference to temp graphs
+                        # the graph must not be referenced by another consumer
+                        FILTER (NOT EXISTS {
+                            ?tempGraph @requiredBy ?concurrentConsumer .
+                            FILTER (!sameTerm(@consumerUri, ?concurrentConsumer))
+                        })
+                    }");
+                command.SetParameter("monitorLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
+                command.SetParameter("requiredBy", RuntimeHelper.PropertyRequiredBy);
+                //command.SetParameter("hasScope", PropertyHasScope);
+                command.SetParameter("consumerUri", RDFHelper.CreateUriNode(Uri));
+                command.SetParameter("RdfNull", RuntimeHelper.BLACKHOLE);
+
+                SparqlResultSet metas = (SparqlResultSet)UnderlyingStorage.Query(command.ToString());
+                // Build the list resources to garbage and graphs to clear
+                StringBuilder dropGraphsSB = new StringBuilder();
+                StringBuilder releasableResourcesFilter = new StringBuilder();
+                releasableResourcesFilter.AppendLine("@consumerUri");
+                foreach (Uri graphUri in metas.Results.Select(r => ((IUriNode)r.Value("tempGraph")).Uri))
+                {
+                    releasableResourcesFilter.AppendLine(", <" + graphUri.ToString() + ">");
+                    dropGraphsSB.AppendLine("DROP SILENT GRAPH <" + graphUri.ToString() + ">;");
+                }
+                // Then clean up the UnderlyingStorage
+                command.CommandText = @"
+                    DELETE {
+                        GRAPH @monitorLog {
+                            ?garbagedResource ?p ?o .
+                        }
+                    }
+                    USING NAMED @monitorLog
+                    WHERE {
+                        GRAPH @monitorLog {
+                            ?garbagedResource ?p ?o .
+                            FILTER (?garbagedResource IN(" + releasableResourcesFilter.ToString() + @"))
+                        }
+                    };
+
+                    " + dropGraphsSB.ToString() + @"
+                    #DROP SILENT GRAPH @RdfNull;
+                    ";
+                UnderlyingStorage.Update(command.ToString());
+            }
         }
 
         public virtual void Dispose()

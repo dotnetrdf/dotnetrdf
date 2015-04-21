@@ -1,27 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using System.Resources;
 using System.Text;
-using VDS.RDF;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Spin.Core;
 
 namespace VDS.RDF.Query.Spin.Model.IO
 {
-
     /// <summary>
     /// The default implementation of the ISparqlPrinter interface.
     /// </summary>
     public class BaseSparqlPrinter : ISparqlPrinter
     {
-
         //private const PrefixMapping noPrefixMapping = new PrefixMapping();
 
         private int indentation;
@@ -48,14 +40,12 @@ namespace VDS.RDF.Query.Spin.Model.IO
 
         private bool usePrefixes = true;
 
-
         #region Initialisation
 
         public BaseSparqlPrinter()
             : this(new StringBuilder())
         {
         }
-
 
         public BaseSparqlPrinter(StringBuilder sb)
             : this(sb, new Dictionary<String, IResource>())
@@ -68,7 +58,7 @@ namespace VDS.RDF.Query.Spin.Model.IO
             this.initialBindings = initialBindings;
         }
 
-        #endregion
+        #endregion Initialisation
 
         #region Utilities
 
@@ -84,12 +74,10 @@ namespace VDS.RDF.Query.Spin.Model.IO
             return cl;
         }
 
-
         public int getIndentation()
         {
             return indentation;
         }
-
 
         public IResource getInitialBinding(String varName)
         {
@@ -100,7 +88,6 @@ namespace VDS.RDF.Query.Spin.Model.IO
             return null;
         }
 
-
         public Dictionary<INode, String> getNodeToLabelMap()
         {
             if (nodeToLabelMap == null)
@@ -110,36 +97,30 @@ namespace VDS.RDF.Query.Spin.Model.IO
             return nodeToLabelMap;
         }
 
-
         public bool getPrintPrefixes()
         {
             return printPrefixes;
         }
-
 
         public String GetString()
         {
             return sb.ToString();
         }
 
-
         public StringBuilder getStringBuilder()
         {
             return sb;
         }
-
 
         public bool getUseExtraPrefixes()
         {
             return useExtraPrefixes;
         }
 
-
         public bool getUsePrefixes()
         {
             return usePrefixes;
         }
-
 
         public bool hasInitialBindings()
         {
@@ -151,21 +132,19 @@ namespace VDS.RDF.Query.Spin.Model.IO
             return namedBNodeMode;
         }
 
-
         public bool isNested()
         {
             return nested;
         }
 
-
         /**
          * @param str Non-null string.
          */
+
         public void print(String str)
         {
             sb.Append(str.ToString());
         }
-
 
         public void printIndentation(int depth)
         {
@@ -175,12 +154,10 @@ namespace VDS.RDF.Query.Spin.Model.IO
             }
         }
 
-
         public void printKeyword(String str)
         {
             print(str);
         }
-
 
         public void println()
         {
@@ -193,7 +170,6 @@ namespace VDS.RDF.Query.Spin.Model.IO
             indentation += indent;
             printIndentation(indentation);
         }
-
 
         public void printVariable(String str)
         {
@@ -212,7 +188,6 @@ namespace VDS.RDF.Query.Spin.Model.IO
                 print(lit);
             }
         }
-
 
         public void printURIResource(IResource resource)
         {
@@ -245,62 +220,54 @@ namespace VDS.RDF.Query.Spin.Model.IO
             print(">");
         }
 
-
         /**
          * Work-around for a bug in Jena: Jena would use the default
          * namespace of an imported Graph in a MultiUnion.
          * @param resource  the INode to get the qname for
          * @return the qname or null
          */
+
         public static String qnameFor(IResource resource)
         {
             // TODO use model namespace mapper;
             return null; // resource.Uri.ToString();
         }
 
-
         public void setIndentation(int value)
         {
             this.indentation = value;
         }
-
 
         public void setIndentationString(String value)
         {
             this.indentationString = value;
         }
 
-
         public void setNamedBNodeMode(bool value)
         {
             this.namedBNodeMode = value;
         }
-
 
         public void setNested(bool value)
         {
             this.nested = value;
         }
 
-
         public void setPrintPrefixes(bool value)
         {
             this.printPrefixes = value;
         }
-
 
         public void setUseExtraPrefixes(bool value)
         {
             this.useExtraPrefixes = value;
         }
 
-
         public void setUsePrefixes(bool value)
         {
             this.usePrefixes = value;
         }
 
-        #endregion
-
-   }
+        #endregion Utilities
+    }
 }

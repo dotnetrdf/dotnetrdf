@@ -1,29 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public class VariableImpl : AbstractSPINResource, IVariableResource
     {
-
         public VariableImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         private void addTriplePatterns(INode predicate, HashSet<ITriplePatternResource> results)
         {
@@ -35,12 +28,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public String getName()
         {
             return GetString(SP.PropertyVarName);
         }
-
 
         public HashSet<ITriplePatternResource> getTriplePatterns()
         {
@@ -50,7 +41,6 @@ namespace VDS.RDF.Query.Spin.Model
             addTriplePatterns(SP.PropertyObject, results);
             return results;
         }
-
 
         public bool isBlankNodeVar()
         {
@@ -65,7 +55,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         override public void Print(ISparqlPrinter p)
         {
             String name = getName();
@@ -79,7 +68,5 @@ namespace VDS.RDF.Query.Spin.Model
                 p.printVariable(name);
             }
         }
-
-
     }
 }

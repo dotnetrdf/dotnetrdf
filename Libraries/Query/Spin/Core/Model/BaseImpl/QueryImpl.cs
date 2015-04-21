@@ -1,56 +1,43 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF;
+using System.Linq;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public abstract class QueryImpl : AbstractSPINResource, ISolutionModifierQueryResource
     {
-
-
         public QueryImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         public IEnumerable<Uri> getFrom()
         {
             return getList(SP.PropertyFrom).Select(r => r.Uri);
         }
 
-
         public IEnumerable<Uri> getFromNamed()
         {
             return getList(SP.PropertyFromNamed).Select(r => r.Uri);
         }
-
 
         public long? getLimit()
         {
             return GetLong(SP.PropertyLimit);
         }
 
-
         public long? getOffset()
         {
             return GetLong(SP.PropertyOffset);
         }
-
 
         private List<String> getStringList(INode predicate)
         {
@@ -71,7 +58,6 @@ namespace VDS.RDF.Query.Spin.Model
             return results;
         }
 
-
         public IValuesResource getValues()
         {
             IResource values = GetResource(SP.PropertyValues);
@@ -84,7 +70,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return null;
             }
         }
-
 
         public IElementListResource getWhere()
         {
@@ -100,12 +85,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public List<IElementResource> getWhereElements()
         {
             return getElements(SP.PropertyWhere);
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -127,9 +110,7 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public abstract void printSPINRDF(ISparqlPrinter p);
-
 
         protected void printStringFrom(ISparqlPrinter context)
         {
@@ -150,7 +131,6 @@ namespace VDS.RDF.Query.Spin.Model
                 context.print(">");
             }
         }
-
 
         protected void printSolutionModifiers(ISparqlPrinter context)
         {
@@ -206,7 +186,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         private void printOrderByExpression(ISparqlPrinter sb, IResource node)
         {
             // TODO check for real test
@@ -228,7 +207,6 @@ namespace VDS.RDF.Query.Spin.Model
             printNestedExpressionString(sb, node, true);
         }
 
-
         protected void printValues(ISparqlPrinter p)
         {
             IValuesResource values = getValues();
@@ -238,7 +216,6 @@ namespace VDS.RDF.Query.Spin.Model
                 values.Print(p);
             }
         }
-
 
         protected void printWhere(ISparqlPrinter p)
         {

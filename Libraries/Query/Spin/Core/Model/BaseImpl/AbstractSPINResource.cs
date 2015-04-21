@@ -1,27 +1,24 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.Core;
+using VDS.RDF.Query.Spin.Model.IO;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Spin.Model.IO;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public abstract class AbstractSPINResource : SpinResource, IPrintable
     {
-
         /**
          * One level of indentation (four spaces), used by toString methods
          */
         public const String INDENTATION = " ";
-
 
         public AbstractSPINResource(INode node, SpinModel spinModel)
             : base(node, spinModel)
@@ -35,12 +32,10 @@ namespace VDS.RDF.Query.Spin.Model
             return GetString(RDFS.PropertyComment);
         }
 
-
         public List<IElementResource> getElements()
         {
             return getElements(SP.PropertyElements);
         }
-
 
         public List<IElementResource> getElements(INode predicate)
         {
@@ -83,7 +78,6 @@ namespace VDS.RDF.Query.Spin.Model
             return prefix;
         }
 
-
         public static bool hasRDFType(INode node, IGraph graph, INode type)
         {
             return graph.ContainsTriple(new Triple(node, RDF.PropertyType, type));
@@ -104,12 +98,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         protected void printNestedElementList(ISparqlPrinter p)
         {
             printNestedElementList(p, SP.PropertyElements);
         }
-
 
         protected void printNestedElementList(ISparqlPrinter p, INode predicate)
         {
@@ -127,19 +119,16 @@ namespace VDS.RDF.Query.Spin.Model
             p.print("}");
         }
 
-
         protected void printNestedExpressionString(ISparqlPrinter context, IResource node)
         {
             printNestedExpressionString(context, node, false);
         }
-
 
         protected void printNestedExpressionString(ISparqlPrinter p, IResource node, bool force)
         {
             // TODO handle namespace prefixes
             //SPINExpressions.printExpressionString(p, node, true, force, new NamespaceMapper());
         }
-
 
         protected void printPrefixes(ISparqlPrinter context)
         {
@@ -179,7 +168,6 @@ namespace VDS.RDF.Query.Spin.Model
             //}
         }
 
-
         public String toString()
         {
             //StringSparqlPrinter p = new StringSparqlPrinter();
@@ -187,7 +175,6 @@ namespace VDS.RDF.Query.Spin.Model
             //return p.getString();
             return String.Empty;
         }
-
 
         public static void printVarOrResource(ISparqlPrinter p, IResource resource)
         {

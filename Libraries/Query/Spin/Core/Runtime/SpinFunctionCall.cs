@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.PropertyFunctions;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.Model.IO;
 using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Query.Expressions.Functions;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Nodes;
-using System.Text;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Spin.Core.Runtime
 {
@@ -29,8 +26,10 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
         //private SparqlParameterizedString _queryTemplate;
 
         private bool _isSparqlFunction = true;
+
         // We still maintain those as lists for when multiple/arguments and results will be supported
         private List<ISparqlExpression> _arguments;
+
         private IVariableNode _resultVariable;
 
         internal SpinFunctionCall(SpinModel model)
@@ -62,11 +61,14 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
             }
         }
 
-        public bool IsSparqlFunction {
-            get {
+        public bool IsSparqlFunction
+        {
+            get
+            {
                 return _isSparqlFunction;
             }
         }
+
         /// <summary>
         /// Gets the Function URI for the property function
         /// </summary>
@@ -119,13 +121,15 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
         public object ToSparql()
         {
             if (QueryTemplate == null) return null;
-            foreach (KeyValuePair<String, INode> localVariable in QueryTemplate.Variables.Where(kv=>kv.Value==null).ToList()) {
+            foreach (KeyValuePair<String, INode> localVariable in QueryTemplate.Variables.Where(kv => kv.Value == null).ToList())
+            {
                 int argIndex = ArgumentNames.IndexOf(localVariable.Key);
                 if (argIndex >= 0)
                 {
                     BindArgument(argIndex, _arguments[argIndex]);
                 }
-                else {
+                else
+                {
                     QueryTemplate.SetVariable(localVariable.Key, RDFHelper.CreateTempVariableNode());
                 }
             }
@@ -136,7 +140,8 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
                 // TODO add the arguments as outputVariables for correct join in case the subquery is to be kept
                 return new SubQueryPattern(query);
             }
-            else { 
+            else
+            {
                 // We do not use a subquery by return the graph pattern
                 return query.RootGraphPattern;
             }
@@ -164,7 +169,6 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
             if (QueryTemplate == null) return;
             QueryTemplate.SetVariable(ArgumentNames[index], boundValue);
         }
-
 
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {

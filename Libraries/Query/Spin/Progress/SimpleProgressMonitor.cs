@@ -1,7 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 using System;
 
 namespace VDS.RDF.Query.Spin.Progress
@@ -12,21 +13,19 @@ namespace VDS.RDF.Query.Spin.Progress
      *
      * @author Holger Knublauch
      */
+
     public class SimpleProgressMonitor : IProgressMonitor
     {
-
         private String name;
 
         private int currentWork;
 
         private int totalWork;
 
-
         public SimpleProgressMonitor(String name)
         {
             this.name = name;
         }
-
 
         public void beginTask(String label, int totalWork)
         {
@@ -35,41 +34,34 @@ namespace VDS.RDF.Query.Spin.Progress
             this.currentWork = 0;
         }
 
-
         public void done()
         {
             println("Done");
         }
-
 
         public bool isCanceled()
         {
             return false;
         }
 
-
         protected void println(String text)
         {
             Console.WriteLine(name + ": " + text);
         }
 
-
         public void setCanceled(bool value)
         {
         }
-
 
         public void setTaskName(String value)
         {
             println("Task name: " + value);
         }
 
-
         public void subTask(String label)
         {
             println("Subtask: " + label);
         }
-
 
         public void worked(int amount)
         {

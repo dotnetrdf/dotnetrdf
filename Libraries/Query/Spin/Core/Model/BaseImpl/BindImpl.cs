@@ -1,22 +1,19 @@
-using VDS.RDF.Query.Spin.OntologyHelpers;
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
-using VDS.RDF.Query.Spin.SparqlUtil;
+
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class BindImpl : ElementImpl, IBindResource
     {
-
         public BindImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         public IResource getExpression()
         {
@@ -31,7 +28,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public IVariableResource getVariable()
         {
             IResource var = GetResource(SP.PropertyVariable);
@@ -44,7 +40,6 @@ namespace VDS.RDF.Query.Spin.Model
                 return null;
             }
         }
-
 
         override public void Print(ISparqlPrinter context)
         {
@@ -73,7 +68,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             context.print(")");
         }
-
 
         //override public void visit(IElementVisitor visitor)
         //{

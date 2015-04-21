@@ -1,29 +1,21 @@
 using System;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
-
     public abstract class TupleImpl : AbstractSPINResource
     {
-
         public TupleImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         public IResource getObject()
         {
             return getRDFNodeOrVariable(SP.PropertyObject);
         }
-
 
         public IResource getObjectResource()
         {
@@ -38,12 +30,10 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         public IResource getSubject()
         {
             return getRDFNodeOrVariable(SP.PropertySubject);
         }
-
 
         protected IResource getRDFNodeOrVariable(INode predicate)
         {
@@ -66,24 +56,20 @@ namespace VDS.RDF.Query.Spin.Model
             }
         }
 
-
         internal void print(IResource node, ISparqlPrinter p)
         {
             TupleImpl.print(GetModel(), node, p);
         }
-
 
         internal void print(IResource node, ISparqlPrinter p, bool abbrevRDFType)
         {
             TupleImpl.print(GetModel(), node, p, abbrevRDFType);
         }
 
-
         public static void print(SpinModel model, IResource node, ISparqlPrinter p)
         {
             print(model, node, p, false);
         }
-
 
         public static void print(SpinModel model, IResource node, ISparqlPrinter p, bool abbrevRDFType)
         {

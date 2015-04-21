@@ -1,18 +1,13 @@
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class AskImpl : QueryImpl, IAskResource
     {
-
         public AskImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
         }
-
 
         override public void printSPINRDF(ISparqlPrinter context)
         {

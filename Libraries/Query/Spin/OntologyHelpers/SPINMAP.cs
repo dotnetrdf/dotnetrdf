@@ -1,5 +1,3 @@
-
-
 using System;
 using VDS.RDF.Query.Spin.Utility;
 
@@ -10,9 +8,9 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
      *
      * Automatically generated with TopBraid Composer.
      */
+
     public class SPINMAP
     {
-
         public const String BASE_URI = "http://spinrdf.org/spinmap";
 
         public const String NS_URI = BASE_URI + "#";
@@ -101,13 +99,11 @@ namespace VDS.RDF.Query.Spin.OntologyHelpers
 
         public readonly static IUriNode PropertyValue2 = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "value2"));
 
-
 #if UNDEFINED
         public static bool exists(Model model)
         {
             return model.Contains(model.Object(SPINMAP.BASE_URI), RDF.type, OWL.Ontology);
         }
-
 
         public static String getURI()
         {

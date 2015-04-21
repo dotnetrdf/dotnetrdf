@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
-using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Query.Spin.Core.Runtime.Factories;
 using VDS.RDF.Query.Spin.Core.Runtime.Registries;
@@ -17,45 +14,15 @@ using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
-using VDS.RDF.Update;
-using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin
 {
-
-    internal enum SpinEvaluationState
-    {
-        UserQuerying = 0,
-        SpinInferencing = 1,
-        SpinConstraintsChecking = 2,
-        SpinUpdating = 3
-    }
-
     /// <summary>
+    /// An instance of a SPIN model that is defined for a specific Storage
     /// </summary>
     /// <remarks>
-    /// TODO check wether we really need this at runtime or if it is not simpler to issue direct queries to through the associated connection ?
-    ///     For this, we need to evaluate the performance cost of storage update regarding the SPIN features:
-    ///         => either execute a batch of sparql updates afterward to process constructors/rules/constraints checks
-    ///             PROS: 
-    ///                 => all features would be evaluated against up-to-date data and model, so no need for real distributed management
-    ///                 => all features are evaluated atomically for the command unit since a single SparqlCommandSet is run
-    ///                 => requires minimal IO since only the SparqlCommandSet is sent instead of sending unitary sparql commands and getting back results
-    ///             CONS: 
-    ///                 => a number of updates would be evaluated with no effect since data may be filtered out by nature
-    ///             REMARKS:
-    ///                 => we still require some IO to knwo when a processing has no more effect to stop the chain processing
-    ///                 => expand the SparqlExecutableType collection to make it more versatile (=> spin rules may induce re-iteration
-    ///         => after each CommandUnit execution, we get back the unit pending changes
-    ///             CONS:
-    ///                 => requires more IO
-    ///                 => we may need to compensate atomicity loss
-    ///                 => requires more processing to determine the diff
-    ///                     => if the current diff is computed remotely, this is nearly equivalent to the first option
-    ///                 => requires model-against-data exploration at each iteration to determine wich constructors/rules/constraints are to be evaluated
-    ///                     => the resource consumption here may be equivalent or event greater than running non-effect updates
-    /// TODO use the Ontology API 
-    /// TODO check security for SPIN imported graphs access 
+    /// TODO try and use the Ontology API
+    /// TODO check security for SPIN imported graphs access
     /// TODO add the getter for SPIN imported graphs Uris
     /// </remarks>
     public class SpinModel
@@ -122,13 +89,14 @@ namespace VDS.RDF.Query.Spin
             _setupStorages.Add(storage.ToString());
         }
 
-        #endregion
+        #endregion Static members
 
         private HashSet<Uri> _spinImports = new HashSet<Uri>(RDFHelper.uriComparer);
-        private InMemoryDataset _spinConfiguration = new InMemoryDataset(new TripleStore(), true);
+        private IGraph _inferenceGraph = new ThreadSafeGraph();
+        private InMemoryDataset _spinDataset = new InMemoryDataset(new TripleStore(), true);
         private IInferenceEngine _reasoner;
 
-        // A simple in-memory graph to be able to create new resources for the current model 
+        // A simple in-memory graph to be able to create new resources for the current model
         private IGraph _localResourceBuilder = new ThreadSafeGraph();
 
         #region Instantiation and initialisation
@@ -137,18 +105,21 @@ namespace VDS.RDF.Query.Spin
         {
             EnsureSPINBase(store);
             Queue<Uri> importList = new Queue<Uri>();
-            foreach(Uri importUri in spinImports) {
+            foreach (Uri importUri in spinImports)
+            {
                 importList.Enqueue(importUri);
             }
-            while (importList.Count>0)
+            while (importList.Count > 0)
             {
                 Uri importUri = importList.Dequeue();
-                if(!_spinImports.Contains(importUri)) {
+                if (!_spinImports.Contains(importUri))
+                {
                     IGraph spinGraph = SPINImports.Load(importUri, new RdfXmlParser());
                     store.SaveGraph(spinGraph);
-                    _spinConfiguration.AddGraph(spinGraph);
+                    _spinDataset.AddGraph(spinGraph);
                     _spinImports.Add(importUri);
-                    foreach (Uri dependency in spinGraph.GetTriplesWithPredicate(SPIN.PropertyImports).Select(t => ((IUriNode)t.Object).Uri)) {
+                    foreach (Uri dependency in spinGraph.GetTriplesWithPredicate(SPIN.PropertyImports).Select(t => ((IUriNode)t.Object).Uri))
+                    {
                         importList.Enqueue(dependency);
                     }
                     foreach (Uri dependency in spinGraph.GetTriplesWithPredicate(OWL.PropertyImports).Select(t => ((IUriNode)t.Object).Uri))
@@ -158,7 +129,6 @@ namespace VDS.RDF.Query.Spin
                 }
             }
             _spinImports.UnionWith(BUILTIN_SPIN_GRAPHS);
-            // Compile the model into something usable
             Initialize();
         }
 
@@ -171,42 +141,31 @@ namespace VDS.RDF.Query.Spin
             IGraph spinConfiguration = connection.ServiceDescription;
         }
 
+        // TODO check how to define the model efficiently
         internal void Initialize()
         {
             _reasoner = new StaticRdfsReasoner();
-            foreach (IGraph spinGraph in _spinConfiguration.Graphs.Where(g => g.BaseUri != null).ToList())
+            foreach (IGraph spinGraph in _spinDataset.Graphs.Where(g => g.BaseUri != null).ToList())
             {
-                if (_inferenceGraphs.ContainsKey(spinGraph.BaseUri))
-                {
-                    _spinConfiguration.RemoveGraph(_inferenceGraphs[spinGraph.BaseUri].BaseUri);
-                    _inferenceGraphs.Remove(spinGraph.BaseUri);
-                }
-                else
-                {
-                    _reasoner.Initialise(spinGraph);
-                }
+                _reasoner.Initialise(spinGraph);
             }
-            foreach (IGraph spinGraph in _spinConfiguration.Graphs.Where(g => g.BaseUri != null).ToList())
+            foreach (IGraph spinGraph in _spinDataset.Graphs.Where(g => g.BaseUri != null).ToList())
             {
-                IGraph inferenceGraph = ApplyInference(spinGraph);
-                _spinConfiguration.AddGraph(inferenceGraph);
+                _reasoner.Apply(spinGraph, _inferenceGraph);
             }
+            _spinDataset.AddGraph(_inferenceGraph);
         }
 
         public void Dispose()
         {
-            foreach (Graph g in _spinConfiguration.Graphs)
+            foreach (IGraph g in _spinDataset.Graphs)
             {
-                InMemoryGraphsRegistry.UnRegister(g);
+                SPINImports.UnRegister(g);
                 g.Dispose();
             }
         }
 
-        #endregion
-
-        #region Spin model helpers
-
-        #endregion
+        #endregion Instantiation and initialisation
 
         #region Spin Model utilities
 
@@ -368,35 +327,34 @@ namespace VDS.RDF.Query.Spin
             return root;
         }
 
-
         internal IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
-            return _spinConfiguration.GetTriplesWithSubject(GetSourceNode(subj));
+            return _spinDataset.GetTriplesWithSubject(GetSourceNode(subj));
         }
 
         internal IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
-            return _spinConfiguration.GetTriplesWithPredicate(GetSourceNode(pred));
+            return _spinDataset.GetTriplesWithPredicate(GetSourceNode(pred));
         }
 
         internal IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
-            return _spinConfiguration.GetTriplesWithObject(GetSourceNode(obj));
+            return _spinDataset.GetTriplesWithObject(GetSourceNode(obj));
         }
 
         internal IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return _spinConfiguration.GetTriplesWithPredicateObject(GetSourceNode(pred), GetSourceNode(obj));
+            return _spinDataset.GetTriplesWithPredicateObject(GetSourceNode(pred), GetSourceNode(obj));
         }
 
         internal IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return _spinConfiguration.GetTriplesWithSubjectPredicate(GetSourceNode(subj), GetSourceNode(pred));
+            return _spinDataset.GetTriplesWithSubjectPredicate(GetSourceNode(subj), GetSourceNode(pred));
         }
 
         internal IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return _spinConfiguration.GetTriplesWithSubjectObject(GetSourceNode(subj), GetSourceNode(obj));
+            return _spinDataset.GetTriplesWithSubjectObject(GetSourceNode(subj), GetSourceNode(obj));
         }
 
         internal bool ContainsTriple(INode subj, INode pred, INode obj)
@@ -406,7 +364,7 @@ namespace VDS.RDF.Query.Spin
 
         internal bool ContainsTriple(Triple t)
         {
-            return _spinConfiguration.ContainsTriple(t);
+            return _spinDataset.ContainsTriple(t);
         }
 
         internal bool IsMagicPropertyFunction(Uri u)
@@ -449,36 +407,7 @@ namespace VDS.RDF.Query.Spin
             return new SpinFunctionCall(spinDeclaration);
         }
 
-        #endregion
-
-        #region Dataset utilities
-
-        private Dictionary<Uri, IGraph> _inferenceGraphs = new Dictionary<Uri, IGraph>(RDFHelper.uriComparer);
-
-        public void Infer(IGraph g)
-        {
-            _reasoner.Apply(g);
-        }
-
-        internal IGraph ApplyInference(IGraph g)
-        {
-            IGraph inferedTriples;
-            if (_inferenceGraphs.ContainsKey(g.BaseUri))
-            {
-                inferedTriples = _inferenceGraphs[g.BaseUri];
-                inferedTriples.Clear();
-            }
-            else
-            {
-                inferedTriples = new ThreadSafeGraph();
-                inferedTriples.BaseUri = SpinRuntime.NewTempGraphUri();
-            }
-            _reasoner.Apply(g, inferedTriples);
-            _inferenceGraphs[g.BaseUri] = inferedTriples;
-            return inferedTriples;
-        }
-
-        #endregion
+        #endregion Spin Model utilities
 
         #region IPropertyFunctionFactory members
 
@@ -499,7 +428,7 @@ namespace VDS.RDF.Query.Spin
             return false;
         }
 
-        #endregion
+        #endregion IPropertyFunctionFactory members
 
         #region ISparqlCustomExpressionFactory members
 
@@ -518,7 +447,6 @@ namespace VDS.RDF.Query.Spin
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
-
+        #endregion ISparqlCustomExpressionFactory members
     }
 }

@@ -1,7 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2009 TopQuadrant, Inc.
- * All rights reserved. 
+ * All rights reserved.
  *******************************************************************************/
+
 namespace VDS.RDF.Query.Spin.Model
 {
     /**
@@ -9,6 +10,7 @@ namespace VDS.RDF.Query.Spin.Model
      *
      * @author Holger Knublauch
      */
+
     public interface IUpdateResource : ICommandResource
     {
     }

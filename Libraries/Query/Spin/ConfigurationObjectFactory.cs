@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query.Spin.SparqlStrategies;
-using VDS.RDF.Storage;
-using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Query.Spin
 {
@@ -38,6 +34,7 @@ namespace VDS.RDF.Query.Spin
                     obj = new SpinStorageProvider(g, objNode, storageNode);
                     // TODO try to build the spin model associated to this storage ?
                     return true;
+
                 default:
                     try
                     {
@@ -58,6 +55,5 @@ namespace VDS.RDF.Query.Spin
             return t.FullName == SpinStorageProviderClassName
                 || (t.GetInterfaces().Contains(this._factoryType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic));
         }
-
     }
 }

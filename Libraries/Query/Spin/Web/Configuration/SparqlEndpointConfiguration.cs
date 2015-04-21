@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using VDS.RDF.Configuration;
-using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
-using VDS.RDF.Storage;
 using VDS.RDF.Web;
 using VDS.RDF.Web.Configuration.Server;
 
@@ -19,8 +14,8 @@ namespace VDS.RDF.Query.Spin.Web.Configuration
     public class SparqlEndpointConfiguration
         : BaseSparqlServerConfiguration
     {
-
         public Connection Connection { get; private set; }
+
         /// <summary>
         /// Creates a new SPARQL Server Configuration from information in a Configuration Graph
         /// </summary>
@@ -55,6 +50,5 @@ namespace VDS.RDF.Query.Spin.Web.Configuration
             : base(null, g, objNode)
         {
         }
-
     }
 }

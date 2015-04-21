@@ -1,22 +1,16 @@
 using System;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
+using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class ServiceImpl : ElementImpl, IServiceResource
     {
-
         public ServiceImpl(INode node, SpinModel spinModel)
             : base(node, spinModel)
         {
-
         }
-
 
         public Uri getServiceURI()
         {
@@ -32,7 +26,6 @@ namespace VDS.RDF.Query.Spin.Model
             return null;
         }
 
-
         public IVariableResource getServiceVariable()
         {
             IResource s = GetResource(SP.PropertyServiceURI);
@@ -46,7 +39,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             return null;
         }
-
 
         override public void Print(ISparqlPrinter p)
         {
@@ -68,7 +60,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             printNestedElementList(p);
         }
-
 
         //override public void visit(IElementVisitor visitor)
         //{

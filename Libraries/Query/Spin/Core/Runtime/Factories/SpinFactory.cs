@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using VDS.RDF.Query.Spin.AssemblyDiscovery;
-using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Query.Spin.Model;
 
 [assembly: SpinExtensionsAssembly()]
 
 namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
 {
-
     /// <summary>
     /// A marker interface to register classes that provide Spin extensions implementation
     /// </summary>
@@ -20,7 +18,7 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
 
     // TODO should we sgment this by model ?
     /// <summary>
-    /// A singleton class for managing runtime Spin extensions  
+    /// A singleton class for managing runtime Spin extensions
     /// </summary>
     public class SpinFactory
     {
@@ -53,7 +51,9 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
             }
         }
 
-        private SpinFactory() { }
+        private SpinFactory()
+        {
+        }
 
         private static void RegisterClass(Type implementation)
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
                 }
             }
             // Look for any contructor that takes a SpinProcessor as only parameter
-            ConstructorInfo classConstructor = implementation.GetConstructor( new Type[] { typeof(SpinModel) });
+            ConstructorInfo classConstructor = implementation.GetConstructor(new Type[] { typeof(SpinModel) });
             if (classConstructor == null)
             {
                 if (!_typesRegistry.ContainsKey(rdfsClassUri))
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
             _namespacesRegistry[namespaceUri] = classConstructor;
         }
 
-        #endregion
+        #endregion Registry initialisation
 
         #region Factory methods
 
@@ -160,6 +160,6 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
             return _typesRegistry[rdfsClassUri].Invoke(new Object[] { model });
         }
 
-        #endregion
+        #endregion Factory methods
     }
 }

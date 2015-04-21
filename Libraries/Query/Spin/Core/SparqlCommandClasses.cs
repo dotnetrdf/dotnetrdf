@@ -14,7 +14,7 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Query.Spin.Core
 {
     // Perhaps make one of this classes public one day to be consistent with other equivalent .Net APIs
-    // => may this be ambiguous because of different processing of query and updates ? 
+    // => may this be ambiguous because of different processing of query and updates ?
 
     // TODO check wether we need to make more versatile flags when implementing other rewriting strategies
     [Flags]
@@ -43,14 +43,15 @@ namespace VDS.RDF.Query.Spin.Core
     internal delegate void SparqlExecutableEventHandler(Object sender, SparqlExecutableEventArgs args);
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public abstract class SparqlExecutable
         : SparqlTemporaryResourceMediator
     {
-
         internal event SparqlExecutableEventHandler ExecutionStarted;
+
         internal event SparqlExecutableEventHandler Failed;
+
         internal SparqlExecutableEventHandler Succeeded;
 
         protected void RaiseExecutionStarted(SparqlExecutableEventArgs args)
@@ -81,10 +82,9 @@ namespace VDS.RDF.Query.Spin.Core
         }
 
         internal abstract Connection Connection { get; set; }
-
     }
 
-    #endregion
+    #endregion Event args and delegates
 
     // TODO perhaps find a better name to avoid confusion with the original Sparql namespace ?
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Spin.Core
     ///         NOTE: similar temporary resources may occur during a full transaction or a full command
     ///             for optimisation, it may be advisable to create a class to handle such cases to alleviate execution units pre/post processing
     ///             perhaps use a similar framework that is used for caching with dependancies ?
-    /// TODO define a ReturnType/ResultType property to bind the correct result handlers 
+    /// TODO define a ReturnType/ResultType property to bind the correct result handlers
     /// TODO use the SpinStatistics namespace
     /// </remarks>
     public class SparqlCommand
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Spin.Core
             CompilationTime = timer.Elapsed;
         }
 
-        internal override IQueryableStorage UnderlyingStorage
+        internal override IUpdateableStorage UnderlyingStorage
         {
             get
             {
@@ -242,20 +242,21 @@ namespace VDS.RDF.Query.Spin.Core
                     SparqlResultSet results = new SparqlResultSet();
                     ExecuteReader(null, new ResultSetHandler((SparqlResultSet)results));
                     return results;
+
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
                     IGraph g = new Graph();
                     ExecuteReader(new GraphHandler(g), null);
                     return g;
+
                 default:
                     throw new RdfQueryException("Cannot process unknown query types");
             }
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sparqlQuery"></param>
         /// <returns></returns>
@@ -319,7 +320,7 @@ namespace VDS.RDF.Query.Spin.Core
             ExecutionTime = timer.Elapsed;
         }
 
-        #endregion
+        #endregion public API
 
         #region Internal implementation
 
@@ -337,15 +338,15 @@ namespace VDS.RDF.Query.Spin.Core
             return updateWrapper;
         }
 
-        #endregion
+        #endregion Internal implementation
 
         #region Command statistics
 
         public TimeSpan? CompilationTime { get; private set; }
+
         public TimeSpan? ExecutionTime { get; private set; }
 
-        #endregion
-
+        #endregion Command statistics
     }
 
     /// <summary>
@@ -358,7 +359,6 @@ namespace VDS.RDF.Query.Spin.Core
     public class SparqlCommandUnit
         : SparqlExecutable
     {
-
         private readonly Connection _connection;
         private SparqlQuery _query = null;
         private SparqlUpdateCommand _updateCommand;
@@ -407,7 +407,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
         }
 
-        internal override IQueryableStorage UnderlyingStorage
+        internal override IUpdateableStorage UnderlyingStorage
         {
             get
             {
@@ -526,6 +526,5 @@ namespace VDS.RDF.Query.Spin.Core
                         select u);*/
             }
         }
-
     }
 }

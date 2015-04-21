@@ -3,20 +3,17 @@ using VDS.RDF.Query.Spin.Utility;
 
 namespace VDS.RDF.Query.Spin.OntologyHelpers
 {
-
     /// <summary>
-    /// Vocabulary for http://spinrdf.org/spr 
+    /// Vocabulary for http://spinrdf.org/spr
     /// @author Holger Knublauch
     /// </summary>
     public class SPR
     {
-
         public const String BASE_URI = "http://spinrdf.org/spr";
 
         public const String NS_URI = BASE_URI + "#";
 
         public const String PREFIX = "spr";
-
 
         public readonly static IUriNode ClassTable = RDFHelper.CreateUriNode(UriFactory.Create(NS_URI + "Table"));
 

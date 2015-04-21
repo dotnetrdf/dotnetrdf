@@ -1,34 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Spin.Core;
-using VDS.RDF.Query.Spin.OntologyHelpers;
-using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Model.IO;
+using VDS.RDF.Query.Spin.OntologyHelpers;
 
 namespace VDS.RDF.Query.Spin.Model
 {
-
     public class ModifyImpl : UpdateImpl, IModifyResource
     {
-
         public ModifyImpl(INode node, SpinModel graph)
             : base(node, graph)
         {
         }
-
 
         public IEnumerable<Uri> getUsing()
         {
             return ListProperties(SP.PropertyUsing).Select(t => ((IUriNode)t.Object).Uri);
         }
 
-
         public IEnumerable<Uri> getUsingNamed()
         {
             return ListProperties(SP.PropertyUsingNamed).Select(t => ((IUriNode)t.Object).Uri);
         }
-
 
         public override void printSPINRDF(ISparqlPrinter p)
         {
@@ -78,7 +71,5 @@ namespace VDS.RDF.Query.Spin.Model
             }
             printWhere(p);
         }
-
-
     }
 }
