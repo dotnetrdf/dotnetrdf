@@ -127,7 +127,7 @@
     <Compile Include="Core\Model\SPINLabels.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Transactions\TransactionLog.cs" />
+    <Compile Include="Core\Runtime\StorageRuntimeMonitor.cs" />
     <Compile Include="OntologyHelpers\SD.cs" />
     <Compile Include="Core\Model\ISPINFactory.cs" />
     <Compile Include="Core\Model\IAbstractAttribute.cs">
@@ -408,6 +408,7 @@
   <ItemGroup>
     <Folder Include="Core\Compilation\" />
     <Folder Include="Core\Context\" />
+    <Folder Include="Core\Transactions\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SparqlTemplates.resx">

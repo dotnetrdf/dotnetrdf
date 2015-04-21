@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VDS.RDF.Query.Spin.Core.Transactions;
+using VDS.RDF.Query.Spin.Core.Runtime;
 using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;

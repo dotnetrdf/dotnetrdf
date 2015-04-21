@@ -13,8 +13,6 @@ using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Spin.Core;
 using VDS.RDF.Query.Spin.Core.Runtime;
-using VDS.RDF.Query.Spin.Core.Transactions;
-using VDS.RDF.Query.Spin.OntologyHelpers;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -223,7 +221,7 @@ WHERE {
     ?tempGraph @affectsGraph ?affectedGraph .
     FILTER (!sameTerm(?tempGraph, @RdfNull))
 }");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
+            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
             command.SetParameter("committedAt", DOTNETRDF_TRANS.PropertyCommittedAt);
             command.SetParameter("startedAt", DOTNETRDF_TRANS.PropertyStartedAt);
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
@@ -366,7 +364,7 @@ DROP SILENT GRAPH @RdfNull;
                 // First add a dependency to the command's parent context for possible garbage collection in case of crash
                 _commandMetas[command.ID].Assert(RDFHelper.CreateUriNode(command.Uri), DOTNETRDF_TRANS.PropertyRequiredBy, RDFHelper.CreateUriNode(command.ParentContext.Uri));
                 // Then adds the commands metas
-                command.UnderlyingStorage.UpdateGraph(TransactionLog.TRANSACTION_LOG_URI, _commandMetas[command.ID].Triples, null);
+                command.UnderlyingStorage.UpdateGraph(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI, _commandMetas[command.ID].Triples, null);
                 // For SparqlCommand, copy the read transaction's pendingUpdate graphs into the Command's scope to provide for correct handling of Command's interruption if needed
                 if (command is SparqlCommand)
                 {
@@ -405,7 +403,7 @@ WHERE {
     ?tempGraph @affectsGraph ?affectedGraph
     FILTER (!sameTerm(?tempGraph, @RdfNull))
 }");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
+            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
             command.SetParameter("pendingAssertions", DOTNETRDF_TRANS.ClassPendingAssertionsGraph);
             command.SetParameter("pendingRemovals", DOTNETRDF_TRANS.ClassPendingRemovalsGraph);
@@ -522,7 +520,7 @@ WHERE {
         FILTER (!sameTerm(@consumerUri, ?concurrentConsumer))
     })
 }");
-            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(TransactionLog.TRANSACTION_LOG_URI));
+            command.SetParameter("transactionLog", RDFHelper.CreateUriNode(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI));
             command.SetParameter("requiredBy", DOTNETRDF_TRANS.PropertyRequiredBy);
             command.SetParameter("hasScope", DOTNETRDF_TRANS.PropertyHasScope);
             command.SetParameter("consumerUri", RDFHelper.CreateUriNode(context.Uri));
@@ -601,7 +599,7 @@ WHERE {
                 _monitor = transactionalEventsListener;
                 _simulateIsolation = simulateIsolation;
 
-                _namedGraphs.Add(TransactionLog.TRANSACTION_LOG_URI);
+                _namedGraphs.Add(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI);
                 _defaultGraphVarTokens.Push(new HashSet<IToken>());
                 _namedGraphVarTokens.Push(new HashSet<IToken>());
                 _compilationGraphVarTokens.Push(new HashSet<IToken>());
@@ -1228,7 +1226,7 @@ WHERE {
             private GraphPattern AddGraphBindings(IEnumerable<GraphPattern> rewrittenPatterns)
             {
                 Uri commandUri = _command.Uri;
-                GraphPattern root = new GraphPattern().WithinGraph(TransactionLog.TRANSACTION_LOG_URI);
+                GraphPattern root = new GraphPattern().WithinGraph(StorageRuntimeMonitor.RUNTIME_MONITOR_GRAPH_URI);
                 // References used graphs
                 IEnumerable<String> graphVariables = rewrittenPatterns.Where(gp => gp != null).SelectMany(gp => gp.GraphSpecifiers).Where(t => t.TokenType == Token.VARIABLE).Select(t => t.Value.Substring(1));//.Union(_graphBindingsExpressions.Values.SelectMany(bp => bp.Variables));
                 IEnumerable<String> explicitGraphs = rewrittenPatterns.Where(gp => gp != null).SelectMany(gp => gp.GraphSpecifiers).Where(t => t.TokenType == Token.URI).Select(t => t.Value);

@@ -3,20 +3,20 @@ using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 
-namespace VDS.RDF.Query.Spin.Core.Transactions
+namespace VDS.RDF.Query.Spin.Core.Runtime
 {
 
     // TODO refactor this into a StorageMonitor or something ?
     /// <summary>
     /// The transactionLog class is responsible to log and track transactional events in a centralized distributed graph on a specific storage
     /// </summary>
-    internal class TransactionLog
+    internal class StorageRuntimeMonitor
     {
 
         /// <summary>
         /// The distributed transaction log's graph Uri
         /// </summary>
-        internal static Uri TRANSACTION_LOG_URI = UriFactory.Create(DOTNETRDF_TRANS.BASE_URI + "-log");
+        internal static Uri RUNTIME_MONITOR_GRAPH_URI = UriFactory.Create(DOTNETRDF_TRANS.BASE_URI + "-log");
 
         /// <summary>
         /// A reference of locally managed transactions
@@ -51,7 +51,7 @@ WHERE {
     }
 };
 ");
-            pingCommand.SetParameter("transactionLog", RDFHelper.CreateUriNode(TRANSACTION_LOG_URI));
+            pingCommand.SetParameter("transactionLog", RDFHelper.CreateUriNode(RUNTIME_MONITOR_GRAPH_URI));
             pingCommand.SetParameter("lastAccessUri", DOTNETRDF_TRANS.PropertyLastAccess);
             pingCommand.SetParameter("startedAtUri", DOTNETRDF_TRANS.PropertyStartedAt);
             pingCommand.SetVariable("s", RDFHelper.CreateUriNode(connection.Uri));

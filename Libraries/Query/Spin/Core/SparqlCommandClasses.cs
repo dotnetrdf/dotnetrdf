@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Query.Spin.Core.Runtime;
-using VDS.RDF.Query.Spin.Core.Transactions;
-using VDS.RDF.Query.Spin.SparqlStrategies;
 using VDS.RDF.Query.Spin.Utility;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -478,7 +474,7 @@ namespace VDS.RDF.Query.Spin.Core
             try
             {
                 // Relocate this into a separated thread ?
-                TransactionLog.Ping(Connection);
+                StorageRuntimeMonitor.Ping(Connection);
 
                 if (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate))
                 {
