@@ -3382,7 +3382,9 @@ namespace VDS.RDF.Parsing
                     throw ParserHelper.Error("A BIND assignment is attempting to bind to the variable ?" + bind.VariableName + " but this variable is already in use earlier in the Graph pattern", next);
                 }
 
-                context.Query.AddVariable(next.Value);
+                foreach (String localVar in bind.Variables) {
+                    context.Query.AddVariable(localVar);
+                }
                 if (Options.QueryOptimisation)
                 {
                     p.AddAssignment(bind);
@@ -3449,9 +3451,9 @@ namespace VDS.RDF.Parsing
             SparqlQueryParserContext subcontext = new SparqlQueryParserContext(context, tokens);
             subcontext.Query.NamespaceMap.Import(context.Query.NamespaceMap);
             SparqlQuery subquery = this.ParseInternal(subcontext);
-            foreach (SparqlVariable var in subquery.Variables)
+            foreach (SparqlVariable var in subquery.Variables.Where(v => v.IsResultVariable))
             {
-                if (var.IsResultVariable) context.Query.AddVariable("?" + var.Name, false);
+                context.Query.AddVariable("?" + var.Name, false);
             }
             SubQueryPattern subqueryPattern = new SubQueryPattern(subquery);
             GraphPattern p2 = new GraphPattern();
