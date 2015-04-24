@@ -61,49 +61,49 @@ namespace VDS.RDF.Query.Spin.Utility
 
         #region NodeFactory shortcuts
 
-        // TODO return a couple of direct and negated Uris
-        internal static List<HashSet<Uri>> GetPropertyPathItems(ISparqlPath path)
-        {
-            List<HashSet<Uri>> predicates = new List<HashSet<Uri>>() { new HashSet<Uri>(uriComparer), new HashSet<Uri>(uriComparer) };
-            if (path is AlternativePath)
-            {
-                AlternativePath altPath = (AlternativePath)path;
-                List<HashSet<Uri>> results = GetPropertyPathItems(altPath.LhsPath);
-                predicates[0].UnionWith(results[0]);
-                predicates[1].UnionWith(results[1]);
-                results = GetPropertyPathItems(altPath.RhsPath);
-                predicates[0].UnionWith(results[0]);
-                predicates[1].UnionWith(results[1]);
-            }
-            else if (path is NegatedSet)
-            {
-                NegatedSet negSet = (NegatedSet)path;
-                predicates[1].UnionWith(negSet.Properties.Select(ppty => ((IUriNode)ppty.Predicate).Uri).Union(negSet.InverseProperties.Select(ppty => ((IUriNode)ppty.Predicate).Uri)));
-            }
-            else if (path is SequencePath)
-            {
-                SequencePath stepPath = (SequencePath)path;
-                List<HashSet<Uri>> results = GetPropertyPathItems(stepPath.LhsPath);
-                predicates[0].UnionWith(results[0]);
-                predicates[1].UnionWith(results[1]);
-                results = GetPropertyPathItems(stepPath.RhsPath);
-                predicates[0].UnionWith(results[0]);
-                predicates[1].UnionWith(results[1]);
-            }
-            else if (path is Property)
-            {
-                Property singlePath = (Property)path;
-                predicates[0].Add(((IUriNode)singlePath.Predicate).Uri);
-            }
-            else if (path is BaseUnaryPath)
-            {
-                BaseUnaryPath unaryPath = (BaseUnaryPath)path;
-                List<HashSet<Uri>> results = GetPropertyPathItems(unaryPath.Path);
-                predicates[0].UnionWith(results[0]);
-                predicates[1].UnionWith(results[1]);
-            }
-            return predicates;
-        }
+        //// TODO check whether we still need this
+        //internal static List<HashSet<Uri>> GetPropertyPathItems(ISparqlPath path)
+        //{
+        //    List<HashSet<Uri>> predicates = new List<HashSet<Uri>>() { new HashSet<Uri>(uriComparer), new HashSet<Uri>(uriComparer) };
+        //    if (path is AlternativePath)
+        //    {
+        //        AlternativePath altPath = (AlternativePath)path;
+        //        List<HashSet<Uri>> results = GetPropertyPathItems(altPath.LhsPath);
+        //        predicates[0].UnionWith(results[0]);
+        //        predicates[1].UnionWith(results[1]);
+        //        results = GetPropertyPathItems(altPath.RhsPath);
+        //        predicates[0].UnionWith(results[0]);
+        //        predicates[1].UnionWith(results[1]);
+        //    }
+        //    else if (path is NegatedSet)
+        //    {
+        //        NegatedSet negSet = (NegatedSet)path;
+        //        predicates[1].UnionWith(negSet.Properties.Select(ppty => ((IUriNode)ppty.Predicate).Uri).Union(negSet.InverseProperties.Select(ppty => ((IUriNode)ppty.Predicate).Uri)));
+        //    }
+        //    else if (path is SequencePath)
+        //    {
+        //        SequencePath stepPath = (SequencePath)path;
+        //        List<HashSet<Uri>> results = GetPropertyPathItems(stepPath.LhsPath);
+        //        predicates[0].UnionWith(results[0]);
+        //        predicates[1].UnionWith(results[1]);
+        //        results = GetPropertyPathItems(stepPath.RhsPath);
+        //        predicates[0].UnionWith(results[0]);
+        //        predicates[1].UnionWith(results[1]);
+        //    }
+        //    else if (path is Property)
+        //    {
+        //        Property singlePath = (Property)path;
+        //        predicates[0].Add(((IUriNode)singlePath.Predicate).Uri);
+        //    }
+        //    else if (path is BaseUnaryPath)
+        //    {
+        //        BaseUnaryPath unaryPath = (BaseUnaryPath)path;
+        //        List<HashSet<Uri>> results = GetPropertyPathItems(unaryPath.Path);
+        //        predicates[0].UnionWith(results[0]);
+        //        predicates[1].UnionWith(results[1]);
+        //    }
+        //    return predicates;
+        //}
 
         public static INode GetNode(PatternItem item)
         {
