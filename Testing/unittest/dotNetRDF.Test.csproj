@@ -2505,7 +2505,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="dotNetRDF.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="resources\rdfa\0001.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -3412,7 +3414,9 @@
     <None Include="resources\core-441\star-path.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="resources\spin.ttl" />
+    <None Include="resources\spin-config.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

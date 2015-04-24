@@ -1,0 +1,49 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#>.
+@prefix spin: <http://spinrdf.org/spin#>.
+
+_:factory a dnr:ObjectFactory ;
+  dnr:type "VDS.RDF.Query.Spin.ConfigurationObjectFactory, dotNetRDF.Query.Spin" .
+
+# Configuration of a SPIN StorageProvider around a Sesame store
+<dotnetrdf:/spin/sesame> a dnr:SpinStorageProvider ;
+	dnr:type "VDS.RDF.Query.Spin.SpinStorageProvider, dotNetRDF.Query.Spin" ;
+	# Configuration for the physical underlying storage
+	dnr:storageProvider [	
+			dnr:server "http://localhost:8080/openrdf-sesame/" ;
+			dnr:type "VDS.RDF.Storage.SesameHttpProtocolConnector" ;
+			dnr:storeID "unit-test" ;
+			#dnr:user "username" ;
+			#dnr:password "password" 
+		];
+	# Configuration of the features the framework should provide over the underlying storage
+	dnr:sparqlStrategy _:fullSupportStrategy;
+	# Declaration of SPIN definitions to use for the storage 
+	#	(possible dependencies through spin:imports or owl:imports will be processed on load)
+	spin:imports <http://topbraid.org/examples/kennedysSPIN> .
+
+_:fullSupportStrategy dnr:sparqlStrategy (
+		"VDS.RDF.Query.Spin.SparqlStrategies.SpinSupportStrategy, dotNetRDF.Query.Spin"
+		"VDS.RDF.Query.Spin.SparqlStrategies.TransactionSupportStrategy, dotNetRDF.Query.Spin"
+		) .
+
+
+# Configuration of a SPIN StorageProvider around a InMemoryStore
+<dotnetrdf:/spin/inmemory> a dnr:SpinStorageProvider ;
+	dnr:type "VDS.RDF.Query.Spin.SpinStorageProvider, dotNetRDF.Query.Spin" ;
+	# Configuration for the physical underlying storage
+	dnr:storageProvider [	
+			dnr:type "VDS.RDF.Storage.InMemoryManager" ;
+		];
+	# Configuration of the features the framework should provide over the underlying storage
+	dnr:sparqlStrategy _:fullSupportStrategy;
+	# Declaration of SPIN definitions to use for the storage 
+	#	(possible dependencies through spin:imports or owl:imports will be processed on load)
+	spin:imports <http://topbraid.org/examples/kennedysSPIN> .
+
+_:fullSupportStrategy dnr:sparqlStrategy (
+		"VDS.RDF.Query.Spin.SparqlStrategies.SpinSupportStrategy, dotNetRDF.Query.Spin"
+		"VDS.RDF.Query.Spin.SparqlStrategies.TransactionSupportStrategy, dotNetRDF.Query.Spin"
+		) .
+

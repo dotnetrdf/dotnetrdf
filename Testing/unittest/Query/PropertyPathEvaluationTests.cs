@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
             Assert.AreEqual(1, results.Count, "Expected 1 Result");
-            Assert.AreEqual(rdfsClass, results[1]["x"], "Expected 1 Result set to rdfs:Class");
+            Assert.AreEqual(rdfsClass, results[0]["x"], "Expected 1 Result set to rdfs:Class");
         }
 
         [Test]
