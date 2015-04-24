@@ -5,7 +5,7 @@ using VDS.RDF.Query.Spin.SparqlStrategies;
 
 namespace VDS.RDF.Query.Spin
 {
-    // TODO rename this with a more generic name since it does not really pertains to Spin only
+
     public class ConfigurationObjectFactory
         : IObjectFactory
     {
@@ -15,7 +15,7 @@ namespace VDS.RDF.Query.Spin
                              SpinSupportStrategyClassName = "VDS.RDF.Query.Spin.SpinSupportStrategy",
                              TransactionSupportStrategyClassName = "VDS.RDF.Query.Spin.TransactionSupportStrategy";
 
-        // TODO check whether the objNode has already be instantiated or not
+        // TODO add a static instance registry indexed by objNode ?
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;

@@ -13,13 +13,10 @@ namespace VDS.RDF.Query.Spin.Core.Runtime
     #endregion Events handlers
 
     /// <summary>
-    /// A base class for objects that require or emit temporary graphs in the underlying storage
+    /// A base class for objects that require usage of temporary graphs in the underlying storage
     /// </summary>
-    /// <remarks>
-    /// Under normal circumstances, this class should notify listeners to release its temporary graphs on Dispose if not sooner
-    /// </remarks>
-    /// TODO try to define an API to make temporary resources declaration and dependency management simpler
-    /// TODO allow to create a direct instance for potential garbage collection in case of crash recovery
+    /// TODO provide an API to simplify temporary resources declaration, dependencies and runtime management
+    /// TODO allow to create direct instances for potential garbage collection (mainly in case of crash recovery or whenever timed-out resources are not automatically disposed of)
     public abstract class SparqlTemporaryResourceMediator
         : IDisposable
     {

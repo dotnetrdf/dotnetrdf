@@ -33,6 +33,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.9.0")]
 [assembly: AssemblyVersion("1.0.9.0")]
 [assembly: AssemblyFileVersion("1.0.9.0")]
-
-//TODO: Remove once finished
-//[assembly: InternalsVisibleTo("spin-tests")]

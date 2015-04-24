@@ -352,10 +352,10 @@ namespace VDS.RDF.Query.Spin.Core
     /// <summary>
     /// A single sparql query of update in a SparqlCommand batch
     /// </summary>
-    /// TODO some SPARQL queries may be reworked in a way that they required special result handling (thinking of local evaluation of custom PropertyFunctions here that would get the arguments back and compute the result locally)
-    /// => we could also do this the other way around to allow for simpler support of Update commands that required those function computations
-    ///     thus we also provide a serviceend point here for local computation and wrap the property function call into a SERVICE GraphPattern
-    ///     => these function must cannot use blank nodes parameters
+    /// TODO in case of using a remote storage, we perhaps can handle custom functions by wrapping the call into a SERVICE pattern
+    ///     => this requires being able to identify such functions (either through configuration or SPARQL1.1 SD discovery whenever available)
+    ///     => this requires being able to provide a local SparqlEndpoint to evaluate the results and send it back to the server
+    ///     => this should normally be handled by a specific strategy
     public class SparqlCommandUnit
         : SparqlExecutable
     {
@@ -465,10 +465,7 @@ namespace VDS.RDF.Query.Spin.Core
             SparqlParameterizedString parameterizedCommand = new SparqlParameterizedString(
                 (CommandType.HasFlag(SparqlExecutableType.SparqlUpdate)) ? UpdateCommand.ToString() : Query.ToString()
                 );
-            foreach (String param in ((Dictionary<String, INode>)parameterizedCommand.Parameters).Keys)
-            {
-                parameterizedCommand.SetParameter(param, Connection[param]);
-            }
+            Connection.AssignParameters(parameterizedCommand);
             // Do the command execution
             RaiseExecutionStarted(new SparqlExecutableEventArgs());
             try
@@ -482,10 +479,6 @@ namespace VDS.RDF.Query.Spin.Core
                 }
                 else
                 {
-                    // TODO handle custom PropertyFunctions evaluation: maybe we can wrap the whole query in a service clause an run a local leviathan engine instead ?
-                    //  => problems : 1/ determine the service Uri from a IQueryableStorage object
-                    //                2/ ensure that multiple service calls will handle blank nodes correctly
-                    // TODO find a way to decouple the client's handlers and any internal required handler
                     Connection.UnderlyingStorage.Query(rdfHandler, resultsHandler, parameterizedCommand.ToString());
                 }
                 RaiseExecutionSucceeded(new SparqlExecutableEventArgs());

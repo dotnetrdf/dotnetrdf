@@ -257,7 +257,6 @@ namespace VDS.RDF.Query.Spin.Model
             }
             else
             {
-                //TODO ??????????
                 p.printURIResource(function);
             }
         }

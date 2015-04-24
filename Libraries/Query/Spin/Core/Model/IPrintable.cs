@@ -3,7 +3,6 @@
  * All rights reserved.
  *******************************************************************************/
 
-// TODO is this really needed ?
 using VDS.RDF.Query.Spin.Model.IO;
 
 namespace VDS.RDF.Query.Spin.SparqlUtil

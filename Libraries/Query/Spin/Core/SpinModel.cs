@@ -22,8 +22,8 @@ namespace VDS.RDF.Query.Spin
     /// </summary>
     /// <remarks>
     /// TODO try and use the Ontology API
-    /// TODO check security for SPIN imported graphs access
-    /// TODO add the getter for SPIN imported graphs Uris
+    /// TODO check whether and how to define security for SPIN imported graphs access
+    /// TODO add a property to get the list of spin imports' uris
     /// </remarks>
     public class SpinModel
         : IPropertyFunctionFactory, ISparqlCustomExpressionFactory
@@ -97,6 +97,7 @@ namespace VDS.RDF.Query.Spin
         private IInferenceEngine _reasoner;
 
         // A simple in-memory graph to be able to create new resources for the current model
+        // TODO check whether we still need this 
         private IGraph _localResourceBuilder = new ThreadSafeGraph();
 
         #region Instantiation and initialisation

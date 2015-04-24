@@ -498,7 +498,6 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <remarks>
         /// When set, the value is set recursively for any non GraphGraphPattern child
-        /// TODO check what about to do with the SERVICE specifiers 
         /// </remarks>
         public IToken ActiveGraph
         {

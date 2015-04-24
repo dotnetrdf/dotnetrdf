@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Spin.Model
             //    HashSet<Uri> namespaces = new HashSet<Uri>();
             //    foreach (IResource uriResource in uriResources)
             //    {
-            //        // TODO gestion des prefixes
+            //        // TODO namespaces handling
             //        //String ns = uriResource.getNameSpace();
             //        //namespaces.Add(ns);
             //    }

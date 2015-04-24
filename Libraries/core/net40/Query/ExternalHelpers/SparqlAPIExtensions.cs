@@ -11,7 +11,6 @@ namespace VDS.RDF.Query
     /// A set of extension methods to help work with TriplePattern and GraphPattern instances
     /// </summary>
     /// <remarks>
-    /// TODO check when cloning is truly required
     /// </remarks>
     public static class SparqlAPIExtensions
     {

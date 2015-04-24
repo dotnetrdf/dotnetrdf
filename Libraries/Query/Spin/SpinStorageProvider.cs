@@ -13,11 +13,10 @@ namespace VDS.RDF.Query.Spin
 {
     /// <summary>
     /// This class is responsible for
-    ///     => defining which SPARQL strategy handlers are necessary for a specific server and version
-    ///     => creating the Connection objects to a specific store through the GetStore method.
+    ///     => configuring the chain of SPARQL strategy handlers that are necessary to interpret the client's commands
+    ///     => creating the Connection objects to a specific store through the GetConnection method.
     /// </summary>
     /// <remarks>
-    /// TODO replace manual registration by the configuration then rename it finally to SpinStorageProvider
     /// </remarks>
     public class SpinStorageProvider
         : ISparqlSDPlugin
@@ -54,6 +53,19 @@ namespace VDS.RDF.Query.Spin
             SpinModel.Register(this, (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode), spinImports);
         }
 
+
+        internal void Handle(SparqlCommandUnit command)
+        {
+            foreach (ISparqlHandlingStrategy handler in _sparqlHandlers)
+            {
+                handler.Handle(command);
+            }
+        }
+
+        /// <summary>
+        /// Returns a new Connection instance to the Storage
+        /// </summary>
+        /// <returns></returns>
         public Connection GetConnection()
         {
             IStorageProvider storage = (IQueryableStorage)ConfigurationLoader.LoadObject(_configurationGraph, _storageNode);
@@ -62,14 +74,6 @@ namespace VDS.RDF.Query.Spin
                 throw new DotNetRdfConfigurationException("A SpinStorageProvider underlying storage must support SPARQL 1.1 Updates.");
             }
             return new Connection(this, (IUpdateableStorage)storage);
-        }
-
-        internal void Handle(SparqlCommandUnit command)
-        {
-            foreach (ISparqlHandlingStrategy handler in _sparqlHandlers)
-            {
-                handler.Handle(command);
-            }
         }
 
         #region ISparqlSDPlugin members

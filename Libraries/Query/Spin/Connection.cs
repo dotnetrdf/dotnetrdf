@@ -15,28 +15,12 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Query.Spin
 {
-    // TODO do we really need a connection state ? If yes :
-    //  => check the state for the connection on each method
-    //  => decide where and how to maintain it correctly
 
-    // TODO define how the Connection Class can be used more simply and transparently within a HttpApplication
-    //      We should then :
-    //          => make it creatable by direct API call (ConnectionString style ?). This implies to :
-    //              => make sure the correct strategy is associated with the underlying server
-    //                  => determine how we can define RDF "drivers" and check the driver corresponds with the underlying engine
-    //                  => determine how the required SPIN graphs to use can be associated with a specific Storage by either:
-    //                      => finding a way to force configuration
-    //                      => perform a global storage exploration to get all statements with spin:imports predicate along with the graph they appear in
-    //                          => this may be dangerous and would require having a security layer to be sure that normal users could not add such statement into the store
-    //          => force named configuration of the remote service and create the connection using the alias
-
-    // TODO Since we want to SPIN, it may be useful to wrap the storage within an internal security layer defined directly in the SPIN configuration
-    //      => Such a layer could be handled as a ISparqlHandlingStrategy to ensure queries and updates are restricted accordlingly to the current user's rights
-    //      => if present it may however be advisable that the module would affect any SPARQL1.1 ServiceDescription returned to the client (for instance return Dataset limitations, ie. the graphs the user can access)
-    //          => check how this behaviour can be enforced or ignored from within the connection.
-
+    // TODO Since we want to SPIN, it may be useful or even recommended to provide a security layer to restrict users' possible updates or exploration of the SPIN model or other sensitive graphs
+    //      => though there is a legacy Permissions Configuration feature, we may want to define a strategy do refine actions/rights granularity for the corresponding store.
+    
     // TODO define how to handle possible concurrent Spin configuration changes and what to do in these cases.
-    //      Either rollback the transaction or try to rerun it from the start using the new configuration ?
+    //      => Either rollback the transaction or try to rerun it from the start using the new configuration ?
 
     #region Event args and delegates
 
@@ -86,14 +70,7 @@ namespace VDS.RDF.Query.Spin
     /// Though we do not implement any other IDbConnection interface methods, I just added the Open methods to allow for storage to provide their own User Access/Rights layer
     /// </remarks>
     // TODO complete the IUpdateableStorage implementation
-    // TODO define how to allow for Sparql compliant command parameters, either:
-    //      => replace parameters with variables:
-    //          PRO: simpler, doe not require complex text replacement
-    //          CONS: limits usable names when parameters
-    //      => define a dummy function
-    //          PRO: more consistent with SWP ui:param() function, allows direct disambiguation from "legacy" sparql variables
-    //          CONS: requires complex text replacement with possible namespace resolution and aliasing to avoid variable conflict
-    //      TODO define how missing parameters should be handled (either UNDEF or dumb NULL value as done for SQL ?)
+    // TODO complete events definitions and handling
     public sealed class Connection
         : SparqlTemporaryResourceMediator, IUpdateableStorage, ITransactionalStorage
     {
@@ -112,6 +89,9 @@ namespace VDS.RDF.Query.Spin
         /// <summary>
         /// A client SPIN-capable connection over a physical IUpdateableStorage
         /// </summary>
+        /// <remarks>
+        /// Connection should only be creatable through SpinStorageProvider.GetConnection call
+        /// </remarks>
         /// <param name="server"></param>
         /// <param name="storage"></param>
         internal Connection(SpinStorageProvider server, IUpdateableStorage storage)
@@ -134,7 +114,7 @@ namespace VDS.RDF.Query.Spin
 
         public void Open(string userId, System.Security.SecureString password)
         {
-            if (State.HasFlag(ConnectionState.Open)) Close();
+            //if (State.HasFlag(ConnectionState.Open)) Close();
             // TODO set the userId env value
             Open();
         }
@@ -145,7 +125,6 @@ namespace VDS.RDF.Query.Spin
             {
                 // TODO for all SparqlSDContributor, provide a INode or Uri for reference in the SD graph
                 // TODO check wether the service description can be set for the storage or if it depends on the client's identity.
-                //      => if not try to use a single graph for the storage
                 if (_serviceDescription != null) return ServiceDescription;
                 try
                 {
@@ -157,7 +136,7 @@ namespace VDS.RDF.Query.Spin
                 }
                 // Enrich the description with the Sparql handlers informations if any provided.
                 _serviceDescription.Merge(_sparqlHandler.SparqlSDContribution);
-                // TODO try and determine the dataset usable by the client (either static for the storage or may be dependent on the current client's identity
+                // TODO try and determine the dataset usable by the client (either static for the storage or may be dependent on the current client's identity)
                 return _serviceDescription;
             }
         }
@@ -178,6 +157,15 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
+        /// <summary>
+        /// Gets/Sets a parameter value for this connection
+        /// </summary>
+        /// <remarks>
+        /// Any nulled/undefined parameter is currently subsituted by an unbound variable upon execution.
+        /// TODO this may cause some security issues. Check whether it is our responsibility to handle any policy
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public INode this[String name]
         {
             get
@@ -209,10 +197,9 @@ namespace VDS.RDF.Query.Spin
         #region Transaction events
 
         // TODO do we need to handle this
-
         internal event ConnectionEventHandler Aborted;
 
-        // TODO split events between internal pre event and public complete event
+        // TODO maybe split events into an internal Start/Requested event and a public one so we can ensure that all work is done correctly before notifying any external resource ?
         internal event ConnectionEventHandler Committed;
 
         internal event ConnectionEventHandler Rolledback;
@@ -221,6 +208,7 @@ namespace VDS.RDF.Query.Spin
 
         #region IUpdateableStorage members
 
+        // TODO check wether we can return anything safely ?
         public IStorageServer ParentServer
         {
             get
@@ -311,7 +299,7 @@ namespace VDS.RDF.Query.Spin
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            // TODO tranform the additions and removals into GraphGraphPatterns and create a modify command
+            // TODO tranform the additions and removals into a SPARQL1.1 UpdateCommand
         }
 
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
@@ -340,31 +328,31 @@ namespace VDS.RDF.Query.Spin
             get { throw new NotImplementedException(); }
         }
 
-        // TODO base this on the GetConfiguration
+        // TODO base this on the connection's current configuration
         public bool IsReadOnly
         {
             get { throw new NotImplementedException(); }
         }
 
-        // TODO base this on the GetConfiguration
+        // TODO base this on the connection's current configuration
         public IOBehaviour IOBehaviour
         {
             get { throw new NotImplementedException(); }
         }
 
-        // TODO base this on the GetConfiguration
+        // TODO base this on the connection's current configuration
         public bool UpdateSupported
         {
             get { throw new NotImplementedException(); }
         }
 
-        // TODO base this on the GetConfiguration
+        // TODO base this on the connection's current configuration
         public bool DeleteSupported
         {
             get { throw new NotImplementedException(); }
         }
 
-        // TODO base this on the GetConfiguration
+        // TODO base this on the connection's current configuration
         public bool ListGraphsSupported
         {
             get { throw new NotImplementedException(); }
@@ -423,7 +411,6 @@ namespace VDS.RDF.Query.Spin
 
         #region Internal implementation
 
-        // TODO find a more generic name
         internal SpinStorageProvider StorageProvider
         {
             get
@@ -449,18 +436,22 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
-        // TODO implement this so we can try and pass direct object references as parameters ?
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
         internal void AssignParameters(SparqlParameterizedString command)
         {
             foreach (String paramName in ((Dictionary<String, INode>)command.Parameters).Keys)
             {
-                object value = this[paramName];
+                INode value = this[paramName];
                 if (value != null)
                 {
+                    command.SetParameter(paramName, value);
                 }
                 else
                 {
-                    command.SetParameter(paramName, RuntimeHelper.BLACKHOLE);
+                    command.SetParameter(paramName, RDFHelper.CreateTempVariableNode());
                 }
             }
         }
@@ -477,11 +468,6 @@ namespace VDS.RDF.Query.Spin
             return command;
         }
 
-        // TODO either
-        //      1. provide generic methods to check whether a graph is being updated or requires isolation
-        //          => define names that do not imply anything about possible transaction strategies
-        //      2. make the strategies listen to events and maintain the case locally (better but more complex ?)
-
         #endregion Internal implementation
 
         #region Events and helpers
@@ -497,17 +483,17 @@ namespace VDS.RDF.Query.Spin
         //event TripleStoreEventHandler GraphRemoved;
 
         /// <summary>
-        /// Event which is raised when Graphs has been updated (changes committed) by other connections or processes
+        /// Event which is raised when Graphs has been updated (changes committed) outside of this connection
         /// </summary>
         /// <remarks>
         /// if we want to give priority to Spin model graphs, we may have to make this event cancellable
         /// or define how the connection must react whenever a configuration graph is changed (this will be driven from the SpinStrategy implementation)
         /// </remarks>
-        /// TODO relocate this in a storage associated class (namely the TransactionLog that should be renamed to relate more to the storage notion
+        /// TODO relocate this in the StorageRuntimeMonitor class
         internal event ConnectionEventHandler GraphsChanged;
 
         /// <summary>
-        /// Event which is raised when a Graphs contents changes within the current transaction
+        /// Event which is raised when a Graph contents changes within the current transaction
         /// </summary>
         internal event ConnectionEventHandler GraphsUpdated;
 
@@ -515,8 +501,6 @@ namespace VDS.RDF.Query.Spin
         /// Helper method for raising the <see cref="GraphsUpdated">GraphsChanged</see> event
         /// </summary>
         /// <param name="args">List of the changed graphs' uri</param>
-        /// TODO handle the fact that until commit, only the current connection should listen to this event...
-        ///     => emit different events or handle different scoping like here and in TransactionLog/RuntimeLog ?
         internal void RaiseGraphsUpdated(IEnumerable<Uri> args)
         {
             ConnectionEventHandler d = this.GraphsUpdated;
@@ -526,11 +510,13 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
+        // YET UNUSED 
         ///// <summary>
         ///// Event which is raised when a Graph is cleared
         ///// </summary>
         //event TripleStoreEventHandler GraphCleared;
 
+        // YET UNUSED 
         ///// <summary>
         ///// Event which is raised when a Graph has a merge operation performed on it
         ///// </summary>

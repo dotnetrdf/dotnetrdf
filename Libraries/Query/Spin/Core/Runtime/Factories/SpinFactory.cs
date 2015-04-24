@@ -12,11 +12,12 @@ namespace VDS.RDF.Query.Spin.Core.Runtime.Factories
     /// <summary>
     /// A marker interface to register classes that provide Spin extensions implementation
     /// </summary>
+    /// TODO check whether we can work with this and that it does not cause any conflict
+    ///         then check if we could/should bind this to the automatic Configuration API
     public interface ISpinImplementation
     {
     }
 
-    // TODO should we sgment this by model ?
     /// <summary>
     /// A singleton class for managing runtime Spin extensions
     /// </summary>
