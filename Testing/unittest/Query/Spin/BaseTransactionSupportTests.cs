@@ -53,7 +53,11 @@ namespace SpinTest
             if (conn != null) conn.Close();
             if (conn2 != null) conn2.Close();
         }
-
+        
+        /// <remarks>
+        /// This test doesn't run as expected with an in-memory storage, due to an issue in algebra evaluation
+        /// see ExplicitGraphsPropertyPathCompilationTest for more explanations and possible solution
+        /// </remarks>
         [Test]
         public void DefaultGraphsPropertyPathCompilationTest()
         {
@@ -69,6 +73,14 @@ namespace SpinTest
             Assert.AreEqual(69, result.Triples.Count, "Wrong asserted triples count");
         }
 
+        /// <remarks>
+        /// This test doesn't run as expected with an in-memory storage
+        /// This is caused by the LeftJoin evaluation (from the OPTIONAL) that wraps the transactional triple expansion : 
+        /// Checks return that :
+        ///     => though the Extend are expressed in constant terms, the result variable is always considered floating (see <see cref="Query.Algebra.Extend">line 203 </see>
+        ///     => even when forcing variable to fixed when ther is not any floating variable in the inner expression Query.Algrebra.LeftJoin.CanFlowResultsToRhs still returns false due to the test l.312
+        ///         => should not LHS fixed variables allow to flow the results ?
+        /// </remarks>
         [Test]
         public void ExplicitGraphsPropertyPathCompilationTest()
         {
@@ -76,7 +88,7 @@ namespace SpinTest
             CleanupBeforeTest();
             conn = SpinProvider.GetConnection();
             conn.Open();
-            conn.Update(@"PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> INSERT { GRAPH <unit-test:dotnetrdf.org:tests:ExplicitGraphsPropertyPathCompilationTest> { ?s <tmp:dotnetrdf.org:rdfs:subClassOf> ?p . } }  USING NAMED <http://spinrdf.org/spin> USING NAMED <http://spinrdf.org/spin2> WHERE { graph <http://spinrdf.org/spin> { ?s rdfs:subClassOf+ ?p } }");
+            conn.Update(@"PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> INSERT { GRAPH <unit-test:dotnetrdf.org:tests:ExplicitGraphsPropertyPathCompilationTest> { ?s <tmp:dotnetrdf.org:rdfs:subClassOf> ?p . } }  USING NAMED <http://spinrdf.org/spin> WHERE { graph <http://spinrdf.org/spin> { ?s rdfs:subClassOf+ ?p } }");
             conn.Commit();
             conn.Close();
             IGraph result = new Graph();
@@ -129,6 +141,10 @@ namespace SpinTest
             Assert.AreEqual(32, result.Triples.Count, "Wrong asserted triples count");
         }
 
+        /// <remarks>
+        /// This test doesn't run as expected with an in-memory storage, due to an issue in algebra evaluation
+        /// see ExplicitGraphsPropertyPathCompilationTest for more explanations and possible solution
+        /// </remarks>
         [Test]
         public void NamedGraphsPropertyPathCompilationTest()
         {
