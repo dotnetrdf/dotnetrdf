@@ -1,27 +1,23 @@
 ﻿#define CLEANUP
-using System;
+
 using NUnit.Framework;
-using VDS.RDF.Query.Spin;
-using VDS.RDF.Query.Spin.SparqlStrategies;
-using VDS.RDF.Query;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query.Patterns;
-using VDS.RDF;
-using VDS.RDF.Storage;
-using System.Diagnostics;
-using System.Linq;
-using VDS.RDF.Query.Spin.Utility;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Core.Runtime;
+using VDS.RDF.Query.Spin.SparqlStrategies;
+using VDS.RDF.Storage;
 
 namespace SpinTest
 {
-
     [TestFixture]
     public abstract class BaseTransactionSupportTests
     {
-
         protected abstract IUpdateableStorage PhysicalStorage { get; }
+
         protected abstract SpinStorageProvider SpinProvider { get; }
 
         protected abstract bool IsConfigured();
@@ -44,7 +40,6 @@ namespace SpinTest
             {
                 PhysicalStorage.DeleteGraph(graphUri);
             }
-
         }
 
         [TearDown()]
@@ -53,7 +48,7 @@ namespace SpinTest
             if (conn != null) conn.Close();
             if (conn2 != null) conn2.Close();
         }
-        
+
         /// <remarks>
         /// This test doesn't run as expected with an in-memory storage, due to an issue in algebra evaluation
         /// see ExplicitGraphsPropertyPathCompilationTest for more explanations and possible solution
@@ -75,7 +70,7 @@ namespace SpinTest
 
         /// <remarks>
         /// This test doesn't run as expected with an in-memory storage
-        /// This is caused by the LeftJoin evaluation (from the OPTIONAL) that wraps the transactional triple expansion : 
+        /// This is caused by the LeftJoin evaluation (from the OPTIONAL) that wraps the transactional triple expansion :
         /// Checks return that :
         ///     => though the Extend are expressed in constant terms, the result variable is always considered floating (see <see cref="Query.Algebra.Extend">line 203 </see>
         ///     => even when forcing variable to fixed when ther is not any floating variable in the inner expression Query.Algrebra.LeftJoin.CanFlowResultsToRhs still returns false due to the test l.312
@@ -193,7 +188,7 @@ namespace SpinTest
             Assert.IsTrue(newResult.IsEmpty, "Query should not return any result");
             conn2.Close();
             conn2 = SpinProvider.GetConnection();
-            conn2.Open(); 
+            conn2.Open();
             newResult = (SparqlResultSet)conn2.Query(@"SELECT * FROM <unit-test:dotnetrdf.org:tests:ConcurrencyTest> WHERE { ?s ?p ?o . }");
             Assert.IsFalse(newResult.IsEmpty, "Query should return some result");
             conn2.Close();

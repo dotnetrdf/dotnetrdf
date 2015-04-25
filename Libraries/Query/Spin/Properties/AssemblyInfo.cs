@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF SPIN")]
-[assembly: AssemblyDescription("A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine")]
+[assembly: AssemblyDescription("A library which provides a full SPIN implementation over a vairety of RDF storage engines (including the dotNetRDF InMemory storage)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Query.SPIN")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2010")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2009-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.9.0")]
-[assembly: AssemblyVersion("1.0.9.0")]
-[assembly: AssemblyFileVersion("1.0.9.0")]
+[assembly: AssemblyVersion("0.0.9.0")]
+[assembly: AssemblyFileVersion("0.0.9.0")]
