@@ -80,6 +80,8 @@ namespace SpinTest
         ///     => though the Extend are expressed in constant terms, the result variable is always considered floating (see <see cref="Query.Algebra.Extend">line 203 </see>
         ///     => even when forcing variable to fixed when ther is not any floating variable in the inner expression Query.Algrebra.LeftJoin.CanFlowResultsToRhs still returns false due to the test l.312
         ///         => should not LHS fixed variables allow to flow the results ?
+        /// Patching this behaviour make the PropertyPathCompilation tests work without breaking anything (according to the test suites)
+        /// Will have to discuss the solution with Rob
         /// </remarks>
         [Test]
         public void ExplicitGraphsPropertyPathCompilationTest()
