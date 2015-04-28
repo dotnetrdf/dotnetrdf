@@ -52,7 +52,6 @@ namespace VDS.RDF.Query.Patterns
         private bool _isService = false;
         private bool _isSilent = false;
         private IToken _graphSpecifier = null;
-        private IToken _activeGraph = null;
         private readonly List<GraphPattern> _graphPatterns = new List<GraphPattern>();
         private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
         private readonly List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
@@ -87,7 +86,7 @@ namespace VDS.RDF.Query.Patterns
             this._break = gp._break;
             this._broken = gp._broken;
             this._filter = gp._filter;
-            if (!shallow) this._graphPatterns.AddRange(gp._graphPatterns.Select(cgp => cgp.Clone())); // Cloning is made necessary since each graph pattern has to maintain its children ActiveGraph separately
+            if (!shallow) this._graphPatterns.AddRange(gp._graphPatterns);
             this.GraphSpecifier = gp._graphSpecifier;
             this._isExists = gp._isExists;
             this._isFiltered = gp._isFiltered;
@@ -201,10 +200,6 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="p">Graph Pattern</param>
         public void AddGraphPattern(GraphPattern p)
         {
-            if (!p.IsGraph)
-            {
-                p._activeGraph = this._activeGraph;
-            }
             if (this._break)
             {
                 if (this._broken)
@@ -494,39 +489,15 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets the Active Graph that this Graph Pattern is evaluated against
-        /// </summary>
-        /// <remarks>
-        /// When set, the value is set recursively for any non GraphGraphPattern child
-        /// </remarks>
-        public IToken ActiveGraph
-        {
-            get
-            {
-                if (IsGraph) return this.GraphSpecifier;
-                return this._activeGraph;
-            }
-            internal set
-            {
-                this._activeGraph = value;
-                foreach (GraphPattern cgp in this.ChildGraphPatterns.Where(gp => !gp.IsGraph))
-                {
-                    cgp.ActiveGraph = value;
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets/Sets the Graph Specifier that applies to this Graph Pattern
         /// </summary>
         /// <remarks>
-        /// This property also sets the ActiveGraph for the pattern.
         /// This property is also used internally for SERVICE specifiers to save adding an additional property unnecessarily
         /// </remarks>
         public IToken GraphSpecifier
         {
             get { return this._graphSpecifier; }
-            internal set { this._graphSpecifier = value; if (IsGraph) this.ActiveGraph = value; }
+            internal set { this._graphSpecifier = value; }
         }
 
         /// <summary>

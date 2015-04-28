@@ -566,7 +566,7 @@ DROP SILENT GRAPH @RdfNull;
             private readonly bool _simulateIsolation;
             private SparqlCommandUnit _command;
 
-            private IToken _activeGraph;
+            private Stack<IToken> _activeGraph = new Stack<IToken>();
 
             private HashSet<Uri> _defaultGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
             private HashSet<Uri> _namedGraphs = new HashSet<Uri>(RDFHelper.uriComparer);
@@ -786,15 +786,17 @@ DROP SILENT GRAPH @RdfNull;
             /// <remarks>TODO notify the TransactionLog class for graphs read</remarks>
             private GraphPattern RewriteReadGraphPattern(GraphPattern gp)
             {
+                // Sets the default graph as first activeGraph if the stack is empty
+                if (_activeGraph.Count == 0) _activeGraph.Push(null);
                 // SERVICE graph patterns are not to be rewritten
                 if (gp.IsService) return gp;
-                GraphPattern output;// = gp.Clone(true);
+                GraphPattern output;
                 if (gp.IsGraph || gp.IsSubQuery || !gp.HasModifier)
                 { // If gp is neither a GraphGraphPattern nor a Bgp we use a shallow copy of gp and add gp rewritten childGraphPattern to it
                     output = new GraphPattern();
                     if (gp.IsGraph)
                     {
-                        _activeGraph = gp.GraphSpecifier;
+                        _activeGraph.Push(gp.GraphSpecifier);
                         // Register the graph to the required graph tokens set
                         switch (gp.GraphSpecifier.TokenType)
                         {
@@ -803,7 +805,7 @@ DROP SILENT GRAPH @RdfNull;
                                 break;
 
                             case Token.URI:
-                                _activeGraph = gp.GraphSpecifier;
+                                //_activeGraph = gp.GraphSpecifier;
                                 break;
 
                             default:
@@ -839,6 +841,7 @@ DROP SILENT GRAPH @RdfNull;
                     }
                     output.AddGraphPattern(ensurePatternBreak);
                 }
+                if (gp.IsGraph) _activeGraph.Pop();
                 return output;
             }
 
@@ -852,7 +855,7 @@ DROP SILENT GRAPH @RdfNull;
             private void RewriteUpdateTemplate(GraphPattern template, GraphPattern deletePattern, GraphPattern insertPattern, bool forInsert)
             {
                 if (template == null) return;
-                if (template.ActiveGraph == null && template.TriplePatterns.Count > 0) throw new NotSupportedException("Cannot currently write to the default graph.");
+                if (template.GraphSpecifier == null && template.TriplePatterns.Count > 0) throw new NotSupportedException("Cannot currently write to the default graph.");
                 if (template.HasChildGraphPatterns)
                 { // Handles the RootGraphPattern
                     foreach (GraphPattern cgp in template.ChildGraphPatterns)
@@ -862,29 +865,29 @@ DROP SILENT GRAPH @RdfNull;
                 }
                 else
                 { // Handles insert and delete triplepatterns
-                    _activeGraph = template.ActiveGraph;
+                    IToken activeGraph = template.GraphSpecifier;
                     // TODO check whether we can use variables that map to the default graph
-                    if (IsDefaultGraph(_activeGraph)) throw new NotSupportedException("Cannot currently update the default graph.");
+                    if (IsDefaultGraph(activeGraph)) throw new NotSupportedException("Cannot currently update the default graph.");
 
                     IToken outputGraphToken, assertionsGraphToken, removalsGraphToken;
-                    switch (_activeGraph.TokenType)
+                    switch (activeGraph.TokenType)
                     {
                         case Token.VARIABLE:
-                            outputGraphToken = _activeGraph;
+                            outputGraphToken = activeGraph;
                             break;
 
                         case Token.URI:
-                            outputGraphToken = _activeGraph;
+                            outputGraphToken = activeGraph;
                             break;
 
                         default:
                             throw new ArgumentException("Invalid token. Expected a graph IRI or variable");
                     }
-                    _activeGraph = outputGraphToken;
+                    activeGraph = outputGraphToken;
                     String assertionsGraphUri = String.Format(TransactionSupportStrategy.PENDING_ASSERTIONS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Context.ID });
-                    assertionsGraphToken = GetGraphAssignement(_activeGraph, "pendingA", assertionsGraphUri);
+                    assertionsGraphToken = GetGraphAssignement(activeGraph, "pendingA", assertionsGraphUri);
                     String removalsGraphUri = String.Format(TransactionSupportStrategy.PENDING_REMOVALS_GRAPH_PREFIX_TEMPLATE, new String[] { _command.Context.ID });
-                    removalsGraphToken = GetGraphAssignement(_activeGraph, "pendingR", removalsGraphUri);
+                    removalsGraphToken = GetGraphAssignement(activeGraph, "pendingR", removalsGraphUri);
                     // Make pendingAdditions and pendingRemovals disjoint
                     foreach (TriplePattern tp in template.TriplePatterns)
                     {
@@ -941,7 +944,7 @@ DROP SILENT GRAPH @RdfNull;
 
             private void RewriteTriplePattern(GraphPattern output, GraphPattern source, ITriplePattern pattern)
             {
-                IToken activeGraph = source.ActiveGraph;
+                IToken activeGraph = _activeGraph.Peek();
                 // Check wether the pattern use the default graph
                 if (activeGraph == null)
                 {
@@ -1031,7 +1034,7 @@ DROP SILENT GRAPH @RdfNull;
                     }
                     else
                     {
-                        IToken activeGraph = source.ActiveGraph;
+                        IToken activeGraph = _activeGraph.Peek();
                         IToken compilationScope;
                         if (IsDefaultGraph(activeGraph))
                         {
