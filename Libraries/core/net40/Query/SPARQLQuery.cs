@@ -750,7 +750,7 @@ namespace VDS.RDF.Query
         /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph</param>
         protected internal void AddVariable(String name, bool isResultVar)
         {
-            String var = name.StartsWith("?") ? name.Substring(1) : name;
+            String var = name.StartsWith("?") || name.StartsWith("$") ? name.Substring(1) : name;
             if ((int)this._type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
             if (!this._vars.Any(v => v.Name.Equals(var)))
@@ -1248,7 +1248,7 @@ namespace VDS.RDF.Query
             //If we have a top level VALUES clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
-                algebra = Join.CreateJoin(new Bindings(this._bindings), algebra);
+                algebra = Join.CreateJoin(algebra, new Bindings(this._bindings));
             }
 
             //Then we apply any optimisers followed by relevant solution modifiers
