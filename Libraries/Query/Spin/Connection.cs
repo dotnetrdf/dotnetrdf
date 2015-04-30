@@ -468,17 +468,9 @@ namespace VDS.RDF.Query.Spin
         /// <param name="command"></param>
         internal void AssignParameters(SparqlParameterizedString command)
         {
-            foreach (String paramName in ((Dictionary<String, INode>)command.Parameters).Keys)
+            foreach (String paramName in _parameters.Keys)
             {
-                INode value = this[paramName];
-                if (value != null)
-                {
-                    command.SetParameter(paramName, value);
-                }
-                else
-                {
-                    command.SetParameter(paramName, RDFHelper.CreateTempVariableNode());
-                }
+                command.SetParameter(paramName, this[paramName]);
             }
         }
 
