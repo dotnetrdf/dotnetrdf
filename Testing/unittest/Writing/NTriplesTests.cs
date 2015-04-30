@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -38,26 +38,17 @@ namespace VDS.RDF.Writing
     [TestFixture]
     public class NTriplesTests
     {
-        [Test]
-        public void WritingNTriplesAsciiChars()
+        private void Test(String literal, IRdfWriter writer, IRdfReader parser)
         {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i <= 127; i++)
-            {
-                builder.Append((char)i);
-            }
-
             IGraph g = new Graph();
             g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
-            g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(builder.ToString()));
+            g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(literal));
 
-            NTriplesWriter writer = new NTriplesWriter();
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);
 
             Console.WriteLine(strWriter.ToString());
 
-            NTriplesParser parser = new NTriplesParser();
             IGraph h = new Graph();
             parser.Load(h, new StringReader(strWriter.ToString()));
 
@@ -65,7 +56,55 @@ namespace VDS.RDF.Writing
         }
 
         [Test]
-        public void WritingNTriplesNonAsciiChars()
+        public void WritingNTriplesAsciiChars1()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i <= 127; i++)
+            {
+                builder.Append((char)i);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
+        }
+
+        [Test]
+        public void WritingNTriplesAsciiChars2()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i <= 127; i++)
+            {
+                builder.Append((char)i);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+        }
+
+        [Test]
+        public void WritingNTriplesAsciiChars3()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i <= 127; i++)
+            {
+                builder.Append((char)i);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesAsciiChars4()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i <= 127; i++)
+            {
+                builder.Append((char)i);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesNonAsciiChars1()
         {
             StringBuilder builder = new StringBuilder();
             for (int i = 128; i <= 255; i++)
@@ -73,21 +112,43 @@ namespace VDS.RDF.Writing
                 builder.Append((char) i);
             }
 
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
-            g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(builder.ToString()));
+           this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
+        }
 
-            NTriplesWriter writer = new NTriplesWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            writer.Save(g, strWriter);
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void WritingNTriplesNonAsciiChars2()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 128; i <= 255; i++)
+            {
+                builder.Append((char)i);
+            }
 
-            Console.WriteLine(strWriter.ToString());
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+        }
 
-            NTriplesParser parser = new NTriplesParser();
-            IGraph h = new Graph();
-            parser.Load(h, new StringReader(strWriter.ToString()));
+        [Test]
+        public void WritingNTriplesNonAsciiChars3()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 128; i <= 255; i++)
+            {
+                builder.Append((char)i);
+            }
 
-            Assert.AreEqual(g, h);
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesNonAsciiChars4()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 128; i <= 255; i++)
+            {
+                builder.Append((char)i);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
         [Test]
@@ -100,21 +161,7 @@ namespace VDS.RDF.Writing
                 builder.Append((char) j);
             }
 
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
-            g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(builder.ToString()));
-
-            NTriplesWriter writer = new NTriplesWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            writer.Save(g, strWriter);
-
-            Console.WriteLine(strWriter.ToString());
-
-            NTriplesParser parser = new NTriplesParser();
-            IGraph h = new Graph();
-            parser.Load(h, new StringReader(strWriter.ToString()));
-
-            Assert.AreEqual(g, h);
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
         [Test]
@@ -138,21 +185,118 @@ namespace VDS.RDF.Writing
                 i++;
             }
 
-            IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
-            g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(builder.ToString()));
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
+        }
 
-            NTriplesWriter writer = new NTriplesWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            writer.Save(g, strWriter);
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void WritingNTriplesMixedChars3()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0, j = 128; i <= 127 && j <= 255; i++, j++)
+            {
+                builder.Append((char)i);
+                builder.Append((char)j);
+            }
 
-            Console.WriteLine(strWriter.ToString());
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+        }
 
-            NTriplesParser parser = new NTriplesParser();
-            IGraph h = new Graph();
-            parser.Load(h, new StringReader(strWriter.ToString()));
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void WritingNTriplesMixedChars4()
+        {
+            StringBuilder builder = new StringBuilder();
+            Queue<char> ascii = new Queue<char>(Enumerable.Range(0, 128).Select(c => (char)c));
+            Queue<char> nonAscii = new Queue<char>(Enumerable.Range(128, 128).Select(c => (char)c));
 
-            Assert.AreEqual(g, h);
+            int i = 1;
+            while (ascii.Count > 0)
+            {
+                for (int x = 0; x < i && ascii.Count > 0; x++)
+                {
+                    builder.Append(ascii.Dequeue());
+                }
+                for (int x = 0; x < i && nonAscii.Count > 0; x++)
+                {
+                    builder.Append(nonAscii.Dequeue());
+                }
+                i++;
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+        }
+
+        [Test]
+        public void WritingNTriplesMixedChars5()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0, j = 128; i <= 127 && j <= 255; i++, j++)
+            {
+                builder.Append((char)i);
+                builder.Append((char)j);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesMixedChars6()
+        {
+            StringBuilder builder = new StringBuilder();
+            Queue<char> ascii = new Queue<char>(Enumerable.Range(0, 128).Select(c => (char)c));
+            Queue<char> nonAscii = new Queue<char>(Enumerable.Range(128, 128).Select(c => (char)c));
+
+            int i = 1;
+            while (ascii.Count > 0)
+            {
+                for (int x = 0; x < i && ascii.Count > 0; x++)
+                {
+                    builder.Append(ascii.Dequeue());
+                }
+                for (int x = 0; x < i && nonAscii.Count > 0; x++)
+                {
+                    builder.Append(nonAscii.Dequeue());
+                }
+                i++;
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesMixedChars7()
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0, j = 128; i <= 127 && j <= 255; i++, j++)
+            {
+                builder.Append((char)i);
+                builder.Append((char)j);
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Test]
+        public void WritingNTriplesMixedChars8()
+        {
+            StringBuilder builder = new StringBuilder();
+            Queue<char> ascii = new Queue<char>(Enumerable.Range(0, 128).Select(c => (char)c));
+            Queue<char> nonAscii = new Queue<char>(Enumerable.Range(128, 128).Select(c => (char)c));
+
+            int i = 1;
+            while (ascii.Count > 0)
+            {
+                for (int x = 0; x < i && ascii.Count > 0; x++)
+                {
+                    builder.Append(ascii.Dequeue());
+                }
+                for (int x = 0; x < i && nonAscii.Count > 0; x++)
+                {
+                    builder.Append(nonAscii.Dequeue());
+                }
+                i++;
+            }
+
+            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
         }
 
         [Test]
@@ -177,6 +321,17 @@ namespace VDS.RDF.Writing
             TimeSpan ntriplesTime = timer.Elapsed;
             timer.Reset();
 
+            // Write 10,000 times with NTriplesFormatter in RDF 1.1 mode
+            formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            strWriter = new System.IO.StringWriter();
+            timer.Start();
+            strWriter.WriteLine(formatter.Format(n));
+            timer.Stop();
+
+            Console.WriteLine("NTriples Formatter (RDF 1.1) Time Elapsed: " + timer.Elapsed);
+            //TimeSpan ntriples11Time = timer.Elapsed;
+            timer.Reset();
+
             // Write and check round trip with Turtle and compare speed
             strWriter = new System.IO.StringWriter();
             formatter = new UncompressedTurtleFormatter();
@@ -189,6 +344,64 @@ namespace VDS.RDF.Writing
 
             // Compare Speed
             Assert.IsTrue(turtleTime.CompareTo(ntriplesTime) == -1);
+        }
+
+        private void TestBNodeFormatting(IBlankNode b, INodeFormatter formatter, String expected)
+        {
+            String actual = formatter.Format(b);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void WritingNTriplesBlankNodeIDs1()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Original);
+            Graph g = new Graph();
+
+            // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
+            IBlankNode b = g.CreateBlankNode("simple");
+            this.TestBNodeFormatting(b, formatter, "_:simple");
+            b = g.CreateBlankNode("simple1234");
+            this.TestBNodeFormatting(b, formatter, "_:simple1234");
+
+            // Complex IDs which are only valid in RDF 1.1 NTriples
+            // When using Original syntax these should be rewritten
+            b = g.CreateBlankNode("complex-dash");
+            this.TestBNodeFormatting(b, formatter, "_:autos1");
+            b = g.CreateBlankNode("complex_underscore");
+            this.TestBNodeFormatting(b, formatter, "_:autos2");
+            b = g.CreateBlankNode("complex.dot");
+            this.TestBNodeFormatting(b, formatter, "_:autos3");
+            b = g.CreateBlankNode("complex-dash_underscore.dot");
+            this.TestBNodeFormatting(b, formatter, "_:autos4");
+            b = g.CreateBlankNode("комплекс");
+            this.TestBNodeFormatting(b, formatter, "_:autos5");
+        }
+
+        [Test]
+        public void WritingNTriplesBlankNodeIDs2()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            Graph g = new Graph();
+
+            // Simple IDs which are valid in Original NTriples and RDF 1.1 NTriples
+            IBlankNode b = g.CreateBlankNode("simple");
+            this.TestBNodeFormatting(b, formatter, "_:simple");
+            b = g.CreateBlankNode("simple1234");
+            this.TestBNodeFormatting(b, formatter, "_:simple1234");
+
+            // Complex IDs which are only valid in RDF 1.1 NTriples
+            // When using RDF 1.1 syntax these will be left as-is
+            b = g.CreateBlankNode("complex-dash");
+            this.TestBNodeFormatting(b, formatter, "_:complex-dash");
+            b = g.CreateBlankNode("complex_underscore");
+            this.TestBNodeFormatting(b, formatter, "_:complex_underscore");
+            b = g.CreateBlankNode("complex.dot");
+            this.TestBNodeFormatting(b, formatter, "_:complex.dot");
+            b = g.CreateBlankNode("complex-dash_underscore.dot");
+            this.TestBNodeFormatting(b, formatter, "_:complex-dash_underscore.dot");
+            b = g.CreateBlankNode("комплекс");
+            this.TestBNodeFormatting(b, formatter, "_:комплекс");
         }
     }
 }

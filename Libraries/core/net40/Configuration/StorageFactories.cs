@@ -58,7 +58,11 @@ namespace VDS.RDF.Configuration
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
-                             StardogServer = "VDS.RDF.Storage.Management.StardogServer"
+                             StardogV1 = "VDS.RDF.Storage.StardogV1Connector",
+                             StardogV2 = "VDS.RDF.Storage.StardogV2Connector",
+                             StardogServer = "VDS.RDF.Storage.Management.StardogServer",
+                             StardogServerV1 = "VDS.RDF.Storage.Management.StardogV1Server",
+                             StardogServerV2 = "VDS.RDF.Storage.Management.StardogV2Server"
                              ;
 
         /// <summary>
@@ -82,7 +86,6 @@ namespace VDS.RDF.Configuration
             obj = null;
 
             String server, user, pwd, store, catalog, loadModeRaw;
-            bool isAsync;
 
             Object temp;
             INode storeObj;
@@ -139,30 +142,13 @@ namespace VDS.RDF.Configuration
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                     if (file == null) return false;
                     file = ConfigurationLoader.ResolvePath(file);
-                    isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
+                    bool isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
 #endif
 
                 case Dydra:
-                    //Get the Account Name and Store
-                    String account = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
-                    if (account == null) return false;
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-
-                    //Get User Credentials
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null)
-                    {
-                        storageProvider = new DydraConnector(account, store, user);
-                    }
-                    else
-                    {
-                        storageProvider = new DydraConnector(account, store);
-                    }
-                    break;
+                    throw new DotNetRdfConfigurationException("DydraConnector is no longer supported by dotNetRDF and is considered obsolete");
 
                 case FourStore:
                     //Get the Server and whether Updates are enabled
@@ -187,7 +173,7 @@ namespace VDS.RDF.Configuration
                         temp = ConfigurationLoader.LoadObject(g, datasetObj);
                         if (temp is ISparqlDataset)
                         {
-                            storageProvider = new InMemoryManager((ISparqlDataset)temp);
+                            storageProvider = new InMemoryManager((ISparqlDataset) temp);
                         }
                         else
                         {
@@ -203,7 +189,7 @@ namespace VDS.RDF.Configuration
                             temp = ConfigurationLoader.LoadObject(g, storeObj);
                             if (temp is IInMemoryQueryableStore)
                             {
-                                storageProvider = new InMemoryManager((IInMemoryQueryableStore)temp);
+                                storageProvider = new InMemoryManager((IInMemoryQueryableStore) temp);
                             }
                             else
                             {
@@ -226,7 +212,7 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IStorageProvider)
                     {
-                        storageProvider = new ReadOnlyConnector((IStorageProvider)temp);
+                        storageProvider = new ReadOnlyConnector((IStorageProvider) temp);
                     }
                     else
                     {
@@ -240,7 +226,7 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IQueryableStorage)
                     {
-                        storageProvider = new QueryableReadOnlyConnector((IQueryableStorage)temp);
+                        storageProvider = new QueryableReadOnlyConnector((IQueryableStorage) temp);
                     }
                     else
                     {
@@ -262,7 +248,7 @@ namespace VDS.RDF.Configuration
                     if (user != null && pwd != null)
                     {
 #if !NO_SYNC_HTTP
-                        storageProvider = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
+                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store, user, pwd});
 #else
                         storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
 #endif
@@ -270,7 +256,7 @@ namespace VDS.RDF.Configuration
                     else
                     {
 #if !NO_SYNC_HTTP
-                        storageProvider = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
+                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store});
 #else
                         storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
 #endif
@@ -297,7 +283,7 @@ namespace VDS.RDF.Configuration
 
                 case Sparql:
                     //Get the Endpoint URI or the Endpoint
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
 
                     //What's the load mode?
                     loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
@@ -309,7 +295,7 @@ namespace VDS.RDF.Configuration
 #if SILVERLIGHT
                             loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
 #else
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw);
+                            loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
 #endif
                         }
                         catch
@@ -320,12 +306,12 @@ namespace VDS.RDF.Configuration
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
                         {
-                            storageProvider = new SparqlConnector((SparqlRemoteEndpoint)temp, loadMode);
+                            storageProvider = new SparqlConnector((SparqlRemoteEndpoint) temp, loadMode);
                         }
                         else
                         {
@@ -337,10 +323,10 @@ namespace VDS.RDF.Configuration
                         //Are there any Named/Default Graph URIs
                         IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                      where def.NodeType == NodeType.Uri
-                                                     select ((IUriNode)def).Uri;
+                                                     select ((IUriNode) def).Uri;
                         IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                        where named.NodeType == NodeType.Uri
-                                                       select ((IUriNode)named).Uri;
+                                                       select ((IUriNode) named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
                         {
                             storageProvider = new SparqlConnector(new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs), loadMode);
@@ -348,7 +334,7 @@ namespace VDS.RDF.Configuration
                         else
                         {
                             storageProvider = new SparqlConnector(UriFactory.Create(server), loadMode);
-                        }                        
+                        }
                     }
                     break;
 
@@ -357,7 +343,7 @@ namespace VDS.RDF.Configuration
                     SparqlRemoteUpdateEndpoint updateEndpoint;
 
                     //Get the Query Endpoint URI or the Endpoint
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
 
                     //What's the load mode?
                     loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
@@ -369,7 +355,7 @@ namespace VDS.RDF.Configuration
 #if SILVERLIGHT
                             loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw, false);
 #else
-                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod), loadModeRaw);
+                            loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
 #endif
                         }
                         catch
@@ -380,12 +366,12 @@ namespace VDS.RDF.Configuration
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
                         {
-                            queryEndpoint = (SparqlRemoteEndpoint)temp;
+                            queryEndpoint = (SparqlRemoteEndpoint) temp;
                         }
                         else
                         {
@@ -397,13 +383,14 @@ namespace VDS.RDF.Configuration
                         //Are there any Named/Default Graph URIs
                         IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                      where def.NodeType == NodeType.Uri
-                                                     select ((IUriNode)def).Uri;
+                                                     select ((IUriNode) def).Uri;
                         IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                        where named.NodeType == NodeType.Uri
-                                                       select ((IUriNode)named).Uri;
+                                                       select ((IUriNode) named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
                         {
-                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs); ;
+                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs);
+                            ;
                         }
                         else
                         {
@@ -412,16 +399,16 @@ namespace VDS.RDF.Configuration
                     }
 
                     //Find the Update Endpoint or Endpoint URI
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)) });
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteUpdateEndpoint)
                         {
-                            updateEndpoint = (SparqlRemoteUpdateEndpoint)temp;
+                            updateEndpoint = (SparqlRemoteUpdateEndpoint) temp;
                         }
                         else
                         {
@@ -433,7 +420,7 @@ namespace VDS.RDF.Configuration
                         updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(server));
                     }
 
-                    storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint);
+                    storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
 
                     break;
 
@@ -447,6 +434,8 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case Stardog:
+                case StardogV1:
+                case StardogV2:
                     //Get the Server and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
@@ -463,7 +452,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-                            reasoning = (StardogReasoningMode)Enum.Parse(typeof(StardogReasoningMode), mode, true);
+                            reasoning = (StardogReasoningMode) Enum.Parse(typeof (StardogReasoningMode), mode, true);
                         }
                         catch
                         {
@@ -473,11 +462,35 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
+                        switch (targetType.FullName)
+                        {
+                            case StardogV1:
+                                storageProvider = new StardogV1Connector(server, store, reasoning, user, pwd);
+                                break;
+                            case StardogV2:
+                                storageProvider = new StardogV2Connector(server, store, reasoning, user, pwd);
+                                break;
+                            case Stardog:
+                            default:
+                                storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
+                                break;
+                        }
                     }
                     else
                     {
-                        storageProvider = new StardogConnector(server, store, reasoning);
+                        switch (targetType.FullName)
+                        {
+                            case StardogV1:
+                                storageProvider = new StardogV1Connector(server, store, reasoning);
+                                break;
+                            case StardogV2:
+                                storageProvider = new StardogV2Connector(server, store, reasoning);
+                                break;
+                            case Stardog:
+                            default:
+                                storageProvider = new StardogConnector(server, store, reasoning);
+                                break;
+                        }
                     }
                     break;
 
@@ -489,11 +502,35 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        storageServer = new StardogServer(server, user, pwd);
+                        switch (targetType.FullName)
+                        {
+                            case StardogServerV1:
+                                storageServer = new StardogV1Server(server, user, pwd);
+                                break;
+                            case StardogServerV2:
+                                storageServer = new StardogV2Server(server, user, pwd);
+                                break;
+                            case StardogServer:
+                            default:
+                                storageServer = new StardogServer(server, user, pwd);
+                                break;
+                        }
                     }
                     else
                     {
-                        storageServer = new StardogServer(server);
+                        switch (targetType.FullName)
+                        {
+                            case StardogServerV1:
+                                storageServer = new StardogV1Server(server);
+                                break;
+                            case StardogServerV2:
+                                storageServer = new StardogV2Server(server);
+                                break;
+                            case StardogServer:
+                            default:
+                                storageServer = new StardogServer(server);
+                                break;
+                        }
                     }
                     break;
             }
@@ -508,25 +545,32 @@ namespace VDS.RDF.Configuration
                 obj = storageServer;
             }
 
-#if !NO_PROXY
-            //Check whether this is a proxyable manager and if we need to load proxy settings
+            //Check whether this is a standard HTTP manager and if so load standard configuration
             if (obj is BaseHttpConnector)
             {
+                BaseHttpConnector connector = (BaseHttpConnector) obj;
+
+                int timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), 0);
+                if (timeout > 0)
+                {
+                    connector.Timeout = timeout;
+                }
+#if !NO_PROXY
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);
                     if (temp is WebProxy)
                     {
-                        ((BaseHttpConnector)obj).Proxy = (WebProxy)temp;
+                        connector.Proxy = (WebProxy) temp;
                     }
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load storage provider/server identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
                     }
                 }
-            }
 #endif
+            }
 
             return (obj != null);
         }
@@ -557,7 +601,11 @@ namespace VDS.RDF.Configuration
                 case ReadWriteSparql:
                 case SparqlHttpProtocol:
                 case Stardog:
+                case StardogV1:
+                case StardogV2:
                 case StardogServer:
+                case StardogServerV1:
+                case StardogServerV2:
                     return true;
                 default:
                     return false;

@@ -37,6 +37,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -46,13 +47,24 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
-        private void TestQuery(String query)
+        private SparqlQuery TestQuery(String query)
         {
             SparqlQuery q = this._parser.ParseFromString(query);
 
             Console.WriteLine(q.ToString());
             Console.WriteLine();
             Console.WriteLine(q.ToAlgebra().ToString());
+
+            return q;
+        }
+
+        private SparqlUpdateCommandSet TestUpdate(String update)
+        {
+            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
+
+            Console.WriteLine(cmds.ToString());
+
+            return cmds;
         }
 
         [Test]
@@ -230,6 +242,20 @@ SELECT ?X WHERE
         }
 
         [Test]
+        public void SparqlParsingExistsWithinSubQuery1()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { ?s a <http://restricted> } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinSubQuery2()
+        {
+            String query = "SELECT * WHERE { { SELECT ?s WHERE { ?s a ?type FILTER NOT EXISTS { { ?s a <http://restricted> } UNION { ?s a <http://other> } } } } }";
+            TestQuery(query);
+        }
+
+        [Test]
         public void SparqlVarNames()
         {
             List<String> names = new List<String>
@@ -256,14 +282,95 @@ SELECT ?X WHERE
         public void SparqlParsingInsertDataWithGraphVar()
         {
             String update = "INSERT DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
         }
 
         [Test, ExpectedException(typeof (RdfParseException))]
         public void SparqlParsingDeleteDataWithGraphVar()
         {
             String update = "DELETE DATA { GRAPH ?g { } }";
-            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause1()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause2()
+        {
+            String update = @"WITH <http://source>
+INSERT { GRAPH <http://target> { ?s ?p ?o } } 
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause3()
+        {
+            String update = @"WITH <http://source>
+DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { ?s ?p ?o . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause4()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause5()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER NOT EXISTS { ?s a <http://restricted> } }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause6()
+        {
+            String update = @"PREFIX myschema: <http://www.example.com/schema#>
+    INSERT {
+        GRAPH <data:public> {
+            ?s ?p ?o
+        }
+    } WHERE {
+        GRAPH <input:source> {
+            ?s ?p ?o .
+        } .
+        FILTER( NOT EXISTS {
+            {?p a myschema:PrivateProperty}
+            UNION { ?s a myschema:PrivateResource }
+            UNION { ?o a myschema:PrivateResource }
+        })
+    }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause7()
+        {
+            String update = @"DELETE { GRAPH <http://source> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o  } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
+        }
+
+        [Test]
+        public void SparqlParsingExistsWithinUpdateWhereClause8()
+        {
+            String update = @"INSERT { GRAPH <http://target> { ?s ?p ?o } }
+WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://restricted> }) }";
+            TestUpdate(update);
         }
 
         [Test]
@@ -286,6 +393,271 @@ SELECT ?X WHERE
             ILiteralNode lit = (ILiteralNode) n;
             Assert.AreEqual(String.Empty, lit.Language);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
+        }
+        
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter1()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { @subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetUri("subject", uri);
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter2()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { $subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetVariable("subject", new UriNode(null, uri));
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens1()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens2()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o .
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens3()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ;
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens4()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ,
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_1()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { SELECT * WHERE { } }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_2()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    OPTIONAL { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_3()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { } UNION { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_4()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    MINUS { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_5()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingCore427_1()
+        {
+            const String query = "SELECT (UUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(UUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(UUID"));
+        }
+
+        [Test]
+        public void SparqlParsingCore427_2()
+        {
+            const String query = "SELECT (StrUUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(STRUUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(STRUUID"));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingIllegalWhitespaceInUris()
+        {
+            const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
+            this._parser.ParseFromString(query);
+        }
+        
+        [Test]
+        public void SparqlParsingEscapedWhitespaceInUris()
+        {
+            const string query = "SELECT * WHERE { <http://example.com/foo%20bar> a <http://example.com/foo%20type> }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+            var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
+            var subjectMatch = pattern.Subject as NodeMatchPattern;
+            Assert.AreEqual(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
         }
     }
 }

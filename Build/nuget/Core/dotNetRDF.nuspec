@@ -11,51 +11,43 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
-    <dependencies>
-      <!-- These dependencies apply to all builds -->
-      <group>
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-      </group>
-
-      <!-- These only apply to non-portable builds -->
+    <dependencies>       
       <group targetFramework="net35-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
-      <group targetFramework="sl4">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
-      </group>
-      <group targetFramework="sl4-wp7">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
+        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
       </group>
     </dependencies>
     <releaseNotes>
-     - Include Portable Class Library builds
-     - Various bug fixes
-     - Improved performance of NTriples serializer for non-ASCII data
-     - Upgraded Json.Net dependency to 5.0.6
-     - Split source and PDBs into separate symbols package
+- Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+- SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+- Accessing remote SPARQL endpoints could fail to include default and named graph parameters if POSTing the queries (CORE-434)
+- Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
+- Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+- Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+- Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
+- Fix typo in MIME type definitions for NTriples
+- Upgrade PCL build to Profile 328
+- Upgrade Dependencies to latest versions
     </releaseNotes>
   </metadata>
 </package>

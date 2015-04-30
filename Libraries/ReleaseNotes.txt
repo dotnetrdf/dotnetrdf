@@ -3,9 +3,9 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 1.0.1
+Version 1.0.9
 
-dotNetRDF Project 2009-13
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 See Acknowledgements.txt for full list of developers and contributors
@@ -73,9 +73,9 @@ We recommend using NuGet to install dotNetRDF libraries since that will manage d
 To use this library you will need .Net Framework 3.5 SP1 or higher.
 
 The Core Library depends on the following third party libraries:
-- JSON.Net 5.0.6 which can be obtained from http://json.codeplex.com
-- HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack (Not required if using the PCL build)
-- VDS.Common 1.2.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
+- JSON.Net 6.0.8 which can be obtained from http://json.codeplex.com
+- HtmlAgilityPack 1.4.9 which can be obtained from http://www.codeplex.com/htmlagilitypack (Not required if using the PCL build)
+- VDS.Common 1.5.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
 - Portable.Runtime 0.1.0 which can be obtained from http://pclcontrib.codeplex.com (Only required if using the PCL build)
 
 The relevant DLLs are included with this release and if you wish to use the library you may need to reference these
@@ -105,13 +105,10 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- The W3C First Public Working Draft of TriG (9th April 2013) are not yet supported
-- The W3C Note on NTriples and NQuads (9th April 2013) are not yet supported
+- TriG support does not yet match the RDF 1.1 specification (Feb 25th 2014)
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- The zero or more property path operator * may produce incorrect results, using the one or more + operator
-  should give correct results and generally returns more useful results
  
 Change History
 --------------
@@ -120,6 +117,8 @@ Please see ChangeLog.txt included in this release
 
 Release History
 ---------------
+
+NB - Dates are given UK style as dd/mm/yyyy
 
 31/07/2009 - First public Alpha release (Version 0.1.0 Alpha)
 
@@ -181,7 +180,21 @@ Release History
 
 14/6/2013 - Pre-release of Version 1.0.1-portableRC1 (Build 1.0.1.2648)
 
-?/?/2013 - Release of Version 1.0.1 (Build 1.0.1.?)
+10/10/2013 - Release of Version 1.0.1 (Build 1.0.1.2809)
+
+14/11/2013 - Release of Version 1.0.2 (Build 1.0.2.2880)
+
+17/1/2014 - Release of Version 1.0.3 (Build 1.0.3.3065)
+
+14/3/2014 - Release of Version 1.0.4 (Build 1.0.4.3225)
+
+23/5/2014 - Release of Version 1.0.5 (Build 1.0.5.3315)
+
+8/8/2014 - Release of Version 1.0.6 (Build 1.0.6.3421)
+
+21/11/2014 - Release of Version 1.0.7 (Build 1.0.7.3471)
+
+20/03/2014 - Release of Version 1.0.8 (Build 1.0.8.3533)
 
 Acknowledgements
 ----------------

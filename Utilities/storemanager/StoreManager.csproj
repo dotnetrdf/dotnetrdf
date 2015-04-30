@@ -74,6 +74,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogues\CloseConnectionDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogues\CloseConnectionDialogue.Designer.cs">
+      <DependentUpon>CloseConnectionDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConnectionManagementListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ConnectionManagementListView.Designer.cs">
+      <DependentUpon>ConnectionManagementListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ConnectionSettingsGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -81,98 +93,167 @@
       <DependentUpon>ConnectionSettingsGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ControlEvents.cs" />
-    <Compile Include="CopyMoveDialogue.cs">
+    <Compile Include="Dialogues\CopyMoveDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CopyMoveDialogue.Designer.cs">
+    <Compile Include="Dialogues\CopyMoveDialogue.Designer.cs">
       <DependentUpon>CopyMoveDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="CopyMoveRenameGraphForm.cs">
+    <Compile Include="Dialogues\CopyMoveRenameGraphDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CopyMoveRenameGraphForm.Designer.cs">
-      <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
+    <Compile Include="Dialogues\CopyMoveRenameGraphDialogue.Designer.cs">
+      <DependentUpon>CopyMoveRenameGraphDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="CrossThreadForm.cs">
+    <Compile Include="Dialogues\OptionsDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutForm.cs">
+    <Compile Include="Dialogues\OptionsDialogue.Designer.cs">
+      <DependentUpon>OptionsDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogues\RenameConnectionDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutForm.Designer.cs">
+    <Compile Include="Dialogues\RenameConnectionDialogue.Designer.cs">
+      <DependentUpon>RenameConnectionDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogues\StringResultDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogues\StringResultDialogue.Designer.cs">
+      <DependentUpon>StringResultDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogues\RestoreConnectionsDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogues\RestoreConnectionsDialogue.Designer.cs">
+      <DependentUpon>RestoreConnectionsDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CrossThreadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditConnectionForm.cs">
+    <Compile Include="Forms\EditConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditConnectionForm.Designer.cs">
+    <Compile Include="Forms\EditConnectionForm.Designer.cs">
       <DependentUpon>EditConnectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="InvalidTemplateForm.cs">
+    <Compile Include="Dialogues\EntityQueryGeneratorDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InvalidTemplateForm.Designer.cs">
+    <Compile Include="Dialogues\EntityQueryGeneratorDialogue.Designer.cs">
+      <DependentUpon>EntityQueryGeneratorDialogue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Forms\InvalidTemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\InvalidTemplateForm.Designer.cs">
       <DependentUpon>InvalidTemplateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewStoreForm.cs">
+    <Compile Include="Forms\ManageConnectionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewStoreForm.Designer.cs">
+    <Compile Include="Forms\ManageConnectionsForm.Designer.cs">
+      <DependentUpon>ManageConnectionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NewStoreForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewStoreForm.Designer.cs">
       <DependentUpon>NewStoreForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="StoreManagerForm.cs">
+    <Compile Include="Forms\OpenConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StoreManagerForm.Designer.cs">
+    <Compile Include="Forms\OpenConnectionForm.Designer.cs">
+      <DependentUpon>OpenConnectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\StoreManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StoreManagerForm.Designer.cs">
       <DependentUpon>StoreManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManagerForm.cs">
+    <Compile Include="Forms\ManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ManagerForm.Designer.cs">
+    <Compile Include="Forms\ManagerForm.Designer.cs">
       <DependentUpon>ManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TaskErrorTraceForm.cs">
+    <Compile Include="Dialogues\TaskErrorTraceDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TaskErrorTraceForm.Designer.cs">
-      <DependentUpon>TaskErrorTraceForm.cs</DependentUpon>
+    <Compile Include="Dialogues\TaskErrorTraceDialogue.Designer.cs">
+      <DependentUpon>TaskErrorTraceDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="TaskInformationForm.cs">
+    <Compile Include="Dialogues\TaskInformationDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TaskInformationForm.Designer.cs">
-      <DependentUpon>TaskInformationForm.cs</DependentUpon>
+    <Compile Include="Dialogues\TaskInformationDialogue.Designer.cs">
+      <DependentUpon>TaskInformationDialogue.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListViewColumnSorter.cs" />
-    <Compile Include="NewConnectionForm.cs">
+    <Compile Include="Controls\ListViewColumnSorter.cs" />
+    <Compile Include="Forms\NewConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewConnectionForm.Designer.cs">
+    <Compile Include="Forms\NewConnectionForm.Designer.cs">
       <DependentUpon>NewConnectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\CopyMoveDragInfo.cs" />
-    <Compile Include="Tasks\CopyMoveRenameTask.cs" />
+    <EmbeddedResource Include="Dialogues\CloseConnectionDialogue.resx">
+      <DependentUpon>CloseConnectionDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ConnectionManagementListView.resx">
+      <DependentUpon>ConnectionManagementListView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConnectionSettingsGrid.resx">
       <DependentUpon>ConnectionSettingsGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EditConnectionForm.resx">
+    <EmbeddedResource Include="Dialogues\OptionsDialogue.resx">
+      <DependentUpon>OptionsDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogues\RenameConnectionDialogue.resx">
+      <DependentUpon>RenameConnectionDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogues\RestoreConnectionsDialogue.resx">
+      <DependentUpon>RestoreConnectionsDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogues\StringResultDialogue.resx">
+      <DependentUpon>StringResultDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EditConnectionForm.resx">
       <DependentUpon>EditConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InvalidTemplateForm.resx">
+    <EmbeddedResource Include="Dialogues\EntityQueryGeneratorDialogue.resx">
+      <DependentUpon>EntityQueryGeneratorDialogue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\InvalidTemplateForm.resx">
       <DependentUpon>InvalidTemplateForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewStoreForm.resx">
+    <EmbeddedResource Include="Forms\ManageConnectionsForm.resx">
+      <DependentUpon>ManageConnectionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewStoreForm.resx">
       <DependentUpon>NewStoreForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StoreManagerForm.resx">
+    <EmbeddedResource Include="Forms\OpenConnectionForm.resx">
+      <DependentUpon>OpenConnectionForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StoreManagerForm.resx">
       <DependentUpon>StoreManagerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ManagerForm.resx">
+    <EmbeddedResource Include="Forms\ManagerForm.resx">
       <DependentUpon>ManagerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -196,11 +277,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="QuickConnect.cs" />
-    <Compile Include="StartPage.cs">
+    <Compile Include="Forms\StartPage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartPage.Designer.cs">
+    <Compile Include="Forms\StartPage.Designer.cs">
       <DependentUpon>StartPage.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -227,32 +307,32 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CopyMoveDialogue.resx">
+    <EmbeddedResource Include="Dialogues\CopyMoveDialogue.resx">
       <DependentUpon>CopyMoveDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="CopyMoveRenameGraphForm.resx">
-      <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogues\CopyMoveRenameGraphDialogue.resx">
+      <DependentUpon>CopyMoveRenameGraphDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="AboutForm.resx">
+    <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaskErrorTraceForm.resx">
-      <DependentUpon>TaskErrorTraceForm.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogues\TaskErrorTraceDialogue.resx">
+      <DependentUpon>TaskErrorTraceDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaskInformationForm.resx">
-      <DependentUpon>TaskInformationForm.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogues\TaskInformationDialogue.resx">
+      <DependentUpon>TaskInformationDialogue.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewConnectionForm.resx">
+    <EmbeddedResource Include="Forms\NewConnectionForm.resx">
       <DependentUpon>NewConnectionForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="sparql.css" />
-    <EmbeddedResource Include="StartPage.resx">
+    <EmbeddedResource Include="Forms\StartPage.resx">
       <DependentUpon>StartPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -285,8 +365,8 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -295,3 +375,4 @@
   </Target>
   -->
 </Project>
+

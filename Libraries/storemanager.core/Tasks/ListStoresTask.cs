@@ -25,13 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -41,7 +37,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ListStoresTask
         : NonCancellableTask<IEnumerable<String>>
     {
-        private IStorageServer _manager;
+        private readonly IStorageServer _manager;
 
         /// <summary>
         /// Creates a new list stores task
@@ -60,20 +56,21 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         protected override IEnumerable<String> RunTaskInternal()
         {
             if (this._manager == null) throw new RdfStorageException("Store does not support listing of available Stores");
-            IStorageCapabilities caps = this._manager as IStorageCapabilities;
+            // TODO IStorageServer does not require IStorageCapabilies to be implemented, add IServerCapabilities interface?
+            //IStorageCapabilities caps = this._manager as IStorageCapabilities;
 
-            if (caps != null)
-            {
-                if (!caps.IsReady)
-                {
-                    this.Information = "Waiting for Store to become ready...";
-                    this.RaiseStateChanged();
-                    while (!caps.IsReady)
-                    {
-                        Thread.Sleep(250);
-                    }
-                }
-            }
+            //if (caps != null)
+            //{
+            //    if (!caps.IsReady)
+            //    {
+            //        this.Information = "Waiting for Store to become ready...";
+            //        this.RaiseStateChanged();
+            //        while (!caps.IsReady)
+            //        {
+            //            Thread.Sleep(250);
+            //        }
+            //    }
+            //}
 
             
             return this._manager.ListStores();

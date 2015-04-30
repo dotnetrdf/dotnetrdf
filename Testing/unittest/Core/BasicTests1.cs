@@ -894,42 +894,13 @@ namespace VDS.RDF
             //Create a Triple in Second Graph
             h.Assert(h.CreateBlankNode(), h.CreateUriNode("rdf:type"), h.CreateUriNode("ex:Triple"));
             Assert.AreEqual(1, h.Triples.Count, "Should have 1 Triple in the Graph");
-
-            //Create a Triple with Nodes from different Graphs (should fail)
-            try
-            {
-                g.Assert(g.CreateBlankNode(), h.CreateBlankNode("rdf:type"), g.CreateBlankNode("ex:Triple"));
-                Assert.Fail("Should have thrown an error when Triple was instantiated as Nodes are from different Graphs");
-            }
-            catch (RdfException)
-            {
-                Console.WriteLine("Error thrown as expected - Triples must be instantiated with Nodes from the same Graph");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-            //Create a Triple with Nodes from different Graphs (should fail)
-            try
-            {
-                h.Assert(g.CreateBlankNode(), h.CreateBlankNode("rdf:type"), g.CreateBlankNode("ex:Triple"));
-                Assert.Fail("Should have thrown an error when Triple was instantiated as Nodes are from different Graphs");
-            }
-            catch (RdfException)
-            {
-                Console.WriteLine("Error thrown as expected - Triples must be instantiated with Nodes from the same Graph");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
 #if PORTABLE
         [TestCase("The following String needs URL Encoding <node>Test</node> 100% not a percent encode", "The%20following%20String%20needs%20URL%20Encoding%20%3Cnode%3ETest%3C%2Fnode%3E%20100%25%20not%20a%20percent%20encode")]
         [TestCase("This string contains UTF-8 納豆 characters", "This%20string%20contains%20UTF-8%20%E7%B4%8D%E8%B1%86%20characters")]
         [TestCase("This string contains UTF-8 ç´è± characters", "This%20string%20contains%20UTF-8%20%C3%A7%C2%B4%C2%8D%C3%A8%C2%B1%C2%86%20characters")]
+        [TestCase("This string has safe characters -._~", "This%20string%20has%20safe%20characters%20-._~")]
         public void UriEncoding(string test, string expectedEncoded)
         {
             string encoded = HttpUtility.UrlEncode(test);

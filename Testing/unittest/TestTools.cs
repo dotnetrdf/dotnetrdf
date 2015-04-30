@@ -110,11 +110,11 @@ namespace VDS.RDF
         {
             if (results is IGraph)
             {
-                ShowGraph((IGraph)results);
+                ShowGraph((IGraph) results);
             }
             else if (results is SparqlResultSet)
             {
-                SparqlResultSet resultSet = (SparqlResultSet)results;
+                SparqlResultSet resultSet = (SparqlResultSet) results;
                 Console.WriteLine("Result: " + resultSet.Result);
                 Console.WriteLine(resultSet.Results.Count + " Results");
                 foreach (SparqlResult r in resultSet.Results)
@@ -254,12 +254,33 @@ namespace VDS.RDF
             Console.WriteLine(message);
         }
 
-        public static void TestInMTAThread(ThreadStart info)
+        public static void TestInMTAThread(Action action)
         {
-                Thread t = new Thread(info);
-                t.SetApartmentState(ApartmentState.MTA);
-                t.Start();
-                t.Join();
+            Exception ex = null;
+            Thread t = new Thread(() => ThreadExecute(action, out ex));
+            t.SetApartmentState(ApartmentState.MTA);
+            t.Start();
+            t.Join();
+            if (ex != null) throw ex;
+        }
+
+        /// <summary>
+        /// Taken from StackOverflow: http://stackoverflow.com/questions/5983779/catch-exception-that-is-thrown-in-different-thread
+        /// </summary>
+        /// <param name="test">Test action</param>
+        /// <param name="exception">Exception if thrown</param>
+        private static void ThreadExecute(Action test, out Exception exception)
+        {
+            exception = null;
+
+            try
+            {
+                test();
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
         }
 
         public static void PrintEnumerable<T>(IEnumerable<T> items, String sep)
@@ -298,18 +319,35 @@ namespace VDS.RDF
             }
         }
 
-        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action Test)
+        public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
         {
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
 
             try
             {
-                Test();
+                test();
             }
             finally
             {
                 Thread.CurrentThread.CurrentCulture = currentCulture;
+            }
+        }
+
+        /// <summary>
+        /// Runs a test at a specified recursive depth
+        /// </summary>
+        /// <param name="i">Recursive depth</param>
+        /// <param name="test">Test</param>
+        public static void RunAtDepth(int i, Action test)
+        {
+            if (i > 0)
+            {
+                RunAtDepth(i - 1, test);
+            }
+            else
+            {
+                test();
             }
         }
     }

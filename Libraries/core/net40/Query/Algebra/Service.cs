@@ -37,9 +37,9 @@ namespace VDS.RDF.Query.Algebra
     public class Service 
         : ITerminalOperator
     {
-        private IToken _endpointSpecifier;
-        private GraphPattern _pattern;
-        private bool _silent = false;
+        private readonly IToken _endpointSpecifier;
+        private readonly GraphPattern _pattern;
+        private readonly bool _silent = false;
 
         /// <summary>
         /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern
@@ -254,6 +254,23 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Safest to assume all variables are floating as no guarantee the remote service is fully SPARQL compliant
+                return this.Variables;
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return Enumerable.Empty<String>(); } }
+
+        /// <summary>
         /// Gets the Endpoint Specifier
         /// </summary>
         public IToken EndpointSpecifier
@@ -281,7 +298,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToAlgebra().ToString() + ")";
+            return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToString() + ")";
         }
 
         /// <summary>

@@ -104,5 +104,13 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(numGraphs * triplesPerGraph, store2.Graphs.Sum(g => g.Triples.Count));
 
         }
+
+        [Test]
+        public void ParseTriXWithEmptyGraph()
+        {
+            TripleStore store = new TripleStore();
+            this._parser.Load(store, @"resources\\trix\emptygraph.trix");
+            Assert.AreEqual(0, store.Graphs.Count);
+        }
     }
 }

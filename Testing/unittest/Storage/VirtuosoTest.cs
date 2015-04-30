@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using OpenLink.Data.Virtuoso;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -65,11 +66,11 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, "MergePart1.ttl");
+                FileLoader.Load(testData, @"resources\MergePart1.ttl");
                 testData.BaseUri = new Uri("http://localhost/VirtuosoTest");
                 manager.SaveGraph(testData);
                 testData = new Graph();
-                FileLoader.Load(testData, "resources\\Turtle.ttl");
+                FileLoader.Load(testData, @"resources\Turtle.ttl");
                 testData.BaseUri = new Uri("http://localhost/TurtleImportTest");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -393,7 +394,7 @@ namespace VDS.RDF.Storage
         }
 
         [Test]
-        public void StorageVirtuosoNativeQuery()
+        public void StorageVirtuosoNativeQueryAndUpdate()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             VirtuosoManager manager = VirtuosoTest.GetConnection();
@@ -442,9 +443,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Now we'll delete a Triple");
 
                 //Try a DELETE DATA
-                result = manager.Query("DELETE DATA FROM <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
-                CheckQueryResult(result, true);
-
+                manager.Update("DELETE DATA { GRAPH <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".} }");
                 Console.WriteLine("Triple with subject <http://example.org/seven> should be missing - ASKing for it...");
 
                 //Try a SELECT query
@@ -454,9 +453,7 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Now we'll add the Triple back again");
 
                 //Try a INSERT DATA
-                result = manager.Query("INSERT DATA INTO <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
-                CheckQueryResult(result, true);
-
+                manager.Update("INSERT DATA INTO <http://example.org/> { <http://example.org/seven> <http://example.org/property> \"extra triple\".}");
                 Console.WriteLine("Triple with subject <http://example.org/seven> should be restored - ASKing for it again...");
 
                 //Try a SELECT query
@@ -515,6 +512,28 @@ namespace VDS.RDF.Storage
                 result = manager.Query("ASK { ?s ?p ?o . ?o bif:contains 'example' }");
                 CheckQueryResult(result, true);
 
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoNativeQueryBifContains2()
+        {
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                Object result = null;
+
+                //Try a CONSTRUCT query
+                result = manager.Query("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . ?o bif:contains 'example' }");
+                CheckQueryResult(result, false);
             }
             finally
             {
@@ -783,6 +802,106 @@ namespace VDS.RDF.Storage
             }
         }
 
+        [Test]
+        public void StorageVirtuosoRelativeUris()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                //Load in our Test Graph
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("/storage/virtuoso/relative", UriKind.Relative);
+
+                virtuoso.SaveGraph(g);
+
+                // Load it back out again
+                Graph h = new Graph();
+                virtuoso.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.IsEmpty, "Graph loaded via relative URI should not be empty");
+                Assert.AreEqual(g, h);
+
+                Console.WriteLine("Loading with relative URI works OK");
+                Console.WriteLine();
+
+                // Load it back out using marshalled URI
+                Uri u = new Uri("virtuoso-relative:/storage/virtuoso/relative");
+                h = new Graph();
+                virtuoso.LoadGraph(h, u);
+                Assert.IsFalse(h.IsEmpty, "Graph loaded via marshalled URI should not be empty");
+                Assert.AreEqual(g, h);
+
+                Console.WriteLine("Loading with marshalled URI works OK");
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoBadUpdate()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                virtuoso.Update("Bad update");
+                Assert.Fail("Expected an error");
+            }
+            catch
+            {
+                //Expected so can be ignored
+                Assert.IsFalse(virtuoso.HasOpenConnection, "Connection should be closed");
+                Assert.IsFalse(virtuoso.HasActiveTransaction, "Should be no active transaction");
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoBadQuery()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                virtuoso.Query("Bad query");
+                Assert.Fail("Expected an error");
+            }
+            catch
+            {
+                //Expected so can be ignored
+                Assert.IsFalse(virtuoso.HasOpenConnection, "Connection should be closed");
+                Assert.IsFalse(virtuoso.HasActiveTransaction, "Should be no active transaction");
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
+        [Test]
+        public void StorageVirtuosoTightSaveLoop()
+        {
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
+            try
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    IGraph g = new Graph();
+                    g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/Type")));
+                    g.BaseUri = new Uri("http://example.org/graphs/" + i);
+
+                    virtuoso.SaveGraph(g);
+                }
+            }
+            finally
+            {
+                virtuoso.Dispose();
+            }
+        }
+
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -794,7 +913,7 @@ namespace VDS.RDF.Storage
             {
                 if (expectResultSet)
                 {
-                    Console.WriteLine("Got a SPARQLResultSet as expected");
+                    Console.WriteLine("Got a SPARQL Result Set as expected");
 
                     SparqlResultSet rset = (SparqlResultSet)results;
                     Console.WriteLine("Result = " + rset.Result);
@@ -806,7 +925,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Expected a SPARQLResultSet but got a '" + results.GetType().ToString() + "'");
+                    Assert.Fail("Expected a Graph but got a '" + results.GetType().ToString() + "'");
                 }
             }
             else if (results is Graph)
@@ -824,7 +943,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    Assert.Fail("Expected a Graph but got a '" + results.GetType().ToString() + "'");
+                    Assert.Fail("Expected a Result Set but got a '" + results.GetType().ToString() + "'");
                 }
             }
         }

@@ -44,10 +44,10 @@ namespace VDS.RDF.Query
     /// A Class for connecting to a remote SPARQL Endpoint and executing Queries against it
     /// </summary>
     public class SparqlRemoteEndpoint 
-        : BaseEndpoint, IConfigurationSerializable
+        : BaseEndpoint
     {
-        private List<String> _defaultGraphUris = new List<string>();
-        private List<String> _namedGraphUris = new List<string>();
+        private readonly List<String> _defaultGraphUris = new List<string>();
+        private readonly List<String> _namedGraphUris = new List<string>();
         private String _resultsAccept, _rdfAccept;
 
         const int LongQueryLength = 2048;
@@ -457,33 +457,22 @@ namespace VDS.RDF.Query
                 longQuery = false;
                 try
                 {
-                    if (!this.Uri.Query.Equals(String.Empty))
-                    {
-                        queryUri.Append("&query=");
-                    }
-                    else
-                    {
-                        queryUri.Append("?query=");
-                    }
+                    queryUri.Append(!this.Uri.Query.Equals(String.Empty) ? "&query=" : "?query=");
                     queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                     //Add the Default Graph URIs
                     foreach (String defaultGraph in this._defaultGraphUris)
                     {
-                        if (!defaultGraph.Equals(String.Empty))
-                        {
-                            queryUri.Append("&default-graph-uri=");
-                            queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
-                        }
+                        if (defaultGraph.Equals(String.Empty)) continue;
+                        queryUri.Append("&default-graph-uri=");
+                        queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                     }
                     //Add the Named Graph URIs
                     foreach (String namedGraph in this._namedGraphUris)
                     {
-                        if (!namedGraph.Equals(String.Empty))
-                        {
-                            queryUri.Append("&named-graph-uri=");
-                            queryUri.Append(HttpUtility.UrlEncode(namedGraph));
-                        }
+                        if (namedGraph.Equals(String.Empty)) continue;
+                        queryUri.Append("&named-graph-uri=");
+                        queryUri.Append(HttpUtility.UrlEncode(namedGraph));
                     }
                 }
                 catch (UriFormatException)
@@ -504,20 +493,16 @@ namespace VDS.RDF.Query
                 //Add the Default Graph URI(s)
                 foreach (String defaultGraph in this._defaultGraphUris)
                 {
-                    if (!defaultGraph.Equals(String.Empty))
-                    {
-                        queryUri.Append("&default-graph-uri=");
-                        queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
-                    }
+                    if (defaultGraph.Equals(String.Empty)) continue;
+                    postData.Append("&default-graph-uri=");
+                    postData.Append(HttpUtility.UrlEncode(defaultGraph));
                 }
                 //Add the Named Graph URI(s)
                 foreach (String namedGraph in this._namedGraphUris)
                 {
-                    if (!namedGraph.Equals(String.Empty))
-                    {
-                        queryUri.Append("&named-graph-uri=");
-                        queryUri.Append(HttpUtility.UrlEncode(namedGraph));
-                    }
+                    if (namedGraph.Equals(String.Empty)) continue;
+                    postData.Append("&named-graph-uri=");
+                    postData.Append(HttpUtility.UrlEncode(namedGraph));
                 }
 
                 httpResponse = this.ExecuteQuery(this.Uri, postData.ToString(), acceptHeader);
@@ -543,17 +528,15 @@ namespace VDS.RDF.Query
             //Expect errors in this function to be handled by the calling function
 
             //Set-up the Request
-            HttpWebRequest httpRequest;
-            HttpWebResponse httpResponse;
-            httpRequest = (HttpWebRequest)WebRequest.Create(target);
+            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(target);
 
             //Use HTTP GET/POST according to user set preference
             httpRequest.Accept = accept;
             if (!postData.Equals(String.Empty))
             {
                 httpRequest.Method = "POST";
-                httpRequest.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream()))
+                httpRequest.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -563,50 +546,10 @@ namespace VDS.RDF.Query
             {
                 httpRequest.Method = this.HttpMode;
             }
-#if !SILVERLIGHT
-            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
-#endif
-
-            //Apply Credentials to request if necessary
-            if (this.Credentials != null)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
-                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    httpRequest.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    //Leave .Net to handle the HTTP auth challenge response itself
-                    httpRequest.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                    httpRequest.PreAuthenticate = true;
-#endif
-                }
-            }
-
-#if !NO_PROXY
-            //Use a Proxy if required
-            if (this.Proxy != null)
-            {
-                httpRequest.Proxy = this.Proxy;
-                if (this.UseCredentialsForProxy)
-                {
-                    httpRequest.Proxy.Credentials = this.Credentials;
-                }
-            }
-#endif
+            this.ApplyRequestOptions(httpRequest);
 
             Tools.HttpDebugRequest(httpRequest);
-
-            httpResponse = (HttpWebResponse)httpRequest.GetResponse();
-
+            HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse();
             Tools.HttpDebugResponse(httpResponse);
 
             return httpResponse;
@@ -624,9 +567,9 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -636,7 +579,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -718,9 +661,9 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -730,7 +673,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -805,9 +748,9 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.RdfAcceptHeader;
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -817,7 +760,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -896,9 +839,9 @@ namespace VDS.RDF.Query
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = this.ResultsAcceptHeader;
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             request.BeginGetRequestStream(result =>
@@ -906,7 +849,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     Stream stream = request.EndGetRequestStream(result);
-                    using (StreamWriter writer = new StreamWriter(stream))
+                    using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                     {
                         writer.Write("query=");
                         writer.Write(HttpUtility.UrlEncode(query));

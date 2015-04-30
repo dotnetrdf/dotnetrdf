@@ -42,8 +42,8 @@ namespace VDS.RDF.Query.Patterns
     public class TriplePattern
         : BaseTriplePattern, IMatchTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
     {
-        private TripleIndexType _indexType = TripleIndexType.None;
-        private PatternItem _subj, _pred, _obj;
+        private readonly TripleIndexType _indexType = TripleIndexType.None;
+        private readonly PatternItem _subj, _pred, _obj;
 
         /// <summary>
         /// Creates a new Triple Pattern
@@ -215,6 +215,19 @@ namespace VDS.RDF.Query.Patterns
                 return this._obj;
             }
         }
+
+        /// <summary>
+        /// Returns all variables mentioned as a match guarantees all variables are bound
+        /// </summary>
+        public override IEnumerable<string> FixedVariables
+        {
+            get { return this.Variables; }
+        }
+
+        /// <summary>
+        /// Returns an empty enumeration as a match guarantees all variables are bound
+        /// </summary>
+        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all

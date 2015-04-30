@@ -33,7 +33,6 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
@@ -81,7 +80,7 @@ namespace VDS.RDF.Parsing
     public class SparqlQueryParser
         : ITraceableTokeniser, IObjectParser<SparqlQuery>
     {
-        private TokenQueueMode _queuemode = TokenQueueMode.QueueAllBeforeParsing;
+        private readonly TokenQueueMode _queuemode = TokenQueueMode.QueueAllBeforeParsing;
         private bool _tracetokeniser = false;
         private Uri _defaultBaseUri = null;
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
@@ -1321,6 +1320,7 @@ namespace VDS.RDF.Parsing
 
                             case Token.BIND:
                                 //BIND Clause
+                                context.Tokens.Dequeue();
                                 this.TryParseBindAssignment(context, pattern);
                                 break;
 
@@ -1811,7 +1811,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw ParserHelper.Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " + ExcessTokensString(context, expectedCount), next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
 
@@ -1872,7 +1872,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw ParserHelper.Error("Encountered a Comma Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Comma Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " + ExcessTokensString(context, expectedCount), next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1905,7 +1905,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw ParserHelper.Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " + ExcessTokensString(context, expectedCount), next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1945,7 +1945,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw ParserHelper.Error("Encountered a DOT Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a DOT Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " + ExcessTokensString(context, expectedCount), next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -2002,7 +2002,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw ParserHelper.Error("Encountered a Token which terminates a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Token which terminates a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " + ExcessTokensString(context, expectedCount), next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -3419,10 +3419,9 @@ namespace VDS.RDF.Parsing
 
             //Now collect Tokens until we hit the closing Right Bracket
             int openBrackets = 1;
-            IToken next;
             do
             {
-                next = context.Tokens.Peek();
+                IToken next = context.Tokens.Peek();
 
                 if (next.TokenType == Token.LEFTCURLYBRACKET)
                 {
@@ -3454,7 +3453,9 @@ namespace VDS.RDF.Parsing
                 if (var.IsResultVariable) context.Query.AddVariable("?" + var.Name, false);
             }
             SubQueryPattern subqueryPattern = new SubQueryPattern(subquery);
-            p.AddTriplePattern(subqueryPattern);
+            GraphPattern p2 = new GraphPattern();
+            p2.AddTriplePattern(subqueryPattern);
+            p.AddGraphPattern(p2);
         }
 
         private void TryParseServiceClause(SparqlQueryParserContext context, GraphPattern p)
@@ -3731,6 +3732,30 @@ namespace VDS.RDF.Parsing
             {
                 return expr.Arguments.All(arg => this.IsProjectableExpression(context, arg, projectedSoFar));
             }
+        }
+
+        public String ExcessTokensString(SparqlQueryParserContext context, int expectedCount)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("The following excess tokens were ecountered from Line ");
+
+            List<IToken> excessTokens = new List<IToken>();
+            while (context.LocalTokens.Count > expectedCount)
+            {
+                excessTokens.Add(context.LocalTokens.Pop());
+            }
+            excessTokens.Reverse();
+
+            IToken first = excessTokens[0];
+            builder.AppendLine(first.StartLine + " Column " + first.StartPosition + " onwards:");
+            for (int i = 0; i < excessTokens.Count; i++)
+            {
+                builder.Append(excessTokens[i].Value);
+                builder.Append(' ');
+            }
+            builder.AppendLine();
+            builder.Append("You may be missing some syntax to divide these tokens into multiple triple patterns");
+            return builder.ToString();
         }
         
         #endregion

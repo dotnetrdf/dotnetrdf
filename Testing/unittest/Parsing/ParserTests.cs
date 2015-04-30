@@ -360,52 +360,25 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingRdfXmlNamespaceAttributes()
         {
-                Graph g = new Graph();
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
-                request.Method = "GET";
-                request.Accept = MimeTypesHelper.HttpAcceptHeader;
-
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
-
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-        }
-
-#if !NO_HTMLAGILITYPACK
-        [Test]
-        public void ParsingMalformedRdfA()
-        {
-            Console.WriteLine("Tests how the RDFa Parser handles RDFa from the web which is embedded in malformed HTML and is known to contain malformed RDFa");
-            Console.WriteLine("For this we use MySpace RDFa");
-            Console.WriteLine();
-
-            RdfAParser parser = new RdfAParser();
-            parser.Warning += new RdfReaderWarning(TestTools.WarningPrinter);
-
-            List<Uri> testUris = new List<Uri>()
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
             {
-                new Uri("http://www.myspace.com/coldplay"),
-                new Uri("http://www.myspace.com/fashionismylife10")
-            };
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
 
-            foreach (Uri u in testUris) 
+            Graph g = new Graph();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
+            request.Method = "GET";
+            request.Accept = MimeTypesHelper.HttpAcceptHeader;
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+            parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+            foreach (Triple t in g.Triples)
             {
-                Console.WriteLine("Testing URI " + u.AbsoluteUri);
-                Graph g = new Graph();
-                UriLoader.Load(g, u, parser);
-
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
+                Console.WriteLine(t.ToString());
             }
         }
-#endif
 
         [Test]
         public void ParsingRdfXmlStreaming()

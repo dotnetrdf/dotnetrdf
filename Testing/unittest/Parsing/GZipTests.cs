@@ -56,6 +56,9 @@ namespace VDS.RDF.Parsing
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
             {
+                // Omit CSV since that is a lossy format that does not round trip
+                if (def.CanonicalMimeType.Equals("text/csv")) continue;
+
                 if (def.CanWriteRdf && def.CanParseRdf)
                 {
                     IRdfWriter writer = def.GetRdfWriter();
@@ -543,7 +546,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(filename));
 
-                Assert.IsTrue(this._results.Equals(results), "Graphs for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
@@ -562,7 +565,7 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.IsTrue(this._results.Equals(results), "Graphs for file " + filename + " were not equal");
+                Assert.IsTrue(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
     }

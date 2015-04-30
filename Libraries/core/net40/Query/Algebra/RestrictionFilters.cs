@@ -28,9 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
@@ -44,9 +42,9 @@ namespace VDS.RDF.Query.Algebra
     public abstract class VariableRestrictionFilter 
         : IFilter
     {
-        private ISparqlAlgebra _pattern;
-        private String _var;
-        private ISparqlFilter _filter;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly String _var;
+        private readonly ISparqlFilter _filter;
 
         /// <summary>
         /// Creates a new Variable Restriction Filter
@@ -89,6 +87,16 @@ namespace VDS.RDF.Query.Algebra
                 return (this._pattern.Variables.Concat(this._filter.Variables)).Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used

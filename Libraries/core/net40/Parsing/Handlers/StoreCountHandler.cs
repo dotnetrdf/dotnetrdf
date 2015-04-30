@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new Store Count Handler
         /// </summary>
         public StoreCountHandler()
-            : base(new MockNodeFactory()) { }
+            : base(new NodeFactory()) { }
 
         /// <summary>
         /// Starts RDF Handling by reseting the counters

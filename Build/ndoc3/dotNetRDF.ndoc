@@ -6,7 +6,7 @@
     </assemblies>
     <documenters>
         <documenter name="MSDN">
-            <property name="OutputDirectory" value="docs/\" />
+            <property name="OutputDirectory" value="C:\Users\rvesse\Downloads\ndoc-temp\" />
             <property name="HtmlHelpName" value="dotNetRDF API Documentation" />
             <property name="Title" value="dotNetRDF API Documentation" />
             <property name="OutputTarget" value="Web" />
@@ -16,7 +16,7 @@
             <property name="ShowMissingParams" value="True" />
             <property name="DocumentExplicitInterfaceImplementations" value="True" />
             <property name="AssemblyVersionInfo" value="AssemblyFileVersion" />
-            <property name="CopyrightText" value="dotNetRDF Project 2009-13" />
+            <property name="CopyrightText" value="dotNetRDF Project 2009-15" />
             <property name="CopyrightHref" value="http://www.dotnetrdf.org" />
             <property name="FeedbackEmailAddress" value="dotnetrdf-develop@lists.sourceforge.net" />
             <property name="SdkDocVersion" value="SDK_v3_5" />

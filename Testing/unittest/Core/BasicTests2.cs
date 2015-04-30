@@ -44,6 +44,11 @@ namespace VDS.RDF
 
         [Test]
         public void GraphEquality() {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
 #if !NO_URICACHE
@@ -246,6 +251,11 @@ namespace VDS.RDF
         [Test]
         public void ParsingUriLoader()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {

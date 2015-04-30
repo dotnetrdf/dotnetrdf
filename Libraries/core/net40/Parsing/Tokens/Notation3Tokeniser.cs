@@ -774,9 +774,10 @@ namespace VDS.RDF.Parsing.Tokens
             this.StartNewToken();
 
             //Get the Prefix Characters
-            while (!Char.IsWhiteSpace(next))
+            while (!Char.IsWhiteSpace(next) && next != '<')
             {
                 this.ConsumeCharacter();
+                if (next == ':') break;
                 next = this.Peek();
             }
             if (!this.Value.EndsWith(":"))

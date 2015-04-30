@@ -254,7 +254,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriples(INode n)
         {
-            return this.GetTriplesWithSubject(n).Concat(this.GetTriplesWithPredicate(n)).Concat(this.GetTriplesWithObject(n));
+            return this.GetTriplesWithSubject(n).Union(this.GetTriplesWithPredicate(n)).Union(this.GetTriplesWithObject(n));
         }
 
         /// <summary>
@@ -264,11 +264,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples</returns>
         public override IEnumerable<Triple> GetTriples(Uri uri)
         {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where t.Involves(uri)
-                                     select t;
-
-            return ts;
+            return GetTriples(new UriNode(null, uri));
         }
 
 

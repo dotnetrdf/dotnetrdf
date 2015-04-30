@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
 
@@ -73,6 +70,23 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         protected override IStorageProvider OpenConnectionInternal()
         {
             return new DatasetFileManager(this.File, this.Async);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            DatasetFileConnectionDefinition definition = new DatasetFileConnectionDefinition();
+            definition.File = this.File;
+            definition.Async = this.Async;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[Dataset File] " + this.File.ToSafeString();
         }
     }
 }

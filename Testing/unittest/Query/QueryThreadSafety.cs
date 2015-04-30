@@ -116,7 +116,7 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlQueryThreadSafeEvaluation()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.SparqlQueryThreadSafeEvaluationActual));
+            TestTools.TestInMTAThread(this.SparqlQueryThreadSafeEvaluationActual);
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
             for (int i = 1; i <= 10; i++)
             {
                 Console.WriteLine("Run #" + i);
-                TestTools.TestInMTAThread(new ThreadStart(this.SparqlQueryAndUpdateThreadSafeEvaluationActual));
+                TestTools.TestInMTAThread(this.SparqlQueryAndUpdateThreadSafeEvaluationActual);
                 Console.WriteLine();
             }
         }

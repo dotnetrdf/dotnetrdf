@@ -19,7 +19,7 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.License.exclude.exts" 
-            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig,snk" />
+            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig,snk,gz" />
   <property name="dotnetrdf.License.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.License.search" value="Copyright \(c\) 20\d{2}-20\d{2} dotNetRDF Project" />
   <property name="dotnetrdf.License.replace" value="License.txt" />
@@ -30,11 +30,12 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="101" />
-  <property name="dotnetrdf.releasetype" value="stable" />
-  <property name="dotnetrdf.toolsversion" value="101" />
-  <property name="dotnetrdf.toolsreleasetype" value="stable" />
-  <property name="dotnetrdf.nuspecversion" value="1.0.1-RC2" />
+  <property name="dotnetrdf.version" value="109" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="109" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.9-prerelease01" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.9.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -54,8 +55,6 @@
 
   <target name="projectsync" description="Sync project files" unless="${dotnetrdf.nocompile}" 
 	depends="projectsync-core-net35,
-		 projectsync-core-silverlight,
-		 projectsync-core-windowsphone,
 		 projectsync-core-clientprofile,
 	   projectsync-core-clientprofile-net35,
      projectsync-core-portable,
@@ -75,24 +74,6 @@
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-    </exec>
-  </target>
-
-  <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file"  unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
-    <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-    </exec>    
-  </target>
-
-  <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file"  unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
-    <!-- This exec task syncs the Windows Phone project file with the Core Library -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
     </exec>
   </target>
 
@@ -191,7 +172,7 @@
           depends="license-libs,license-tests,license-utils" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-libs" description="Applies License headers to all library targets"
-          depends="license-core,license-core-silverlight,
+          depends="license-core,
                    license-data-virtuoso,
                    license-query-fulltext,
                    license-editor-core,license-editor-wpf,
@@ -229,23 +210,6 @@
   </target>
   
   <!-- TODO: Probably need a license-core-portable target that ensures we don't overwrite 3rd Party Licenses -->
-
-  <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
-      <arg value="-directory" />
-      <arg value="Libraries/core/sl4/" />
-      <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.License.exclude.exts}" />
-      <arg value="-exclude" />
-      <arg value="${dotnetrdf.License.exclude.regex}" />
-      <arg value="-license-search" />
-      <arg value="${dotnetrdf.License.search}" />
-      <arg value="-license-file" />
-      <arg value="${dotnetrdf.License.replace}" />
-      <arg value="-fix" />
-      <arg value="${dotnetrdf.License.overwrite}" />
-    </exec>
-  </target>
 
   <target name="license-data-virtuoso" description="Applies License headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
@@ -542,64 +506,84 @@
     <property name="dotnetrdf.nocompile" value="true" />
   </target>
 
+  <target name="restore-packages" description="Restore NuGet packages necessary for build" unless="${dotnetrdf.nocompile}">
+    <exec program="nuget">
+      <arg value="restore" />
+      <arg value="dotNetRDF.sln" />
+    </exec>
+  </target>
+
   <target name="compile" description="Compile the dotNetRDF released builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-libs,
+          depends="restore-packages,
+                   compile-libs,
                    compile-utils">
   </target>
 
   <target name="compile-libs" description="Copiles all libraries for main distribution and toolkit" unless="${dotnetrdf.nocompile}"
-          depends="compile-libs-main,
+          depends="restore-packages,
+                   compile-libs-main,
                    compile-libs-utils">
   </target>
 
   <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
-          depends="compile-libs-core,
+          depends="restore-packages,
+                   compile-libs-core,
                    compile-libs-data-virtuoso,
                    compile-libs-query-fulltext">
   </target>
 
   <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
-          depends="compile-core,
+          depends="restore-packages,
+                   compile-core,
                    compile-core-net35,
-                   compile-core-silverlight,
-                   compile-core-windowsphone,
                    compile-core-clientprofile,
                    compile-core-clientprofile-net35,
                    compile-core-portable">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
-          depends="compile-data-virtuoso,
+          depends="restore-packages,
+                   compile-data-virtuoso,
                    compile-data-virtuoso-net35,
                    compile-data-virtuoso-clientprofile,
                    compile-data-virtuoso-clientprofile-net35">
   </target>
 
   <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
-          depends="compile-query-fulltext,
+          depends="restore-packages,
+                   compile-query-fulltext,
                    compile-query-fulltext-net35,
                    compile-query-fulltext-clientprofile,
                    compile-query-fulltext-clientprofile-net35">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
-          depends="compile-editor-core,compile-editor-wpf,
+          depends="restore-packages,
+                   compile-editor-core,compile-editor-wpf,
                    compile-storemanager-core">
   </target>
 
   <target name="compile-utils" description="Compiles the dotNetRDF Toolkit" unless="${dotnetrdf.nocompile}"
         depends="license-utils,
-                   compile-util-convert,
-                   compile-util-editor-wpf,
-                   compile-util-opt-stats,
-                   compile-util-query-cmd,compile-util-query-gui,
-                   compile-util-server-cmd,compile-util-server-gui,
-                   compile-util-webdeploy,
-                   compile-util-storemanager">
+                 restore-packages,
+                 compile-util-convert,
+                 compile-util-editor-wpf,
+                 compile-util-opt-stats,
+                 compile-util-query-cmd,compile-util-query-gui,
+                 compile-util-server-cmd,compile-util-server-gui,
+                 compile-util-webdeploy,
+                 compile-util-storemanager">
+    
+  </target>
+
+  <target name="compile-utils-installer" description="Compiles the dotNetRDF Toolkit and the Toolkit Installer" unless="${dotnetrdf.nocompile}"
+          depends="restore-packages,
+                   compile-utils,
+                   compile-util-installer">
 
   </target>
           
-  <target name="compile-core" description="Compiles just the dotNetRDF Core Library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="compile-core" description="Compiles just the dotNetRDF Core Library" depends="license-core,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
@@ -612,7 +596,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-net35">
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -624,32 +608,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="license-core,projectsync-core-windowsphone">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile">
+  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -661,7 +620,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile-net35">
+  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -673,7 +632,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-portable" description="Compiles the dotNetRDF Portable Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-portable">
+  <target name="compile-core-portable" description="Compiles the dotNetRDF Portable Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-portable,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -685,7 +644,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core">
+  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -697,7 +656,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectsync-data-virtuoso-clientprofile">
+  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectsync-data-virtuoso-clientprofile,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -709,7 +668,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-net35,projectsync-data-virtuoso-net35">
+  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-net35,projectsync-data-virtuoso-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -721,7 +680,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectsync-data-virtuoso-clientprofile-net35">
+  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectsync-data-virtuoso-clientprofile-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -733,7 +692,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core">
+  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -745,7 +704,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectsync-query-fulltext-clientprofile">
+  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectsync-query-fulltext-clientprofile,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -757,7 +716,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectsync-query-fulltext-net35">
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectsync-query-fulltext-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -769,7 +728,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectsync-query-fulltext-clientprofile-net35">
+  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectsync-query-fulltext-clientprofile-net35,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -781,7 +740,7 @@
     </exec>
   </target>
 
-  <target name="compile-editor-core" description="Compiles just the rdfEditor Core Library" depends="license-editor-core,compile-core" unless="${dotnetrdf.nocompile}">
+  <target name="compile-editor-core" description="Compiles just the rdfEditor Core Library" depends="license-editor-core,compile-core,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
@@ -793,7 +752,7 @@
     </exec>
   </target>
 
-  <target name="compile-editor-wpf" description="Compiles just the rdfEditor WPF Library" depends="license-editor-wpf,compile-editor-core" unless="${dotnetrdf.nocompile}">
+  <target name="compile-editor-wpf" description="Compiles just the rdfEditor WPF Library" depends="license-editor-wpf,compile-editor-core,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
@@ -805,7 +764,7 @@
     </exec>
   </target>
 
-  <target name="compile-storemanager-core" description="Compiles just the StoreManager Core Library" depends="license-storemanager-core,compile-core" unless="${dotnetrdf.nocompile}">
+  <target name="compile-storemanager-core" description="Compiles just the StoreManager Core Library" depends="license-storemanager-core,compile-core,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
@@ -817,7 +776,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-convert" description="Compile the rdfConvert Utility" depends="license-utils,compile-core" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-convert" description="Compile the rdfConvert Utility" depends="license-utils,compile-core,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -829,7 +788,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-editor-wpf" description="Compile the rdfEditor Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-editor-wpf" description="Compile the rdfEditor Utility" depends="license-utils,compile-libs-main,compile-libs-utils,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -841,7 +800,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-opt-stats" description="Compile the rdfOptStats Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-opt-stats" description="Compile the rdfOptStats Utility" depends="license-utils,compile-libs-main,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -853,7 +812,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-query-cmd" description="Compile the rdfQuery Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-query-cmd" description="Compile the rdfQuery Utility" depends="license-utils,compile-libs-main,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -865,7 +824,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-query-gui" description="Compile the SparqlGui Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-query-gui" description="Compile the SparqlGui Utility" depends="license-utils,compile-libs-main,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -877,7 +836,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-server-cmd" description="Compile the rdfServer Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-server-cmd" description="Compile the rdfServer Utility" depends="license-utils,compile-libs-main,compile-libs-utils,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -889,7 +848,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-server-gui" description="Compile the rdfServerGUI Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-server-gui" description="Compile the rdfServerGUI Utility" depends="license-utils,compile-libs-main,compile-libs-utils,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -901,7 +860,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-webdeploy" description="Compile the rdfWebDeploy Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-webdeploy" description="Compile the rdfWebDeploy Utility" depends="license-utils,compile-libs-main,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -913,7 +872,7 @@
     </exec>
   </target>
 
-  <target name="compile-util-storemanager" description="Compile the StoreManager Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-storemanager" description="Compile the StoreManager Utility" depends="license-utils,compile-libs-main,compile-libs-utils,restore-packages" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -925,11 +884,13 @@
     </exec>
   </target>
 
-  <target name="compile-utils-installer" description="Compile the Toolkit Installer" depends="compile-utils" unless="${dotnetrdf.nocompile}">
+  <target name="compile-util-installer" description="Compiles the dotNetRDF Toolkit Installer" unless="${dotnetrdf.nocompile}" depends="compile-utils,restore-packages">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/ToolkitInstaller/ToolkitInstaller.vdproj" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Build/ToolkitInstaller/ToolkitInstaller.wixproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
@@ -949,9 +910,8 @@
 
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-core,build-core-net35,
-                   build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
-                   build-core-windowsphone,
+                   build-core-portable,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
 
@@ -982,24 +942,6 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/VDS.Common.dll" />
-  </target>
-
-  <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/VDS.Common.dll" />
-  </target>
-
-  <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
@@ -1179,11 +1121,34 @@
 
   <!-- Release Build Targets -->
 
+  <target name="validate-release" description="Validates that the release artifacts have the correct version set"
+	        depends="validate-release-libs,
+		   validate-release-utils" />
+
+  <target name="validate-release-libs" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Libraries/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
+  <target name="validate-release-utils" description="Validates that the libraries to be released have the correct version set">
+    <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
+      <arg value="-scan" />
+      <arg value="Utilities/" />
+      <arg value="-validate" />
+      <arg value="${dotnetrdf.buildversion}" />
+    </exec>
+  </target>
+
   <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
-          depends="build-release-libs,
+          depends="validate-release,
+                   build-release-libs,
                    build-release-utils" />
 
-  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-libs,build-libs">
     <copy todir="bin/stable/Libraries/" overwrite="true">
       <fileset basedir="bin/nightlies/Libraries">
         <include name="**/*" />
@@ -1191,7 +1156,7 @@
     </copy>
   </target>
 
-  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="build-utils">
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="validate-release-utils,build-utils">
     <copy todir="bin/stable/Toolkit/" overwrite="true">
       <fileset basedir="bin/nightlies/Toolkit">
         <include name="**/*" />
@@ -1416,22 +1381,7 @@
       </fileset>
     </delete>
     <delete>
-      <fileset basedir="Build/nuget/Core/lib/sl4">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/sl4-wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-win+net40+sl4+wp">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Core/lib/portable-windows8+net45">
+      <fileset basedir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
         <include name="*" />
       </fileset>
     </delete>
@@ -1461,24 +1411,7 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/sl4/">
-      <fileset basedir="bin/stable/Libraries/Core/sl4/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/sl4-wp/">
-      <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/portable-win+net40+sl4+wp/">
-      <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Core/lib/portable-windows8+net45/">
+    <copy todir="Build/nuget/Core/lib/portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1">
       <fileset basedir="bin/stable/Libraries/Core/portable/">
         <include name="dotNetRDF.*" />
         <!-- Have to include Portable.Runtime.dll directly as it ain't on NuGet yet -->

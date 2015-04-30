@@ -24,23 +24,52 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
     /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple
     /// </summary>
-    public class NQuadsFormatter 
+    public class NQuadsFormatter
         : NTriplesFormatter
     {
         /// <summary>
         /// Creates a new NQuads Formatter
         /// </summary>
         public NQuadsFormatter()
-            : base("NQuads") { }
+            : this(NQuadsSyntax.Original, GetName()) { }
+
+        /// <summary>
+        /// Creates a new NQuads formatter
+        /// </summary>
+        /// <param name="syntax">NQuads syntax to output</param>
+        public NQuadsFormatter(NQuadsSyntax syntax)
+            : this(syntax, GetName(syntax)) { }
+
+        /// <summary>
+        /// Creates a new NQuads formatter
+        /// </summary>
+        /// <param name="syntax">NQuads syntax to output</param>
+        /// <param name="formatName">Format Name</param>
+        public NQuadsFormatter(NQuadsSyntax syntax, String formatName)
+            : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
+
+        private static String GetName()
+        {
+            return GetName(NQuadsSyntax.Original);
+        }
+
+        private static string GetName(NQuadsSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NQuadsSyntax.Original:
+                    return "NQuads";
+                default:
+                    return "NQuads (RDF 1.1)";
+            }
+        }
 
         /// <summary>
         /// Formats a Triple as a String
@@ -53,10 +82,20 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return base.Format(t);
             }
-            else
-            {
-                return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
-            }
+            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " <" + this.FormatUri(t.GraphUri) + "> .";
         }
+    }
+
+    /// <summary>
+    /// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification
+    /// </summary>
+    public class NQuads11Formatter
+        : NQuadsFormatter
+    {
+        /// <summary>
+        /// Creates a new formatter
+        /// </summary>
+        public NQuads11Formatter()
+            : base(NQuadsSyntax.Rdf11) { }
     }
 }

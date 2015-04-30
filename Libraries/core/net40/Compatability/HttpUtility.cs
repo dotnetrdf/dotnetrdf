@@ -191,7 +191,10 @@ namespace VDS.RDF
 
         private static bool IsSafeCharacter(char c)
         {
-            if (c == '-' || c >= 48 && c <= 57 || c >= 65 && c <= 90 || c >= 97 && c <= 122)
+            // Safe characters which should not be percent encoded per RFC 3986 Section 2.3
+            // http://tools.ietf.org/html/rfc3986#section-2.3
+            // Alpha (65-90 and 97-122), Digits (48-57), Hyphen (45), Period (46), Underscore (95) and Tilde (126)
+            if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57) || c == 45 || c == 46 || c == 95 || c == 126)
             {
                 return true;
             }

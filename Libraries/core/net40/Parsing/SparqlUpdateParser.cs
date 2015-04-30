@@ -520,58 +520,53 @@ namespace VDS.RDF.Parsing
                 //Then return the command
                 return new DeleteCommand(where, where);
             }
-            else
+            //Get the Modification Template
+            GraphPattern deletions = this.TryParseModifyTemplate(context);
+
+            //Then we expect a WHERE keyword
+            next = context.Tokens.Dequeue();
+            if (next.TokenType == Token.USING)
             {
-                //Get the Modification Template
-                GraphPattern deletions = this.TryParseModifyTemplate(context);
-
-                //Then we expect a WHERE keyword
-                next = context.Tokens.Dequeue();
-                if (next.TokenType == Token.USING)
+                foreach (KeyValuePair<Uri, bool> kvp in this.TryParseUsingStatements(context))
                 {
-                    foreach (KeyValuePair<Uri, bool> kvp in this.TryParseUsingStatements(context))
+                    if (kvp.Value)
                     {
-                        if (kvp.Value)
-                        {
-                            usingNamed.Add(kvp.Key);
-                        }
-                        else
-                        {
-                            usings.Add(kvp.Key);
-                        }
+                        usingNamed.Add(kvp.Key);
                     }
-                    next = context.Tokens.Dequeue();
+                    else
+                    {
+                        usings.Add(kvp.Key);
+                    }
                 }
-                if (next.TokenType == Token.WHERE)
-                {
-                    //Now parse the WHERE pattern
-                    SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
-                    subContext.Query.BaseUri = context.BaseUri;
-                    subContext.Query.NamespaceMap = context.NamespaceMap;
-                    subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
-                    subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
-                    subContext.ExpressionFactories = context.ExpressionFactories;
-                    GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
-
-                    //And finally return the command
-                    DeleteCommand cmd = new DeleteCommand(deletions, where);
-                    usings.ForEach(u => cmd.AddUsingUri(u));
-                    usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
-                    return cmd;
-                }
-                else if (next.TokenType == Token.INSERT)
-                {
-                    InsertCommand insertCmd = (InsertCommand)this.TryParseInsertCommand(context, false);
-                    ModifyCommand cmd = new ModifyCommand(deletions, insertCmd.InsertPattern, insertCmd.WherePattern);
-                    insertCmd.UsingUris.ToList().ForEach(u => cmd.AddUsingUri(u));
-                    insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
-                    return cmd;
-                }
-                else
-                {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
-                }
+                next = context.Tokens.Dequeue();
             }
+            if (next.TokenType == Token.WHERE)
+            {
+                //Now parse the WHERE pattern
+                SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+                subContext.Query.BaseUri = context.BaseUri;
+                subContext.Query.NamespaceMap = context.NamespaceMap;
+                subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
+                subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
+                subContext.ExpressionFactories = context.ExpressionFactories;
+                subContext.ExpressionParser.QueryParser = context.QueryParser;
+                GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
+
+                //And finally return the command
+                DeleteCommand cmd = new DeleteCommand(deletions, @where);
+                usings.ForEach(u => cmd.AddUsingUri(u));
+                usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
+                return cmd;
+            }
+            if (next.TokenType == Token.INSERT)
+            {
+                InsertCommand insertCmd = (InsertCommand)this.TryParseInsertCommand(context, false);
+                ModifyCommand cmd = new ModifyCommand(deletions, insertCmd.InsertPattern, insertCmd.WherePattern);
+                insertCmd.UsingUris.ToList().ForEach(u => cmd.AddUsingUri(u));
+                insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
+                return cmd;
+            }
+            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
         }
 
         private SparqlUpdateCommand TryParseDeleteDataCommand(SparqlUpdateParserContext context)
@@ -584,6 +579,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
@@ -714,6 +710,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //And finally return the command
@@ -733,6 +730,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
@@ -871,9 +869,18 @@ namespace VDS.RDF.Parsing
             else if (next.TokenType == Token.DELETE)
             {
                 SparqlUpdateCommand deleteCmd = this.TryParseDeleteCommand(context, false);
-                if (deleteCmd is BaseModificationCommand)
+                if (deleteCmd is DeleteCommand)
                 {
-                    ((BaseModificationCommand)deleteCmd).GraphUri = u;
+                    DeleteCommand delete = ((DeleteCommand)deleteCmd);
+                    if (ReferenceEquals(delete.DeletePattern, delete.WherePattern))
+                    {
+                        throw new RdfParseException("The DELETE WHERE { } shorthand syntax cannot be used in conjunction with a WITH clause");
+                    }
+                    delete.GraphUri = u;
+                }
+                else if (deleteCmd is BaseModificationCommand)
+                {
+                    ((BaseModificationCommand) deleteCmd).GraphUri = u;
                 }
                 else
                 {
@@ -895,6 +902,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.ExpressionParser.QueryParser = context.QueryParser;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //Validate that the Graph Pattern is simple

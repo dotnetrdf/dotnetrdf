@@ -1,0 +1,19 @@
+@prefix ab: <http://learningsparql.com/ns/addressbook#> .
+@prefix d: <http://learningsparql.com/ns/data#> .
+
+d:i0432 ab:firstName "Richard" .
+d:i0432 ab:lastName "Mutt" .
+d:i0432 ab:homeTel "(229) 276-5135" .
+d:i0432 ab:nick "Dick" .
+d:i0432 ab:email "richard49@hotmail.com" .
+
+d:i9771 ab:firstName "Cindy" .
+d:i9771 ab:lastName "Marshall" .
+d:i9771 ab:homeTel "(245) 646-5488" .
+d:i9771 ab:email "cindym@gmail.com" .
+
+d:i8301 ab:firstName "Craig" .
+d:i8301 ab:lastName "Ellis" .
+d:i8301 ab:workTel "(245) 315-5486" .
+d:i8301 ab:email "craigellis@yahoo.com" .
+d:i8301 ab:email "c.ellis@usairwaysgroup.com" .

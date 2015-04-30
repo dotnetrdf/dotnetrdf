@@ -653,6 +653,35 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public abstract int CompareVirtualId(TNodeID other);
+
+        public bool TryCompareVirtualId(INode other, out int comparisonResult)
+        {
+            if (other is IVirtualNode<TNodeID, TGraphID>)
+            {
+                var virt = other as IVirtualNode<TNodeID, TGraphID>;
+                if (ReferenceEquals(this._provider, virt.Provider))
+                {
+                    if (this._id.Equals(virt.VirtualID))
+                    {
+                        comparisonResult = 0;
+                    }
+                    else
+                    {
+                        comparisonResult = CompareVirtualId(virt.VirtualID);
+                    }
+                    return true;
+                }
+            }
+            comparisonResult = 0;
+            return false;
+        }
+
+        /// <summary>
         /// Gets the String representation of the Node
         /// </summary>
         /// <returns></returns>

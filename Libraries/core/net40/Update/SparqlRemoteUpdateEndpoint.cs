@@ -124,44 +124,13 @@ namespace VDS.RDF.Update
 
                 //Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
-
-                //Apply Credentials to request if necessary
-                if (this.Credentials != null)
-                {
-                    if (Options.ForceHttpBasicAuth)
-                    {
-                        //Forcibly include a HTTP basic authentication header
-                        string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                        request.Headers.Add("Authorization", "Basic " + credentials);
-                    }
-                    else
-                    {
-                        //Leave .Net to cope with HTTP auth challenge response
-                        request.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                        request.PreAuthenticate = true;
-#endif
-                    }
-                }
-
-#if !NO_PROXY
-                //Use a Proxy if required
-                if (this.Proxy != null)
-                {
-                    request.Proxy = this.Proxy;
-                    if (this.UseCredentialsForProxy)
-                    {
-                        request.Proxy.Credentials = this.Credentials;
-                    }
-                }
-#endif
-
+                this.ApplyRequestOptions(request);
                 Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
                     request.Method = "POST";
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -200,45 +169,9 @@ namespace VDS.RDF.Update
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
-            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
-
-            //Apply Credentials to request if necessary
-            if (this.Credentials != null)
-            {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
-                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    //Leave .Net to cope with HTTP auth challenge response
-                    request.Credentials = this.Credentials;
-#if !SILVERLIGHT
-                    request.PreAuthenticate = true;
-#endif
-                }
-            }
-
-#if !NO_PROXY
-            //Use a Proxy if required
-            if (this.Proxy != null)
-            {
-                request.Proxy = this.Proxy;
-                if (this.UseCredentialsForProxy)
-                {
-                    request.Proxy.Credentials = this.Credentials;
-                }
-            }
-#endif
-
+            this.ApplyRequestOptions(request);
             Tools.HttpDebugRequest(request);
 
             try
@@ -248,7 +181,7 @@ namespace VDS.RDF.Update
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                             {
                                 writer.Write("update=");
                                 writer.Write(HttpUtility.UrlEncode(sparqlUpdate));

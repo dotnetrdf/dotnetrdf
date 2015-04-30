@@ -34,9 +34,10 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Minus join
     /// </summary>
-    public class Minus : IMinus
+    public class Minus 
+        : IMinus
     {
-        private ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlAlgebra _lhs, _rhs;
 
         /// <summary>
         /// Creates a new Minus join
@@ -100,6 +101,22 @@ namespace VDS.RDF.Query.Algebra
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
             }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get { return this._lhs.FloatingVariables; }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get { return this._lhs.FixedVariables; }
         }
 
         /// <summary>

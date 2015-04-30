@@ -124,7 +124,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 //Deploy dotNetRDF and required DLLs to the bin directory of the application
                 String sourceFolder = RdfWebDeployHelper.ExecutablePath;
                 IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
-                if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
                 if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
                 if (this._fulltext) dlls = dlls.Concat(RdfWebDeployHelper.RequiredFullTextDLLs);
                 foreach (String dll in dlls)
@@ -577,10 +576,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         Console.WriteLine("rdfWebDeploy: IIS Classic Handler registration will not be performed");
                         break;
                     case "-noiis":
-                        break;
-                    case "-sql":
-                        this._sql = true;
-                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
+                        this._noLocalIIS = true;
                         break;
                     case "-virtuoso":
                         this._virtuoso = true;

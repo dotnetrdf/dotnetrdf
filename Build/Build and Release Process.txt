@@ -8,15 +8,14 @@ Prerequisites
 
 To build dotNetRDF you will need one of the following:
 
- - Visual Studio 2010 
+ - Visual Studio 2010 or higher
  OR
  - NAnt (http://nant.sourceforge.net) and .Net 4.0 SDK
 
 You will also need the following installed on your machine:
 
  - NuGet (http://nuget.codeplex.com)
- - Silverlight 4 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=18149)
- - Windows Phone 7 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=27570 and http://www.microsoft.com/en-us/download/details.aspx?id=29233
+ - Portable Class Library tools with .Net 4.5 targets
 
 Standard (Visual Studio) Build
 ------------------------------
@@ -36,7 +35,7 @@ To build everything simply run the following:
 
 nant build
 
-This will build all the libraries and toolkkit utilities and copy them to the bin/nightlies directory.
+This will build all the libraries and toolkit utilities and copy them to the bin/nightlies directory.
 
 If you prefer you can compile in VS and then run the following to prepare the directory structures that subsequent
 release steps expect:
@@ -58,7 +57,10 @@ As build process but nuget may also be needed if you intended to make NuGet pack
 
 Run all relevant unit tests and other tests suites (e.g. SPARQL DAWG) to ensure that no regressions or breaking
 changes have crept in.  In the case of breaking changes you may need to update unit tests to reflect new
-code/behaviour
+code/behaviour.
+
+You can check the CI server at ci.dotnetrdf.org to see latest build statest though the build server is a little
+flaky and may not be up.
 
 2 - Build
 ---------

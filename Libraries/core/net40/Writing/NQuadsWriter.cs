@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -42,8 +43,23 @@ namespace VDS.RDF.Writing
         : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
-        private bool _prettyPrint = true;
-        private bool _multiThreaded = Options.AllowMultiThreadedWriting;
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        public NQuadsWriter()
+            : this(NQuadsSyntax.Original) { }
+
+        /// <summary>
+        /// Creates a new writer
+        /// </summary>
+        /// <param name="syntax">NQuads Syntax mode to use</param>
+        public NQuadsWriter(NQuadsSyntax syntax)
+        {
+            PrettyPrintMode = true;
+            UseMultiThreadedWriting = Options.AllowMultiThreadedWriting;
+            this.Syntax = syntax;
+        }
 
         /// <summary>
         /// Controls whether Pretty Printing is used
@@ -51,32 +67,12 @@ namespace VDS.RDF.Writing
         /// <remarks>
         /// For NQuads this simply means that Graphs in the output are separated with Whitespace and comments used before each Graph
         /// </remarks>
-        public bool PrettyPrintMode
-        {
-            get
-            {
-                return this._prettyPrint;
-            }
-            set
-            {
-                this._prettyPrint = value;
-            }
-        }
+        public bool PrettyPrintMode { get; set; }
 
         /// <summary>
         /// Gets/Sets whether Multi-Threaded Writing
         /// </summary>
-        public bool UseMultiThreadedWriting
-        {
-            get
-            {
-                return this._multiThreaded;
-            }
-            set
-            {
-                this._multiThreaded = value;
-            }
-        }
+        public bool UseMultiThreadedWriting { get; set; }
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer
@@ -88,6 +84,11 @@ namespace VDS.RDF.Writing
                 return typeof(NQuadsFormatter);
             }
         }
+
+        /// <summary>
+        /// Gets/Sets the NQuads syntax mode
+        /// </summary>
+        public NQuadsSyntax Syntax { get; set; }
 
 #if !NO_FILE
         /// <summary>
@@ -116,7 +117,7 @@ namespace VDS.RDF.Writing
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this._prettyPrint, false);
+            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer, this.PrettyPrintMode, false);
             //Check there's something to do
             if (context.Store.Graphs.Count == 0)
             {
@@ -126,7 +127,7 @@ namespace VDS.RDF.Writing
 
             try
             {
-                if (this._multiThreaded)
+                if (this.UseMultiThreadedWriting)
                 {
                     //Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
@@ -165,10 +166,10 @@ namespace VDS.RDF.Writing
                 {
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output);
+                        NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(this.Syntax));
                         foreach (Triple t in g.Triples)
                         {
-                            context.Output.WriteLine(this.TripleToNQuads(graphContext, t));
+                            context.Output.WriteLine(this.TripleToNQuads(graphContext, t, g.BaseUri));
                         }
                     }
                     context.Output.Close();
@@ -197,7 +198,7 @@ namespace VDS.RDF.Writing
             }
             foreach (Triple t in context.Graph.Triples)
             {
-                context.Output.WriteLine(this.TripleToNQuads(context, t));
+                context.Output.WriteLine(this.TripleToNQuads(context, t, context.Graph.BaseUri));
             }
             context.Output.WriteLine();
 
@@ -209,8 +210,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="context">Writer Context</param>
         /// <param name="t">Triple to convert</param>
+        /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        private String TripleToNQuads(NTriplesWriterContext context, Triple t)
+        private String TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
         {
             StringBuilder output = new StringBuilder();
             output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
@@ -218,10 +220,11 @@ namespace VDS.RDF.Writing
             output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphUri != null)
+            if (t.GraphUri != null || graphUri != null)
             {
                 output.Append(" <");
-                output.Append(context.UriFormatter.FormatUri(t.GraphUri));
+                // Favour graph name rather than per-triple graph name because we may have a triple with a different graph name than the containing graph
+                output.Append(context.UriFormatter.FormatUri(graphUri ?? t.GraphUri));
                 output.Append(">");
             }
             output.Append(" .");
@@ -279,7 +282,7 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
-                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(this.Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     if (!graphContent.Equals(String.Empty))
                     {

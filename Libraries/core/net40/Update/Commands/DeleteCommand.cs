@@ -237,7 +237,7 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
-                if (results is IdentityMultiset) queryContext.OutputMultiset = new SingletonMultiset(results.Variables);
+                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards
@@ -259,7 +259,7 @@ namespace VDS.RDF.Update.Commands
                 IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
                 //Delete the Triples for each Solution
-                foreach (ISet s in queryContext.OutputMultiset.Sets)
+                foreach (ISet s in results.Sets)
                 {
                     List<Triple> deletedTriples = new List<Triple>();
 

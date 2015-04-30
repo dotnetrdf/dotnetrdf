@@ -95,6 +95,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlRemoteEndpointLongUpdate()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;
@@ -264,6 +269,11 @@ results.Dispose()
         [Test]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
@@ -285,6 +295,11 @@ results.Dispose()
         [Test]
         public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             String query;
             using (StreamReader reader = new StreamReader("resources\\dbpedia-query-time.rq"))
             {

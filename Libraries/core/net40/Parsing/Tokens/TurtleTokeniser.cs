@@ -672,7 +672,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                         if (rightangleallowed)
                                         {
-                                            this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                                            this.HandleEscapes(this._syntax == TurtleSyntax.Original ? TokeniserEscapeMode.QuotedLiterals : TokeniserEscapeMode.QuotedLiteralsBoth);
                                         }
                                         else
                                         {
@@ -992,9 +992,10 @@ namespace VDS.RDF.Parsing.Tokens
             this.StartNewToken();
 
             //Get the Prefix Characters
-            while (!Char.IsWhiteSpace(next))
+            while (!Char.IsWhiteSpace(next) && next != '<')
             {
                 this.ConsumeCharacter();
+                if (next == ':') break;
                 next = this.Peek();
             }
             if (!this.Value.EndsWith(":"))
@@ -1025,7 +1026,7 @@ namespace VDS.RDF.Parsing.Tokens
             this.StartNewToken();
 
             //Grab all the Characters in the QName
-            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && (next != '.' || this._syntax == TurtleSyntax.W3C))
+            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || this._syntax == TurtleSyntax.W3C))
             {
                 //Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)

@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Filters;
@@ -41,8 +40,8 @@ namespace VDS.RDF.Query.Algebra
     public class Filter 
         : IFilter
     {
-        private ISparqlAlgebra _pattern;
-        private ISparqlFilter _filter;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly ISparqlFilter _filter;
 
         /// <summary>
         /// Creates a new Filter
@@ -112,6 +111,16 @@ namespace VDS.RDF.Query.Algebra
                 return (this._pattern.Variables.Concat(this._filter.Variables)).Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used

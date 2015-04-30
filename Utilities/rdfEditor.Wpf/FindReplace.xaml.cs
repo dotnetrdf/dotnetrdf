@@ -24,18 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
@@ -46,7 +36,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class FindReplace : Window
     {
         private FindReplaceMode _mode = FindReplaceMode.Find;
-        private WpfFindAndReplace _engine = new WpfFindAndReplace();
+        private readonly WpfFindAndReplace _engine = new WpfFindAndReplace();
 
         public FindReplace()
         {

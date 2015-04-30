@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing.Events.RdfXml;
 
@@ -146,7 +147,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="e">Event</param>
         public override void Enqueue(T e)
         {
-            if (e != null)
+            if (!ReferenceEquals(e, null))
             {
                 if (e is ClearQueueEvent)
                 {
@@ -183,6 +184,68 @@ namespace VDS.RDF.Parsing.Events
                 this.Enqueue(this._jitgen.GetNextEvent());
             }
             return base.Peek();
+        }
+    }
+
+
+    public class SublistEventQueue<T> : BaseEventQueue<T> where T : IEvent
+    {
+        private IEventQueue<T> _events;
+        private int _threshold;
+
+        public SublistEventQueue(IEventQueue<T> events, int threshold)
+        {
+            this._events = events;
+            this._threshold = threshold;
+        }
+
+        public override T Dequeue()
+        {
+            if (this._events.Count > this._threshold)
+            {
+                return this._events.Dequeue();
+            }
+            else
+            {
+                throw new InvalidOperationException("Event queue is empty");
+            }
+        }
+
+        public override void Enqueue(T e)
+        {
+            if (!ReferenceEquals(e, null))
+            {
+                if (e is ClearQueueEvent)
+                {
+                    this.Clear();
+                }
+                else
+                {
+                    this._events.Enqueue(e);
+                }
+            }
+        }
+
+        public override T Peek()
+        {
+            if (this._events.Count > this._threshold)
+            {
+                return this._events.Peek();
+            }
+            else
+            {
+                throw new InvalidOperationException("Event queue is empty");
+            }
+        }
+
+        public override void Clear()
+        {
+            this._events.Clear();
+        }
+
+        public override int Count
+        {
+            get { return this._events.Count - this._threshold; }
         }
     }
 }

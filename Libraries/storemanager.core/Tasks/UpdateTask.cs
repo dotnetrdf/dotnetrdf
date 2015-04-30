@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -39,8 +36,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class UpdateTask 
         : NonCancellableTask<TaskResult>
     {
-        private IStorageProvider _manager;
-        private String _update;
+        private readonly IStorageProvider _manager;
+        private readonly String _update;
         private SparqlUpdateCommandSet _cmds;
 
         /// <summary>

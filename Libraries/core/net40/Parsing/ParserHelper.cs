@@ -235,6 +235,27 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        internal static INode TryResolveUri(IResultsParserContext context, String value)
+        {
+                    try
+                    {
+                        String uri = Tools.ResolveUri(value, String.Empty);
+                        return context.Handler.CreateUriNode(UriFactory.Create(uri));
+                    }
+#if PORTABLE
+                    catch (FormatException formatEx)
+#else
+                    catch (UriFormatException formatEx)
+#endif
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + value + "' due to the following error:\n" + formatEx.Message, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + value + "' due to the following error:\n" + rdfEx.Message, rdfEx);
+                    }
+        }
+
         /// <summary>
         /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
         /// </summary>

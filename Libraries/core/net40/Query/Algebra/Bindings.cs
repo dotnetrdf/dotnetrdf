@@ -25,9 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -38,7 +35,7 @@ namespace VDS.RDF.Query.Algebra
     public class Bindings
         : ITerminalOperator
     {
-        private BindingsPattern _bindings;
+        private readonly BindingsPattern _bindings;
         private BaseMultiset _mset;
 
         /// <summary>
@@ -47,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="bindings">Bindings</param>
         public Bindings(BindingsPattern bindings)
         {
-            if (bindings == null) throw new ArgumentNullException("Null Bindings");
+            if (bindings == null) throw new ArgumentNullException("bindings", "Bindings cannot be null");
             this._bindings = bindings;
         }
 
@@ -58,11 +55,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            if (this._mset == null)
-            {
-                this._mset = this._bindings.ToMultiset();
-            }
-            return this._mset;
+            return this._mset ?? (this._mset = this._bindings.ToMultiset());
         }
 
         /// <summary>
@@ -75,6 +68,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._bindings.Variables;
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._bindings.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._bindings.FixedVariables; } } 
 
         /// <summary>
         /// Gets the Bindings 

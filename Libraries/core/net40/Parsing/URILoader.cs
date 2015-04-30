@@ -413,18 +413,21 @@ namespace VDS.RDF.Parsing
                     parser.Warning += RaiseWarning;
 #if !NO_URICACHE
                     //To do caching we ask the cache to give us a handler and then we tie it to
-                    IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
-                    if (cacheHandler != null)
+                    if (Options.UriLoaderCaching)
                     {
-                        //Note: We can ONLY use caching when we know that the Handler will accept all the data returned
-                        //i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
-                        if (handler.AcceptsAll)
+                        IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                        if (cacheHandler != null)
                         {
-                            handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler });
-                        }
-                        else
-                        {
-                            cacheHandler = null;
+                            //Note: We can ONLY use caching when we know that the Handler will accept all the data returned
+                            //i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
+                            if (handler.AcceptsAll)
+                            {
+                                handler = new MultiHandler(new IRdfHandler[] {handler, cacheHandler});
+                            }
+                            else
+                            {
+                                cacheHandler = null;
+                            }
                         }
                     }
                     try
@@ -437,10 +440,14 @@ namespace VDS.RDF.Parsing
                     catch
                     {
                         //If we were trying to cache the response and something went wrong discard the cached copy
-                        _cache.RemoveETag(u);
-                        _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
-                        _cache.RemoveLocalCopy(u);
-                        _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        if (Options.UriLoaderCaching)
+                        {
+                            _cache.RemoveETag(u);
+                            _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
+                            _cache.RemoveLocalCopy(u);
+                            _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        }
+                        throw;
                     }
 #endif
                 }
@@ -458,34 +465,37 @@ namespace VDS.RDF.Parsing
                 }
 
 #if !NO_URICACHE
-                if (webEx.Response != null)
+                if (Options.UriLoaderCaching)
                 {
-                    if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotModified)
+                    if (webEx.Response != null)
                     {
-                        //If so then we need to load the Local Copy assuming it exists?
-                        if (_cache.HasLocalCopy(u, false))
+                        if (((HttpWebResponse) webEx.Response).StatusCode == HttpStatusCode.NotModified)
                         {
-                            String local = _cache.GetLocalCopy(u);
-                            try
+                            //If so then we need to load the Local Copy assuming it exists?
+                            if (_cache.HasLocalCopy(u, false))
                             {
-                                FileLoader.Load(handler, local, new TurtleParser());
+                                String local = _cache.GetLocalCopy(u);
+                                try
+                                {
+                                    FileLoader.Load(handler, local, new TurtleParser());
+                                }
+                                catch
+                                {
+                                    //If we get an Exception we failed to access the file successfully
+                                    _cache.RemoveETag(u);
+                                    _cache.RemoveLocalCopy(u);
+                                    UriLoader.Load(handler, u, parser);
+                                }
+                                return;
                             }
-                            catch
+                            else
                             {
-                                //If we get an Exception we failed to access the file successfully
+                                //If the local copy didn't exist then we need to redo the response without
+                                //the ETag as we've lost the cached copy somehow
                                 _cache.RemoveETag(u);
-                                _cache.RemoveLocalCopy(u);
                                 UriLoader.Load(handler, u, parser);
+                                return;
                             }
-                            return;
-                        }
-                        else
-                        {
-                            //If the local copy didn't exist then we need to redo the response without
-                            //the ETag as we've lost the cached copy somehow
-                            _cache.RemoveETag(u);
-                            UriLoader.Load(handler, u, parser);
-                            return;
                         }
                     }
                 }

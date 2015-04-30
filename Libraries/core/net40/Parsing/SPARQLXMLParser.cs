@@ -386,7 +386,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.Input.Name.Equals("uri"))
             {
-                return context.Handler.CreateUriNode(UriFactory.Create(context.Input.ReadElementContentAsString()));
+                return ParserHelper.TryResolveUri(context, context.Input.ReadElementContentAsString());
             }
             else if (context.Input.Name.Equals("literal"))
             {
@@ -395,26 +395,43 @@ namespace VDS.RDF.Parsing
                     //Literal with no Data Type/Language Specifier
                     return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                 }
-                else if (context.Input.AttributeCount == 1)
+                else if (context.Input.AttributeCount >= 1)
                 {
-                    context.Input.MoveToNextAttribute();
-                    if (context.Input.Name.Equals("xml:lang"))
+                    String lang = null;
+                    Uri dt = null;
+                    while (context.Input.MoveToNextAttribute())
                     {
-                        //Language is specified
-                        String lang = context.Input.Value;
-                        context.Input.MoveToContent();
-                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
+                        if (context.Input.Name.Equals("xml:lang"))
+                        {
+                            //Language is specified
+                            lang = context.Input.Value;
+                        }
+                        else if (context.Input.Name.Equals("datatype"))
+                        {
+                            //Data Type is specified
+                            dt = ((IUriNode) ParserHelper.TryResolveUri(context, context.Input.Value)).Uri;
+                        }
+                        else
+                        {
+                            this.RaiseWarning("SPARQL Result Set has a <literal> element with an unknown attribute '" + context.Input.Name + "'!");
+                        }
                     }
-                    else if (context.Input.Name.Equals("datatype"))
+
+                    if (lang != null && dt != null) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
+
+                    context.Input.MoveToContent();
+                    if (lang != null)
                     {
-                        //Data Type is specified
-                        String dt = context.Input.Value;
-                        context.Input.MoveToContent();
-                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), UriFactory.Create(dt));
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
+                    } 
+                    else if (dt != null)
+                    {
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), dt);
                     }
                     else
                     {
-                        throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <literal> element has an unknown attribute '" + context.Input.Name + "'!");
+                        // Just a plain literal with lots of custom attributes
+                        return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                     }
                 }
                 else

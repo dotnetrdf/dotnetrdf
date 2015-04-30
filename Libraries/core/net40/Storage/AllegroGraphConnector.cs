@@ -197,11 +197,11 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -241,7 +241,7 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
 
                 //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream))
+                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                         {
                             writer.Write(postData);
                             writer.Close();
@@ -347,10 +347,7 @@ namespace VDS.RDF.Storage
             {
                 return "[AllegroGraph] Store '" + this._store + "' in Catalog '" + this._catalog + "' on Server '" + this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")) + "'";
             }
-            else
-            {
-                return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
-            }
+            return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
         }
 
         /// <summary>
@@ -390,7 +387,7 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 }

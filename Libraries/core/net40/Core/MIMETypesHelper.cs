@@ -58,6 +58,11 @@ namespace VDS.RDF
         public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
         /// <summary>
+        /// MIME Type for URL Enoded WWW Form Content used when POSTing over HTTP in UTF-8 encoding
+        /// </summary>
+        public const String Utf8WWWFormURLEncoded = WWWFormURLEncoded + ";charset=utf-8";
+
+        /// <summary>
         /// MIME Type for Multipart Form Data
         /// </summary>
         public const String FormMultipart = "multipart/form-data";
@@ -80,12 +85,12 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
+        internal static string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads
         /// </summary>
-        internal static string[] NQuads = { "text/x-nquads" };
+        internal static string[] NQuads = { "application/n-quads", "text/x-nquads" };
 
         /// <summary>
         /// MIME Types for TriG
@@ -244,7 +249,7 @@ namespace VDS.RDF
         /// Whether MIME Type Definitions have been initialised
         /// </summary>
         private static bool _init = false;
-        private static Object _initLock = new Graph();
+        private static readonly Object _initLock = new Graph();
 
         /// <summary>
         /// Checks whether something is a valid MIME Type

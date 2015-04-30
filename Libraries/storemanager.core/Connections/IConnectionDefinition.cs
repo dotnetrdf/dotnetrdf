@@ -25,9 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
@@ -79,5 +77,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="g">Graph</param>
         /// <param name="objNode">Object Node</param>
         void PopulateFrom(IGraph g, INode objNode);
+
+        /// <summary>
+        /// Make a copy of the defintion
+        /// </summary>
+        /// <returns>Copy of the existing definition</returns>
+        IConnectionDefinition Copy();
     }
 }

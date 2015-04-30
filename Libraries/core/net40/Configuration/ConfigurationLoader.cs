@@ -84,6 +84,7 @@ namespace VDS.RDF.Configuration
                             PropertyAsync = ConfigurationNamespace + "async",
                             PropertyLoadMode = ConfigurationNamespace + "loadMode",
                             PropertyEncryptConnection = ConfigurationNamespace + "encryptConnection",
+                            PropertySkipParsing = ConfigurationNamespace + "skipParsing",
                             //Properties for associating Managers with other things
                             PropertyStorageProvider = ConfigurationNamespace + "storageProvider",
                             //Properties for associating Processors with other things

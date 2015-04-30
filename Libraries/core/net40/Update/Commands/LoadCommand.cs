@@ -33,8 +33,8 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class LoadCommand : SparqlUpdateCommand
     {
-        private Uri _sourceUri, _graphUri;
-        private bool _silent = false;
+        private readonly Uri _sourceUri, _graphUri;
+        private readonly bool _silent = false;
 
         /// <summary>
         /// Creates a new LOAD command
@@ -96,10 +96,7 @@ namespace VDS.RDF.Update.Commands
             {
                 return true;
             }
-            else
-            {
-                return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
-            }
+            return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
         }
 
         /// <summary>

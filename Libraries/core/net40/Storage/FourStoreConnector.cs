@@ -298,7 +298,7 @@ namespace VDS.RDF.Storage
                 }
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.Turtle[0];
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 //Write the Graph as Turtle to the Request Stream
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
@@ -395,11 +395,6 @@ namespace VDS.RDF.Storage
                                 insert.AppendLine(t.ToString(this._formatter));
                             }
                             insert.AppendLine("}}");
-
-                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
-                            request.Method = "POST";
-                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                            request = base.GetProxiedRequest(request);
                         }
                     }
 
@@ -525,7 +520,7 @@ namespace VDS.RDF.Storage
                     throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
                 }
                 request.Method = "DELETE";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -614,7 +609,7 @@ namespace VDS.RDF.Storage
             }
             request.Method = "PUT";
             request.ContentType = MimeTypesHelper.Turtle[0];
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             //Write the Graph as Turtle to the Request Stream
             CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
@@ -694,11 +689,6 @@ namespace VDS.RDF.Storage
                                 insert.AppendLine(t.ToString(this._formatter));
                             }
                             insert.AppendLine("}}");
-
-                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
-                            request.Method = "POST";
-                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                            request = base.GetProxiedRequest(request);
                         }
                     }
 
@@ -754,7 +744,7 @@ namespace VDS.RDF.Storage
             {
                 request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(graphUri));
                 request.Method = "DELETE";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
                 this.DeleteGraphAsync(request, false, graphUri, callback, state);
             }
             else
@@ -843,8 +833,8 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._endpoint.Uri);
                 request.Accept = accept;
                 request.Method = "POST";
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                request = base.GetProxiedRequest(request);
+                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
+                request = base.ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -853,7 +843,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream))
+                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
                         {
                             writer.Write("query=");
                             writer.Write(HttpUtility.UrlEncode(sparqlQuery));
@@ -952,7 +942,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, enableUpdates, this._updatesEnabled.ToLiteral(context.Graph)));
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 }

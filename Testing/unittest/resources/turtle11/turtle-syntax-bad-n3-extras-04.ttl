@@ -1,5 +1,5 @@
 # N3 paths
-@prefix : <http://example/> .
-@prefix ns: <http://example/p#> .
+@prefix : <http://www.w3.org/2013/TurtleTests/> .
+@prefix ns: <http://www.w3.org/2013/TurtleTests/p#> .
 
 :x^ns:p :p :z .

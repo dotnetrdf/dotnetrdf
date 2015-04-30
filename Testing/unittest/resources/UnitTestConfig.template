@@ -30,12 +30,6 @@ Storage.AllegroGraph.Repository=unit-test
 Storage.AllegroGraph.User=
 Storage.AllegroGraph.Password=
 
-# A Dydra account to use for testing
-Storage.Dydra=false
-Storage.Dydra.Account=rvesse
-Storage.Dydra.Repository=test
-Storage.Dydra.ApiKey=
-
 # A 4store install to use for testing
 Storage.FourStore=false
 Storage.FourStore.Server=http://localhost:8080
@@ -55,7 +49,7 @@ Storage.Sesame.Repository=unit-test
 
 # A Stardog install to use for testing
 Storage.Stardog=false
-Storage.Stardog.Server=http://localhost:5822
+Storage.Stardog.Server=http://localhost:5820
 Storage.Stardog.DB=test
 Storage.Stardog.User=admin
 Storage.Stardog.Password=admin
@@ -68,6 +62,9 @@ Storage.Virtuoso.DB=DB
 Storage.Virtuoso.User=dba
 Storage.Virtuoso.Password=dba
 Storage.Virtuoso.Endpoint=http://localhost:8890/sparql
+
+# Parsing from Remote Server
+Parsing.Remote=false
 
 # Is Graph Viz installed on the machine?
 Writing.GraphViz=false

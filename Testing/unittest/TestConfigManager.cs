@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 
 namespace VDS.RDF
@@ -92,8 +90,10 @@ namespace VDS.RDF
 
         public const String UseGraphViz = "Writing.GraphViz";
 
+        public const String UseRemoteParsing = "Parsing.Remote";
+
         private static bool _init = false, _failed = false;
-        private static Dictionary<String, String> _settings = new Dictionary<string,string>();
+        private static readonly Dictionary<String, String> _settings = new Dictionary<string,string>();
 
         private static void Init()
         {
