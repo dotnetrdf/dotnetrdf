@@ -87,17 +87,14 @@ namespace VDS.RDF.Query
         private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
         private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
 
-        private static Regex BaseNamespacePattern = new Regex("BASE\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
-        private static Regex NamespacePrefixPattern = new Regex("PREFIX\\s+([\\w\\-_]+):\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
-        private static Regex ParamCapturePattern = new Regex("((?<!@)@)([\\w\\-_]+)(?=[^\\w]|$)", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
-        private static Regex VarCapturePattern = new Regex("([?$])([\\w\\-_]+)(?=[^\\w]|$)", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]+):)\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex ReplaceableElementCapturePattern = new Regex("([?$@])([\\w\\-_]+)", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Creates a new empty parameterized String
         /// </summary>
         public SparqlParameterizedString()
         {
-            _formatter = new SparqlFormatter(_nsmap);
         }
 
         /// <summary>
@@ -142,35 +139,34 @@ namespace VDS.RDF.Query
             }
             set
             {
-                foreach (Match baseUri in BaseNamespacePattern.Matches(value))
-                {
-                    this.BaseUri = UriFactory.Create(baseUri.Groups[1].Value);
-                    this.Namespaces.AddNamespace("", this.BaseUri);
-                    value = value.Replace(baseUri.Value, "");
-                }
-                foreach (Match prefix in NamespacePrefixPattern.Matches(value))
-                {
-                    this.Namespaces.AddNamespace(prefix.Groups[1].Value, UriFactory.Create(prefix.Groups[2].Value));
-                    value = value.Replace(prefix.Value, "");
-                }
-                foreach (Match varAssignment in VarCapturePattern.Matches(value))
-                {
-                    String varName = varAssignment.Groups[2].Value;
-                    if (!_variables.ContainsKey(varName))
-                    {
-                        _variables[varName] = null;
-                    }
-                }
-                foreach (Match paramAssignment in ParamCapturePattern.Matches(value))
-                {
-                    String paramName = paramAssignment.Groups[2].Value;
-                    if (!_parameters.ContainsKey(paramName))
-                    {
-                        _parameters[paramName] = null;
-                    }
-                }
-                this._command = value;
+                this._command = TrimPreamble(value);
             }
+        }
+
+        /// <summary>
+        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text
+        /// </summary>
+        /// <remarks>
+        /// This is done so the instance could be safely added to another SparqlParameterizedString without causing syntax issues
+        /// </remarks>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private String TrimPreamble(String value) {
+            int commandStart = 0;
+            foreach (Match preambleItem in PreambleCapturePattern.Matches(value))
+            {
+                if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
+                {
+                    this.BaseUri = UriFactory.Create(preambleItem.Groups[1].Value);
+                    this.Namespaces.AddNamespace("", this.BaseUri);
+                }
+                else
+                {
+                    this.Namespaces.AddNamespace(preambleItem.Groups[2].Value, UriFactory.Create(preambleItem.Groups[3].Value));
+                }
+                commandStart = preambleItem.Index + preambleItem.Length;
+            }
+            return value.Substring(commandStart);
         }
 
         #region Sparql extension methods
@@ -182,7 +178,8 @@ namespace VDS.RDF.Query
         public void AppendSubQuery(SparqlQuery query)
         {
             _nsmap.Import(query.NamespaceMap);
-            this.CommandText += this._formatter.Format(new SubQueryPattern(query));
+            this._formatter = new SparqlFormatter();
+            this._command += TrimPreamble(this._formatter.Format(new SubQueryPattern(query)));
         }
 
         /// <summary>
@@ -192,7 +189,8 @@ namespace VDS.RDF.Query
         public void AppendSubQuery(SparqlParameterizedString query)
         {
             _nsmap.Import(query.Namespaces);
-            this.CommandText += query.CommandText;
+            this._formatter = new SparqlFormatter();
+            this._command += TrimPreamble(query._command);
         }
 
         #endregion
@@ -228,7 +226,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets an enumeration of the Variables <!-- for which Values have been set -->
+        /// Gets an enumeration of the Variables for which Values have been set
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Variables
         {
@@ -239,7 +237,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets an enumeration of the Parameters <!-- for which Values have been set -->
+        /// Gets an enumeration of the Parameters for which Values have been set
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Parameters
         {
@@ -581,68 +579,73 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        #region Serialization and instantiation
+        #region Serialization
 
         /// <summary>
         /// Returns the actual Query/Update String with parameter and variable values inserted
         /// </summary>
         /// <returns></returns>
-        public string ToRawString()
-        {
-            String output = String.Empty;
-
-            //Add the actual Command Text
-            output += this._command;
-
-            //Finally substitue in values for parameters and variables
-
-            //Make the replacements starting with the longest parameter names first so in the event
-            //of one parameter name being a prefix of another we've already replaced the longer name
-            //first
-            foreach (String param in this._parameters.Keys.OrderByDescending(k => k.Length))
-            {
-                if (this._parameters[param] != null)
-                {
-                    //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]).Replace("$", "$$") + "$2");
-                }
-            }
-
-            //Do Variable replacements after Parameter replacements
-            foreach (String var in this._variables.Keys.OrderByDescending(k => k.Length))
-            {
-                if (this._variables[var] != null)
-                {
-                    //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]).Replace("$", "$$") + "$2");
-                }
-            }
-
-            return output;
-        }
-
-        /// <summary>
-        /// Returns the actual Query/Update String with base and namespace prefix declarations and parameter and variable values inserted
-        /// </summary>
-        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
+			this._formatter = new SparqlFormatter(this.Namespaces);
 
             // First prepend Base declaration
             if (this.BaseUri != null)
             {
-                output.Append("BASE <" + this._formatter.FormatUri(this.BaseUri) + ">\r\n");
+                output.AppendLine("BASE <" + this._formatter.FormatUri(this.BaseUri) + ">");
             }
 
             // Next prepend any Namespace Declarations
             foreach (String prefix in this._nsmap.Prefixes)
             {
-                output.Append("PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\r\n");
+                output.AppendLine("PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">");
             }
 
-            //Then add the actual Command Text
-            output.Append(this.ToRawString());
+            //Then inserts variable and parameters values in the text
+            int lastSubstitutionEnd = 0;
+
+            // This implementation have the same caveats that the original one should the _command contains explicit literals or uris that may contain some set variable or parameter pattern, 
+            //  however it should yield better performances since there is only one sequential pass on the _command string
+            //  We perhaps should provide some more safety but this would come at a performance cost
+            foreach (Match item in ReplaceableElementCapturePattern.Matches(this._command))
+            {
+                String unprocessedText = String.Empty;
+                if (item.Index > lastSubstitutionEnd)
+                {
+                    unprocessedText = this._command.Substring(lastSubstitutionEnd, item.Index - lastSubstitutionEnd);
+                    output.Append(unprocessedText);
+                }
+                String name = item.Groups[2].Value;
+                switch (item.Groups[1].Value)
+                {
+                    case "@":
+                        if (this._parameters.ContainsKey(name) && this._parameters[name] != null)
+                        {
+                            output.Append(this._formatter.Format(this._parameters[name]));
+                        }
+                        else
+                        {
+                            output.Append(item.Value);
+                        }
+                        break;
+                    default:
+                        if (this._variables.ContainsKey(name) && this._variables[name] != null)
+                        {
+                            output.Append(this._formatter.Format(this._variables[name]));
+                        }
+                        else
+                        {
+                            output.Append(item.Value);
+                        }
+                        break;
+                }
+                lastSubstitutionEnd = item.Index + item.Length;
+            }
+            if (lastSubstitutionEnd < this._command.Length)
+            {
+                output.Append(this._command.Substring(lastSubstitutionEnd));
+            }
 
             return output.ToString();
         }
