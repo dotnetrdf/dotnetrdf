@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Tuple is complete i.e. has no undefined entries
+        /// Gets whether the Tuple is unbound i.e. has no defined entries
         /// </summary>
         public bool IsUnbound
         {
