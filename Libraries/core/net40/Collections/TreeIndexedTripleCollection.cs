@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
@@ -200,6 +201,12 @@ namespace VDS.RDF.Collections
             if (ts != null) ts.Remove(t);
         }
 
+        private static void ClearIndex<TKey, TValue>(MultiDictionary<TKey, TValue> index)
+        {
+            if (index == null) return;
+            index.Clear();
+        }
+
         /// <summary>
         /// Adds a Triple to the collection
         /// </summary>
@@ -247,11 +254,22 @@ namespace VDS.RDF.Collections
             {
                 //If removed then unindex
                 this.Unindex(t);
-                this.RaiseTripleRemoved(t);
                 this._count--;
                 return true;
             }
             return false;
+        }
+
+        public override void Clear()
+        {
+            this._triples.Clear();
+            ClearIndex(this._s);
+            ClearIndex(this._p);
+            ClearIndex(this._o);
+            ClearIndex(this._sp);
+            ClearIndex(this._so);
+            ClearIndex(this._po);
+            this.RaiseCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
         /// <summary>

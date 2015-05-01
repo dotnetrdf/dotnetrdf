@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VDS.Common.Collections;
 using VDS.Common.Trees;
@@ -202,11 +203,19 @@ namespace VDS.RDF.Collections
             {
                 //If removed then unindex
                 this.Unindex(t);
-                this.RaiseTripleRemoved(t);
                 this._count--;
                 return true;
             }
             return false;
+        }
+
+        public override void Clear()
+        {
+            this._triples.Clear();
+            this._s.Clear();
+            this._p.Clear();
+            this._o.Clear();
+            this.RaiseCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
         /// <summary>

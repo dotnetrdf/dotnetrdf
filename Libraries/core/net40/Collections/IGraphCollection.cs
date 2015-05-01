@@ -35,14 +35,6 @@ namespace VDS.RDF.Collections
     public interface IGraphCollection
         : IRdfDictionary<INode,IGraph>
     {
-        /// <summary>
-        /// Event that occurs when a graph is added to the collection
-        /// </summary>
-        event GraphEventHandler GraphAdded;
 
-        /// <summary>
-        /// Event that occurs when a graph is removed from the collection
-        /// </summary>
-        event GraphEventHandler GraphRemoved;
     }
 }

@@ -57,18 +57,6 @@ namespace VDS.RDF.Collections
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection");
             this._graphs = graphCollection;
-            this._graphs.GraphAdded += this.HandleGraphAdded;
-            this._graphs.GraphRemoved += this.HandleGraphRemoved;
-        }
-
-        private void HandleGraphAdded(Object sender, GraphEventArgs args)
-        {
-            this.RaiseGraphAdded(args.Graph, args.GraphName);
-        }
-
-        private void HandleGraphRemoved(Object sender, GraphEventArgs args)
-        {
-            this.RaiseGraphRemoved(args.Graph, args.GraphName);
         }
 
         /// <summary>

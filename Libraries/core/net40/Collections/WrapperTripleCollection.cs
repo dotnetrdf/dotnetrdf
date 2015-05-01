@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Graphs;
@@ -57,18 +58,13 @@ namespace VDS.RDF.Collections
         {
             if (tripleCollection == null) throw new ArgumentNullException("tripleCollection");
             this._triples = tripleCollection;
-            this._triples.TripleAdded += this.HandleTripleAdded;
-            this._triples.TripleRemoved += this.HandleTripleRemoved;
+            this._triples.CollectionChanged += UnderlyingTripleCollectionChanged;
         }
 
-        private void HandleTripleAdded(Object sender, TripleEventArgs args)
+        private void UnderlyingTripleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.RaiseTripleAdded(args.Triple);
-        }
-
-        private void HandleTripleRemoved(Object sender, TripleEventArgs args)
-        {
-            this.RaiseTripleRemoved(args.Triple);
+            // Bubble the event up
+            this.RaiseCollectionChanged(sender, e);
         }
 
         /// <summary>

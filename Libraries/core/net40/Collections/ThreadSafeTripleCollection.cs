@@ -184,6 +184,19 @@ namespace VDS.RDF.Collections
             }
         }
 
+        public override void Clear()
+        {
+            try
+            {
+                this.EnterWriteLock();
+                this._triples.Clear();
+            }
+            finally
+            {
+                this.ExitWriteLock();
+            }
+        }
+
         /// <summary>
         /// Gets the Enumerator for the Collection
         /// </summary>

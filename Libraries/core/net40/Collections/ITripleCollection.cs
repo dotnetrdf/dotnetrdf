@@ -30,7 +30,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for Triple Collections, a triple collection is a collection of triples where duplicates are ignored.
+    /// Interface for Triple Collections, a triple collection is a set of triples thus duplicates are ignored.
     /// </summary>
     public interface ITripleCollection
         : IRdfCollection<Triple>
@@ -40,10 +40,6 @@ namespace VDS.RDF.Collections
         IEnumerable<INode> PredicateNodes { get; }
 
         IEnumerable<INode> SubjectNodes { get; }
-
-        event TripleEventHandler TripleAdded;
-
-        event TripleEventHandler TripleRemoved;
 
         IEnumerable<Triple> WithObject(INode obj);
 

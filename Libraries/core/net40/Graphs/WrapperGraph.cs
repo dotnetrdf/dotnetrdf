@@ -57,9 +57,6 @@ namespace VDS.RDF.Graphs
         /// Underlying Graph this is a wrapper around
         /// </summary>
         protected readonly IGraph _g;
-        private TripleEventHandler TripleAssertedHandler, TripleRetractedHandler;
-        private GraphEventHandler GraphChangedHandler, GraphClearedHandler, GraphMergedHandler;
-        private CancellableGraphEventHandler GraphClearRequestedHandler, GraphMergeRequestedHandler;
 
         /// <summary>
         /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling
@@ -67,15 +64,6 @@ namespace VDS.RDF.Graphs
         protected WrapperGraph()
         {
             this._g = new Graph();
-
-            //Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
-            this.TripleAssertedHandler = new TripleEventHandler(this.OnTripleAsserted);
-            this.TripleRetractedHandler = new TripleEventHandler(this.OnTripleRetracted);
-            this.GraphChangedHandler = new GraphEventHandler(this.OnChanged);
-            this.GraphClearedHandler = new GraphEventHandler(this.OnCleared);
-            this.GraphMergedHandler = new GraphEventHandler(this.OnMerged);
-            this.GraphClearRequestedHandler = new CancellableGraphEventHandler(this.OnClearRequested);
-            this.GraphMergeRequestedHandler = new CancellableGraphEventHandler(this.OnMergeRequested);
         }
 
         /// <summary>
@@ -87,7 +75,6 @@ namespace VDS.RDF.Graphs
         {
             if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
             this._g = g;
-            this.AttachEventHandlers();
         }      
 
 #if !SILVERLIGHT
@@ -104,7 +91,6 @@ namespace VDS.RDF.Graphs
             Type t = Type.GetType(graphType);
             if (t == null) throw new ArgumentException("Invalid serialization information, graph type '" + graphType + "' is not available in your environment");
             this._g = (IGraph)info.GetValue("innerGraph", t);
-            this.AttachEventHandlers();
         }
 
 #endif
@@ -345,16 +331,6 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
-        /// Merges another Graph into the current Graph
-        /// </summary>
-        /// <param name="g">Graph to Merge into this Graph</param>
-        /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
-        public virtual void Merge(IGraph g)
-        {
-            this._g.Merge(g);
-        }
-
-        /// <summary>
         /// Determines whether a Graph is equal to another Object
         /// </summary>
         /// <param name="obj">Object to test</param>
@@ -503,265 +479,6 @@ namespace VDS.RDF.Graphs
 
         #endregion
 
-        #region Event Handling
-
-        /// <summary>
-        /// Event which is raised when a Triple is asserted in the Graph
-        /// </summary>
-        public event TripleEventHandler TripleAsserted;
-
-        /// <summary>
-        /// Event which is raised when a Triple is retracted from the Graph
-        /// </summary>
-        public event TripleEventHandler TripleRetracted;
-
-        /// <summary>
-        /// Event which is raised when the Graph contents change
-        /// </summary>
-        public event GraphEventHandler Changed;
-
-        /// <summary>
-        /// Event which is raised just before the Graph is cleared of its contents
-        /// </summary>
-        public event CancellableGraphEventHandler ClearRequested;
-
-        /// <summary>
-        /// Event which is raised after the Graph is cleared of its contents
-        /// </summary>
-        public event GraphEventHandler Cleared;
-
-        /// <summary>
-        /// Event which is raised when a Merge operation is requested on the Graph
-        /// </summary>
-        public event CancellableGraphEventHandler MergeRequested;
-
-        /// <summary>
-        /// Event which is raised when a Merge operation is completed on the Graph
-        /// </summary>
-        public event GraphEventHandler Merged;
-
-        /// <summary>
-        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleAdded">Triple Added</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleAsserted">TripleAsserted</see> event
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Triple Event Arguments</param>
-        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
-        {
-            this.RaiseTripleAsserted(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
-        /// </summary>
-        /// <param name="args">Triple Event Arguments</param>
-        protected void RaiseTripleAsserted(TripleEventArgs args)
-        {
-            TripleEventHandler d = this.TripleAsserted;
-            args.Graph = this;
-            if (d != null)
-            {
-                d(this, args);
-            }
-            this.RaiseGraphChanged(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
-        /// </summary>
-        /// <param name="t">Triple</param>
-        protected void RaiseTripleAsserted(Triple t)
-        {
-            TripleEventHandler d = this.TripleAsserted;
-            GraphEventHandler e = this.Changed;
-            if (d != null || e != null)
-            {
-                TripleEventArgs args = new TripleEventArgs(t, this);
-                if (d != null) d(this, args);
-                if (e != null) e(this, new GraphEventArgs(this, args));
-            }
-        }
-
-        /// <summary>
-        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleRemoved">Triple Removed</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleRetracted">Triple Retracted</see> event
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Triple Event Arguments</param>
-        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
-        {
-            this.RaiseTripleRetracted(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
-        /// </summary>
-        /// <param name="args"></param>
-        protected void RaiseTripleRetracted(TripleEventArgs args)
-        {
-            TripleEventHandler d = this.TripleRetracted;
-            args.Graph = this;
-            if (d != null)
-            {
-                d(this, args);
-            }
-            this.RaiseGraphChanged(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
-        /// </summary>
-        /// <param name="t">Triple</param>
-        protected void RaiseTripleRetracted(Triple t)
-        {
-            TripleEventHandler d = this.TripleRetracted;
-            GraphEventHandler e = this.Changed;
-            if (d != null || e != null)
-            {
-                TripleEventArgs args = new TripleEventArgs(t, this, false);
-                if (d != null) d(this, args);
-                if (e != null) e(this, new GraphEventArgs(this, args));
-            }
-        }
-
-        /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
-        protected virtual void OnChanged(Object sender, GraphEventArgs args)
-        {
-            this.RaiseGraphChanged(args.TripleEvent);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="Changed">Changed</see> event
-        /// </summary>
-        /// <param name="args">Triple Event Arguments</param>
-        protected void RaiseGraphChanged(TripleEventArgs args)
-        {
-            GraphEventHandler d = this.Changed;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this, args));
-            }
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="Changed">Changed</see> event
-        /// </summary>
-        protected void RaiseGraphChanged()
-        {
-            GraphEventHandler d = this.Changed;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
-        }
-
-        /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
-        protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
-        {
-            this.RaiseClearRequested(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation
-        /// </summary>
-        /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected void RaiseClearRequested(CancellableGraphEventArgs args)
-        {
-            CancellableGraphEventHandler d = this.ClearRequested;
-            if (d != null)
-            {
-                d(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
-        protected virtual void OnCleared(Object sender, GraphEventArgs args)
-        {
-            this.RaiseCleared();
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="Cleared">Cleared</see> event
-        /// </summary>
-        protected void RaiseCleared()
-        {
-            GraphEventHandler d = this.Cleared;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
-        }
-
-        /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
-        protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
-        {
-            this.RaiseMergeRequested(args);
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation
-        /// </summary>
-        /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected void RaiseMergeRequested(CancellableGraphEventArgs args)
-        {
-            CancellableGraphEventHandler d = this.MergeRequested;
-            if (d != null)
-            {
-                d(this, args);
-            }
-        }
-
-        /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
-        /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
-        protected virtual void OnMerged(Object sender, GraphEventArgs args)
-        {
-            this.RaiseMerged();
-        }
-
-        /// <summary>
-        /// Helper method for raising the <see cref="Merged">Merged</see> event
-        /// </summary>
-        protected void RaiseMerged()
-        {
-            GraphEventHandler d = this.Merged;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(this));
-            }
-        }
-
-        /// <summary>
-        /// Helper method for attaching the necessary event handlers to the underlying graph
-        /// </summary>
-        protected void AttachEventHandlers()
-        {
-            //Wire up handlers for all the Graph level events
-            this._g.Cleared += this.GraphClearedHandler;
-            this._g.Changed += this.GraphChangedHandler;
-            this._g.Merged += this.GraphMergedHandler;
-            this._g.TripleAsserted += this.TripleAssertedHandler;
-            this._g.TripleRetracted += this.TripleRetractedHandler;
-        }
-
-        #endregion
-
         /// <summary>
         /// Disposes of the wrapper and in doing so disposes of the underlying graph
         /// </summary>
@@ -817,8 +534,7 @@ namespace VDS.RDF.Graphs
                 {
                     reader.Read();
                     Object temp = graphDeserializer.Deserialize(reader);
-                    this._g.Merge((IGraph)temp);
-                    this.AttachEventHandlers();
+                    this._g.Assert(((IGraph)temp).Triples);
                     reader.Read();
                 }
                 else

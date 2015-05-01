@@ -69,15 +69,13 @@ namespace VDS.RDF.Collections
         {
             if (this._graphs.ContainsKey(graphName))
             {
-                //Merge into the existing Graph
-                this._graphs[graphName].Merge(g);
-                this.RaiseGraphAdded(this._graphs[graphName], graphName);
+                // Add to the existing Graph
+                this._graphs[graphName].Assert(g.Triples);
             }
             else
             {
                 //Safe to add a new Graph
                 this._graphs.Add(graphName, g);
-                this.RaiseGraphAdded(g, graphName);
             }
         }
 
@@ -90,7 +88,6 @@ namespace VDS.RDF.Collections
             IGraph g;
             if (!this._graphs.TryGetValue(graphName, out g)) return false;
             if (!this._graphs.Remove(graphName)) return false;
-            this.RaiseGraphRemoved(g, graphName);
             return true;
         }
 
@@ -99,12 +96,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         public override void Clear()
         {
-            List<KeyValuePair<INode, IGraph>> gs = ((IEnumerable<KeyValuePair<INode, IGraph>>)this._graphs).ToList();
             this._graphs.Clear();
-            foreach (KeyValuePair<INode, IGraph> kvp in gs)
-            {
-                this.RaiseGraphRemoved(kvp.Value, kvp.Key);
-            }
         } 
 
         /// <summary>

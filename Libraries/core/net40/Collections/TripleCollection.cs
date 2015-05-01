@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VDS.Common.Collections;
 using VDS.RDF.Graphs;
@@ -62,7 +63,6 @@ namespace VDS.RDF.Collections
             if (!this.Contains(t))
             {
                 this._triples.Add(t, null);
-                this.RaiseTripleAdded(t);
                 return true;
             }
             return false;
@@ -77,10 +77,15 @@ namespace VDS.RDF.Collections
         {
             if (this._triples.Remove(t))
             {
-                this.RaiseTripleRemoved(t);
                 return true;
             }
             return false;
+        }
+
+        public override void Clear()
+        {
+            this._triples.Clear();
+            this.RaiseCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
         /// <summary>

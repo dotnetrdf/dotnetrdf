@@ -102,10 +102,7 @@ namespace VDS.RDF.Graphs
         public override void Assert(Triple t)
         {
             //Add to Triples Collection
-            if (this._triples.Add(t))
-            {
-                this.RaiseTripleAsserted(t);
-            }
+            this._triples.Add(t);
         }
 
         /// <summary>
@@ -127,10 +124,7 @@ namespace VDS.RDF.Graphs
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
         public override void Retract(Triple t)
         {
-            if (this._triples.Remove(t))
-            {
-                this.RaiseTripleRetracted(t);
-            }
+            this._triples.Remove(t);
         }
 
         /// <summary>

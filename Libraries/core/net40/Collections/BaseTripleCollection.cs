@@ -23,7 +23,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
@@ -42,6 +44,23 @@ namespace VDS.RDF.Collections
         /// <param name="t">Triple to add</param>
         /// <remarks>Adding a Triple that already exists should be permitted though it is not necessary to persist the duplicate to underlying storage</remarks>
         public abstract bool Add(Triple t);
+
+        /// <summary>
+        /// Adds a range of triples to the collection
+        /// </summary>
+        /// <param name="ts">Triples to add</param>
+        /// <returns>True if any triples are added</returns>
+        public virtual bool AddRange(IEnumerable<Triple> ts)
+        {
+            this.StartBatch(NotifyCollectionChangedAction.Add);
+            bool added = false;
+            foreach (Triple t in ts)
+            {
+                added = this.Add(t) || added;
+            }
+            this.EndBatch();
+            return added;
+        }
 
         /// <summary>
         /// Determines whether a given Triple is in the collection
@@ -63,6 +82,28 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="t">Triple to remove</param>
         public abstract bool Remove(Triple t);
+
+        /// <summary>
+        /// Removes a range of Triples from the Collection
+        /// </summary>
+        /// <param name="ts">Triples to remove</param>
+        /// <returns>True if any triples are removed, false otherwise</returns>
+        public virtual bool RemoveRange(IEnumerable<Triple> ts)
+        {
+            this.StartBatch(NotifyCollectionChangedAction.Remove);
+            bool removed = false;
+            foreach (Triple t in ts)
+            {
+                removed = this.Remove(t) || removed;
+            }
+            this.EndBatch();
+            return removed;
+        }
+
+        /// <summary>
+        /// Clears the collection
+        /// </summary>
+        public abstract void Clear();
 
         /// <summary>
         /// Gets all the Nodes which are Objects of Triples in the Triple Collection
@@ -183,39 +224,95 @@ namespace VDS.RDF.Collections
             return this.GetEnumerator();
         }
 
-        /// <summary>
-        /// Event which occurs when a Triple is added to the Collection
-        /// </summary>
-        public event TripleEventHandler TripleAdded;
+        private bool InBatchOperation { get; set; }
+
+        private List<Triple> CurrentBatch { get; set; }
+
+        private NotifyCollectionChangedAction BatchAction { get; set; }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         /// <summary>
-        /// Event which occurs when a Triple is removed from the Collection
+        /// Signals the start of a batch add/remove operation.  Single triple events will be suppressed and queued up until <see cref="EndBatch()" /> is called
         /// </summary>
-        public event TripleEventHandler TripleRemoved;
-
-        /// <summary>
-        /// Helper method for raising the <see cref="TripleAdded">Triple Added</see> event
-        /// </summary>
-        /// <param name="t">Triple</param>
-        protected void RaiseTripleAdded(Triple t)
+        /// <param name="action">Action, must be add/remove</param>
+        protected void StartBatch(NotifyCollectionChangedAction action)
         {
-            TripleEventHandler d = this.TripleAdded;
-            if (d != null)
-            {
-                d(this, new TripleEventArgs(t, null));
-            }
+            if (this.InBatchOperation) throw new InvalidOperationException("A batch operation is already ongoing");
+            if (action != NotifyCollectionChangedAction.Add && action != NotifyCollectionChangedAction.Remove) throw new InvalidOperationException("Batch operations can only be used for adds/removes");
+
+            this.InBatchOperation = true;
+            this.CurrentBatch = new List<Triple>();
+            this.BatchAction = action;
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleRemoved">Triple Removed</see> event
+        /// Signals the end of a batch add/remove operation, queued events will now fire as a single event
         /// </summary>
-        /// <param name="t">Triple</param>
-        protected void RaiseTripleRemoved(Triple t)
+        protected void EndBatch()
         {
-            TripleEventHandler d = this.TripleRemoved;
+            if (!this.InBatchOperation) throw new InvalidOperationException("No batch operation was started");
+
+            this.RaiseCollectionChanged(this.BatchAction);
+            this.InBatchOperation = false;
+            this.CurrentBatch = null;
+        }
+
+        protected void RaiseCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
             if (d != null)
             {
-                d(this, new TripleEventArgs(t, null, false));
+                d(sender, args);
+            }
+        }
+
+        private void RaiseCollectionChanged(NotifyCollectionChangedAction action, Triple t)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null)
+            {
+                d(this, new NotifyCollectionChangedEventArgs(action, t));
+            }
+        }
+
+        protected void RaiseCollectionChanged(NotifyCollectionChangedAction action)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null)
+            {
+                if (this.InBatchOperation)
+                {
+                    d(this, new NotifyCollectionChangedEventArgs(action, this.CurrentBatch));
+                }
+                else
+                {
+                    d(this, new NotifyCollectionChangedEventArgs(action));
+                }
+            }
+        }
+
+        protected void RaiseTripleAdded(Triple t)
+        {
+            if (this.InBatchOperation)
+            {
+                this.CurrentBatch.Add(t);
+            }
+            else
+            {
+                this.RaiseCollectionChanged(NotifyCollectionChangedAction.Add, t);
+            }
+        }
+
+        protected void RaiseTripleRemoved(Triple t)
+        {
+            if (this.InBatchOperation)
+            {
+                this.CurrentBatch.Add(t);
+            }
+            else
+            {
+                this.RaiseCollectionChanged(NotifyCollectionChangedAction.Remove, t);
             }
         }
     }

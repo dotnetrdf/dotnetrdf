@@ -219,43 +219,5 @@ namespace VDS.RDF.Collections
         {
             return this.GetEnumerator();
         }
-
-        /// <summary>
-        /// Event which is raised when a Graph is added to the Collection
-        /// </summary>
-        public event GraphEventHandler GraphAdded;
-
-        /// <summary>
-        /// Event which is raised when a Graph is removed from the Collection
-        /// </summary>
-        public event GraphEventHandler GraphRemoved;
-
-        /// <summary>
-        /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="graphName">Graph name</param>
-        protected virtual void RaiseGraphAdded(IGraph g, INode graphName)
-        {
-            GraphEventHandler d = this.GraphAdded;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(g, graphName));
-            }
-        }
-
-        /// <summary>
-        /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="graphName">Graph name</param>
-        protected virtual void RaiseGraphRemoved(IGraph g, INode graphName)
-        {
-            GraphEventHandler d = this.GraphRemoved;
-            if (d != null)
-            {
-                d(this, new GraphEventArgs(g, graphName));
-            }
-        }
     }
 }
