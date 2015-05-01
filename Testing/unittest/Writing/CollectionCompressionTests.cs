@@ -497,7 +497,7 @@ namespace VDS.RDF.Writing
         }
 
         [Test]
-        public void WritingCollectionCompressionCore442_03()
+        public void WritingCollectionCompressionCore442_02()
         {
             Graph g = new Graph();
             g.LoadFromFile(@"resources\core-442\three-items.ttl");

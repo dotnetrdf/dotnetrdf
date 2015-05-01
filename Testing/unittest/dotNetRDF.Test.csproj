@@ -268,6 +268,9 @@
     <Content Include="resources\core-442\one-item.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\core-442\three-items.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\core-442\two-items.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -566,12 +566,14 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
+                    //CORE-442 This calculation may be incorrect
+
                     //For implicit collections if the number of Triples in the Collection is exactly ((t*3) - 1) those in the Graph then
                     //can't compress i.e. the collection is not linked to anything else
                     //Or if the number of mentions compared to the expected mentions differs by more than 1 then
                     //can't compress i.e. the collection is linked to more than one thing
                     int mentions = context.Graph.GetTriples(kvp.Key).Count();
-                    int expectedMentions = ((c.Triples.Count * 3) - 1);
+                    int expectedMentions = 2;
                     if (expectedMentions == mentions || mentions-expectedMentions != 1)
                     {
                         context.Collections.Remove(kvp.Key);
