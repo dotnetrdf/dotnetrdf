@@ -527,12 +527,34 @@ namespace VDS.RDF.Graphs
         }
     }
 
-    public class GraphWithSubTreeIndexContractTests
+    [TestFixture]
+    public class SubTreeIndexedGraphContractTests
         : AbstractGraphContractTests
     {
         protected override IGraph GetInstance()
         {
             return new Graph(new SubTreeIndexedTripleCollection());
+        }
+    }
+
+    [TestFixture]
+    public class TrieIndexedGraphContractTests
+        : AbstractGraphContractTests
+    {
+        protected override IGraph GetInstance()
+        {
+            return new Graph(new TrieIndexedTripleCollection());
+        }
+    }
+
+    [TestFixture]
+    public class UnindexedGraphContractTests
+        : AbstractGraphContractTests
+    {
+
+        protected override IGraph GetInstance()
+        {
+            return new Graph(new TripleCollection());
         }
     }
 

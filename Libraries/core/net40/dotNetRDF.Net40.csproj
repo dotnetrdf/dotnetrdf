@@ -81,6 +81,7 @@
     <Compile Include="Collections\ITripleCollection.cs" />
     <Compile Include="Collections\ThreadSafeGraphCollection.cs" />
     <Compile Include="Collections\ThreadSafeTripleCollection.cs" />
+    <Compile Include="Collections\TrieIndexedTripleCollection.cs" />
     <Compile Include="Compatibility\HashSet.cs" />
     <Compile Include="Compatibility\PortableLibraryCompatibility.cs" />
     <Compile Include="Compatibility\SilverlightCompatability.cs" />

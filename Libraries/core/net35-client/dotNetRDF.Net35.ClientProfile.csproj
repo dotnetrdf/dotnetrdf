@@ -422,4 +422,9 @@
       <Link>Nodes\RandomDerivedBlankNodeGenerator.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Collections\TrieIndexedTripleCollection.cs">
+      <Link>Collections\TrieIndexedTripleCollection.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

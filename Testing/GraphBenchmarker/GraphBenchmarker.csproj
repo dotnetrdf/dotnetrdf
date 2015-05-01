@@ -188,10 +188,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
-      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
-      <Name>dotNetRDF.WinForms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
       <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
       <Name>dotNetRDF.IO.Net40</Name>
