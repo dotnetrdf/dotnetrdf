@@ -71,18 +71,18 @@ namespace VDS.RDF.Query
     /// This class was added to a library based on a suggestion by Alexander Sidorov and ideas from slides from <a href="http://www.slideshare.net/Morelab/sparqlrdqlsparul-injection">Slideshare</a> by Almedia et al
     /// </para>
     /// <para>
-    /// <strong>PERFORMANCE TIP: </strong> For better performances Try using AppendSubQuery or Append methods instead of CommantdText += ...
-    /// <strong>PERFORMANCE TIP: </strong> Since the serialisation is cached, you may get a performance boost by calling Clear, ClearVariables or ClearParemeters methods before changing many parameters or variables values
+    /// <strong>PERFORMANCE TIPS:</strong> if building the command text incrementaly, avoid using <c> CommandText += </c> and use the AppendSubQuery or Append methods instead
     /// </para>
     /// </remarks>
     public class SparqlParameterizedString
     {
+        private static char[] _invalidIRICharacters = " >\"{}|^`[]".ToCharArray();
+
         private static readonly IGraph _g = new NonIndexedGraph();
-        private static readonly SparqlFormatter _cleanFormatter = new SparqlFormatter();
+        private static readonly SparqlFormatter _emptyFormatter = new SparqlFormatter();
 
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
         private List<String> _commandText = new List<String>();
-        //private Dictionary<int, String> _placeHolders = new Dictionary<int, String>();
         private HashSet<int> _placeHolders = new HashSet<int>();
         private readonly Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private readonly Dictionary<String, INode> _variables = new Dictionary<string, INode>();
@@ -91,10 +91,10 @@ namespace VDS.RDF.Query
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
 
-        private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
-        private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", RegexOptions.IgnoreCase);
+        private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", RegexOptions.IgnoreCase);
 
-        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]+):)\\s*<([^>]+)>", /*RegexOptions.Compiled | */RegexOptions.IgnoreCase);
+        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]+):)\\s*<([^>]+)>", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Creates a new empty parameterized String
@@ -151,35 +151,8 @@ namespace VDS.RDF.Query
             set
             {
                 ResetText();
-                Parse(TrimPreamble(value)); // TODO deprecate the _command field and replace it with the join of _cache
+                PreprocessText(TrimPreamble(value)); // TODO deprecate the _command field and replace it with the join of _cache
             }
-        }
-
-        /// <summary>
-        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text
-        /// </summary>
-        /// <remarks>
-        /// This is done so the instance could be safely added to another SparqlParameterizedString without causing syntax issues
-        /// </remarks>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private String TrimPreamble(String value)
-        {
-            int commandStart = 0;
-            foreach (Match preambleItem in PreambleCapturePattern.Matches(value))
-            {
-                if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
-                {
-                    this.BaseUri = UriFactory.Create(preambleItem.Groups[1].Value);
-                    this.Namespaces.AddNamespace("", this.BaseUri);
-                }
-                else
-                {
-                    this.Namespaces.AddNamespace(preambleItem.Groups[2].Value, UriFactory.Create(preambleItem.Groups[3].Value));
-                }
-                commandStart = preambleItem.Index + preambleItem.Length;
-            }
-            return value.Substring(commandStart);
         }
 
         #region Sparql extension methods
@@ -190,68 +163,42 @@ namespace VDS.RDF.Query
         /// <param name="query">Query</param>
         public void AppendSubQuery(SparqlQuery query)
         {
-            // Update the cache
-            Parse(TrimPreamble(_cleanFormatter.Format(new SubQueryPattern(query))));
-            // Update the namespaces
-            if (query.NamespaceMap.Prefixes.Any())
-            {
-                _nsmap.Import(query.NamespaceMap);
-                // TODO check wether the formatter reacts to nsMap changes
-                this._formatter = new SparqlFormatter(this._nsmap);
-            }
+            PreprocessText(TrimPreamble(_emptyFormatter.Format(new SubQueryPattern(query))));
+            // NOTE: the namespaces are already updated through during the TrimPreambule call
         }
 
-
-        // This is wrongly named as AppendSubQuery since the text is only appended without any effective wrapping as a SubQuery
         /// <summary>
         /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
         /// </summary>
         /// <param name="query">Query</param>
         public void AppendSubQuery(SparqlParameterizedString query)
         {
-            // Merges the instances caches and placeholders
-            int offset = _commandText.Count;
-            _commandText.AddRange(query._commandText);
-            //foreach (int index in query._placeHolders.Keys)
-            //foreach (int index in query._placeHolders)
-            //{
-            //    _placeHolders[index + offset] = query._placeHolders[index];
-            //}
-            _placeHolders.UnionWith(query._placeHolders.Select(index => index + offset));
-            // Update the namespaces
-            if (query.Namespaces.Prefixes.Any())
-            {
-                _nsmap.Import(query.Namespaces);
-                this._formatter = new SparqlFormatter(this._nsmap);
-            }
+            // TODO shouldn't we ensure that the text is wrapped in { } to get a correct subquery pattern ?
+            //      this may cause compatibility issues though
+            Append(query);
         }
 
         /// <summary>
-        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// Appends the given text to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
         /// </summary>
-        /// <param name="query">Query</param>
-        public void Append(SparqlParameterizedString query)
+        /// <param name="text">Text</param>
+        public void Append(SparqlParameterizedString text)
         {
             // Merges the instances caches and placeholders
             int offset = _commandText.Count;
-            _commandText.AddRange(query._commandText);
-            //foreach (int index in query._placeHolders.Keys)
-            //foreach (int index in query._placeHolders)
-            //{
-            //    _placeHolders[index + offset] = query._placeHolders[index];
-            //}
-            _placeHolders.UnionWith(query._placeHolders.Select(index => index + offset));
+            _placeHolders.UnionWith(text._placeHolders.Select(index => index + offset));
+            _commandText.AddRange(text._commandText);
             // Update the namespaces
-            _nsmap.Import(query.Namespaces);
+            _nsmap.Import(text.Namespaces);
         }
 
         /// <summary>
-        /// Appends the given text at the end of the CommandText, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// Appends the given text to the existing command text, any prefixes in the command are moved to the parent query
         /// </summary>
-        /// <param name="query">Query</param>
+        /// <param name="text">Text</param>
         public void Append(String text)
         {
-            Parse(TrimPreamble(text));
+            PreprocessText(TrimPreamble(text));
         }
 
         #endregion
@@ -308,7 +255,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        #region Parameters and Variables assingment methods
+        #region Parameters and Variables assignment methods
 
         /// <summary>
         /// Clears all set Parameters and Variables
@@ -402,6 +349,8 @@ namespace VDS.RDF.Query
             }
             //Only allow the setting of valid variable names
             if (!ValidVariableNamePattern.IsMatch(name)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
+
+            //OPT: Could ensure that the variable name actually appears in the command?
             name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
             this._variables[name] = value;
         }
@@ -645,21 +594,47 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        #region Parsing and Serialization
+        #region Command text processing and Serialization
 
-        private static char[] _nonIRICharacters = " >\"{}|^`]".ToCharArray(); // TODO check the characters list
-
+        /// <summary>
+        /// Clears the preprocessing structures
+        /// </summary>
         private void ResetText()
         {
             this._placeHolders.Clear();
             this._commandText.Clear();
         }
 
+
         /// <summary>
-        /// Provides some moderate (and non-validating) parsing to avoid conflict between legit parameters/variables and language tags/literals...
+        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text
         /// </summary>
-        /// <param name="value"></param>
-        private void Parse(String value)
+        /// <remarks>
+        /// This is done so the instance can be directly merged into another SparqlParameterizedString through the Append methods
+        /// </remarks>
+        private String TrimPreamble(String value)
+        {
+            int commandStart = 0;
+            foreach (Match preambleItem in PreambleCapturePattern.Matches(value))
+            {
+                if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
+                {
+                    this.BaseUri = UriFactory.Create(preambleItem.Groups[1].Value);
+                    this.Namespaces.AddNamespace("", this.BaseUri);
+                }
+                else
+                {
+                    this.Namespaces.AddNamespace(preambleItem.Groups[2].Value, UriFactory.Create(preambleItem.Groups[3].Value));
+                }
+                commandStart = preambleItem.Index + preambleItem.Length;
+            }
+            return value.Substring(commandStart);
+        }
+        
+        /// <summary>
+        /// Provides some fast string exploration to determine valid parameter/variable placeholders and leave out any constant SPARQL ambiguous patterns (language tags, parameter- or variable-like patterns in IRIs or in string literals...)
+        /// </summary>
+        private void PreprocessText(String value)
         {
             bool inIri = false;
             bool inLiteral = false;
@@ -704,7 +679,7 @@ namespace VDS.RDF.Query
                         }
                         break;
                     case '<':
-                        //first assume that we may begin a uri, whether it's true or not will be determined later
+                        // toggle whether me may start a Iri or break one
                         inIri = !inIri;
                         break;
                     case '@':
@@ -714,7 +689,7 @@ namespace VDS.RDF.Query
                         {
                             if (c == '@' && i > 0 && value[i - 1] == '"')
                             {
-                                // encountered a lang tag => do nothing
+                                // encountered a language tag => do nothing
                             }
                             else if (c == '?' && i < l && !Char.IsLetterOrDigit(value[i + 1]))
                             {
@@ -730,8 +705,7 @@ namespace VDS.RDF.Query
                                 currentSegment = new StringBuilder();
 #endif
                                 currentSegment.Append(c);
-                                bool leftOver = false;
-                                // todo capture the identifier
+                                // Capture the identifier
                                 for (int idCharIndex = i + 1; idCharIndex < l; idCharIndex++)
                                 {
                                     char idc = value[idCharIndex];
@@ -743,7 +717,6 @@ namespace VDS.RDF.Query
                                     }
                                     else
                                     {
-                                        leftOver = true;
                                         break;
                                     }
                                 }
@@ -757,7 +730,9 @@ namespace VDS.RDF.Query
 #else
                                 currentSegment = new StringBuilder();
 #endif
-                                if (leftOver) currentSegment.Append(value[i]);
+                                // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
+                                if (i<l-1) currentSegment.Append(value[i]);
+ 
                                 // nothing more to do here
                                 continue;
                             }
@@ -768,7 +743,7 @@ namespace VDS.RDF.Query
                         {
                             // check wether the character is a valid in IRIs
                             // TODO validate that the char array is correct
-                            if (Char.IsControl(c) || _nonIRICharacters.Contains(c))
+                            if (Char.IsControl(c) || _invalidIRICharacters.Contains(c))
                             {
                                 inIri = false;
                             }
@@ -800,10 +775,9 @@ namespace VDS.RDF.Query
                 output.AppendLine("PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">");
             }
 
-            //Then inserts variable and parameters values in the text
+            //Then append the text with variable and parameters replaced by their values if set
             for (int i = 0, l = _commandText.Count; i < l; i++)
             {
-
                 if (!_placeHolders.Contains(i)) {
                     output.Append(_commandText[i]);
                 }
@@ -839,7 +813,6 @@ namespace VDS.RDF.Query
                     }
                 }
             }
-
             return output.ToString();
         }
 
