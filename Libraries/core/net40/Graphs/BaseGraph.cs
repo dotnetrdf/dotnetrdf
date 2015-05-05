@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 #if !NO_DATA
 using System.Data;
 #endif
@@ -50,7 +51,7 @@ namespace VDS.RDF.Graphs
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public abstract class BaseGraph 
-        : IGraph
+        : IGraph, IEventedGraph
 #if !SILVERLIGHT
         ,ISerializable
 #endif
@@ -65,11 +66,7 @@ namespace VDS.RDF.Graphs
         /// Namespace Mapper
         /// </summary>
         protected readonly NamespaceMapper _nsmapper;
-
-        /// <summary>
-        /// Mapping from String IDs to GUIDs for Blank Nodes
-        /// </summary>
-        protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
+        private readonly NotifyCollectionChangedEventHandler _changedHandler;
 
 #if !SILVERLIGHT
         private GraphDeserializationInfo _dsInfo;
@@ -87,6 +84,10 @@ namespace VDS.RDF.Graphs
         {
             this._triples = tripleCollection;
             this._nsmapper = new NamespaceMapper();
+            this._changedHandler = this.HandleTripleCollectionChanged;
+
+            // Attach event handlers
+            this.AttachEventHandlers();
         }
 
         /// <summary>
@@ -621,6 +622,35 @@ namespace VDS.RDF.Graphs
 
         #endregion
 
+        #region Events
+
+        protected void AttachEventHandlers()
+        {
+            this._triples.CollectionChanged += this._changedHandler;
+        }
+
+        protected void HandleTripleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
+        {
+            this.RaiseCollectionChanged(args);
+        }
+
+        /// <summary>
+        /// Raises the collection changed event
+        /// </summary>
+        /// <param name="args">Collection changed arguments</param>
+        protected void RaiseCollectionChanged(NotifyCollectionChangedEventArgs args)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null)
+            {
+                d(this, args);
+            }
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        #endregion
+
         /// <summary>
         /// Disposes of a Graph
         /// </summary>
@@ -709,6 +739,8 @@ namespace VDS.RDF.Graphs
                         reader.Read();
                     }
                 }
+                // Attach events after deserialization completes
+                this.AttachEventHandlers();
             }
             else
             {

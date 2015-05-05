@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Collections;
@@ -514,6 +515,79 @@ namespace VDS.RDF.Graphs
             g.Assert(new Triple(fido, breed, lab));
 
             Assert.AreEqual(5, g.Count);
+        }
+
+        [Test]
+        public void GraphContractEvents1()
+        {
+            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            if (g == null) Assert.Ignore("Graph instance does not support events");
+
+            // Attach event handler
+            int events = 0;
+            g.CollectionChanged += (sender, args) => {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, args.Action);
+                events++; 
+            };
+
+            // Assert should generate an event
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            g.Assert(t);
+            Assert.AreEqual(1, events);
+
+            // Adding the same triple again should not fire the event
+            g.Assert(t);
+            Assert.AreEqual(1, events);
+        }
+
+        [Test]
+        public void GraphContractEvents2()
+        {
+            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            if (g == null) Assert.Ignore("Graph instance does not support events");
+
+            // Attach event handler
+            int events = 0;
+            NotifyCollectionChangedAction action = NotifyCollectionChangedAction.Add;
+            g.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(action, args.Action);
+                events++;
+            };
+
+            // Assert should generate an event
+            Triple t = new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), g.CreateBlankNode());
+            g.Assert(t);
+            Assert.AreEqual(1, events);
+
+            // Adding the same triple again should not fire the event
+            g.Assert(t);
+            Assert.AreEqual(1, events);
+
+            // Retracting the triple should fire an event
+            action = NotifyCollectionChangedAction.Remove;
+            g.Retract(t);
+            Assert.AreEqual(2, events);
+        }
+
+        [Test]
+        public void GraphContractEvents3()
+        {
+            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            if (g == null) Assert.Ignore("Graph instance does not support events");
+
+            // Attach event handler
+            int events = 0;
+            g.CollectionChanged += (sender, args) => {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                events++;
+            };
+
+            // Clear 
+            g.Clear();
+
+            // Expect one event to have fired
+            Assert.AreEqual(1, events);
         }
     }
 
