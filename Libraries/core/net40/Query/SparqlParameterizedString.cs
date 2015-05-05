@@ -637,6 +637,7 @@ namespace VDS.RDF.Query
         private void PreprocessText(String value)
         {
             bool inIri = false;
+            char literalOpeningChar = '\0';
             bool inLiteral = false;
             bool inLongLiteral = false;
             bool escaping = false;
@@ -653,9 +654,11 @@ namespace VDS.RDF.Query
                             escaping = !escaping;
                         }
                         break;
+                    case '\'':
                     case '"':
                         if (!inLiteral)
                         {
+                            literalOpeningChar = c;
                             inLiteral = true;
                             if (i < l - 2 && value[i + 1] == c && value[i + 2] == c)
                             {
@@ -664,7 +667,7 @@ namespace VDS.RDF.Query
                                 i += 2;
                             }
                         }
-                        else if (!escaping)
+                        else if (!escaping && c == literalOpeningChar)
                         {
                             if (!inLongLiteral)
                             {
