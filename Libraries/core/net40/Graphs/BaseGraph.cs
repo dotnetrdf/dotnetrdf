@@ -624,6 +624,8 @@ namespace VDS.RDF.Graphs
 
         #region Events
 
+        public virtual bool HasEvents { get { return true; } }
+
         protected void AttachEventHandlers()
         {
             this._triples.CollectionChanged += this._changedHandler;

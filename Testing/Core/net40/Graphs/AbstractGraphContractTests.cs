@@ -521,7 +521,7 @@ namespace VDS.RDF.Graphs
         public void GraphContractEvents1()
         {
             IEventedGraph g = this.GetInstance() as IEventedGraph;
-            if (g == null) Assert.Ignore("Graph instance does not support events");
+            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
             int events = 0;
@@ -544,7 +544,7 @@ namespace VDS.RDF.Graphs
         public void GraphContractEvents2()
         {
             IEventedGraph g = this.GetInstance() as IEventedGraph;
-            if (g == null) Assert.Ignore("Graph instance does not support events");
+            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
             int events = 0;
@@ -574,7 +574,7 @@ namespace VDS.RDF.Graphs
         public void GraphContractEvents3()
         {
             IEventedGraph g = this.GetInstance() as IEventedGraph;
-            if (g == null) Assert.Ignore("Graph instance does not support events");
+            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
             int events = 0;

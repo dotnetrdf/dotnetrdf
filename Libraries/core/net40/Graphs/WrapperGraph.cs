@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 #if !NO_DATA
 using System.Data;
 #endif
@@ -48,7 +49,7 @@ namespace VDS.RDF.Graphs
     [Serializable, XmlRoot(ElementName="graph")]
 #endif
     public abstract class WrapperGraph 
-        : IGraph
+        : IEventedGraph
 #if !SILVERLIGHT
         , ISerializable
 #endif
@@ -57,24 +58,25 @@ namespace VDS.RDF.Graphs
         /// Underlying Graph this is a wrapper around
         /// </summary>
         protected readonly IGraph _g;
+        private readonly NotifyCollectionChangedEventHandler _changedHandler;
 
         /// <summary>
         /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling
         /// </summary>
         protected WrapperGraph()
-        {
-            this._g = new Graph();
-        }
+            : this(new Graph()) { }
 
         /// <summary>
         /// Creates a new wrapper around the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
         public WrapperGraph(IGraph g)
-            : this()
         {
             if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
             this._g = g;
+
+            this._changedHandler = this.HandleCollectionChanged;
+            this.AttachEventHandlers();
         }      
 
 #if !SILVERLIGHT
@@ -91,6 +93,7 @@ namespace VDS.RDF.Graphs
             Type t = Type.GetType(graphType);
             if (t == null) throw new ArgumentException("Invalid serialization information, graph type '" + graphType + "' is not available in your environment");
             this._g = (IGraph)info.GetValue("innerGraph", t);
+            this.AttachEventHandlers();
         }
 
 #endif
@@ -478,6 +481,34 @@ namespace VDS.RDF.Graphs
 #endif
 
         #endregion
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public virtual bool HasEvents
+        {
+            get
+            {
+                return this._g is IEventedGraph && ((IEventedGraph)this._g).HasEvents;
+            }
+        }
+
+        private void HandleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
+        {
+            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            if (d != null)
+            {
+                d(this, args);
+            }
+        }
+
+        protected void AttachEventHandlers()
+        {
+            IEventedGraph e = this._g as IEventedGraph;
+            if (e.HasEvents)
+            {
+                e.CollectionChanged += this._changedHandler;
+            }
+        }
 
         /// <summary>
         /// Disposes of the wrapper and in doing so disposes of the underlying graph
