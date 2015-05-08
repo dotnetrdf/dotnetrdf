@@ -23,42 +23,27 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.IO;
-using VDS.RDF.Graphs;
-
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    /// <summary>
+    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be performed in a transaction and committed or rolled back as desired
+    /// </summary>
+    public interface ITransactionalGraph
+        : IGraph
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
-
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
-        }
-
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
+        /// <summary>
+        /// Begins a transaction
+        /// </summary>
+        void Begin();
 
         /// <summary>
-        /// Helper method for generating Parser Warning Events
+        /// Commits a transaction
         /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
-        {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
-        }
+        void Commit();
 
         /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
+        /// Aborts and rollbacks a transaction
         /// </summary>
-        public event RdfWriterWarning Warning;
+        void Rollback();
     }
 }

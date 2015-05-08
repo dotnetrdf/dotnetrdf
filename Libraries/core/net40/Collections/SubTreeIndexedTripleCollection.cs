@@ -69,10 +69,15 @@ namespace VDS.RDF.Collections
 
         private long _count = 0;
 
-        /// <summary>
-        /// Creates a new Tree Indexed triple collection
-        /// </summary>
-        public SubTreeIndexedTripleCollection() {}
+        public override bool CanModifyDuringIteration
+        {
+            get { return true; }
+        }
+
+        public override bool HasIndexes
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// Indexes a Triple
@@ -103,7 +108,7 @@ namespace VDS.RDF.Collections
                 {
                     if (ts == null)
                     {
-                        subtree[t] = new List<Triple> {t};
+                        subtree[t] = new List<Triple> { t };
                     }
                     else
                     {
@@ -112,13 +117,13 @@ namespace VDS.RDF.Collections
                 }
                 else
                 {
-                    subtree.Add(t, new List<Triple> {t});
+                    subtree.Add(t, new List<Triple> { t });
                 }
             }
             else
             {
                 subtree = new MultiDictionary<Triple, List<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
-                subtree.Add(t, new List<Triple> {t});
+                subtree.Add(t, new List<Triple> { t });
                 index.Add(n, subtree);
             }
         }
@@ -160,14 +165,14 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override bool Add(Triple t)
         {
-            if (!this.Contains(t))
-            {
-                this._triples.Add(t, null);
-                this.Index(t);
-                this._count++;
-                return true;
-            }
-            return false;
+            if (this.Contains(t)) return false;
+
+            this._triples.Add(t, null);
+            this.Index(t);
+            this._count++;
+            this.RaiseTripleAdded(t);
+
+            return true;
         }
 
         /// <summary>
@@ -199,14 +204,14 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override bool Remove(Triple t)
         {
-            if (this._triples.Remove(t))
-            {
-                //If removed then unindex
-                this.Unindex(t);
-                this._count--;
-                return true;
-            }
-            return false;
+            if (!this._triples.Remove(t)) return false;
+
+            //If removed then unindex
+            this.Unindex(t);
+            this._count--;
+            this.RaiseTripleRemoved(t);
+
+            return true;
         }
 
         public override void Clear()

@@ -23,42 +23,22 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.IO;
-using VDS.RDF.Graphs;
-
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs.Utilities
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    public class ReadOnlyCapabilities 
+        : WrapperCapabilities
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
+        public ReadOnlyCapabilities(IGraphCapabilities capabilities) 
+            : base(capabilities) {}
 
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
+        public override GraphAccessMode AccessMode
+        {
+            get { return GraphAccessMode.Read; }
         }
 
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
-
-        /// <summary>
-        /// Helper method for generating Parser Warning Events
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
+        public override bool CanModifyDuringIteration
         {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
+            get { return false; }
         }
-
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
     }
 }

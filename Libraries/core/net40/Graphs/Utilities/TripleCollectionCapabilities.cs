@@ -24,41 +24,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.IO;
-using VDS.RDF.Graphs;
+using VDS.RDF.Collections;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs.Utilities
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    /// <summary>
+    /// Graph capabilities for graphs based upon triple collections
+    /// </summary>
+    public class TripleCollectionCapabilities
+        : IGraphCapabilities
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
-
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
-        }
-
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
+        private readonly ITripleCollection _tripleCollection;
 
         /// <summary>
-        /// Helper method for generating Parser Warning Events
+        /// Creates a new set of capabilities
         /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
+        /// <param name="ts">Triple collection</param>
+        /// <param name="mode">Access mode</param>
+        public TripleCollectionCapabilities(ITripleCollection ts, GraphAccessMode mode)
         {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
+            if (ts == null) throw new ArgumentNullException("ts", "Triple collection cannot be null");
+
+            this._tripleCollection = ts;
+            this.AccessMode = mode;
         }
 
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
+        public GraphAccessMode AccessMode { get; private set; }
+
+        public bool CanModifyDuringIteration
+        {
+            get { return this._tripleCollection.CanModifyDuringIteration; }
+        }
+
+        public bool HasIndexes
+        {
+            get { return this._tripleCollection.HasIndexes; }
+        }
     }
 }

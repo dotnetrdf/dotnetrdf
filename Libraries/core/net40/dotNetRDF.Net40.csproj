@@ -97,7 +97,15 @@
     <Compile Include="Configuration\IObjectFactory.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GraphExtensions.cs" />
+    <Compile Include="Graphs\GraphAccessMode.cs" />
+    <Compile Include="Graphs\IEventedGraph.cs" />
+    <Compile Include="Graphs\IGraphCapabilities.cs" />
     <Compile Include="Graphs\IQuadStore.cs" />
+    <Compile Include="Graphs\ITransactionalGraph.cs" />
+    <Compile Include="Graphs\ReadOnlyGraph.cs" />
+    <Compile Include="Graphs\Utilities\ReadOnlyCapabilities.cs" />
+    <Compile Include="Graphs\Utilities\TripleCollectionCapabilities.cs" />
+    <Compile Include="Graphs\Utilities\WrapperCapabilities.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="LiteralExtensions.cs" />
     <Compile Include="Nodes\ComparisonHelper.cs" />
@@ -238,11 +246,11 @@
     <Compile Include="Graphs\BaseGraph.cs" />
     <Compile Include="Graphs\GraphStore.cs" />
     <Compile Include="Graphs\Graph.cs" />
-    <Compile Include="Graphs\GraphDiff.cs" />
-    <Compile Include="Graphs\GraphMatcher.cs" />
+    <Compile Include="Graphs\Utilities\GraphDiff.cs" />
+    <Compile Include="Graphs\Utilities\GraphMatcher.cs" />
     <Compile Include="Graphs\IGraph.cs" />
     <Compile Include="Graphs\IGraphStore.cs" />
-    <Compile Include="Graphs\SubGraphMatcher.cs" />
+    <Compile Include="Graphs\Utilities\SubGraphMatcher.cs" />
     <Compile Include="Graphs\ThreadSafeGraph.cs" />
   </ItemGroup>
   <ItemGroup>

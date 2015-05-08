@@ -44,7 +44,7 @@ namespace VDS.RDF.Collections
         : WrapperTripleCollection
     {
 #if !NO_RWLOCK
-        private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 #endif
 
         /// <summary>
@@ -106,6 +106,16 @@ namespace VDS.RDF.Collections
 #else
             Monitor.Exit(this._triples);
 #endif
+        }
+
+        public override bool CanModifyDuringIteration
+        {
+            get { return true; }
+        }
+
+        public override bool HasIndexes
+        {
+            get { return true; }
         }
 
         /// <summary>

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using VDS.RDF.Graphs.Utilities;
 #if !NO_DATA
 using System.Data;
 #endif
@@ -200,6 +201,14 @@ namespace VDS.RDF.Graphs
             get
             {
                 return (this._triples.Count == 0);
+            }
+        }
+
+        public virtual IGraphCapabilities Capabilities
+        {
+            get
+            {
+                return new TripleCollectionCapabilities(this._triples, this._triples.IsReadOnly ? GraphAccessMode.Read : GraphAccessMode.ReadWrite);
             }
         }
 

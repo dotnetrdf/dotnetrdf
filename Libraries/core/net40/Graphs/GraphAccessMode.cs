@@ -24,41 +24,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.IO;
-using VDS.RDF.Graphs;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    /// <summary>
+    /// Possible access modes for a graph
+    /// </summary>
+    [Flags]
+    public enum GraphAccessMode
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
-
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
-        }
-
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
+        /// <summary>
+        /// None
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Read
+        /// </summary>
+        Read = 1,
+        /// <summary>
+        /// Append
+        /// </summary>
+        Append = 2,
+        /// <summary>
+        /// Delete
+        /// </summary>
+        Delete = 3,
 
         /// <summary>
-        /// Helper method for generating Parser Warning Events
+        /// Write i.e. append and delete
         /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
-        {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
-        }
-
+        Write = Append | Delete,
         /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
+        /// Read Write i.e. read and write
         /// </summary>
-        public event RdfWriterWarning Warning;
+        ReadWrite = Read | Write
     }
 }

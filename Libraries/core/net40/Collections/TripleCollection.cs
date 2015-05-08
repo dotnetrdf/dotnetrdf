@@ -44,6 +44,16 @@ namespace VDS.RDF.Collections
         /// </summary>
         protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
 
+        public override bool CanModifyDuringIteration
+        {
+            get { return true; }
+        }
+
+        public override bool HasIndexes
+        {
+            get { return false; }
+        }
+
         /// <summary>
         /// Determines whether a given Triple is in the Triple Collection
         /// </summary>
@@ -60,13 +70,11 @@ namespace VDS.RDF.Collections
         /// <param name="t">Triple to add</param>
         public override bool Add(Triple t)
         {
-            if (!this.Contains(t))
-            {
-                this._triples.Add(t, null);
-                this.RaiseTripleAdded(t);
-                return true;
-            }
-            return false;
+            if (this.Contains(t)) return false;
+
+            this._triples.Add(t, null);
+            this.RaiseTripleAdded(t);
+            return true;
         }
 
         /// <summary>
@@ -76,12 +84,10 @@ namespace VDS.RDF.Collections
         /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
         public override bool Remove(Triple t)
         {
-            if (this._triples.Remove(t))
-            {
-                this.RaiseTripleRemoved(t);
-                return true;
-            }
-            return false;
+            if (!this._triples.Remove(t)) return false;
+
+            this.RaiseTripleRemoved(t);
+            return true;
         }
 
         public override void Clear()

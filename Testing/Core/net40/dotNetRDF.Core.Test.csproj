@@ -75,6 +75,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Graphs\AbstractGraphContractTests.cs" />
     <Compile Include="Graphs\GraphContractTests.cs" />
+    <Compile Include="Graphs\ReadOnlyGraphContractTests.cs" />
     <Compile Include="Graphs\SubTreeIndexedGraphContractTests.cs" />
     <Compile Include="Graphs\ThreadSafeGraphContractTests.cs" />
     <Compile Include="Graphs\TrieIndexedGraphContractTests.cs" />

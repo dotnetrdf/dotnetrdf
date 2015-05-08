@@ -86,5 +86,10 @@ namespace VDS.RDF.Collections
         { 
             get;
         }
+
+        /// <summary>
+        /// Gets if the collection is ready only
+        /// </summary>
+        bool IsReadOnly { get; }
     }
 }

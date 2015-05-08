@@ -43,6 +43,12 @@ namespace VDS.RDF.Collections
             this.InBatchOperation = false;
         }
 
+        public abstract bool CanModifyDuringIteration { get; }
+
+        public abstract bool HasIndexes { get; }
+
+        public virtual bool IsReadOnly { get { return false; } }
+
         /// <summary>
         /// Adds a Triple to the Collection
         /// </summary>
@@ -258,7 +264,11 @@ namespace VDS.RDF.Collections
         {
             if (!this.InBatchOperation) throw new InvalidOperationException("No batch operation was started");
 
-            this.RaiseCollectionChanged(this.BatchAction);
+            // Only raise the batch event if the batch is non-empty
+            if (this.CurrentBatch.Count > 0)
+            {
+                this.RaiseCollectionChanged(this.BatchAction);
+            }
             this.InBatchOperation = false;
             this.CurrentBatch = null;
         }

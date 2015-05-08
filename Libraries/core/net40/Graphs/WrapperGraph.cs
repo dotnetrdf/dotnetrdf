@@ -122,6 +122,11 @@ namespace VDS.RDF.Graphs
             }
         }
 
+        public virtual IGraphCapabilities Capabilities
+        {
+            get { return this._g.Capabilities; }
+        }
+
         /// <summary>
         /// Gets the Namespace Map for the Graph
         /// </summary>

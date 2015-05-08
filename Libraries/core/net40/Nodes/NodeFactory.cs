@@ -84,7 +84,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public virtual INode CreateGraphLiteralNode()
         {
-            return new GraphLiteralNode(null);
+            return new GraphLiteralNode(new Graph());
         }
 
         /// <summary>

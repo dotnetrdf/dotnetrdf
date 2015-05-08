@@ -23,42 +23,17 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.IO;
-using VDS.RDF.Graphs;
+using NUnit.Framework;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    [TestFixture]
+    public class ReadOnlyGraphContractTests
+        : AbstractGraphContractTests
     {
-        public void Save(IGraph g, TextWriter output)
+        protected override IGraph CreateGraphInstance()
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
-
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
+            return new ReadOnlyGraph(new Graph());
         }
-
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
-
-        /// <summary>
-        /// Helper method for generating Parser Warning Events
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
-        {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
-        }
-
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
     }
 }

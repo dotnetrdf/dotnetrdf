@@ -89,6 +89,16 @@ namespace VDS.RDF.Collections
             if (predObjIndex) this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastNodeComparer()), compoundIndexMode);
         }
 
+        public override bool CanModifyDuringIteration
+        {
+            get { return true; }
+        }
+
+        public override bool HasIndexes
+        {
+            get { return this._s != null || this._p != null || this._o != null || this._sp != null || this._so != null || this._po != null; }
+        }
+
         /// <summary>
         /// Indexes a Triple
         /// </summary>
@@ -216,8 +226,10 @@ namespace VDS.RDF.Collections
         {
             if (this.Contains(t)) return false;
             this._triples.Add(t, null);
+
             this.Index(t);
             this._count++;
+            this.RaiseTripleAdded(t);
             return true;
         }
 
@@ -250,14 +262,14 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         public override bool Remove(Triple t)
         {
-            if (this._triples.Remove(t))
-            {
-                //If removed then unindex
-                this.Unindex(t);
-                this._count--;
-                return true;
-            }
-            return false;
+            if (!this._triples.Remove(t)) return false;
+
+            //If removed then unindex
+            this.Unindex(t);
+            this._count--;
+            this.RaiseTripleRemoved(t);
+
+            return true;
         }
 
         public override void Clear()

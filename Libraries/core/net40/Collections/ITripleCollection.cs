@@ -52,5 +52,15 @@ namespace VDS.RDF.Collections
         IEnumerable<Triple> WithSubjectObject(INode subj, INode obj);
 
         IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred);
+
+        /// <summary>
+        /// Indicates whether the collection may be modified while an iteration is ongoing
+        /// </summary>
+        bool CanModifyDuringIteration { get; }
+
+        /// <summary>
+        /// Indicates whether the collection has indexes
+        /// </summary>
+        bool HasIndexes { get; }
     }
 }

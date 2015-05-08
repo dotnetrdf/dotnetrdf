@@ -24,41 +24,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.IO;
-using VDS.RDF.Graphs;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs.Utilities
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    public abstract class WrapperCapabilities
+        : IGraphCapabilities
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
 
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
+        private readonly IGraphCapabilities _capabilities;
+
+        protected WrapperCapabilities(IGraphCapabilities capabilities)
+        {
+            if (capabilities == null) throw new ArgumentNullException("capabilities", "Capabilities cannot be null");
+
+            this._capabilities = capabilities;
         }
 
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
-
-        /// <summary>
-        /// Helper method for generating Parser Warning Events
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
+        public virtual GraphAccessMode AccessMode
         {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
+            get { return this._capabilities.AccessMode; }
         }
 
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
+        public virtual bool CanModifyDuringIteration
+        {
+            get { return this._capabilities.CanModifyDuringIteration; }
+        }
+
+        public virtual bool HasIndexes
+        {
+            get { return this._capabilities.HasIndexes; }
+        }
     }
 }

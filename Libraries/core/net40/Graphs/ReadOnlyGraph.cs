@@ -24,41 +24,45 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.IO;
-using VDS.RDF.Graphs;
+using System.Collections.Generic;
+using VDS.RDF.Graphs.Utilities;
 
-namespace VDS.RDF.Writing
+namespace VDS.RDF.Graphs
 {
-    public abstract class BaseGraphStoreWriter
-        : IRdfWriter
+    public class ReadOnlyGraph
+        : WrapperGraph
     {
-        public void Save(IGraph g, TextWriter output)
-        {
-            if (g == null) throw new ArgumentNullException("g", "Cannot write RDF from a null graph");
-            if (output == null) throw new ArgumentNullException("output", "Cannot write RDF to a null writer");
+        public ReadOnlyGraph(IGraph g)
+            : base(g) { }
 
-            IGraphStore graphStore = new GraphStore();
-            graphStore.Add(g);
-            this.Save(graphStore, output);
+        public override IGraphCapabilities Capabilities
+        {
+            get { return new ReadOnlyCapabilities(base.Capabilities); }
         }
 
-        public abstract void Save(IGraphStore graphStore, TextWriter output);
-
-        /// <summary>
-        /// Helper method for generating Parser Warning Events
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        protected void RaiseWarning(String message)
+        public override void Assert(IEnumerable<Triple> ts)
         {
-            if (this.Warning != null)
-            {
-                this.Warning(message);
-            }
+            throw new InvalidOperationException("Graph is read only");
         }
 
-        /// <summary>
-        /// Event which is raised when there is a non-fatal issue with the RDF being written
-        /// </summary>
-        public event RdfWriterWarning Warning;
+        public override void Assert(Triple t)
+        {
+            throw new InvalidOperationException("Graph is read only");
+        }
+
+        public override void Clear()
+        {
+            throw new InvalidOperationException("Graph is read only");
+        }
+
+        public override void Retract(IEnumerable<Triple> ts)
+        {
+            throw new InvalidOperationException("Graph is read only");
+        }
+
+        public override void Retract(Triple t)
+        {
+            throw new InvalidOperationException("Graph is read only");
+        }
     }
 }

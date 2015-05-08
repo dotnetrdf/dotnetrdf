@@ -74,6 +74,16 @@ namespace VDS.RDF.Collections
             this._baseCollection = baseTriples;
         }
 
+        public override bool CanModifyDuringIteration
+        {
+            get { return this._collections.All(c => c.CanModifyDuringIteration); }
+        }
+
+        public override bool HasIndexes
+        {
+            get { return this._collections.All(c => c.HasIndexes); }
+        }
+
         /// <summary>
         /// Adds a Triple to the base collection
         /// </summary>

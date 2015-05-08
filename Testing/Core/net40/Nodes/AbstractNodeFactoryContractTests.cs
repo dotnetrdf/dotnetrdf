@@ -138,6 +138,25 @@ namespace VDS.RDF.Nodes
         }
 
         [Test]
+        public void NodeFactoryContractBlanks03B()
+        {
+            INodeFactory f1 = this.CreateFactoryInstance();
+            INodeFactory f2 = this.CreateFactoryInstance();
+
+            // Passing the same ID in should result in the same blank node
+            Guid id = Guid.NewGuid();
+            INode a = f1.CreateBlankNode(id);
+            Assert.AreEqual(NodeType.Blank, a.NodeType);
+            Assert.AreEqual(id, a.AnonID);
+
+            INode b = f2.CreateBlankNode(id);
+            Assert.AreEqual(NodeType.Blank, b.NodeType);
+            Assert.AreEqual(id, b.AnonID);
+
+            Assert.AreEqual(a, b, "Calls to CreateBlankNode() with the same Guid MUST produce equivalent blank nodes across factories");
+        }
+
+        [Test]
         public void NodeFactoryContractBlanks05()
         {
             INodeFactory factory = this.CreateFactoryInstance();
@@ -352,6 +371,31 @@ namespace VDS.RDF.Nodes
         {
             INodeFactory factory = this.CreateFactoryInstance();
 
+            Uri dt = this.ResolveQName(":type");
+            INode a = factory.CreateLiteralNode("test", dt);
+            Assert.AreEqual(NodeType.Literal, a.NodeType);
+            Assert.AreEqual("test", a.Value);
+            Assert.IsFalse(a.HasLanguage);
+            Assert.IsNull(a.Language);
+            Assert.IsTrue(a.HasDataType);
+            Assert.IsTrue(this._uriComparer.Equals(dt, a.DataType));
+
+            INode b = factory.CreateLiteralNode("test", dt);
+            Assert.AreEqual(NodeType.Literal, b.NodeType);
+            Assert.AreEqual("test", b.Value);
+            Assert.IsFalse(b.HasLanguage);
+            Assert.IsNull(b.Language);
+            Assert.IsTrue(b.HasDataType);
+            Assert.IsTrue(this._uriComparer.Equals(dt, b.DataType));
+            
+            Assert.AreEqual(a, b, "Calling CreateLiteralNode() with the same parameters MUST result in equivalent literal nodes");
+        }
+
+        [Test]
+        public void NodeFactoryContractLiterals04()
+        {
+            INodeFactory factory = this.CreateFactoryInstance();
+
             INode implicitLit = factory.CreateLiteralNode("test");
             INode explicitLit = factory.CreateLiteralNode("test", this._xsdString);
 
@@ -366,7 +410,7 @@ namespace VDS.RDF.Nodes
         }
 
         [Test]
-        public void NodeFactoryContractLiterals03b()
+        public void NodeFactoryContractLiterals04B()
         {
             INodeFactory factory = this.CreateFactoryInstance();
 
@@ -752,7 +796,7 @@ namespace VDS.RDF.Nodes
             }
         }
 
-        protected void CheckSortEqual(INode x, INode y)
+        protected void CheckSortEqual (INode x, INode y)
         {
             Assert.AreEqual(0, x.CompareTo(y));
             Assert.AreEqual(0, y.CompareTo(x));

@@ -1,4 +1,29 @@
-﻿using System;
+/*
+dotNetRDF is free and open source software licensed under the MIT License
+
+-----------------------------------------------------------------------------
+
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-develop@lists.sf.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -14,16 +39,31 @@ namespace VDS.RDF.Graphs
     public abstract class AbstractGraphContractTests
         : AbstractNodeFactoryContractTests
     {
-        protected sealed override INodeFactory CreateFactoryInstance()
+        protected override sealed INodeFactory CreateFactoryInstance()
         {
-            return (INodeFactory)this.GetGraphInstance();
+            return (INodeFactory) this.CreateGraphInstance();
         }
 
         /// <summary>
         /// Gets a new fresh instance of a graph for testing
         /// </summary>
         /// <returns></returns>
-        protected abstract IGraph GetGraphInstance();
+        protected abstract IGraph CreateGraphInstance();
+
+        protected void Incapable()
+        {
+            Assert.Ignore("Graph does not provide the necessary capabilities for this test to run");
+        }
+
+        protected void Incapable(String message)
+        {
+            Assert.Ignore(message);
+        }
+
+        protected void RequireAccess(IGraph g, GraphAccessMode mode)
+        {
+            if (g.Capabilities.AccessMode < mode) this.Incapable(String.Format("Test requires graph access {0} but graph only provides {1}", mode, g.Capabilities.AccessMode));
+        }
 
         protected IEnumerable<Triple> GenerateTriples(int n)
         {
@@ -36,14 +76,18 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractCount1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.Read);
+
             Assert.AreEqual(0, g.Count);
         }
 
         [Test]
         public void GraphContractCount2()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             g.Assert(this.GenerateTriples(1));
             Assert.AreEqual(1, g.Count);
         }
@@ -51,7 +95,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractCount3()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             g.Assert(this.GenerateTriples(100));
             Assert.AreEqual(100, g.Count);
         }
@@ -59,14 +105,18 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractIsEmpty1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.Read);
+
             Assert.IsTrue(g.IsEmpty);
         }
 
         [Test]
         public void GraphContractIsEmpty2()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             g.Assert(this.GenerateTriples(1));
             Assert.IsFalse(g.IsEmpty);
         }
@@ -74,14 +124,18 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractNamespaces1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.Read);
+
             Assert.IsNotNull(g.Namespaces);
         }
 
         [Test]
         public void GraphContractNamespaces2()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.IsNotNull(g.Namespaces);
             g.Namespaces.AddNamespace("ex", new Uri("http://example.org"));
             Assert.IsTrue(g.Namespaces.HasNamespace("ex"));
@@ -91,7 +145,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractAssert1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -110,9 +166,42 @@ namespace VDS.RDF.Graphs
         }
 
         [Test]
+        public void GraphContractAssert2()
+        {
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Assert triples
+            List<Triple> ts = new List<Triple>();
+            for (int i = 0; i < 10000; i++)
+            {
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), i.ToLiteral(g)));
+            }
+            g.Assert(ts);
+            Assert.AreEqual(ts.Count, g.Count);
+            foreach (Triple t in ts)
+            {
+                Assert.IsTrue(g.ContainsTriple(t));
+            }
+
+            // Asserting same triples again should have no effect
+            g.Assert(ts);
+            Assert.AreEqual(ts.Count, g.Count);
+            foreach (Triple t in ts)
+            {
+                Assert.IsTrue(g.ContainsTriple(t));
+            }
+        }
+
+        [Test]
         public void GraphContractRetract1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -131,9 +220,42 @@ namespace VDS.RDF.Graphs
         }
 
         [Test]
+        public void GraphContractRetract2()
+        {
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Assert triples
+            List<Triple> ts = new List<Triple>();
+            for (int i = 0; i < 10000; i++)
+            {
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), i.ToLiteral(g)));
+            }
+            g.Assert(ts);
+            Assert.AreEqual(ts.Count, g.Count);
+            foreach (Triple t in ts)
+            {
+                Assert.IsTrue(g.ContainsTriple(t));
+            }
+
+            // Retract triples
+            g.Retract(ts);
+            Assert.AreEqual(0, g.Count);
+            foreach (Triple t in ts)
+            {
+                Assert.IsFalse(g.ContainsTriple(t));
+            }
+        }
+
+        [Test]
         public void GraphContractTriples1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -162,9 +284,89 @@ namespace VDS.RDF.Graphs
         }
 
         [Test]
+        public void GraphContractTriples2()
+        {
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Asserts
+            List<Triple> data = new List<Triple>();
+            for (int i = 0; i < 1000; i++)
+            {
+                data.Add(new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), i.ToLiteral(g)));
+            }
+            g.Assert(data);
+            Assert.AreEqual(data.Count, g.Count);
+            foreach (Triple t in data)
+            {
+                Assert.IsTrue(g.ContainsTriple(t));
+                Assert.IsTrue(g.Triples.Any());
+            }
+
+            IEnumerable<Triple> ts = g.Triples;
+            Assert.IsTrue(ts.Any());
+            Assert.AreEqual(data.Count, ts.Count());
+            foreach (Triple t in ts)
+            {
+                Assert.IsTrue(data.Remove(t));
+            }
+
+            // Retract triples
+            g.Retract(ts.ToList());
+            Assert.AreEqual(0, g.Count);
+            foreach (Triple t in ts)
+            {
+                Assert.IsFalse(g.ContainsTriple(t));
+            }
+
+            // Enumerable should reflect current state of graph
+            Assert.IsFalse(ts.Any());
+            Assert.AreEqual(0, ts.Count());
+        }
+
+        [Test]
+        public void GraphContractTriples3()
+        {
+            IGraph g = this.CreateGraphInstance();
+            if (!g.Capabilities.CanModifyDuringIteration) this.Incapable();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
+            Assert.AreEqual(0, g.Count);
+            Assert.IsFalse(g.Triples.Any());
+
+            // Asserts
+            List<Triple> data = new List<Triple>();
+            for (int i = 0; i < 10; i++)
+            {
+                data.Add(new Triple(g.CreateUriNode(new Uri("http://subject")), g.CreateUriNode(new Uri("http://predicate")), i.ToLiteral(g)));
+            }
+            g.Assert(data);
+            Assert.AreEqual(data.Count, g.Count);
+            foreach (Triple t in data)
+            {
+                Assert.IsTrue(g.ContainsTriple(t));
+                Assert.IsTrue(g.Triples.Any());
+            }
+
+            IEnumerable<Triple> ts = g.Triples;
+            Assert.IsTrue(ts.Any());
+            Assert.AreEqual(data.Count, ts.Count());
+            foreach (Triple t in ts)
+            {
+                // Expect this to throw an error
+                g.Retract(t);
+            }
+        }
+
+        [Test]
         public void GraphContractQuads1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Quads.Any());
 
@@ -217,7 +419,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -262,7 +466,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind2()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -319,7 +525,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind3()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -368,7 +576,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractStructure1()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -378,8 +588,8 @@ namespace VDS.RDF.Graphs
             INode o1 = g.CreateLiteralNode("value");
             INode o2 = g.CreateUriNode(new Uri("http://o"));
 
-            INode[] vs = new INode[] {s1, s2, o1, o2};
-            INode[] es = new INode[] {p};
+            INode[] vs = new INode[] { s1, s2, o1, o2 };
+            INode[] es = new INode[] { p };
 
             g.Assert(new Triple(s1, p, o1));
             g.Assert(new Triple(s1, p, o2));
@@ -400,7 +610,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractStructure2()
         {
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -410,8 +622,8 @@ namespace VDS.RDF.Graphs
             INode o1 = g.CreateVariableNode("var");
             INode o2 = g.CreateUriNode(new Uri("http://o"));
 
-            INode[] vs = new INode[] {s1, s2, o1, o2};
-            INode[] es = new INode[] {p};
+            INode[] vs = new INode[] { s1, s2, o1, o2 };
+            INode[] es = new INode[] { p };
 
             g.Assert(new Triple(s1, p, o1));
             g.Assert(new Triple(s1, p, o2));
@@ -433,7 +645,9 @@ namespace VDS.RDF.Graphs
         public void GraphContractUsage1()
         {
             //Create a new Empty Graph
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.IsNotNull(g);
 
             //Define Namespaces
@@ -493,7 +707,9 @@ namespace VDS.RDF.Graphs
         public void GraphContractUsage2()
         {
             //Create a new Empty Graph
-            IGraph g = this.GetGraphInstance();
+            IGraph g = this.CreateGraphInstance();
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
             Assert.IsNotNull(g);
 
             //Define Namespaces
@@ -524,14 +740,16 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents1()
         {
-            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
-            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
+            IEventedGraph g = this.CreateGraphInstance() as IEventedGraph;
+            if (g == null || !g.HasEvents) this.Incapable("Graph instance does not support events");
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
 
             // Attach event handler
             int events = 0;
-            g.CollectionChanged += (sender, args) => {
+            g.CollectionChanged += (sender, args) =>
+            {
                 Assert.AreEqual(NotifyCollectionChangedAction.Add, args.Action);
-                events++; 
+                events++;
             };
 
             // Assert should generate an event
@@ -547,8 +765,9 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents2()
         {
-            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
-            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
+            IEventedGraph g = this.CreateGraphInstance() as IEventedGraph;
+            if (g == null || !g.HasEvents) this.Incapable("Graph instance does not support events");
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
 
             // Attach event handler
             int events = 0;
@@ -577,12 +796,14 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents3()
         {
-            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
-            if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
+            IEventedGraph g = this.CreateGraphInstance() as IEventedGraph;
+            if (g == null || !g.HasEvents) this.Incapable("Graph instance does not support events");
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
 
             // Attach event handler
             int events = 0;
-            g.CollectionChanged += (sender, args) => {
+            g.CollectionChanged += (sender, args) =>
+            {
                 Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
                 events++;
             };
@@ -592,6 +813,85 @@ namespace VDS.RDF.Graphs
 
             // Expect one event to have fired
             Assert.AreEqual(1, events);
+        }
+
+        [Test]
+        public void GraphContractEvents4()
+        {
+            IEventedGraph g = this.CreateGraphInstance() as IEventedGraph;
+            if (g == null || !g.HasEvents) this.Incapable("Graph instance does not support events");
+            this.RequireAccess(g, GraphAccessMode.ReadWrite);
+
+            // Attach event handler
+            int events = 0, totalChanges = 0;
+            NotifyCollectionChangedAction action = NotifyCollectionChangedAction.Add;
+            NotifyCollectionChangedEventArgs mostRecentArgs = null;
+            g.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(action, args.Action);
+                mostRecentArgs = args;
+                events++;
+                totalChanges += (args.NewItems != null ? args.NewItems.Count : 0) + (args.OldItems != null ? args.OldItems.Count : 0);
+            };
+
+            // Assert should generate an event
+            const int numTriples = 1000;
+            List<Triple> ts = this.GenerateTriples(numTriples).ToList();
+            g.Assert(ts);
+            switch (events)
+            {
+                case 1:
+                    // Single bulk event
+                    Assert.AreEqual(1, events);
+                    Assert.AreEqual(numTriples, totalChanges);
+                    Assert.IsNotNull(mostRecentArgs);
+                    Assert.AreEqual(ts.Count, mostRecentArgs.NewItems.Count);
+                    break;
+
+                case numTriples:
+                    // Event per triple
+                    Assert.AreEqual(numTriples, events);
+                    Assert.AreEqual(numTriples, totalChanges);
+                    break;
+
+                default:
+                    // Some batching of events
+                    Assert.AreEqual(numTriples, totalChanges);
+                    break;
+            }
+
+            // Adding the same data again should not fire any events
+            int currentEvents = events;
+            g.Assert(ts);
+            Assert.AreEqual(currentEvents, events);
+
+            // Retracting the triple should fire an event
+            events = 0;
+            totalChanges = 0;
+            action = NotifyCollectionChangedAction.Remove;
+            mostRecentArgs = null;
+            g.Retract(ts);
+            switch (events)
+            {
+                case 1:
+                    // Single bulk event
+                    Assert.AreEqual(1, events);
+                    Assert.AreEqual(numTriples, totalChanges);
+                    Assert.IsNotNull(mostRecentArgs);
+                    Assert.AreEqual(ts.Count, mostRecentArgs.OldItems.Count);
+                    break;
+
+                case numTriples:
+                    // Event per triple
+                    Assert.AreEqual(numTriples, events);
+                    Assert.AreEqual(numTriples, totalChanges);
+                    break;
+
+                default:
+                    // Some batching of events
+                    Assert.AreEqual(numTriples, totalChanges);
+                    break;
+            }
         }
     }
 }

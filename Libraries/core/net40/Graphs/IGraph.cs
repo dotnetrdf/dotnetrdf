@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 #if !NO_DATA
 using System.Data;
 #endif
@@ -105,6 +104,11 @@ namespace VDS.RDF.Graphs
             get;
         }
 
+        /// <summary>
+        /// Gets the capabilities of the graph
+        /// </summary>
+        IGraphCapabilities Capabilities { get; }
+
         #endregion
 
         #region Assertion & Retraction
@@ -134,13 +138,8 @@ namespace VDS.RDF.Graphs
         void Retract(IEnumerable<Triple> ts);
 
         /// <summary>
-        /// Retracts all Triples from the Graph
+        /// Clears the graph of all data
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The Graph should raise the <see cref="ClearRequested">ClearRequested</see> event at the start of the Clear operation and abort the operation if the operation is cancelled by an event handler.  On completing the Clear the <see cref="Cleared">Cleared</see> event should be raised.
-        /// </para>
-        /// </remarks>
         void Clear();
 
         #endregion
@@ -242,42 +241,5 @@ namespace VDS.RDF.Graphs
 #endif
 
         #endregion
-    }
-
-    /// <summary>
-    /// Interface for graphs that support events, events are provided via implementation of the standard <see cref="INotifyCollectionChanged" /> interface
-    /// </summary>
-    public interface IEventedGraph
-        : IGraph, INotifyCollectionChanged
-    {
-        /// <summary>
-        /// Indicates whether a graph actually has events
-        /// </summary>
-        /// <remarks>
-        /// While generally speaking use of this interface will be sufficient to indicate that a graph supports events in some cases where complex graph types such as decorators, unions, etc are used the availability of events may be dictated by the underlying graphs even if the wrapper is capable of providing them.  Thus users intending to consume events should check that this method returns true.
-        /// </remarks>
-        bool HasEvents { get; }
-    }
-
-    /// <summary>
-    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be performed in a transaction and committed or rolled back as desired
-    /// </summary>
-    public interface ITransactionalGraph
-        : IGraph
-    {
-        /// <summary>
-        /// Begins a transaction
-        /// </summary>
-        void Begin();
-
-        /// <summary>
-        /// Commits a transaction
-        /// </summary>
-        void Commit();
-
-        /// <summary>
-        /// Aborts and rollbacks a transaction
-        /// </summary>
-        void Rollback();
     }
 }
