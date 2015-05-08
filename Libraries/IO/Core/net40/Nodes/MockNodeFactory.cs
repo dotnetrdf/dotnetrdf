@@ -11,7 +11,7 @@ namespace VDS.RDF.Nodes
     /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="VDS.RDF.Parsing.Handlers.CountHandler">CountHandler</see> to speed up processing
     /// </para>
     /// </remarks>
-    internal class MockNodeFactory
+    internal sealed class MockNodeFactory
         : INodeFactory
     {
         private readonly INode _bnode = new BlankNode(Guid.NewGuid());
@@ -19,6 +19,11 @@ namespace VDS.RDF.Nodes
         private readonly INode _lit = new LiteralNode("mock");
         private readonly UriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
         private readonly INode _var = new VariableNode("mock");
+
+        public bool CreatesImplicitlyTypedLiterals
+        {
+            get { return this._lit.HasDataType; }
+        }
 
         public INode CreateBlankNode()
         {

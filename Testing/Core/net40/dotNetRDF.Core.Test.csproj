@@ -74,8 +74,15 @@
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
     <Compile Include="Graphs\AbstractGraphContractTests.cs" />
+    <Compile Include="Graphs\GraphContractTests.cs" />
+    <Compile Include="Graphs\SubTreeIndexedGraphContractTests.cs" />
+    <Compile Include="Graphs\ThreadSafeGraphContractTests.cs" />
+    <Compile Include="Graphs\TrieIndexedGraphContractTests.cs" />
+    <Compile Include="Graphs\UnindexedGraphContractTests.cs" />
+    <Compile Include="Graphs\WrapperGraphContractTests.cs" />
     <Compile Include="Namespaces\AbstractNamespaceMapperContractTests.cs" />
-    <Compile Include="Nodes\NodeTests.cs" />
+    <Compile Include="Nodes\NodeFactoryTests.cs" />
+    <Compile Include="Nodes\AbstractNodeFactoryContractTests.cs" />
     <Compile Include="Nodes\LiteralNodeTests.cs" />
     <Compile Include="Nodes\ValuedNodeTests.cs" />
     <Compile Include="TestTools.cs" />

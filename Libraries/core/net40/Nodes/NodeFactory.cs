@@ -40,7 +40,21 @@ namespace VDS.RDF.Nodes
         public NodeFactory()
         { }
 
-        #region INodeFactory Members
+        /// <summary>
+        /// Indicates whether this factory produces RDF 1.1 literals
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If true then calling <see cref="CreateLiteralNode(string)"/> will produce a literal typed as xsd:string and calling <see cref="CreateLiteralNode(string,string)"/> will produce a literal typed as rdf:langString.  If false then literals are created only with the fields provided.
+        /// </para>
+        /// <para>
+        /// This instance respects the global <see cref="Options.Rdf11"/> setting and thus its return value is dictated by the value of that setting
+        /// </para>
+        /// </remarks>
+        public virtual bool CreatesImplicitlyTypedLiterals
+        {
+            get { return Options.Rdf11; }
+        }
         
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID
@@ -68,7 +82,7 @@ namespace VDS.RDF.Nodes
         /// Creates a Graph Literal Node which represents the empty Subgraph
         /// </summary>
         /// <returns></returns>
-        public INode CreateGraphLiteralNode()
+        public virtual INode CreateGraphLiteralNode()
         {
             return new GraphLiteralNode(null);
         }
@@ -78,7 +92,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="subgraph">Subgraph</param>
         /// <returns></returns>
-        public INode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual INode CreateGraphLiteralNode(IGraph subgraph)
         {
             return new GraphLiteralNode(subgraph);
         }
@@ -89,7 +103,7 @@ namespace VDS.RDF.Nodes
         /// <param name="literal">Value of the Literal</param>
         /// <param name="datatype">Data Type URI of the Literal</param>
         /// <returns></returns>
-        public INode CreateLiteralNode(string literal, Uri datatype)
+        public virtual INode CreateLiteralNode(string literal, Uri datatype)
         {
             return new LiteralNode(literal, datatype);
         }
@@ -99,7 +113,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <returns></returns>
-        public INode CreateLiteralNode(string literal)
+        public virtual INode CreateLiteralNode(string literal)
         {
             return new LiteralNode(literal);
         }
@@ -110,7 +124,7 @@ namespace VDS.RDF.Nodes
         /// <param name="literal">Value of the Literal</param>
         /// <param name="langspec">Language Specifier for the Literal</param>
         /// <returns></returns>
-        public INode CreateLiteralNode(string literal, string langspec)
+        public virtual INode CreateLiteralNode(string literal, string langspec)
         {
             return new LiteralNode(literal, langspec);
         }
@@ -120,7 +134,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="uri">URI</param>
         /// <returns></returns>
-        public INode CreateUriNode(Uri uri)
+        public virtual INode CreateUriNode(Uri uri)
         {
             return new UriNode(uri);
         }
@@ -130,11 +144,9 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="varname"></param>
         /// <returns></returns>
-        public INode CreateVariableNode(string varname)
+        public virtual INode CreateVariableNode(string varname)
         {
             return new VariableNode(varname);
         }
-
-        #endregion
     }
 }

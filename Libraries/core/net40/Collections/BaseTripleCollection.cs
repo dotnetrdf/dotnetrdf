@@ -38,6 +38,11 @@ namespace VDS.RDF.Collections
     public abstract class BaseTripleCollection
         : ITripleCollection
     {
+        protected BaseTripleCollection()
+        {
+            this.InBatchOperation = false;
+        }
+
         /// <summary>
         /// Adds a Triple to the Collection
         /// </summary>

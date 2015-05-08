@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using NUnit.Framework;
-using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Graphs
@@ -13,13 +12,18 @@ namespace VDS.RDF.Graphs
     /// </summary>
     [TestFixture]
     public abstract class AbstractGraphContractTests
-        : BaseTest
+        : AbstractNodeFactoryContractTests
     {
+        protected sealed override INodeFactory CreateFactoryInstance()
+        {
+            return (INodeFactory)this.GetGraphInstance();
+        }
+
         /// <summary>
         /// Gets a new fresh instance of a graph for testing
         /// </summary>
         /// <returns></returns>
-        protected abstract IGraph GetInstance();
+        protected abstract IGraph GetGraphInstance();
 
         protected IEnumerable<Triple> GenerateTriples(int n)
         {
@@ -32,14 +36,14 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractCount1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
         }
 
         [Test]
         public void GraphContractCount2()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             g.Assert(this.GenerateTriples(1));
             Assert.AreEqual(1, g.Count);
         }
@@ -47,7 +51,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractCount3()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             g.Assert(this.GenerateTriples(100));
             Assert.AreEqual(100, g.Count);
         }
@@ -55,14 +59,14 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractIsEmpty1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.IsTrue(g.IsEmpty);
         }
 
         [Test]
         public void GraphContractIsEmpty2()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             g.Assert(this.GenerateTriples(1));
             Assert.IsFalse(g.IsEmpty);
         }
@@ -70,14 +74,14 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractNamespaces1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.IsNotNull(g.Namespaces);
         }
 
         [Test]
         public void GraphContractNamespaces2()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.IsNotNull(g.Namespaces);
             g.Namespaces.AddNamespace("ex", new Uri("http://example.org"));
             Assert.IsTrue(g.Namespaces.HasNamespace("ex"));
@@ -87,7 +91,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractAssert1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -108,7 +112,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractRetract1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -129,7 +133,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractTriples1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Triples.Any());
 
@@ -160,7 +164,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractQuads1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsFalse(g.Quads.Any());
 
@@ -213,7 +217,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -258,7 +262,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind2()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -315,7 +319,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractFind3()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -364,7 +368,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractStructure1()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -396,7 +400,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractStructure2()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.AreEqual(0, g.Count);
             Assert.IsTrue(g.IsEmpty);
 
@@ -429,7 +433,7 @@ namespace VDS.RDF.Graphs
         public void GraphContractUsage1()
         {
             //Create a new Empty Graph
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.IsNotNull(g);
 
             //Define Namespaces
@@ -489,7 +493,7 @@ namespace VDS.RDF.Graphs
         public void GraphContractUsage2()
         {
             //Create a new Empty Graph
-            IGraph g = this.GetInstance();
+            IGraph g = this.GetGraphInstance();
             Assert.IsNotNull(g);
 
             //Define Namespaces
@@ -520,7 +524,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents1()
         {
-            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
             if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
@@ -543,7 +547,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents2()
         {
-            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
             if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
@@ -573,7 +577,7 @@ namespace VDS.RDF.Graphs
         [Test]
         public void GraphContractEvents3()
         {
-            IEventedGraph g = this.GetInstance() as IEventedGraph;
+            IEventedGraph g = this.GetGraphInstance() as IEventedGraph;
             if (g == null || !g.HasEvents) Assert.Ignore("Graph instance does not support events");
 
             // Attach event handler
@@ -589,69 +593,5 @@ namespace VDS.RDF.Graphs
             // Expect one event to have fired
             Assert.AreEqual(1, events);
         }
-    }
-
-    [TestFixture]
-    public class GraphContractTests
-        : AbstractGraphContractTests
-    {
-        protected override IGraph GetInstance()
-        {
-            return new Graph();
-        }
-    }
-
-    [TestFixture]
-    public class SubTreeIndexedGraphContractTests
-        : AbstractGraphContractTests
-    {
-        protected override IGraph GetInstance()
-        {
-            return new Graph(new SubTreeIndexedTripleCollection());
-        }
-    }
-
-    [TestFixture]
-    public class TrieIndexedGraphContractTests
-        : AbstractGraphContractTests
-    {
-        protected override IGraph GetInstance()
-        {
-            return new Graph(new TrieIndexedTripleCollection());
-        }
-    }
-
-    [TestFixture]
-    public class UnindexedGraphContractTests
-        : AbstractGraphContractTests
-    {
-
-        protected override IGraph GetInstance()
-        {
-            return new Graph(new TripleCollection());
-        }
-    }
-
-    [TestFixture]
-    public class ThreadSafeGraphContractTests
-        : AbstractGraphContractTests
-    {
-        protected override IGraph GetInstance()
-        {
-            return new ThreadSafeGraph();
-        }
-    }
-
-    [TestFixture]
-    public class WrapperGraphContractTests
-        : AbstractGraphContractTests
-    {
-        protected override IGraph GetInstance()
-        {
-            return new TestWrapperGraph();
-        }
-
-        private class TestWrapperGraph
-            : WrapperGraph {}
     }
 }

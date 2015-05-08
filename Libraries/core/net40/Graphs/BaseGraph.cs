@@ -51,7 +51,7 @@ namespace VDS.RDF.Graphs
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
     public abstract class BaseGraph 
-        : IGraph, IEventedGraph
+        : NodeFactory, IEventedGraph
 #if !SILVERLIGHT
         ,ISerializable
 #endif
@@ -250,70 +250,6 @@ namespace VDS.RDF.Graphs
         #region Node Creation
 
         /// <summary>
-        /// Creates a new blank node with an auto-generated ID
-        /// </summary>
-        /// <returns>Blank node</returns>
-        public virtual INode CreateBlankNode()
-        {
-            return new BlankNode(Guid.NewGuid());
-        }
-
-        /// <summary>
-        /// Creates a new blank node with the given ID
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <returns>Blank node</returns>
-        public virtual INode CreateBlankNode(Guid id)
-        {
-            return new BlankNode(id);
-        }
-
-        /// <summary>
-        /// Creates a new literal node with the given Value
-        /// </summary>
-        /// <param name="literal">String value of the Literal</param>
-        /// <returns>Literal node</returns>
-        public virtual INode CreateLiteralNode(String literal)
-        {
-            return new LiteralNode(literal);
-        }
-
-        /// <summary>
-        /// Creates a new literal node with the given value and language specifier
-        /// </summary>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">Language Specifier of the Literal</param>
-        /// <returns>Language specified literal node</returns>
-        public virtual INode CreateLiteralNode(String literal, String langspec)
-        {
-            return new LiteralNode(literal, langspec);
-        }
-
-        /// <summary>
-        /// Creates a new literal node with the given value and data type
-        /// </summary>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">URI of the Data Type</param>
-        /// <returns>Typed literal node</returns>
-        public virtual INode CreateLiteralNode(String literal, Uri datatype)
-        {
-            return new LiteralNode(literal, datatype);
-        }
-
-        /// <summary>
-        /// Creates a new URI Node with the given URI
-        /// </summary>
-        /// <param name="uri">URI for the Node</param>
-        /// <returns>URI Node</returns>
-        /// <remarks>
-        /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined. In the case of relative URIs issues may occur when trying to serialize the data or when accurate round tripping is required.
-        /// </remarks>
-        public virtual INode CreateUriNode(Uri uri)
-        {
-            return new UriNode(uri);
-        }
-
-        /// <summary>
         /// Creates a new URI Node with the given prefixed name
         /// </summary>
         /// <param name="prefixedName">Prefixed name for the Node</param>
@@ -322,35 +258,6 @@ namespace VDS.RDF.Graphs
         public virtual INode CreateUriNode(String prefixedName)
         {
             return new UriNode(UriFactory.ResolvePrefixedName(prefixedName, this._nsmapper, null));
-        }
-
-        /// <summary>
-        /// Creates a new Variable Node
-        /// </summary>
-        /// <param name="varname">Variable Name</param>
-        /// <returns>Variable Node</returns>
-        public virtual INode CreateVariableNode(String varname)
-        {
-            return new VariableNode(varname);
-        }
-
-        /// <summary>
-        /// Creates a new Graph Literal Node with its value being an Empty Subgraph
-        /// </summary>
-        /// <returns>Graph Literal Node</returns>
-        public virtual INode CreateGraphLiteralNode()
-        {
-            return new GraphLiteralNode(new Graph());
-        }
-
-        /// <summary>
-        /// Creates a new Graph Literal Node with its value being the given Subgraph
-        /// </summary>
-        /// <param name="subgraph">Subgraph this Node represents</param>
-        /// <returns></returns>
-        public virtual INode CreateGraphLiteralNode(IGraph subgraph)
-        {
-            return new GraphLiteralNode(subgraph);
         }
 
         #endregion

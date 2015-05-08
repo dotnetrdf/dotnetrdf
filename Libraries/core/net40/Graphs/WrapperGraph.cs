@@ -219,6 +219,17 @@ namespace VDS.RDF.Graphs
         }
 
         /// <summary>
+        /// Indicates whether this factory produces RDF 1.1 literals
+        /// </summary>
+        /// <remarks>
+        /// If true then calling <see cref="CreateLiteralNode(string)"/> will produce a literal typed as xsd:string and calling <see cref="CreateLiteralNode(string,string)"/> will produce a literal typed as rdf:langString.  If false then literals are created only with the fields provided.
+        /// </remarks>
+        public virtual bool CreatesImplicitlyTypedLiterals
+        {
+            get { return this._g.CreatesImplicitlyTypedLiterals; }
+        }
+
+        /// <summary>
         /// Creates a new Blank Node
         /// </summary>
         /// <returns></returns>

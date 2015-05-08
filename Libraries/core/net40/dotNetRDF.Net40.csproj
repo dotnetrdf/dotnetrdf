@@ -100,6 +100,7 @@
     <Compile Include="Graphs\IQuadStore.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="LiteralExtensions.cs" />
+    <Compile Include="Nodes\ComparisonHelper.cs" />
     <Compile Include="Nodes\DateNode.cs" />
     <Compile Include="Nodes\FastNodeComparer.cs" />
     <Compile Include="Nodes\IBlankNodeGenerator.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Nodes\TimeSpanNode.cs" />
     <Compile Include="Collections\GraphCollection.cs" />
     <Compile Include="Nodes\UnsignedLongNode.cs" />
+    <Compile Include="Nodes\UriComparer.cs" />
     <Compile Include="Writing\Formatting\IQuadFormatter.cs" />
     <Compile Include="NamespaceDocs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

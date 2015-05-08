@@ -111,10 +111,7 @@ namespace VDS.RDF.Graphs
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
         public override void Assert(IEnumerable<Triple> ts)
         {
-            foreach (Triple t in ts)
-            {
-                this.Assert(t);
-            }
+            this._triples.AddRange(ts);
         }
 
         /// <summary>
@@ -133,10 +130,7 @@ namespace VDS.RDF.Graphs
         /// <param name="ts">Enumeration of Triples to retract</param>
         public override void Retract(IEnumerable<Triple> ts)
         {
-            foreach (Triple t in ts)
-            {
-                this.Retract(t);
-            }
+            this._triples.RemoveRange(ts);
         }
 
         #endregion

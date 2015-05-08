@@ -24,12 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Graphs;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -74,6 +70,11 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         #region INodeFactory Members
+
+        public virtual bool CreatesImplicitlyTypedLiterals
+        {
+            get { return this._factory.CreatesImplicitlyTypedLiterals; }
+        }
 
         /// <summary>
         /// Creates a Blank Node

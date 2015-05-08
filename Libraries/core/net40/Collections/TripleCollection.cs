@@ -63,6 +63,7 @@ namespace VDS.RDF.Collections
             if (!this.Contains(t))
             {
                 this._triples.Add(t, null);
+                this.RaiseTripleAdded(t);
                 return true;
             }
             return false;
@@ -77,6 +78,7 @@ namespace VDS.RDF.Collections
         {
             if (this._triples.Remove(t))
             {
+                this.RaiseTripleRemoved(t);
                 return true;
             }
             return false;

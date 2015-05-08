@@ -34,6 +34,14 @@ namespace VDS.RDF.Nodes
     public interface INodeFactory
     {
         /// <summary>
+        /// Indicates whether this factory produces RDF 1.1 literals
+        /// </summary>
+        /// <remarks>
+        /// If true then calling <see cref="CreateLiteralNode(string)"/> will produce a literal typed as xsd:string and calling <see cref="CreateLiteralNode(string,string)"/> will produce a literal typed as rdf:langString.  If false then literals are created only with the fields provided.
+        /// </remarks>
+        bool CreatesImplicitlyTypedLiterals { get; }
+
+        /// <summary>
         /// Creates a Blank Node with a new automatically generated ID
         /// </summary>
         /// <returns></returns>
