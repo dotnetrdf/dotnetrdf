@@ -83,7 +83,6 @@ namespace VDS.RDF.Query
 
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
         private List<String> _commandText = new List<String>();
-        private HashSet<int> _placeHolders = new HashSet<int>();
         private readonly Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private readonly Dictionary<String, INode> _variables = new Dictionary<string, INode>();
 
@@ -186,7 +185,6 @@ namespace VDS.RDF.Query
         {
             // Merges the instances caches and placeholders
             int offset = _commandText.Count;
-            _placeHolders.UnionWith(text._placeHolders.Select(index => index + offset));
             _commandText.AddRange(text._commandText);
             // Update the namespaces
             _nsmap.Import(text.Namespaces);
@@ -601,7 +599,7 @@ namespace VDS.RDF.Query
         /// </summary>
         private void ResetText()
         {
-            this._placeHolders.Clear();
+            //this._placeHolders.Clear();
             this._commandText.Clear();
         }
 
@@ -630,7 +628,7 @@ namespace VDS.RDF.Query
             }
             return value.Substring(commandStart);
         }
-        
+
         /// <summary>
         /// Provides some fast string exploration to determine valid parameter/variable placeholders and leave out any constant SPARQL ambiguous patterns (language tags, parameter- or variable-like patterns in IRIs or in string literals...)
         /// </summary>
@@ -723,10 +721,9 @@ namespace VDS.RDF.Query
                                         break;
                                     }
                                 }
-                                // stop the capture and tag a placeHolder
+                                // stop the capture 
                                 // TODO should we check that the identifier is not empty, just to be sure ?
                                 String assignment = currentSegment.ToString();
-                                _placeHolders.Add(_commandText.Count);//, assignment);
                                 _commandText.Add(assignment);
 #if NET40 || SILVERLIGHT || WINDOWS_PHONE
                                 currentSegment.Clear();
@@ -734,8 +731,8 @@ namespace VDS.RDF.Query
                                 currentSegment = new StringBuilder();
 #endif
                                 // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
-                                if (i<l-1) currentSegment.Append(value[i]);
- 
+                                if (i < l - 1) currentSegment.Append(value[i]);
+
                                 // nothing more to do here
                                 continue;
                             }
@@ -745,7 +742,6 @@ namespace VDS.RDF.Query
                         if (inIri)
                         {
                             // check wether the character is a valid in IRIs
-                            // TODO validate that the char array is correct
                             if (Char.IsControl(c) || _invalidIRICharacters.Contains(c))
                             {
                                 inIri = false;
@@ -755,7 +751,7 @@ namespace VDS.RDF.Query
                 }
                 currentSegment.Append(c);
             }
-            _commandText.Add(currentSegment.ToString());
+            if (currentSegment.Length > 0) _commandText.Add(currentSegment.ToString());
         }
 
         /// <summary>
@@ -779,41 +775,40 @@ namespace VDS.RDF.Query
             }
 
             //Then append the text with variable and parameters replaced by their values if set
+            INode value = null;
             for (int i = 0, l = _commandText.Count; i < l; i++)
             {
-                if (!_placeHolders.Contains(i)) {
-                    output.Append(_commandText[i]);
-                }
-                else
+                String segment = _commandText[i];
+                switch (segment[0])
                 {
-                    String assignment = _commandText[i];
-                    String name = assignment.Substring(1);
-                    INode value = null;
-                    switch (_commandText[i][0])
-                    {
-                        case '@':
-                            this._parameters.TryGetValue(name, out value);
-                            if (value != null)
-                            {
-                                output.Append(this._formatter.Format(value));
-                            }
-                            else
-                            {
-                                output.Append(assignment);
-                            }
-                            break;
-                        default:
-                            this._variables.TryGetValue(name, out value);
-                            if (value != null)
-                            {
-                                output.Append(this._formatter.Format(value));
-                            }
-                            else
-                            {
-                                output.Append(assignment);
-                            }
-                            break;
-                    }
+                    case '@':
+                        String paramName = segment.Substring(1);
+                        this._parameters.TryGetValue(paramName, out value);
+                        if (value != null)
+                        {
+                            output.Append(this._formatter.Format(value));
+                        }
+                        else
+                        {
+                            output.Append(segment);
+                        }
+                        break;
+                    case '?':
+                    case '$':
+                        String varName = segment.Substring(1);
+                        this._variables.TryGetValue(varName, out value);
+                        if (value != null)
+                        {
+                            output.Append(this._formatter.Format(value));
+                        }
+                        else
+                        {
+                            output.Append(segment);
+                        }
+                        break;
+                    default:
+                        output.Append(_commandText[i]);
+                        break;
                 }
             }
             return output.ToString();
