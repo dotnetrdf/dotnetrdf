@@ -26,8 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Xml;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Spin.Model;
@@ -306,44 +309,211 @@ namespace VDS.RDF.Query.Spin.Utility
 
         #region Literal nodes utility
 
-        public static int? AsInteger(object value, int? defaultValue = null)
+        /// <summary>
+        /// Takes a <see cref="INode">INode</see> and converts it to a <see cref="IValuedNode">IValuedNode</see> if it is not already an instance that implements the interface
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns>Valued Node</returns>
+        public static Object AsPrimitive(this INode n)
         {
-            if (value == null) return defaultValue;
-            if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
-            if (!(value is IValuedNode)) return defaultValue;
-            return (int)((IValuedNode)value).AsInteger();
-        }
+            if (n == null) return null;
 
-        public static long? AsLong(object value, long? defaultValue = null)
-        {
-            if (value == null) return defaultValue;
-            if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
-            if (!(value is IValuedNode)) return defaultValue;
-            return ((IValuedNode)value).AsInteger();
-        }
-
-        public static String AsString(object value, String defaultValue = null)
-        {
-            if (value == null) return defaultValue;
-            if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
-            if (!(value is IValuedNode)) return defaultValue;
-            return ((IValuedNode)value).AsString();
-        }
-
-        public static bool? AsBoolean(object value, bool? defaultValue = null)
-        {
-            if (value == null) return defaultValue;
-            if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
-            if (!(value is IValuedNode)) return defaultValue;
-            return ((IValuedNode)value).AsBoolean();
-        }
-
-        public static float? AsFloat(object value, float? defaultValue = null)
-        {
-            if (value == null || !(value is IValuedNode)) return defaultValue;
-            if (value is ILiteralNode) value = ((ILiteralNode)value).AsValuedNode();
-            if (!(value is IValuedNode)) return defaultValue;
-            return ((IValuedNode)value).AsFloat();
+            switch (n.NodeType)
+            {
+                case NodeType.Blank:
+                    IBlankNode b = (IBlankNode)n;
+                    return b;
+                case NodeType.GraphLiteral:
+                    IGraphLiteralNode glit = (IGraphLiteralNode)n;
+                    return glit.SubGraph.BaseUri;
+                case NodeType.Literal:
+                    ILiteralNode lit = (ILiteralNode)n;
+                    //Decide what kind of valued node to produce based on node datatype
+                    if (lit.DataType != null)
+                    {
+                        String dt = lit.DataType.AbsoluteUri;
+                        switch (dt)
+                        {
+                            case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
+                                bool bVal;
+                                if (Boolean.TryParse(lit.Value, out bVal))
+                                {
+                                    return bVal;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeByte:
+                                //xsd:byte actually maps to SignedByte in .Net
+                                sbyte sbVal;
+                                if (sbyte.TryParse(lit.Value, out sbVal))
+                                {
+                                    return sbVal;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                                DateTime date;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
+                                {
+                                    return date;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                DateTime dateTime;
+                                if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
+                                {
+                                    return dateTime;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
+                            case XmlSpecsHelper.XmlSchemaDataTypeDuration:
+                                TimeSpan timeSpan;
+                                try
+                                {
+                                    timeSpan = XmlConvert.ToTimeSpan(lit.Value);
+                                    return timeSpan;
+                                }
+                                catch
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
+                                Decimal dec;
+                                if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
+                                {
+                                    return dec;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDouble:
+                                Double dbl;
+                                if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                                {
+                                    return dbl;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                                Single flt;
+                                if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out flt))
+                                {
+                                    return flt;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeInt:
+                            case XmlSpecsHelper.XmlSchemaDataTypeInteger:
+                            case XmlSpecsHelper.XmlSchemaDataTypeLong:
+                            case XmlSpecsHelper.XmlSchemaDataTypeShort:
+                                long lng;
+                                if (Int64.TryParse(lit.Value, out lng))
+                                {
+                                    return lng;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
+                            case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
+                                //Must be below zero
+                                long neglng;
+                                if (Int64.TryParse(lit.Value, out neglng) && neglng < 0)
+                                {
+                                    return neglng;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
+                            case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
+                                //Must be above zero
+                                long poslng;
+                                if (Int64.TryParse(lit.Value, out poslng) && poslng >= 0)
+                                {
+                                    return poslng;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
+                                //xsd:unsignedByte actually maps to Byte in .Net
+                                byte byVal;
+                                if (byte.TryParse(lit.Value, out byVal))
+                                {
+                                    return byVal;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
+                            case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
+                            case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
+                                //Must be unsigned
+                                ulong ulng;
+                                if (UInt64.TryParse(lit.Value, out ulng))
+                                {
+                                    return ulng;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            default:
+                                if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
+                                {
+                                    long l;
+                                    if (Int64.TryParse(lit.Value, out l))
+                                    {
+                                        return l;
+                                    }
+                                    else
+                                    {
+                                        return null;
+                                    }
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                        }
+                    }
+                    else if (!lit.Language.Equals(String.Empty))
+                    {
+                        return new StringNode(n.Graph, lit.Value, lit.Language);
+                    }
+                    else
+                    {
+                        return new StringNode(n.Graph, lit.Value);
+                    }
+                case NodeType.Uri:
+                    IUriNode u = (IUriNode)n;
+                    return u.Uri;
+                case NodeType.Variable:
+                    IVariableNode v = (IVariableNode)n;
+                    return null;
+                default:
+                    throw new RdfQueryException("Cannot create a native value node for an unknown node type");
+            }
         }
 
         #endregion Literal nodes utility

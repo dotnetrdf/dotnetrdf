@@ -39,6 +39,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using VDS.RDF.Query.Spin.Utility;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Spin.Model
 {
@@ -265,22 +266,30 @@ namespace VDS.RDF.Query.Spin.Model
 
         public bool? GetBoolean(INode property)
         {
-            return RDFHelper.AsBoolean(GetLiteral(property));
+            IValuedNode value = GetLiteral(property).AsValuedNode();
+            if (value == null) return null;
+            return (bool?)value.AsBoolean();
         }
 
         public int? GetInteger(INode property)
         {
-            return RDFHelper.AsInteger(GetLiteral(property));
+            IValuedNode value = GetLiteral(property).AsValuedNode();
+            if (value == null) return null;
+            return (int?)value.AsInteger();
         }
 
         public long? GetLong(INode property)
         {
-            return RDFHelper.AsLong(GetLiteral(property));
+            IValuedNode value = GetLiteral(property).AsValuedNode();
+            if (value == null) return null;
+            return value.AsInteger();
         }
 
         public String GetString(INode property)
         {
-            return RDFHelper.AsString(GetLiteral(property));
+            IValuedNode value = GetLiteral(property).AsValuedNode();
+            if (value == null) return null;
+            return value.AsString();
         }
 
         public IResource InferRDFNode(INode property)
