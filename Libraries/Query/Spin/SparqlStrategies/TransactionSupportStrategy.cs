@@ -696,7 +696,7 @@ DROP SILENT GRAPH @RdfNull;
             /// TODO handle the DESCRIBE case (that one will be tricky :( )
             private SparqlQuery RewriteQuery(SparqlQuery query)
             {
-                SparqlQuery rewrittenQuery = query.Copy();
+                SparqlQuery rewrittenQuery = query.CopyWithExplicitVariables();
                 GraphPattern rewrittenPattern = RewriteReadGraphPattern(rewrittenQuery.RootGraphPattern);
                 GraphPattern commandPattern = AddGraphBindings(new HashSet<GraphPattern>() { rewrittenPattern });
                 commandPattern.AddGraphPattern(rewrittenPattern);
@@ -917,7 +917,7 @@ DROP SILENT GRAPH @RdfNull;
                         _compilationGraphVarTokens.Push(new HashSet<IToken>());
 
                         SparqlQuery subQuery = RewriteQuery(((SubQueryPattern)pattern).SubQuery);
-                        output.AddTriplePattern(new SubQueryPattern(subQuery));
+                        output.AddTriplePattern(new SubQueryPattern(subQuery.AsSubQuery()));
 
                         _defaultGraphVarTokens.Pop();
                         _namedGraphVarTokens.Pop();
@@ -1191,6 +1191,7 @@ DROP SILENT GRAPH @RdfNull;
             /// <param name="bindingExpressions"></param>
             /// <returns></returns>
             /// TODO find a way to batch this;
+            /// TODO using bindings to compute this goes against the fucking w3c SPARQL spec since bindings won't allow to evaluate expressions whose variables are not used 
             private IEnumerable<Uri> ComputeGraphBindings(String sourceVar, IEnumerable<Uri> sourceGraph, IEnumerable<BindPattern> bindingExpressions)
             {
                 SparqlQuery localEvaluationQuery = new SparqlQueryParser().ParseFromString("SELECT DISTINCT * WHERE {}");
@@ -1202,6 +1203,7 @@ DROP SILENT GRAPH @RdfNull;
                     {
                         ((List<BindingTuple>)localEvaluationQuery.Bindings.Tuples).Add(new BindingTuple(varList, new List<PatternItem>() { new NodeMatchPattern(RDFHelper.CreateUriNode(graphUri)) }));
                     }
+                    ((List<BindingTuple>)localEvaluationQuery.Bindings.Tuples).Add(new BindingTuple(varList, new List<PatternItem>() { null }));
                 }
                 foreach (BindPattern bindingExpression in bindingExpressions)
                 {
