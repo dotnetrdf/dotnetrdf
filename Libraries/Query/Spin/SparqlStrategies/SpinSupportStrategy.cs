@@ -309,13 +309,13 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                 List<object> rewrittenPatterns = new List<object>();
                 // TODO use organization of the graph pattern
                 if (pattern == null) return rewrittenPatterns;
-                for (int i = 0, l = pattern.ChildGraphPatterns.Count; i < l; i++)
-                {
-                    rewrittenPatterns.AddRange(Rewrite(pattern.ChildGraphPatterns[i]));
-                }
                 for (int i = 0, l = pattern.TriplePatterns.Count; i < l; i++)
                 {
                     rewrittenPatterns.AddRange(Rewrite(pattern.TriplePatterns[i]));
+                }
+                for (int i = 0, l = pattern.ChildGraphPatterns.Count; i < l; i++)
+                {
+                    rewrittenPatterns.AddRange(Rewrite(pattern.ChildGraphPatterns[i]));
                 }
                 foreach (IAssignmentPattern assignment in pattern.UnplacedAssignments)
                 {
@@ -326,10 +326,6 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                     rewrittenPatterns.AddRange(Rewrite(pattern.Filter));
                 }
                 GraphPattern rewritenPattern = pattern.Clone(true);
-                foreach (GraphPattern o in rewrittenPatterns.Where(o => o is GraphPattern).ToList())
-                {
-                    rewritenPattern.AddGraphPattern((GraphPattern)o);
-                }
                 foreach (object o in rewrittenPatterns.Where(o => !(o is GraphPattern)))
                 {
                     if (o is ITriplePattern)
@@ -341,6 +337,10 @@ namespace VDS.RDF.Query.Spin.SparqlStrategies
                         // appends the filter to the pattern
                         rewritenPattern.AddFilter((ISparqlFilter)o);
                     }
+                }
+                foreach (GraphPattern o in rewrittenPatterns.Where(o => o is GraphPattern).ToList())
+                {
+                    rewritenPattern.AddGraphPattern((GraphPattern)o);
                 }
                 return new List<object>() { rewritenPattern };
             }
