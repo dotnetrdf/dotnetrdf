@@ -497,13 +497,9 @@ namespace VDS.RDF.Query.Spin.Utility
                                 }
                         }
                     }
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        return new StringNode(n.Graph, lit.Value, lit.Language);
-                    }
                     else
                     {
-                        return new StringNode(n.Graph, lit.Value);
+                        return lit.Value;
                     }
                 case NodeType.Uri:
                     IUriNode u = (IUriNode)n;
