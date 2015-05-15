@@ -114,6 +114,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             foreach (String file in Directory.GetFiles(dir, pattern))
             {
+// ReSharper disable once AssignNullToNotNullAttribute
                 this.RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".nt"), shouldParse);
             }
         }
@@ -136,6 +137,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             foreach (String file in Directory.GetFiles(dir).Where(isTest))
             {
+// ReSharper disable once AssignNullToNotNullAttribute
                 this.RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + FileExtension), shouldParse);
             }
         }
@@ -162,19 +164,6 @@ namespace VDS.RDF.Parsing.Suites
             manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
             manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
 
-            const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> 
-prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
-prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
-SELECT ?name ?input ?comment ?result
-WHERE
-{
-  ?test mf:action [ qt:data ?input ] .
-  OPTIONAL { ?test mf:name ?name }
-  OPTIONAL { ?test rdfs:comment ?comment }
-  OPTIONAL { ?test mf:result ?result }
-}";
-
             foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {
                 Triple nameTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:name")).FirstOrDefault();
@@ -193,16 +182,24 @@ WHERE
                 this.RunTest(name, comment, input, results, shouldParse);
             }
         }
-        
+
         /// <summary>
         /// Runs all tests found in the manifest, determines whether a test should pass/fail based on the test information
         /// </summary>
         /// <param name="file">Manifest file</param>
+        /// <param name="positiveSyntaxTest">Type node that represents positive syntax tests</param>
+        /// <param name="negativeSyntaxTest">Type node that represents negative syntax tests</param>
         protected void RunManifest(String file, INode positiveSyntaxTest, INode negativeSyntaxTest)
         {
             this.RunManifest(file, new INode[] { positiveSyntaxTest }, new INode[] { negativeSyntaxTest });
         }
 
+        /// <summary>
+        /// Runs all tests found in the manifest, determines whether a test should pass/fail based on the test information
+        /// </summary>
+        /// <param name="file">Manifest file</param>
+        /// <param name="positiveSyntaxTests">Type nodes that represents positive syntax tests</param>
+        /// <param name="negativeSyntaxTests">Type nodes that represents negative syntax tests</param>
         protected void RunManifest(String file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
         {
             if (!File.Exists(file))
@@ -225,22 +222,6 @@ WHERE
             manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
             manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
 
-            const string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
-prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
-prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
-prefix rdft:   <http://www.w3.org/ns/rdftest#>
-SELECT ?name ?input ?comment ?result ?type
-WHERE
-{
-  { ?test mf:action [ qt:data ?input ] . }
-  UNION
-  { ?test mf:action ?input . FILTER(!ISBLANK(?input)) }
-  OPTIONAL { ?test a ?type }
-  OPTIONAL { ?test mf:name ?name }
-  OPTIONAL { ?test rdfs:comment ?comment }
-  OPTIONAL { ?test mf:result ?result }
-}";
             foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {
                 Triple nameTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:name")).FirstOrDefault();
@@ -264,7 +245,7 @@ WHERE
                 Triple resultsTriple = manifest.GetTriplesWithSubjectPredicate(testTriple.Subject, manifest.CreateUriNode("mf:result")).FirstOrDefault();
                 String results = resultsTriple != null && resultsTriple.Object.NodeType == NodeType.Literal ? this.GetFile(resultsTriple.Object) : null;
 
-                bool? shouldParse = results != null ? true : false;
+                bool? shouldParse = results != null;
                 if (!shouldParse.Value)
                 {
                     //No results declared so may be a positive/negative syntax test
@@ -279,9 +260,7 @@ WHERE
                         shouldParse = true;
                     }
                     else if (negativeSyntaxTests.Contains(typeTriple.Object))
-                    {
-                        shouldParse = false;
-                    }
+                    {}
                     else
                     {
                         //Unable to determine what the expected result is

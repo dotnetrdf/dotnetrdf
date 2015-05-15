@@ -48,8 +48,6 @@ namespace VDS.RDF.Graphs
         , IXmlSerializable
 #endif
     {
-        #region Properties
-
         /// <summary>
         /// Gets the number of triples in the graph
         /// </summary>
@@ -109,10 +107,6 @@ namespace VDS.RDF.Graphs
         /// </summary>
         IGraphCapabilities Capabilities { get; }
 
-        #endregion
-
-        #region Assertion & Retraction
-
         /// <summary>
         /// Asserts a Triple in the Graph
         /// </summary>
@@ -142,20 +136,12 @@ namespace VDS.RDF.Graphs
         /// </summary>
         void Clear();
 
-        #endregion
-
-        #region Node Creation
-
         /// <summary>
         /// Creates a URI Node for the given prefixed name using the graphs associated namespace map to resolve the prefixed name
         /// </summary>
         /// <param name="prefixedName">Prefixed name</param>
         /// <returns>URI Node</returns>
         INode CreateUriNode(string prefixedName);
-
-        #endregion
-
-        #region Selection
 
         /// <summary>
         /// Finds triples matching the given search criteria i.e. those where the given nodes occur in the appropriate position(s).  Null values are treated as wildcards for a position.
@@ -173,60 +159,6 @@ namespace VDS.RDF.Graphs
         /// <returns></returns>
         bool ContainsTriple(Triple t);
 
-        #endregion
-
-        #region Advanced Graph Operations
-
-        /// <summary>
-        /// Checks whether a Graph is equal to another Graph and if so returns the mapping of Blank Nodes
-        /// </summary>
-        /// <param name="g">Graph to compare with</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        bool Equals(IGraph g, out Dictionary<INode, INode> mapping);
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        bool IsSubGraphOf(IGraph g);
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping);
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        bool HasSubGraph(IGraph g);
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping);
-
-        /// <summary>
-        /// Calculates the difference between this Graph and the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
-        /// </para>
-        /// </remarks>
-        GraphDiffReport Difference(IGraph g);
-
 #if !NO_DATA
 
         /// <summary>
@@ -239,7 +171,5 @@ namespace VDS.RDF.Graphs
         DataTable ToDataTable();
 
 #endif
-
-        #endregion
     }
 }

@@ -267,20 +267,11 @@
     <Compile Include="..\net40\Graphs\Graph.cs">
       <Link>Graphs\Graph.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Graphs\GraphDiff.cs">
-      <Link>Graphs\GraphDiff.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Graphs\GraphMatcher.cs">
-      <Link>Graphs\GraphMatcher.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Graphs\IGraph.cs">
       <Link>Graphs\IGraph.cs</Link>
     </Compile>
     <Compile Include="..\net40\Graphs\IGraphStore.cs">
       <Link>Graphs\IGraphStore.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Graphs\SubGraphMatcher.cs">
-      <Link>Graphs\SubGraphMatcher.cs</Link>
     </Compile>
     <Compile Include="..\net40\Graphs\ThreadSafeGraph.cs">
       <Link>Graphs\ThreadSafeGraph.cs</Link>
@@ -387,6 +378,47 @@
   <ItemGroup>
     <Compile Include="..\net40\Collections\TrieIndexedTripleCollection.cs">
       <Link>Collections\TrieIndexedTripleCollection.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Graphs\GraphAccessMode.cs">
+      <Link>Graphs\GraphAccessMode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\IEventedGraph.cs">
+      <Link>Graphs\IEventedGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\IGraphCapabilities.cs">
+      <Link>Graphs\IGraphCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ITransactionalGraph.cs">
+      <Link>Graphs\ITransactionalGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ReadOnlyGraph.cs">
+      <Link>Graphs\ReadOnlyGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\ReadOnlyCapabilities.cs">
+      <Link>Graphs\Utilities\ReadOnlyCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\TripleCollectionCapabilities.cs">
+      <Link>Graphs\Utilities\TripleCollectionCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\WrapperCapabilities.cs">
+      <Link>Graphs\Utilities\WrapperCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\ComparisonHelper.cs">
+      <Link>Nodes\ComparisonHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\UriComparer.cs">
+      <Link>Nodes\UriComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\GraphDiff.cs">
+      <Link>Graphs\Utilities\GraphDiff.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\GraphMatcher.cs">
+      <Link>Graphs\Utilities\GraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\SubGraphMatcher.cs">
+      <Link>Graphs\Utilities\SubGraphMatcher.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

@@ -29,16 +29,12 @@ using System.Collections.Specialized;
 #if !NO_DATA
 using System.Data;
 #endif
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Graphs
 {
@@ -70,9 +66,9 @@ namespace VDS.RDF.Graphs
         /// Creates a new wrapper around the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
-        public WrapperGraph(IGraph g)
+        protected WrapperGraph(IGraph g)
         {
-            if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
+            if (g == null) throw new ArgumentNullException("g", "Wrapped Graph cannot be null");
             this._g = g;
 
             this._changedHandler = this.HandleCollectionChanged;
@@ -97,8 +93,6 @@ namespace VDS.RDF.Graphs
         }
 
 #endif
-
-        #region Wrappers around all the standard IGraph stuff
 
         /// <summary>
         /// Gets the number of triples in the graph
@@ -364,123 +358,7 @@ namespace VDS.RDF.Graphs
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (obj is IGraph)
-            {
-                Dictionary<INode, INode> temp;
-                return this.Equals((IGraph)obj, out temp);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Determines whether this Graph is equal to the given Graph
-        /// </summary>
-        /// <param name="g">Graph to test for equality</param>
-        /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll - <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a>
-        /// </para>
-        /// <para>
-        /// Graph Equality is determined according to the following algorithm:
-        /// </para>
-        /// <ol>
-        /// <li>If the given Graph is null Graphs are not equal</li>
-        /// <li>If the given Graph is this Graph (as determined by Reference Equality) then Graphs are equal</li>
-        /// <li>If the Graphs have a different number of Triples they are not equal</li>
-        /// <li>Declare a list of Triples which are the Triples of the given Graph called <em>OtherTriples</em></li>
-        /// <li>Declare two dictionaries of Nodes to Integers which are called <em>LocalClassification</em> and <em>OtherClassification</em></li>
-        /// <li>For Each Triple in this Graph
-        ///     <ol>
-        ///     <li>If it is a Ground Triple and cannot be found and removed from <em>OtherTriples</em> then Graphs are not equal since the Triple does not exist in both Graphs</li>
-        ///     <li>If it contains Blank Nodes track the number of usages of this Blank Node in <em>LocalClassification</em></li>
-        ///     </ol>
-        /// </li> 
-        /// <li>If there are any Triples remaining in <em>OtherTriples</em> which are Ground Triples then Graphs are not equal since this Graph does not contain them</li>
-        /// <li>If all the Triples from both Graphs were Ground Triples and there were no Blank Nodes then the Graphs are equal</li>
-        /// <li>Iterate over the remaining Triples in <em>OtherTriples</em> and populate the <em>OtherClassification</em></li>
-        /// <li>If the count of the two classifications is different the Graphs are not equal since there are differing numbers of Blank Nodes in the Graph</li>
-        /// <li>Now build two additional dictionaries of Integers to Integers which are called <em>LocalDegreeClassification</em> and <em>OtherDegreeClassification</em>.  Iterate over <em>LocalClassification</em> and <em>OtherClassification</em> such that the corresponding degree classifications contain a mapping of the number of Blank Nodes with a given degree</li>
-        /// <li>If the count of the two degree classifications is different the Graphs are not equal since there are not the same range of Blank Node degrees in both Graphs</li>
-        /// <li>For All classifications in <em>LocalDegreeClassification</em> there must be a matching classification in <em>OtherDegreeClassification</em> else the Graphs are not equal</li>
-        /// <li>Then build a possible mapping using the following rules:
-        ///     <ol>
-        ///     <li>Any Blank Node used only once should be mapped to an equivalent Blank Node in the other Graph.  If this is not possible then the Graphs are not equal</li>
-        ///     <li>Any Blank Node with a unique degree should be mapped to an equivalent Blank Node in the other Graph.  If this is not possible then the Graphs are not equal</li>
-        ///     <li>Keep a copy of the mapping up to this point as a Base Mapping for use as a fallback in later steps</li>
-        ///     <li>Build up lists of dependent pairs of Blank Nodes for both Graphs</li>
-        ///     <li>Use these lists to determine if there are any independent nodes not yet mapped.  These should be mapped to equivalent Blank Nodes in the other Graph, if this is not possible the Graphs are not equal</li>
-        ///     <li>Use the Dependencies and existing mappings to generate a possible mapping</li>
-        ///     <li>If a Complete Possible Mapping (there is a Mapping for each Blank Node from this Graph to the Other Graph) then test this mapping.  If it succeeds then the Graphs are equal</li>
-        ///     <li>Otherwise we now fallback to the Base Mapping and use it as a basis for Brute Forcing the possible solution space and testing every possibility until either a mapping works or we find the Graphs to be non-equal</li>
-        ///     </ol>
-        /// </li>
-        /// </ol>
-        /// </remarks>
-        public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            return this._g.Equals(g, out mapping);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        public virtual bool IsSubGraphOf(IGraph g)
-        {
-            return this._g.IsSubGraphOf(g);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        public virtual bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            return this._g.IsSubGraphOf(g, out mapping);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        public virtual bool HasSubGraph(IGraph g)
-        {
-            return this._g.HasSubGraph(g);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        public virtual bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            return this._g.HasSubGraph(g, out mapping);
-        }
-
-        /// <summary>
-        /// Computes the Difference between this Graph the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
-        /// </para>
-        /// </remarks>
-        public virtual GraphDiffReport Difference(IGraph g)
-        {
-            return this._g.Difference(g);
+            return ReferenceEquals(this, obj);
         }
 
 #if !NO_DATA
@@ -496,10 +374,14 @@ namespace VDS.RDF.Graphs
 
 #endif
 
-        #endregion
-
+        /// <summary>
+        /// Event which is raised when the graph changes
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
+        /// <summary>
+        /// Gets whether the graph has events
+        /// </summary>
         public virtual bool HasEvents
         {
             get
@@ -508,6 +390,11 @@ namespace VDS.RDF.Graphs
             }
         }
 
+        /// <summary>
+        /// Helper method uses to handle the <see cref="INotifyCollectionChanged.CollectionChanged"/> from the wrapped graph and propagate it to this graphs <see cref="CollectionChanged"/> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         private void HandleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
         {
             NotifyCollectionChangedEventHandler d = this.CollectionChanged;
@@ -517,9 +404,13 @@ namespace VDS.RDF.Graphs
             }
         }
 
+        /// <summary>
+        /// Attaches event handles to the underlying graph
+        /// </summary>
         protected void AttachEventHandlers()
         {
             IEventedGraph e = this._g as IEventedGraph;
+            if (e == null) return;
             if (e.HasEvents)
             {
                 e.CollectionChanged += this._changedHandler;
@@ -536,8 +427,6 @@ namespace VDS.RDF.Graphs
 
 #if !SILVERLIGHT
 
-        #region ISerializable Members
-
         /// <summary>
         /// Gets the Serialization Information
         /// </summary>
@@ -548,10 +437,6 @@ namespace VDS.RDF.Graphs
             info.AddValue("graphType", this._g.GetType().AssemblyQualifiedName);
             info.AddValue("innerGraph", this._g, typeof(IGraph));
         }
-
-        #endregion
-
-        #region IXmlSerializable Members
 
         /// <summary>
         /// Gets the Schema for XML serialization
@@ -607,8 +492,6 @@ namespace VDS.RDF.Graphs
             graphSerializer.Serialize(writer, this._g);
             writer.WriteEndElement();
         }
-
-        #endregion
 
 #endif
     }

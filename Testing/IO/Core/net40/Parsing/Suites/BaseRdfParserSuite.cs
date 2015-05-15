@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
+using VDS.RDF.Graphs.Utilities;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Suites

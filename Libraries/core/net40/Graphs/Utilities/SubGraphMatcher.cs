@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Graphs
+namespace VDS.RDF.Graphs.Utilities
 {
     /// <summary>
     /// Implements a Sub-Graph Isomorphism Algorithm
@@ -37,7 +37,6 @@ namespace VDS.RDF.Graphs
         //The Unbound and Bound lists refers to the Nodes of the Target Graph
         private List<INode> _unbound;
         private List<INode> _bound;
-        private Dictionary<INode, INode> _mapping;
         private List<Triple> _subTriples;
         private List<Triple> _parentTriples;
 
@@ -223,7 +222,7 @@ namespace VDS.RDF.Graphs
             //Start with new lists and dictionaries each time in case we get reused
             this._unbound = new List<INode>();
             this._bound = new List<INode>();
-            this._mapping = new Dictionary<INode, INode>();
+            this.Mapping = new Dictionary<INode, INode>();
             this._subTriples = new List<Triple>();
 
             //Initialise the Source Triples list
@@ -240,7 +239,7 @@ namespace VDS.RDF.Graphs
             List<Triple> targets = new List<Triple>(this._parentTriples);
             if (this._subTriples.All(t => targets.Remove(t.MapTriple(parent, trivialMapping))))
             {
-                this._mapping = trivialMapping;
+                this.Mapping = trivialMapping;
                 return true;
             }
 
@@ -256,29 +255,27 @@ namespace VDS.RDF.Graphs
                                 where t.Involves(pair.Key)
                                 select t).First();
 
-                foreach (INode n in this._unbound.Where(n => parentNodes[n] == pair.Value))
+                int v = pair.Value;
+                foreach (INode n in this._unbound.Where(n => parentNodes[n] == v))
                 {
                     //See if this Mapping works
-                    this._mapping.Add(pair.Key, n);
-                    if (this._parentTriples.Remove(toMap.MapTriple(parent, this._mapping)))
+                    this.Mapping.Add(pair.Key, n);
+                    if (this._parentTriples.Remove(toMap.MapTriple(parent, this.Mapping)))
                     {
                         this._subTriples.Remove(toMap);
                         this._bound.Add(n);
                         break;
                     }
-                    this._mapping.Remove(pair.Key);
+                    this.Mapping.Remove(pair.Key);
                 }
 
                 //If we couldn't map a single use Node then it's not a sub-graph
-                if (!this._mapping.ContainsKey(pair.Key))
+                if (!this.Mapping.ContainsKey(pair.Key))
                 {
                     return false;
                 }
-                else
-                {
-                    //Otherwise we can mark that Node as Bound
-                    this._unbound.Remove(this._mapping[pair.Key]);
-                }
+                //Otherwise we can mark that Node as Bound
+                this._unbound.Remove(this.Mapping[pair.Key]);
             }
 
             //If all the Nodes were used only once and we mapped them all then it's a sub-graph
@@ -299,7 +296,7 @@ namespace VDS.RDF.Graphs
                     if (x == null || y == null) return false;
 
                     //Add the Mapping
-                    this._mapping.Add(x, y);
+                    this.Mapping.Add(x, y);
                     this._bound.Add(y);
                     this._unbound.Remove(y);
                 }
@@ -367,40 +364,40 @@ namespace VDS.RDF.Graphs
             foreach (INode x in subIndependents)
             {
                 //They may already be mapped as they may be single use Triples
-                if (this._mapping.ContainsKey(x)) continue;
+                if (this.Mapping.ContainsKey(x)) continue;
 
                 List<Triple> xs = this._subTriples.Where(t => t.Involves(x)).ToList();
                 foreach (INode y in parentIndependents)
                 {
                     if (subNodes[x] != parentNodes[y]) continue;
 
-                    this._mapping.Add(x, y);
+                    this.Mapping.Add(x, y);
 
                     //Test the mapping
                     List<Triple> ys = this._parentTriples.Where(t => t.Involves(y)).ToList();
-                    if (xs.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
+                    if (xs.All(t => ys.Remove(t.MapTriple(parent, this.Mapping))))
                     {
                         //This is a valid mapping
-                        xs.ForEach(t => this._parentTriples.Remove(t.MapTriple(parent, this._mapping)));
+                        xs.ForEach(t => this._parentTriples.Remove(t.MapTriple(parent, this.Mapping)));
                         xs.ForEach(t => this._subTriples.Remove(t));
                         break;
                     }
-                    this._mapping.Remove(x);
+                    this.Mapping.Remove(x);
                 }
 
                 //If we couldn't map an independent Node then we fail
-                if (!this._mapping.ContainsKey(x)) return false;
+                if (!this.Mapping.ContainsKey(x)) return false;
             }
 
             //Want to save our mapping so far here as if the mapping we produce using the dependency information
             //is flawed then we'll have to attempt brute force
-            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>(this._mapping);
+            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>(this.Mapping);
 
             //Now we use the dependency information to try and find mappings
             foreach (MappingPair dependency in subDependencies)
             {
                 //If both dependent Nodes are already mapped we don't need to try mapping them again
-                if (this._mapping.ContainsKey(dependency.X) && this._mapping.ContainsKey(dependency.Y)) continue;
+                if (this.Mapping.ContainsKey(dependency.X) && this.Mapping.ContainsKey(dependency.Y)) continue;
 
                 //Get all the Triples with this Pair in them
                 List<Triple> xs;
@@ -445,8 +442,8 @@ namespace VDS.RDF.Graphs
                         throw new RdfException("Unknown exception occurred while trying to generate a Mapping between the two Graphs");
                 }
 
-                bool xbound = this._mapping.ContainsKey(dependency.X);
-                bool ybound = this._mapping.ContainsKey(dependency.Y);
+                bool xbound = this.Mapping.ContainsKey(dependency.X);
+                bool ybound = this.Mapping.ContainsKey(dependency.Y);
 
                 //Look at all the possible Target Dependencies we could map to
                 foreach (MappingPair target in parentDependencies)
@@ -457,16 +454,16 @@ namespace VDS.RDF.Graphs
                     //candidate mappings
                     if (xbound)
                     {
-                        if (!target.X.Equals(this._mapping[dependency.X])) continue;
+                        if (!target.X.Equals(this.Mapping[dependency.X])) continue;
                     }
                     if (ybound)
                     {
-                        if (!target.Y.Equals(this._mapping[dependency.Y])) continue;
+                        if (!target.Y.Equals(this.Mapping[dependency.Y])) continue;
                     }
 
                     //If the Nodes in the Target have already been used then we can discard this possible mapping
-                    if (!xbound && this._mapping.ContainsValue(target.X)) continue;
-                    if (!ybound && this._mapping.ContainsValue(target.Y)) continue;
+                    if (!xbound && this.Mapping.ContainsValue(target.X)) continue;
+                    if (!ybound && this.Mapping.ContainsValue(target.Y)) continue;
 
                     //Get the Triples with the Target Pair in them
                     List<Triple> ys;
@@ -496,9 +493,9 @@ namespace VDS.RDF.Graphs
                     if (xs.Count > ys.Count) continue;
 
                     //If all the Triples in xs can be removed from ys then this is a valid mapping
-                    if (!xbound) this._mapping.Add(dependency.X, target.X);
-                    if (!ybound) this._mapping.Add(dependency.Y, target.Y);
-                    if (xs.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
+                    if (!xbound) this.Mapping.Add(dependency.X, target.X);
+                    if (!ybound) this.Mapping.Add(dependency.Y, target.Y);
+                    if (xs.All(t => ys.Remove(t.MapTriple(parent, this.Mapping))))
                     {
                         if (canonical)
                         {
@@ -514,33 +511,24 @@ namespace VDS.RDF.Graphs
                         this._unbound.Remove(target.Y);
                         break;
                     }
-                    else
-                    {
-                        if (!xbound) this._mapping.Remove(dependency.X);
-                        if (!ybound) this._mapping.Remove(dependency.Y);
-                    }
+                    if (!xbound) this.Mapping.Remove(dependency.X);
+                    if (!ybound) this.Mapping.Remove(dependency.Y);
                 }
             }
 
             //If we've filled in the Mapping fully then the Graph is hopefully a sub-graph of the parent graph
-            if (this._mapping.Count == subNodes.Count)
+            if (this.Mapping.Count == subNodes.Count)
             {
                 //Need to check we found a valid mapping
                 List<Triple> ys = new List<Triple>(this._parentTriples);
-                if (this._subTriples.All(t => ys.Remove(t.MapTriple(parent, this._mapping))))
+                if (this._subTriples.All(t => ys.Remove(t.MapTriple(parent, this.Mapping))))
                 {
                     return true;
                 }
-                else
-                {
-                    this._mapping = baseMapping;
-                    return this.TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
-                }
-            }
-            else
-            {
+                this.Mapping = baseMapping;
                 return this.TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
             }
+            return this.TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
         }
 
         /// <summary>
@@ -558,18 +546,19 @@ namespace VDS.RDF.Graphs
             Dictionary<INode, List<INode>> possibleMappings = new Dictionary<INode, List<INode>>();
 
             //Populate existing Mappings
-            foreach (KeyValuePair<INode,INode> fixedMapping in this._mapping) 
+            foreach (KeyValuePair<INode,INode> fixedMapping in this.Mapping) 
             {
-                possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable<INode>()));
+                possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable()));
             }
 
             //Populate possibilities for each Node
             foreach (KeyValuePair<INode, int> gPair in subNodes)
             {
-                if (!this._mapping.ContainsKey(gPair.Key))
+                if (!this.Mapping.ContainsKey(gPair.Key))
                 {
                     possibleMappings.Add(gPair.Key, new List<INode>());
-                    foreach (KeyValuePair<INode, int> hPair in parentNodes.Where(p => p.Value == gPair.Value && !this._bound.Contains(p.Key)))
+                    int v = gPair.Value;
+                    foreach (KeyValuePair<INode, int> hPair in parentNodes.Where(p => p.Value == v && !this._bound.Contains(p.Key)))
                     {
                         possibleMappings[gPair.Key].Add(hPair.Key);
                     }
@@ -580,7 +569,7 @@ namespace VDS.RDF.Graphs
             }
 
             //Now start testing the possiblities
-            List<Dictionary<INode, INode>> possibles = this.GenerateMappings(possibleMappings, subDependencies, parentDependencies, parent);
+            IEnumerable<Dictionary<INode, INode>> possibles = this.GenerateMappings(possibleMappings, subDependencies, parentDependencies, parent);
 
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
@@ -602,7 +591,7 @@ namespace VDS.RDF.Graphs
         /// <param name="parentDependencies">Dependencies in the 2nd Graph</param>
         /// <param name="target">Target Graph (2nd Graph)</param>
         /// <returns></returns>
-        private List<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> subDependencies, List<MappingPair> parentDependencies, IGraph target)
+        private IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> subDependencies, List<MappingPair> parentDependencies, IGraph target)
         {
             List<Dictionary<INode, INode>> mappings = new List<Dictionary<INode, INode>>();
 
@@ -632,17 +621,16 @@ namespace VDS.RDF.Graphs
                             n.Add(x, y);
                             if (dependent)
                             {
-                                foreach (MappingPair dependency in subDependencies)
-                                {
-                                    if (n.ContainsKey(dependency.X) && n.ContainsKey(dependency.Y))
-                                    {
-                                        MappingPair targetDependency = new MappingPair(n[dependency.X], n[dependency.Y], dependency.Type);
-                                        if (!parentDependencies.Contains(targetDependency))
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
+                                //foreach (MappingPair dependency in subDependencies)
+                                //{
+                                    //if (!n.ContainsKey(dependency.X) || !n.ContainsKey(dependency.Y)) continue;
+
+                                    //MappingPair targetDependency = new MappingPair(n[dependency.X], n[dependency.Y], dependency.Type);
+                                    //if (!parentDependencies.Contains(targetDependency))
+                                    //{
+                                    //    continue;
+                                    //}
+                                //}
                             }
                             
                             temp.Add(n);
@@ -662,18 +650,17 @@ namespace VDS.RDF.Graphs
                     foreach (Dictionary<INode, INode> m in mappings)
                     {
                         //Are all the Blank Nodes involved in these Triples mapped at this stage?
-                        if (xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || m.ContainsKey(node))))
-                        {
-                            //Then we can do a partial mapping test
-                            IEnumerable<Triple> ys = (from t in xs
-                                                      where this._parentTriples.Contains(t.MapTriple(target, m))
-                                                      select t);
+                        if (!xs.All(t => t.Nodes.All(node => node.NodeType != NodeType.Blank || m.ContainsKey(node)))) continue;
 
-                            if (xs.Count != ys.Count())
-                            {
-                                continue;
-                            }
-                        }
+                        //Then we can do a partial mapping test
+                        //IEnumerable<Triple> ys = (from t in xs
+                        //    where this._parentTriples.Contains(t.MapTriple(target, m))
+                        //    select t);
+
+                        //if (xs.Count != ys.Count())
+                        //{
+                        //    continue;
+                        //}
                     }
                 }
             }
@@ -684,12 +671,6 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Gets the Blank Node mapping if one could be found
         /// </summary>
-        public Dictionary<INode, INode> Mapping
-        {
-            get
-            {
-                return this._mapping;
-            }
-        }
+        public Dictionary<INode, INode> Mapping { get; private set; }
     }
 }

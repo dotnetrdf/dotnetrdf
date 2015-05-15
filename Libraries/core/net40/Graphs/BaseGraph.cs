@@ -31,11 +31,12 @@ using VDS.RDF.Graphs.Utilities;
 using System.Data;
 #endif
 using System.Linq;
+#if !PORTABLE
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using VDS.Common.Collections;
+#endif
 using VDS.RDF.Collections;
 using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
@@ -57,7 +58,6 @@ namespace VDS.RDF.Graphs
         ,ISerializable
 #endif
     {
-        #region Member Variables
 
         /// <summary>
         /// Collection of Triples in the Graph
@@ -72,10 +72,6 @@ namespace VDS.RDF.Graphs
 #if !SILVERLIGHT
         private GraphDeserializationInfo _dsInfo;
 #endif
-
-        #endregion
-
-        #region Constructor
 
         /// <summary>
         /// Creates a new Base Graph using the given Triple Collection
@@ -115,10 +111,6 @@ namespace VDS.RDF.Graphs
             if (this._dsInfo != null) this._dsInfo.Apply(this);
         }
 #endif
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// Gets the set of Triples in this Graph
@@ -204,6 +196,9 @@ namespace VDS.RDF.Graphs
             }
         }
 
+        /// <summary>
+        /// Gets the capabilities of the graph
+        /// </summary>
         public virtual IGraphCapabilities Capabilities
         {
             get
@@ -211,10 +206,6 @@ namespace VDS.RDF.Graphs
                 return new TripleCollectionCapabilities(this._triples, this._triples.IsReadOnly ? GraphAccessMode.Read : GraphAccessMode.ReadWrite);
             }
         }
-
-        #endregion
-
-        #region Triple Assertion & Retraction
 
         /// <summary>
         /// Asserts a Triple in the Graph
@@ -244,19 +235,10 @@ namespace VDS.RDF.Graphs
         /// <summary>
         /// Clears all Triples from the Graph
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The Graph will raise the <see cref="ClearRequested">ClearRequested</see> event at the start of the Clear operation which allows for aborting the operation if the operation is cancelled by an event handler.  On completing the Clear the <see cref="Cleared">Cleared</see> event will be raised.
-        /// </para>
-        /// </remarks>
         public virtual void Clear()
         {
             this._triples.Clear();
         }
-
-        #endregion
-
-        #region Node Creation
 
         /// <summary>
         /// Creates a new URI Node with the given prefixed name
@@ -268,10 +250,6 @@ namespace VDS.RDF.Graphs
         {
             return new UriNode(UriFactory.ResolvePrefixedName(prefixedName, this._nsmapper, null));
         }
-
-        #endregion
-
-        #region Triple Selection
 
         /// <summary>
         /// Finds triples matching the given search criteria i.e. those where the given nodes occur in the appropriate position(s).  Null values are considered wildcards for a position.
@@ -341,153 +319,18 @@ namespace VDS.RDF.Graphs
             return this._triples.Contains(t);
         }
 
-        #endregion
-
-        #region Graph Equality
-
         /// <summary>
         /// Determines whether a Graph is equal to another Object
         /// </summary>
         /// <param name="obj">Object to test</param>
         /// <returns></returns>
         /// <remarks>
-        /// <para>
-        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>
-        /// </para>
-        /// <para>
-        /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals
-        /// </para>
+        /// Graphs are only considered equal if they have the same reference, to check if two graphs are equivalent use the <see cref="GraphExtensions.IsIsomorphicWith(IGraph,IGraph)"/> method
         /// </remarks>
         public override bool Equals(object obj)
         {
-            //Graphs can't be equal to null
-            if (obj == null) return false;
-
-            // Graphs can only be equal to other Graphs
-            if (!(obj is IGraph)) return false;
-
-            IGraph g = (IGraph)obj;
-
-            Dictionary<INode, INode> temp;
-            return this.Equals(g, out temp);
+            return ReferenceEquals(this, obj);
         }
-
-        /// <summary>
-        /// Determines whether this Graph is equal to the given Graph
-        /// </summary>
-        /// <param name="g">Graph to test for equality</param>
-        /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// See <see cref="GraphMatcher"/> for documentation of the equality algorithm used.
-        /// </remarks>
-        public virtual bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            //Set the mapping to be null
-            mapping = null;
-
-            GraphMatcher matcher = new GraphMatcher();
-            if (matcher.Equals(this, g))
-            {
-                mapping = matcher.Mapping;
-                return true;
-            }
-            return false;
-        }
-
-        #endregion
-
-        #region Sub-Graph Matching
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        public bool IsSubGraphOf(IGraph g)
-        {
-            Dictionary<INode, INode> temp;
-            return this.IsSubGraphOf(g, out temp);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        public bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            //Set the mapping to be null
-            mapping = null;
-
-            SubGraphMatcher matcher = new SubGraphMatcher();
-            if (matcher.IsSubGraph(this, g))
-            {
-                mapping = matcher.Mapping;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        public bool HasSubGraph(IGraph g)
-        {
-            return g.IsSubGraphOf(this);
-        }
-
-        /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
-        /// <returns></returns>
-        public bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            return g.IsSubGraphOf(this, out mapping);
-        }
-
-        #endregion
-
-        #region Graph Difference
-
-        /// <summary>
-        /// Computes the Difference between this Graph the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
-        /// </para>
-        /// </remarks>
-        public GraphDiffReport Difference(IGraph g)
-        {
-            GraphDiff differ = new GraphDiff();
-            return differ.Difference(this, g);
-        }
-
-        #endregion
-
-        #region Helper Functions
-
-        /// <summary>
-        /// Creates a new unused Blank Node ID and returns it
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Obsolete, no longer used", true)]
-        public virtual String GetNextBlankNodeID()
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region Operators
 
 #if !NO_DATA
 
@@ -536,18 +379,25 @@ namespace VDS.RDF.Graphs
 
 #endif
 
-        #endregion
-
-        #region Events
-
+        /// <summary>
+        /// Gets whether the graph has events
+        /// </summary>
         public virtual bool HasEvents { get { return true; } }
 
+        /// <summary>
+        /// Attachs the event handles to the underying <see cref="ITripleCollection"/>
+        /// </summary>
         protected void AttachEventHandlers()
         {
             this._triples.CollectionChanged += this._changedHandler;
         }
 
-        protected void HandleTripleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
+        /// <summary>
+        /// Helper method used to catch the <see cref="INotifyCollectionChanged.CollectionChanged"/> from the underlying <see cref="ITripleCollection"/> and propogate the event up through this graphs <see cref="CollectionChanged"/> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
+        private void HandleTripleCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)
         {
             this.RaiseCollectionChanged(args);
         }
@@ -565,9 +415,10 @@ namespace VDS.RDF.Graphs
             }
         }
 
+        /// <summary>
+        /// Events which is raised when the graph changes
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        #endregion
 
         /// <summary>
         /// Disposes of a Graph
@@ -579,9 +430,7 @@ namespace VDS.RDF.Graphs
         }
 
 #if !SILVERLIGHT
-
-        #region ISerializable Members
-
+ 
         /// <summary>
         /// Gets the Serialization Information for serializing a Graph
         /// </summary>
@@ -594,10 +443,6 @@ namespace VDS.RDF.Graphs
                                                           select new KeyValuePair<String,String>(p, this.Namespaces.GetNamespaceUri(p).AbsoluteUri);
             info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
         }
-
-        #endregion
-
-        #region IXmlSerializable Members
 
         /// <summary>
         /// Gets the Schema for XML Serialization
@@ -693,8 +538,6 @@ namespace VDS.RDF.Graphs
             }
             writer.WriteEndElement();
         }
-
-        #endregion
 
 #endif
     }

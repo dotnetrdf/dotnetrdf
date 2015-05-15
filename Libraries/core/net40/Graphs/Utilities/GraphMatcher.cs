@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Graphs
+namespace VDS.RDF.Graphs.Utilities
 {
     /// <summary>
     /// Implements a Graph Isomorphism Algorithm
@@ -304,14 +304,10 @@ namespace VDS.RDF.Graphs
                 //Try to do a Rules Based Mapping
                 return this.TryRulesBasedMapping(g, h, gNodes, hNodes, gDegrees, hDegrees);
             }
-            else
-            {
-                //There are degree classifications that don't have the same number of BNodes with that degree 
-                //or the degree classification is not in the other Graph
-                Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
-                return false;
-            }
-
+            //There are degree classifications that don't have the same number of BNodes with that degree 
+            //or the degree classification is not in the other Graph
+            Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
+            return false;
         }
 
         /// <summary>
@@ -366,7 +362,8 @@ namespace VDS.RDF.Graphs
                                 where t.Involves(pair.Key)
                                 select t).First();
 
-                foreach (INode n in this._unbound.Where(n => hNodes[n] == pair.Value))
+                int v = pair.Value;
+                foreach (INode n in this._unbound.Where(n => hNodes[n] == v))
                 {
                     //See if this Mapping works
                     this._mapping.Add(pair.Key, n);
@@ -401,27 +398,26 @@ namespace VDS.RDF.Graphs
             int mappedSoFar = this._mapping.Count;
             foreach (KeyValuePair<int, int> degreeClass in gDegrees)
             {
-                if (degreeClass.Key > 1 && degreeClass.Value == 1)
+                if (degreeClass.Key <= 1 || degreeClass.Value != 1) continue;
+
+                //There is a Node of degree greater than 1 than has a unique degree
+                //i.e. there is only one Node with this degree so there can only ever be one
+                //possible mapping for this Node
+                INode x = gNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+                INode y = hNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
+
+                //If either of these return null then the Graphs can't be equal
+                if (x == null || y == null)
                 {
-                    //There is a Node of degree greater than 1 than has a unique degree
-                    //i.e. there is only one Node with this degree so there can only ever be one
-                    //possible mapping for this Node
-                    INode x = gNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
-                    INode y = hNodes.FirstOrDefault(p => p.Value == degreeClass.Key).Key;
-
-                    //If either of these return null then the Graphs can't be equal
-                    if (x == null || y == null)
-                    {
-                        Debug.WriteLine("[NOT EQUAL] Node with unique degree could not be mapped");
-                        this._mapping = null;
-                        return false;
-                    }
-
-                    //Add the Mapping
-                    this._mapping.Add(x, y);
-                    this._bound.Add(y);
-                    this._unbound.Remove(y);
+                    Debug.WriteLine("[NOT EQUAL] Node with unique degree could not be mapped");
+                    this._mapping = null;
+                    return false;
                 }
+
+                //Add the Mapping
+                this._mapping.Add(x, y);
+                this._bound.Add(y);
+                this._unbound.Remove(y);
             }
             Debug.WriteLine("Unique blank nodes allowing mapping of " + (this._mapping.Count - mappedSoFar) + " nodes, " + this._mapping.Count + " mapped out of a total " + gNodes.Count);
             mappedSoFar = this._mapping.Count;
@@ -701,11 +697,8 @@ namespace VDS.RDF.Graphs
                         }
                         break;
                     }
-                    else
-                    {
-                        if (!xbound) this._mapping.Remove(dependency.X);
-                        if (!ybound) this._mapping.Remove(dependency.Y);
-                    }
+                    if (!xbound) this._mapping.Remove(dependency.X);
+                    if (!ybound) this._mapping.Remove(dependency.Y);
                 }
             }
             Debug.WriteLine("Dependency information allowed us to map a further " + (this._mapping.Count - mappedSoFar) + " nodes, we now have a possible mapping with " + this._mapping.Count + " blank nodes mapped (" + baseMapping.Count + " confirmed mappings) out of a total " + gNodes.Count + " blank nodes");
@@ -720,19 +713,16 @@ namespace VDS.RDF.Graphs
                     Debug.WriteLine("[EQUAL] Generated a rules based mapping successfully");
                     return true;
                 }
-                else
-                {
-                    //Fall back should to a divide and conquer mapping
-                    Debug.WriteLine("Had a potential rules based mapping but it was invalid, falling back to divide and conquer mapping with base mapping of " + baseMapping.Count + " nodes");
-                    this._mapping = baseMapping;
-                    return this.TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
-                }
-            }
-            else
-            {
-                Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
+
+                //Fall back to a divide and conquer mapping
+                Debug.WriteLine("Had a potential rules based mapping but it was invalid, falling back to divide and conquer mapping with base mapping of " + baseMapping.Count + " nodes");
+                this._mapping = baseMapping;
                 return this.TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
             }
+
+            // Rules based mapping failed
+            Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
+            return this.TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
         }
 
         /// <summary>
@@ -770,7 +760,7 @@ namespace VDS.RDF.Graphs
                 this._mapping = null;
                 return false;
             }
-            else if (gMsgs.Count == 1)
+            if (gMsgs.Count == 1)
             {
                 Debug.WriteLine("Blank Node potions of graphs did not decompose into isolated sub-graphs, falling back to brute force mapping");
                 return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
@@ -821,7 +811,7 @@ namespace VDS.RDF.Graphs
                         Debug.Indent();
 #endif
                         Dictionary<INode, INode> partialMapping;
-                        if (lhs.Equals(rhs, out partialMapping))
+                        if (lhs.IsIsomorphicWith(rhs, out partialMapping))
                         {
                             partialMappings.Add(partialMapping);
                             partialMappingSources.Add(rhs);
@@ -844,7 +834,7 @@ namespace VDS.RDF.Graphs
                         this._mapping = null;
                         return false;
                     }
-                    else if (partialMappings.Count == 1)
+                    if (partialMappings.Count == 1)
                     {
                         //Only one possible match
                         foreach (KeyValuePair<INode, INode> kvp in partialMappings[0])
@@ -855,10 +845,7 @@ namespace VDS.RDF.Graphs
                                 this._mapping = null;
                                 return false;
                             }
-                            else
-                            {
-                                this._mapping.Add(kvp.Key, kvp.Value);
-                            }
+                            this._mapping.Add(kvp.Key, kvp.Value);
                         }
                         Debug.WriteLine("Divide and conquer found a unique mapping for an isolated sub-graph and confirmed an additional " + partialMappings[0].Count + " blank node mappings");
 
@@ -897,20 +884,16 @@ namespace VDS.RDF.Graphs
                     Debug.WriteLine("[EQUAL] Generated a divide and conquer based mapping successfully");
                     return true;
                 }
-                else
-                {
-                    //Invalid mapping
-                    Debug.WriteLine("[NOT EQUAL] Divide and conquer led to an invalid mapping");
-                    this._mapping = null;
-                    return false;
-                }
+
+                //Invalid mapping
+                Debug.WriteLine("[NOT EQUAL] Divide and conquer led to an invalid mapping");
+                this._mapping = null;
+                return false;
             }
-            else
-            {
-                //If dvide and conquer fails fall back to brute force
-                Debug.WriteLine("Divide and conquer based mapping did not succeed in mapping everything, have " + this._mapping.Count + " confirmed mappings out of " + gNodes.Count + " total blank nodes, falling back to brute force mapping");
-                return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
-            }
+
+            //If dvide and conquer fails fall back to brute force
+            Debug.WriteLine("Divide and conquer based mapping did not succeed in mapping everything, have " + this._mapping.Count + " confirmed mappings out of " + gNodes.Count + " total blank nodes, falling back to brute force mapping");
+            return this.TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
         }
 
         /// <summary>
@@ -930,22 +913,21 @@ namespace VDS.RDF.Graphs
             //Populate possibilities for each Node
             foreach (KeyValuePair<INode, int> gPair in gNodes)
             {
-                if (!this._mapping.ContainsKey(gPair.Key))
-                {
-                    possibleMappings.Add(gPair.Key, new List<INode>());
-                    foreach (KeyValuePair<INode, int> hPair in hNodes.Where(p => p.Value == gPair.Value && !this._bound.Contains(p.Key)))
-                    {
-                        possibleMappings[gPair.Key].Add(hPair.Key);
-                    }
+                if (this._mapping.ContainsKey(gPair.Key)) continue;
 
-                    //If there's no possible matches for the Node we fail
-                    if (possibleMappings[gPair.Key].Count == 0)
-                    {
-                        Debug.WriteLine("[NOT EQUAL] Unable to find any possible mappings for a blank node");
-                        this._mapping = null;
-                        return false;
-                    }
+                possibleMappings.Add(gPair.Key, new List<INode>());
+                int v = gPair.Value;
+                foreach (KeyValuePair<INode, int> hPair in hNodes.Where(p => p.Value == v && !this._bound.Contains(p.Key)))
+                {
+                    possibleMappings[gPair.Key].Add(hPair.Key);
                 }
+
+                //If there's no possible matches for the Node we fail
+                if (possibleMappings[gPair.Key].Count != 0) continue;
+
+                Debug.WriteLine("[NOT EQUAL] Unable to find any possible mappings for a blank node");
+                this._mapping = null;
+                return false;
             }
 
             //This should never happen but handle it just in case
@@ -955,7 +937,7 @@ namespace VDS.RDF.Graphs
             }
 
             //Now start testing the possiblities
-            IEnumerable<Dictionary<INode, INode>> possibles = GraphMatcher.GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings);
+            IEnumerable<Dictionary<INode, INode>> possibles = GenerateMappings(new Dictionary<INode, INode>(this._mapping), possibleMappings);
             int count = 0;
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
@@ -966,12 +948,11 @@ namespace VDS.RDF.Graphs
                 if (this._sourceTriples.Count != targets.Count) continue;
 
                 // Validate the mapping
-                if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
-                {
-                    this._mapping = mapping;
-                    Debug.WriteLine("[EQUAL] Succesfully brute forced a mapping on Attempt #" + count);
-                    return true;
-                }
+                if (!this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping)))) continue;
+
+                this._mapping = mapping;
+                Debug.WriteLine("[EQUAL] Succesfully brute forced a mapping on Attempt #" + count);
+                return true;
             }
 
             Debug.WriteLine("[NOT EQUAL] No valid brute forced mappings (" + count + " were considered)");
@@ -1027,7 +1008,7 @@ namespace VDS.RDF.Graphs
                     foreach (INode x2 in possibleMappings.Keys)
                     {
                         if (test.ContainsKey(x2)) continue;
-                        foreach (Dictionary<INode, INode> mapping in GraphMatcher.GenerateMappingsInternal(test, possibleMappings, x2))
+                        foreach (Dictionary<INode, INode> mapping in GenerateMappingsInternal(test, possibleMappings, x2))
                         {
                             yield return mapping;
                         }
@@ -1053,9 +1034,9 @@ namespace VDS.RDF.Graphs
     /// </summary>
     class MappingPair
     {
-        private INode _x, _y;
-        private int _hash;
-        private TripleIndexType _type;
+        private readonly INode _x, _y;
+        private readonly int _hash;
+        private readonly TripleIndexType _type;
 
         public MappingPair(INode x, INode y, TripleIndexType type)
         {
@@ -1092,15 +1073,10 @@ namespace VDS.RDF.Graphs
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            if (obj is MappingPair)
-            {
-                MappingPair p = (MappingPair)obj;
-                return (this._x.Equals(p.X) && this._y.Equals(p.Y) && this._type == p.Type);
-            }
-            else
-            {
-                return false;
-            }
+            if (!(obj is MappingPair)) return false;
+
+            MappingPair p = (MappingPair)obj;
+            return (this._x.Equals(p.X) && this._y.Equals(p.Y) && this._type == p.Type);
         }
 
         public override int GetHashCode()

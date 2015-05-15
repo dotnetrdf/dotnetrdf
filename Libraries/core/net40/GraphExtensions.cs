@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Graphs;
+using VDS.RDF.Graphs.Utilities;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF
@@ -184,6 +185,127 @@ namespace VDS.RDF
         public static void Retract(this IGraph g, INode subj, INode pred, INode obj)
         {
             g.Retract(new Triple(subj, pred, obj));
+        }
+
+        /// <summary>
+        /// Checks whether a Graph is equivalent (isomorphic) to another Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="other">Graph to compare with for equivalence</param>
+        /// <returns>True if graphs are isomorphic, false otherwise</returns>
+        /// <remarks>
+        /// <para>
+        /// Graphs are considered equivalent or more formally isomorphic if there is a mapping such that every sub-graph that contains a set of blank nodes may be mapped to an equivalent sub-graph in the other graph.
+        /// </para>
+        /// <para>
+        /// Please see the <see cref="GraphMatcher"/> class for notes on the isomorphism algorithm used
+        /// </para>
+        /// </remarks>
+        public static bool IsIsomorphicWith(this IGraph g, IGraph other)
+        {
+            Dictionary<INode, INode> mapping = null;
+            return IsIsomorphicWith(g, other, out mapping);
+        }
+
+        /// <summary>
+        /// Checks whether a Graph is equivalent (isomorphic) to another Graph and if so returns the mapping of Blank Nodes
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="other">Graph to compare with for equivalence</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns>True if graphs are isomorphic, false otherwise</returns>
+        /// <remarks>
+        /// <para>
+        /// Graphs are considered equivalent or more formally isomorphic if there is a mapping such that every sub-graph that contains a set of blank nodes may be mapped to an equivalent sub-graph in the other graph.
+        /// </para>
+        /// <para>
+        /// Please see the <see cref="GraphMatcher"/> class for notes on the isomorphism algorithm used
+        /// </para>
+        /// </remarks>
+        public static bool IsIsomorphicWith(this IGraph g, IGraph other, out Dictionary<INode, INode> mapping)
+        {
+            //Set the mapping to be null
+            mapping = null;
+
+            GraphMatcher matcher = new GraphMatcher();
+            if (!matcher.Equals(g, other)) return false;
+
+            // Return the mapping
+            mapping = matcher.Mapping;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks whether a Graph is a sub-graph of another Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="superGraph">Graph that should contain <paramref name="g"/> as a sub-graph</param>
+        /// <returns></returns>
+        public static bool IsSubGraphOf(this IGraph g, IGraph superGraph)
+        {
+            Dictionary<INode, INode> temp;
+            return IsSubGraphOf(g, superGraph, out temp);
+        }
+
+        /// <summary>
+        /// Checks whether a Graph is a sub-graph of another Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="superGraph">Graph that should contain <paramref name="g"/> as a sub-graph</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns></returns>
+        public static bool IsSubGraphOf(this IGraph g, IGraph superGraph, out Dictionary<INode, INode> mapping)
+        {
+            //Set the mapping to be null
+            mapping = null;
+
+            SubGraphMatcher matcher = new SubGraphMatcher();
+            if (matcher.IsSubGraph(g, superGraph))
+            {
+                mapping = matcher.Mapping;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a Graph has another Graph as a sub-graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="subGraph">Graph that should be contained in <paramref name="g"/> as a sub-graph</param>
+        /// <returns></returns>
+        public static bool HasSubGraph(this IGraph g, IGraph subGraph)
+        {
+            return IsSubGraphOf(subGraph, g);
+        }
+
+        /// <summary>
+        /// Checks whether a Graph has another Graph as a sub-graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="subGraph">Graph that should be contained in <paramref name="g"/> as a sub-graph</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns></returns>
+        public static bool HasSubGraph(this IGraph g, IGraph subGraph, out Dictionary<INode, INode> mapping)
+        {
+            return IsSubGraphOf(subGraph, g, out mapping);
+        }
+
+        /// <summary>
+        /// Calculates the difference between two graphs
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="other">Graph to compare against</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Produces a report which shows the changes that must be made to <paramref name="g"/> in order to produce <paramref name="other"/> or if they represent the same graph reports that
+        /// </para>
+        /// </remarks>
+        public static GraphDiffReport Difference(this IGraph g, IGraph other)
+        {
+            GraphDiff differ = new GraphDiff();
+            return differ.Difference(g, other);
         }
     }
 }

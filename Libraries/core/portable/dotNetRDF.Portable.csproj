@@ -11,7 +11,7 @@
     <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile136</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile336</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
@@ -39,6 +39,7 @@
     <DefineConstants>TRACE;PORTABLE, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Compatibility\CryptoConfig.cs" />
@@ -284,20 +285,11 @@
     <Compile Include="..\net40\Graphs\Graph.cs">
       <Link>Graphs\Graph.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Graphs\GraphDiff.cs">
-      <Link>Graphs\GraphDiff.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Graphs\GraphMatcher.cs">
-      <Link>Graphs\GraphMatcher.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Graphs\IGraph.cs">
       <Link>Graphs\IGraph.cs</Link>
     </Compile>
     <Compile Include="..\net40\Graphs\IGraphStore.cs">
       <Link>Graphs\IGraphStore.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Graphs\SubGraphMatcher.cs">
-      <Link>Graphs\SubGraphMatcher.cs</Link>
     </Compile>
     <Compile Include="..\net40\Graphs\ThreadSafeGraph.cs">
       <Link>Graphs\ThreadSafeGraph.cs</Link>
@@ -400,6 +392,50 @@
     </Compile>
     <Compile Include="..\net40\Nodes\RandomDerivedBlankNodeGenerator.cs">
       <Link>Nodes\RandomDerivedBlankNodeGenerator.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Collections\TrieIndexedTripleCollection.cs">
+      <Link>Collections\TrieIndexedTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\GraphAccessMode.cs">
+      <Link>Graphs\GraphAccessMode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\IEventedGraph.cs">
+      <Link>Graphs\IEventedGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\IGraphCapabilities.cs">
+      <Link>Graphs\IGraphCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ITransactionalGraph.cs">
+      <Link>Graphs\ITransactionalGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ReadOnlyGraph.cs">
+      <Link>Graphs\ReadOnlyGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\ReadOnlyCapabilities.cs">
+      <Link>Graphs\Utilities\ReadOnlyCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\TripleCollectionCapabilities.cs">
+      <Link>Graphs\Utilities\TripleCollectionCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\WrapperCapabilities.cs">
+      <Link>Graphs\Utilities\WrapperCapabilities.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\ComparisonHelper.cs">
+      <Link>Nodes\ComparisonHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\UriComparer.cs">
+      <Link>Nodes\UriComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\GraphDiff.cs">
+      <Link>Graphs\Utilities\GraphDiff.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\GraphMatcher.cs">
+      <Link>Graphs\Utilities\GraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\Utilities\SubGraphMatcher.cs">
+      <Link>Graphs\Utilities\SubGraphMatcher.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

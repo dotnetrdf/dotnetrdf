@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
+using VDS.RDF.Graphs.Utilities;
 using VDS.RDF.Nodes;
 using VDS.RDF.Writing.Formatting;
 

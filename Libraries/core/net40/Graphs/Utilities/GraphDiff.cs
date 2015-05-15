@@ -27,17 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.Graphs
+namespace VDS.RDF.Graphs.Utilities
 {
     /// <summary>
     /// Implementation of a Graph Difference algorithm for RDF Graphs
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This algorithm is broadly based upon the methodology fror computing differences in RDF Graphs described in the <a href="http://www.springerlink.com/index/lq65211003774313.pdf">RDFSync</a> paper by Tummarello et al.  This is an implementation purely of a difference algorithm and not the synchronisation aspects described in their paper.  Main difference between their algorithm and mine is that mine does not make the input Graphs lean as it is concerned with showing the raw differences between the Graphs and does not concern itself with whether the differences may be semantically irrelevant.
+    /// This algorithm is broadly based upon the methodology for computing differences in RDF Graphs described in the <a href="http://www.springerlink.com/index/lq65211003774313.pdf">RDFSync</a> paper by Tummarello et al.  This is an implementation purely of a difference algorithm and not the synchronisation aspects described in their paper.  Main difference between their algorithm and mine is that mine does not make the input Graphs lean as it is concerned with showing the raw differences between the Graphs and does not concern itself with whether the differences may be semantically irrelevant.
     /// </para>
     /// <para>
     /// To understand this consider the following Graphs:
@@ -57,11 +56,13 @@ namespace VDS.RDF.Graphs
     /// </remarks>
     public class GraphDiff
     {
-        private HashSet<Triple> _lhsUnassigned = new HashSet<Triple>();
-        private HashSet<Triple> _rhsUnassigned = new HashSet<Triple>();
-        private List<IGraph> _lhsMSGs = new List<IGraph>();
-        private List<IGraph> _rhsMSGs = new List<IGraph>();
-
+        private readonly HashSet<Triple> _lhsUnassigned = new HashSet<Triple>();
+        private readonly HashSet<Triple> _rhsUnassigned = new HashSet<Triple>();
+// ReSharper disable InconsistentNaming
+        private readonly List<IGraph> _lhsMSGs = new List<IGraph>();
+        private readonly List<IGraph> _rhsMSGs = new List<IGraph>();
+// ReSharper enable InconsistentNaming
+        
         /// <summary>
         /// Calculates the Difference between the two Graphs i.e. the changes required to get from the 1st Graph to the 2nd Graph
         /// </summary>
@@ -81,31 +82,29 @@ namespace VDS.RDF.Graphs
                     report.AreDifferentSizes = false;
                     return report;
                 }
-                else
+
+                //A is null and B is non-null so considered non-equal with everything from B listed as added
+                report.AreEqual = false;
+                report.AreDifferentSizes = true;
+                foreach (Triple t in b.Triples)
                 {
-                    //A is null and B is non-null so considered non-equal with everything from B listed as added
-                    report.AreEqual = false;
-                    report.AreDifferentSizes = true;
-                    foreach (Triple t in b.Triples)
+                    if (t.IsGround)
                     {
-                        if (t.IsGround)
-                        {
-                            report.AddAddedTriple(t);
-                        }
-                        else
-                        {
-                            this._rhsUnassigned.Add(t);
-                        }
+                        report.AddAddedTriple(t);
                     }
-                    GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
-                    foreach (IGraph msg in this._rhsMSGs)
+                    else
                     {
-                        report.AddAddedMSG(msg);
+                        this._rhsUnassigned.Add(t);
                     }
-                    return report;
                 }
+                ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+                foreach (IGraph msg in this._rhsMSGs)
+                {
+                    report.AddAddedMSG(msg);
+                }
+                return report;
             }
-            else if (b == null)
+            if (b == null)
             {
                 //A is non-null and B is null so considered non-equal with everything from A listed as removed
                 report.AreEqual = false;
@@ -121,7 +120,7 @@ namespace VDS.RDF.Graphs
                         this._lhsUnassigned.Add(t);
                     }
                 }
-                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
+                ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
                 foreach (IGraph msg in this._lhsMSGs)
                 {
                     report.AddRemovedMSG(msg);
@@ -130,8 +129,8 @@ namespace VDS.RDF.Graphs
             }
 
             //Firstly check for Graph Equality
-            Dictionary<INode,INode> equalityMapping = new Dictionary<INode,INode>();
-            if (a.Equals(b, out equalityMapping))
+            Dictionary<INode,INode> equalityMapping;
+            if (a.IsIsomorphicWith(b, out equalityMapping))
             {
                 //If Graphs are equal set AreEqual to true, assign the mapping and return
                 report.AreEqual = true;
@@ -162,80 +161,78 @@ namespace VDS.RDF.Graphs
 
             //Do we need to compute MSGs?
             //If all Triples are Ground Triples then this step gets skipped which saves on computation
-            if (a.Triples.Any(t => !t.IsGround) || b.Triples.Any(t => !t.IsGround))
+            if (a.Triples.All(t => t.IsGround) && b.Triples.All(t => t.IsGround)) return report;
+
+            //Some non-ground Triples so start computing MSGs
+
+            //First build 2 HashSets of the non-ground Triples from the Graphs
+            foreach (Triple t in a.Triples.Where(t => !t.IsGround))
             {
-                //Some non-ground Triples so start computing MSGs
+                this._lhsUnassigned.Add(t);
+            }
+            foreach (Triple t in b.Triples.Where(t => !t.IsGround))
+            {
+                this._rhsUnassigned.Add(t);
+            }
 
-                //First build 2 HashSets of the non-ground Triples from the Graphs
-                foreach (Triple t in a.Triples.Where(t => !t.IsGround))
+            //Then compute all the MSGs
+            ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
+            ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+
+            //Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
+            GraphSizeComparer comparer = new GraphSizeComparer();
+            this._lhsMSGs.Sort(comparer);
+            this._rhsMSGs.Sort(comparer);
+
+            //Now start trying to match MSG
+            foreach (IGraph msg in this._lhsMSGs)
+            {
+                //Get Candidate MSGs from RHS i.e. those of equal size
+                List<IGraph> candidates = (from g in this._rhsMSGs
+                    where g.Count == msg.Count
+                    select g).ToList();
+
+                if (candidates.Count == 0)
                 {
-                    this._lhsUnassigned.Add(t);
+                    //No Candidate Matches so this MSG is not present in the 2nd Graph so add to report as a Removed MSG
+                    report.AddRemovedMSG(msg);
                 }
-                foreach (Triple t in b.Triples.Where(t => !t.IsGround))
+                else
                 {
-                    this._rhsUnassigned.Add(t);
-                }
-
-                //Then compute all the MSGs
-                GraphDiff.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
-                GraphDiff.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
-
-                //Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
-                GraphSizeComparer comparer = new GraphSizeComparer();
-                this._lhsMSGs.Sort(comparer);
-                this._rhsMSGs.Sort(comparer);
-
-                //Now start trying to match MSG
-                foreach (IGraph msg in this._lhsMSGs)
-                {
-                    //Get Candidate MSGs from RHS i.e. those of equal size
-                    List<IGraph> candidates = (from g in this._rhsMSGs
-                                               where g.Count == msg.Count
-                                               select g).ToList();
-
-                    if (candidates.Count == 0)
+                    //Do any of the candidates match?
+                    bool hasMatch = false;
+                    foreach (IGraph candidate in candidates)
                     {
-                        //No Candidate Matches so this MSG is not present in the 2nd Graph so add to report as a Removed MSG
-                        report.AddRemovedMSG(msg);
-                    }
-                    else
-                    {
-                        //Do any of the candidates match?
-                        bool hasMatch = false;
-                        foreach (IGraph candidate in candidates)
+                        Dictionary<INode, INode> tempMapping;
+                        if (!msg.IsIsomorphicWith(candidate, out tempMapping)) continue;
+
+                        //This MSG has a Match in the 2nd Graph so add the Mapping information
+                        hasMatch = true;
+                        try
                         {
-                            Dictionary<INode, INode> tempMapping = new Dictionary<INode, INode>();
-                            if (msg.Equals(candidate, out tempMapping))
-                            {
-                                //This MSG has a Match in the 2nd Graph so add the Mapping information
-                                hasMatch = true;
-                                try
-                                {
-                                    this.MergeMapping(report, tempMapping);
-                                }
-                                catch (RdfException)
-                                {
-                                    //If the Mapping cannot be merged it is a bad mapping and we try other candidates
-                                    hasMatch = false;
-                                    continue;
-                                }
-
-                                //Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
-                                //We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
-                                this._rhsMSGs.RemoveAll(g => ReferenceEquals(g, candidate));
-                            }
+                            this.MergeMapping(report, tempMapping);
+                        }
+                        catch (RdfException)
+                        {
+                            //If the Mapping cannot be merged it is a bad mapping and we try other candidates
+                            hasMatch = false;
+                            continue;
                         }
 
-                        //No match was found so the MSG is removed from the 2nd Graph
-                        if (!hasMatch) report.AddRemovedMSG(msg);   
+                        //Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
+                        //We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
+                        this._rhsMSGs.RemoveAll(g => ReferenceEquals(g, candidate));
                     }
-                }
 
-                //If we are left with any MSGs in the RHS then these are added MSG
-                foreach (IGraph msg in this._rhsMSGs)
-                {
-                    report.AddAddedMSG(msg);
+                    //No match was found so the MSG is removed from the 2nd Graph
+                    if (!hasMatch) report.AddRemovedMSG(msg);   
                 }
+            }
+
+            //If we are left with any MSGs in the RHS then these are added MSG
+            foreach (IGraph msg in this._rhsMSGs)
+            {
+                report.AddAddedMSG(msg);
             }
             return report;
         }
@@ -259,7 +256,7 @@ namespace VDS.RDF.Graphs
                 unassigned.Remove(first);
 
                 //Get the BNodes from it that need to be processed
-                GraphDiff.GetNodesForProcessing(first, unprocessed);
+                GetNodesForProcessing(first, unprocessed);
 
                 //Start building an MSG starting from the Triple
                 Graph msg = new Graph();
@@ -276,7 +273,7 @@ namespace VDS.RDF.Graphs
                         //When a Triple is added to an MSG it is removed from the unassigned list
                         unassigned.Remove(t);
                         msg.Assert(t);
-                        GraphDiff.GetNodesForProcessing(t, unprocessed);
+                        GetNodesForProcessing(t, unprocessed);
                     }
 
                     processed.Add(next);

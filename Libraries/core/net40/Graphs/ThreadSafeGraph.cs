@@ -25,10 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if !NO_RWLOCK
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using VDS.RDF.Collections;
 using VDS.RDF.Nodes;
@@ -177,7 +175,7 @@ namespace VDS.RDF.Graphs
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();                    
+                    this._lockManager.ExitReadLock(); 
                 }
             }
         }
