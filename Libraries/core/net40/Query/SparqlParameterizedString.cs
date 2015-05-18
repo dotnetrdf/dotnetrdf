@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -69,26 +70,37 @@ namespace VDS.RDF.Query
     /// <para>
     /// This class was added to a library based on a suggestion by Alexander Sidorov and ideas from slides from <a href="http://www.slideshare.net/Morelab/sparqlrdqlsparul-injection">Slideshare</a> by Almedia et al
     /// </para>
+    /// <para>
+    /// <strong>PERFORMANCE TIPS:</strong> if building the command text incrementaly, avoid using <c> CommandText += </c> and use the AppendSubQuery or Append methods instead
+    /// </para>
     /// </remarks>
     public class SparqlParameterizedString
     {
-        private String _command = String.Empty;
+        private static char[] _invalidIRICharacters = " >\"{}|^`[]".ToCharArray();
+
+        private static readonly IGraph _g = new NonIndexedGraph();
+        private static readonly SparqlFormatter _emptyFormatter = new SparqlFormatter();
+
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
+        private List<String> _commandText = new List<String>();
         private readonly Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private readonly Dictionary<String, INode> _variables = new Dictionary<string, INode>();
+
         private SparqlFormatter _formatter;
-        private readonly IGraph _g = new NonIndexedGraph();
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
 
-        private const String ValidParameterNamePattern = "^@?[\\w\\-_]+$";
-        private const String ValidVariableNamePattern = "^[?$]?[\\w\\-_]+$";
+        private static Regex ValidParameterNamePattern = new Regex("^@?[\\w\\-_]+$", RegexOptions.IgnoreCase);
+        private static Regex ValidVariableNamePattern = new Regex("^[?$]?[\\w\\-_]+$", RegexOptions.IgnoreCase);
+
+        private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]+):)\\s*<([^>]+)>", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Creates a new empty parameterized String
         /// </summary>
         public SparqlParameterizedString()
         {
+            _formatter = new SparqlFormatter(_nsmap);
         }
 
         /// <summary>
@@ -98,7 +110,7 @@ namespace VDS.RDF.Query
         public SparqlParameterizedString(String command)
             : this()
         {
-            this._command = command;
+            this.CommandText = command;
         }
 
         /// <summary>
@@ -121,20 +133,28 @@ namespace VDS.RDF.Query
         /// </summary>
         public Uri BaseUri { get; set; }
 
+
         /// <summary>
         /// Gets/Sets the parameterized Command Text
         /// </summary>
-        public String CommandText
+        public virtual String CommandText
         {
             get
             {
-                return this._command;
+#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+                return String.Join("", _commandText);
+#else
+                return String.Join("", _commandText.ToArray());
+#endif
             }
             set
             {
-                this._command = value;
+                ResetText();
+                PreprocessText(TrimPreamble(value)); // TODO deprecate the _command field and replace it with the join of _cache
             }
         }
+
+        #region Sparql extension methods
 
         /// <summary>
         /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query
@@ -142,9 +162,8 @@ namespace VDS.RDF.Query
         /// <param name="query">Query</param>
         public void AppendSubQuery(SparqlQuery query)
         {
-            this.Namespaces.Import(query.NamespaceMap);
-            this._formatter = new SparqlFormatter();
-            this.CommandText += this._formatter.Format(new SubQueryPattern(query));
+            PreprocessText(TrimPreamble(_emptyFormatter.Format(new SubQueryPattern(query))));
+            // NOTE: the namespaces are already updated through during the TrimPreambule call
         }
 
         /// <summary>
@@ -153,10 +172,34 @@ namespace VDS.RDF.Query
         /// <param name="query">Query</param>
         public void AppendSubQuery(SparqlParameterizedString query)
         {
-            this.Namespaces.Import(query.Namespaces);
-            this._formatter = new SparqlFormatter();
-            this.CommandText += query.CommandText;
+            // TODO shouldn't we ensure that the text is wrapped in { } to get a correct subquery pattern ?
+            //      this may cause compatibility issues though
+            Append(query);
         }
+
+        /// <summary>
+        /// Appends the given text to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// </summary>
+        /// <param name="text">Text</param>
+        public void Append(SparqlParameterizedString text)
+        {
+            // Merges the instances caches and placeholders
+            int offset = _commandText.Count;
+            _commandText.AddRange(text._commandText);
+            // Update the namespaces
+            _nsmap.Import(text.Namespaces);
+        }
+
+        /// <summary>
+        /// Appends the given text to the existing command text, any prefixes in the command are moved to the parent query
+        /// </summary>
+        /// <param name="text">Text</param>
+        public void Append(String text)
+        {
+            PreprocessText(TrimPreamble(text));
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteQuery()">ExecuteQuery()</see> method
@@ -189,31 +232,6 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Clears all set Parameters and Variables
-        /// </summary>
-        public void Clear()
-        {
-            this.ClearParameters();
-            this.ClearVariables();
-        }
-
-        /// <summary>
-        /// Clears all set Parameters
-        /// </summary>
-        public void ClearParameters()
-        {
-            this._parameters.Clear();
-        }
-
-        /// <summary>
-        /// Clears all set Variables
-        /// </summary>
-        public void ClearVariables()
-        {
-            this._variables.Clear();
-        }
-
-        /// <summary>
         /// Gets an enumeration of the Variables for which Values have been set
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Variables
@@ -235,6 +253,33 @@ namespace VDS.RDF.Query
             }
         }
 
+        #region Parameters and Variables assignment methods
+
+        /// <summary>
+        /// Clears all set Parameters and Variables
+        /// </summary>
+        public virtual void Clear()
+        {
+            this.ClearParameters();
+            this.ClearVariables();
+        }
+
+        /// <summary>
+        /// Clears all set Parameters
+        /// </summary>
+        public virtual void ClearParameters()
+        {
+            this._parameters.Clear();
+        }
+
+        /// <summary>
+        /// Clears all set Variables
+        /// </summary>
+        public virtual void ClearVariables()
+        {
+            this._variables.Clear();
+        }
+
         /// <summary>
         /// Sets the Value of a Parameter 
         /// </summary>
@@ -245,21 +290,19 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void SetParameter(String name, INode value)
         {
+            if (value == null)
+            {
+                UnsetParameter(name);
+                return;
+            }
             //Only allow the setting of valid parameter names
-            if (!Regex.IsMatch(name, ValidParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
+            if (!ValidParameterNamePattern.IsMatch(name)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
 
             //OPT: Could ensure that the parameter name actually appears in the command?
-            name = (name.StartsWith("@")) ? name.Substring(1) : name;
+            name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
 
             //Finally can set/update parameter value
-            if (this._parameters.ContainsKey(name))
-            {
-                this._parameters[name] = value;
-            }
-            else
-            {
-                this._parameters.Add(name, value);
-            }
+            this._parameters[name] = value;
         }
 
         /// <summary>
@@ -271,7 +314,8 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void UnsetParameter(String name)
         {
-            name = (name.StartsWith("@")) ? name.Substring(1) : name;
+            if (name == null) return;
+            name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
             this._parameters.Remove(name);
         }
 
@@ -284,7 +328,8 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void UnsetVariable(String name)
         {
-            name = (name.StartsWith("@")) ? name.Substring(1) : name;
+            if (name == null) return;
+            name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
             this._variables.Remove(name);
         }
 
@@ -293,19 +338,19 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name</param>
         /// <param name="value">Value</param>
-        public void SetVariable(String name, INode value)
+        public virtual void SetVariable(String name, INode value)
         {
+            if (value == null)
+            {
+                UnsetVariable(name);
+                return;
+            }
             //Only allow the setting of valid variable names
-            if (!Regex.IsMatch(name, ValidVariableNamePattern)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
+            if (!ValidVariableNamePattern.IsMatch(name)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
 
-            if (this._variables.ContainsKey(name))
-            {
-                this._variables[name] = value;
-            }
-            else
-            {
-                this._variables.Add(name, value);
-            }
+            //OPT: Could ensure that the variable name actually appears in the command?
+            name = !Char.IsLetterOrDigit(name[0]) ? name.Substring(1) : name;
+            this._variables[name] = value;
         }
 
         /// <summary>
@@ -315,7 +360,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, int value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -325,7 +370,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, long value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -335,7 +380,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, short value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -345,7 +390,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, decimal value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -355,7 +400,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, float value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -365,7 +410,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, double value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -386,7 +431,7 @@ namespace VDS.RDF.Query
         /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
         public void SetLiteral(String name, DateTime value, bool precise)
         {
-            this.SetParameter(name, value.ToLiteral(this._g, precise));
+            this.SetParameter(name, value.ToLiteral(_g, precise));
         }
 
         /// <summary>
@@ -407,7 +452,7 @@ namespace VDS.RDF.Query
         /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
         public void SetLiteral(String name, DateTimeOffset value, bool precise)
         {
-            this.SetParameter(name, value.ToLiteral(this._g, precise));
+            this.SetParameter(name, value.ToLiteral(_g, precise));
         }
 
         /// <summary>
@@ -417,7 +462,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, TimeSpan value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -427,7 +472,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, bool value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
@@ -438,7 +483,7 @@ namespace VDS.RDF.Query
         public void SetLiteral(String name, String value)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
-            this.SetParameter(name, new LiteralNode(this._g, value));
+            this.SetParameter(name, new LiteralNode(_g, value));
         }
 
         /// <summary>
@@ -450,7 +495,7 @@ namespace VDS.RDF.Query
         public void SetLiteral(String name, String value, Uri datatype)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
-            this.SetParameter(name, datatype == null ? new LiteralNode(this._g, value) : new LiteralNode(this._g, value, datatype));
+            this.SetParameter(name, datatype == null ? new LiteralNode(_g, value) : new LiteralNode(_g, value, datatype));
         }
 
         /// <summary>
@@ -463,7 +508,7 @@ namespace VDS.RDF.Query
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
             if (lang == null) throw new ArgumentNullException("lang", "Cannot set a Literal to have a null Language");
-            this.SetParameter(name, new LiteralNode(this._g, value, lang));
+            this.SetParameter(name, new LiteralNode(_g, value, lang));
         }
 
         /// <summary>
@@ -474,7 +519,7 @@ namespace VDS.RDF.Query
         public void SetUri(String name, Uri value)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a URI to be null");
-            this.SetParameter(name, new UriNode(this._g, value));
+            this.SetParameter(name, new UriNode(_g, value));
         }
 
         /// <summary>
@@ -489,7 +534,7 @@ namespace VDS.RDF.Query
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Blank Node to have a null ID");
             if (value.Equals(String.Empty)) throw new ArgumentException("Cannot set a Blank Node to have an empty ID", "value");
-            this.SetParameter(name, this._g.CreateBlankNode(value));
+            this.SetParameter(name, _g.CreateBlankNode(value));
         }
 
         /// <summary>
@@ -501,8 +546,12 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void SetBlankNode(String name)
         {
-            this.SetParameter(name, this._g.CreateBlankNode());
+            this.SetParameter(name, _g.CreateBlankNode());
         }
+
+        #endregion
+
+        #region Runtime Evaluation
 
         /// <summary>
         /// Executes this command as a query
@@ -541,55 +590,230 @@ namespace VDS.RDF.Query
             this._updateProcessor.ProcessCommandSet(cmds);
         }
 
+        #endregion
+
+        #region Command text processing and Serialization
+
+        /// <summary>
+        /// Clears the preprocessing structures
+        /// </summary>
+        private void ResetText()
+        {
+            //this._placeHolders.Clear();
+            this._commandText.Clear();
+        }
+
+
+        /// <summary>
+        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text
+        /// </summary>
+        /// <remarks>
+        /// This is done so the instance can be directly merged into another SparqlParameterizedString through the Append methods
+        /// </remarks>
+        private String TrimPreamble(String value)
+        {
+            int commandStart = 0;
+            foreach (Match preambleItem in PreambleCapturePattern.Matches(value))
+            {
+                if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
+                {
+                    this.BaseUri = UriFactory.Create(preambleItem.Groups[1].Value);
+                    this.Namespaces.AddNamespace("", this.BaseUri);
+                }
+                else
+                {
+                    this.Namespaces.AddNamespace(preambleItem.Groups[2].Value, UriFactory.Create(preambleItem.Groups[3].Value));
+                }
+                commandStart = preambleItem.Index + preambleItem.Length;
+            }
+            return value.Substring(commandStart);
+        }
+
+        /// <summary>
+        /// Provides some fast string exploration to determine valid parameter/variable placeholders and leave out any constant SPARQL ambiguous patterns (language tags, parameter- or variable-like patterns in IRIs or in string literals...)
+        /// </summary>
+        private void PreprocessText(String value)
+        {
+            bool inIri = false;
+            char literalOpeningChar = '\0';
+            bool inLiteral = false;
+            bool inLongLiteral = false;
+            bool escaping = false;
+
+            StringBuilder currentSegment = new StringBuilder();
+            for (int i = 0, l = value.Length; i < l; i++)
+            {
+                char c = value[i];
+                switch (c)
+                {
+                    case '\\':
+                        if (inLiteral)
+                        {
+                            escaping = !escaping;
+                        }
+                        break;
+                    case '\'':
+                    case '"':
+                        if (!inLiteral)
+                        {
+                            literalOpeningChar = c;
+                            inLiteral = true;
+                            if (i < l - 2 && value[i + 1] == c && value[i + 2] == c)
+                            {
+                                inLongLiteral = true;
+                                currentSegment.Append(c, 2);
+                                i += 2;
+                            }
+                        }
+                        else if (!escaping && c == literalOpeningChar)
+                        {
+                            if (!inLongLiteral)
+                            {
+                                inLiteral = false;
+                            }
+                            else if (i < l - 2 && value[i + 1] == c && value[i + 2] == c)
+                            {
+                                inLongLiteral = false;
+                                currentSegment.Append(c, 2);
+                                i += 2;
+                            }
+                        }
+                        break;
+                    case '<':
+                        // toggle whether me may start a Iri or break one
+                        inIri = !inIri;
+                        break;
+                    case '@':
+                    case '$':
+                    case '?':
+                        if (!inLiteral && !inIri)
+                        {
+                            if (c == '@' && i > 0 && value[i - 1] == '"')
+                            {
+                                // encountered a language tag => do nothing
+                            }
+                            else if (c == '?' && i < l && !Char.IsLetterOrDigit(value[i + 1]))
+                            {
+                                // must be a propertyPath ? modifier => do nothing
+                            }
+                            else
+                            {
+                                // Start variable or parameter capture
+                                _commandText.Add(currentSegment.ToString());
+#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+                                currentSegment.Clear();
+#else
+                                currentSegment = new StringBuilder();
+#endif
+                                currentSegment.Append(c);
+                                // Capture the identifier
+                                for (int idCharIndex = i + 1; idCharIndex < l; idCharIndex++)
+                                {
+                                    char idc = value[idCharIndex];
+                                    i = idCharIndex;
+                                    //check that the character is in valid identifier range
+                                    if (Char.IsLetterOrDigit(idc) || idc == '-' || idc == '_')
+                                    {
+                                        currentSegment.Append(idc);
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                // stop the capture 
+                                // TODO should we check that the identifier is not empty, just to be sure ?
+                                String assignment = currentSegment.ToString();
+                                _commandText.Add(assignment);
+#if NET40 || SILVERLIGHT || WINDOWS_PHONE
+                                currentSegment.Clear();
+#else
+                                currentSegment = new StringBuilder();
+#endif
+                                // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
+                                if (i < l - 1) currentSegment.Append(value[i]);
+
+                                // nothing more to do here
+                                continue;
+                            }
+                        }
+                        break;
+                    default:
+                        if (inIri)
+                        {
+                            // check wether the character is a valid in IRIs
+                            if (Char.IsControl(c) || _invalidIRICharacters.Contains(c))
+                            {
+                                inIri = false;
+                            }
+                        }
+                        break;
+                }
+                currentSegment.Append(c);
+            }
+            if (currentSegment.Length > 0) _commandText.Add(currentSegment.ToString());
+        }
+
         /// <summary>
         /// Returns the actual Query/Update String with parameter and variable values inserted
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            String output = String.Empty;
-            this._formatter = new SparqlFormatter(this.Namespaces);
+            StringBuilder output = new StringBuilder();
 
             // First prepend Base declaration
             if (this.BaseUri != null)
             {
-                output += "BASE <" + this._formatter.FormatUri(this.BaseUri) + ">\r\n";
+                output.AppendLine("BASE <" + this._formatter.FormatUri(this.BaseUri) + ">");
             }
 
             // Next prepend any Namespace Declarations
             foreach (String prefix in this._nsmap.Prefixes)
             {
-                output += "PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\r\n";
+                output.AppendLine("PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">");
             }
-                
-            //Then add the actual Command Text
-            output += this._command;
 
-            //Finally substitue in values for parameters and variables
-
-            //Make the replacements starting with the longest parameter names first so in the event
-            //of one parameter name being a prefix of another we've already replaced the longer name
-            //first
-            foreach (String param in this._parameters.Keys.OrderByDescending(k => k.Length))
+            //Then append the text with variable and parameters replaced by their values if set
+            INode value = null;
+            for (int i = 0, l = _commandText.Count; i < l; i++)
             {
-                if (this._parameters[param] != null)
+                String segment = _commandText[i];
+                switch (segment[0])
                 {
-                    //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]).Replace("$", "$$") + "$2");
+                    case '@':
+                        String paramName = segment.Substring(1);
+                        this._parameters.TryGetValue(paramName, out value);
+                        if (value != null)
+                        {
+                            output.Append(this._formatter.Format(value));
+                        }
+                        else
+                        {
+                            output.Append(segment);
+                        }
+                        break;
+                    case '?':
+                    case '$':
+                        String varName = segment.Substring(1);
+                        this._variables.TryGetValue(varName, out value);
+                        if (value != null)
+                        {
+                            output.Append(this._formatter.Format(value));
+                        }
+                        else
+                        {
+                            output.Append(segment);
+                        }
+                        break;
+                    default:
+                        output.Append(_commandText[i]);
+                        break;
                 }
             }
-
-            //Do Variable replacements after Parameter replacements
-            foreach (String var in this._variables.Keys.OrderByDescending(k => k.Length))
-            {
-                if (this._variables[var] != null)
-                {
-                    //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
-                    output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]).Replace("$", "$$") + "$2");
-                }
-            }
-
-            return output;
+            return output.ToString();
         }
+
+        #endregion
     }
 }
