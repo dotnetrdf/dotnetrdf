@@ -513,11 +513,6 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            //if (!this.QueriesEnabled && !this.UpdatesEnabled && !this.HttpProtocolEnabled)
-            //{
-            //    throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
-            //}
-
             //Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)

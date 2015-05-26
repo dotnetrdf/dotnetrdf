@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
@@ -74,6 +75,10 @@ namespace VDS.RDF.Web
         public void ProcessRequest(HttpContext context)
         {
             this._config = this.LoadConfig(context, out this._basePath);
+            if (!this._config.QueriesEnabled && !this._config.UpdatesEnabled && !this._config.HttpProtocolEnabled)
+            {
+                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
+            }
             WebContext webContext = new WebContext(context);
 
             //Add our Standard Headers
