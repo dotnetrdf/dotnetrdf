@@ -707,6 +707,7 @@ namespace VDS.RDF.Query
 #endif
                                 currentSegment.Append(c);
                                 // Capture the identifier
+                                bool hasRemainingChar = false;
                                 for (int idCharIndex = i + 1; idCharIndex < l; idCharIndex++)
                                 {
                                     char idc = value[idCharIndex];
@@ -718,6 +719,7 @@ namespace VDS.RDF.Query
                                     }
                                     else
                                     {
+                                        hasRemainingChar = true;
                                         break;
                                     }
                                 }
@@ -731,7 +733,7 @@ namespace VDS.RDF.Query
                                 currentSegment = new StringBuilder();
 #endif
                                 // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
-                                if (i < l) currentSegment.Append(value[i]);
+                                if (hasRemainingChar) currentSegment.Append(value[i]);
 
                                 // nothing more to do here
                                 continue;
