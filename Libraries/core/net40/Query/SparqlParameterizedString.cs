@@ -731,7 +731,7 @@ namespace VDS.RDF.Query
                                 currentSegment = new StringBuilder();
 #endif
                                 // Add the last character found (if any) to the new segment, since it is not part of the variable or parameter name
-                                if (i < l - 1) currentSegment.Append(value[i]);
+                                if (i < l) currentSegment.Append(value[i]);
 
                                 // nothing more to do here
                                 continue;
