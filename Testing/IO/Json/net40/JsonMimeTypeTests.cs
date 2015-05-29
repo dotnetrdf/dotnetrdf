@@ -9,6 +9,11 @@ namespace VDS.RDF
     [TestFixture]
     public class JsonMimeTypeTests
     {
+        public void Setup()
+        {
+            IOManager.ScanDefinitions();
+        }
+
         [Test]
         public void MimeTypesGetDefinitionsByTypeRdfJson1()
         {
