@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotNetRDF.Sparql.Core</id>
+    <version>$version$</version>
+    <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
+    <owners>RobVesse</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://www.dotnetrdf.org</projectUrl>
+    <iconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      ALPHA Release - dotNetRDF.Sparql.Core is a revised SPARQL API for dotNetRDF.  Provides data structures for representing SPARQL commands and results and the Medusa in-memory query engine.
+    </description>
+    <tags>RDF RDF/XML Turtle NTriples Notation3 NQuads TriG TriX</tags>
+    <dependencies>
+        <dependency id="dotNetRDF.Core" version="$version$" />
+        <dependency id="dotNetRDF.IO.Core" version="$version$" />
+    </dependencies>
+    <releaseNotes>
+This is an **ALPHA** release intended as a developer preview, this library is still unstable, incomplete and subject to extensive change
+      
+- Completely new API for representing SPARQL results
+- Completely new API for representing SPARQL queries
+- Completely new Medusa in-memory query engine
+    </releaseNotes>
+  </metadata>
+</package>

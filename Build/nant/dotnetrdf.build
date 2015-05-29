@@ -479,7 +479,8 @@
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${nobuild}"
           depends="build-core,build-core-clientprofile,
                    build-io-core,build-io-core-clientprofile,
-                   build-io-json,build-io-json-clientprofile"/>
+                   build-io-json,build-io-json-clientprofile,
+                   build-sparql-core"/>
   <!-- Portable currently not buildable -->
   <!--,
                    build-core-portable" />-->
@@ -569,6 +570,18 @@
   <target name="build-io-json-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${nobuild}" depends="compile-io-json-clientprofile">
     <call target="build-io-json-base" />
     <property name="build.target" value="net40-client" />
+    <call target="build-worker" />
+  </target>
+
+  <target name="build-sparql-core-base">
+    <call target="build-lib-base" />
+    <property name="build.product" value="Sparql/Core" />
+    <property name="build.artifacts" value="dotNetRDF.Sparql.Core.*" />
+    <property name="build.target" value="net40" />
+  </target>
+
+  <target name="build-sparql-core" description="Copy the latest build to the Nightly Build directory" unless="${nobuild}"  depends="compile-sparql-core">
+    <call target="build-sparql-core-base" />
     <call target="build-worker" />
   </target>
 
@@ -717,8 +730,8 @@
 
   <target name="dist-libs-nuget" description="Creates the NuGet packages" unless="${nodist}" 
           depends="dist-libs-nuget-core,
-                   dist-libs-nuget-io-core,
-                   dist-libs-nuget-io-json">
+                   dist-libs-nuget-io-core,dist-libs-nuget-io-json,
+                   dist-libs-nuget-sparql-core">
   </target>
   
   <property name="nuget.product" value="Core" />
@@ -726,7 +739,7 @@
   <property name="nuget.profile" value="Debug" />
   <property name="nuget.nuspec" value="" />
 
-  <target name="nuget-worker">
+  <target name="dist-nuget-worker">
     <!-- Copy libraries -->
     <copy todir="Build/nuget/${nuget.product}/lib/">
       <fileset basedir="bin/stable/Libraries/${nuget.product}/" failonempty="true" >
@@ -758,7 +771,7 @@
     <property name="nuget.product" value="Core" />
     <property name="nuget.artifacts" value="dotNetRDF.*" />
     <property name="nuget.nuspec" value="dotNetRDF.Core" />
-    <call target="nuget-worker" />
+    <call target="dist-nuget-worker" />
   </target>
 
   <target name="dist-libs-nuget-io-core" description="Creates the IO Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-io-core" unless="${nodist}">
@@ -768,7 +781,7 @@
     <property name="nuget.product" value="IO/Core" />
     <property name="nuget.artifacts" value="dotNetRDF.IO.Core.*" />
     <property name="nuget.nuspec" value="dotNetRDF.IO.Core" />
-    <call target="nuget-worker" />
+    <call target="dist-nuget-worker" />
   </target>
 
   <target name="dist-libs-nuget-io-json" description="Creates the IO JSON Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-io-json" unless="${nodist}">
@@ -778,7 +791,17 @@
     <property name="nuget.product" value="IO/Json" />
     <property name="nuget.artifacts" value="dotNetRDF.IO.Json.*" />
     <property name="nuget.nuspec" value="dotNetRDF.IO.Json" />
-    <call target="nuget-worker" />
+    <call target="dist-nuget-worker" />
+  </target>
+
+  <target name="dist-libs-nuget-sparql-core" description="Creates the SPARQL Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-sparql-core" unless="${nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-sparql-core" description="Creates the SPARQL Core Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
+    <property name="nuget.product" value="Sparql/Core" />
+    <property name="nuget.artifacts" value="dotNetRDF.Sparql.Core.*" />
+    <property name="nuget.nuspec" value="dotNetRDF.Sparql.Core" />
+    <call target="dist-nuget-worker" />
   </target>
   
   <!-- Upload Targets for Uploading the Builds to a website and Publishing NuGet Packages -->
@@ -786,18 +809,50 @@
   <target name="upload" description="Uploads ZIPs to a Website and publish NuGet packages"
           depends="upload-libs-nuget">
   </target>
+  
+  <property name="upload.product" value="Core" />
+  <property name="upload.nuspec" value="dotNetRDF.Core" />
 
-  <target name="upload-libs-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" 
-          depends="upload-libs-nuget-core">
-  </target>
-
-  <target name="upload-libs-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-libs-nuget-core">
-    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
+  <target name="upload-nuget-worker">
+    <exec workingdir="Build/nuget/${upload.product}/" program="nuget.exe">
       <arg value="push" />
-      <arg value="dotNetRDF.${nuspecversion}.nupkg" />
+      <arg value="${upload.nuspec}.${nuspecversion}.nupkg" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
     </exec>
   </target>
 
+  <target name="upload-libs-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" 
+          depends="upload-libs-nuget-core,
+                   upload-libs-nuget-io-core,upload-libs-nuget-io-json,
+                   upload-libs-nuget-sparql-core">
+  </target>
+
+  <target name="upload-libs-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" 
+          depends="dist-libs-nuget-core">
+    <property name="upload.product" value="Core" />
+    <property name="upload.nuspec" value="dotNetRDF.Core" />
+    <call target="upload-nuget-worker" />
+  </target>
+
+  <target name="upload-libs-nuget-io-core" description="Uploads the IO Core Library Package to the NuGet Gallery"
+        depends="dist-libs-nuget-io-core">
+    <property name="upload.product" value="IO/Core" />
+    <property name="upload.nuspec" value="dotNetRDF.IO.Core" />
+    <call target="upload-nuget-worker" />
+  </target>
+
+  <target name="upload-libs-nuget-io-json" description="Uploads the IO JSON Library Package to the NuGet Gallery"
+      depends="dist-libs-nuget-io-json">
+    <property name="upload.product" value="IO/Json" />
+    <property name="upload.nuspec" value="dotNetRDF.IO.Json" />
+    <call target="upload-nuget-worker" />
+  </target>
+
+  <target name="upload-libs-nuget-sparql-core" description="Uploads the SPARQL Core Library Package to the NuGet Gallery"
+      depends="dist-libs-nuget-sparql-core">
+    <property name="upload.product" value="Sparql/Core" />
+    <property name="upload.nuspec" value="dotNetRDF.Sparql.Core" />
+    <call target="upload-nuget-worker" />
+  </target>
 </project>
