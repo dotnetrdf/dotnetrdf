@@ -6,6 +6,8 @@
 ## 2. http://www.w3.org/Consortium/Legal/2008/03-bsd-license
 ## 3. http://www.w3.org/2004/10/27-testcases
 
+@base <http://www.w3.org/ns/rdftest/turtle> .
+
 # Test named *subm* are (c) W3C and taken from the Turtle submission.
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

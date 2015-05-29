@@ -28,7 +28,9 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Graphs;
+using VDS.RDF.Namespaces;
 using VDS.RDF.Nodes;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Parsing.Suites
 {
@@ -89,9 +91,13 @@ namespace VDS.RDF.Parsing.Suites
             {
                 case NodeType.Uri:
                     Uri u = n.Uri;
-                    if (u.IsFile) return u.AbsolutePath;
-                    String lastSegment = u.Segments[u.Segments.Length - 1];
-                    return Path.Combine(this._baseDir, lastSegment);
+                    if (u.IsAbsoluteUri && u.IsFile) return u.AbsolutePath;
+                    if (u.IsAbsoluteUri)
+                    {
+                        String lastSegment = u.Segments[u.Segments.Length - 1];
+                        return Path.Combine(this._baseDir, lastSegment);
+                    }
+                    return Path.Combine(this._baseDir, u.ToString());
                 default:
                     Assert.Fail("Malformed manifest file, input file must be a  URI");
                     break;
@@ -162,7 +168,7 @@ namespace VDS.RDF.Parsing.Suites
 
             manifest.Namespaces.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
             manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
-            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
 
             foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {
@@ -217,10 +223,11 @@ namespace VDS.RDF.Parsing.Suites
                 TestTools.ReportError("Bad Manifest", ex);
                 Assert.Fail("Failed to load Manifest " + file);
             }
-            manifest.Namespaces.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            manifest.Namespaces.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            manifest.Namespaces.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
             manifest.Namespaces.AddNamespace("rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
             manifest.Namespaces.AddNamespace("mf", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
-            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+            manifest.Namespaces.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
 
             foreach (Triple testTriple in manifest.GetTriplesWithPredicate(manifest.CreateUriNode("mf:action")))
             {

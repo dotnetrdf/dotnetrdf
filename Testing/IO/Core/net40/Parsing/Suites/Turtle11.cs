@@ -78,11 +78,12 @@ namespace VDS.RDF.Parsing.Suites
                 Graph g = new Graph();
                 g.Namespaces.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
                 INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+                INode posEvalTest = g.CreateUriNode("rdft:TestTurtleEval");
                 INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
                 INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
                 //Run manifests
-                this.RunManifest("resources/turtle11/manifest.ttl", new INode[] { posSyntaxTest }, new INode[] { negSyntaxTest, negEvalTest });
+                this.RunManifest("resources/turtle11/manifest.ttl", new INode[] { posSyntaxTest, posEvalTest }, new INode[] { negSyntaxTest, negEvalTest });
 
                 if (this.Count == 0) Assert.Fail("No tests found");
 
