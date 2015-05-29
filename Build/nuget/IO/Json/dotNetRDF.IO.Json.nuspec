@@ -15,9 +15,12 @@
     <tags>RDF RDF/XML Turtle NTriples Notation3 NQuads TriG TriX</tags>
     <dependencies>       
       <dependency id="dotNetRDF.IO.Core" version="$version$" />
-      <dependency id="Newtonsoft.Json" version="6.0.5" />
+      <dependency id="Newtonsoft.Json" version="6.0.8" />
     </dependencies>
     <releaseNotes>
+This is an **ALPHA** release intended as a developer preview, while this library is relatively stable and well tested other libraries in the 1.9 Alpha may not be
+
+- Moved Newtonsoft.Json dependent code into own module
     </releaseNotes>
   </metadata>
 </package>

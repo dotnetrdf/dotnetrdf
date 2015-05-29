@@ -478,43 +478,98 @@
 
   <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${nobuild}"
           depends="build-core,build-core-clientprofile,
-                   build-io-core,build-io-core-clientprofile"/>
+                   build-io-core,build-io-core-clientprofile,
+                   build-io-json,build-io-json-clientprofile"/>
   <!-- Portable currently not buildable -->
   <!--,
                    build-core-portable" />-->
+  
+  <property name="build.classifier" value="Libraries" />
+  <property name="build.product" value="Core" />
+  <property name="build.target" value="net40" />
+  <property name="build.profile" value="Debug" />
+  <property name="build.artifacts" value="dotNetRDF.*" />
+  <property name="build.dependencies" value="" />
+
+  <target name="build-worker">
+    <copy overwrite="true" todir="bin/nightlies/${build.classifier}/${build.product}/${build.target}">
+      <fileset failonempty="true">
+        <include name="${build.classifier}/${build.product}/${build.target}/bin/${build.profile}/${build.artifacts}" if="${build.artifacts != ''}"/>
+        <include name="${build.classifier}/${build.product}/${build.target}/bin/${build.profile}/${build.dependencies}" if="${build.dependencies != ''}" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-lib-base">
+    <property name="build.classifier" value="Libraries" />
+    <property name="build.profile" value="Debug" />
+    <property name="build.artifacts" value="" />
+    <property name="build.dependencies" value="" />
+  </target>
+
+  <target name="build-core-base">
+    <call target="build-lib-base" />
+    <property name="build.target" value="net40" />
+    <property name="build.product" value="Core" />
+    <property name="build.artifacts" value="dotNetRDF.Core.*" />
+    <property name="build.dependencies" value="VDS.Common.dll" />
+  </target>
 
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${nobuild}"  depends="compile-core">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.Core.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.Core.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.Core.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/VDS.Common.dll" />
+    <call target="build-core-base" />
+    <call target="build-worker" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${nobuild}" depends="compile-core-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.Core.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.Core.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.Core.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
+    <call target="build-core-base" />
+    <property name="build.target" value="net40-client" />
+    <call target="build-worker" />
   </target>
 
   <target name="build-core-portable" description="Copy the latest Portable build to the Portable Nightly Build directory" unless="${nobuild}" depends="compile-core-portable">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.Core.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.Core.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.Core.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Portable.Runtime.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/VDS.Common.dll" />
+    <call target="build-core-base" />
+    <property name="build.target" value="portable" />
+    <call target="build-worker" />
+    <property name="build.artifacts" values="" />
+    <property name="build.dependencies" value="Portable.Runtime.dll" />
+    <call target="build-worker" />
+  </target>
+
+  <target name="build-io-core-base">
+    <call target="build-lib-base" />
+    <property name="build.product" value="IO/Core" />
+    <property name="build.artifacts" value="dotNetRDF.IO.Core.*" />
+    <property name="build.target" value="net40" />
   </target>
 
   <target name="build-io-core" description="Copy the latest build to the Nightly Build directory" unless="${nobuild}"  depends="compile-io-core">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40/" file="Libraries/IO/Core/net40/bin/Debug/dotNetRDF.IO.Core.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40/" file="Libraries/IO/Core/net40/bin/Debug/dotNetRDF.IO.Core.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40/" file="Libraries/IO/Core/net40/bin/Debug/dotNetRDF.IO.Core.pdb" />
+    <call target="build-io-core-base" />
+    <call target="build-worker" />
   </target>
 
   <target name="build-io-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${nobuild}" depends="compile-io-core-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40-client/" file="Libraries/IO/Core/net40-client/bin/Debug/dotNetRDF.IO.Core.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40-client/" file="Libraries/IO/Core/net40-client/bin/Debug/dotNetRDF.IO.Core.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/IO/Core/net40-client/" file="Libraries/IO/Core/net40-client/bin/Debug/dotNetRDF.IO.Core.pdb" />
+    <call target="build-io-core-base" />
+    <property name="build.target" value="net40-client" />
+    <call target="build-worker" />
+  </target>
+
+  <target name="build-io-json-base">
+    <call target="build-lib-base" />
+    <property name="build.target" value="net40" />
+    <property name="build.product" value="IO/Json" />
+    <property name="build.artifacts" value="dotNetRDF.IO.Json.*" />
+    <property name="build.dependencies" value="Newtonsoft.Json.dll" />
+  </target>
+
+  <target name="build-io-json" description="Copy the latest build to the Nightly Build directory" unless="${nobuild}"  depends="compile-io-json">
+    <call target="build-io-json-base" />
+    <call target="build-worker" />
+  </target>
+
+  <target name="build-io-json-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${nobuild}" depends="compile-io-json-clientprofile">
+    <call target="build-io-json-base" />
+    <property name="build.target" value="net40-client" />
+    <call target="build-worker" />
   </target>
 
   <!-- Release Build Targets -->
@@ -662,7 +717,8 @@
 
   <target name="dist-libs-nuget" description="Creates the NuGet packages" unless="${nodist}" 
           depends="dist-libs-nuget-core,
-                   dist-libs-nuget-io-core">
+                   dist-libs-nuget-io-core,
+                   dist-libs-nuget-io-json">
   </target>
   
   <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-core" unless="${nodist}">
@@ -733,6 +789,44 @@
     <exec workingdir="Build/nuget/IO/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.IO.Core.nuspec" />
+      <arg value="-Symbols" unless="${nosymbols}" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
+      <arg value="-Version" />
+      <arg value="${nuspecversion}" />
+    </exec>
+  </target>
+
+  <target name="dist-libs-nuget-io-json" description="Creates the IO JSON Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-io-json" unless="${nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-io-json" description="Creates the IO JSON Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
+    <!-- Then create the Json library package -->
+    <copy todir="Build/nuget/IO/Json/lib/net40/">
+      <fileset basedir="bin/stable/Libraries/IO/Json/net40/">
+        <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/IO/Json/lib/net40-client/">
+      <fileset basedir="bin/stable/Libraries/IO/Json/net40-client/">
+        <include name="dotNetRDF.*" />
+      </fileset>
+    </copy>
+    <!--<copy todir="Build/nuget/IO/Json/lib/portable-net4+sl4+netJson45+wp8+MonoAndroid1+MonoTouch1">
+      <fileset basedir="bin/stable/Libraries/IO/Json/portable/">
+        <include name="dotNetRDF.*" />
+        <include name="Portable.Runtime.dll" />
+      </fileset>
+    </copy>-->
+    <copy todir="Build/nuget/IO/Json/src/" unless="${nosymbols}">
+      <fileset basedir="Libraries/Json/net40/">
+        <include name="**/*.cs" />
+      </fileset>
+    </copy>
+    <!-- Finally invoke nuget on the package -->
+    <exec workingdir="Build/nuget/IO/Json/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.IO.Json.nuspec" />
       <arg value="-Symbols" unless="${nosymbols}" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
