@@ -76,9 +76,9 @@
       <Project>{c730a95a-290f-4a07-bb9b-54fbf314239d}</Project>
       <Name>dotNetRDF.Sparql.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Core.Test.csproj">
+    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Net40.Test.csproj">
       <Project>{ca506ee2-90c1-4307-b98a-fe14730509ad}</Project>
-      <Name>dotNetRDF.Core.Test</Name>
+      <Name>dotNetRDF.Net40.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3859,9 +3859,9 @@
       <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
       <Name>dotNetRDF.IO.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Core.Test.csproj">
+    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Net40.Test.csproj">
       <Project>{CA506EE2-90C1-4307-B98A-FE14730509AD}</Project>
-      <Name>dotNetRDF.Core.Test</Name>
+      <Name>dotNetRDF.Net40.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

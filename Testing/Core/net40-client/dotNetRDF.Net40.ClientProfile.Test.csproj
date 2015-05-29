@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2961D6B2-F803-4A95-BAF2-10357F24D59D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>net40_client</RootNamespace>
+    <AssemblyName>net40-client</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise />
+  </Choose>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj">
+      <Project>{2bf58afc-4dce-4ed4-bbe2-b751c1e4bc21}</Project>
+      <Name>dotNetRDF.Net40.ClientProfile</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Testing\Core\net40\dotNetRDF.Net40.Test.csproj" "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\net40\BaseTest.cs">
+      <Link>BaseTest.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\AbstractGraphContractTests.cs">
+      <Link>Graphs\AbstractGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\GraphContractTests.cs">
+      <Link>Graphs\GraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ReadOnlyGraphContractTests.cs">
+      <Link>Graphs\ReadOnlyGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\SubTreeIndexedGraphContractTests.cs">
+      <Link>Graphs\SubTreeIndexedGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\ThreadSafeGraphContractTests.cs">
+      <Link>Graphs\ThreadSafeGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\TrieIndexedGraphContractTests.cs">
+      <Link>Graphs\TrieIndexedGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\UnindexedGraphContractTests.cs">
+      <Link>Graphs\UnindexedGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Graphs\WrapperGraphContractTests.cs">
+      <Link>Graphs\WrapperGraphContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Namespaces\AbstractNamespaceMapperContractTests.cs">
+      <Link>Namespaces\AbstractNamespaceMapperContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\NodeFactoryTests.cs">
+      <Link>Nodes\NodeFactoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\AbstractNodeFactoryContractTests.cs">
+      <Link>Nodes\AbstractNodeFactoryContractTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\LiteralNodeTests.cs">
+      <Link>Nodes\LiteralNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\ValuedNodeTests.cs">
+      <Link>Nodes\ValuedNodeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\TestTools.cs">
+      <Link>TestTools.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\UriFactoryTests.cs">
+      <Link>UriFactoryTests.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
