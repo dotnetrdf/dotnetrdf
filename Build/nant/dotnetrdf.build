@@ -670,7 +670,7 @@
     </delete>
   </target>
 
-  <target name="clean-nuget" description="Cleans the NuGet working directories">
+  <target name="clean-nuget" description="Cleans the NuGet working directories" unless="${nodist}">
    <delete failonerror="false">
      <fileset>
        <include name="Build/nuget/**/lib/" />

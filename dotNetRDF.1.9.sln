@@ -202,6 +202,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Json", "Json", "{97265762-D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Core.Net40.ClientProfile.Test", "Testing\Core\net40-client\dotNetRDF.Core.Net40.ClientProfile.Test.csproj", "{2961D6B2-F803-4A95-BAF2-10357F24D59D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sparql", "Sparql", "{F0D5CEAB-5939-440B-AE52-576D1EF3F178}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{64F34E15-DE8E-42D9-9360-70E73D2FC0E9}"
+	ProjectSection(SolutionItems) = preProject
+		Build\nuget\Sparql\Core\dotNetRDF.Sparql.Core.nuspec = Build\nuget\Sparql\Core\dotNetRDF.Sparql.Core.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -665,6 +672,8 @@ Global
 		{4987AC0B-EAFD-44B6-94B3-850253E1ADAE} = {31C3B378-E539-41B8-A17E-4631DB5F13ED}
 		{97265762-DBAE-411E-93A8-A2B813D84C36} = {31C3B378-E539-41B8-A17E-4631DB5F13ED}
 		{2961D6B2-F803-4A95-BAF2-10357F24D59D} = {5E7E57FF-71E5-483C-887F-E0F609EDE10E}
+		{F0D5CEAB-5939-440B-AE52-576D1EF3F178} = {99E6AA95-7905-4997-A593-F21E11BDD2DB}
+		{64F34E15-DE8E-42D9-9360-70E73D2FC0E9} = {F0D5CEAB-5939-440B-AE52-576D1EF3F178}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.vsmdi
