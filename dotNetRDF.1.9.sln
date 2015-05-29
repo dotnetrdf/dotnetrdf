@@ -17,6 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{3CDA014A
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{05FF69EA-EC65-4CD6-AC82-12D110E6D626}"
+	ProjectSection(SolutionItems) = preProject
+		License.txt = License.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Library", "Core Library", "{D0EBD311-D634-4254-B787-3573CE8E808C}"
 	ProjectSection(SolutionItems) = preProject
@@ -152,7 +155,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphBenchmarker", "Testing
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Json.Net40", "Libraries\IO\Json\net40\dotNetRDF.IO.Json.Net40.csproj", "{63EAB21F-9F9B-495B-9649-48C58914377F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Core.Test", "Testing\IO\Core\net40\dotNetRDF.IO.Core.Test.csproj", "{3BDB1534-04C8-4D45-B8D5-DEAC4C75960B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Core.Net40.Test", "Testing\IO\Core\net40\dotNetRDF.IO.Core.Net40.Test.csproj", "{3BDB1534-04C8-4D45-B8D5-DEAC4C75960B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.IO.Json.Test", "Testing\IO\Json\net40\dotNetRDF.IO.Json.Test.csproj", "{3E6CD893-3D85-459E-8F26-247F841D8810}"
 EndProject
