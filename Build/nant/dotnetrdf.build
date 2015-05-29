@@ -492,7 +492,7 @@
   <property name="build.dependencies" value="" />
 
   <target name="build-worker">
-    <copy overwrite="true" todir="bin/nightlies/${build.classifier}/${build.product}/${build.target}">
+    <copy overwrite="true" todir="bin/nightlies/${build.classifier}/${build.product}/${build.target}" flatten="true">
       <fileset failonempty="true">
         <include name="${build.classifier}/${build.product}/${build.target}/bin/${build.profile}/${build.artifacts}" if="${build.artifacts != ''}"/>
         <include name="${build.classifier}/${build.product}/${build.target}/bin/${build.profile}/${build.dependencies}" if="${build.dependencies != ''}" />
@@ -721,118 +721,64 @@
                    dist-libs-nuget-io-json">
   </target>
   
-  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-core" unless="${nodist}">
-  </target>
+  <property name="nuget.product" value="Core" />
+  <property name="nuget.artifacts" value="dotNetRDF.*" />
+  <property name="nuget.profile" value="Debug" />
+  <property name="nuget.nuspec" value="" />
 
-  <target name="do-dist-libs-nuget-core" description="Creates the Core Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
-    <!-- Then create the Core library package -->
-    <copy todir="Build/nuget/Core/lib/net40/">
-      <fileset basedir="bin/stable/Libraries/Core/net40/">
-        <include name="dotNetRDF.*" />
+  <target name="nuget-worker">
+    <!-- Copy libraries -->
+    <copy todir="Build/nuget/${nuget.product}/lib/">
+      <fileset basedir="bin/stable/Libraries/${nuget.product}/" failonempty="true" >
+        <include name="**/${nuget.artifacts}" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/net40-client/">
-      <fileset basedir="bin/stable/Libraries/Core/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <!--<copy todir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-      <fileset basedir="bin/stable/Libraries/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>-->
-    <copy todir="Build/nuget/Core/src/" unless="${nosymbols}">
-      <fileset basedir="Libraries/core/net40/">
+    <!-- Copy source if including symbols -->
+    <copy todir="Build/nuget/${nuget.product}/src/" unless="${nosymbols}">
+      <fileset basedir="Libraries/${nuget.product}/net40/" failonempty="true">
         <include name="**/*.cs" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
+    <exec workingdir="Build/nuget/${nuget.product}/" program="nuget.exe">
       <arg value="pack" />
-      <arg value="dotNetRDF.Core.nuspec" />
+      <arg value="${nuget.nuspec}.nuspec" />
       <arg value="-Symbols" unless="${nosymbols}" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
       <arg value="${nuspecversion}" />
     </exec>
+  </target>
+  
+  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-core" unless="${nodist}">
+  </target>
+
+  <target name="do-dist-libs-nuget-core" description="Creates the Core Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
+    <property name="nuget.product" value="Core" />
+    <property name="nuget.artifacts" value="dotNetRDF.*" />
+    <property name="nuget.nuspec" value="dotNetRDF.Core" />
+    <call target="nuget-worker" />
   </target>
 
   <target name="dist-libs-nuget-io-core" description="Creates the IO Core Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-io-core" unless="${nodist}">
   </target>
 
   <target name="do-dist-libs-nuget-io-core" description="Creates the IO Core Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
-    <!-- Then create the Core library package -->
-    <copy todir="Build/nuget/IO/Core/lib/net40/">
-      <fileset basedir="bin/stable/Libraries/IO/Core/net40/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/IO/Core/lib/net40-client/">
-      <fileset basedir="bin/stable/Libraries/IO/Core/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <!--<copy todir="Build/nuget/IO/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-      <fileset basedir="bin/stable/Libraries/IO/Core/portable/">
-        <include name="dotNetRDF.*" />
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>-->
-    <copy todir="Build/nuget/IO/Core/src/" unless="${nosymbols}">
-      <fileset basedir="Libraries/core/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
-    <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/IO/Core/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.IO.Core.nuspec" />
-      <arg value="-Symbols" unless="${nosymbols}" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-      <arg value="-Version" />
-      <arg value="${nuspecversion}" />
-    </exec>
+    <property name="nuget.product" value="IO/Core" />
+    <property name="nuget.artifacts" value="dotNetRDF.IO.Core.*" />
+    <property name="nuget.nuspec" value="dotNetRDF.IO.Core" />
+    <call target="nuget-worker" />
   </target>
 
   <target name="dist-libs-nuget-io-json" description="Creates the IO JSON Library NuGet package" depends="build-release-libs, do-dist-libs-nuget-io-json" unless="${nodist}">
   </target>
 
   <target name="do-dist-libs-nuget-io-json" description="Creates the IO JSON Library NuGet package (no dependency)" depends="clean-nuget" unless="${nodist}">
-    <!-- Then create the Json library package -->
-    <copy todir="Build/nuget/IO/Json/lib/net40/">
-      <fileset basedir="bin/stable/Libraries/IO/Json/net40/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/IO/Json/lib/net40-client/">
-      <fileset basedir="bin/stable/Libraries/IO/Json/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <!--<copy todir="Build/nuget/IO/Json/lib/portable-net4+sl4+netJson45+wp8+MonoAndroid1+MonoTouch1">
-      <fileset basedir="bin/stable/Libraries/IO/Json/portable/">
-        <include name="dotNetRDF.*" />
-        <include name="Portable.Runtime.dll" />
-      </fileset>
-    </copy>-->
-    <copy todir="Build/nuget/IO/Json/src/" unless="${nosymbols}">
-      <fileset basedir="Libraries/Json/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
-    <!-- Finally invoke nuget on the package -->
-    <exec workingdir="Build/nuget/IO/Json/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.IO.Json.nuspec" />
-      <arg value="-Symbols" unless="${nosymbols}" />
-      <arg value="-Verbosity" />
-      <arg value="detailed" />
-      <arg value="-Version" />
-      <arg value="${nuspecversion}" />
-    </exec>
+    <property name="nuget.product" value="IO/Json" />
+    <property name="nuget.artifacts" value="dotNetRDF.IO.Json.*" />
+    <property name="nuget.nuspec" value="dotNetRDF.IO.Json" />
+    <call target="nuget-worker" />
   </target>
   
   <!-- Upload Targets for Uploading the Builds to a website and Publishing NuGet Packages -->
