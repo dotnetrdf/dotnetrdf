@@ -1,56 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21}</ProjectGuid>
+    <ProjectGuid>{8AAEC132-8EC5-4A53-B27B-960FBAB99E19}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <AssemblyName>dotNetRDF</AssemblyName>
+    <AssemblyName>dotNetRDF.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NO_WEB;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PORTABLE, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\dotNetRDF.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE,NO_WEB,NET40</DefineConstants>
+    <DefineConstants>TRACE;PORTABLE, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\dotNetRDF.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.5.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\VDS.Common.1.5.0\lib\net40-client\VDS.Common.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Compatibility\CryptoConfig.cs" />
+    <Compile Include="Crypto\CryptographicException.cs" />
+    <Compile Include="Crypto\CryptographicUnexpectedOperationExcpetion.cs" />
+    <Compile Include="Crypto\HashAlgorithm.cs" />
+    <Compile Include="Crypto\ICryptoTransform.cs" />
+    <Compile Include="Crypto\SHA1.cs" />
+    <Compile Include="Crypto\SHA1CryptoServiceProvider.cs" />
+    <Compile Include="Crypto\SHA1Managed.cs" />
+    <Compile Include="Crypto\SHA256.cs" />
+    <Compile Include="Crypto\SHA256Managed.cs" />
+    <Compile Include="Crypto\SHAConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -71,8 +76,6 @@
     <Compile Include="..\net40\Writing\WriterUtilities.cs">
       <Link>Writing\WriterUtilities.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\net40\Callbacks.cs">
       <Link>Callbacks.cs</Link>
     </Compile>
@@ -136,22 +139,35 @@
     <Compile Include="..\net40\Writing\Serialization\SerializationHelper.cs">
       <Link>Writing\Serialization\SerializationHelper.cs</Link>
     </Compile>
-    <EmbeddedResource Include="..\net40\Writing\Serialization\SerializationSchema.xsd">
-      <Link>Writing\Serialization\SerializationSchema.xsd</Link>
-    </EmbeddedResource>
     <Compile Include="..\net40\Writing\Formatting\INodeFormatter.cs">
       <Link>Writing\Formatting\INodeFormatter.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\net40\Writing\Serialization\SerializationSchema.xsd">
+      <Link>Writing\Serialization\SerializationSchema.xsd</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Portable.Runtime">
+      <HintPath>lib\Portable.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common">
+      <HintPath>..\..\..\packages\VDS.Common.1.5.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <ItemGroup>
-    <Compile Include="..\net40\Writing\Formatting\IQuadFormatter.cs">
-      <Link>Writing\Formatting\IQuadFormatter.cs</Link>
-    </Compile>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\net40\Collections\IGraphCollection.cs">
       <Link>Collections\IGraphCollection.cs</Link>
@@ -209,6 +225,9 @@
     </Compile>
     <Compile Include="..\net40\Nodes\UnsignedLongNode.cs">
       <Link>Nodes\UnsignedLongNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IQuadFormatter.cs">
+      <Link>Writing\Formatting\IQuadFormatter.cs</Link>
     </Compile>
     <Compile Include="..\net40\Collections\TripleCollection.cs">
       <Link>Collections\TripleCollection.cs</Link>
@@ -316,9 +335,24 @@
       <Link>UriFactory.cs</Link>
     </Compile>
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.Core.Net40.csproj" "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\net40\Attributes\ConfigurationObjectFactory.cs">
       <Link>Attributes\ConfigurationObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\HashSet.cs">
+      <Link>Compatibility\HashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\PortableLibraryCompatibility.cs">
+      <Link>Compatibility\PortableLibraryCompatibility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\SilverlightCompatability.cs">
+      <Link>Compatibility\SilverlightCompatability.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatibility\WindowsPhoneCompatibility.cs">
+      <Link>Compatibility\WindowsPhoneCompatibility.cs</Link>
     </Compile>
     <Compile Include="..\net40\Configuration\ConfigurationSerializationContext.cs">
       <Link>Configuration\ConfigurationSerializationContext.cs</Link>
@@ -331,20 +365,6 @@
     </Compile>
     <Compile Include="..\net40\Configuration\IConfigurationSerializable.cs">
       <Link>Configuration\IConfigurationSerializable.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\net40\Compatibility\HashSet.cs">
-      <Link>Compatibility\HashSet.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatibility\PortableLibraryCompatibility.cs">
-      <Link>Compatibility\PortableLibraryCompatibility.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatibility\SilverlightCompatability.cs">
-      <Link>Compatibility\SilverlightCompatability.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Compatibility\WindowsPhoneCompatibility.cs">
-      <Link>Compatibility\WindowsPhoneCompatibility.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -376,8 +396,6 @@
     <Compile Include="..\net40\Collections\TrieIndexedTripleCollection.cs">
       <Link>Collections\TrieIndexedTripleCollection.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\net40\Graphs\GraphAccessMode.cs">
       <Link>Graphs\GraphAccessMode.cs</Link>
     </Compile>
@@ -417,8 +435,5 @@
     <Compile Include="..\net40\Graphs\Utilities\SubGraphMatcher.cs">
       <Link>Graphs\Utilities\SubGraphMatcher.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -45,13 +45,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj">
+    <ProjectReference Include="..\..\..\core\net40-client\dotNetRDF.Core.Net40.ClientProfile.csproj">
       <Project>{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21}</Project>
-      <Name>dotNetRDF.Net40.ClientProfile</Name>
+      <Name>dotNetRDF.Core.Net40.ClientProfile</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\net40-client\dotNetRDF.IO.Net40.ClientProfile.csproj">
+    <ProjectReference Include="..\..\Core\net40-client\dotNetRDF.IO.Core.Net40.ClientProfile.csproj">
       <Project>{BE68B7AE-F1FE-474F-95DB-817A9032CC98}</Project>
-      <Name>dotNetRDF.IO.Net40.ClientProfile</Name>
+      <Name>dotNetRDF.IO.Core.Net40.ClientProfile</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

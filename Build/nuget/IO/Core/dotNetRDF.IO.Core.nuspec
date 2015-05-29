@@ -17,9 +17,11 @@
         <dependency id="dotNetRDF.Core" version="$version$" />
     </dependencies>
     <releaseNotes>
+This is an **ALPHA** release intended as a developer preview, while this library is relatively stable and well tested other libraries in the 1.9 Alpha may not be
+      
 - Slimmed down IO API
-- Consolidate IStoreReader into IRdfReader
-- Consolidate IStoreWriter into IRdfWriter
+- Consolidated IStoreReader into IRdfReader
+- Consolidated IStoreWriter into IRdfWriter
 - Memory efficient blank node generation
     </releaseNotes>
   </metadata>

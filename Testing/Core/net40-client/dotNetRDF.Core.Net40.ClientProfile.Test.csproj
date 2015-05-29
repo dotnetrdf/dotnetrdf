@@ -6,9 +6,9 @@
     <ProjectGuid>{2961D6B2-F803-4A95-BAF2-10357F24D59D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40_client</RootNamespace>
-    <AssemblyName>net40-client</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Core.Net40.ClientProfile.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -17,6 +17,7 @@
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,13 +57,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj">
+    <ProjectReference Include="..\..\..\Libraries\core\net40-client\dotNetRDF.Core.Net40.ClientProfile.csproj">
       <Project>{2bf58afc-4dce-4ed4-bbe2-b751c1e4bc21}</Project>
-      <Name>dotNetRDF.Net40.ClientProfile</Name>
+      <Name>dotNetRDF.Core.Net40.ClientProfile</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Libraries\IO\Core\net40-client\dotNetRDF.IO.Net40.ClientProfile.csproj">
+    <ProjectReference Include="..\..\..\Libraries\IO\Core\net40-client\dotNetRDF.IO.Core.Net40.ClientProfile.csproj">
       <Project>{be68b7ae-f1fe-474f-95db-817a9032cc98}</Project>
-      <Name>dotNetRDF.IO.Net40.ClientProfile</Name>
+      <Name>dotNetRDF.IO.Core.Net40.ClientProfile</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +97,7 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Testing\Core\net40\dotNetRDF.Net40.Test.csproj" "$(ProjectPath)"</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Testing\Core\net40\dotNetRDF.Core.Net40.Test.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

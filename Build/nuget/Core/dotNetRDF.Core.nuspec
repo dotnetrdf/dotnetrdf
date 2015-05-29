@@ -14,16 +14,19 @@
     </description>
     <tags>RDF Semantic Web Graph Graphs Triples Quads</tags>
     <dependencies>       
-        <dependency id="VDS.Common" version="[1.4.0]" />
+        <dependency id="VDS.Common" version="[1.5.0]" />
     </dependencies>
     <releaseNotes>
+This is an **ALPHA** release intended as a developer preview, while this library is relatively stable and well tested other libraries in the 1.9 Alpha may not be
+
 - Slimmed down Core API
-- INode sub-interfaces consolidated into INode
+- INode sub-interfaces consolidated into single INode interface
 - INode no longer graph scoped
 - New Quad class
 - IGraphStore replaces ITripleStore
 - Support for RDF 1.1
 - Blank nodes now identified by Guid's
+- Simplified IGraph interface
     </releaseNotes>
   </metadata>
 </package>

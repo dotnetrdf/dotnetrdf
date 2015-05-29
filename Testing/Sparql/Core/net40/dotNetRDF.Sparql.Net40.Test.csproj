@@ -64,21 +64,21 @@
     <Compile Include="Query\Processors\QuadStoreQueryProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Libraries\core\net40\dotNetRDF.Net40.csproj">
+    <ProjectReference Include="..\..\..\..\Libraries\core\net40\dotNetRDF.Core.Net40.csproj">
       <Project>{bfbac159-1e60-4d03-8aca-d34e31eb83bf}</Project>
-      <Name>dotNetRDF.Net40</Name>
+      <Name>dotNetRDF.Core.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Libraries\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
+    <ProjectReference Include="..\..\..\..\Libraries\IO\Core\net40\dotNetRDF.IO.Core.Net40.csproj">
       <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
-      <Name>dotNetRDF.IO.Net40</Name>
+      <Name>dotNetRDF.IO.Core.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Libraries\Sparql\Core\net40\dotNetRDF.Sparql.Net40.csproj">
+    <ProjectReference Include="..\..\..\..\Libraries\Sparql\Core\net40\dotNetRDF.Sparql.Core.Net40.csproj">
       <Project>{c730a95a-290f-4a07-bb9b-54fbf314239d}</Project>
-      <Name>dotNetRDF.Sparql.Net40</Name>
+      <Name>dotNetRDF.Sparql.Core.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Net40.Test.csproj">
+    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Core.Net40.Test.csproj">
       <Project>{ca506ee2-90c1-4307-b98a-fe14730509ad}</Project>
-      <Name>dotNetRDF.Net40.Test</Name>
+      <Name>dotNetRDF.Core.Net40.Test</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
