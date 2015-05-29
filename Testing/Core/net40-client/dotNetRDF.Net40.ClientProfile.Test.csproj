@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -58,6 +59,10 @@
     <ProjectReference Include="..\..\..\Libraries\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj">
       <Project>{2bf58afc-4dce-4ed4-bbe2-b751c1e4bc21}</Project>
       <Name>dotNetRDF.Net40.ClientProfile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Libraries\IO\Core\net40-client\dotNetRDF.IO.Net40.ClientProfile.csproj">
+      <Project>{be68b7ae-f1fe-474f-95db-817a9032cc98}</Project>
+      <Name>dotNetRDF.IO.Net40.ClientProfile</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

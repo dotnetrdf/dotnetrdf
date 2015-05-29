@@ -68,14 +68,14 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingRdfXmlIdsDom()
         {
             IGraph g = new Graph();
-            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, @"resources\rdfxml\xmlbase\test014.rdf");
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRdfXmlIllegalBaseDom()
         {
             IGraph g = new Graph();
-            this.Parser.Load(new GraphHandler(g), new StreamReader("resources\\rdfxml\\xmlbase\\test014.rdf"), new ParserProfile(new Uri("mailto:illegal@base.com")));
+            this.Parser.Load(new GraphHandler(g), new StreamReader(@"resources\rdfxml\xmlbase\error001.rdf"));
         }
     }
 #endif
@@ -125,14 +125,14 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingRdfXmlIDsStreaming()
         {
             IGraph g = new Graph();
-            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, @"resources\rdfxml\xmlbase\test014.rdf");
         }
 
         [Test, ExpectedException(typeof(RdfParseException))]
         public void ParsingRdfXmlIllegalBaseStreaming()
         {
             IGraph g = new Graph();
-            this.Parser.Load(new GraphHandler(g), new StreamReader("resources\\rdfxml\\xmlbase\\test014.rdf"), new ParserProfile(new Uri("mailto:illegal@base.com")));
+            this.Parser.Load(new GraphHandler(g), new StreamReader(@"resources\rdfxml\xmlbase\error001.rdf"));
         }
     }
 }

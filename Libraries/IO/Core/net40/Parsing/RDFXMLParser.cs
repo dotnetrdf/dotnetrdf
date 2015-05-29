@@ -945,7 +945,7 @@ namespace VDS.RDF.Parsing
 
             //Resolve the Uri
             UriReferenceEvent uriref = new UriReferenceEvent(id, String.Empty);
-            INode uri = this.Resolve(context, uriref,element.BaseUri);
+            INode uri = this.Resolve(context, uriref, element.BaseUri);
 
             this.Reify(context, uri, subj, pred, obj);
         }
@@ -1594,6 +1594,12 @@ namespace VDS.RDF.Parsing
         {
             try
             {
+                if (baseUri != null)
+                {
+                    // If we have a Base URI and we are resolving a relative URI then the Base URI 
+                    // must follow the generic syntax UNLESS we are resolving a fragment URI
+                    if (uriref.Identifier.Length > 0 && uriref.Identifier[0] != '#') CheckGenericBase(baseUri, uriref);
+                }
                 INode u = context.Handler.CreateUriNode(UriFactory.ResolveUri(uriref.Identifier, baseUri));
                 return u;
             }
@@ -1901,7 +1907,12 @@ namespace VDS.RDF.Parsing
         {
             if (baseUri == null) return;
             if (!baseUri.IsAbsoluteUri) throw ParserHelper.Error("Relative Base URIs are not permitted", evt);
-            if (baseUri.Scheme.Equals("mailto")) throw ParserHelper.Error("mailto: is an invalid scheme for Base URIs", evt);
+        }
+
+        public static void CheckGenericBase(Uri baseUri, IRdfXmlEvent evt)
+        {
+            if (baseUri == null) return;
+            if (baseUri.Scheme.Equals("mailto")) throw ParserHelper.Error("mailto: is an invalid scheme for Base URIs when resolving relative URIs", evt);
         }
 
         #endregion
