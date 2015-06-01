@@ -101,6 +101,7 @@
     <Compile Include="RdfServerOptions.cs" />
     <Compile Include="RdfServerPathResolver.cs" />
     <Compile Include="SparqlServerHandler.cs" />
+    <Compile Include="StartupModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
