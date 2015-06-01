@@ -27,6 +27,7 @@ rdfOptStats
 rdfQuery
 
 rdfServer
+- Fix bug with unsupported configurations not being flagged as errors
 
 rdfServerGUI
 
