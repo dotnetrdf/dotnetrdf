@@ -250,6 +250,7 @@
     <Compile Include="Storage\Management\StardogServer.cs" />
     <Compile Include="Storage\StorageCallbacks.cs" />
     <Compile Include="Storage\StorageHelper.cs" />
+    <Compile Include="Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs" />
     <Compile Include="Web\WebContext.cs" />
     <Compile Include="Web\IHttpContext.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />

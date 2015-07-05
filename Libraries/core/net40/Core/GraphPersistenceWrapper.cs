@@ -211,7 +211,7 @@ namespace VDS.RDF
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public bool Assert(Triple t)
+        public virtual bool Assert(Triple t)
         {
             if (this._alwaysQueueActions || !this._g.Triples.Contains(t))
             {
@@ -241,7 +241,7 @@ namespace VDS.RDF
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public bool Retract(Triple t)
+        public virtual bool Retract(Triple t)
         {
             if (this._alwaysQueueActions || this._g.Triples.Contains(t))
             {
@@ -576,7 +576,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to test</param>
         /// <returns></returns>
-        public bool ContainsTriple(Triple t)
+        public virtual bool ContainsTriple(Triple t)
         {
             return this._g.ContainsTriple(t);
         }
