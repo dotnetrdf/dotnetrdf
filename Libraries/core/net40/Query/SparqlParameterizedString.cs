@@ -617,7 +617,7 @@ namespace VDS.RDF.Query
             {
                 if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
                 {
-                    this.BaseUri = UriFactory.Create(preambleItem.Groups[1].Value);
+                    this.BaseUri = UriFactory.Create(preambleItem.Groups[3].Value);
                     this.Namespaces.AddNamespace("", this.BaseUri);
                 }
                 else
