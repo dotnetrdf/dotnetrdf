@@ -19,12 +19,12 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         /// <param name="provider">Virtual RDF Provider, the object, e.g. a storage manger, that provides virtualization of nodes</param>
         /// <param name="preMaterializedValue">Node that has to be converted to it's virtualized form with itself as materialized value. Usually a parsed Literal or Uri.</param>
-        protected abstract INode CreateVirtual(IVirtualRdfProvider<Guid, Guid> provider, INode preMaterializedValue);
+        protected abstract INode CreateVirtual(IVirtualRdfProvider<TNodeID, TGraphID> provider, INode preMaterializedValue);
 
         /// <summary>
         /// Virtual RDF Provider
         /// </summary>
-        protected readonly IVirtualRdfProvider<Guid, Guid> _provider;
+        protected readonly IVirtualRdfProvider<TNodeID, TGraphID> _provider;
 
         /// <summary>
         /// Creates a new Store Graph Persistence Wrapper for Virtualized Nodes
@@ -39,7 +39,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
-        public StoreVirtualGraphPersistenceWrapper(VDS.RDF.Storage.IStorageProvider manager, IVirtualRdfProvider<Guid, Guid> provider, VDS.RDF.IGraph g, System.Uri graphUri, bool writeOnly)
+        public StoreVirtualGraphPersistenceWrapper(VDS.RDF.Storage.IStorageProvider manager, IVirtualRdfProvider<TNodeID, TGraphID> provider, VDS.RDF.IGraph g, System.Uri graphUri, bool writeOnly)
             : base(manager, g, graphUri, writeOnly)
         {
             if (provider == null) throw new ArgumentNullException("provider", "Cannot persist virtual nodes without a virtual RDF provider");
