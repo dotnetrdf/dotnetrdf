@@ -350,7 +350,10 @@ namespace VDS.RDF.Storage
         public void StorageStardogReasoningQL()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
+            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
+            {
+                Assert.Inconclusive("Version of Stardog being tested does not support configuring reasoning mode at connection level");
+            }
 
             Graph g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");

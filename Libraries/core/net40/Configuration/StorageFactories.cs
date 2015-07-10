@@ -60,9 +60,11 @@ namespace VDS.RDF.Configuration
                              Stardog = "VDS.RDF.Storage.StardogConnector",
                              StardogV1 = "VDS.RDF.Storage.StardogV1Connector",
                              StardogV2 = "VDS.RDF.Storage.StardogV2Connector",
+                             StardogV3 = "VDS.RDF.Storage.StardogV3Connector",
                              StardogServer = "VDS.RDF.Storage.Management.StardogServer",
                              StardogServerV1 = "VDS.RDF.Storage.Management.StardogV1Server",
-                             StardogServerV2 = "VDS.RDF.Storage.Management.StardogV2Server"
+                             StardogServerV2 = "VDS.RDF.Storage.Management.StardogV2Server",
+                             StardogServerV3 = "VDS.RDF.Storage.Management.StardogV3Server"
                              ;
 
         /// <summary>
@@ -436,6 +438,7 @@ namespace VDS.RDF.Configuration
                 case Stardog:
                 case StardogV1:
                 case StardogV2:
+                case StardogV3:
                     //Get the Server and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
@@ -470,9 +473,12 @@ namespace VDS.RDF.Configuration
                             case StardogV2:
                                 storageProvider = new StardogV2Connector(server, store, reasoning, user, pwd);
                                 break;
+                            case StardogV3:
+                                storageProvider = new StardogV3Connector(server, store, user, pwd);
+                                break;
                             case Stardog:
                             default:
-                                storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
+                                storageProvider = new StardogConnector(server, store, user, pwd);
                                 break;
                         }
                     }
@@ -486,15 +492,21 @@ namespace VDS.RDF.Configuration
                             case StardogV2:
                                 storageProvider = new StardogV2Connector(server, store, reasoning);
                                 break;
+                            case StardogV3:
+                                storageProvider = new StardogV3Connector(server, store);
+                                break;
                             case Stardog:
                             default:
-                                storageProvider = new StardogConnector(server, store, reasoning);
+                                storageProvider = new StardogConnector(server, store);
                                 break;
                         }
                     }
                     break;
 
                 case StardogServer:
+                case StardogServerV1:
+                case StardogServerV2:
+                case StardogServerV3:
                     //Get the Server and User Credentials
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
@@ -509,6 +521,9 @@ namespace VDS.RDF.Configuration
                                 break;
                             case StardogServerV2:
                                 storageServer = new StardogV2Server(server, user, pwd);
+                                break;
+                            case StardogServerV3:
+                                storageServer = new StardogV3Server(server, user, pwd);
                                 break;
                             case StardogServer:
                             default:
@@ -525,6 +540,9 @@ namespace VDS.RDF.Configuration
                                 break;
                             case StardogServerV2:
                                 storageServer = new StardogV2Server(server);
+                                break;
+                            case StardogServerV3:
+                                storageServer = new StardogV3Server(server);
                                 break;
                             case StardogServer:
                             default:
