@@ -450,9 +450,55 @@ namespace VDS.RDF.Parsing
                         }
 
                         //Check that either there are no Aggregates used or only Aggregates used
-                        if (SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType) && (context.Query.IsAggregate && context.Query.GroupBy == null && context.Query.Variables.Any(v => v.IsResultVariable && !v.IsAggregate)))
+                        if (SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType) && (context.Query.IsAggregate && context.Query.GroupBy == null))
                         {
-                            throw new RdfParseException("The Select Query is invalid since it contains both Aggregates and Variables in the SELECT Clause but it does not contain a GROUP BY clause");
+                            // CORE-446
+                            // Cope with the case where aggregates are used inside other functions
+                            foreach (SparqlVariable var in context.Query.Variables)
+                            {
+                                if (!var.IsResultVariable) continue;
+                                if (var.IsAggregate) continue;
+
+                                if (var.IsProjection)
+                                {
+                                    // Maybe OK if the projection operates over aggregates or group keys
+                                    ISparqlExpression expr = var.Projection;
+                                    Queue<ISparqlExpression> exprs = new Queue<ISparqlExpression>(expr.Arguments);
+                                    while (exprs.Count > 0)
+                                    {
+                                        expr = exprs.Dequeue();
+
+                                        // Aggregates are OK
+                                        if (expr is AggregateTerm) continue;
+
+                                        // Other primary expressions are OK
+                                        if (expr is ConstantTerm) continue;
+                                        if (expr is AllModifier) continue;
+                                        if (expr is DistinctModifier) continue;
+
+                                        // Variables may 
+                                        if (expr is VariableTerm)
+                                        {
+                                            String exprVar = expr.Variables.First();
+                                            if (!context.Query.Variables.Any(v => v.IsAggregate && v.Name.Equals(exprVar)))
+                                            {
+                                                throw new RdfParseException("The Select Query is invalid since it contains both Aggregates and Variables in the SELECT Clause but it does not contain a GROUP BY clause");
+                                            }
+                                        }
+
+                                        // Anything else need to check its arguments
+                                        foreach (ISparqlExpression arg in expr.Arguments)
+                                        {
+                                            exprs.Enqueue(arg);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    throw new RdfParseException("The Select Query is invalid since it contains both Aggregates and Variables in the SELECT Clause but it does not contain a GROUP BY clause");
+                                }
+                            }
+                            
                         }
 
                         //Then a possible ORDER BY clause
