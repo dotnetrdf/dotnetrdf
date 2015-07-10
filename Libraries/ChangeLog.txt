@@ -9,6 +9,7 @@ Changed
  - Performance fixes for query evaluation ove graphs (CORE-449, CORE-450, CORE-451)
  - BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
  - AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
+ - SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
 
 1.0.8
 -----
