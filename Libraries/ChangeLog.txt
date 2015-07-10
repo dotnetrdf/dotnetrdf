@@ -6,6 +6,7 @@
 
 Changed
 - Bug Fixes
+ - Performance fixes for query evaluation ove graphs (CORE-449, CORE-450, CORE-451)
 
 1.0.8
 -----
