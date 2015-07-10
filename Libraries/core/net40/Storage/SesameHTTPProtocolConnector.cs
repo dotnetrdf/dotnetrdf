@@ -428,6 +428,25 @@ namespace VDS.RDF.Storage
             return output.ToString();
         }
 
+
+        /// <summary>
+        /// Gets the Content Type used to save data to the store i.e. the MIME type to use for the <strong>Content-Type</strong> header
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetSaveContentType()
+        {
+            return MimeTypesHelper.NTriples[0];
+        }
+
+        /// <summary>
+        /// Creates an RDF Writer to use for saving data to the store
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IRdfWriter CreateRdfWriter()
+        {
+            return new NTriplesWriter();
+        }
+
 #if !NO_SYNC_HTTP
 
         /// <summary>
@@ -556,24 +575,6 @@ namespace VDS.RDF.Storage
             {
                 throw StorageHelper.HandleHttpError(webEx, "save a Graph to");
             }
-        }
-
-        /// <summary>
-        /// Gets the Content Type used to save data to the store i.e. the MIME type to use for the <strong>Content-Type</strong> header
-        /// </summary>
-        /// <returns></returns>
-        protected virtual string GetSaveContentType()
-        {
-            return MimeTypesHelper.NTriples[0];
-        }
-
-        /// <summary>
-        /// Creates an RDF Writer to use for saving data to the store
-        /// </summary>
-        /// <returns></returns>
-        protected virtual IRdfWriter CreateRdfWriter()
-        {
-            return new NTriplesWriter();
         }
 
         /// <summary>
