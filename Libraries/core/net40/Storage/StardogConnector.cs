@@ -1883,7 +1883,6 @@ namespace VDS.RDF.Storage
                 case StardogReasoningMode.SL:
                     throw new RdfStorageException(
                         "Stardog 1.* does not support the SL reasoning level, please ensure you are using a Stardog 2.* connector if you wish to use this reasoning level");
-                case StardogReasoningMode.None:
                 default:
                     return String.Empty;
             }
