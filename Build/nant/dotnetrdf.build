@@ -34,7 +34,7 @@
   <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
   <property name="dotnetrdf.toolsversion" value="109" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
   <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
-  <property name="dotnetrdf.nuspecversion" value="1.0.9-prerelease01" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.9-prerelease02" /> <!-- Version number passed to NuGet for packaging -->
   <property name="dotnetrdf.buildversion" value="1.0.9.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
@@ -1418,16 +1418,10 @@
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/src/">
-      <fileset basedir="Libraries/core/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1486,16 +1480,10 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Data.Virtuoso/src/">
-      <fileset basedir="Libraries/Data/Virtuoso/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1554,16 +1542,10 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Query.FullText/src/">
-      <fileset basedir="Libraries/Query/FullText/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Query.FullText.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1654,13 +1636,9 @@
       <infiles>
         <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
         <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-        <include name="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
-        <include name="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
       </infiles>
     </style>
     <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
     <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-    <move file="Build/nant/dotNetRDF.Data.Virtuoso.symbols.html" tofile="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
-    <move file="Build/nant/dotNetRDF.Query.FullText.symbols.html" tofile="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
   </target>
 </project>

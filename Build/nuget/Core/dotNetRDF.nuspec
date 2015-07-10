@@ -13,41 +13,37 @@
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
     <dependencies>       
       <group targetFramework="net35-client">
-        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
-        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
-        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-        <dependency id="VDS.Common" version="[1.5.0]" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
         <dependency id="Newtonsoft.Json" version="6.0.8" />
       </group>
     </dependencies>
     <releaseNotes>
-- Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
-- SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
-- Accessing remote SPARQL endpoints could fail to include default and named graph parameters if POSTing the queries (CORE-434)
-- Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
-- Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
-- Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
-- Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
-- Fix typo in MIME type definitions for NTriples
-- Upgrade PCL build to Profile 328
-- Upgrade Dependencies to latest versions
+- Performance fixes for query evaluation ove graphs (CORE-449, CORE-450, CORE-451)
+- BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
+- AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
+- SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
+- Fixes for Stardog 3.x support (CORE-443)
+- Improvements to multi-threaded performance when using URI Interning
     </releaseNotes>
   </metadata>
 </package>

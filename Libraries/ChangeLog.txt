@@ -11,6 +11,9 @@ Changed
  - AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
  - SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
  - Fixes for Stardog 3.x support (CORE-443)
+ - Improvements to multi-threaded performance when using URI Interning
+- Dependencies
+ - Upgrade VDS.Common to 1.6.0
 
 1.0.8
 -----

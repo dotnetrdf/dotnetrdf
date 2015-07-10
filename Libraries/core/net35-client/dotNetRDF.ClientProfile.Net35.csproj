@@ -79,8 +79,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="VDS.Common, Version=1.5.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\VDS.Common.1.5.0\lib\net35-client\VDS.Common.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\packages\VDS.Common.1.6.0\lib\net35-client\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -38,4 +38,5 @@ soh
 SparqlGUI
 
 StoreManager
+- Support for Stardog 3.x
 
