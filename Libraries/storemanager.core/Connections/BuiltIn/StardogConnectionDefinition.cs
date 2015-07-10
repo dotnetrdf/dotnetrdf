@@ -31,6 +31,69 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     /// <summary>
+    /// Definition for connections to Stardog 3.x
+    /// </summary>
+    public class StardogV3ConnectionDefinition
+        : BaseStardogConnectionDefinition
+    {
+        /// <summary>
+        /// Creates a new definition
+        /// </summary>
+        public StardogV3ConnectionDefinition()
+            : base("Stardog 3.x", "Connect to a Stardog 3.x database exposed via the Stardog HTTP server", typeof(StardogConnector))
+        {
+            this.ReasoningMode = StardogReasoningMode.DatabaseControlled;
+        }
+
+        /// <summary>
+        /// Opens the connection
+        /// </summary>
+        /// <returns></returns>
+        protected override IStorageProvider OpenConnectionInternal()
+        {
+            if (this.UseAnonymousAccount)
+            {
+                if (this.UseProxy)
+                {
+                    return new StardogConnector(this.Server, this.StoreID, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
+                }
+
+                return new StardogConnector(this.Server, this.StoreID, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
+            }
+            if (this.UseProxy)
+            {
+                return new StardogConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
+            }
+
+            return new StardogConnector(this.Server, this.StoreID, this.Username, this.Password);
+        }
+
+        /// <summary>
+        /// Gets/Sets the Reasoning Mode for queries
+        /// </summary>
+        public override StardogReasoningMode ReasoningMode { get; set; }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            StardogV3ConnectionDefinition definition = new StardogV3ConnectionDefinition();
+            definition.Server = this.Server;
+            definition.StoreID = this.StoreID;
+            definition.ReasoningMode = StardogReasoningMode.DatabaseControlled;
+            definition.UseAnonymousAccount = this.UseAnonymousAccount;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            definition.Username = this.Username;
+            definition.Password = this.Password;
+            return definition;
+        }
+    }
+
+    /// <summary>
     /// Definition for connections to Stardog 2.x
     /// </summary>
     public class StardogV2ConnectionDefinition
@@ -54,17 +117,17 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 if (this.UseProxy)
                 {
-                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
+                    return new StardogV2Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser, this.GetProxy());
                 }
 
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
+                return new StardogV2Connector(this.Server, this.StoreID, this.ReasoningMode, BaseStardogConnector.AnonymousUser, BaseStardogConnector.AnonymousUser);
             }
             if (this.UseProxy)
             {
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
+                return new StardogV2Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
             }
 
-            return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+            return new StardogV2Connector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
         }
 
         /// <summary>
