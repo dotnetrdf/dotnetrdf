@@ -27,20 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
 {
@@ -56,13 +50,13 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector, IConfigurationSerializable, IAsyncUpdateableStorage
+        : BaseSesameHttpProtocolConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
         , IUpdateableStorage
 #endif
     {
         private String _agraphBase;
-        private String _catalog;
+        private readonly String _catalog;
          
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store
@@ -335,6 +329,12 @@ namespace VDS.RDF.Storage
             if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
 
             return base.CreateRequest(servicePath, accept, method, queryParams);
+        }
+
+        protected override string GetSaveContentType()
+        {
+            // AllegroGraph rejects application/n-triples as it still expects to get text/plain so have to use that instead
+            return "text/plain";
         }
 
         /// <summary>

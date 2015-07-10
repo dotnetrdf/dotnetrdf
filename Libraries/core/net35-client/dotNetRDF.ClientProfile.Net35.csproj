@@ -2561,4 +2561,9 @@
       <Link>Configuration\IConfigurationLoader.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs">
+      <Link>Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
