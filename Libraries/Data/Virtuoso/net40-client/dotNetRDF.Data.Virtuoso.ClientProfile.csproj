@@ -120,7 +120,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net40-client\dotNetRDF.ClientProfile.csproj">
+    <ProjectReference Include="..\..\..\core\net40-client\dotNetRDF.Net40.ClientProfile.csproj">
       <Project>{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21}</Project>
       <Name>dotNetRDF.ClientProfile</Name>
     </ProjectReference>
