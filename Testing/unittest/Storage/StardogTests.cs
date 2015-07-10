@@ -400,6 +400,21 @@ namespace VDS.RDF.Storage
                 "Reasoning should yield as many if not more results");
         }
 
+        [Test, ExpectedException(typeof(RdfStorageException))]
+        public void StorageStardogReasoningMode()
+        {
+            StardogConnector connector = StardogTests.GetConnection();
+
+            if (connector.Reasoning != StardogReasoningMode.DatabaseControlled)
+            {
+                Assert.Pass();
+            }
+            else
+            {
+                connector.Reasoning = StardogReasoningMode.DL;
+            }
+        }
+
         [Test]
         public void StorageStardogTransactionTest()
         {
