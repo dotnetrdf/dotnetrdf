@@ -418,6 +418,21 @@ namespace VDS.RDF
                 httpRequest.Proxy.Credentials = this.Credentials;
             }
 #endif
+
+            // Allow derived classes to provide further customisation
+            this.ApplyCustomRequestOptions(httpRequest);
+        }
+
+        /// <summary>
+        /// Method which may be overridden in derived classes to add any additional custom request options/headers to the request
+        /// </summary>
+        /// <param name="httpRequest">HTTP Request</param>
+        /// <remarks>
+        /// This is called at the end of <see cref="ApplyRequestOptions"/> so can also be used to override that methods default behaviour
+        /// </remarks>
+        protected virtual void ApplyCustomRequestOptions(HttpWebRequest httpRequest)
+        {
+            
         }
     }
 }
