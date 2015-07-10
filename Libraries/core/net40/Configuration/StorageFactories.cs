@@ -621,9 +621,11 @@ namespace VDS.RDF.Configuration
                 case Stardog:
                 case StardogV1:
                 case StardogV2:
+                case StardogV3:
                 case StardogServer:
                 case StardogServerV1:
                 case StardogServerV2:
+                case StardogServerV3:
                     return true;
                 default:
                     return false;
