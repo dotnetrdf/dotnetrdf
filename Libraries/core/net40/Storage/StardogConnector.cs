@@ -535,7 +535,7 @@ namespace VDS.RDF.Storage
                 }
 
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
+                tID = this._activeTrans ?? this.BeginTransaction();
 
                 HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
