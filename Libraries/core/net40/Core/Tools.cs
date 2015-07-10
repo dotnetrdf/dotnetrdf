@@ -325,6 +325,12 @@ namespace VDS.RDF
             //No need to copy if it's already in the relevant Graph
             if (ReferenceEquals(original.Graph, target)) return original;
 
+            // if a node can copy itself then let it do it
+            var selfcopyable_original = original as RDF.Storage.Virtualisation.ICanCopy;
+            if (selfcopyable_original != null) return selfcopyable_original.CopyNode(target);
+            
+            // if it doesn't, copy it's values:
+
             if (original.NodeType == NodeType.Uri)
             {
                 IUriNode u = (IUriNode)original;
