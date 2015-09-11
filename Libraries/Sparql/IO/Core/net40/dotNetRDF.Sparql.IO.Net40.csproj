@@ -69,6 +69,7 @@
     <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
     <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SparqlIOExtensions.cs" />
     <Compile Include="SparqlIOManager.cs" />
     <Compile Include="SparqlIOOptions.cs" />
     <Compile Include="SparqlMimeTypeDefinition.cs" />
