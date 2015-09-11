@@ -8,8 +8,8 @@
     <ProjectGuid>{65EE75DE-3E17-4C80-844E-77ED21B9C671}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRdf.Sparql.IO.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,19 +48,18 @@
     <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
     <Compile Include="Parsing\Handlers\BaseResultsHandler.cs" />
+    <Compile Include="Parsing\Handlers\ListStringsHandler.cs" />
     <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
-    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultWriteThroughHandler.cs" />
-    <Compile Include="Parsing\Handlers\SparqlHandlerExtensions.cs" />
     <Compile Include="Parsing\SPARQLBooleanParser.cs" />
     <Compile Include="Parsing\SparqlCsvParser.cs" />
     <Compile Include="Parsing\SparqlQueryParser.cs" />
     <Compile Include="Parsing\SparqlRdfParser.cs" />
     <Compile Include="Parsing\SparqlTsvParser.cs" />
     <Compile Include="Parsing\SparqlUpdateParser.cs" />
-    <Compile Include="Parsing\SPARQLXMLParser.cs" />
+    <Compile Include="Parsing\SparqlXmlParser.cs" />
     <Compile Include="Parsing\StringResultsParser.cs" />
     <Compile Include="Parsing\Tokens\PathToken.cs" />
     <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
@@ -82,7 +81,20 @@
     <Compile Include="Writing\SPARQLXMLWriter.cs" />
     <Compile Include="Writing\SparqlXsltWriter.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\core\net40\dotNetRDF.Core.Net40.csproj">
+      <Project>{bfbac159-1e60-4d03-8aca-d34e31eb83bf}</Project>
+      <Name>dotNetRDF.Core.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\IO\Core\net40\dotNetRDF.IO.Core.Net40.csproj">
+      <Project>{fade13be-82b7-4daf-bb7c-8f4f10806691}</Project>
+      <Name>dotNetRDF.IO.Core.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\net40\dotNetRDF.Sparql.Core.Net40.csproj">
+      <Project>{c730a95a-290f-4a07-bb9b-54fbf314239d}</Project>
+      <Name>dotNetRDF.Sparql.Core.Net40</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

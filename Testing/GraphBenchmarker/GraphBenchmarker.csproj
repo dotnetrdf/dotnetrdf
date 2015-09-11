@@ -188,7 +188,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
+    <ProjectReference Include="..\..\Libraries\IO\Core\net40\dotNetRDF.IO.Core.Net40.csproj">
       <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
       <Name>dotNetRDF.IO.Net40</Name>
     </ProjectReference>

@@ -5185,7 +5185,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.Net40.csproj">
+    <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.Core.Net40.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>

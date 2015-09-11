@@ -170,6 +170,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="dotNetRDF.snk" />
     <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd">
       <SubType>Designer</SubType>

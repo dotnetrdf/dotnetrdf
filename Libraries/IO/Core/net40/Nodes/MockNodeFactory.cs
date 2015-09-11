@@ -29,14 +29,14 @@ using VDS.RDF.Graphs;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// An internal implementation of a Node Factory which returns mock constants regardless of the inputs
+    /// An implementation of a Node Factory which returns mock constants regardless of the inputs
     /// </summary>
     /// <remarks>
     /// <para>
     /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="VDS.RDF.Parsing.Handlers.CountHandler">CountHandler</see> to speed up processing
     /// </para>
     /// </remarks>
-    internal sealed class MockNodeFactory
+    public sealed class MockNodeFactory
         : INodeFactory
     {
         private readonly INode _bnode = new BlankNode(Guid.NewGuid());

@@ -24,24 +24,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.IO;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Reader Classes which parser Sparql Result Set syntaxes into Result Set objects
+    /// Interface for Reader Classes which parser SPARQL Result Set serializations
     /// </summary>
     public interface ISparqlResultsReader
     {
         /// <summary>
-        /// Loads a Result Set using a Results Handler from the given Input
+        /// Reads SPARQL results passing them to the given results handler
         /// </summary>
         /// <param name="handler">Results Handler</param>
         /// <param name="input">Input to read from</param>
-        void Load(ISparqlResultsHandler handler, TextReader input);
+        /// <param name="profile">Parser profile to use</param>
+        void Load(ISparqlResultsHandler handler, TextReader input, IParserProfile profile);
 
         /// <summary>
         /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         event SparqlWarning Warning;
+    }
+
+    /// <summary>
+    /// Interface for readers which are capable of streaming the results
+    /// </summary>
+    public interface IStreamingSparqlResultsReader
+        : ISparqlResultsReader
+    {
+        /// <summary>
+        /// Streams a result set from the given input
+        /// </summary>
+        /// <param name="input">Input to stream from</param>
+        /// <param name="profile">Parser profile to use</param>
+        /// <returns>Results stream</returns>
+        IResultStream Stream(TextReader input, IParserProfile profile);
     }
 }

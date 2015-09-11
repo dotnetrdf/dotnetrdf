@@ -23,7 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using VDS.RDF.Query;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -76,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">Result</param>
         /// <returns></returns>
-        protected override bool HandleResultInternal(SparqlResult result)
+        protected override bool HandleResultInternal(IResultRow result)
         {
             this._counter++;
             return true;

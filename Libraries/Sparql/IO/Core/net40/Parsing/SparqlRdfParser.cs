@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class SparqlRdfParser : ISparqlResultsReader
     {
-        private IRdfReader _parser;
+        private readonly IRdfReader _parser;
 
         /// <summary>
         /// Creates a new SPARQL RDF Parser which will use auto-detection for determining the syntax of input streams/files

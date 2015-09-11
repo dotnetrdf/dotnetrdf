@@ -24,13 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Specialized;
-using VDS.RDF.Graphs;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF
 {
-    #region Reader and Writer Warning Events
 
     // TODO Refactor events to have a nicer signature
 
@@ -51,7 +47,5 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="message">Warning Message</param>
     public delegate void SparqlWarning(String message);
-
-    #endregion
 
 }

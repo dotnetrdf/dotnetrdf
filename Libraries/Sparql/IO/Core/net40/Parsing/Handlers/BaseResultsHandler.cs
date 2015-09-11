@@ -1,5 +1,6 @@
 using System;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Results;
 
 namespace VDS.RDF.Parsing.Handlers
 {
@@ -15,13 +16,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new SPARQL Results Handler
         /// </summary>
         /// <param name="factory">Node Factory</param>
-        public BaseResultsHandler(INodeFactory factory)
+        protected BaseResultsHandler(INodeFactory factory)
             : base(factory) { }
 
         /// <summary>
         /// Creates a new SPARQL Results Handler
         /// </summary>
-        public BaseResultsHandler()
+        protected BaseResultsHandler()
             : this(new NodeFactory()) { }
 
         #region ISparqlResultsHandler Members
@@ -89,6 +90,17 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles a result row
+        /// </summary>
+        /// <param name="result">Result row</param>
+        /// <returns></returns>
+        public bool HandleResult(IResultRow result)
+        {
+            if (!this._inUse) throw new RdfParseException("Cannot Handle a Result as this Handler is not currently in-use");
+            return this.HandleResultInternal(result);
+        }
+
+        /// <summary>
         /// Must be overridden by derived handlers to appropriately handle variable declarations
         /// </summary>
         /// <param name="var">Variable Name</param>
@@ -96,22 +108,11 @@ namespace VDS.RDF.Parsing.Handlers
         protected abstract bool HandleVariableInternal(String var);
 
         /// <summary>
-        /// Handlers SPARQL Results
+        /// Must be overridden by derived handlers to appropriately handle result rows
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="row">Result</param>
         /// <returns></returns>
-        public bool HandleResult(SparqlResult result)
-        {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle a Result as this Handler is not currently in-use");
-            return this.HandleResultInternal(result);
-        }
-
-        /// <summary>
-        /// Must be overridden by derived handlers to appropriately handler SPARQL Results
-        /// </summary>
-        /// <param name="result">Result</param>
-        /// <returns></returns>
-        protected abstract bool HandleResultInternal(SparqlResult result);
+        protected abstract bool HandleResultInternal(IResultRow row);
 
         #endregion
     }

@@ -69,6 +69,20 @@ namespace VDS.RDF.Query.Results
             // TODO Should we validate that values does not have any variables that aren't also in variables?
         }
 
+        /// <summary>
+        /// Creates a new result row as a copy of another result row
+        /// </summary>
+        /// <param name="row">Row</param>
+        protected ResultRow(IResultRow row)
+            : this(row != null ? row.Variables : null)
+        {
+            if (row == null) throw new ArgumentNullException("row");
+            foreach (String var in this._variables)
+            {
+                this._values.Add(var, row[var]);
+            }
+        }
+
         public bool IsEmpty { get { return this._variables.Count == 0; } }
 
         public INode this[string var]

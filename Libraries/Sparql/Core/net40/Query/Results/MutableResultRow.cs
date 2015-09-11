@@ -35,6 +35,8 @@ namespace VDS.RDF.Query.Results
     public class MutableResultRow
         : ResultRow, IMutableResultRow
     {
+        private IResultRow _result;
+
         /// <summary>
         /// Creates a new result row which has no variables and no values
         /// </summary>
@@ -56,6 +58,18 @@ namespace VDS.RDF.Query.Results
         public MutableResultRow(IEnumerable<String> variables, IDictionary<String, INode> values)
             : base(variables, values) {}
 
+        /// <summary>
+        /// Creates a new result row as a copy of an existing row
+        /// </summary>
+        /// <param name="row">Row</param>
+        public MutableResultRow(IResultRow row)
+            : base(row) { }
+
+        /// <summary>
+        /// Sets the value of a variable
+        /// </summary>
+        /// <param name="var">Variable</param>
+        /// <param name="value">Value</param>
         public void Set(string var, INode value)
         {
             if (this._values.ContainsKey(var))

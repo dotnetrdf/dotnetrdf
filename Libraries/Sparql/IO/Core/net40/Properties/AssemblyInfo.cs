@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("net40")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("dotNetRDF.Sparql.IO.Core")]
+[assembly: AssemblyDescription("dotNetRDF SPARQL IO Core (.Net 4.0)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IDS")]
-[assembly: AssemblyProduct("net40")]
-[assembly: AssemblyCopyright("Copyright © IDS 2014")]
+[assembly: AssemblyCompany("Visual Design Studios")]
+[assembly: AssemblyProduct("dotNetRDF.Sparql.IO.Core")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

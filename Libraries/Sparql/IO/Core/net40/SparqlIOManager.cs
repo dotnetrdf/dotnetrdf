@@ -9,6 +9,9 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Manager for SPARQL IO Operations
+    /// </summary>
     public static class SparqlIOManager
     {
         #region Constants
