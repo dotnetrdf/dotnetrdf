@@ -27,7 +27,7 @@ rdfOptStats
 rdfQuery
 
 rdfServer
-- Fix bug with unsupported configurations not being flagged as errors
+
 
 rdfServerGUI
 
@@ -38,5 +38,8 @@ soh
 SparqlGUI
 
 StoreManager
-- Support for Stardog 3.x
+
+
+Installation
+- Fixed bug with outdated versions being packaged in Installer Package
 
