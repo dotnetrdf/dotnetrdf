@@ -419,6 +419,9 @@ namespace VDS.RDF
             }
 #endif
 
+            // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
+            httpRequest.KeepAlive = false;
+
             // Allow derived classes to provide further customisation
             this.ApplyCustomRequestOptions(httpRequest);
         }
