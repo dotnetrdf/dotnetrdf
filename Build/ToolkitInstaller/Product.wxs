@@ -32,7 +32,7 @@
             <Shortcut Id="rdfEditorShortcut"
                       Name="rdfEditor"
                       Description="A Notepad style editor for RDF data formats"
-                      Target="[#filBA0031A9E0A4E87AF35A8B08DDCC3129]"
+                      Target="[#rdfEditorComponentGroup_rdfEditor.exe]"
                       WorkingDirectory="APPLICATIONROOTDIRECTORY" />
             <RemoveFolder Id="rdfEditorShortcutUninstall" Directory="rdfEditorShortcutsFolder" On="uninstall" />
             <RegistryValue Root="HKCU" Key="Software\dotNetRDF\rdfEditor" Name="installed" Type="integer" Value="1"
@@ -48,7 +48,7 @@
             <Shortcut Id="rdfServerShortcut"
                       Name="rdfServer"
                       Description="A lightweight SPARQL Server for simple testing and experimentation"
-                      Target="[#fil8D7830BA51CBAFB0E8D4C8E74CCB00CD]"
+                      Target="[#rdfServerComponentGroup_rdfServerGUI.exe]"
                       WorkingDirectory="APPLICATIONROOTDIRECTORY" />
             <RemoveFolder Id="rdfServerShortcutUninstall" Directory="rdfServerShortcutsFolder" On="uninstall" />
             <RegistryValue Root="HKCU" Key="Software\dotNetRDF\rdfServer" Name="installed" Type="integer" Value="1"
@@ -64,7 +64,7 @@
             <Shortcut Id="sparqlGuiShortcut"
                       Name="SPARQL GUI"
                       Description="A simple GUI for experimenting with SPARQL queries"
-                      Target="[#fil74568287B655C8C92D8E77869C9CF745]"
+                      Target="[#sparqlGuiComponentGroup_SparqlGUI.exe]"
                       WorkingDirectory="APPLICATIONROOTDIRECTORY" />
             <RemoveFolder Id="sparqlGuiShortcutUninstall" Directory="sparqlGuiShortcutsFolder" On="uninstall" />
             <RegistryValue Root="HKCU" Key="Software\dotNetRDF\SparqlGui" Name="installed" Type="integer" Value="1"
@@ -80,7 +80,7 @@
             <Shortcut Id="storeManagerShortcut"
                       Name="Store Manager"
                       Description="Application for connecting to and managing a variety of different RDF stores"
-                      Target="[#fil1A66030D17A1A3AFDF3B7D6F5231C604]"
+                      Target="[#storeManagerComponentGroup_StoreManager.exe]"
                       WorkingDirectory="APPLICATIONROOTDIRECTORY" />
             <RemoveFolder Id="storeManagerShortcutUninstall" Directory="storeManagerShortcutsFolder" On="uninstall" />
             <RegistryValue Root="HKCU" Key="Software\dotNetRDF\StoreManager" Name="installed" Type="integer" Value="1"

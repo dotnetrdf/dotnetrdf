@@ -5,17 +5,17 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="infoComponentGroup">
-            <Component Id="cmpD84FC6DF707D9EBCFAAE6A68F16784BE" Directory="INSTALLFOLDER" Guid="{E0600820-E812-45CD-864F-A9ECF3A85B05}">
-                <File Id="filA90DD75D66E780FDCC4F9DE9495B0466" KeyPath="yes" Source="$(var.infoFiles)\Acknowledgments.txt" />
+            <Component Id="infoComponentGroup_Acknowledgments.txt" Directory="INSTALLFOLDER" Guid="{7213A69E-6687-4533-91A8-C1270274E734}">
+                <File Id="infoComponentGroup_Acknowledgments.txt" KeyPath="yes" Source="$(var.infoFiles)\Acknowledgments.txt" />
             </Component>
-            <Component Id="cmp91E48083DCCC2F8DD30BFC004072D081" Directory="INSTALLFOLDER" Guid="{0FBCCC45-A42E-4C9A-9397-02891563863E}">
-                <File Id="filD34DC0F461E6D1167294523BCE0B5D5F" KeyPath="yes" Source="$(var.infoFiles)\ChangeLog.txt" />
+            <Component Id="infoComponentGroup_ChangeLog.txt" Directory="INSTALLFOLDER" Guid="{DC212885-05F0-4F31-8DDE-CF4CE3A9C45F}">
+                <File Id="infoComponentGroup_ChangeLog.txt" KeyPath="yes" Source="$(var.infoFiles)\ChangeLog.txt" />
             </Component>
-            <Component Id="cmp8E24F363C6996AB33372BEAACBD8324C" Directory="INSTALLFOLDER" Guid="{AA95CCD2-F621-4991-8EB2-FD929EA84786}">
-                <File Id="fil4E17902A59ACB163351CB54725DDA810" KeyPath="yes" Source="$(var.infoFiles)\License.txt" />
+            <Component Id="infoComponentGroup_License.txt" Directory="INSTALLFOLDER" Guid="{BB6C96E8-74DC-4622-B2F9-887AEB76D77D}">
+                <File Id="infoComponentGroup_License.txt" KeyPath="yes" Source="$(var.infoFiles)\License.txt" />
             </Component>
-            <Component Id="cmpA0F75245F73DDC41EA13EE77C8171B6B" Directory="INSTALLFOLDER" Guid="{153BCDE7-D715-44CE-A7EC-8613C4F1E109}">
-                <File Id="fil11F7955CD12BC94AE47EA69335947FA6" KeyPath="yes" Source="$(var.infoFiles)\ReadMe.txt" />
+            <Component Id="infoComponentGroup_ReadMe.txt" Directory="INSTALLFOLDER" Guid="{382C535A-A620-41A5-A5B4-DA7E5138B80E}">
+                <File Id="infoComponentGroup_ReadMe.txt" KeyPath="yes" Source="$(var.infoFiles)\ReadMe.txt" />
             </Component>
         </ComponentGroup>
     </Fragment>

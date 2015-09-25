@@ -5,23 +5,23 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfConvertComponentGroup">
-            <Component Id="cmp10952AE548ACEF33DBE9BDB2E73C7CD3" Directory="rdfConvertFolder" Guid="{3E5E49EC-339E-4CE9-8847-30E5B6AA636D}">
-                <File Id="filEEE16B3DB7A4643787A805E6EC86E3B1" KeyPath="yes" Source="$(var.rdfConvertFiles)\dotNetRDF.dll" />
+            <Component Id="rdfConvertComponentGroup_dotNetRDF.dll" Directory="rdfConvertFolder" Guid="{04A1BFA6-737D-4537-B12B-94A4D90BAC29}">
+                <File Id="rdfConvertComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmpEA678DB0EBB8F1914028F729A03A25B3" Directory="rdfConvertFolder" Guid="{68B1757A-ECD8-4571-B631-A98D853AAB62}">
-                <File Id="fil2DB43F11A0637CFEA030D6DDA666465A" KeyPath="yes" Source="$(var.rdfConvertFiles)\HtmlAgilityPack.dll" />
+            <Component Id="rdfConvertComponentGroup_HtmlAgilityPack.dll" Directory="rdfConvertFolder" Guid="{064DA3AB-1080-4B28-8CC7-669E2CD921E7}">
+                <File Id="rdfConvertComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmpD12E71E459B2ABA508E0B3DCBB345CC2" Directory="rdfConvertFolder" Guid="{4FE8CBFC-0EB6-4FCE-B229-419C5FE6C43B}">
-                <File Id="fil167BDBEE03136EBC16E83194EA4652D4" KeyPath="yes" Source="$(var.rdfConvertFiles)\Newtonsoft.Json.dll" />
+            <Component Id="rdfConvertComponentGroup_Newtonsoft.Json.dll" Directory="rdfConvertFolder" Guid="{A930FCF3-E7E8-4A28-BFA6-4A2D304A2DDA}">
+                <File Id="rdfConvertComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp248482AB78AC97EE122C0C9800E04807" Directory="rdfConvertFolder" Guid="{942C11BA-B5DE-4657-9F52-FF10BFBA5181}">
-                <File Id="fil84AF0462AC15B4817D8F25A2E82CA8E6" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe" />
+            <Component Id="rdfConvertComponentGroup_rdfConvert.exe" Directory="rdfConvertFolder" Guid="{A746C256-1F61-4459-9FB8-C2FE03C1DFA5}">
+                <File Id="rdfConvertComponentGroup_rdfConvert.exe" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe" />
             </Component>
-            <Component Id="cmp64EFF4828518B83B2B0ADE36C11078E7" Directory="rdfConvertFolder" Guid="{FAC6D027-BC09-4D84-85FE-74B928942376}">
-                <File Id="filDD5C4961A312B8D1CC44B84A8F1A3241" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe.config" />
+            <Component Id="rdfConvertComponentGroup_rdfConvert.exe.config" Directory="rdfConvertFolder" Guid="{0F2B7776-87AE-4B70-8309-CDB567C98B3A}">
+                <File Id="rdfConvertComponentGroup_rdfConvert.exe.config" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe.config" />
             </Component>
-            <Component Id="cmp947480609EA4E8D6EC122D9F9C44EA29" Directory="rdfConvertFolder" Guid="{2218D08A-66DC-4451-B02B-93B06C9D9257}">
-                <File Id="filFD20D41B05ED00415DA309090D06C760" KeyPath="yes" Source="$(var.rdfConvertFiles)\VDS.Common.dll" />
+            <Component Id="rdfConvertComponentGroup_VDS.Common.dll" Directory="rdfConvertFolder" Guid="{6E442C2D-DDF4-43E0-8E95-B42AE77FADB9}">
+                <File Id="rdfConvertComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>
     </Fragment>
