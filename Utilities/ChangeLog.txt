@@ -42,4 +42,5 @@ StoreManager
 
 Installation
 - Fixed bug with outdated versions being packaged in Installer Package
+- Fixed Start Menu shortcuts to only be for GUI tools
 
