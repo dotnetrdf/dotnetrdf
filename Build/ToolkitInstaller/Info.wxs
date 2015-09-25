@@ -5,16 +5,16 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="infoComponentGroup">
-            <Component Id="cmpD84FC6DF707D9EBCFAAE6A68F16784BE" Directory="INSTALLFOLDER" Guid="{0405717F-AE63-4422-A173-D1B1D7F8359F}">
+            <Component Id="cmpD84FC6DF707D9EBCFAAE6A68F16784BE" Directory="INSTALLFOLDER" Guid="{7676744C-5E20-4352-862E-953D072C65F5}">
                 <File Id="filA90DD75D66E780FDCC4F9DE9495B0466" KeyPath="yes" Source="$(var.infoFiles)\Acknowledgments.txt" />
             </Component>
-            <Component Id="cmp91E48083DCCC2F8DD30BFC004072D081" Directory="INSTALLFOLDER" Guid="{4EA0C2C5-13DA-4BCF-A27E-BA8656BF71F2}">
+            <Component Id="cmp91E48083DCCC2F8DD30BFC004072D081" Directory="INSTALLFOLDER" Guid="{7F3B1CC0-AEF6-432F-929F-4AEE4C88A7C5}">
                 <File Id="filD34DC0F461E6D1167294523BCE0B5D5F" KeyPath="yes" Source="$(var.infoFiles)\ChangeLog.txt" />
             </Component>
-            <Component Id="cmp8E24F363C6996AB33372BEAACBD8324C" Directory="INSTALLFOLDER" Guid="{C66EE3EC-F8C5-496C-BEA1-189FA627EBAF}">
+            <Component Id="cmp8E24F363C6996AB33372BEAACBD8324C" Directory="INSTALLFOLDER" Guid="{3DF81D70-328E-4956-9692-B2EEA3E18855}">
                 <File Id="fil4E17902A59ACB163351CB54725DDA810" KeyPath="yes" Source="$(var.infoFiles)\License.txt" />
             </Component>
-            <Component Id="cmpA0F75245F73DDC41EA13EE77C8171B6B" Directory="INSTALLFOLDER" Guid="{70BDAB38-8E78-4441-8BC8-20801865DC60}">
+            <Component Id="cmpA0F75245F73DDC41EA13EE77C8171B6B" Directory="INSTALLFOLDER" Guid="{E770B555-9E88-4F0A-8034-B658E15867E3}">
                 <File Id="fil11F7955CD12BC94AE47EA69335947FA6" KeyPath="yes" Source="$(var.infoFiles)\ReadMe.txt" />
             </Component>
         </ComponentGroup>
