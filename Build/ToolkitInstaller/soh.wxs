@@ -5,22 +5,22 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="sohComponentGroup">
-            <Component Id="cmp47D6FDAD8F056AA0F69AFA708316374B" Directory="sohFolder" Guid="{57B1AF2D-0BC4-4069-83C4-0B7997011FCB}">
+            <Component Id="cmp47D6FDAD8F056AA0F69AFA708316374B" Directory="sohFolder" Guid="{6A102395-45FE-497B-9CD9-D9FC7AF8B7BD}">
                 <File Id="filA0BB29B0B3AC7C808B695723041BA3B2" KeyPath="yes" Source="$(var.sohFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="cmpFB495F5EE55F395BDF0F344B6CD838D9" Directory="sohFolder" Guid="{5676BA7B-56AF-4822-A0B5-C21D511F6F8B}">
+            <Component Id="cmpFB495F5EE55F395BDF0F344B6CD838D9" Directory="sohFolder" Guid="{6BD87F83-0DDF-42D2-931F-968FC0D99E4B}">
                 <File Id="fil0FB19A896378DDB97EE916F065CB9579" KeyPath="yes" Source="$(var.sohFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="cmp8CEC532DE136A774DA46DFDE4030F347" Directory="sohFolder" Guid="{9466BDC6-30DB-4E06-82EF-BE595613DC64}">
+            <Component Id="cmp8CEC532DE136A774DA46DFDE4030F347" Directory="sohFolder" Guid="{E6F99244-17C2-4481-A0B6-11578AAA3C68}">
                 <File Id="filE477E8B56A8001D7DB38CFFBE22500F8" KeyPath="yes" Source="$(var.sohFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="cmp2604192B3AB59BE0622BBE6C9EC7FFBD" Directory="sohFolder" Guid="{C9804BD4-3265-4FE4-B72E-455117D68970}">
+            <Component Id="cmp2604192B3AB59BE0622BBE6C9EC7FFBD" Directory="sohFolder" Guid="{3D9A0A9D-BD51-4F73-B8A9-9919BA31F2A6}">
                 <File Id="filE7FB9300AD370D24B64DEBE937E92FE5" KeyPath="yes" Source="$(var.sohFiles)\soh.exe" />
             </Component>
-            <Component Id="cmp8D73222EF927E393A96E5E53C7376761" Directory="sohFolder" Guid="{69073E61-2E29-440D-80AA-9FD2D0FB7573}">
+            <Component Id="cmp8D73222EF927E393A96E5E53C7376761" Directory="sohFolder" Guid="{5CAEB68D-718E-4B19-B36E-DFCEF11C55B8}">
                 <File Id="filD42E4818A3A0F52C7F146B83B252C1FA" KeyPath="yes" Source="$(var.sohFiles)\soh.exe.config" />
             </Component>
-            <Component Id="cmp1A1D0D2DE46BD240398A83A785D7A887" Directory="sohFolder" Guid="{3CDD9056-D86A-45A4-8EF8-F851BAA5F7AD}">
+            <Component Id="cmp1A1D0D2DE46BD240398A83A785D7A887" Directory="sohFolder" Guid="{5F2683BE-0301-437A-9ACD-540817C9CD05}">
                 <File Id="filABDC0EB72106E54FD04D26E6791FDBDA" KeyPath="yes" Source="$(var.sohFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>
