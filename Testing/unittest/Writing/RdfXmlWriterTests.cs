@@ -353,7 +353,7 @@ namespace VDS.RDF.Writing
             Console.WriteLine(outData);
 
             Assert.IsTrue(outData.Contains("rdf:about=\"&ex;1s\""));
-            Assert.IsTrue(outData.Contains("rdf:resource=\"&ex:2o\""));
+            Assert.IsTrue(outData.Contains("rdf:resource=\"&ex;2o\""));
         }
     }
 #endif
