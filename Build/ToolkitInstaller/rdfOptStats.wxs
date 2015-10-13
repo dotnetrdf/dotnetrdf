@@ -5,22 +5,22 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfOptStatsComponentGroup">
-            <Component Id="rdfOptStatsComponentGroup_dotNetRDF.dll" Directory="rdfOptStatsFolder" Guid="{3D79F6B6-789F-47E3-B85E-9C4F83C1788C}">
+            <Component Id="rdfOptStatsComponentGroup_dotNetRDF.dll" Directory="rdfOptStatsFolder" Guid="{A858BAED-E159-4419-97C5-934F85DD504C}">
                 <File Id="rdfOptStatsComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="rdfOptStatsComponentGroup_HtmlAgilityPack.dll" Directory="rdfOptStatsFolder" Guid="{A10E6AAA-E5AF-412F-841A-78C5E54B8CCB}">
+            <Component Id="rdfOptStatsComponentGroup_HtmlAgilityPack.dll" Directory="rdfOptStatsFolder" Guid="{788D8F6B-A507-4804-937D-23883E776983}">
                 <File Id="rdfOptStatsComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="rdfOptStatsComponentGroup_Newtonsoft.Json.dll" Directory="rdfOptStatsFolder" Guid="{F610E9AB-9BCF-4121-9D10-BEA58267E2FA}">
+            <Component Id="rdfOptStatsComponentGroup_Newtonsoft.Json.dll" Directory="rdfOptStatsFolder" Guid="{683CC04A-61B5-4381-A50D-94876CDA15AC}">
                 <File Id="rdfOptStatsComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe" Directory="rdfOptStatsFolder" Guid="{5BE4C099-890A-400B-A991-C379B2901CBF}">
+            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe" Directory="rdfOptStatsFolder" Guid="{126773EB-CA74-4E80-BA73-4D73E290B77E}">
                 <File Id="rdfOptStatsComponentGroup_rdfOptStats.exe" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe" />
             </Component>
-            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe.config" Directory="rdfOptStatsFolder" Guid="{50292F72-D7CA-4C2D-88CC-A3BC5CDC3388}">
+            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe.config" Directory="rdfOptStatsFolder" Guid="{EA869301-7620-499B-960D-D00872A01B86}">
                 <File Id="rdfOptStatsComponentGroup_rdfOptStats.exe.config" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe.config" />
             </Component>
-            <Component Id="rdfOptStatsComponentGroup_VDS.Common.dll" Directory="rdfOptStatsFolder" Guid="{C5E8ECFF-78CF-4F4B-9E46-E34101110CC5}">
+            <Component Id="rdfOptStatsComponentGroup_VDS.Common.dll" Directory="rdfOptStatsFolder" Guid="{5C2DED31-6E97-4EBE-9628-15C47ABD29EE}">
                 <File Id="rdfOptStatsComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>
