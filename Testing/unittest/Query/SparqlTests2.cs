@@ -1602,6 +1602,74 @@ WHERE
             TestTools.ShowResults(results);
         }
 
+        [Test, Timeout(15000)]
+        public void SparqlGraphOptionalInteractionCore457_1()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-457\data.nq");
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\optional.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(q.QueryExecutionTime.HasValue);
+            Console.WriteLine(q.QueryExecutionTime.Value);
+
+            TestTools.ShowResults(results);
+        }
+
+        [Test, Timeout(15000)]
+        public void SparqlGraphExistsInteractionCore457_1()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-457\data.nq");
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\exists.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(q.QueryExecutionTime.HasValue);
+            Console.WriteLine(q.QueryExecutionTime.Value);
+
+            TestTools.ShowResults(results);
+        }
+
+        [Test, Timeout(15000)]
+        public void SparqlGraphOptionalInteractionCore457_2()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-457\data.nq");
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\optional2.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(q.QueryExecutionTime.HasValue);
+            Console.WriteLine(q.QueryExecutionTime.Value);
+
+            TestTools.ShowResults(results);
+        }
+
+        [Test, Timeout(15000)]
+        public void SparqlGraphExistsInteractionCore457_2()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-457\data.nq");
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\exists2.rq");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(q.QueryExecutionTime.HasValue);
+            Console.WriteLine(q.QueryExecutionTime.Value);
+
+            TestTools.ShowResults(results);
+        }
+
 #endif
     }
 }

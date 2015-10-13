@@ -282,7 +282,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 // Only execute the RHS if the LHS had some results
                 // Need to be careful about whether we linearize (CORE-406)
-                context.InputMultiset = CanFlowResultsToRhs(context) ? lhsResult : new IdentityMultiset();
+                context.InputMultiset = CanFlowResultsToRhs(context) && !IsCrossProduct ? lhsResult : new IdentityMultiset();
                 BaseMultiset rhsResult = context.Evaluate(this._rhs);
                 context.CheckTimeout();
 
@@ -315,6 +315,11 @@ namespace VDS.RDF.Query.Algebra
 
             // Otherwise OK
             return true;
+        }
+
+        private bool IsCrossProduct
+        {
+            get { return !this._lhs.Variables.Any(v => this._rhs.Variables.Contains(v)); }
         }
 
         /// <summary>
