@@ -80,7 +80,7 @@ namespace VDS.RDF.Query
                 SparqlOptimiser.AddOptimiser(opt);
             }
         }
-            
+
         [Test]
         public void SparqlBind()
         {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -379,7 +379,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Test, ExpectedException(typeof (RdfParseException))]
         public void SparqlBindScope1()
         {
             String query = @"PREFIX : <http://www.example.org>
@@ -462,7 +462,7 @@ WHERE
             Console.WriteLine(algebra.ToString());
             Assert.IsInstanceOf<Select>(algebra);
 
-            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
+            algebra = ((IUnaryOperator) algebra).InnerAlgebra;
             Assert.IsInstanceOf<Extend>(algebra);
         }
 
@@ -493,10 +493,10 @@ WHERE
             Console.WriteLine(algebra.ToString());
             Assert.IsInstanceOf<Select>(algebra);
 
-            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
+            algebra = ((IUnaryOperator) algebra).InnerAlgebra;
             Assert.IsInstanceOf<Union>(algebra);
 
-            IUnion union = (Union)algebra;
+            IUnion union = (Union) algebra;
             ISparqlAlgebra lhs = union.Lhs;
             Assert.IsInstanceOf<Extend>(lhs);
 
@@ -521,7 +521,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -553,8 +553,8 @@ WHERE
             catch (RdfParseException)
             {
                 Console.WriteLine("Error thrown as expected");
-            } 
-            catch 
+            }
+            catch
             {
                 Assert.Fail("Expected a RdfParseException");
             }
@@ -746,7 +746,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -780,7 +780,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -814,7 +814,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -848,7 +848,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -882,7 +882,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -916,7 +916,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -950,7 +950,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -992,7 +992,7 @@ WHERE
             timer.Reset();
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -1012,7 +1012,7 @@ WHERE
             Console.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -1048,7 +1048,7 @@ WHERE
             Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                SparqlResultSet rset = (SparqlResultSet) results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r.ToString());
@@ -1175,7 +1175,7 @@ WHERE
                 Object results = processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rset = (SparqlResultSet)results;
+                    SparqlResultSet rset = (SparqlResultSet) results;
                     foreach (SparqlResult r in rset)
                     {
                         Console.WriteLine(r.ToString());
@@ -1521,7 +1521,7 @@ WHERE
                 }
 
                 Console.WriteLine("Total Execution Time: " + total);
-                Assert.IsTrue(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
+                Assert.IsTrue(total < new TimeSpan(0, 0, 1*(totalRuns/10)));
             }
             finally
             {
@@ -1602,72 +1602,78 @@ WHERE
             TestTools.ShowResults(results);
         }
 
-        [Test, Timeout(15000)]
+        private void RunCore457(String query)
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-457\data.nq");
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\" + query);
+            q.Timeout = 15000;
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(q.QueryExecutionTime.HasValue);
+            Console.WriteLine(q.QueryExecutionTime.Value);
+
+            TestTools.ShowResults(results);
+        }
+
+        [Test, Ignore, Timeout(15000)]
         public void SparqlGraphOptionalInteractionCore457_1()
         {
-            TripleStore store = new TripleStore();
-            store.LoadFromFile(@"resources\core-457\data.nq");
-            InMemoryDataset dataset = new InMemoryDataset(store);
-
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\optional.rq");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsTrue(q.QueryExecutionTime.HasValue);
-            Console.WriteLine(q.QueryExecutionTime.Value);
-
-            TestTools.ShowResults(results);
+            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
+            RunCore457("optional.rq");
         }
 
-        [Test, Timeout(15000)]
-        public void SparqlGraphExistsInteractionCore457_1()
-        {
-            TripleStore store = new TripleStore();
-            store.LoadFromFile(@"resources\core-457\data.nq");
-            InMemoryDataset dataset = new InMemoryDataset(store);
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\exists.rq");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsTrue(q.QueryExecutionTime.HasValue);
-            Console.WriteLine(q.QueryExecutionTime.Value);
-
-            TestTools.ShowResults(results);
-        }
-
-        [Test, Timeout(15000)]
+        [Test, Ignore, Timeout(15000)]
         public void SparqlGraphOptionalInteractionCore457_2()
         {
-            TripleStore store = new TripleStore();
-            store.LoadFromFile(@"resources\core-457\data.nq");
-            InMemoryDataset dataset = new InMemoryDataset(store);
-
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\optional2.rq");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsTrue(q.QueryExecutionTime.HasValue);
-            Console.WriteLine(q.QueryExecutionTime.Value);
-
-            TestTools.ShowResults(results);
+            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
+            try
+            {
+                Options.UsePLinqEvaluation = false;
+                RunCore457("optional.rq");
+            }
+            finally
+            {
+                Options.UsePLinqEvaluation = true;
+            }
         }
 
         [Test, Timeout(15000)]
+        public void SparqlGraphOptionalInteractionCore457_3()
+        {
+            RunCore457("optional2.rq");
+        }
+
+        [Test, Ignore, Timeout(15000)]
+        public void SparqlGraphExistsInteractionCore457_1()
+        {
+            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
+            RunCore457("exists.rq");
+        }
+
+        [Test, Ignore, Timeout(15000)]
         public void SparqlGraphExistsInteractionCore457_2()
         {
-            TripleStore store = new TripleStore();
-            store.LoadFromFile(@"resources\core-457\data.nq");
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
+            try
+            {
+                Options.UsePLinqEvaluation = false;
+                RunCore457("exists.rq");
+            }
+            finally
+            {
+                Options.UsePLinqEvaluation = true;
+            }
+        }
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\exists2.rq");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-            Assert.IsNotNull(results);
-            Assert.IsTrue(q.QueryExecutionTime.HasValue);
-            Console.WriteLine(q.QueryExecutionTime.Value);
-
-            TestTools.ShowResults(results);
+        [Test, Timeout(30000)]
+        public void SparqlGraphExistsInteractionCore457_3()
+        {
+            RunCore457("exists2.rq");
         }
 
 #endif
