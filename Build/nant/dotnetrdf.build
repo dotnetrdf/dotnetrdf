@@ -929,14 +929,14 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/virtado4.dll" />
   </target>
 
   <target name="build-data-virtuoso-net35" description="Copy the latest Data.Virtuoso 3.5 build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-net35">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/virtado3.dll" />
   </target>
 
   <target name="build-query-fulltext" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext">
