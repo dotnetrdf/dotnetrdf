@@ -31,12 +31,29 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.0.*")]
-[assembly: AssemblyFileVersion("0.1.1.2713")]
+// [assembly: AssemblyVersion("1.0.9.3683")]
+[assembly: AssemblyVersion("1.0.9.3683")]
+[assembly: AssemblyFileVersion("1.0.9.3683")]
 
 //TODO: Remove once finished
-[assembly: InternalsVisibleTo("spin-tests")]
+//[assembly: InternalsVisibleTo("spin-tests")]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

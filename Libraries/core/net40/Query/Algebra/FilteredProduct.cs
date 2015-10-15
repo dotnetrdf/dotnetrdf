@@ -40,8 +40,8 @@ namespace VDS.RDF.Query.Algebra
     public class FilteredProduct
         : IAbstractJoin
     {
-        private ISparqlAlgebra _lhs, _rhs;
-        private ISparqlExpression _expr;
+        private readonly ISparqlAlgebra _lhs, _rhs;
+        private readonly ISparqlExpression _expr;
 
         /// <summary>
         /// Creates a new Filtered Product
@@ -250,6 +250,32 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._lhs.Variables.Concat(this._rhs.Variables).Concat(this._expr.Variables).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those floating on either side which are not fixed
+                IEnumerable<String> floating = this._lhs.FloatingVariables.Concat(this._rhs.FloatingVariables).Distinct();
+                HashSet<String> fixedVars = new HashSet<string>(this.FixedVariables);
+                return floating.Where(v => !fixedVars.Contains(v));
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables
+        {
+            get
+            {
+                // Fixed variables are those fixed on either side
+                return this._lhs.FixedVariables.Concat(this._rhs.FixedVariables).Distinct();
             }
         }
 

@@ -250,7 +250,7 @@ namespace VDS.RDF
         /// <remarks>Handy method which means you can assert a Triple by specifying the Subject, Predicate and Object without having to explicity declare a new Triple</remarks>
         public static void Assert(this IGraph g, INode subj, INode pred, INode obj)
         {
-            g.Assert(new Triple(subj, pred, obj));
+            g.Assert(new Triple(Tools.CopyNode(subj, g), Tools.CopyNode(pred, g), Tools.CopyNode(obj, g)));
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace VDS.RDF
         /// <remarks>Handy method which means you can retract a Triple by specifying the Subject, Predicate and Object without having to explicity declare a new Triple</remarks>
         public static void Retract(this IGraph g, INode subj, INode pred, INode obj)
         {
-            g.Retract(new Triple(subj, pred, obj));
+            g.Retract(new Triple(Tools.CopyNode(subj, g), Tools.CopyNode(pred, g), Tools.CopyNode(obj, g)));
         }
 
         #endregion
@@ -697,7 +697,8 @@ namespace VDS.RDF
                 String[] lines = line.Split('\n');
                 foreach (String l in lines)
                 {
-                    if (!l.Equals(String.Empty)) builder.AppendLine(new String(' ', indent) + l);
+                    if (String.IsNullOrEmpty(l) || l.ToCharArray().All(c => Char.IsWhiteSpace(c))) continue;
+                    builder.AppendLine(new String(' ', indent) + l);
                 }
             }
             else

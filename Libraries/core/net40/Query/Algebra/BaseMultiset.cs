@@ -43,6 +43,23 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         protected List<int> _orderedIDs = null;
 
+
+        private int _virtualCount = -1;
+        /// <summary>
+        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member
+        /// </summary>
+        public int VirtualCount
+        {
+            get
+            {
+                return (_virtualCount==-1 ? this.Count : this._virtualCount);
+            }
+            internal set
+            {
+                this._virtualCount = value;
+            }
+        }
+
         /// <summary>
         /// Joins this Multiset to another Multiset
         /// </summary>
@@ -73,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
             foreach (String var in joinVars)
             {
                 joinedSet.AddVariable(var);
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 
@@ -194,37 +211,39 @@ namespace VDS.RDF.Query.Algebra
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr));
                     return partitionedSet;
                 }
-                else
-                {
 #endif
-                    //Do a serial Left Join Product
+                //Do a serial Left Join Product
 
-                    //Calculate a Product filtering as we go
-                    foreach (ISet x in this.Sets)
+                //Calculate a Product filtering as we go
+                foreach (ISet x in this.Sets)
+                {
+                    bool standalone = false;
+                    bool matched = false;
+                    foreach (ISet y in other.Sets)
                     {
-                        bool standalone = false;
-                        foreach (ISet y in other.Sets)
+                        ISet z = x.Join(y);
+                        try
                         {
-                            ISet z = x.Join(y);
-                            try
-                            {
-                                joinedSet.Add(z);
-                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
-                                {
-                                    joinedSet.Remove(z.ID);
-                                    standalone = true;
-                                }
-                            }
-                            catch
+                            joinedSet.Add(z);
+                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;
                             }
+                            else
+                            {
+                                matched = true;
+                            }
                         }
-                        if (standalone) joinedSet.Add(x.Copy());
+                        catch
+                        {
+                            joinedSet.Remove(z.ID);
+                            standalone = true;
+                        }
                     }
-#if NET40 && !SILVERLIGHT
+                    if (standalone && !matched) joinedSet.Add(x.Copy());
                 }
+#if NET40 && !SILVERLIGHT
 #endif
             }
             else
@@ -236,7 +255,7 @@ namespace VDS.RDF.Query.Algebra
                 foreach (String var in joinVars)
                 {
                     joinedSet.AddVariable(var);
-                    values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                    values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                     nulls.Add(new List<int>());
                 }
 
@@ -289,12 +308,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
 #if NET40 && !SILVERLIGHT
-        
+
         private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
         {
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);
             SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
-            bool standalone = false;
+            bool standalone = false, matched = false;
 
             int id = partitionedSet.GetNextBaseID();
             foreach (ISet y in other.Sets)
@@ -310,6 +329,10 @@ namespace VDS.RDF.Query.Algebra
                         partitionedSet.Remove(z.ID);
                         standalone = true;
                     }
+                    else
+                    {
+                        matched = true;
+                    }
                 }
                 catch
                 {
@@ -317,8 +340,7 @@ namespace VDS.RDF.Query.Algebra
                     standalone = true;
                 }
             }
-            if (standalone)
-            {
+            if (standalone && !matched) {
                 id++;
                 ISet z = x.Copy();
                 z.ID = id;
@@ -443,7 +465,7 @@ namespace VDS.RDF.Query.Algebra
             foreach (String var in joinVars)
             {
                 joinedSet.AddVariable(var);
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 
@@ -580,7 +602,7 @@ namespace VDS.RDF.Query.Algebra
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 

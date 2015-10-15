@@ -1,0 +1,13 @@
+﻿SELECT ?s ?label
+WHERE {   
+    ?s a <http://www.w3.org/2000/01/rdf-schema#Class> .
+    {
+        SELECT ?label 
+        WHERE {
+            ?s a <http://www.w3.org/2000/01/rdf-schema#Class> .
+            ?s <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        }
+    }
+} 
+ORDER BY ?label
+LIMIT 2

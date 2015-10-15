@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>3.7</ProductVersion>
+    <ProjectGuid>5bf10fa7-95b7-42b4-8f17-65ae02aa65fe</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>dotNetRdf-Toolkit</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <SDKPath Condition=" '$(SDKPath)' == '' ">C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A</SDKPath>
+    <DotNetRdfVersion>1.0.10.0</DotNetRdfVersion>
+    <PackageDir>$(IntermediateOutputPath)packages</PackageDir>
+    <CompilerAdditionalOptions>-dCoreFiles=$(PackageDir) -dProductName="dotNetRDF Toolkit" -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -drdfQueryFiles=$(PackageDir)\rdfQuery -drdfServerFiles=$(PackageDir)\rdfServer -drdfOptStatsFiles=$(PackageDir)\rdfOptStats -dsohFiles=$(PackageDir)\soh -dsparqlGuiFiles=$(PackageDir)\sparqlGui -dstoreManagerFiles=$(PackageDir)\storeManager -dinfoFiles=$(PackageDir)\info -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <CompilerAdditionalOptions>-drdfEditorFiles=$(PackageDir)\rdfEditor.Wpf -drdfConvertFiles=$(PackageDir)\rdfConvert -drdfWebDeployFiles=$(PackageDir)\rdfWebDeploy -drdfQueryFiles=$(PackageDir)\rdfQuery -drdfServerFiles=$(PackageDir)\rdfServer -drdfOptStatsFiles=$(PackageDir)\rdfOptStats -dsohFiles=$(PackageDir)\soh -dsparqlGuiFiles=$(PackageDir)\sparqlGui -dstoreManagerFiles=$(PackageDir)\storeManager -dinfoFiles=$(PackageDir)\info -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Info.wxs" />
+    <Compile Include="Product.wxs" />
+    <Compile Include="rdfConvert.wxs" />
+    <Compile Include="rdfEditor.wxs" />
+    <Compile Include="rdfOptStats.wxs" />
+    <Compile Include="rdfQuery.wxs" />
+    <Compile Include="rdfServer.wxs" />
+    <Compile Include="rdfWebDeploy.wxs" />
+    <Compile Include="soh.wxs" />
+    <Compile Include="sparqlGui.wxs" />
+    <Compile Include="storeManager.wxs" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <!--
+	To modify your build process, add your task inside one of the targets below and uncomment it.
+	Other similar extension points exist, see Wix.targets.
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+  <Target Name="BeforeBuild" DependsOnTargets="HeatPackage">
+  </Target>
+  <Target Name="CopyBinaries">
+    <MSBuild Projects="CopyBinaries.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="HeatPackage" DependsOnTargets="CopyBinaries">
+    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
+  </Target>
+  <ItemGroup>
+    <BootstrapperFile Include=".NETFramework,Version=v4.0">
+      <ProductName>.NET Framework 4.0</ProductName>
+    </BootstrapperFile>
+    <BootstrapperFile Include="Microsoft.Windows.Installer.4.5">
+      <ProductName>Windows Installer 4.5</ProductName>
+    </BootstrapperFile>
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CopyBinaries.proj" />
+    <Content Include="EULA.rtf" />
+    <Content Include="StableIds.xsl" />
+    <Content Include="Heat.proj" />
+  </ItemGroup>
+  <Target Name="AfterBuild">
+    <GenerateBootstrapper ApplicationFile="DotNetRdf-Toolkit.msi" ApplicationRequiresElevation="true" ApplicationName="dotNetRDF Toolkit Installer" BootstrapperItems="@(BootstrapperFile)" ComponentsLocation="HomeSite" CopyComponents="true" OutputPath="$(OutputPath)" Path="$(SDKPath)\Bootstrapper" />
+  </Target>
+</Project>

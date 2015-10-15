@@ -95,6 +95,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingUriLoaderResponseUriCaching()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {

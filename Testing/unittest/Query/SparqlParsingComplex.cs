@@ -328,5 +328,13 @@ namespace VDS.RDF.Query
             SparqlQuery q2 = parser.ParseFromString(query2);
             Console.WriteLine("Parsed reserialized input OK");
         }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingUpdateWithDeleteWhereIllegal()
+        {
+            const string update = "WITH <http://graph> DELETE WHERE { ?s ?p ?o }";
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            parser.ParseFromString(update);
+        }
     }
 }

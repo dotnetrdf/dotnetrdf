@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -40,35 +37,33 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class QueryTask
         : NonCancellableTask<Object>
     {
-        private String _query;
-        private IQueryableStorage _manager;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlQuery _q;
-        private GenericQueryProcessor _processor;
-        private bool _usePaging = false;
-        private int _pageSize = 1000;
+        private readonly IQueryableStorage _storage;
+        protected readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly GenericQueryProcessor _processor;
+        private readonly bool _usePaging = false;
+        private readonly int _pageSize = 1000;
 
         /// <summary>
         /// Creates a new Query Task
         /// </summary>
-        /// <param name="manager">Storage Provider</param>
+        /// <param name="storage">Storage Provider</param>
         /// <param name="query">Query</param>
-        public QueryTask(IQueryableStorage manager, String query)
+        public QueryTask(IQueryableStorage storage, String query)
             : base("SPARQL Query")
         {
-            this._manager = manager;
-            this._processor = new GenericQueryProcessor(manager);
-            this._query = query;
+            this._storage = storage;
+            this._processor = new GenericQueryProcessor(storage);
+            this.QueryString = query;
         }
 
         /// <summary>
         /// Creates a new Query Task
         /// </summary>
-        /// <param name="manager">Storage Provider</param>
+        /// <param name="storage">Storage Provider</param>
         /// <param name="query">Query</param>
         /// <param name="pageSize">Page Size</param>
-        public QueryTask(IQueryableStorage manager, String query, int pageSize)
-            : this(manager, query)
+        public QueryTask(IQueryableStorage storage, String query, int pageSize)
+            : this(storage, query)
         {
             this._usePaging = true;
             this._pageSize = pageSize;
@@ -83,14 +78,15 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             try
             {
                 //Firstly try and parse the Query
-                this._q = this._parser.ParseFromString(this._query);
+                this.Query = this._parser.ParseFromString(this.QueryString);
             }
             catch
             {
-                this.Information = "Query is not valid SPARQL 1.0/1.1 - will attempt to evaluate it but underlying store may reject the query...";
+                this.Information = "Query is not valid SPARQL 1.0/1.1 - will attempt to evaluate it but underlying store may reject the originalQuery...";
             }
 
-            if (this._q != null)
+            // Successfuly parsed originalQuery
+            if (this.Query != null)
             {
                 //Then apply it to the Manager using the GenericQueryProcessor
                 try
@@ -98,44 +94,44 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     //Check that paging can be used if it was enabled
                     if (this._usePaging)
                     {
-                        if (this._q.Limit >= 0 || this._q.Offset > 0)
+                        if (this.Query.Limit >= 0 || this.Query.Offset > 0)
                         {
-                            throw new RdfQueryException("Cannot apply query paging when the SPARQL Query already contains an explicit LIMIT and/or OFFSET clause");
+                            throw new RdfQueryException("Cannot apply originalQuery paging when the SPARQL Query already contains an explicit LIMIT and/or OFFSET clause");
                         }
-                        else if (this._q.QueryType == SparqlQueryType.Ask)
+                        else if (this.Query.QueryType == SparqlQueryType.Ask)
                         {
-                            throw new RdfQueryException("Cannot apply query paging to an ASK Query");
+                            throw new RdfQueryException("Cannot apply originalQuery paging to an ASK Query");
                         }
                     }
 
                     int offset = 0;
                     TimeSpan totalTime = TimeSpan.Zero;
 
-                    switch (this._q.QueryType)
+                    switch (this.Query.QueryType)
                     {
                         case SparqlQueryType.Ask:
-                            SparqlResultSet blnResult = this._processor.ProcessQuery(this._q) as SparqlResultSet;
-                            if (blnResult == null) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK query as was expected");
+                            SparqlResultSet blnResult = this._processor.ProcessQuery(this.Query) as SparqlResultSet;
+                            if (blnResult == null) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK originalQuery as was expected");
                             return blnResult;
 
                         case SparqlQueryType.Construct:
                         case SparqlQueryType.Describe:
                         case SparqlQueryType.DescribeAll:
                             Graph g = new Graph();
-                            g.NamespaceMap.Import(this._q.NamespaceMap);
+                            g.NamespaceMap.Import(this.Query.NamespaceMap);
 
                             do
                             {
                                 if (this._usePaging)
                                 {
-                                    this._q.Limit = this._pageSize;
-                                    this._q.Offset = offset;
+                                    this.Query.Limit = this._pageSize;
+                                    this.Query.Offset = offset;
                                 }
-                                Object result = this._processor.ProcessQuery(this._q);
-                                totalTime += this._q.QueryExecutionTime.Value;
+                                Object result = this._processor.ProcessQuery(this.Query);
+                                totalTime += this.Query.QueryExecutionTime.HasValue ? this.Query.QueryExecutionTime.Value : TimeSpan.Zero;
 
                                 if (!(result is IGraph)) throw new RdfQueryException("SPARQL Query did not return a RDF Graph as expected");
-                                IGraph temp = (IGraph)result;
+                                IGraph temp = (IGraph) result;
 
                                 //If no further results can halt
                                 if (temp.Triples.Count == 0) break;
@@ -143,7 +139,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
                                 //Merge the partial result into the final result
                                 g.Merge(temp);
-
                             } while (this._usePaging);
 
                             this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
@@ -165,14 +160,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                                 {
                                     if (this._usePaging)
                                     {
-                                        this._q.Limit = this._pageSize;
-                                        this._q.Offset = offset;
+                                        this.Query.Limit = this._pageSize;
+                                        this.Query.Offset = offset;
                                     }
-                                    Object result = this._processor.ProcessQuery(this._q);
-                                    totalTime += this._q.QueryExecutionTime.Value;
+                                    Object result = this._processor.ProcessQuery(this.Query);
+                                    totalTime += this.Query.QueryExecutionTime.HasValue ? this.Query.QueryExecutionTime.Value : TimeSpan.Zero;
 
                                     if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
-                                    SparqlResultSet rset = (SparqlResultSet)result;
+                                    SparqlResultSet rset = (SparqlResultSet) result;
                                     foreach (String var in rset.Variables)
                                     {
                                         handler.HandleVariable(var);
@@ -200,49 +195,48 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             return results;
 
                         default:
-                            throw new RdfQueryException("Cannot evaluate an unknown query type");
+                            throw new RdfQueryException("Cannot evaluate an unknown originalQuery type");
                     }
                 }
                 catch
                 {
                     //Try and show the execution time if possible
-                    try
+                    if (this.Query.QueryExecutionTime.HasValue)
                     {
-                        this.Information = "Query Failed (Took " + this._q.QueryExecutionTime.Value.ToString() + ")";
+                        this.Information = "Query Failed (Took " + this.Query.QueryExecutionTime.Value + ")";
                     }
-                    catch
+                    else
                     {
                         this.Information = "Query Failed";
                     }
                     throw;
                 }
             }
-            else
+
+            // Unsuccessfully parsed originalQuery - may be using syntax extensions specific to the target store
+            DateTime start = DateTime.Now;
+            try
             {
-                DateTime start = DateTime.Now;
+                if (this._usePaging)
+                {
+                    throw new RdfQueryException("Cannot apply paging to a Query that we cannot parse as a valid SPARQL 1.0/1.1 originalQuery");
+                }
+                Object results = this._storage.Query(this.QueryString);
+                this.Information = "Query Completed OK (Took " + (DateTime.Now - start) + ")";
+                return results;
+            }
+            catch
+            {
+                //Try and show the execution time if possible
                 try
                 {
-                    if (this._usePaging)
-                    {
-                        throw new RdfQueryException("Cannot apply paging to a Query that we cannot parse as a valid SPARQL 1.0/1.1 query");
-                    }
-                    Object results = this._manager.Query(this._query);
-                    this.Information = "Query Completed OK (Took " + (DateTime.Now - start).ToString() + ")";
-                    return results;
+                    this.Information = "Query Failed (Took " + (DateTime.Now - start) + ")";
                 }
                 catch
                 {
-                    //Try and show the execution time if possible
-                    try
-                    {
-                        this.Information = "Query Failed (Took " + (DateTime.Now - start).ToString() + ")";
-                    }
-                    catch
-                    {
-                        this.Information = "Query Failed";
-                    }
-                    throw;
+                    this.Information = "Query Failed";
                 }
+                throw;
             }
         }
 
@@ -251,21 +245,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public override bool IsCancellable
         {
-            get 
-            {
-                return false; 
-            }
+            get { return false; }
         }
 
         /// <summary>
-        /// Gets the query (assuming it is valid standard SPARQL)
+        /// Gets the originalQuery (assuming it is valid standard SPARQL)
         /// </summary>
-        public SparqlQuery Query
-        {
-            get
-            {
-                return this._q;
-            }
-        }
+        public SparqlQuery Query { get; protected set; }
+
+        /// <summary>
+        /// Gets the originalQuery string that is being used
+        /// </summary>
+        public String QueryString { get; protected set; }
     }
 }

@@ -339,6 +339,22 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+
+        [Test]
+        public void WritingRdfXmlEntityCompactionLeadingDigits()
+        {
+            const String data = "@prefix ex: <http://example.org/> . ex:1s ex:p ex:2o .";
+            Graph g = new Graph();
+            g.LoadFromString(data, new TurtleParser());
+
+            RdfXmlWriter writer = new RdfXmlWriter();
+            writer.CompressionLevel = WriterCompressionLevel.High;
+            String outData = StringWriter.Write(g, writer);
+            Console.WriteLine(outData);
+
+            Assert.IsTrue(outData.Contains("rdf:about=\"&ex;1s\""));
+            Assert.IsTrue(outData.Contains("rdf:resource=\"&ex;2o\""));
+        }
     }
 #endif
 }

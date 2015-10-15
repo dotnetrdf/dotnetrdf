@@ -41,7 +41,7 @@ namespace VDS.RDF
         /// <summary>
         /// Underlying Storage of the Triple Collection
         /// </summary>
-        protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
+        protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
         /// <summary>
         /// Creates a new Triple Collection

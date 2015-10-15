@@ -38,9 +38,9 @@ namespace VDS.RDF.Query.Algebra
     public class GroupBy
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
-        private ISparqlGroupBy _grouping;
-        private List<SparqlVariable> _aggregates = new List<SparqlVariable>();
+        private readonly ISparqlAlgebra _pattern;
+        private readonly ISparqlGroupBy _grouping;
+        private readonly List<SparqlVariable> _aggregates = new List<SparqlVariable>();
 
         /// <summary>
         /// Creates a new Group By
@@ -93,11 +93,10 @@ namespace VDS.RDF.Query.Algebra
             {
                 foreach (KeyValuePair<String, INode> assignment in group.Assignments)
                 {
-                    if (!vars.Contains(assignment.Key))
-                    {
-                        groupSet.AddVariable(assignment.Key);
-                        vars.Add(assignment.Key);
-                    }
+                    if (vars.Contains(assignment.Key)) continue;
+
+                    groupSet.AddVariable(assignment.Key);
+                    vars.Add(assignment.Key);
                 }
                 groupSet.AddGroup(group);
             }
@@ -142,9 +141,27 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Distinct();
+                return this._pattern.Variables.Concat(this._aggregates.Select(v => v.Name)).Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables
+        {
+            get
+            {
+                // Floating variables are those floating in the inner algebra plus aggregates
+                return this._pattern.FloatingVariables.Concat(this._aggregates.Select(v => v.Name)).Distinct();
+            }
+            
+        }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra

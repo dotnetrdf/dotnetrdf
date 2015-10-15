@@ -1122,6 +1122,11 @@ namespace VDS.RDF.Storage
         {
             this.EnsureTestDataset(manager);
 
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try
             {

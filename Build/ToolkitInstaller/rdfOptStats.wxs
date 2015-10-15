@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="rdfOptStatsFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="rdfOptStatsComponentGroup">
+            <Component Id="rdfOptStatsComponentGroup_dotNetRDF.dll" Directory="rdfOptStatsFolder" Guid="{D0C960D4-D00C-4C77-9FE1-C674611374E2}">
+                <File Id="rdfOptStatsComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\dotNetRDF.dll" />
+            </Component>
+            <Component Id="rdfOptStatsComponentGroup_HtmlAgilityPack.dll" Directory="rdfOptStatsFolder" Guid="{1E684AD4-8293-4C9F-B696-7770900A09F5}">
+                <File Id="rdfOptStatsComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\HtmlAgilityPack.dll" />
+            </Component>
+            <Component Id="rdfOptStatsComponentGroup_Newtonsoft.Json.dll" Directory="rdfOptStatsFolder" Guid="{796F0B64-F15D-4AAD-9386-3262233138A7}">
+                <File Id="rdfOptStatsComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe" Directory="rdfOptStatsFolder" Guid="{55F97C28-9BA4-45AB-9654-42C57021853C}">
+                <File Id="rdfOptStatsComponentGroup_rdfOptStats.exe" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe" />
+            </Component>
+            <Component Id="rdfOptStatsComponentGroup_rdfOptStats.exe.config" Directory="rdfOptStatsFolder" Guid="{21A0CEB8-8455-427C-95B0-3D0A82AAE03B}">
+                <File Id="rdfOptStatsComponentGroup_rdfOptStats.exe.config" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\rdfOptStats.exe.config" />
+            </Component>
+            <Component Id="rdfOptStatsComponentGroup_VDS.Common.dll" Directory="rdfOptStatsFolder" Guid="{444F129C-FC87-4352-A57D-C0307E3EF3D7}">
+                <File Id="rdfOptStatsComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfOptStatsFiles)\VDS.Common.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

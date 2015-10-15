@@ -5,6 +5,6 @@
 
 rdfs:label opt:predicateCount 100 .
 rdf:type opt:predicateCount 200 .
-rdfs:Class opt:objectCount 100 .
-"example" opt:objectCount 200 .
+rdfs:Class opt:objectCount 500 .
+"example" opt:objectCount 10 .
 rdfs:subClassOf opt:predicateCount 200 .

@@ -16,7 +16,6 @@
       <dependency id="OpenLink.Data.Virtuoso" version="7.0.3202.3" />
     </dependencies>
     <releaseNotes>
-      - Split source and PDBs into separate symbols package
     </releaseNotes>
   </metadata>
 </package>

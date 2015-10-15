@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Web.Configuration;
 using System.IO;
 
@@ -34,9 +33,9 @@ namespace VDS.RDF.Utilities.Web.Deploy
 {
     class DllUpdate
     {
-        private bool _noLocalIIS = false;
+        private bool _noLocalIis = false;
         private String _site = "Default Web Site";
-        private bool _sql = false, _virtuoso = false, _fulltext = false;
+        private bool _virtuoso = false, _fulltext = false;
 
         public void RunDllUpdate(String[] args)
         {
@@ -55,7 +54,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
             }
 
             String appFolder;
-            if (!this._noLocalIIS)
+            if (!this._noLocalIis)
             {
                 //Open the Configuration File
                 System.Configuration.Configuration config = WebConfigurationManager.OpenWebConfiguration(args[1], this._site);
@@ -80,7 +79,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
             //Copy all required DLLs are in the bin directory of the application
             String sourceFolder = RdfWebDeployHelper.ExecutablePath;
             IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
-            if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
             if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
             if (this._fulltext) dlls = dlls.Concat(RdfWebDeployHelper.RequiredFullTextDLLs);
 
@@ -109,7 +107,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 switch (args[i])
                 {
                     case "-noiis":
-                        this._noLocalIIS = true;
+                        this._noLocalIis = true;
                         break;
                     case "-site":
                         if (i < args.Length - 1)
@@ -123,10 +121,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             Console.Error.Write("rdfWebDeploy: Error: Expected a site name to be specified after the -site option");
                             return false;
                         }
-                        break;
-                    case "-sql":
-                        this._sql = true;
-                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
                         break;
                     case "-virtuoso":
                         this._virtuoso = true;

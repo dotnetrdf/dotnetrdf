@@ -652,6 +652,7 @@ namespace VDS.RDF.Parsing.Tokens
                 while (!Char.IsWhiteSpace(next) && next != '<')
                 {
                     this.ConsumeCharacter();
+                    if (next == ':') break;
                     next = this.Peek();
                 }
             }
@@ -706,8 +707,8 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (Char.IsWhiteSpace(next))
                     {
-                        //Ignore White Space inside URIs
-                        this.SkipCharacter();
+                        // White space is illegal in URIs
+                        throw Error("Illegal white space in URI '" + this.Value + "'");
                     }
                     else if (next == '\\')
                     {

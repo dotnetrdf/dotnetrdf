@@ -190,6 +190,11 @@ namespace VDS.RDF.Writing.Serialization
         [Test]
         public void SerializationXmlGraph3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
 
@@ -235,6 +240,11 @@ namespace VDS.RDF.Writing.Serialization
         [Test]
         public void SerializationBinaryGraph3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
 
@@ -280,6 +290,11 @@ namespace VDS.RDF.Writing.Serialization
         [Test]
         public void SerializationDataContractGraph3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
 
@@ -325,6 +340,11 @@ namespace VDS.RDF.Writing.Serialization
         [Test]
         public void SerializationJsonGraph3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
 

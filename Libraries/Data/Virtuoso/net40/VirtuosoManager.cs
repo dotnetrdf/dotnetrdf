@@ -68,28 +68,31 @@ namespace VDS.RDF.Storage
         /// Default Port for Virtuoso Servers
         /// </summary>
         public const int DefaultPort = 1111;
+
         /// <summary>
         /// Default Database for Virtuoso Server Quad Store
         /// </summary>
         public const String DefaultDB = "DB";
 
+        private const String SubjectColumn = "S", PredicateColumn = "P", ObjectColumn = "O";
         private const String VirtuosoRelativeBaseString = "virtuoso-relative:";
         private readonly Uri VirtuosoRelativeBase = new Uri(VirtuosoRelativeBaseString);
 
         #region Variables & Constructors
 
-        private VirtuosoConnection _db;
+        private readonly VirtuosoConnection _db;
         private VirtuosoTransaction _dbtrans;
-        private ITripleFormatter _formatter = new VirtuosoFormatter();
+        private readonly ITripleFormatter _formatter = new VirtuosoFormatter();
 
-        private String _dbserver, _dbname, _dbuser, _dbpwd;
-        private int _dbport, _timeout = 0;
+        private readonly String _dbserver, _dbname, _dbuser, _dbpwd;
+        private readonly int _dbport, _timeout = 0;
 
         /// <summary>
         /// Indicates whether the Database Connection is currently being kept open
         /// </summary>
         private bool _keepOpen = false;
-        private bool _customConnString = false;
+
+        private readonly bool _customConnString = false;
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -143,7 +146,9 @@ namespace VDS.RDF.Storage
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
         public VirtuosoManager(String server, int port, String db, String user, String password)
-            : this(server, port, db, user, password, 0) { }
+            : this(server, port, db, user, password, 0)
+        {
+        }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -155,8 +160,10 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Assumes the Server is on the localhost and the port is the default installation port of 1111
         /// </remarks>
-        public VirtuosoManager(String db, String user, String password, int timeout) 
-            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout) { }
+        public VirtuosoManager(String db, String user, String password, int timeout)
+            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout)
+        {
+        }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -168,7 +175,9 @@ namespace VDS.RDF.Storage
         /// Assumes the Server is on the localhost and the port is the default installation port of 1111
         /// </remarks>
         public VirtuosoManager(String db, String user, String password)
-            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, 0) { }
+            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, 0)
+        {
+        }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -263,7 +272,7 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(g, (Uri)null);
+                this.LoadGraph(g, (Uri) null);
             }
             else
             {
@@ -280,7 +289,7 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(handler, (Uri)null);
+                this.LoadGraph(handler, (Uri) null);
             }
             else
             {
@@ -315,17 +324,10 @@ namespace VDS.RDF.Storage
 
             VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
 
-            dt.Columns.Add("S", typeof(System.Object));
-            dt.Columns.Add("P", typeof(System.Object));
-            dt.Columns.Add("O", typeof(System.Object));
-            try
-            {
-                adapter.Fill(dt);
-            }
-            catch
-            {
-                throw;
-            }
+            dt.Columns.Add("S", typeof (System.Object));
+            dt.Columns.Add("P", typeof (System.Object));
+            dt.Columns.Add("O", typeof (System.Object));
+            adapter.Fill(dt);
 
             return dt;
         }
@@ -341,7 +343,7 @@ namespace VDS.RDF.Storage
             INode temp;
             if (n is SqlExtendedString)
             {
-                SqlExtendedString iri = (SqlExtendedString)n;
+                SqlExtendedString iri = (SqlExtendedString) n;
                 if (iri.IriType == SqlExtendedStringType.BNODE)
                 {
                     //Blank Node
@@ -366,7 +368,7 @@ namespace VDS.RDF.Storage
             }
             else if (n is SqlRdfBox)
             {
-                SqlRdfBox lit = (SqlRdfBox)n;
+                SqlRdfBox lit = (SqlRdfBox) n;
                 if (lit.StrLang != null)
                 {
                     //Language Specified Literal
@@ -399,35 +401,35 @@ namespace VDS.RDF.Storage
             }
             else if (n is Int32)
             {
-                temp = ((Int32)n).ToLiteral(factory);
+                temp = ((Int32) n).ToLiteral(factory);
             }
             else if (n is Int16)
             {
-                temp = ((Int16)n).ToLiteral(factory);
+                temp = ((Int16) n).ToLiteral(factory);
             }
             else if (n is Single)
             {
-                temp = ((Single)n).ToLiteral(factory);
+                temp = ((Single) n).ToLiteral(factory);
             }
             else if (n is Double)
             {
-                temp = ((Double)n).ToLiteral(factory);
+                temp = ((Double) n).ToLiteral(factory);
             }
             else if (n is Decimal)
             {
-                temp = ((Decimal)n).ToLiteral(factory);
+                temp = ((Decimal) n).ToLiteral(factory);
             }
             else if (n is DateTime)
             {
-                temp = ((DateTime)n).ToLiteral(factory);
+                temp = ((DateTime) n).ToLiteral(factory);
             }
             else if (n is TimeSpan)
             {
-                temp = ((TimeSpan)n).ToLiteral(factory);
+                temp = ((TimeSpan) n).ToLiteral(factory);
             }
             else if (n is Boolean)
             {
-                temp = ((Boolean)n).ToLiteral(factory);
+                temp = ((Boolean) n).ToLiteral(factory);
             }
             else if (n is DBNull)
             {
@@ -532,10 +534,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
-            get
-            {
-                return IOBehaviour.IsQuadStore | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples;
-            }
+            get { return IOBehaviour.IsQuadStore | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples; }
         }
 
         /// <summary>
@@ -698,10 +697,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override bool UpdateSupported
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -709,10 +705,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override bool IsReady
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -720,10 +713,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override bool IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         #endregion
@@ -757,10 +747,7 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+            return g;
         }
 
         /// <summary>
@@ -788,7 +775,7 @@ namespace VDS.RDF.Storage
                 if (resultsHandler != null) resultsHandler.StartResults();
 
                 DataTable results = new DataTable();
-                results.Columns.CollectionChanged += new System.ComponentModel.CollectionChangeEventHandler(Columns_CollectionChanged);
+                results.Columns.CollectionChanged += Columns_CollectionChanged;
 
                 //See if the query can be parsed into a SparqlQuery object
                 //It might not since the user might use Virtuoso's extensions to Sparql in their query
@@ -826,7 +813,7 @@ namespace VDS.RDF.Storage
                             {
                                 if (var.IsResultVariable)
                                 {
-                                    results.Columns.Add(var.Name, typeof(System.Object));
+                                    results.Columns.Add(var.Name, typeof (System.Object));
                                 }
                             }
                             break;
@@ -834,6 +821,8 @@ namespace VDS.RDF.Storage
 
                     try
                     {
+                        #region Valid SPARQL Query Handling
+
                         this.Open(false);
 
                         //Make the Query against Virtuoso
@@ -850,7 +839,7 @@ namespace VDS.RDF.Storage
                                 //Expect a DataTable containing a single row and column which contains a boolean
 
                                 //Ensure Results Handler is not null
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean Result with a null SPARQL Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean Result with a null SPARQL Results Handler");
 
                                 if (results.Rows.Count == 1 && results.Columns.Count == 1)
                                 {
@@ -863,14 +852,7 @@ namespace VDS.RDF.Storage
                                     }
                                     else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
                                     {
-                                        if (r == 1)
-                                        {
-                                            resultsHandler.HandleBooleanResult(true);
-                                        }
-                                        else
-                                        {
-                                            resultsHandler.HandleBooleanResult(false);
-                                        }
+                                        resultsHandler.HandleBooleanResult(r == 1);
                                     }
                                     else
                                     {
@@ -891,7 +873,7 @@ namespace VDS.RDF.Storage
                                 //That string will be a Turtle serialization of the Graph
 
                                 //Ensure that RDF Handler is not null
-                                if (rdfHandler == null) throw new ArgumentNullException("Cannot handle a Graph result with a null RDF Handler");
+                                if (rdfHandler == null) throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
 
                                 if (results.Rows.Count == 1 && results.Columns.Count == 1)
                                 {
@@ -907,9 +889,29 @@ namespace VDS.RDF.Storage
                                         throw new RdfQueryException("Expected a valid Turtle serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but the result failed to parse", parseEx);
                                     }
                                 }
+                                else if (results.Columns.Count == 3)
+                                {
+                                    rdfHandler.StartRdf();
+                                    try
+                                    {
+                                        foreach (DataRow row in results.Rows)
+                                        {
+                                            INode s = this.LoadNode(rdfHandler, row[0]);
+                                            INode p = this.LoadNode(rdfHandler, row[1]);
+                                            INode o = this.LoadNode(rdfHandler, row[2]);
+                                            if (!rdfHandler.HandleTriple(new Triple(s, p, o))) break;
+                                        }
+                                        rdfHandler.EndRdf(true);
+                                    }
+                                    catch
+                                    {
+                                        rdfHandler.EndRdf(false);
+                                        throw;
+                                    }
+                                }
                                 else
                                 {
-                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count +  "column(s)");
+                                    throw new RdfQueryException("Unexpected results data received for a CONSTRUCT/DESCRIBE query (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count + " column(s)");
                                 }
                                 break;
 
@@ -920,7 +922,7 @@ namespace VDS.RDF.Storage
                             case SparqlQueryType.SelectDistinct:
                             case SparqlQueryType.SelectReduced:
                                 //Ensure Results Handler is not null
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL Results with a null Results Handler");
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
                                 //Get Result Variables
                                 List<SparqlVariable> resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
@@ -950,6 +952,8 @@ namespace VDS.RDF.Storage
                         }
 
                         this.Close(false);
+
+                        #endregion
                     }
                     catch
                     {
@@ -962,136 +966,179 @@ namespace VDS.RDF.Storage
                     //Have to attempt to detect the return type based on the DataTable that
                     //the SPASQL (Sparql+SQL) query gives back
 
-                    //Make the Query against Virtuoso
-                    VirtuosoCommand cmd = this._db.CreateCommand();
-                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-                    cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/ + sparqlQuery;
-                    VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
-                    adapter.Fill(results);
-
-                    //Try to detect the return type based on the DataTable configuration
-                    if (results.Rows.Count == 0 && results.Columns.Count > 0)
+                    try
                     {
-                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handler SPARQL Results with a null Results Handler");
+                        #region Potentially Invalid SPARQL Query Handling
 
-                        //No Rows but some columns implies empty SELECT results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        foreach (DataColumn col in results.Columns)
-                        {
-                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
-                        }
-                    }
-                    else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
-                    {
-                        //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
+                        this.Open(false);
 
-                        //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
-                        bool result;
-                        int r;
-                        decimal rdec;
-                        double rdbl;
-                        float rflt;
+                        //Make the Query against Virtuoso
+                        VirtuosoCommand cmd = this._db.CreateCommand();
+                        cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                        cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/+ sparqlQuery;
+                        VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                        adapter.Fill(results);
 
-                        if (results.Rows[0][0].ToString().Equals(String.Empty))
+                        //Try to detect the return type based on the DataTable configuration
+                        if (results.Columns.Count == 3
+                                && results.Columns[0].ColumnName.Equals(SubjectColumn)
+                                && results.Columns[1].ColumnName.Equals(PredicateColumn)
+                                && results.Columns[2].ColumnName.Equals(ObjectColumn)
+                                && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
                         {
-                            //Empty Results - no need to do anything
-                        }
-                        else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
-                        {
-                            //Parseable Boolean so ASK Results
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean result with a null Results Handler");
-                            resultsHandler.HandleBooleanResult(result);
-                        }
-                        else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
-                        {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            //Ensure that RDF Handler is not null
+                            if (rdfHandler == null) throw new ArgumentNullException("rdfHandler", "Cannot handle a Graph result with a null RDF Handler");
 
-                            //Parseable Integer so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", r.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            rdfHandler.StartRdf();
+                            try
+                            {
+                                foreach (DataRow row in results.Rows)
+                                {
+                                    INode s = this.LoadNode(rdfHandler, row[0]);
+                                    INode p = this.LoadNode(rdfHandler, row[1]);
+                                    INode o = this.LoadNode(rdfHandler, row[2]);
+                                    if (!rdfHandler.HandleTriple(new Triple(s, p, o))) break;
+                                }
+                                rdfHandler.EndRdf(true);
+                            }
+                            catch
+                            {
+                                rdfHandler.EndRdf(false);
+                                throw;
+                            }
                         }
-                        else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
+                        else if (results.Rows.Count == 0 && results.Columns.Count > 0)
                         {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
-                            //Parseable Single so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rflt.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            //No Rows but some columns implies empty SELECT results
+                            foreach (DataColumn col in results.Columns)
+                            {
+                                if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
+                            }
                         }
-                        else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
+                        else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
                         {
-                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
 
-                            //Parseable Double so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rdbl.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
-                        else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
-                        {
-                            //Parseable Decimal so Aggregate SELECT Query Results
-                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                            Set s = new Set();
-                            s.Add("Result", rdec.ToLiteral(resultsHandler));
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
+                            bool result;
+                            int r;
+                            decimal rdec;
+                            double rdbl;
+                            float rflt;
+
+                            if (results.Rows[0][0].ToString().Equals(String.Empty))
+                            {
+                                //Empty Results - no need to do anything
+                            }
+                            else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
+                            {
+                                //Parseable Boolean so ASK Results
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle a Boolean result with a null Results Handler");
+                                resultsHandler.HandleBooleanResult(result);
+                            }
+                            else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Integer so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", r.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Single so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rflt.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Double so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rdbl.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                                //Parseable Decimal so Aggregate SELECT Query Results
+                                if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                                Set s = new Set();
+                                s.Add("Result", rdec.ToLiteral(resultsHandler));
+                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                            }
+                            else
+                            {
+                                //String so try and parse as Turtle
+                                try
+                                {
+                                    //Use StringParser to parse
+                                    String data = results.Rows[0][0].ToString();
+                                    TurtleParser ttlparser = new TurtleParser();
+                                    ttlparser.Load(rdfHandler, new StringReader(data));
+                                }
+                                catch (RdfParseException)
+                                {
+                                    if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                                    //If it failed to parse then it might be the result of one of the aggregate
+                                    //functions that Virtuoso extends Sparql with
+                                    if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
+                                    Set s = new Set();
+                                    s.Add(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
+                                    //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                                    if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                }
+                            }
                         }
                         else
                         {
-                            //String so try and parse as Turtle
-                            try
-                            {
-                                //Use StringParser to parse
-                                String data = results.Rows[0][0].ToString();
-                                TurtleParser ttlparser = new TurtleParser();
-                                ttlparser.Load(rdfHandler, new StringReader(data));
-                            }
-                            catch (RdfParseException)
-                            {
-                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+                            //Any other number of rows/columns we have to assume that it's normal SELECT results
+                            //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
 
-                                //If it failed to parse then it might be the result of one of the aggregate
-                                //functions that Virtuoso extends Sparql with
-                                if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
+                            if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
+
+                            //Get Result Variables
+                            List<String> vars = new List<string>();
+                            foreach (DataColumn col in results.Columns)
+                            {
+                                vars.Add(col.ColumnName);
+                                if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
+                            }
+
+                            //Convert each solution into a SPARQLResult
+                            foreach (DataRow r in results.Rows)
+                            {
                                 Set s = new Set();
-                                s.Add(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
-                                //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                                foreach (String var in vars)
+                                {
+                                    if (r[var] != null)
+                                    {
+                                        s.Add(var, this.LoadNode(resultsHandler, r[var]));
+                                    }
+                                }
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
                         }
+                        this.Close(false);
+
+                        #endregion
                     }
-                    else
+                    catch
                     {
-                        //Any other number of rows/columns we have to assume that it's normal SELECT results
-                        //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
-
-                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
-
-                        //Get Result Variables
-                        List<String> vars = new List<string>();
-                        foreach (DataColumn col in results.Columns)
-                        {
-                            vars.Add(col.ColumnName);
-                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
-                        }
-
-                        //Convert each solution into a SPARQLResult
-                        foreach (DataRow r in results.Rows)
-                        {
-                            Set s = new Set();
-                            foreach (String var in vars)
-                            {
-                                if (r[var] != null)
-                                {
-                                    s.Add(var, this.LoadNode(resultsHandler, r[var]));
-                                }
-                            }
-                            if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                        }
+                        this.Close(true, true);
+                        throw;
                     }
                 }
 
@@ -1105,17 +1152,18 @@ namespace VDS.RDF.Storage
             }
             catch
             {
+                this.Close(true);
                 if (resultsHandler != null) resultsHandler.EndResults(false);
                 this.Close(false);
                 throw;
             }
         }
 
-        void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
+        private static void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
         {
-            Type reqType = typeof(Object);
+            Type reqType = typeof (Object);
             if (e.Action != System.ComponentModel.CollectionChangeAction.Add) return;
-            DataColumn column = (DataColumn)e.Element;
+            DataColumn column = (DataColumn) e.Element;
             if (!column.DataType.Equals(reqType))
             {
                 column.DataType = reqType;
@@ -1165,8 +1213,8 @@ namespace VDS.RDF.Storage
                     VirtuosoCommand cmd = this._db.CreateCommand();
                     cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                     cmd.CommandText = "SPARQL " + sparqlUpdate;
-                    cmd.ExecuteNonQuery();
 
+                    cmd.ExecuteNonQuery();
                     this.Close(true);
                 }
                 catch (Exception ex)
@@ -1226,10 +1274,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override bool DeleteSupported
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         /// <summary>
@@ -1244,7 +1289,7 @@ namespace VDS.RDF.Storage
                 if (results is SparqlResultSet)
                 {
                     List<Uri> graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    foreach (SparqlResult r in ((SparqlResultSet) results))
                     {
                         if (r.HasValue("g"))
                         {
@@ -1253,12 +1298,12 @@ namespace VDS.RDF.Storage
                             {
                                 if (temp.NodeType == NodeType.Uri)
                                 {
-                                    graphs.Add(((IUriNode)temp).Uri);
+                                    graphs.Add(((IUriNode) temp).Uri);
                                 }
                                 else if (temp.NodeType == NodeType.Literal)
                                 {
                                     //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query prior to Virtuoso 6.1.3
-                                    graphs.Add(UriFactory.Create(((ILiteralNode)temp).Value));
+                                    graphs.Add(UriFactory.Create(((ILiteralNode) temp).Value));
                                 }
                             }
                             catch
@@ -1286,10 +1331,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override bool ListGraphsSupported
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         #region Database IO
@@ -1437,6 +1479,22 @@ namespace VDS.RDF.Storage
             return cmd.ExecuteScalar();
         }
 
+        /// <summary>
+        /// Gets whether there is an active connection to the Virtuoso database
+        /// </summary>
+        public bool HasOpenConnection
+        {
+            get { return this._db.State != ConnectionState.Broken && this._db.State != ConnectionState.Closed; }
+        }
+
+        /// <summary>
+        /// Gets whether there is any active transaction on the Virtuoso database
+        /// </summary>
+        public bool HasActiveTransaction
+        {
+            get { return !ReferenceEquals(this._dbtrans, null); }
+        }
+
         #endregion
 
         #region IDisposable Members
@@ -1461,10 +1519,7 @@ namespace VDS.RDF.Storage
             {
                 return "[Virtuoso] Custom Connection String";
             }
-            else
-            {
-                return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
-            }
+            return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
         }
 
         /// <summary>
@@ -1479,7 +1534,7 @@ namespace VDS.RDF.Storage
             }
 
             //Firstly need to ensure our object factory has been referenced
-            context.EnsureObjectFactory(typeof(VirtuosoObjectFactory));
+            context.EnsureObjectFactory(typeof (VirtuosoObjectFactory));
 
             //Then serialize the actual configuration
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
@@ -1488,7 +1543,7 @@ namespace VDS.RDF.Storage
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
-            
+
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Data.Virtuoso")));

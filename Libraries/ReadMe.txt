@@ -10,20 +10,12 @@ This package contains the Core Library for the following .Net profiles:
 - .Net 4.0 Client Profile
 - .Net 3.5
 - .Net 3.5 Client Profile
-- Silverlight 4
-- Silverlight 4 for Windows Phone 7
-- Portable Class Library for:
- - .Net 4.0 and Higher
- - Silverlight 4 and Higher
- - Windows Phone 7 and Higher
- - .Net for Windows Store
+- Portable Class Library Profile 328
 
 It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
 - .Net 4.0
-- .Net 4.0 Client Profile
 - .Net 3.5
-- .Net 3.5 Client Profile
 
 And it contains a Query plugin for Full Text indexing support, builds are provided
 for the following .Net profiles:
@@ -34,7 +26,7 @@ for the following .Net profiles:
 
 Please see the Release Notes for usage details and Known Issues
 
-dotNetRDF Project 2009-13
+dotNetRDF Project 2009-15
 dotnetrdf-develop@lists.sf.net
 
 See Acknowledgements.txt for full list of developers and contributors

@@ -136,6 +136,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlGroupByAssignmentExpression2()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
@@ -164,6 +169,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlGroupByAssignmentExpression3()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);

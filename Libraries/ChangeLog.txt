@@ -1,6 +1,179 @@
 ﻿Change Log
 ==========
 
+1.0.10
+------
+
+Changed
+- Bug Fixes
+ - Fix inconsistent use of XML entities for compression in RdfXmlWriter (CORE-453)
+ - Disable HTTP Keep Alive by default as it can cause errors under some circumstances (CORE-454)
+- Dependencies
+ - Upgrade OpenLink.Data.Virtuoso to 7.20.3214.1 (VIRT-359)
+  - Note that this removes support for Virtuoso on .Net Client Profile
+
+1.0.9
+-----
+
+Changed
+- Bug Fixes
+ - Performance fixes for query evaluation over virtual graphs (CORE-449, CORE-450, CORE-451, CORE-452)
+ - BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
+ - AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
+ - SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
+ - Fixes for Stardog 3.x support (CORE-443)
+ - Improvements to multi-threaded performance when using URI Interning
+- Dependencies
+ - Upgrade VDS.Common to 1.6.0
+
+1.0.8
+-----
+
+Changed
+- Bug Fixes
+ - Some SPARQL parsers did not handle bad URIs gracefully i.e. did not provide informative errors (CORE-432)
+ - SPARQL CSV parser reject variable names in header row if CSV quoted values are used (CORE-433)
+ - Accessing remote SPARQL endpoints could fail to include default & named graph parameters if POSTing the queries (CORE-434)
+ - Fix possible exception when evaluating a query with a ORDER BY and LIMIT over a cross product (CORE-437)
+ - Lazy query evaluation can cause an apparent infinite loop (i.e. extremely slow query evaluation) in some cases (CORE-439)
+ - Fix typo in MIME type definitions for NTriples
+ - Fix bug where HAVING clause that used aggregates could fail to evaluate correctly if project expressions were also used (CORE-440)
+ - Fix bug in evaluation of the zero length portion of * paths causing incorrect results (CORE-441)
+- Build
+ - Upgrade PCL build to Profile 328
+- Dependencies
+ - Upgrade VDS.Common to 1.5.0
+ - Upgrade Json.Net to 6.0.8
+
+1.0.7
+-----
+
+Changed
+- Bug Fixes
+ - Missing ToString() on UUID() and StrUUID() functions (CORE-427)
+ - Fix bug with parsing BIND inside complex nested graph patterns (CORE-428)
+ - Fix bug with RDF/XML output under MonoTouch (CORE-431)
+- Build
+ - Ensure AssemblyVersion is synchronised properly with NuGet package versions (CORE-426)
+ - Remove MSBuild integrated NuGet package restore
+- Dependencies
+ - Upgrade VDS.Common to 1.4.0
+ - Upgrade Json.Net to 6.0.6
+ - Upgrade HtmlAgilityPack to 1.4.9
+
+1.0.6
+-----
+
+Changed
+- Bug Fixes
+ - Fix bug in overly strict SPARQL Results JSON parsing (CORE-419)
+ - Fix bug with incorrect sub-query evaluation (CORE-420)
+ - Fix bug where NQuadsWriter may omit graph names when the data was inserted via SPARQL Updates (CORE-421)
+ - Fix bug parsing SPARQL Results JSON where data is in unexpected order (CORE-423)
+ - Fix possible NPE when running updates with a custom query processor
+ - Fix for Stardog 2.2 reasoning support
+
+1.0.5
+-----
+
+Changed
+- Bug Fixes
+ - Fix a bug with Left Join producing incorrect results due to join linearization optimizations in some cases (CORE-406)
+ - Fix a bug in substituting parameter values containing $ signs into SparqlParameterizedString instances (CORE-408)
+ - Fix a corner case in evaluating CONSTRUCT queries with empty WHERE clause and concrete triples in template (CORE-407)
+ - Fix overly strict SPARQL Results XML parsing (CORE-410)
+ - Fix incorrect usage of Single.NaN and Double.NaN constants with equality operator (CORE-412)
+ - Include location information in Illegal space in URIs error from NTriples tokeniser
+ - Fix a bug with scheduling of sub-queries (CORE-416)
+ - Fix a bug with GRAPH clauses being executed multiple times unecessarily (CORE-416)
+- Dependencies
+ - Upgrade VDS.Common to 1.3.0 (CORE-405)
+ - Upgrade Json.Net to 6.0.3 (CORE-405)
+- Build
+ - Upgrade PCL build to Profile 136 (CORE-405)
+- Parsing
+ - Improve error message for excess triple pattern tokens (CORE-411)
+- Query
+ - Add FixedVariables and FloatingVariables properties to ISparqlAlgebra and related classes (CORE-406)
+ - Improve logic for when Left Joins are linearized (CORE-406)
+ - ExplainQueryProcessor improvements:
+  - GRAPH clause explanations
+  - Indentation of output for easier reading
+
+Removed
+- Builds
+ - Remove SL4 and WP7 builds (CORE-405)
+
+1.0.4
+-----
+
+Added
+- Parsing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+ - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
+- Writing
+ - Support for updated NTriples syntax per the RDF 1.1 specification (CORE-355)
+ - Support for updated NQuads syntax per the RDF 1.1 specification (CORE-356)
+
+
+Changed
+- Bug Fixes
+ - Fix a bug where some graph patterns may get translated into algebra incorrectly (CORE-398)
+ - Fix a bug with overly greedly tokenization when parsing prefix declarations in Turtle, N3 and SPARQL
+ - Fix a bug with language specifiers not being consistently normalized to lower case internally
+   leading to unexpected behaviour trying to query for triples by language tag (CORE-401)
+ - Fix a bug in re-serializing queries containing UNION clauses (CORE-402)
+ - Fix a bug in parsing collections from TriG syntax (CORE-403)
+- Core API
+ - Content negotiation for NTriples and NQuads updated to favour officialy specified MIME types (CORE-355,CORE-356)
+- Storage
+ - Add Timeout property to all HTTP based storage providers which is used for all HTTP requests (CORE-400)
+ - Fix handling CONSTRUCT/DESCRIBE results from more recent Virtuoso versions (VIRT-397)
+ - Fix handling of inserting/deleting blank nodes with more recent Virtuoso versions (VIRT-399)
+- Formatting
+ - NTriplesFormatter and NQuadsFormatter now take a syntax argument (CORE-355,CORE-356)
+ - NTriples11Formatter and NQuadsFormatter11 added as convinient shortcuts to providing explicit syntax (CORE-355,CORE-356)
+
+ Removed
+ - Removed obsolete unusable DydraConnector
+
+1.0.3
+-----
+
+Changed
+- Bug Fixes
+ - Fix a bug in how Sesame connections load the default graph
+ - Fix a bug causing incorrect results in some cases of { } OPTIONAL { } when the LHS and RHS are disjoint i.e. no
+   common variables (CORE-386)
+ - DELETE WHERE { } shorthand syntax was permitted to have a preceding WITH clause which was invalid SPARQL syntax (CORE-389)
+ - URILoader.Load() can sometimes swallow exceptions (CORE-391)
+ - Timeout (and other request options) was not honoured for asynchronous queries and updates using SparqlRemoteEndpoint and SparqlRemoteUpdateEndpoint (CORE-393)
+ - Fix a bug in handling Fragment Identifier in Graph URIs for SPARQL Graph Store protocol based stores like Fuseki (CORE-394)
+ - Fix a bug in translating and evaluating complex property paths (CORE-395)
+- Dependencies
+ - Bumped Json.Net to 5.0.8
+- Documentation
+ - Minor tweak to Timeout properties to ensure all explicitly state that the unit is milliseconds (CORE-387)
+- Query
+ - SparqlResultSet can now be created from an IEnumerable<SparqlResult> instances (CORE-383)
+- Storage
+ - Add native SPARQL Update support to StardogV2Connector (CORE-376)
+
+1.0.2
+-----
+
+Added
+
+Changed
+- Bug Fixes
+ - Possible OOM when stream parsing large RDF/XML files (CORE-378)
+ - Fix a bug with transactions being left open in some cases when using VirtuosoManager (VIRT-382)
+- NuGet
+ - Fixed packaging to ensure the Portable Class Library builds are included
+
+Removed
+- Marked as obsolete unusable the obsoleted ICharFormatter.FormatChar() method
+
 1.0.1
 -----
 
@@ -25,10 +198,15 @@ Changed
  - Fixes to handling of some Date Time comparisons in SPARQL (CORE-365)
  - Fixes to asynchronous error propagation for some async APIs (CORE-370)
  - Fixes to parsing of EXISTS/NOT EXISTS within the WHERE clause of a SPARQL Update (CORE-373)
+ - Fixed an encoding bug when communicating with Sesame servers (CORE-374)
+ - Fixed a bug with handling relative URIs as graph names with Virtuoso (VIRT-375)
 - Dependencies
  - Upgraded Json.Net to 5.0.6
 - Query
  - IValuedNode contract changed to have both AsDateTime() and AsDateTimeOffset() methods (CORE-365)
+- Storage
+ - Add partial support for connections to Stardog 2.0 servers
+  - Native SPARQL update support for Stardog 2.0 is not yet available
 - Configuration API
  - ConfiguationLoader had IConfigurationLoader interface extracted (CORE-362)
 - Writing

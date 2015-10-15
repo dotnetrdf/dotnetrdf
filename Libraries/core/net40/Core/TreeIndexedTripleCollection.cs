@@ -41,7 +41,7 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         //Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
+        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         //Simple Indexes
         private MultiDictionary<INode, List<Triple>> _s, _p, _o;
         //Compound Indexes
@@ -79,12 +79,12 @@ namespace VDS.RDF
         /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
         public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, MultiDictionaryMode compoundIndexMode)
         {
-            if (subjIndex) this._s = new MultiDictionary<INode, List<Triple>>(new FastNodeComparer(), MultiDictionaryMode.AVL);
-            if (predIndex) this._p = new MultiDictionary<INode, List<Triple>>(new FastNodeComparer(), MultiDictionaryMode.AVL);
-            if (objIndex) this._o = new MultiDictionary<INode, List<Triple>>(new FastNodeComparer(), MultiDictionaryMode.AVL);
-            if (subjPredIndex) this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastNodeComparer()), compoundIndexMode);
-            if (subjObjIndex) this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastNodeComparer()), compoundIndexMode);
-            if (predObjIndex) this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastNodeComparer()), compoundIndexMode);
+            if (subjIndex) this._s = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (predIndex) this._p = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (objIndex) this._o = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (subjPredIndex) this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (subjObjIndex) this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (predObjIndex) this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
         }
 
         /// <summary>

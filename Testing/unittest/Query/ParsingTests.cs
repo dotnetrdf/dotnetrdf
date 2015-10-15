@@ -37,6 +37,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -392,6 +393,329 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             ILiteralNode lit = (ILiteralNode) n;
             Assert.AreEqual(String.Empty, lit.Language);
             Assert.IsTrue(EqualityHelper.AreUrisEqual(lit.DataType, new Uri("http://example/type")));
+        }
+        
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter1()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { @subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetUri("subject", uri);
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingHandlesDollarSignInUriParameter2()
+        {
+            const string queryString = @"SELECT ?p ?o WHERE { $subject ?p ?o . }";
+            const string expectedCondition = @"<http://dbpedia.org/resource/$_(film)> ?p ?o";
+            var uri = new Uri("http://dbpedia.org/resource/$_(film)");
+
+            var parametrizedQueryString = new SparqlParameterizedString(queryString);
+            parametrizedQueryString.SetVariable("subject", new UriNode(null, uri));
+            var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
+            Console.WriteLine(sparqlQuery.ToString());
+
+            Assert.That(sparqlQuery.ToString(), Contains.Substring(expectedCondition));
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens1()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens2()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o .
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens3()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ;
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingExcessTokens4()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE
+{
+  ?s rdf:type ?type ?p ?o ,
+}
+";
+            try
+            {
+                this._parser.ParseFromString(query);
+                Assert.Fail("Did not error as expected");
+            }
+            catch (RdfParseException parseEx)
+            {
+                Console.WriteLine(parseEx.Message);
+                Assert.IsFalse(parseEx.Message.Contains("?s"));
+                Assert.IsFalse(parseEx.Message.Contains("rdf:type"));
+                Assert.IsFalse(parseEx.Message.Contains("?type"));
+                Assert.IsTrue(parseEx.Message.Contains("?p"));
+                Assert.IsTrue(parseEx.Message.Contains("?o"));
+            }
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_1()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { SELECT * WHERE { } }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_2()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    OPTIONAL { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_3()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { } UNION { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_4()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    MINUS { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingComplexCore428_5()
+        {
+            // Distilled from CORE-428 report
+            const String query = @"SELECT *
+WHERE
+{
+  OPTIONAL 
+  {
+    { }
+    BIND('test' AS ?test)
+  }
+}";
+
+            // Should be a valid query
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingCore427_1()
+        {
+            const String query = "SELECT (UUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(UUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(UUID"));
+        }
+
+        [Test]
+        public void SparqlParsingCore427_2()
+        {
+            const String query = "SELECT (StrUUID() AS ?test) { }";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            String toString = q.ToString();
+            Assert.IsTrue(toString.Contains("(STRUUID"));
+
+            String formattedString = new SparqlFormatter().Format(q);
+            Assert.IsTrue(formattedString.Contains("(STRUUID"));
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingIllegalWhitespaceInUris()
+        {
+            const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
+            this._parser.ParseFromString(query);
+        }
+        
+        [Test]
+        public void SparqlParsingEscapedWhitespaceInUris()
+        {
+            const string query = "SELECT * WHERE { <http://example.com/foo%20bar> a <http://example.com/foo%20type> }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+            var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
+            var subjectMatch = pattern.Subject as NodeMatchPattern;
+            Assert.AreEqual(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_1()
+        {
+            const String query = @" PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX sem: <http://ns.kodak.com/sem/1.0/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ( afn:sqrt( sum( (?fVal - ?ave) * (?fVal - ?ave) ) /  (COUNT(?fv) - 1) ) as ?stddev )  (avg(?fVal) as ?a)
+FROM <urn:guid:mdw>
+WHERE 
+{
+  ?pic sem:MyPredicate ?fv .
+  BIND (xsd:float(?fv ) AS ?fVal)
+  {
+    SELECT (AVG(?fVal2) AS ?ave) (COUNT(?fVal2) as ?cnt) 
+    WHERE
+    {
+      ?pic sem:MyPredicate ?fvi .
+      BIND (xsd:float(?fvi ) AS ?fVal2)
+    }
+  }
+}";
+
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_2()
+        {
+            // Valid because only aggregates used in the projection
+            const String query = @"SELECT (<http://func>() AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingAggregatesCore446_3()
+        {
+            // Invalid because non-aggregate and non-group key used in projection
+            const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_4()
+        {
+            // Valid because only aggregates and group keys used in projection
+            const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o } GROUP BY ?s";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_5()
+        {
+            // Invalid because non-aggregate and non-group key used in projection
+            const String query = @"SELECT (<http://func>(?count) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
         }
     }
 }

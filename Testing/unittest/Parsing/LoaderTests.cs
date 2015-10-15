@@ -116,6 +116,11 @@ namespace VDS.RDF.Parsing
         [Test]
         public void ParsingDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
@@ -199,8 +204,13 @@ namespace VDS.RDF.Parsing
 #if !PORTABLE
 
         [Test]
-        public void ParsingUriLoaderDBPedia()
+        public void ParsingUriLoaderDBPedia1()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
@@ -216,6 +226,54 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine(t.ToString(formatter));
                 }
                 Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+                SetUriLoaderCaching(true);
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia2()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
+            IGraph g = new Graph();
+            UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
+
+            INodeFormatter formatter = new TurtleW3CFormatter();
+            foreach (INode p in g.Triples.Select(t => t.Predicate).Distinct())
+            {
+                Console.WriteLine("ToString() = " + p.ToString());
+                Console.WriteLine("Formatted = " + p.ToString(formatter));
+                Console.WriteLine("URI ToString() = " + ((IUriNode)p).Uri.ToString());
+            }
+        }
+
+        [Test]
+        public void ParsingUriLoaderDBPedia3()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.HttpDebugging = true;
+                SetUriLoaderCaching(false);
+                Options.UriLoaderTimeout = 45000;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
+                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                TestTools.ShowGraph(g);
             }
             finally
             {

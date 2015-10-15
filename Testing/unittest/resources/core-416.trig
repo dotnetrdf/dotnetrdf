@@ -1,0 +1,28 @@
+﻿@prefix ex: <http://foo.com/product/> .
+@prefix sch: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://foo.com/productList/> 
+{
+  ex:Wrench1 foaf:primaryTopic ex:Wrench1 .
+  ex:Wrench2 foaf:primaryTopic ex:Wrench2 .
+  ex:Wrench3 foaf:primaryTopic ex:Wrench3 .
+  ex:Wrench4 foaf:primaryTopic ex:Wrench4 .
+  ex:Wrench5 foaf:primaryTopic ex:Wrench5 .
+  ex:Wrench6 foaf:primaryTopic ex:Wrench6 .
+  ex:Wrench7 foaf:primaryTopic ex:Wrench7 .
+  ex:Lathe foaf:primaryTopic ex:Lathe .
+}
+
+ex:Wrench1 { ex:Wrench1 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench2 { ex:Wrench2 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench3 { ex:Wrench3 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench4 { ex:Wrench4 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench5 { ex:Wrench5 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench6 { ex:Wrench6 a sch:Product ; sch:name "Wrench" . }
+ex:Wrench7 { ex:Wrench7 a sch:Product ; sch:name "Wrench" . }
+
+ex:Lathe
+{
+	ex:Lathe a sch:Product ; sch:name "Lathe" .
+}

@@ -27,20 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
 {
@@ -56,13 +50,13 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector, IConfigurationSerializable, IAsyncUpdateableStorage
+        : BaseSesameHttpProtocolConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
         , IUpdateableStorage
 #endif
     {
         private String _agraphBase;
-        private String _catalog;
+        private readonly String _catalog;
          
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store
@@ -337,6 +331,12 @@ namespace VDS.RDF.Storage
             return base.CreateRequest(servicePath, accept, method, queryParams);
         }
 
+        protected override string GetSaveContentType()
+        {
+            // AllegroGraph rejects application/n-triples as it still expects to get text/plain so have to use that instead
+            return "text/plain";
+        }
+
         /// <summary>
         /// Gets a String which gives details of the Connection
         /// </summary>
@@ -347,10 +347,7 @@ namespace VDS.RDF.Storage
             {
                 return "[AllegroGraph] Store '" + this._store + "' in Catalog '" + this._catalog + "' on Server '" + this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")) + "'";
             }
-            else
-            {
-                return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
-            }
+            return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
         }
 
         /// <summary>
@@ -390,7 +387,7 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 }

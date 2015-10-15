@@ -48,6 +48,14 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public abstract class BaseHttpConnector
     {
+        /// <summary>
+        /// Creates a new connector
+        /// </summary>
+        protected BaseHttpConnector()
+        {
+            this.Timeout = 30000;
+        }
+
 #if !NO_PROXY
         private WebProxy _proxy;
 
@@ -170,50 +178,83 @@ namespace VDS.RDF.Storage
 #endif
 
         /// <summary>
-        /// Adds Proxy Server to requests if used
+        /// Gets/Sets the HTTP Timeouts used specified in milliseconds
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Defaults to 30 seconds (i.e. the default value is 30,000)
+        /// </para>
+        /// <para>
+        /// It is important to understand that this timeout only applies to the HTTP request portions of any operation performed and that the timeout may apply more than once if a POST operation is used since the timeout applies separately to obtaining the request stream to POST the request and obtaining the response stream.  Also the timeout does not in any way apply to subsequent work that may be carried out before the operation can return so if you need a hard timeout on an operation you should manage that yourself.
+        /// </para>
+        /// <para>
+        /// When set to a zero/negative value then the standard .Net timeout of 100 seconds will apply, use <see cref="int.MaxValue"/> if you want the maximum possible timeout i.e. if you expect to launch extremely long running operations.
+        /// </para>
+        /// <para>
+        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds
+        /// </para>
+        /// </remarks>
+        public int Timeout { get; set; }
+
+        /// <summary>
+        /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout
         /// </summary>
         /// <param name="request">HTTP Web Request</param>
-        /// <returns></returns>
-        protected HttpWebRequest GetProxiedRequest(HttpWebRequest request)
+        /// <returns>HTTP Web Request with standard options applied</returns>
+        protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
+#if !SILVERLIGHT
+            if (this.Timeout > 0) request.Timeout = this.Timeout;
+#endif
+
 #if !NO_PROXY
             if (this._proxy != null)
             {
                 request.Proxy = this._proxy;
             }
 #endif
+
+#if !PORTABLE
+            // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
+            request.KeepAlive = false;
+#endif
+
             return request;
         }
 
         /// <summary>
-        /// Helper method which adds proxy configuration to serialization
+        /// Helper method which adds standard configuration information (proxy and timeout settings) to serialized configuration
         /// </summary>
         /// <param name="objNode">Object Node representing the <see cref="IStorageProvider">IStorageProvider</see> whose configuration is being serialized</param>
         /// <param name="context">Serialization Context</param>
-        protected void SerializeProxyConfig(INode objNode, ConfigurationSerializationContext context)
+        protected void SerializeStandardConfig(INode objNode, ConfigurationSerializationContext context)
         {
-#if !NO_PROXY
-            if (this._proxy != null)
+            // Timeout
+            if (this.Timeout > 0)
             {
-                INode proxy = context.NextSubject;
-                INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
-                INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
-                INode user = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-
-                context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
-                context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
-                context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.AbsoluteUri)));
-
-                if (this._proxy.Credentials is NetworkCredential)
-                {
-                    NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
-                    context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
-                    context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
-                }
+                INode timeout = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
+                context.Graph.Assert(new Triple(objNode, timeout, this.Timeout.ToLiteral(context.Graph)));
             }
+
+#if !NO_PROXY
+            // Proxy configuration
+            if (this._proxy == null) return;
+            INode proxy = context.NextSubject;
+            INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
+            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode user = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+            INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+
+            context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
+            context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
+            context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.AbsoluteUri)));
+
+            if (!(this._proxy.Credentials is NetworkCredential)) return;
+            NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
+            context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
+            context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
 #endif
         }
     }
@@ -229,12 +270,12 @@ namespace VDS.RDF.Storage
     public abstract class BaseAsyncHttpConnector
         : BaseHttpConnector, IAsyncStorageProvider
     {
-        private DoRequestSequenceDelgate _d;
+        private readonly DoRequestSequenceDelgate _d;
 
         /// <summary>
         /// Creates a new Base Async HTTP Connector
         /// </summary>
-        public BaseAsyncHttpConnector()
+        protected BaseAsyncHttpConnector()
         {
             this._d = new DoRequestSequenceDelgate(this.DoRequestSequence);
         }
@@ -282,10 +323,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state)
         {
-            this.LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) =>
-                {
-                    callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st);
-                }, state);
+            this.LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) => callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st), state);
         }
 
         /// <summary>

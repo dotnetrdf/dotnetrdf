@@ -48,7 +48,7 @@ namespace VDS.RDF.Query
     public class FederatedSparqlRemoteEndpoint 
         : SparqlRemoteEndpoint
     {
-        private List<SparqlRemoteEndpoint> _endpoints = new List<SparqlRemoteEndpoint>();
+        private readonly List<SparqlRemoteEndpoint> _endpoints = new List<SparqlRemoteEndpoint>();
         private bool _ignoreFailedRequests = false;
         private int _maxSimultaneousRequests = 4;
 

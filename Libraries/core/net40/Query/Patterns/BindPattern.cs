@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Patterns
     public class BindPattern
         : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
     {
-        private String _var;
-        private ISparqlExpression _expr;
+        private readonly String _var;
+        private readonly ISparqlExpression _expr;
 
         /// <summary>
         /// Creates a new BIND Pattern
@@ -148,6 +148,22 @@ namespace VDS.RDF.Query.Patterns
             {
                 return this._var;
             }
+        }
+
+        /// <summary>
+        /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound
+        /// </summary>
+        public override IEnumerable<string> FixedVariables
+        {
+            get { return Enumerable.Empty<String>(); }
+        }
+
+        /// <summary>
+        /// Returns the variable being assigned to as any evaluation error will result in an unbound value so we can't guarantee it is bound
+        /// </summary>
+        public override IEnumerable<string> FloatingVariables
+        {
+            get { return this._var.AsEnumerable(); }
         }
 
         /// <summary>

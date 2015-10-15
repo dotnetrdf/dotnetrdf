@@ -37,8 +37,8 @@ namespace VDS.RDF.Query.Algebra
     public class Distinct
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
-        private bool _trimTemporaryVariables = true;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly bool _trimTemporaryVariables = true;
 
         /// <summary>
         /// Creates a new Distinct Modifier
@@ -74,23 +74,20 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }
-            else
+            if (this._trimTemporaryVariables)
             {
-                if (this._trimTemporaryVariables)
-                {
-                    //Trim temporary variables
-                    context.InputMultiset.Trim();
-                }
-
-                //Apply distinctness
-                context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
-                foreach (ISet s in sets)
-                {
-                    context.OutputMultiset.Add(s.Copy());
-                }
-                return context.OutputMultiset;
+                //Trim temporary variables
+                context.InputMultiset.Trim();
             }
+
+            //Apply distinctness
+            context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
+            IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
+            foreach (ISet s in sets)
+            {
+                context.OutputMultiset.Add(s.Copy());
+            }
+            return context.OutputMultiset;
         }
 
         /// <summary>
@@ -103,6 +100,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._pattern.Variables;
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra
@@ -185,7 +192,7 @@ namespace VDS.RDF.Query.Algebra
     public class Reduced 
         : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
+        private readonly ISparqlAlgebra _pattern;
 
         /// <summary>
         /// Creates a new Reduced Modifier
@@ -238,6 +245,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._pattern.Variables.Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra

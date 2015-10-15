@@ -217,7 +217,7 @@ namespace VDS.RDF.Storage
             String retrievalUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                retrievalUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -228,7 +228,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
                 request.Method = "GET";
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -274,7 +274,7 @@ namespace VDS.RDF.Storage
             String lookupUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                lookupUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                lookupUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -284,7 +284,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(lookupUri);
                 request.Method = "HEAD";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
+                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
             }
             else
             {
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
@@ -384,7 +384,7 @@ namespace VDS.RDF.Storage
             String updateUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                updateUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -396,7 +396,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 RdfXmlWriter writer = new RdfXmlWriter();
                 Graph g = new Graph();
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
             String deleteUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                deleteUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -447,7 +447,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 Tools.HttpDebugRequest(request);
 
@@ -500,7 +500,6 @@ namespace VDS.RDF.Storage
             g.BaseUri = origUri;
         }
 
-
         /// <summary>
         /// Loads a Graph from the Protocol Server
         /// </summary>
@@ -513,7 +512,7 @@ namespace VDS.RDF.Storage
             String retrievalUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                retrievalUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -522,7 +521,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
             request.Method = "GET";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             this.LoadGraphAsync(request, handler, callback, state);
         }
@@ -538,7 +537,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
+                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
             }
             else
             {
@@ -547,7 +546,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
             request.Method = "PUT";
             request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             this.SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
         }
@@ -580,7 +579,7 @@ namespace VDS.RDF.Storage
             String updateUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                updateUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -590,7 +589,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = base.GetProxiedRequest(request);
+            request = base.ApplyRequestOptions(request);
 
             RdfXmlWriter writer = new RdfXmlWriter();
 
@@ -618,7 +617,7 @@ namespace VDS.RDF.Storage
             String deleteUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                deleteUri += "?graph=" + HttpUtility.UrlEncode(graphUri);
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
             else
             {
@@ -629,7 +628,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
-                request = base.GetProxiedRequest(request);
+                request = base.ApplyRequestOptions(request);
 
                 this.DeleteGraphAsync(request, true, graphUri, callback, state);
             }
@@ -682,7 +681,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serviceUri)));
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 }

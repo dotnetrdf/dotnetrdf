@@ -631,12 +631,13 @@ namespace VDS.RDF.Writing
                     this.GenerateElement(context, predRef);
 
                     //Add Temporary Namespace to current XML Element
-                    if (prefix != null && uri != null)
-                    {
-                        context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                        context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
-                        context.Writer.WriteEndAttribute();
-                    }
+                    // CORE-431: This is unecessary and causes malformed XML under monotouch
+                    //if (prefix != null && uri != null)
+                    //{
+                    //    context.Writer.WriteStartAttribute("xmlns", prefix, null);
+                    //    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
+                    //    context.Writer.WriteEndAttribute();
+                    //}
 
                     break;
                 default:
@@ -722,7 +723,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && (type != UriRefType.QName || RdfXmlSpecsHelper.IsValidQName(qname)))
             {
                 //Reduced to QName OK
                 uriref = qname;

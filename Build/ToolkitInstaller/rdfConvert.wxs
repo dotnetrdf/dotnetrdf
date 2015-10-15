@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="rdfConvertFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="rdfConvertComponentGroup">
+            <Component Id="rdfConvertComponentGroup_dotNetRDF.dll" Directory="rdfConvertFolder" Guid="{BA1A0FD9-7205-4915-9014-CAF886ECA299}">
+                <File Id="rdfConvertComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\dotNetRDF.dll" />
+            </Component>
+            <Component Id="rdfConvertComponentGroup_HtmlAgilityPack.dll" Directory="rdfConvertFolder" Guid="{8A5E5AEF-9942-4843-94A7-DFCB1D2B0C01}">
+                <File Id="rdfConvertComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\HtmlAgilityPack.dll" />
+            </Component>
+            <Component Id="rdfConvertComponentGroup_Newtonsoft.Json.dll" Directory="rdfConvertFolder" Guid="{00340A02-06A2-4D1E-A98C-629DEF87051A}">
+                <File Id="rdfConvertComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="rdfConvertComponentGroup_rdfConvert.exe" Directory="rdfConvertFolder" Guid="{059FE3AC-A787-4654-9FDE-FD23DB03E965}">
+                <File Id="rdfConvertComponentGroup_rdfConvert.exe" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe" />
+            </Component>
+            <Component Id="rdfConvertComponentGroup_rdfConvert.exe.config" Directory="rdfConvertFolder" Guid="{8B7058F7-D94E-4C12-9FFA-8D5A5BCE584F}">
+                <File Id="rdfConvertComponentGroup_rdfConvert.exe.config" KeyPath="yes" Source="$(var.rdfConvertFiles)\rdfConvert.exe.config" />
+            </Component>
+            <Component Id="rdfConvertComponentGroup_VDS.Common.dll" Directory="rdfConvertFolder" Guid="{37A45EF0-F035-41E8-B51B-E0ABA0A64334}">
+                <File Id="rdfConvertComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfConvertFiles)\VDS.Common.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

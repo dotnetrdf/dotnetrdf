@@ -40,8 +40,8 @@ namespace VDS.RDF.Query.Patterns
     public class PropertyPathPattern
         : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
     {
-        private PatternItem _subj, _obj;
-        private ISparqlPath _path;
+        private readonly PatternItem _subj, _obj;
+        private readonly ISparqlPath _path;
 
         /// <summary>
         /// Creates a new Property Path Pattern
@@ -113,6 +113,16 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        public override IEnumerable<String> FixedVariables
+        {
+            get { return this._vars; }
+        }
+
+        public override IEnumerable<string> FloatingVariables
+        {
+            get { return Enumerable.Empty<String>(); }
+        }
+
         /// <summary>
         /// Evaluates a property path pattern
         /// </summary>
@@ -128,7 +138,7 @@ namespace VDS.RDF.Query.Patterns
                 transformContext.NextID = (int)context["PathTransformID"];
             }
             ISparqlAlgebra algebra = this._path.ToAlgebra(transformContext);
-            context["PathTransformID"] = transformContext.NextID;
+            context["PathTransformID"] = transformContext.NextID + 1;
 
             //Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;

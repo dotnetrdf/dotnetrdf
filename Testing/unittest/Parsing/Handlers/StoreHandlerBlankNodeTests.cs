@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Test]
         public void ParsingStoreHandlerBlankNodesTriG()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesTriGActual));
+            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriGActual);
         }
 
         public void ParsingStoreHandlerBlankNodesTriGActual()
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Test]
         public void ParsingStoreHandlerBlankNodesTriX()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesTriXActual));
+            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriXActual);
         }
 
         public void ParsingStoreHandlerBlankNodesTriXActual()
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Test]
         public void ParsingStoreHandlerBlankNodesNQuads()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerBlankNodesNQuadsActual));
+            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesNQuadsActual);
         }
 
         public void ParsingStoreHandlerBlankNodesNQuadsActual()

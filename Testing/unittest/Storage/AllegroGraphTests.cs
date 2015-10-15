@@ -47,7 +47,9 @@ namespace VDS.RDF.Storage
 
             return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
         }
-#if !NO_SYNC_HTTP // These tests are using the synchronous API
+
+#if !NO_SYNC_HTTP
+        // These tests are using the synchronous API
 
         [SetUp]
         public void Setup()
@@ -79,6 +81,96 @@ namespace VDS.RDF.Storage
         }
 
         [Test]
+        public void StorageAllegroGraphSaveEmptyGraph1()
+        {
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/AllegroGraph/empty");
+
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            agraph.SaveGraph(g);
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, "http://example.org/AllegroGraph/empty");
+            Assert.IsTrue(h.IsEmpty, "Graph should be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+        }
+
+        [Test]
+        public void StorageAllegroGraphSaveEmptyGraph2()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            Uri graphUri = new Uri("http://example.org/AllegroGraph/empty2");
+            Console.WriteLine("Deleting any existing graph");
+            agraph.DeleteGraph(graphUri);
+            Console.WriteLine("Existing graph deleted");
+
+            // First create a non-empty graph
+            Graph g = new Graph();
+            g.BaseUri = graphUri;
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
+            Console.WriteLine("Saving non-empty graph");
+            agraph.SaveGraph(g);
+            Console.WriteLine("Non-empty graph saved");
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+
+            // Now attempt to save an empty graph as well
+            g = new Graph();
+            g.BaseUri = graphUri;
+            Console.WriteLine("Attempting to save empty graph with same name");
+            agraph.SaveGraph(g);
+            Console.WriteLine("Empty graph saved");
+
+            h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsTrue(h.IsEmpty, "Graph should be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+        }
+
+        [Test]
+        public void StorageAllegroGraphSaveEmptyGraph3()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            Uri graphUri = null;
+            Console.WriteLine("Deleting any existing graph");
+            agraph.DeleteGraph(graphUri);
+            Console.WriteLine("Existing graph deleted");
+
+            // First create a non-empty graph
+            Graph g = new Graph();
+            g.BaseUri = graphUri;
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
+            Console.WriteLine("Saving non-empty graph");
+            agraph.SaveGraph(g);
+            Console.WriteLine("Non-empty graph saved");
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+
+            // Now attempt to overwrite with an empty graph
+            g = new Graph();
+            g.BaseUri = graphUri;
+            Console.WriteLine("Attempting to save empty graph with same name");
+            agraph.SaveGraph(g);
+            Console.WriteLine("Empty graph saved");
+
+            h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+
+            // Since saving to default graph does not overwrite the graph we've just retrieved must contain the empty graph as a sub-graph
+            Assert.IsTrue(h.HasSubGraph(g));
+        }
+
+        [Test]
         public void StorageAllegroGraphDeleteTriples()
         {
             Graph g = new Graph();
@@ -107,8 +199,59 @@ namespace VDS.RDF.Storage
             Object results = agraph.Query("ASK WHERE { GRAPH <http://example.org/AllegroGraphTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
             if (results is SparqlResultSet)
             {
-                Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
+                Assert.IsFalse(((SparqlResultSet) results).Result, "There should no longer be any triples about the Ford Fiesta present");
             }
+        }
+
+        [Test]
+        public void StorageAllegroGraphDeleteGraph1()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            Uri graphUri = new Uri("http://example.org/AllegroGraph/delete");
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = graphUri;
+
+            agraph.SaveGraph(g);
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            agraph.DeleteGraph(graphUri);
+            h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsTrue(h.IsEmpty, "Graph should be equal after deletion");
+            Assert.AreNotEqual(g, h, "Graphs should not be equal after deletion");
+        }
+
+        [Test]
+        public void StorageAllegroGraphDeleteGraph2()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            Uri graphUri = null;
+            agraph.DeleteGraph(graphUri);
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = graphUri;
+
+            agraph.SaveGraph(g);
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+
+            Assert.AreEqual(g, h, "Graphs should have been equal after loading");
+
+            agraph.DeleteGraph(graphUri);
+            h = new Graph();
+            agraph.LoadGraph(h, graphUri);
+            Assert.IsTrue(h.IsEmpty, "Graph should be equal after deletion");
+            Assert.AreNotEqual(g, h, "Graphs should not be equal after deletion");
         }
 
         [Test]
@@ -139,7 +282,7 @@ namespace VDS.RDF.Storage
             Object results = agraph.Query(describe);
             if (results is IGraph)
             {
-                TestTools.ShowGraph((IGraph)results);
+                TestTools.ShowGraph((IGraph) results);
             }
             else
             {

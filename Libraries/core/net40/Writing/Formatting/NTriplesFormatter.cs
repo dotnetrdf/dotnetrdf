@@ -25,8 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -36,7 +36,7 @@ namespace VDS.RDF.Writing.Formatting
     public class NTriplesFormatter
         : BaseFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
+        private readonly BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
 
         /// <summary>
         /// Set of characters which must be escaped in Literals
@@ -51,17 +51,64 @@ namespace VDS.RDF.Writing.Formatting
         };
 
         /// <summary>
+        /// Creates a new NTriples formatter
+        /// </summary>
+        /// <param name="syntax">NTriples syntax to output</param>
+        /// <param name="formatName">Format Name</param>
+        public NTriplesFormatter(NTriplesSyntax syntax, String formatName)
+            : base(formatName)
+        {
+            this.Syntax = syntax;
+            switch (this.Syntax)
+            {
+                case NTriplesSyntax.Original:
+                    this._bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
+                    break;
+                default:
+                    this._bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+                    break;
+            }
+        }
+
+                /// <summary>
+        /// Creates a new NTriples Formatter
+        /// </summary>
+        public NTriplesFormatter(NTriplesSyntax syntax)
+            : this(syntax, GetName(syntax)) { }
+
+        /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
         public NTriplesFormatter()
-            : base("NTriples") { }
+            : this(NTriplesSyntax.Original, GetName()) { }
 
         /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
         /// <param name="formatName">Format Name</param>
         protected NTriplesFormatter(String formatName)
-            : base(formatName) { }
+            : this(NTriplesSyntax.Original, formatName) { }
+
+        private static String GetName()
+        {
+            return GetName(NTriplesSyntax.Original);
+        }
+
+        private static string GetName(NTriplesSyntax syntax)
+        {
+            switch (syntax)
+            {
+                case NTriplesSyntax.Original:
+                    return "NTriples";
+                default:
+                    return "NTriples (RDF 1.1)";
+            }
+        }
+
+        /// <summary>
+        /// Gets the NTriples syntax being used
+        /// </summary>
+        public NTriplesSyntax Syntax { get; private set; }
 
         /// <summary>
         /// Formats a URI Node
@@ -87,10 +134,9 @@ namespace VDS.RDF.Writing.Formatting
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
-            String value;
 
             output.Append('"');
-            value = l.Value;
+            string value = l.Value;
             value = this.Escape(value, this._litEscapes);
             output.Append(this.FormatChar(value.ToCharArray()));
             output.Append('"');
@@ -118,16 +164,14 @@ namespace VDS.RDF.Writing.Formatting
         [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
         {
+            if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(c);
             if (c <= 127)
             {
                 //ASCII
                 return c.ToString();
             }
-            else
-            {
-                //Small Unicode Escape required
-                return "\\u" + ((int)c).ToString("X4");
-            }
+            //Small Unicode Escape required
+            return "\\u" + ((int)c).ToString("X4");
         }
 
         /// <summary>
@@ -137,6 +181,8 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns>String</returns>
         public override string FormatChar(char[] cs)
         {
+            if (this.Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
+
             StringBuilder builder = new StringBuilder();
             int start = 0, length = 0;
             for (int i = 0; i < cs.Length; i++)
@@ -159,11 +205,8 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return new string(cs);
             }
-            else
-            {
-                if (length > 0) builder.Append(cs, start, length);
-                return builder.ToString();
-            }
+            if (length > 0) builder.Append(cs, start, length);
+            return builder.ToString();
         }
 
         /// <summary>
@@ -187,5 +230,18 @@ namespace VDS.RDF.Writing.Formatting
             String temp = base.FormatUri(u);
             return this.FormatChar(temp.ToCharArray());
         }
+    }
+
+    /// <summary>
+    /// Formatter for formatting as NTriples according to the RDF 1.1 specification
+    /// </summary>
+    public class NTriples11Formatter
+        : NTriplesFormatter
+    {
+        /// <summary>
+        /// Creaates a new formatter
+        /// </summary>
+        public NTriples11Formatter()
+            : base(NTriplesSyntax.Rdf11) { }
     }
 }

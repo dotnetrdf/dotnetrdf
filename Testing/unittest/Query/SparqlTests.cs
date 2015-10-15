@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,6 +35,7 @@ using NUnit.Framework;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
@@ -123,11 +125,11 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlParameterizedStringShoulNotDecodeEncodedCharactersInUri()
+        public void SparqlParameterizedStringShouldNotDecodeEncodedCharactersInUri()
         {
             SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some%40encoded%2furi"));
-            Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
+            Assert.AreEqual("DESCRIBE <http://example.com/some%40encoded%2furi>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
         [Test]
@@ -142,6 +144,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;
@@ -195,6 +202,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlDbPediaDotIssue()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             try
             {
                 Options.HttpDebugging = true;
@@ -571,12 +583,152 @@ WHERE
         [Test]
         public void SparqlSimpleQuery1()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             TripleStore store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
-            string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
+            const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
             SparqlQueryParser sparqlParser = new SparqlQueryParser();
             SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
             Object results = store.ExecuteQuery(query);
+        }
+
+        private readonly String[] _langSpecCaseQueries = new string[]
+                {
+                    @"SELECT * WHERE { ?s ?p 'example'@en-gb }",
+                    @"SELECT * WHERE { ?s ?p 'example'@en-GB }",
+                    @"SELECT * WHERE { ?s ?p 'example'@EN-GB }",
+                    @"SELECT * WHERE { ?s ?p 'example'@EN-gb }",
+                    @"SELECT * WHERE { ?s ?p 'example'@en-GB }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en-gb')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en-GB')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN-GB')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN-gb')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'en')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANGMATCHES(LANG(?o), 'EN')) }",
+                    @"SELECT * WHERE { ?s ?p ?o . FILTER(LANG(?o) = 'en-gb') }"
+                };
+
+        private void TestLanguageSpecifierCase(IGraph g)
+        {
+            foreach (String query in this._langSpecCaseQueries)
+            {
+                Console.WriteLine("Checking query:\n" + query);
+                SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                Assert.AreEqual(1, results.Count, "Failed to get a result");
+                Console.WriteLine();
+            }
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase1()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "en-gb");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase2()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "en-GB");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase3()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "EN-gb");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlLanguageSpecifierCase4()
+        {
+            IGraph g = new Graph();
+            ILiteralNode lit = g.CreateLiteralNode("example", "EN-GB");
+            INode s = g.CreateBlankNode();
+            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(s, p, lit);
+            TestLanguageSpecifierCase(g);
+        }
+
+        [Test]
+        public void SparqlConstructEmptyWhereCore407()
+        {
+            const String queryStr = @"CONSTRUCT
+{
+<http://s> <http://p> <http://o> .
+}
+WHERE
+{}";
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+            InMemoryDataset dataset = new InMemoryDataset();
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+
+            IGraph g = processor.ProcessQuery(q) as IGraph;
+            Assert.IsNotNull(g);
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            Assert.AreEqual(1, g.Triples.Count, "Expected a single triple");
+        }
+
+        [Test]
+        public void SparqlConstructFromSubqueryWithLimitCore420()
+        {
+            const string queryStr = @"CONSTRUCT
+{
+  ?s ?p ?o .
+} WHERE {
+  ?s ?p ?o .
+  {
+    SELECT ?s WHERE {
+      ?s a <http://xmlns.com/foaf/0.1/Person> .
+    } LIMIT 3
+  }
+}";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
+            IGraph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
+            g.NamespaceMap.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            var rdfType = g.CreateUriNode("rdf:type");
+            var person = g.CreateUriNode("foaf:Person");
+            var name = g.CreateUriNode("foaf:name");
+            var age = g.CreateUriNode("foaf:age");
+            for (int i = 0; i < 3; i++)
+            {
+                // Create 3 statements for each instance of foaf:Person (including rdf:type statement)
+                var s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
+                g.Assert(new Triple(s, rdfType, person));
+                g.Assert(new Triple(s, name, g.CreateLiteralNode("Person " + i)));
+                g.Assert(new Triple(s, age, g.CreateLiteralNode((20 + i).ToString(CultureInfo.InvariantCulture))));
+            }
+
+            //ISparqlQueryProcessor processor = new ExplainQueryProcessor(new InMemoryDataset(g), ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll | ExplanationLevel.OutputToConsoleStdOut);
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            var resultGraph = processor.ProcessQuery(q) as IGraph;
+
+            Assert.That(resultGraph, Is.Not.Null);
+            Assert.That(resultGraph.Triples.Count, Is.EqualTo(9)); // Returns 3 rather than 9
         }
     }
 }

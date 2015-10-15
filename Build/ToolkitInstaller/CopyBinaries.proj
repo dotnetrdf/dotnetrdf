@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <PackageDir Condition="'$(PackageDir)' == ''">tmp</PackageDir>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.dll" Exclude="Dummy" />
+        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.exe" />
+        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.exe.config" />
+        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.dll" />
+        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.exe" />
+        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.exe.config" />
+        <RdfEditorSyntax  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\Syntax\*.xshd" />
+        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.dll" />
+        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.exe" />
+        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.exe.config" />
+        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.dll" />
+        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.exe" />
+        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.exe.config" />
+        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.dll" />
+        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.exe" />
+        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.exe.config" />
+        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.ttl" />
+        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.html" />
+        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.dll" />
+        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.exe" />
+        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.exe.config" />
+        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.dll" />
+        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.exe" />
+        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.exe.config" />
+        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.ico" />
+        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.rq" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe.config" />
+        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.dll" />
+        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.dll" />
+        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe" />
+        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe.config" />
+        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.ico" />
+        <StoreManagerPlugins Include="..\..\Utilities\storemanager\bin\$(Configuration)\plugins\*.txt" />
+        <ReadMe Include="..\..\Acknowledgments.txt;..\..\License.txt;..\..\Utilities\ReadMe.txt;..\..\Utilities\ChangeLog.txt" />
+    </ItemGroup>
+    
+    <Target Name="CleanTmp">
+        <RemoveDir Directories="$(PackageDir)" Condition="Exists('$(PackageDir)')" />
+        <MakeDir Directories="$(PackageDir)" />
+    </Target>
+    
+    <Target Name="Build" DependsOnTargets="CleanTmp">
+        <Copy SourceFiles="@(RdfConvert)" DestinationFolder="$(PackageDir)\rdfConvert" />
+        <Copy SourceFiles="@(RdfEditor)" DestinationFolder="$(PackageDir)\rdfEditor.Wpf" />
+        <Copy SourceFiles="@(RdfEditorSyntax)" DestinationFolder="$(PackageDir)\rdfEditor.Wpf\Syntax\" />
+        <Copy SourceFiles="@(RdfOptStats)" DestinationFolder="$(PackageDir)\rdfOptStats" />
+        <Copy SourceFiles="@(RdfQuery)" DestinationFolder="$(PackageDir)\rdfQuery" />
+        <Copy SourceFiles="@(RdfServer)" DestinationFolder="$(PackageDir)\rdfServer" />
+        <Copy SourceFiles="@(RdfWebDeploy)" DestinationFolder="$(PackageDir)\rdfWebDeploy" />
+        <Copy SourceFiles="@(Soh)" DestinationFolder="$(PackageDir)\soh" />
+        <Copy SourceFiles="@(SparqlGui)" DestinationFolder="$(PackageDir)\sparqlGui" />
+        <Copy SourceFiles="@(StoreManager)" DestinationFolder="$(PackageDir)\storeManager" />
+        <Copy SourceFiles="@(StoreManagerPlugins)" DestinationFolder="$(PackageDir)\storeManager\plugins\" />
+        <Copy SourceFiles="@(ReadMe)" DestinationFolder="$(PackageDir)\info" />
+    </Target>
+    
+</Project>

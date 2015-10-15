@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="rdfQueryFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="rdfQueryComponentGroup">
+            <Component Id="rdfQueryComponentGroup_dotNetRDF.dll" Directory="rdfQueryFolder" Guid="{471BD173-9DB6-4FD8-B0BA-D5B426AD156B}">
+                <File Id="rdfQueryComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\dotNetRDF.dll" />
+            </Component>
+            <Component Id="rdfQueryComponentGroup_HtmlAgilityPack.dll" Directory="rdfQueryFolder" Guid="{F2D67C34-2FE0-48A7-9D1A-7F4930C0FE7E}">
+                <File Id="rdfQueryComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\HtmlAgilityPack.dll" />
+            </Component>
+            <Component Id="rdfQueryComponentGroup_Newtonsoft.Json.dll" Directory="rdfQueryFolder" Guid="{582C340E-BEFA-4F8D-9332-DCCDB1892E70}">
+                <File Id="rdfQueryComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="rdfQueryComponentGroup_rdfQuery.exe" Directory="rdfQueryFolder" Guid="{C42B1D9D-DB6F-484F-915E-51F2DFFBC123}">
+                <File Id="rdfQueryComponentGroup_rdfQuery.exe" KeyPath="yes" Source="$(var.rdfQueryFiles)\rdfQuery.exe" />
+            </Component>
+            <Component Id="rdfQueryComponentGroup_rdfQuery.exe.config" Directory="rdfQueryFolder" Guid="{499B0B58-258A-4F7A-A8D8-A3A802479BF0}">
+                <File Id="rdfQueryComponentGroup_rdfQuery.exe.config" KeyPath="yes" Source="$(var.rdfQueryFiles)\rdfQuery.exe.config" />
+            </Component>
+            <Component Id="rdfQueryComponentGroup_VDS.Common.dll" Directory="rdfQueryFolder" Guid="{B7D8C777-406E-4128-A62E-E3C4E5367EC2}">
+                <File Id="rdfQueryComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\VDS.Common.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

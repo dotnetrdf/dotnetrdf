@@ -24,12 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -38,8 +34,8 @@ namespace VDS.RDF.Query
     public class ExplainProcessorTests
     {
         private ExplainQueryProcessor _processor;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
         private void TestExplainProcessor(String query)
         {
@@ -76,55 +72,55 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        public void SparqlExplainProcessor1()
+        public void SparqlExplainProcessor01()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o }");
         }
 
         [Test]
-        public void SparqlExplainProcessor2()
+        public void SparqlExplainProcessor02()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s a ?type } }");
         }
 
         [Test]
-        public void SparqlExplainProcessor3()
+        public void SparqlExplainProcessor03()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?s a ?type } }");
         }
 
         [Test]
-        public void SparqlExplainProcessor4()
+        public void SparqlExplainProcessor04()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } FILTER(!BOUND(?type)) }");
         }
 
         [Test]
-        public void SparqlExplainProcessor5()
+        public void SparqlExplainProcessor05()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }");
         }
 
         [Test]
-        public void SparqlExplainProcessor6()
+        public void SparqlExplainProcessor06()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s a ?type }");
         }
 
         [Test]
-        public void SparqlExplainProcessor7()
+        public void SparqlExplainProcessor07()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s ?p ?o2 }");
         }
 
         [Test]
-        public void SparqlExplainProcessor8()
+        public void SparqlExplainProcessor08()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?x ?y ?z } }");
         }
 
         [Test]
-        public void SparqlExplainProcessor9()
+        public void SparqlExplainProcessor09()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . BIND(IsLiteral(?o) AS ?hasLiteral) . ?s a ?type }");
         }
@@ -133,6 +129,36 @@ namespace VDS.RDF.Query
         public void SparqlExplainProcessor10()
         {
             this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . ?s a ?type . BIND(IsLiteral(?o) AS ?hasLiteral)}");
+        }
+
+        [Test]
+        public void SparqlExplainProcessor11()
+        {
+            this.TestExplainProcessor("SELECT * WHERE { GRAPH <http://graph> { ?s ?p ?o } }");
+        }
+
+        [Test]
+        public void SparqlExplainProcessor12()
+        {
+            this.TestExplainProcessor("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }");
+        }
+
+        [Test]
+        public void SparqlExplainProcessor13()
+        {
+            this.TestExplainProcessor("SELECT * WHERE { BIND(<http://graph> AS ?g) GRAPH ?g { ?s ?p ?o } }");
+        }
+
+        [Test]
+        public void SparqlExplainProcessor14()
+        {
+            this.TestExplainProcessor("SELECT * FROM <http://default> WHERE { GRAPH ?g { ?s ?p ?o } }");
+        }
+
+        [Test]
+        public void SparqlExplainProcessor15()
+        {
+            this.TestExplainProcessor("SELECT * FROM NAMED <http://graph> WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
     }
 }

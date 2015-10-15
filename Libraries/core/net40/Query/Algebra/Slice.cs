@@ -34,11 +34,12 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Slice Operation in the SPARQL Algebra
     /// </summary>
-    public class Slice : IUnaryOperator
+    public class Slice
+        : IUnaryOperator
     {
-        private ISparqlAlgebra _pattern;
-        private int _limit = -1, _offset = 0;
-        private bool _detectSettings = true;
+        private readonly ISparqlAlgebra _pattern;
+        private readonly int _limit = -1, _offset = 0;
+        private readonly bool _detectSettings = true;
 
         /// <summary>
         /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query
@@ -105,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
 
                 //Firstly evaluate the inner algebra
                 context.InputMultiset = context.Evaluate(this._pattern);
-
+                context.InputMultiset.VirtualCount = context.InputMultiset.Count;
                 //Then apply the offset
                 if (offset > 0)
                 {
@@ -154,6 +155,16 @@ namespace VDS.RDF.Query.Algebra
                 return this._pattern.Variables.Distinct();
             }
         }
+
+        /// <summary>
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FloatingVariables { get { return this._pattern.FloatingVariables; } }
+
+        /// <summary>
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// </summary>
+        public IEnumerable<String> FixedVariables { get { return this._pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Limit in use (-1 indicates no Limit)

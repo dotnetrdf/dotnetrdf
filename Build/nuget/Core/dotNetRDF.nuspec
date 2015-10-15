@@ -11,51 +11,39 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</description>
     <tags>RDF Semantic Web SPARQL RDF/XML Turtle Notation3</tags>
-    <dependencies>
-      <!-- These dependencies apply to all builds -->
-      <group>
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-      </group>
-
-      <!-- These only apply to non-portable builds -->
+    <dependencies>       
       <group targetFramework="net35-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+        <dependency id="VDS.Common" version="[1.6.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
-      <group targetFramework="sl4">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
-      </group>
-      <group targetFramework="sl4-wp7">
-        <dependency id="Newtonsoft.Json" version="5.0.6" />
-        <dependency id="VDS.Common" version="[1.2.0]" />
-        <dependency id="HtmlAgilityPack" version="1.4.6" />
+      <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
+        <dependency id="VDS.Common" version="[1.6.0]" />
+        <dependency id="Newtonsoft.Json" version="6.0.8" />
       </group>
     </dependencies>
     <releaseNotes>
-     - Include Portable Class Library builds
-     - Various bug fixes
-     - Improved performance of NTriples serializer for non-ASCII data
-     - Upgraded Json.Net dependency to 5.0.6
-     - Split source and PDBs into separate symbols package
+- Performance fixes for query evaluation over virtual graphs (CORE-449, CORE-450, CORE-451, CORE-452)
+- BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
+- AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
+- SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
+- Fixes for Stardog 3.x support (CORE-443)
+- Improvements to multi-threaded performance when using URI Interning
     </releaseNotes>
   </metadata>
 </package>

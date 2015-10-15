@@ -11,11 +11,31 @@
     <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile2</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -26,6 +46,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +56,8 @@
     <DefineConstants>TRACE;PORTABLE, SILVERLIGHT, WINDOWS_PHONE, NO_WEB, NO_ASP, NO_DATA, NO_COMPRESSION, NO_HTMLAGILITYPACK, NO_XSL, NO_SYSTEMCONFIGURATION, NO_PROXY, NO_XMLDOM, NO_RWLOCK, NO_STOPWATCH, NO_FILE, NO_SYNC_HTTP, NO_PROCESS, NO_NORM, NO_URICACHE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <WarningsAsErrors>3245,3644</WarningsAsErrors>
+    <DocumentationFile>bin\Release\dotNetRDF.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Compatability\CryptoConfig.cs" />
@@ -1947,9 +1971,6 @@
     <Compile Include="..\net40\Storage\BaseHttpConnector.cs">
       <Link>Storage\BaseHttpConnector.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Storage\DydraConnector.cs">
-      <Link>Storage\DydraConnector.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Storage\IOBehaviour.cs">
       <Link>Storage\IOBehaviour.cs</Link>
     </Compile>
@@ -2366,7 +2387,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.5.0.6\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Portable.Runtime">
       <HintPath>lib\Portable.Runtime.dll</HintPath>
@@ -2375,7 +2396,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="VDS.Common">
-      <HintPath>..\..\..\packages\VDS.Common.1.2.0\lib\portable-win+net40+sl40+wp\VDS.Common.dll</HintPath>
+      <HintPath>..\..\..\packages\VDS.Common.1.6.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -2386,7 +2407,6 @@
       <Link>Query\Algebra\SetDistinctnessComparer.cs</Link>
     </Compile>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\BindAssignmentVariableNamePart.cs">
       <Link>Query\Builder\BindAssignmentVariableNamePart.cs</Link>
@@ -2515,6 +2535,26 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs">
+      <Link>Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

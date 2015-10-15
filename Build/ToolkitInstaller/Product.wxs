@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="dotNetRDF Toolkit"
+           Language="1033"
+           Version="$(var.BuildNumber)"
+           Manufacturer="dotNetRDF Project"
+           UpgradeCode="31bb847a-80a5-40e0-b5b1-ce8260127175">
+
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!-- Available Features for Installation -->
+    <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1" TypicalDefault="install" InstallDefault="local"
+             Display="expand">
+      <Feature Id="InfoFeature" Title="Information" Display="hidden" Level="1" TypicalDefault="install"
+               InstallDefault="local">
+        <ComponentGroupRef Id="infoComponent" />
+      </Feature>
+      <Feature Id="GuiToolsFeature" Title="GUI Tools" Level="1" TypicalDefault="install" InstallDefault="followParent"
+               Display="expand">
+        <Feature Id="rdfEditorFeature" Title="rdfEditor" Level="1" TypicalDefault="install"
+                 InstallDefault="followParent"
+                 Description="A multi-tabbed notepad style editor with syntax highlighting and validation for most RDF and SPARQL formats">
+          <ComponentGroupRef Id="rdfEditorComponent" />
+          <Component Id="rdfEditorShortcutComponent" Directory="rdfEditorShortcutsFolder"
+                     Guid="{B8B43441-EFD1-4150-A05B-132FB7A2F224}">
+            <Shortcut Id="rdfEditorShortcut"
+                      Name="rdfEditor"
+                      Description="A Notepad style editor for RDF data formats"
+                      Target="[#rdfEditorComponentGroup_rdfEditor.exe]"
+                      WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+            <RemoveFolder Id="rdfEditorShortcutUninstall" Directory="rdfEditorShortcutsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\dotNetRDF\rdfEditor" Name="installed" Type="integer" Value="1"
+                           KeyPath="yes" />
+          </Component>
+        </Feature>
+        <Feature Id="rdfServerGuiFeature" Title="rdfServer" Level="1000" TypicalDefault="advertise"
+                 InstallDefault="followParent"
+                 Description="A simple GUI and command line for running a basic SPARQL server">
+          <ComponentGroupRef Id="rdfServerComponent" Primary="yes" />
+          <Component Id="rdfServerShortcutComponent" Directory="rdfServerShortcutsFolder"
+                     Guid="{8385691D-9BAF-46E7-9163-F7BD596F78E1}">
+            <Shortcut Id="rdfServerShortcut"
+                      Name="rdfServer"
+                      Description="A lightweight SPARQL Server for simple testing and experimentation"
+                      Target="[#rdfServerComponentGroup_rdfServerGUI.exe]"
+                      WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+            <RemoveFolder Id="rdfServerShortcutUninstall" Directory="rdfServerShortcutsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\dotNetRDF\rdfServer" Name="installed" Type="integer" Value="1"
+                           KeyPath="yes" />
+          </Component>
+        </Feature>
+        <Feature Id="sparqlGuiFeature" Title="Sparql GUI" Level="1" TypicalDefault="install"
+                 InstallDefault="followParent"
+                 Description="A simple GUI for experimenting with dotNetRDF's SPARQL query engine">
+          <ComponentGroupRef Id="sparqlGuiComponent" />
+          <Component Id="sparqlGuiShortcutComponent" Directory="sparqlGuiShortcutsFolder"
+                     Guid="{7572DAF2-DEAE-45F4-BEA3-43C6A456851C}">
+            <Shortcut Id="sparqlGuiShortcut"
+                      Name="SPARQL GUI"
+                      Description="A simple GUI for experimenting with SPARQL queries"
+                      Target="[#sparqlGuiComponentGroup_SparqlGUI.exe]"
+                      WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+            <RemoveFolder Id="sparqlGuiShortcutUninstall" Directory="sparqlGuiShortcutsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\dotNetRDF\SparqlGui" Name="installed" Type="integer" Value="1"
+                           KeyPath="yes" />
+          </Component>
+        </Feature>
+        <Feature Id="storeManagerFeature" Title="Store Manager" Level="1" TypicalDefault="install"
+                 InstallDefault="followParent"
+                 Description="A powerful GUI tool for interacting with and managing various kinds of RDF store">
+          <ComponentGroupRef Id="storeManagerComponent" />
+          <Component Id="storeManagerShortcutComponent" Directory="storeManagerShortcutsFolder"
+                     Guid="{E2A80ACE-6C9B-4E9F-BA29-C6BBA1F21800}">
+            <Shortcut Id="storeManagerShortcut"
+                      Name="Store Manager"
+                      Description="Application for connecting to and managing a variety of different RDF stores"
+                      Target="[#storeManagerComponentGroup_StoreManager.exe]"
+                      WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+            <RemoveFolder Id="storeManagerShortcutUninstall" Directory="storeManagerShortcutsFolder" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\dotNetRDF\StoreManager" Name="installed" Type="integer" Value="1"
+                           KeyPath="yes" />
+          </Component>
+        </Feature>
+      </Feature>
+      <Feature Id="CliToolsFeature" Title="Command Line Tools" Level="1" TypicalDefault="install"
+               InstallDefault="local" Display="expand">
+        <Feature Id="rdfConvertFeature" Title="rdfConvert" Level="1" TypicalDefault="install"
+                 InstallDefault="followParent" Description="A command line tool for converting between RDF formats">
+          <ComponentGroupRef Id="rdfConvertComponent" />
+        </Feature>
+        <Feature Id="rdfOptStatsFeature" Title="rdfOptStats" Level="1000" TypicalDefault="advertise"
+                 InstallDefault="followParent"
+                 Description="A command line tool for generating data statistics for use with dotNetRDF's statistic based optimizer">
+          <ComponentGroupRef Id="rdfOptStatsComponent" />
+        </Feature>
+        <Feature Id="rdfQueryFeature" Title="rdfQuery" Level="1" TypicalDefault="install" InstallDefault="followParent"
+                 Description="A command line tool for experimenting with SPARQL queries">
+          <ComponentGroupRef Id="rdfQueryComponent" />
+        </Feature>
+        <Feature Id="rdfServerCliFeature" Title="rdfServer" Level="1000" TypicalDefault="advertise"
+                 InstallDefault="followParent" Description="A command line tool for running a basic SPARQL server">
+          <ComponentGroupRef Id="rdfServerComponent" Primary="no" />
+        </Feature>
+        <Feature Id="rdfWebDeployFeature" Title="rdfWebDeploy" Level="1000" TypicalDefault="advertise"
+                 InstallDefault="followParent"
+                 Description="A command line tool that helps deploying dotNetRDF's ASP.Net support into your web applications">
+          <ComponentGroupRef Id="rdfWebDeployComponent" />
+        </Feature>
+        <Feature Id="sohFeature" Title="soh" Level="1" TypicalDefault="install" InstallDefault="followParent"
+                 Description="A command line tool for interacting with remote SPARQL servers that support the SPARQL Graph Store Protocol">
+          <ComponentGroupRef Id="sohComponent" />
+        </Feature>
+      </Feature>
+      <Component Id="shorcutsComponent" Directory="ShortcutsFolder" Guid="{C29B8F02-C463-4A4E-8E2A-E176629E6B19}">
+        <RemoveFolder Id="shortcutsComponentUninstall" Directory="ShortcutsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\dotNetRDF\Toolkit" Name="installed" Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </Feature>
+
+    <WixVariable Id='WixUILicenseRtf' Value='EULA.rtf' />
+    <Property Id='WIXUI_INSTALLDIR' Value='INSTALLFOLDER' />
+
+    <!-- TODO Customize per http://wixtoolset.org/documentation/manual/v3/wixui/wixui_customizations.html to include InstallDirDiag and InstallScopeDiag -->
+    <UIRef Id="WixUI_Mondo" />
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <!-- Directory Layout within Installation Folder -->
+        <Directory Id="DotNetRdfProjectFolder" Name="dotNetRDF Project">
+          <Directory Id="INSTALLFOLDER" Name="dotNetRDF Toolkit">
+            <Directory Id="rdfConvertFolder" Name="rdfConvert" />
+            <Directory Id="rdfEditorFolder" Name="rdfEditor.Wpf" />
+            <Directory Id="rdfOptStatsFolder" Name="rdfOptStats" />
+            <Directory Id="rdfQueryFolder" Name="rdfQuery" />
+            <Directory Id="rdfServerFolder" Name="rdfServer" />
+            <Directory Id="rdfWebDeployFolder" Name="rdfWebDeploy" />
+            <Directory Id="sohFolder" Name="sohFolder" />
+            <Directory Id="sparqlGuiFolder" Name="sparqlGuiFolder" />
+            <Directory Id="storeManagerFolder" Name="storeManager" />
+          </Directory>
+          <!-- Start Menu Directory Structure -->
+          <Directory Id="ProgramMenuFolder">
+            <Directory Id="ShortcutsFolder" Name="dotNetRDF Toolkit">
+              <Directory Id="rdfEditorShortcutsFolder" Name="rdfEditor" />
+              <Directory Id="rdfServerShortcutsFolder" Name="rdfServer" />
+              <Directory Id="sparqlGuiShortcutsFolder" Name="Sparql GUI" />
+              <Directory Id="storeManagerShortcutsFolder" Name="Store Manager" />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <!-- Mapping of components to Installation Folders -->
+  <Fragment>
+    <ComponentGroup Id="infoComponent" Directory="INSTALLFOLDER">
+      <ComponentGroupRef Id="infoComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfConvertComponent" Directory="rdfConvertFolder">
+      <ComponentGroupRef Id="rdfConvertComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfEditorComponent" Directory="rdfEditorFolder">
+      <ComponentGroupRef Id="rdfEditorComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfOptStatsComponent" Directory="rdfOptStatsFolder">
+      <ComponentGroupRef Id="rdfOptStatsComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfQueryComponent" Directory="rdfQueryFolder">
+      <ComponentGroupRef Id="rdfQueryComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfServerComponent" Directory="rdfServerFolder">
+      <ComponentGroupRef Id="rdfServerComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="rdfWebDeployComponent" Directory="rdfWebDeployFolder">
+      <ComponentGroupRef Id="rdfWebDeployComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="sohComponent" Directory="sohFolder">
+      <ComponentGroupRef Id="sohComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="sparqlGuiComponent" Directory="sparqlGuiFolder">
+      <ComponentGroupRef Id="sparqlGuiComponentGroup" />
+    </ComponentGroup>
+    <ComponentGroup Id="storeManagerComponent" Directory="storeManagerFolder">
+      <ComponentGroupRef Id="storeManagerComponentGroup" />
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- Mapping of Components to Start Menu Shortcuts -->
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="{B8B43441-EFD1-4150-A05B-132FB7A2F224}">
+
+
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

@@ -15,6 +15,7 @@ dotNetRDF*.zip
 _UpgradeReport*
 UpgradeLog*
 log-file.txt
+Backup/
 
 
 # Files not to version control
@@ -26,6 +27,7 @@ found*.txt
 _ReSharper*/
 *.lnk
 *.PublicKey
+Build\ToolkitInstaller\CoreFiles.wxs
 
 # NuGet Package Management Stuff
 .nuget/*.exe

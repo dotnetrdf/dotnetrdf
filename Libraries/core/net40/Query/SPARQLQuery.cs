@@ -590,7 +590,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Query Execution Timeout in Milliseconds
+        /// Gets/Sets the Query Execution Timeout in milliseconds
         /// </summary>
         /// <remarks>
         /// <para>
@@ -638,14 +638,11 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._executionTime == null)
+                if (!this._executionTime.HasValue)
                 {
                     throw new InvalidOperationException("Cannot inspect the Query Time as the Query has not yet been processed");
                 }
-                else
-                {
-                    return this._executionTime;
-                }
+                return this._executionTime;
             }
             set
             {
@@ -718,6 +715,18 @@ namespace VDS.RDF.Query
             }
         }
 
+        private int _virtualCount = -1;
+        public int VirtualCount
+        {
+            get
+            {
+                return this._virtualCount;
+            }
+            internal set
+            {
+                this._virtualCount = value;
+            }
+        }
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)
@@ -1265,6 +1274,9 @@ namespace VDS.RDF.Query
                         algebra = new GroupBy(algebra, this._groupBy, this._vars.Where(v => v.IsAggregate));
                     }
 
+                    //Add HAVING clause immediately after the grouping
+                    if (this._having != null) algebra = new Having(algebra, this._having);
+
                     //After grouping we do projection
                     //We introduce an Extend for each Project Expression
                     foreach (SparqlVariable var in this._vars)
@@ -1274,9 +1286,6 @@ namespace VDS.RDF.Query
                             algebra = new Extend(algebra, var.Projection, var.Name);
                         }
                     }
-
-                    //Add HAVING clause after the projection
-                    if (this._having != null) algebra = new Having(algebra, this._having);
 
                     //We can then Order our results
                     //We do ordering before we do Select but after Project so we can order by any of

@@ -72,7 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Utilities\storemanager\CrossThreadForm.cs">
+    <Compile Include="..\..\Utilities\storemanager\Forms\CrossThreadForm.cs">
       <Link>CrossThreadForm.cs</Link>
       <SubType>Form</SubType>
     </Compile>
@@ -175,6 +175,14 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -194,7 +202,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -203,3 +210,4 @@
   </Target>
   -->
 </Project>
+

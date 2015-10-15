@@ -73,41 +73,62 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="ExportResultSetOptionsForm.cs">
+    <Compile Include="Controls\DnrRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FormatterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FormatterControl.Designer.cs">
+      <DependentUpon>FormatterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\QueryResultsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\QueryResultsControl.Designer.cs">
+      <DependentUpon>QueryResultsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ExportResultSetOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExportResultSetOptionsForm.Designer.cs">
+    <Compile Include="Forms\ExportResultSetOptionsForm.Designer.cs">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ResultSetViewerForm.cs">
+    <Compile Include="Controls\GraphViewerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GraphViewerControl.designer.cs">
+      <DependentUpon>GraphViewerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ResultSetViewerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ResultSetViewerControl.designer.cs">
+      <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ResultSetViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ResultSetViewerForm.Designer.cs">
+    <Compile Include="Forms\ResultSetViewerForm.Designer.cs">
       <DependentUpon>ResultSetViewerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Events.cs" />
-    <Compile Include="ExportGraphOptionsForm.cs">
+    <Compile Include="Forms\ExportGraphOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExportGraphOptionsForm.Designer.cs">
+    <Compile Include="Forms\ExportGraphOptionsForm.Designer.cs">
       <DependentUpon>ExportGraphOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenConnectionForm.cs">
+    <Compile Include="Forms\VisualiseGraphForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="OpenConnectionForm.Designer.cs">
-      <DependentUpon>OpenConnectionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VisualiseGraphForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="VisualiseGraphForm.Designer.cs">
+    <Compile Include="Forms\VisualiseGraphForm.Designer.cs">
       <DependentUpon>VisualiseGraphForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GraphViewerForm.cs">
+    <Compile Include="Forms\GraphViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GraphViewerForm.Designer.cs">
+    <Compile Include="Forms\GraphViewerForm.Designer.cs">
       <DependentUpon>GraphViewerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,27 +141,35 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ExportResultSetOptionsForm.resx">
+    <EmbeddedResource Include="Controls\FormatterControl.resx">
+      <DependentUpon>FormatterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\QueryResultsControl.resx">
+      <DependentUpon>QueryResultsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportResultSetOptionsForm.resx">
       <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ResultSetViewerForm.resx">
+    <EmbeddedResource Include="Controls\GraphViewerControl.resx">
+      <DependentUpon>GraphViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ResultSetViewerControl.resx">
+      <DependentUpon>ResultSetViewerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ResultSetViewerForm.resx">
       <DependentUpon>ResultSetViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExportGraphOptionsForm.resx">
+    <EmbeddedResource Include="Forms\ExportGraphOptionsForm.resx">
       <DependentUpon>ExportGraphOptionsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="OpenConnectionForm.resx">
-      <DependentUpon>OpenConnectionForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="VisualiseGraphForm.resx">
+    <EmbeddedResource Include="Forms\VisualiseGraphForm.resx">
       <DependentUpon>VisualiseGraphForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GraphViewerForm.resx">
+    <EmbeddedResource Include="Forms\GraphViewerForm.resx">
       <DependentUpon>GraphViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -163,7 +192,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

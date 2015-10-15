@@ -428,6 +428,25 @@ namespace VDS.RDF.Storage
             return output.ToString();
         }
 
+
+        /// <summary>
+        /// Gets the Content Type used to save data to the store i.e. the MIME type to use for the <strong>Content-Type</strong> header
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetSaveContentType()
+        {
+            return MimeTypesHelper.NTriples[0];
+        }
+
+        /// <summary>
+        /// Creates an RDF Writer to use for saving data to the store
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IRdfWriter CreateRdfWriter()
+        {
+            return new NTriplesWriter();
+        }
+
 #if !NO_SYNC_HTTP
 
         /// <summary>
@@ -483,14 +502,11 @@ namespace VDS.RDF.Storage
                 String requestUri = this._repositoriesPrefix + this._store + "/statements";
                 if (!graphUri.Equals(String.Empty))
                 {
-                    //if (this._fullContextEncoding)
-                    //{
                     serviceParams.Add("context", "<" + graphUri + ">");
-                    //}
-                    //else
-                    //{
-                    //    serviceParams.Add("context", graphUri);
-                    //}
+                }
+                else
+                {
+                    serviceParams.Add("context", "null");
                 }
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
@@ -543,9 +559,9 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                 }
 
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-                ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
+                request.ContentType = GetSaveContentType();
+                IRdfWriter rdfWriter = CreateRdfWriter();
+                rdfWriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 Tools.HttpDebugRequest(request);
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
@@ -585,8 +601,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 HttpWebResponse response;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
-                NTriplesWriter ntwriter = new NTriplesWriter();
-                //RdfXmlWriter writer = new RdfXmlWriter();
+                IRdfWriter rdfWriter = CreateRdfWriter();
 
                 if (!graphUri.Equals(String.Empty))
                 {
@@ -636,10 +651,8 @@ namespace VDS.RDF.Storage
                         request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                         Graph h = new Graph();
                         h.Assert(additions);
-                        request.ContentType = MimeTypesHelper.NTriples[0];
-                        ntwriter.Save(h, new StreamWriter(request.GetRequestStream()));
-                        //request.ContentType = MimeTypesHelper.RdfXml[0];
-                        //writer.Save(h, new StreamWriter(request.GetRequestStream()));
+                        request.ContentType = GetSaveContentType();
+                        rdfWriter.Save(h, new StreamWriter(request.GetRequestStream()));
 
                         Tools.HttpDebugRequest(request);
 
@@ -675,10 +688,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
                 HttpWebResponse response;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
-                NTriplesWriter ntwriter = new NTriplesWriter();
 
                 if (!graphUri.Equals(String.Empty))
                 {
@@ -689,7 +700,7 @@ namespace VDS.RDF.Storage
                     serviceParams.Add("context", "null");
                 }
 
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
                 
                 Tools.HttpDebugRequest(request);
                 using (response = (HttpWebResponse)request.GetResponse())
@@ -781,8 +792,8 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
             }
 
-            request.ContentType = MimeTypesHelper.NTriples[0];
-            NTriplesWriter ntwriter = new NTriplesWriter();
+            request.ContentType = GetSaveContentType();
+            IRdfWriter ntwriter = CreateRdfWriter();
 
             this.SaveGraphAsync(request, ntwriter, g, callback, state);
         }
@@ -822,7 +833,7 @@ namespace VDS.RDF.Storage
         {
             HttpWebRequest request;
             Dictionary<String, String> serviceParams;
-            NTriplesWriter ntwriter = new NTriplesWriter();
+            IRdfWriter rdfWriter = CreateRdfWriter();
 
             if (removals != null)
             {
@@ -884,10 +895,10 @@ namespace VDS.RDF.Storage
                                         request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                                         Graph h = new Graph();
                                         h.Assert(additions);
-                                        request.ContentType = MimeTypesHelper.NTriples[0];
+                                        request.ContentType = GetSaveContentType();
 
                                         //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
-                                        this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                                        this.UpdateGraphAsync(request, rdfWriter, graphUri.ToSafeUri(), additions, callback, state);
 
                                         //Don't want to make the callback until the adds have finished
                                         //So we must return here as otherwise we will make the callback prematurely
@@ -924,10 +935,10 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                     Graph h = new Graph();
                     h.Assert(additions);
-                    request.ContentType = MimeTypesHelper.NTriples[0];
+                    request.ContentType = GetSaveContentType();
 
                     //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
-                    this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                    this.UpdateGraphAsync(request, rdfWriter, graphUri.ToSafeUri(), additions, callback, state);
 
                     //Don't want to make the callback until the adds have finished
                     //So we must return here as otherwise we will make the callback prematurely
@@ -1190,7 +1201,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            return base.GetProxiedRequest(request);
+            return base.ApplyRequestOptions(request);
         }
 
         /// <summary>
@@ -1238,7 +1249,7 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
 
-            base.SerializeProxyConfig(manager, context);
+            base.SerializeStandardConfig(manager, context);
         }
     }
 

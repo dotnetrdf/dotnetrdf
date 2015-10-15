@@ -40,6 +40,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlServiceUsingDBPedia()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } LIMIT 10";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
@@ -59,6 +64,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlServiceUsingDBPediaAndBindings()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing))
+            {
+                Assert.Inconclusive("Test Config marks Remote Parsing as unavailable, test cannot be run");
+            }
+
             String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);

@@ -33,7 +33,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TNodeID">Node ID Type</typeparam>
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public interface IVirtualNode<TNodeID, TGraphID> 
-        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>
+        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>,
+        IVirtualIdComparable
     {
         /// <summary>
         /// Gets the Node ID
@@ -66,5 +67,39 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             get;
         }
+    }
+
+    /// <summary>
+    /// Interface for comparing nodes on their VirtualID property
+    /// </summary>
+    public interface IVirtualIdComparable
+    {
+        /// <summary>
+        /// Attempt to compare the VirtualID of this node with the VirtualID of the other node
+        /// </summary>
+        /// <param name="other">The other node to try to compare against</param>
+        /// <param name="comparisonResult">The result of the comparison if it could be performed</param>
+        /// <returns>True if a comparison could be performed, false otherwise.</returns>
+        bool TryCompareVirtualId(INode other, out int comparisonResult);
+    }
+
+    /// <summary>
+    /// Interface for nodes that know for themseves how to create a copy of themselves to a different graph
+    /// </summary>
+    /// <remarks>
+    /// Especially virtual nodes need to copy themselves during query algebra processing,
+    /// because the standard copy tools might destroy their virtual state by duplicating it's virtualized
+    /// values. In consequence all indices in the various triple stores fail to match such value-copied nodes
+    /// </remarks> 
+    public interface ICanCopy 
+    {
+        // Note: could someone please check, if every node should know how to copy itself.
+
+        /// <summary>
+        /// Copies the Node into another Graph, currently only used by virtual nodes
+        /// </summary>
+        /// <param name="target">Target Graph</param>
+        /// <returns></returns>
+        INode CopyNode(IGraph target);
     }
 }

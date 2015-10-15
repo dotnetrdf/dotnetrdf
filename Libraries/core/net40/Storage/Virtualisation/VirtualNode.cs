@@ -51,7 +51,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// </para>
     /// </remarks>
     public abstract class BaseVirtualNode<TNodeID, TGraphID> 
-        : IVirtualNode<TNodeID, TGraphID>, IEquatable<BaseVirtualNode<TNodeID, TGraphID>>, IComparable<BaseVirtualNode<TNodeID, TGraphID>>
+        : IVirtualNode<TNodeID, TGraphID>, IEquatable<BaseVirtualNode<TNodeID, TGraphID>>, IComparable<BaseVirtualNode<TNodeID, TGraphID>>,
+        ICanCopy
     {
         private IGraph _g;
         private Uri _graphUri;
@@ -636,12 +637,14 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #endregion
 
+        #region ICopyNodes abstract Member
         /// <summary>
         /// Copies the Virtual Node into another Graph
         /// </summary>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
         public abstract INode CopyNode(IGraph target);
+        #endregion
 
         /// <summary>
         /// Gets the Hash Code of the Virtual Node
@@ -650,6 +653,35 @@ namespace VDS.RDF.Storage.Virtualisation
         public sealed override int GetHashCode()
         {
             return this._id.GetHashCode();
+        }
+
+        /// <summary>
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// </summary>
+        /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
+        /// <returns>The comparison result.</returns>
+        public abstract int CompareVirtualId(TNodeID other);
+
+        public bool TryCompareVirtualId(INode other, out int comparisonResult)
+        {
+            if (other is IVirtualNode<TNodeID, TGraphID>)
+            {
+                var virt = other as IVirtualNode<TNodeID, TGraphID>;
+                if (ReferenceEquals(this._provider, virt.Provider))
+                {
+                    if (this._id.Equals(virt.VirtualID))
+                    {
+                        comparisonResult = 0;
+                    }
+                    else
+                    {
+                        comparisonResult = CompareVirtualId(virt.VirtualID);
+                    }
+                    return true;
+                }
+            }
+            comparisonResult = 0;
+            return false;
         }
 
         /// <summary>

@@ -66,10 +66,27 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             {
                 return new FourStoreConnector(this.Server, this.EnableUpdates, this.GetProxy());   
             }
-            else
-            {
-                return new FourStoreConnector(this.Server, this.EnableUpdates);
-            }
+            return new FourStoreConnector(this.Server, this.EnableUpdates);
+        }
+
+        /// <summary>
+        /// Makes a copy of the current connection definition
+        /// </summary>
+        /// <returns>Copy of the connection definition</returns>
+        public override IConnectionDefinition Copy()
+        {
+            FourStoreConnectionDefinition definition = new FourStoreConnectionDefinition();
+            definition.Server = this.Server;
+            definition.EnableUpdates = this.EnableUpdates;
+            definition.ProxyPassword = this.ProxyPassword;
+            definition.ProxyUsername = this.ProxyUsername;
+            definition.ProxyServer = this.ProxyServer;
+            return definition;
+        }
+
+        public override string ToString()
+        {
+            return "[4store] " + this.Server.ToSafeString();
         }
     }
 }

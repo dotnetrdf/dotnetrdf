@@ -24,6 +24,8 @@
       <Word>a</Word>
     </Keywords>
     
+    <!-- TODO Reference Turtle 1.1 productions once implemented -->
+    
     <Import ruleSet="Turtle/Literals" />
 
     <Import ruleSet="SparqlQuery10/Literals" />

@@ -1,4 +1,4 @@
-Acknowledgements
+﻿Acknowledgements
 ================
 
 Dependencies
@@ -44,7 +44,7 @@ improvements in the code:
   could use to test my TriX parser
 - Marek Safar from the Mono project for fixing the bug in gmcs I identified which meant I couldn't compile
   a Mono build of dotNetRDF
-- Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
+- Andy Seaborne, Steve Harris and Mike Grove for excellent answers to various SPARQL and ARQ function library related questions 
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - Paul Hermans for various suggestions related to the improvement of the Toolkit
@@ -99,3 +99,11 @@ improvements in the code:
  - Dimitri Kourkoulis
  - George Abraham
  - Dennis Ludl
+ - Maximillien Bronnimann
+ - Tony Lootens
+ - Austin Barton
+ - Eugen F
+ - Dimitrii Rassokhin
+ - Сергей Попов
+ - Sergei Popov
+ - Mark D Wood

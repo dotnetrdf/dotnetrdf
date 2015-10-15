@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  
+  <Import Project="$(WixTargetsPath)" />
+
+  <Target Name="Build">
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="Info.wxs"
+      Directory="$(PackageDir)\info"
+      ComponentGroupName="infoComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="INSTALLFOLDER"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.infoFiles" />
+    
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfConvert.wxs"
+      Directory="$(PackageDir)\rdfConvert"
+      ComponentGroupName="rdfConvertComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfConvertFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfConvertFiles" />
+    
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfEditor.wxs"
+      Directory="$(PackageDir)\rdfEditor.Wpf"
+      ComponentGroupName="rdfEditorComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfEditorFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfEditorFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfOptStats.wxs"
+      Directory="$(PackageDir)\rdfOptStats"
+      ComponentGroupName="rdfOptStatsComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfOptStatsFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfOptStatsFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfQuery.wxs"
+      Directory="$(PackageDir)\rdfQuery"
+      ComponentGroupName="rdfQueryComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfQueryFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfQueryFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfServer.wxs"
+      Directory="$(PackageDir)\rdfServer"
+      ComponentGroupName="rdfServerComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfServerFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfServerFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="rdfWebDeploy.wxs"
+      Directory="$(PackageDir)\rdfWebDeploy"
+      ComponentGroupName="rdfWebDeployComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="rdfWebDeployFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.rdfWebDeployFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="soh.wxs"
+      Directory="$(PackageDir)\soh"
+      ComponentGroupName="sohComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="sohFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.sohFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="sparqlGui.wxs"
+      Directory="$(PackageDir)\sparqlGui"
+      ComponentGroupName="sparqlGuiComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="sparqlGuiFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.sparqlGuiFiles" />
+
+    <HeatDirectory
+      ToolPath="$(WixToolPath)"
+      OutputFile="storeManager.wxs"
+      Directory="$(PackageDir)\storeManager"
+      ComponentGroupName="storeManagerComponentGroup"
+      GenerateGuidsNow="true"
+      SuppressCom="true"
+      SuppressRegistry="true"
+      SuppressRootDirectory="true"
+      SuppressUniqueIds="true"
+      DirectoryRefId="storeManagerFolder"
+      Transforms="StableIds.xsl"
+      PreprocessorVariable="var.storeManagerFiles" />
+  </Target>
+</Project>

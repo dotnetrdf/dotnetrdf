@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             List<List<int>> nulls = new List<List<int>>();
             foreach (System.String var in this._joinVars)
             {
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 

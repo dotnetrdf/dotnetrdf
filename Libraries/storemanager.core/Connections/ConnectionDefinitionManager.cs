@@ -149,12 +149,23 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         /// <param name="t">Type</param>
         /// <returns></returns>
-        public static IConnectionDefinition GetDefinition(Type t)
+        public static IConnectionDefinition GetDefinitionByTargetType(Type t)
         {
             if (!_init) Init();
 
             return _defs.FirstOrDefault(d => d.Type.Equals(t));
+        }
 
+        /// <summary>
+        /// Gets a connection definition 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static IConnectionDefinition GetDefinitionByType(Type t)
+        {
+            if (!_init) Init();
+
+            return _defs.FirstOrDefault(d => d.GetType().Equals(t));
         }
 
         /// <summary>

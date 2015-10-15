@@ -325,6 +325,12 @@ namespace VDS.RDF
             //No need to copy if it's already in the relevant Graph
             if (ReferenceEquals(original.Graph, target)) return original;
 
+            // if a node can copy itself then let it do it
+            var selfcopyable_original = original as RDF.Storage.Virtualisation.ICanCopy;
+            if (selfcopyable_original != null) return selfcopyable_original.CopyNode(target);
+            
+            // if it doesn't, copy it's values:
+
             if (original.NodeType == NodeType.Uri)
             {
                 IUriNode u = (IUriNode)original;
@@ -515,15 +521,23 @@ namespace VDS.RDF
             {
                 //Output the actual Response
                 Stream data = httpResponse.GetResponseStream();
-                StreamReader reader = new StreamReader(data);
-                while (!reader.EndOfStream)
+                if (data != null)
                 {
-                    Console.Error.WriteLine(reader.ReadLine());
-                }
-                Console.Error.WriteLine();
+                    StreamReader reader = new StreamReader(data);
+                    while (!reader.EndOfStream)
+                    {
+                        Console.Error.WriteLine(reader.ReadLine());
+                    }
+                    Console.Error.WriteLine();
 
-                if (data.CanSeek) {
-                    data.Seek(0, SeekOrigin.Begin);
+                    if (data.CanSeek)
+                    {
+                        data.Seek(0, SeekOrigin.Begin);
+                    }
+                    else
+                    {
+                        throw new RdfException("Full HTTP Debugging is enabled and the HTTP response stream has been consumed and written to the standard error stream, the stream is no longer available for calling code to consume");
+                    }
                 }
             }
 

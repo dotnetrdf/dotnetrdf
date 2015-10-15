@@ -37,9 +37,9 @@ namespace VDS.RDF.Query.Patterns
     public class PropertyFunctionPattern
         : BaseTriplePattern, IPropertyFunctionPattern, IComparable<PropertyFunctionPattern>
     {
-        private List<ITriplePattern> _patterns;
-        private List<PatternItem> _lhsArgs, _rhsArgs;
-        private ISparqlPropertyFunction _function;
+        private readonly List<ITriplePattern> _patterns;
+        private readonly List<PatternItem> _lhsArgs, _rhsArgs;
+        private readonly ISparqlPropertyFunction _function;
 
         /// <summary>
         /// Creates a new Property Function pattern
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Patterns
             this._rhsArgs = rhsArgs.ToList();
             this._function = propertyFunction;
 
-            foreach (PatternItem item in lhsArgs.Concat(rhsArgs))
+            foreach (PatternItem item in this._lhsArgs.Concat(this._rhsArgs))
             {
                 if (item.VariableName != null && !this._vars.Contains(item.VariableName)) this._vars.Add(item.VariableName);
             }
@@ -123,6 +123,19 @@ namespace VDS.RDF.Query.Patterns
                 return this._function;
             }
         }
+
+        /// <summary>
+        /// Returns the empty enumerable as cannot guarantee any variables are bound
+        /// </summary>
+        public override IEnumerable<string> FixedVariables
+        {
+            get { return Enumerable.Empty<String>(); }
+        }
+
+        /// <summary>
+        /// Returns all variables mentioned in the property function as we can't guarantee they are bound
+        /// </summary>
+        public override IEnumerable<string> FloatingVariables { get { return this._vars; } }
 
         /// <summary>
         /// Evaluates the property function

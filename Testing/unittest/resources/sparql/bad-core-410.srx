@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<sparql
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+  xmlns="http://www.w3.org/2005/sparql-results#"
+  xmlns:q="http://example.org/foo#">
+  <head>
+    <variable name="test" />
+  </head>
+  <results>
+    <result>
+      <binding name="test">
+        <literal q:qname="x" xml:lang="en" datatype="http://www.w3.org/2001/XMLSchema#integer">1993</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>
