@@ -13,7 +13,7 @@
     <tags>RDF Semantic Web SPARQL Virtuoso OpenLink</tags>
     <dependencies>
       <dependency id="dotNetRDF" version="$version$" />
-      <dependency id="OpenLink.Data.Virtuoso" version="6.2.3128.1" />
+      <dependency id="OpenLink.Data.Virtuoso" version="7.20.3214.1" />
     </dependencies>
     <releaseNotes>
     </releaseNotes>
