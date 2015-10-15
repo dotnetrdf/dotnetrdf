@@ -5,40 +5,40 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfWebDeployComponentGroup">
-            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.Data.Virtuoso.dll" Directory="rdfWebDeployFolder" Guid="{A7B49671-C144-479B-994D-77B75F5DC99C}">
+            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.Data.Virtuoso.dll" Directory="rdfWebDeployFolder" Guid="{5E36235E-B819-4A8D-AD23-EDA987CC3F4E}">
                 <File Id="rdfWebDeployComponentGroup_dotNetRDF.Data.Virtuoso.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.dll" Directory="rdfWebDeployFolder" Guid="{F8574980-14A9-4F21-B400-B5FEB589C81F}">
+            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.dll" Directory="rdfWebDeployFolder" Guid="{129D96CE-5218-4E7B-9FE6-C72B21242077}">
                 <File Id="rdfWebDeployComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.Query.FullText.dll" Directory="rdfWebDeployFolder" Guid="{964D7296-5F8F-435E-B35B-8AF52114921E}">
+            <Component Id="rdfWebDeployComponentGroup_dotNetRDF.Query.FullText.dll" Directory="rdfWebDeployFolder" Guid="{E3CF35F0-B322-401B-8327-F1D05E7BAF1B}">
                 <File Id="rdfWebDeployComponentGroup_dotNetRDF.Query.FullText.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_HtmlAgilityPack.dll" Directory="rdfWebDeployFolder" Guid="{8583ECF8-E159-4F59-BF91-A08B423B2FDC}">
+            <Component Id="rdfWebDeployComponentGroup_HtmlAgilityPack.dll" Directory="rdfWebDeployFolder" Guid="{C632E609-9A7F-469A-9B43-9A8ABED187A8}">
                 <File Id="rdfWebDeployComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_ICSharpCode.SharpZipLib.dll" Directory="rdfWebDeployFolder" Guid="{6A9FD64A-9059-423E-8F0B-62A6137BDFAD}">
+            <Component Id="rdfWebDeployComponentGroup_ICSharpCode.SharpZipLib.dll" Directory="rdfWebDeployFolder" Guid="{9C9D21A8-C37F-47B5-A1FE-DCF6B1B5FA91}">
                 <File Id="rdfWebDeployComponentGroup_ICSharpCode.SharpZipLib.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\ICSharpCode.SharpZipLib.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_Lucene.Net.dll" Directory="rdfWebDeployFolder" Guid="{7429CF13-3AEE-4D6C-AF50-997B08FB88F1}">
+            <Component Id="rdfWebDeployComponentGroup_Lucene.Net.dll" Directory="rdfWebDeployFolder" Guid="{DAB5A1CF-817F-4229-B463-8E2F6A7CD7B3}">
                 <File Id="rdfWebDeployComponentGroup_Lucene.Net.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_Microsoft.Web.Administration.dll" Directory="rdfWebDeployFolder" Guid="{3BC481E8-8E9A-412F-9D79-FDBB5A576874}">
+            <Component Id="rdfWebDeployComponentGroup_Microsoft.Web.Administration.dll" Directory="rdfWebDeployFolder" Guid="{D1A1BDB1-D475-40ED-9B1B-21F8A0A10CF5}">
                 <File Id="rdfWebDeployComponentGroup_Microsoft.Web.Administration.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Microsoft.Web.Administration.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_Newtonsoft.Json.dll" Directory="rdfWebDeployFolder" Guid="{7255331C-F4E1-437B-9A66-73069CE654B9}">
+            <Component Id="rdfWebDeployComponentGroup_Newtonsoft.Json.dll" Directory="rdfWebDeployFolder" Guid="{815AE440-FEAF-4CB3-A59D-8842E6B1C71E}">
                 <File Id="rdfWebDeployComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe" Directory="rdfWebDeployFolder" Guid="{4B0E146B-6EE8-46F7-9638-2B128327A927}">
+            <Component Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe" Directory="rdfWebDeployFolder" Guid="{42CBD19C-B782-4D18-91CB-4963A41F13E8}">
                 <File Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\rdfWebDeploy.exe" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe.config" Directory="rdfWebDeployFolder" Guid="{DA281B6F-7A71-44DA-8067-FFDB4AE12948}">
+            <Component Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe.config" Directory="rdfWebDeployFolder" Guid="{DCB790CD-4354-4E68-BBA7-36D1EEB07423}">
                 <File Id="rdfWebDeployComponentGroup_rdfWebDeploy.exe.config" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\rdfWebDeploy.exe.config" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_VDS.Common.dll" Directory="rdfWebDeployFolder" Guid="{9E17B041-0B25-43B5-936D-4AEF5921C2A7}">
+            <Component Id="rdfWebDeployComponentGroup_VDS.Common.dll" Directory="rdfWebDeployFolder" Guid="{6A9C0002-60D2-410F-862F-B38A35DF3A5F}">
                 <File Id="rdfWebDeployComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="rdfWebDeployComponentGroup_virtado4.dll" Directory="rdfWebDeployFolder" Guid="{B98018BB-4E44-421B-A3EA-24AEA1FEB00D}">
+            <Component Id="rdfWebDeployComponentGroup_virtado4.dll" Directory="rdfWebDeployFolder" Guid="{C46E6E6C-EC34-4CE5-9A4C-9EF72DAFA0E1}">
                 <File Id="rdfWebDeployComponentGroup_virtado4.dll" KeyPath="yes" Source="$(var.rdfWebDeployFiles)\virtado4.dll" />
             </Component>
         </ComponentGroup>

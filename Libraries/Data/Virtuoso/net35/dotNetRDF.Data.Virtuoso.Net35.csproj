@@ -69,8 +69,8 @@
     <Reference Include="System.Web" />
     <Reference Include="System.XML" />
     <Reference Include="virtado3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net35\virtado3.dll</HintPath>
       <Private>True</Private>
-      <HintPath>..\..\..\..\packages\OpenLink.Data.Virtuoso.7.0.3202.3\lib\net35\virtado3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -132,4 +132,3 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
-

@@ -5,49 +5,49 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfServerComponentGroup">
-            <Component Id="rdfServerComponentGroup_default.ttl" Directory="rdfServerFolder" Guid="{7EC2D2C4-4380-492B-ABC4-3B25DF4B502E}">
+            <Component Id="rdfServerComponentGroup_default.ttl" Directory="rdfServerFolder" Guid="{A4925982-6A0B-4B53-9029-3C175EB6FEFA}">
                 <File Id="rdfServerComponentGroup_default.ttl" KeyPath="yes" Source="$(var.rdfServerFiles)\default.ttl" />
             </Component>
-            <Component Id="rdfServerComponentGroup_dotNetRDF.dll" Directory="rdfServerFolder" Guid="{0DE5A324-90D0-403C-8ECD-7DF4EB57D7FF}">
+            <Component Id="rdfServerComponentGroup_dotNetRDF.dll" Directory="rdfServerFolder" Guid="{7DED10EF-36A1-4302-85A3-F29C3AEB0115}">
                 <File Id="rdfServerComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfServerFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="rdfServerComponentGroup_HtmlAgilityPack.dll" Directory="rdfServerFolder" Guid="{A80E8CB6-B6EE-46E2-AC35-F07E4601DC52}">
+            <Component Id="rdfServerComponentGroup_HtmlAgilityPack.dll" Directory="rdfServerFolder" Guid="{2303A6CB-08D6-4394-ABFC-B42368AE05B8}">
                 <File Id="rdfServerComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfServerFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="rdfServerComponentGroup_Newtonsoft.Json.dll" Directory="rdfServerFolder" Guid="{A8907547-12A9-452E-8D9A-BA0FE6935A76}">
+            <Component Id="rdfServerComponentGroup_Newtonsoft.Json.dll" Directory="rdfServerFolder" Guid="{D39F911D-6F21-4F73-9A90-7B89909BE385}">
                 <File Id="rdfServerComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfServerFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServer.exe" Directory="rdfServerFolder" Guid="{0FF35729-D4C6-40B2-A605-3F1486AFA262}">
+            <Component Id="rdfServerComponentGroup_rdfServer.exe" Directory="rdfServerFolder" Guid="{5788D850-0EDC-4972-A8E1-F68D93250592}">
                 <File Id="rdfServerComponentGroup_rdfServer.exe" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.exe" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServer.exe.config" Directory="rdfServerFolder" Guid="{91E1D1AC-5ED1-4EF6-AF7D-3A5B40999F5A}">
+            <Component Id="rdfServerComponentGroup_rdfServer.exe.config" Directory="rdfServerFolder" Guid="{D787F870-4EC3-4E69-B369-CA49F370C30C}">
                 <File Id="rdfServerComponentGroup_rdfServer.exe.config" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.exe.config" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServer.vshost.exe" Directory="rdfServerFolder" Guid="{2077B901-409A-424B-9BF8-13938196267C}">
+            <Component Id="rdfServerComponentGroup_rdfServer.vshost.exe" Directory="rdfServerFolder" Guid="{B6348968-190F-4697-9568-84B7A4B9373B}">
                 <File Id="rdfServerComponentGroup_rdfServer.vshost.exe" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.vshost.exe" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServer.vshost.exe.config" Directory="rdfServerFolder" Guid="{46F6D137-F329-4123-B45A-9C76070EAB25}">
+            <Component Id="rdfServerComponentGroup_rdfServer.vshost.exe.config" Directory="rdfServerFolder" Guid="{127779F9-61B0-44E4-A32F-5FED1ABCCA75}">
                 <File Id="rdfServerComponentGroup_rdfServer.vshost.exe.config" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServer.vshost.exe.config" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServerGUI.exe" Directory="rdfServerFolder" Guid="{43AA0071-96BA-4BF1-9993-A0BB68140813}">
+            <Component Id="rdfServerComponentGroup_rdfServerGUI.exe" Directory="rdfServerFolder" Guid="{CD26209D-7622-4B4F-9B54-AA7C8EB4DEA0}">
                 <File Id="rdfServerComponentGroup_rdfServerGUI.exe" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.exe" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServerGUI.exe.config" Directory="rdfServerFolder" Guid="{2DFEDA42-F722-4AA3-BCFF-2AF44B16A62C}">
+            <Component Id="rdfServerComponentGroup_rdfServerGUI.exe.config" Directory="rdfServerFolder" Guid="{6DA3F8D7-28CC-4D76-8D2B-D8DE4981CD37}">
                 <File Id="rdfServerComponentGroup_rdfServerGUI.exe.config" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.exe.config" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe" Directory="rdfServerFolder" Guid="{FC3A2AE6-BB13-4D84-A70F-F60B9E04598F}">
+            <Component Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe" Directory="rdfServerFolder" Guid="{186A2CBE-89C0-4B98-9F74-B56F1D02D784}">
                 <File Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.vshost.exe" />
             </Component>
-            <Component Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe.config" Directory="rdfServerFolder" Guid="{D430C648-425E-4640-860B-C624E6D14F61}">
+            <Component Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe.config" Directory="rdfServerFolder" Guid="{28D92480-B3D3-41B1-AF38-7BEAEF31E15D}">
                 <File Id="rdfServerComponentGroup_rdfServerGUI.vshost.exe.config" KeyPath="yes" Source="$(var.rdfServerFiles)\rdfServerGUI.vshost.exe.config" />
             </Component>
-            <Component Id="rdfServerComponentGroup_servercontrol.html" Directory="rdfServerFolder" Guid="{33776DA3-C61D-428F-A680-B982D745441A}">
+            <Component Id="rdfServerComponentGroup_servercontrol.html" Directory="rdfServerFolder" Guid="{2AE61441-CE59-402D-9C1C-640BD9DD7DBB}">
                 <File Id="rdfServerComponentGroup_servercontrol.html" KeyPath="yes" Source="$(var.rdfServerFiles)\servercontrol.html" />
             </Component>
-            <Component Id="rdfServerComponentGroup_VDS.Common.dll" Directory="rdfServerFolder" Guid="{7B811490-8C78-45B0-A3D7-0BEFE586117D}">
+            <Component Id="rdfServerComponentGroup_VDS.Common.dll" Directory="rdfServerFolder" Guid="{35704F0C-0E0B-482C-9555-B14FABD9E410}">
                 <File Id="rdfServerComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfServerFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="rdfServerComponentGroup_VDS.Web.Server.dll" Directory="rdfServerFolder" Guid="{475E220A-5514-4A3C-B477-CE968756652E}">
+            <Component Id="rdfServerComponentGroup_VDS.Web.Server.dll" Directory="rdfServerFolder" Guid="{22106C71-57AF-4311-A74F-48CC9C0B23A7}">
                 <File Id="rdfServerComponentGroup_VDS.Web.Server.dll" KeyPath="yes" Source="$(var.rdfServerFiles)\VDS.Web.Server.dll" />
             </Component>
         </ComponentGroup>

@@ -5,43 +5,43 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="sparqlGuiComponentGroup">
-            <Component Id="sparqlGuiComponentGroup_database.ico" Directory="sparqlGuiFolder" Guid="{86050FD0-739A-4263-AEE0-BD11FA5A75A8}">
+            <Component Id="sparqlGuiComponentGroup_database.ico" Directory="sparqlGuiFolder" Guid="{C468B636-DA78-4F93-9C79-955476D0EE31}">
                 <File Id="sparqlGuiComponentGroup_database.ico" KeyPath="yes" Source="$(var.sparqlGuiFiles)\database.ico" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_database_table.ico" Directory="sparqlGuiFolder" Guid="{7D6FE17E-B6FB-497F-980C-EC3F9EDF7113}">
+            <Component Id="sparqlGuiComponentGroup_database_table.ico" Directory="sparqlGuiFolder" Guid="{44A01CAF-3243-4E99-955B-C7A0B303DAA0}">
                 <File Id="sparqlGuiComponentGroup_database_table.ico" KeyPath="yes" Source="$(var.sparqlGuiFiles)\database_table.ico" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_default.rq" Directory="sparqlGuiFolder" Guid="{A42D1705-41F7-4F51-8AF5-E03DE49A1902}">
+            <Component Id="sparqlGuiComponentGroup_default.rq" Directory="sparqlGuiFolder" Guid="{F495D387-EBD2-4216-89F2-D342306DEFB3}">
                 <File Id="sparqlGuiComponentGroup_default.rq" KeyPath="yes" Source="$(var.sparqlGuiFiles)\default.rq" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_dotNetRDF.dll" Directory="sparqlGuiFolder" Guid="{FA4EB4A6-D8C2-4F00-8C9D-9027AE6FFFAC}">
+            <Component Id="sparqlGuiComponentGroup_dotNetRDF.dll" Directory="sparqlGuiFolder" Guid="{EE6AE917-8313-42D6-93A4-FD70F522E2A5}">
                 <File Id="sparqlGuiComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_dotNetRDF.Query.FullText.dll" Directory="sparqlGuiFolder" Guid="{6D30461B-91F5-405B-85BE-B279D970EAC7}">
+            <Component Id="sparqlGuiComponentGroup_dotNetRDF.Query.FullText.dll" Directory="sparqlGuiFolder" Guid="{9A5E41A6-E1CB-4724-882D-35FA5D922902}">
                 <File Id="sparqlGuiComponentGroup_dotNetRDF.Query.FullText.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_dotNetRDF.WinForms.dll" Directory="sparqlGuiFolder" Guid="{A5D46B86-6029-4594-8563-3E27E607113C}">
+            <Component Id="sparqlGuiComponentGroup_dotNetRDF.WinForms.dll" Directory="sparqlGuiFolder" Guid="{A9813BE7-8591-4CE9-8ED7-5E99B2A1EB34}">
                 <File Id="sparqlGuiComponentGroup_dotNetRDF.WinForms.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\dotNetRDF.WinForms.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_HtmlAgilityPack.dll" Directory="sparqlGuiFolder" Guid="{830458FA-62B9-4916-9AE3-FD86B0E9A682}">
+            <Component Id="sparqlGuiComponentGroup_HtmlAgilityPack.dll" Directory="sparqlGuiFolder" Guid="{5FD1FABB-E8B2-43FC-A0B7-BD11C79AADB9}">
                 <File Id="sparqlGuiComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_ICSharpCode.SharpZipLib.dll" Directory="sparqlGuiFolder" Guid="{F05828E6-6B8B-4122-AB00-E2CF5451D9FA}">
+            <Component Id="sparqlGuiComponentGroup_ICSharpCode.SharpZipLib.dll" Directory="sparqlGuiFolder" Guid="{D5234EED-A9BA-46CE-AE8E-30391DA8A7C0}">
                 <File Id="sparqlGuiComponentGroup_ICSharpCode.SharpZipLib.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\ICSharpCode.SharpZipLib.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_Lucene.Net.dll" Directory="sparqlGuiFolder" Guid="{3F229176-65F8-48E7-AA1A-D3AF2FCA028D}">
+            <Component Id="sparqlGuiComponentGroup_Lucene.Net.dll" Directory="sparqlGuiFolder" Guid="{F2DE56DB-654B-4F9C-B7D6-82721B97079E}">
                 <File Id="sparqlGuiComponentGroup_Lucene.Net.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_Newtonsoft.Json.dll" Directory="sparqlGuiFolder" Guid="{4FDDB058-58B7-437B-A22E-5C1B210A0B00}">
+            <Component Id="sparqlGuiComponentGroup_Newtonsoft.Json.dll" Directory="sparqlGuiFolder" Guid="{65760404-3385-4CAE-B3D9-376860F68DF0}">
                 <File Id="sparqlGuiComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_SparqlGUI.exe" Directory="sparqlGuiFolder" Guid="{AE822B2D-966F-4235-8D8F-74179C537F24}">
+            <Component Id="sparqlGuiComponentGroup_SparqlGUI.exe" Directory="sparqlGuiFolder" Guid="{D60C0E54-15CE-47AD-A35B-C094F82DBE34}">
                 <File Id="sparqlGuiComponentGroup_SparqlGUI.exe" KeyPath="yes" Source="$(var.sparqlGuiFiles)\SparqlGUI.exe" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_SparqlGUI.exe.config" Directory="sparqlGuiFolder" Guid="{807B7064-61A8-48B9-9DFB-57F78A659C30}">
+            <Component Id="sparqlGuiComponentGroup_SparqlGUI.exe.config" Directory="sparqlGuiFolder" Guid="{398DEC51-2671-4384-B3B4-06BDFCB19BD5}">
                 <File Id="sparqlGuiComponentGroup_SparqlGUI.exe.config" KeyPath="yes" Source="$(var.sparqlGuiFiles)\SparqlGUI.exe.config" />
             </Component>
-            <Component Id="sparqlGuiComponentGroup_VDS.Common.dll" Directory="sparqlGuiFolder" Guid="{7BC97967-7AA6-4664-989E-631A51556503}">
+            <Component Id="sparqlGuiComponentGroup_VDS.Common.dll" Directory="sparqlGuiFolder" Guid="{6220D7AB-A12D-496C-9CF1-6E4FEE64A8BF}">
                 <File Id="sparqlGuiComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.sparqlGuiFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>

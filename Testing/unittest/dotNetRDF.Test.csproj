@@ -95,7 +95,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
-    <Reference Include="virtado4, Version=4.0.0.0, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
+    <Reference Include="virtado4">
       <HintPath>..\..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
       <Private>True</Private>
     </Reference>
