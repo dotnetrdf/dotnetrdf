@@ -336,5 +336,21 @@ namespace VDS.RDF.Query
             SparqlUpdateParser parser = new SparqlUpdateParser();
             parser.ParseFromString(update);
         }
+
+        [Test]
+        public void SparqlParsingToStringRoundTripCore458()
+        {
+            const String query = @"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+SELECT * 
+WHERE 
+{
+  ?s ?p ?o .
+  FILTER(?p = rdf:type) 
+}";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            String output = q.ToString();
+            SparqlQuery q2 = parser.ParseFromString(output);
+        }
     }
 }
