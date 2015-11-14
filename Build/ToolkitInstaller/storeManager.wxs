@@ -7,46 +7,46 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="storeManagerComponentGroup">
-            <Component Id="storeManagerComponentGroup_database_gear.ico" Directory="storeManagerFolder" Guid="{24A5082A-CB4A-45E2-84FC-5DBDC9AE1C43}">
+            <Component Id="storeManagerComponentGroup_database_gear.ico" Directory="storeManagerFolder" Guid="{31ACE57A-7935-41A9-B38C-96392059C161}">
                 <File Id="storeManagerComponentGroup_database_gear.ico" KeyPath="yes" Source="$(var.storeManagerFiles)\database_gear.ico" />
             </Component>
-            <Component Id="storeManagerComponentGroup_dotNetRDF.Data.Virtuoso.dll" Directory="storeManagerFolder" Guid="{4DADCC0F-50FB-454E-A06B-55CE4D4ED867}">
+            <Component Id="storeManagerComponentGroup_dotNetRDF.Data.Virtuoso.dll" Directory="storeManagerFolder" Guid="{ED1BB2AF-5B63-4D82-AB02-9A7D920AEE1A}">
                 <File Id="storeManagerComponentGroup_dotNetRDF.Data.Virtuoso.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.Data.Virtuoso.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_dotNetRDF.dll" Directory="storeManagerFolder" Guid="{BB58517A-3D97-43C9-9DAD-C03219430C8C}">
+            <Component Id="storeManagerComponentGroup_dotNetRDF.dll" Directory="storeManagerFolder" Guid="{660D512E-70F8-461F-9554-4E02E69AF696}">
                 <File Id="storeManagerComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_dotNetRDF.Query.FullText.dll" Directory="storeManagerFolder" Guid="{1C3D2D50-F28F-4C99-8042-873279824B23}">
+            <Component Id="storeManagerComponentGroup_dotNetRDF.Query.FullText.dll" Directory="storeManagerFolder" Guid="{E6469F1D-3404-4F95-8410-8E43D308955F}">
                 <File Id="storeManagerComponentGroup_dotNetRDF.Query.FullText.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.Query.FullText.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_dotNetRDF.WinForms.dll" Directory="storeManagerFolder" Guid="{21824D39-E6A1-4C86-860C-69D89E915D53}">
+            <Component Id="storeManagerComponentGroup_dotNetRDF.WinForms.dll" Directory="storeManagerFolder" Guid="{ACECC60D-F808-4B1C-9E18-02CC116646F6}">
                 <File Id="storeManagerComponentGroup_dotNetRDF.WinForms.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\dotNetRDF.WinForms.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_file_manager.ico" Directory="storeManagerFolder" Guid="{2B08BFEE-3FE9-4336-A920-9D2CDE1D2ECA}">
+            <Component Id="storeManagerComponentGroup_file_manager.ico" Directory="storeManagerFolder" Guid="{A4D4766F-DD29-4A1A-A070-927B9DD7D717}">
                 <File Id="storeManagerComponentGroup_file_manager.ico" KeyPath="yes" Source="$(var.storeManagerFiles)\file-manager.ico" />
             </Component>
-            <Component Id="storeManagerComponentGroup_HtmlAgilityPack.dll" Directory="storeManagerFolder" Guid="{2C31D514-719C-4A34-8A35-43D5BD0CD4A0}">
+            <Component Id="storeManagerComponentGroup_HtmlAgilityPack.dll" Directory="storeManagerFolder" Guid="{B48243F9-5DDF-4638-A997-A2415CB9FFC0}">
                 <File Id="storeManagerComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_Lucene.Net.dll" Directory="storeManagerFolder" Guid="{3E712810-FFB1-483A-96D9-C4F0FE995314}">
+            <Component Id="storeManagerComponentGroup_Lucene.Net.dll" Directory="storeManagerFolder" Guid="{CCAC40D9-6C2F-48D2-8504-1CBE2213EDE1}">
                 <File Id="storeManagerComponentGroup_Lucene.Net.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\Lucene.Net.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_Newtonsoft.Json.dll" Directory="storeManagerFolder" Guid="{D93AD2B8-450F-4F03-8514-7E1787757393}">
+            <Component Id="storeManagerComponentGroup_Newtonsoft.Json.dll" Directory="storeManagerFolder" Guid="{78772BB4-4501-491A-A371-8AED6F224C69}">
                 <File Id="storeManagerComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_StoreManager.Core.dll" Directory="storeManagerFolder" Guid="{C4AD18F9-B94F-4384-AB61-8AE46B665010}">
+            <Component Id="storeManagerComponentGroup_StoreManager.Core.dll" Directory="storeManagerFolder" Guid="{210E2F06-BB9A-4130-8119-1CE273D73641}">
                 <File Id="storeManagerComponentGroup_StoreManager.Core.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.Core.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_StoreManager.exe" Directory="storeManagerFolder" Guid="{14BDE28D-FEC6-4F53-A424-BDE66AF24BD7}">
+            <Component Id="storeManagerComponentGroup_StoreManager.exe" Directory="storeManagerFolder" Guid="{CFE1A384-4BBD-453A-9B77-9B096ADE88B9}">
                 <File Id="storeManagerComponentGroup_StoreManager.exe" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.exe" />
             </Component>
-            <Component Id="storeManagerComponentGroup_StoreManager.exe.config" Directory="storeManagerFolder" Guid="{F7E4C753-78F9-4BC3-A6E1-EE715ACE95B5}">
+            <Component Id="storeManagerComponentGroup_StoreManager.exe.config" Directory="storeManagerFolder" Guid="{5A5B22EF-96BA-4C6C-A699-ED1F0BD4FDF0}">
                 <File Id="storeManagerComponentGroup_StoreManager.exe.config" KeyPath="yes" Source="$(var.storeManagerFiles)\StoreManager.exe.config" />
             </Component>
-            <Component Id="storeManagerComponentGroup_VDS.Common.dll" Directory="storeManagerFolder" Guid="{B6F44E9D-BB0E-4F32-ADCB-6F31738D884D}">
+            <Component Id="storeManagerComponentGroup_VDS.Common.dll" Directory="storeManagerFolder" Guid="{17EEF25C-B30A-4AB5-A302-2D867006A23E}">
                 <File Id="storeManagerComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.storeManagerFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="storeManagerComponentGroup_Store_Manager_Plugins.txt" Directory="plugins" Guid="{CA541B1F-6DF3-47EC-968F-45E3B9AD3333}">
+            <Component Id="storeManagerComponentGroup_Store_Manager_Plugins.txt" Directory="plugins" Guid="{D3C04FB0-A20D-40E4-9F81-0B8264C16598}">
                 <File Id="storeManagerComponentGroup_Store_Manager_Plugins.txt" KeyPath="yes" Source="$(var.storeManagerFiles)\plugins\Store Manager Plugins.txt" />
             </Component>
         </ComponentGroup>

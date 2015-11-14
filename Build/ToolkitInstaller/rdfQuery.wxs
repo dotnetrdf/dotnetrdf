@@ -5,22 +5,22 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfQueryComponentGroup">
-            <Component Id="rdfQueryComponentGroup_dotNetRDF.dll" Directory="rdfQueryFolder" Guid="{5E8FC198-A325-4E9C-985D-5B5343477200}">
+            <Component Id="rdfQueryComponentGroup_dotNetRDF.dll" Directory="rdfQueryFolder" Guid="{59A47D46-78D1-4217-B281-129220486408}">
                 <File Id="rdfQueryComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="rdfQueryComponentGroup_HtmlAgilityPack.dll" Directory="rdfQueryFolder" Guid="{8C2D00BE-F4A6-4573-BFAF-A1B91F383854}">
+            <Component Id="rdfQueryComponentGroup_HtmlAgilityPack.dll" Directory="rdfQueryFolder" Guid="{7B4F34AB-9817-4EDB-8AE8-2927026CB1C7}">
                 <File Id="rdfQueryComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="rdfQueryComponentGroup_Newtonsoft.Json.dll" Directory="rdfQueryFolder" Guid="{D963A04F-D63C-4AE0-AA20-222A408D8193}">
+            <Component Id="rdfQueryComponentGroup_Newtonsoft.Json.dll" Directory="rdfQueryFolder" Guid="{37635828-DF3F-41B9-B528-CDC55E06E396}">
                 <File Id="rdfQueryComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="rdfQueryComponentGroup_rdfQuery.exe" Directory="rdfQueryFolder" Guid="{1E8DADC2-5DA2-487B-AD9E-901B7EC88674}">
+            <Component Id="rdfQueryComponentGroup_rdfQuery.exe" Directory="rdfQueryFolder" Guid="{7C2B73C7-25A7-4C2B-B345-1204FD8FB334}">
                 <File Id="rdfQueryComponentGroup_rdfQuery.exe" KeyPath="yes" Source="$(var.rdfQueryFiles)\rdfQuery.exe" />
             </Component>
-            <Component Id="rdfQueryComponentGroup_rdfQuery.exe.config" Directory="rdfQueryFolder" Guid="{26A59B95-3A5E-47F4-A9D1-A95D64EABAF5}">
+            <Component Id="rdfQueryComponentGroup_rdfQuery.exe.config" Directory="rdfQueryFolder" Guid="{416B5F99-05F2-4EEB-B2CB-C5BE52857F0D}">
                 <File Id="rdfQueryComponentGroup_rdfQuery.exe.config" KeyPath="yes" Source="$(var.rdfQueryFiles)\rdfQuery.exe.config" />
             </Component>
-            <Component Id="rdfQueryComponentGroup_VDS.Common.dll" Directory="rdfQueryFolder" Guid="{287E52EC-5C6C-45A9-A18D-A5D6F3ACE522}">
+            <Component Id="rdfQueryComponentGroup_VDS.Common.dll" Directory="rdfQueryFolder" Guid="{F758941B-473B-412C-8738-1A9DE9C5636C}">
                 <File Id="rdfQueryComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfQueryFiles)\VDS.Common.dll" />
             </Component>
         </ComponentGroup>

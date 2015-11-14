@@ -91,9 +91,9 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\VDS.Common.1.6.0\lib\net40-client\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\VDS.Common.1.6.4\lib\net40-client\VDS.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="virtado4">
       <HintPath>..\..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
