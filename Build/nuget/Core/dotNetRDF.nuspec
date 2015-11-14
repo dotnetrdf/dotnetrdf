@@ -14,36 +14,31 @@
     <dependencies>       
       <group targetFramework="net35-client">
         <dependency id="VDS.Common" version="[1.6.4]" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net35">
         <dependency id="VDS.Common" version="[1.6.4]" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40">
         <dependency id="VDS.Common" version="[1.6.4]" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="net40-client">
         <dependency id="VDS.Common" version="[1.6.4]" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
       </group>
       <group targetFramework="portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
         <dependency id="VDS.Common" version="[1.6.4]" />
-        <dependency id="Newtonsoft.Json" version="6.0.8" />
+        <dependency id="Newtonsoft.Json" version="7.0.1" />
       </group>
     </dependencies>
     <releaseNotes>
-- Performance fixes for query evaluation over virtual graphs (CORE-449, CORE-450, CORE-451, CORE-452)
-- BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
-- AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
-- SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
-- Fixes for Stardog 3.x support (CORE-443)
-- Improvements to multi-threaded performance when using URI Interning
+- 
     </releaseNotes>
   </metadata>
 </package>

@@ -9,9 +9,13 @@ Changed
  - Fix inconsistent use of XML entities for compression in RdfXmlWriter (CORE-453)
  - Disable HTTP Keep Alive by default as it can cause errors under some circumstances (CORE-454)
  - Fix bug with ToString() form of SparqlQuery not being round trippable in some cases (CORE-458)
+- Build
+ - Ensure all NuGet packages and Release libraries are built in Release mode (CORE-459)
 - Dependencies
  - Upgrade OpenLink.Data.Virtuoso to 7.20.3214.1 (VIRT-359)
   - Note that this removes support for Virtuoso on .Net Client Profile
+ - Upgrade VDS.Common to 1.6.4 (CORE-459)
+ - Upgrade Newtonsoft.Json to 7.0.1 (CORE-460)
 
 1.0.9
 -----

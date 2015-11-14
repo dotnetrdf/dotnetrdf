@@ -7,85 +7,85 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="rdfEditorComponentGroup">
-            <Component Id="rdfEditorComponentGroup_dotNetRDF.dll" Directory="rdfEditorFolder" Guid="{7108D577-9B33-483E-9819-171EC57C776B}">
+            <Component Id="rdfEditorComponentGroup_dotNetRDF.dll" Directory="rdfEditorFolder" Guid="{C267F15A-B085-43E4-9EC9-98B1EC5E4A4F}">
                 <File Id="rdfEditorComponentGroup_dotNetRDF.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\dotNetRDF.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_FileAssociation.dll" Directory="rdfEditorFolder" Guid="{2B83D051-E097-480E-9314-655857BCBF4C}">
+            <Component Id="rdfEditorComponentGroup_FileAssociation.dll" Directory="rdfEditorFolder" Guid="{3C7A53B2-46C7-4268-BF38-F3A77ECF2927}">
                 <File Id="rdfEditorComponentGroup_FileAssociation.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\FileAssociation.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_HtmlAgilityPack.dll" Directory="rdfEditorFolder" Guid="{DF00A144-A187-4770-B162-EB9B63D9C94B}">
+            <Component Id="rdfEditorComponentGroup_HtmlAgilityPack.dll" Directory="rdfEditorFolder" Guid="{E6670443-2871-4E3D-B322-1DDDDABCDED7}">
                 <File Id="rdfEditorComponentGroup_HtmlAgilityPack.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\HtmlAgilityPack.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_ICSharpCode.AvalonEdit.dll" Directory="rdfEditorFolder" Guid="{8E3AD283-1D3B-4E88-AD4E-26A903A27BD4}">
+            <Component Id="rdfEditorComponentGroup_ICSharpCode.AvalonEdit.dll" Directory="rdfEditorFolder" Guid="{A17B61B3-A723-4BCD-835A-13951BD46623}">
                 <File Id="rdfEditorComponentGroup_ICSharpCode.AvalonEdit.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\ICSharpCode.AvalonEdit.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_Newtonsoft.Json.dll" Directory="rdfEditorFolder" Guid="{B98DD52A-4F3E-486C-A8EC-A7690BE3C93F}">
+            <Component Id="rdfEditorComponentGroup_Newtonsoft.Json.dll" Directory="rdfEditorFolder" Guid="{0735A5F4-F69C-481D-8276-36D8334D0E93}">
                 <File Id="rdfEditorComponentGroup_Newtonsoft.Json.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\Newtonsoft.Json.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfEditor.Core.dll" Directory="rdfEditorFolder" Guid="{2D0FC2E9-DA5F-412B-9853-D38881F6B590}">
+            <Component Id="rdfEditorComponentGroup_rdfEditor.Core.dll" Directory="rdfEditorFolder" Guid="{7601DA9C-8CDC-48D5-984A-7252C3087C1C}">
                 <File Id="rdfEditorComponentGroup_rdfEditor.Core.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.Core.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfEditor.Core.Wpf.dll" Directory="rdfEditorFolder" Guid="{45AC92FD-6926-4BAB-A777-5A93EE6212BA}">
+            <Component Id="rdfEditorComponentGroup_rdfEditor.Core.Wpf.dll" Directory="rdfEditorFolder" Guid="{BE9588C8-9968-40DF-B02A-E2CB76DD2BA1}">
                 <File Id="rdfEditorComponentGroup_rdfEditor.Core.Wpf.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.Core.Wpf.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfEditor.exe" Directory="rdfEditorFolder" Guid="{B1E94317-0E3C-47B7-9A83-AB78A7FEAE0A}">
+            <Component Id="rdfEditorComponentGroup_rdfEditor.exe" Directory="rdfEditorFolder" Guid="{5F6C67EB-D3FF-404E-9A5D-18E2474131A3}">
                 <File Id="rdfEditorComponentGroup_rdfEditor.exe" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.exe" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfEditor.exe.config" Directory="rdfEditorFolder" Guid="{7715060D-E914-4AA1-B2BA-028E6183065E}">
+            <Component Id="rdfEditorComponentGroup_rdfEditor.exe.config" Directory="rdfEditorFolder" Guid="{4D59A30A-D042-4B54-A401-2E049970CE96}">
                 <File Id="rdfEditorComponentGroup_rdfEditor.exe.config" KeyPath="yes" Source="$(var.rdfEditorFiles)\rdfEditor.exe.config" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_VDS.Common.dll" Directory="rdfEditorFolder" Guid="{78866D92-1E18-4F3C-9A02-0F3D84431D6D}">
+            <Component Id="rdfEditorComponentGroup_VDS.Common.dll" Directory="rdfEditorFolder" Guid="{28F142F0-1669-4478-B0F7-A2DFCBB4C79E}">
                 <File Id="rdfEditorComponentGroup_VDS.Common.dll" KeyPath="yes" Source="$(var.rdfEditorFiles)\VDS.Common.dll" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_n3.xshd" Directory="Syntax" Guid="{08CADF0F-85EC-4776-9E38-3B7024910D9C}">
+            <Component Id="rdfEditorComponentGroup_n3.xshd" Directory="Syntax" Guid="{D4D9C965-47CA-4D9A-9997-07D4D9720B63}">
                 <File Id="rdfEditorComponentGroup_n3.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\n3.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_nquads.xshd" Directory="Syntax" Guid="{EDB909B5-71FC-4F6D-A11C-61CC44B2104B}">
+            <Component Id="rdfEditorComponentGroup_nquads.xshd" Directory="Syntax" Guid="{8FF209CB-29AE-4476-9AE9-C9B320B7DEAD}">
                 <File Id="rdfEditorComponentGroup_nquads.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\nquads.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_nquads11.xshd" Directory="Syntax" Guid="{0EB749CE-9777-4AAA-81BB-032A9233A8F0}">
+            <Component Id="rdfEditorComponentGroup_nquads11.xshd" Directory="Syntax" Guid="{6CC8A27E-E0A9-43F7-B99C-8E4245B2072B}">
                 <File Id="rdfEditorComponentGroup_nquads11.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\nquads11.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_ntriples.xshd" Directory="Syntax" Guid="{7888D81A-0CC7-40AC-A92B-692B7398B42C}">
+            <Component Id="rdfEditorComponentGroup_ntriples.xshd" Directory="Syntax" Guid="{7D008FB1-8EC2-4EDC-9672-1CEF15B1CCD5}">
                 <File Id="rdfEditorComponentGroup_ntriples.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\ntriples.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_ntriples11.xshd" Directory="Syntax" Guid="{F08895DC-0E0F-4088-A42A-18249314763F}">
+            <Component Id="rdfEditorComponentGroup_ntriples11.xshd" Directory="Syntax" Guid="{50F3E4C2-3B7C-4197-8BC1-0E17637B0E9E}">
                 <File Id="rdfEditorComponentGroup_ntriples11.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\ntriples11.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfjson.xshd" Directory="Syntax" Guid="{77622113-FF52-4A7E-BA03-EAED56157B81}">
+            <Component Id="rdfEditorComponentGroup_rdfjson.xshd" Directory="Syntax" Guid="{D33D94DB-91FC-4DE6-8423-04A9AD9B0358}">
                 <File Id="rdfEditorComponentGroup_rdfjson.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\rdfjson.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_rdfxml.xshd" Directory="Syntax" Guid="{E57AD60E-FF3F-436D-922D-A9987C1A7A06}">
+            <Component Id="rdfEditorComponentGroup_rdfxml.xshd" Directory="Syntax" Guid="{A9CB5E84-4DC4-41B4-A5CD-74B24832D008}">
                 <File Id="rdfEditorComponentGroup_rdfxml.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\rdfxml.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_sparql_query_11.xshd" Directory="Syntax" Guid="{FE83FE2E-2303-464D-B08B-DC156D030FE9}">
+            <Component Id="rdfEditorComponentGroup_sparql_query_11.xshd" Directory="Syntax" Guid="{FA6D77AB-04CB-49E0-BA21-557E826312AD}">
                 <File Id="rdfEditorComponentGroup_sparql_query_11.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-query-11.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_sparql_query.xshd" Directory="Syntax" Guid="{FCEC40AD-4FC9-4238-9BBE-24B007CB667E}">
+            <Component Id="rdfEditorComponentGroup_sparql_query.xshd" Directory="Syntax" Guid="{ED07F0EB-806B-4B46-9217-8E7FFC94E987}">
                 <File Id="rdfEditorComponentGroup_sparql_query.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-query.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_sparql_results_json.xshd" Directory="Syntax" Guid="{FE970AFE-DA05-449B-B61C-214EB157C2B3}">
+            <Component Id="rdfEditorComponentGroup_sparql_results_json.xshd" Directory="Syntax" Guid="{78D39F8E-D1D3-4E75-A1C6-704E65C45B81}">
                 <File Id="rdfEditorComponentGroup_sparql_results_json.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-results-json.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_sparql_results_xml.xshd" Directory="Syntax" Guid="{FF70980B-4F38-4E60-A583-EFDECF1DE2F7}">
+            <Component Id="rdfEditorComponentGroup_sparql_results_xml.xshd" Directory="Syntax" Guid="{6EA1A40A-81CA-4CD4-AA9A-BB5910326AC1}">
                 <File Id="rdfEditorComponentGroup_sparql_results_xml.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-results-xml.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_sparql_update.xshd" Directory="Syntax" Guid="{4B60C880-805E-40BF-9DCE-BD68BD3D6498}">
+            <Component Id="rdfEditorComponentGroup_sparql_update.xshd" Directory="Syntax" Guid="{E637F792-0C57-4DFB-86BC-B130B0583F92}">
                 <File Id="rdfEditorComponentGroup_sparql_update.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\sparql-update.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_trig.xshd" Directory="Syntax" Guid="{C7AAFD22-C256-4CA7-B73A-3F80ADF72D68}">
+            <Component Id="rdfEditorComponentGroup_trig.xshd" Directory="Syntax" Guid="{3B02B661-4FA3-4A9C-B484-A09B46670362}">
                 <File Id="rdfEditorComponentGroup_trig.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\trig.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_trix.xshd" Directory="Syntax" Guid="{66F5A1B0-225A-42FD-BBBD-4E09B5135EC3}">
+            <Component Id="rdfEditorComponentGroup_trix.xshd" Directory="Syntax" Guid="{B3245EF8-E06F-4E0F-9AC8-8CF4087F98C5}">
                 <File Id="rdfEditorComponentGroup_trix.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\trix.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_turtle.xshd" Directory="Syntax" Guid="{931811AD-99D1-45FD-9AA9-C578F6A49970}">
+            <Component Id="rdfEditorComponentGroup_turtle.xshd" Directory="Syntax" Guid="{53ED2C72-96AA-407B-A2B8-3FE570B84693}">
                 <File Id="rdfEditorComponentGroup_turtle.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\turtle.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_turtle11.xshd" Directory="Syntax" Guid="{6321CD12-5C89-4755-9ED1-6B0BFABBFFEF}">
+            <Component Id="rdfEditorComponentGroup_turtle11.xshd" Directory="Syntax" Guid="{A6A14824-5450-4841-9763-1A75821A0AF7}">
                 <File Id="rdfEditorComponentGroup_turtle11.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\turtle11.xshd" />
             </Component>
-            <Component Id="rdfEditorComponentGroup_xhtml_rdfa.xshd" Directory="Syntax" Guid="{224E7EF9-2789-466C-A058-FC8908CE7858}">
+            <Component Id="rdfEditorComponentGroup_xhtml_rdfa.xshd" Directory="Syntax" Guid="{A3F2BA4C-600C-49C8-8577-F981596FFEE8}">
                 <File Id="rdfEditorComponentGroup_xhtml_rdfa.xshd" KeyPath="yes" Source="$(var.rdfEditorFiles)\Syntax\xhtml-rdfa.xshd" />
             </Component>
         </ComponentGroup>
