@@ -3408,6 +3408,12 @@
     <None Include="resources\core-441\star-path.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="resources\core-457\exists-limit.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\core-457\exists3.rq">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="resources\core-457\exists2.rq">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

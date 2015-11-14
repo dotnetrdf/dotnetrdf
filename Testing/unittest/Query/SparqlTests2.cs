@@ -1676,6 +1676,19 @@ WHERE
             RunCore457("exists2.rq");
         }
 
+        [Test, Timeout(30000)]
+        public void SparqlGraphExistsInteractionCore457_4()
+        {
+            RunCore457("exists3.rq");
+        }
+
+        [Test, Ignore, Timeout(15000)]
+        public void SparqlGraphExistsInteractionCore457_5()
+        {
+            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
+            RunCore457("exists-limit.rq");
+        }
+
 #endif
     }
 }
