@@ -1,11 +1,35 @@
 ﻿Change Log
 ==========
 
+1.0.10
+------
+
+Changed
+- Bug Fixes
+ - Fix inconsistent use of XML entities for compression in RdfXmlWriter (CORE-453)
+ - Disable HTTP Keep Alive by default as it can cause errors under some circumstances (CORE-454)
+ - Fix bug with ToString() form of SparqlQuery not being round trippable in some cases (CORE-458)
+- Build
+ - Ensure all NuGet packages and Release libraries are built in Release mode (CORE-459)
+- Dependencies
+ - Upgrade OpenLink.Data.Virtuoso to 7.20.3214.1 (VIRT-359)
+  - Note that this removes support for Virtuoso on .Net Client Profile
+ - Upgrade VDS.Common to 1.6.4 (CORE-459)
+ - Upgrade Newtonsoft.Json to 7.0.1 (CORE-460)
+
 1.0.9
 -----
 
 Changed
 - Bug Fixes
+ - Performance fixes for query evaluation over virtual graphs (CORE-449, CORE-450, CORE-451, CORE-452)
+ - BaseEndpoint now permits more access to the HttpWebRequest prior to issuing it to allow for extra customisation (CORE-448)
+ - AllegroGraph compatibility issue with incorrect MIME type for saving data (CORE-447)
+ - SPARQL Query Parser was overly strict with some aggregate containing queries where the GROUP BY was implicit (CORE-446)
+ - Fixes for Stardog 3.x support (CORE-443)
+ - Improvements to multi-threaded performance when using URI Interning
+- Dependencies
+ - Upgrade VDS.Common to 1.6.0
 
 1.0.8
 -----
@@ -244,8 +268,8 @@ Changed
  - Fixed various corner case bugs in Turtle parsing highlighted by updating to support latest W3C recommendation (CORE-314)
  - Fixed a bug with use of xml: as a prefix for element names in RDF/XML (CORE-358)
 - Dependencies
- - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
- - Upgrade Json.Net to 5.0.4
+ - Upgraded VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
+ - Upgraded Json.Net to 5.0.4
 - Documentation
  - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
 - Core API

@@ -1176,7 +1176,6 @@ namespace VDS.RDF.Query
             }
 
             String preOutput = output.ToString();
-            preOutput = preOutput.Replace("<" + RdfSpecsHelper.RdfType + ">", "a");
             if (this._nsmapper.Prefixes.Any())
             {
                 foreach (String prefix in this._nsmapper.Prefixes)

@@ -38,3 +38,8 @@ SparqlGUI
 
 StoreManager
 
+
+Installation
+- Fixed bug with outdated versions being packaged in Installer Package (TOOLS-455)
+- Fixed missing Start Menu shortcuts (TOOLS-456)
+

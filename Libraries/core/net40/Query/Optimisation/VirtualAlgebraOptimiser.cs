@@ -178,12 +178,6 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         return result;
                     }
-                    else if (patterns.Count == current.PatternCount)
-                    {
-                        //If count of remaining patterns same as original pattern count there was no optimisation
-                        //to do so return as is
-                        return current;
-                    }
                     else if (patterns.Count > 0)
                     {
                         //If any patterns left at end join as a BGP with result so far

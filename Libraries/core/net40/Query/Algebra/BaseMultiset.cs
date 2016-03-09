@@ -255,7 +255,7 @@ namespace VDS.RDF.Query.Algebra
                 foreach (String var in joinVars)
                 {
                     joinedSet.AddVariable(var);
-                    values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                    values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                     nulls.Add(new List<int>());
                 }
 
@@ -465,7 +465,7 @@ namespace VDS.RDF.Query.Algebra
             foreach (String var in joinVars)
             {
                 joinedSet.AddVariable(var);
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 
@@ -602,7 +602,7 @@ namespace VDS.RDF.Query.Algebra
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
-                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
             }
 

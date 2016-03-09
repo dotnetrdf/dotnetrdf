@@ -44,11 +44,11 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         //Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
+        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         //Indexes
-        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
-                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
-                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer());
+        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
+                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
+                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer());
 
         //Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
@@ -61,9 +61,9 @@ namespace VDS.RDF
                                   _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
 
         //Comparers
-        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastNodeComparer()),
-                                  _pComparer = new PredicateObjectComparer(new FastNodeComparer()),
-                                  _oComparer = new ObjectSubjectComparer(new FastNodeComparer());
+        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
+                                  _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
+                                  _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
         private int _count = 0;
 

@@ -213,6 +213,12 @@ namespace VDS.RDF.Storage
                 request.Proxy = this._proxy;
             }
 #endif
+
+#if !PORTABLE
+            // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
+            request.KeepAlive = false;
+#endif
+
             return request;
         }
 

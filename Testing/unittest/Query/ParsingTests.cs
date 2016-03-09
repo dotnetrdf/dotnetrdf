@@ -659,5 +659,63 @@ WHERE
             var subjectMatch = pattern.Subject as NodeMatchPattern;
             Assert.AreEqual(new Uri("http://example.com/foo bar"), ((IUriNode)subjectMatch.Node).Uri);
         }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_1()
+        {
+            const String query = @" PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX sem: <http://ns.kodak.com/sem/1.0/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ( afn:sqrt( sum( (?fVal - ?ave) * (?fVal - ?ave) ) /  (COUNT(?fv) - 1) ) as ?stddev )  (avg(?fVal) as ?a)
+FROM <urn:guid:mdw>
+WHERE 
+{
+  ?pic sem:MyPredicate ?fv .
+  BIND (xsd:float(?fv ) AS ?fVal)
+  {
+    SELECT (AVG(?fVal2) AS ?ave) (COUNT(?fVal2) as ?cnt) 
+    WHERE
+    {
+      ?pic sem:MyPredicate ?fvi .
+      BIND (xsd:float(?fvi ) AS ?fVal2)
+    }
+  }
+}";
+
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_2()
+        {
+            // Valid because only aggregates used in the projection
+            const String query = @"SELECT (<http://func>() AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingAggregatesCore446_3()
+        {
+            // Invalid because non-aggregate and non-group key used in projection
+            const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_4()
+        {
+            // Valid because only aggregates and group keys used in projection
+            const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o } GROUP BY ?s";
+            this._parser.ParseFromString(query);
+        }
+
+        [Test]
+        public void SparqlParsingAggregatesCore446_5()
+        {
+            // Invalid because non-aggregate and non-group key used in projection
+            const String query = @"SELECT (<http://func>(?count) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
+            this._parser.ParseFromString(query);
+        }
     }
 }

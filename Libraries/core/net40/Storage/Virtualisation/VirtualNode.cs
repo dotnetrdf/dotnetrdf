@@ -51,7 +51,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// </para>
     /// </remarks>
     public abstract class BaseVirtualNode<TNodeID, TGraphID> 
-        : IVirtualNode<TNodeID, TGraphID>, IEquatable<BaseVirtualNode<TNodeID, TGraphID>>, IComparable<BaseVirtualNode<TNodeID, TGraphID>>
+        : IVirtualNode<TNodeID, TGraphID>, IEquatable<BaseVirtualNode<TNodeID, TGraphID>>, IComparable<BaseVirtualNode<TNodeID, TGraphID>>,
+        ICanCopy
     {
         private IGraph _g;
         private Uri _graphUri;
@@ -636,12 +637,14 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #endregion
 
+        #region ICopyNodes abstract Member
         /// <summary>
         /// Copies the Virtual Node into another Graph
         /// </summary>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
         public abstract INode CopyNode(IGraph target);
+        #endregion
 
         /// <summary>
         /// Gets the Hash Code of the Virtual Node

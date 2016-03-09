@@ -1033,10 +1033,97 @@ namespace VDS.RDF.Storage.Management
     }
 
     /// <summary>
-    /// Management connection for Stardog servers running the latest version, current this is 2.*
+    /// Management connection for Stardog 3.* servers
+    /// </summary>
+    public class StardogV3Server
+        : StardogV2Server
+    {
+        /// <summary>
+        /// Creates a new connection to a Stardog Server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        public StardogV3Server(String baseUri)
+            : this(baseUri, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogV3Server(String baseUri, String username, String password)
+            : base(baseUri, username, password)
+        {
+        }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV3Server(String baseUri, WebProxy proxy)
+            : this(baseUri, null, null, proxy)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogV3Server(String baseUri, String username, String password, WebProxy proxy)
+            : base(baseUri, username, password, proxy)
+        {
+        }
+
+#endif
+
+
+#if !NO_SYNC_HTTP
+
+        /// <summary>
+        /// Gets a provider for the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        public override IStorageProvider GetStore(string storeID)
+        {
+#if !NO_PROXY
+            return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+            return new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd);
+#endif
+        }
+
+#endif
+
+        /// <summary>
+        /// Gets a database from the server
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+#if !NO_PROXY
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
+#else
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(this._baseUri, storeID, this._username, this._pwd)), state);
+#endif
+        }
+    }
+
+    /// <summary>
+    /// Management connection for Stardog servers running the latest version, current this is 3.*
     /// </summary>
     public class StardogServer
-        : StardogV2Server
+        : StardogV3Server
     {
         /// <summary>
         /// Creates a new connection to a Stardog Server

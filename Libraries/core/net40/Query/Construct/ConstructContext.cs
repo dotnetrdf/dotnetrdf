@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetNode(INode n)
         {
-            if (this._nodeMap == null) this._nodeMap = new MultiDictionary<INode,INode>(new FastNodeComparer());
+            if (this._nodeMap == null) this._nodeMap = new MultiDictionary<INode,INode>(new FastVirtualNodeComparer());
 
             if (this._nodeMap.ContainsKey(n)) return this._nodeMap[n];
 

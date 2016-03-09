@@ -15,9 +15,7 @@ This package contains the Core Library for the following .Net profiles:
 It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
 - .Net 4.0
-- .Net 4.0 Client Profile
 - .Net 3.5
-- .Net 3.5 Client Profile
 
 And it contains a Query plugin for Full Text indexing support, builds are provided
 for the following .Net profiles:

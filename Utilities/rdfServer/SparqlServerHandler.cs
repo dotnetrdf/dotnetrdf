@@ -83,7 +83,6 @@ namespace VDS.RDF.Utilities.Server
                 context.Server.Context[RdfServerOptions.DotNetRdfConfigKey] = g;
             }
 
-
             //Generate the expected Path and try and load the Configuration using the appropriate Node
             String expectedPath;
             WebConfigurationLoader.FindObject(g, context.Request.Url, out expectedPath);

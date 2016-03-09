@@ -62,15 +62,16 @@
     <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\packages\OpenLink.Data.Virtuoso.6.2.3128.1\lib\net35\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
+    <Reference Include="virtado4, Version=4.0.0.0, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\OpenLink.Data.Virtuoso.7.20.3214.1\lib\net40\virtado4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="VirtuosoManager.cs" />
     <Compile Include="VirtuosoObjectFactory.cs" />
     <Compile Include="VirtuosoReader.cs" />
-    <Compile Include="VirtuosoTripleStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -118,4 +118,3 @@
   </Target>
   -->
 </Project>
-

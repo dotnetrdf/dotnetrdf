@@ -2386,8 +2386,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Portable.Runtime">
       <HintPath>lib\Portable.Runtime.dll</HintPath>
@@ -2395,8 +2396,9 @@
     <Reference Include="System" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common">
-      <HintPath>..\..\..\packages\VDS.Common.1.5.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
+    <Reference Include="VDS.Common, Version=1.6.4.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\VDS.Common.1.6.4\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -2552,4 +2554,9 @@
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs">
+      <Link>Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

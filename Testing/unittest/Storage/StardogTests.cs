@@ -49,7 +49,10 @@ namespace VDS.RDF.Storage
             {
                 Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
             }
-            return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer), TestConfigManager.GetSetting(TestConfigManager.StardogDatabase), TestConfigManager.GetSetting(TestConfigManager.StardogUser), TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
+            return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
+                TestConfigManager.GetSetting(TestConfigManager.StardogDatabase),
+                TestConfigManager.GetSetting(TestConfigManager.StardogUser),
+                TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
         }
 
         public static StardogServer GetServer()
@@ -58,7 +61,9 @@ namespace VDS.RDF.Storage
             {
                 Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
             }
-            return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer), TestConfigManager.GetSetting(TestConfigManager.StardogUser), TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
+            return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
+                TestConfigManager.GetSetting(TestConfigManager.StardogUser),
+                TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
         }
 
         protected override IStorageProvider GetManager()
@@ -130,7 +135,7 @@ namespace VDS.RDF.Storage
         public void StorageStardogSaveToDefaultGraph()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
+            
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = null;
@@ -158,7 +163,7 @@ namespace VDS.RDF.Storage
                 //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = StardogTests.GetConnection();
-                ;
+                
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -183,7 +188,7 @@ namespace VDS.RDF.Storage
                 //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = StardogTests.GetConnection();
-                ;
+                
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 Uri u = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
@@ -205,7 +210,7 @@ namespace VDS.RDF.Storage
         public void StorageStardogSaveToNamedGraphOverwrite()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
+            
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/namedGraph");
@@ -236,7 +241,7 @@ namespace VDS.RDF.Storage
                 //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = StardogTests.GetConnection();
-                ;
+                
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -258,7 +263,8 @@ namespace VDS.RDF.Storage
                 {
                     Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
                 }
-                Assert.IsFalse(h.GetTriplesWithPredicate(rdfType).Any(), "Retrieved Graph should not contain any rdf:type Triples");
+                Assert.IsFalse(h.GetTriplesWithPredicate(rdfType).Any(),
+                    "Retrieved Graph should not contain any rdf:type Triples");
             }
             finally
             {
@@ -274,7 +280,7 @@ namespace VDS.RDF.Storage
                 //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = StardogTests.GetConnection();
-                ;
+                
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
@@ -300,7 +306,8 @@ namespace VDS.RDF.Storage
                 {
                     Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
                 }
-                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(), "Retrieved Graph should not contain any rdf:type Triples");
+                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(),
+                    "Retrieved Graph should not contain any rdf:type Triples");
             }
             finally
             {
@@ -316,7 +323,7 @@ namespace VDS.RDF.Storage
                 //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = StardogTests.GetConnection();
-                ;
+                
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/tempGraph");
@@ -350,14 +357,19 @@ namespace VDS.RDF.Storage
         public void StorageStardogReasoningQL()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
+            if (stardog.Reasoning == StardogReasoningMode.DatabaseControlled)
+            {
+                Assert.Inconclusive(
+                    "Version of Stardog being tested does not support configuring reasoning mode at connection level");
+            }
 
             Graph g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/reasoning");
             stardog.SaveGraph(g);
 
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
+                           "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
             Console.WriteLine(query);
             Console.WriteLine();
 
@@ -384,14 +396,30 @@ namespace VDS.RDF.Storage
                 Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
 
-            Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count, "Reasoning should yield as many if not more results");
+            Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count,
+                "Reasoning should yield as many if not more results");
+        }
+
+        [Test, ExpectedException(typeof(RdfStorageException))]
+        public void StorageStardogReasoningMode()
+        {
+            StardogConnector connector = StardogTests.GetConnection();
+
+            if (connector.Reasoning != StardogReasoningMode.DatabaseControlled)
+            {
+                Assert.Pass();
+            }
+            else
+            {
+                connector.Reasoning = StardogReasoningMode.DL;
+            }
         }
 
         [Test]
         public void StorageStardogTransactionTest()
         {
             StardogConnector stardog = StardogTests.GetConnection();
-            ;
+            
             stardog.Begin();
             stardog.Commit();
             stardog.Dispose();
@@ -425,7 +453,8 @@ namespace VDS.RDF.Storage
             //Now try to delete the data from this Graph
             GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
             SparqlUpdateParser parser = new SparqlUpdateParser();
-            processor.ProcessCommandSet(parser.ParseFromString("DELETE WHERE { GRAPH <http://example.org/ampersandGraph> { ?s ?p ?o } }"));
+            processor.ProcessCommandSet(
+                parser.ParseFromString("DELETE WHERE { GRAPH <http://example.org/ampersandGraph> { ?s ?p ?o } }"));
 
             Graph i = new Graph();
             stardog.LoadGraph(i, g.BaseUri);
@@ -475,7 +504,8 @@ namespace VDS.RDF.Storage
             }
 
             Console.WriteLine("Inserting data");
-            stardog.Update("INSERT DATA { GRAPH <http://example.org/stardog/update/1> { <http://x> <http://y> <http://z> } }");
+            stardog.Update(
+                "INSERT DATA { GRAPH <http://example.org/stardog/update/1> { <http://x> <http://y> <http://z> } }");
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
@@ -498,7 +528,8 @@ namespace VDS.RDF.Storage
             Assert.IsTrue(g.IsEmpty, "Graph should be empty after DROP command");
 
             Console.WriteLine("Inserting data");
-            stardog.Update("INSERT DATA { GRAPH <http://example.org/stardog/update/2> { <http://x> <http://y> <http://z> } }");
+            stardog.Update(
+                "INSERT DATA { GRAPH <http://example.org/stardog/update/2> { <http://x> <http://y> <http://z> } }");
             Console.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/2");
@@ -523,7 +554,8 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Inserting data");
             IGraph newData = new Graph();
             newData.BaseUri = new Uri("http://example.org/stardog/update/3");
-            newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")), newData.CreateUriNode(new Uri("http://z")));
+            newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")),
+                newData.CreateUriNode(new Uri("http://z")));
             stardog.SaveGraph(newData);
             Console.WriteLine("Inserted data");
             g = new Graph();
@@ -542,7 +574,8 @@ namespace VDS.RDF.Storage
             stardog.Begin();
 
             // Try to make an update
-            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/4>; INSERT DATA { GRAPH <http://example.org/stardog/update/4> { <http://x> <http://y> <http://z> } }");
+            stardog.Update(
+                "DROP SILENT GRAPH <http://example.org/stardog/update/4>; INSERT DATA { GRAPH <http://example.org/stardog/update/4> { <http://x> <http://y> <http://z> } }");
 
             // Commit the transaction
             stardog.Commit();
@@ -565,7 +598,8 @@ namespace VDS.RDF.Storage
             stardog.Begin();
 
             // Try to make an update
-            stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/5>; INSERT DATA { GRAPH <http://example.org/stardog/update/5> { <http://x> <http://y> <http://z> } }");
+            stardog.Update(
+                "DROP SILENT GRAPH <http://example.org/stardog/update/5>; INSERT DATA { GRAPH <http://example.org/stardog/update/5> { <http://x> <http://y> <http://z> } }");
 
             // Rollback the transaction
             stardog.Rollback();

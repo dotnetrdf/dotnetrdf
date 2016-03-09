@@ -13,6 +13,7 @@
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
   <property name="dotnetrdf.noportable" value="${dotnetrdf.nosilverlight}" />
+  <property name="dotnetrdf.configuration" value="Debug" />
   
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
@@ -30,12 +31,12 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="109" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.version" value="1010" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
   <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
-  <property name="dotnetrdf.toolsversion" value="109" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="1010" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
   <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
-  <property name="dotnetrdf.nuspecversion" value="1.0.9-prerelease01" /> <!-- Version number passed to NuGet for packaging -->
-  <property name="dotnetrdf.buildversion" value="1.0.9.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.10-prerelease02" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.10.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -61,8 +62,6 @@
 		 projectsync-query-fulltext-clientprofile,
 		 projectsync-query-fulltext-clientprofile-net35,
 		 projectsync-query-fulltext-net35,
-		 projectsync-data-virtuoso-clientprofile,
-		 projectsync-data-virtuoso-clientprofile-net35,
 		 projectsync-data-virtuoso-net35,
      projectsync-test-portable">
 
@@ -139,30 +138,12 @@
     </exec>
   </target>
 
-  <target name="projectsync-data-virtuoso-clientprofile" description="Syncs the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file"  unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
-    </exec>
-  </target>
-
   <target name="projectsync-data-virtuoso-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
     <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
-    </exec>
-  </target>
-
-  <target name="projectsync-data-virtuoso-clientprofile-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file"  unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Data.Virtuoso .Net 3.5 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/SyncProjects/SyncProjects.exe">
-      <arg value="sync" />
-      <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
     </exec>
   </target>
   
@@ -544,9 +525,7 @@
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
           depends="restore-packages,
                    compile-data-virtuoso,
-                   compile-data-virtuoso-net35,
-                   compile-data-virtuoso-clientprofile,
-                   compile-data-virtuoso-clientprofile-net35">
+                   compile-data-virtuoso-net35">
   </target>
 
   <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
@@ -588,7 +567,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
@@ -601,7 +580,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -613,7 +592,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -625,7 +604,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -637,7 +616,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/portable/dotNetRDF.Portable.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -649,19 +628,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectsync-data-virtuoso-clientprofile,restore-packages">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -673,19 +640,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectsync-data-virtuoso-clientprofile-net35,restore-packages">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -697,7 +652,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -709,7 +664,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -721,7 +676,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -733,7 +688,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -745,7 +700,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor/rdfEditor.Core.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -757,7 +712,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor.wpf/rdfEditor.Core.Wpf.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -769,7 +724,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -781,7 +736,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfConvert/rdfConvert.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -793,7 +748,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfEditor.Wpf/rdfEditor.Wpf.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -805,7 +760,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfOptStats/rdfOptStats.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -817,7 +772,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfQuery/rdfQuery.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -829,7 +784,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/SparqlGui/SparqlGui.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -841,7 +796,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServer/rdfServer.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -853,7 +808,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServerGUI/rdfServerGUI.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -865,7 +820,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfWebDeploy/rdfWebDeploy.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -877,7 +832,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/StoreManager/StoreManager.csproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -889,7 +844,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Build/ToolkitInstaller/ToolkitInstaller.wixproj" />
-      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:Configuration=${dotnetrdf.configuration}" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
@@ -912,7 +867,7 @@
           depends="build-core,build-core-net35,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-portable,
-                   build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
+                   build-data-virtuoso,build-data-virtuoso-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
 
   <target name="build-utils" description="Builds dotNetRDF Toolkit nightlies" unless="${dotnetrdf.nobuild}"
@@ -927,104 +882,90 @@
   </target>
   
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/VDS.Common.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/dotNetRDF.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
   <target name="build-core-net35" description="Copy the latest 3.5 build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/VDS.Common.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/dotNetRDF.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile 3.5 Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/VDS.Common.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
   <target name="build-core-portable" description="Copy the latest Portable build to the Portable Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-portable">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/dotNetRDF.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Portable.Runtime.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/Debug/VDS.Common.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/dotNetRDF.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/Portable.Runtime.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-  </target>
-
-  <target name="build-data-virtuoso-clientprofile" description="Copy the latest Data.Virtuoso Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/virtado4.dll" />
   </target>
 
   <target name="build-data-virtuoso-net35" description="Copy the latest Data.Virtuoso 3.5 build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-  </target>
-
-  <target name="build-data-virtuoso-clientprofile-net35" description="Copy the latest Data.Virtuoso 3.5 Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/dotNetRDF.Data.Virtuoso.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/${dotnetrdf.configuration}/virtado3.dll" />
   </target>
 
   <target name="build-query-fulltext" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/dotNetRDF.Query.FullText.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/${dotnetrdf.configuration}/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-clientprofile" description="Copy the latest Query.FullText build to the Query.FullText Client Profile nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/dotNetRDF.Query.FullText.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/${dotnetrdf.configuration}/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/dotNetRDF.Query.FullText.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/${dotnetrdf.configuration}/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-clientprofile-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/dotNetRDF.Query.FullText.pdb" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.pdb" unless="${'${dotnetrdf.configuration}' != 'Debug'}" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/${dotnetrdf.configuration}/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/${dotnetrdf.configuration}/Lucene.Net.dll" />
   </target>
 
   <target name="build-util-convert" description="Copy the latest rdfConvert build to the nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-util-convert">
@@ -1126,6 +1067,7 @@
 		   validate-release-utils" />
 
   <target name="validate-release-libs" description="Validates that the libraries to be released have the correct version set">
+    <property name="dotnetrdf.configuration" value="Release" />
     <exec program="Build/VersionBumper/VersionBumper.exe" failonerror="true">
       <arg value="-scan" />
       <arg value="Libraries/" />
@@ -1343,7 +1285,7 @@
         <include name="ReadMe.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
-      <fileset basedir="Build/ToolkitInstaller/Debug/" failonempty="true">
+      <fileset basedir="Build/ToolkitInstaller/bin/${dotnetrdf.configuration}/" failonempty="true">
         <include name="*" />
       </fileset>
     </zip>
@@ -1382,12 +1324,12 @@
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-        <include name="*" />
+        <include name="*" />c
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Core/src/">
-        <include name="*" />
+        <include name="**.cs" />
       </fileset>
     </delete>
     <!-- Then create the Core library package -->
@@ -1418,16 +1360,10 @@
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/src/">
-      <fileset basedir="Libraries/core/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1462,7 +1398,7 @@
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/src/">
-        <include name="*" />
+        <include name="**.cs" />
       </fileset>
     </delete>
     <!-- Then create the Data.Virtuoso package -->
@@ -1471,31 +1407,15 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Data.Virtuoso/lib/net40-client/">
-      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net40-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35/">
         <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Data.Virtuoso/lib/net35-client/">
-      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35-client/">
-        <include name="dotNetRDF.*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Data.Virtuoso/src/">
-      <fileset basedir="Libraries/Data/Virtuoso/net40/">
-        <include name="**/*.cs" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1530,7 +1450,7 @@
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/src/">
-        <include name="*" />
+        <include name="**.cs" />
       </fileset>
     </delete>
     <!-- Then create the Query.FullText package -->
@@ -1554,16 +1474,10 @@
         <include name="dotNetRDF.*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Query.FullText/src/">
-      <fileset basedir="Libraries/Query/FullText/net40/">
-        <include name="**/*.cs" />
-      </fileset>
-    </copy>
     <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Query.FullText.nuspec" />
-      <arg value="-Symbols" />
       <arg value="-Verbosity" />
       <arg value="detailed" />
       <arg value="-Version" />
@@ -1654,13 +1568,9 @@
       <infiles>
         <include name="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
         <include name="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-        <include name="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
-        <include name="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
       </infiles>
     </style>
     <move file="Build/nant/dotNetRDF.Data.Virtuoso.html" tofile="Build/nuget/Data.Virtuoso/dotNetRDF.Data.Virtuoso.nuspec" />
     <move file="Build/nant/dotNetRDF.Query.FullText.html" tofile="Build/nuget/Query.FullText/dotNetRDF.Query.FullText.nuspec" />
-    <move file="Build/nant/dotNetRDF.Data.Virtuoso.symbols.html" tofile="Build/nuget/Symbols/Data.Virtuoso/dotNetRDF.Data.Virtuoso.symbols.nuspec" />
-    <move file="Build/nant/dotNetRDF.Query.FullText.symbols.html" tofile="Build/nuget/Symbols/Query.FullText/dotNetRDF.Query.FullText.symbols.nuspec" />
   </target>
 </project>

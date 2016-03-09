@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Query Reasoning Mode", DisplayOrder = 2, Type = ConnectionSettingType.Enum, PopulateFrom = ConfigurationLoader.PropertyLoadMode),
          DefaultValue(StardogReasoningMode.None)]
-        public StardogReasoningMode ReasoningMode { get; set; }
+        public virtual StardogReasoningMode ReasoningMode { get; set; }
 
         /// <summary>
         /// Gets/Sets the Username

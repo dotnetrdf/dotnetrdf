@@ -49,11 +49,11 @@ namespace VDS.RDF.Query.Inference
     /// </remarks>
     public class StaticRdfsReasoner : IInferenceEngine
     {
-        private Dictionary<INode, INode> _classMappings = new Dictionary<INode, INode>();
-        private Dictionary<INode, INode> _propertyMappings = new Dictionary<INode, INode>();
-        private MultiDictionary<INode, List<INode>> _domainMappings = new MultiDictionary<INode, List<INode>>(new FastNodeComparer());
-        private MultiDictionary<INode, List<INode>> _rangeMappings = new MultiDictionary<INode, List<INode>>(new FastNodeComparer());
-        private IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
+        private readonly Dictionary<INode, INode> _classMappings = new Dictionary<INode, INode>();
+        private readonly Dictionary<INode, INode> _propertyMappings = new Dictionary<INode, INode>();
+        private readonly MultiDictionary<INode, List<INode>> _domainMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
+        private readonly MultiDictionary<INode, List<INode>> _rangeMappings = new MultiDictionary<INode, List<INode>>(new FastVirtualNodeComparer());
+        private readonly IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
 
         /// <summary>
         /// Creates a new instance of the Static RdfsReasoner
