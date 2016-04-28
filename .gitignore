@@ -1,0 +1,40 @@
+# use glob syntax.
+syntax: glob
+
+# Temporary Build Artifacts
+bin/
+**/bin
+**/obj
+**/Debug
+TestResults/
+Build/ndoc3/docs
+Build/nuget/**/*.nupkg
+Build/nuget/**/lib/*
+Build/nuget/**/src/*
+dotNetRDF*.zip
+_UpgradeReport*
+UpgradeLog*
+log-file.txt
+Backup/
+
+
+# Files not to version control
+*.suo
+*.temp
+*.user
+temp*.txt
+found*.txt
+_ReSharper*/
+*.lnk
+*.PublicKey
+Build\ToolkitInstaller\CoreFiles.wxs
+
+# NuGet Package Management Stuff
+.nuget/*.exe
+packages/
+
+# Developer/Environment specific config files
+Testing/unittest/resources/UnitTestConfig.properties
+
+# Visual Studio config
+.vs/
