@@ -37,6 +37,7 @@ namespace VDS.RDF
 {
 #if !SILVERLIGHT
     [TestFixture]
+    [Ignore("Remote pellet server no longer available")]
     public class PelletTests
     {
         public const String PelletTestServer = "http://ps.clarkparsia.com/";
