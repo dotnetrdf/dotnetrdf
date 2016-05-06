@@ -27,7 +27,7 @@ WHERE
 					?Gp0_sub foaf:primaryTopic ?p0_sub . 
 				} 
 			} 
-			#ORDER BY ?p0_sub
+			ORDER BY ?p0_sub
 			LIMIT 2 
 		}
 		FILTER(?p0_sub=?p0) 
