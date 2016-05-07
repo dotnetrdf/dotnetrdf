@@ -1209,6 +1209,8 @@
       <fileset failonempty="true">
         <include name="**/*" />
         <exclude name=".hg/" />
+        <exclude name=".git/" />
+        <exclude name=".vs/" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
         <exclude name="**/*.dll" />
