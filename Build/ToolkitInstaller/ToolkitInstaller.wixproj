@@ -10,7 +10,7 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
-    <SDKPath Condition=" '$(SDKPath)' == '' ">C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A</SDKPath>
+    <SDKPath Condition=" '$(SDKPath)' == '' ">C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDK</SDKPath>
     <DotNetRdfVersion>1.0.10.0</DotNetRdfVersion>
     <PackageDir>$(IntermediateOutputPath)packages</PackageDir>
     <CompilerAdditionalOptions>-dCoreFiles=$(PackageDir) -dProductName="dotNetRDF Toolkit" -dBuildNumber=$(DotNetRdfVersion)</CompilerAdditionalOptions>

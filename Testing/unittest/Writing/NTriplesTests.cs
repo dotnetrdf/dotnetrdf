@@ -309,12 +309,16 @@ namespace VDS.RDF.Writing
             }
             INode n = new NodeFactory().CreateLiteralNode(builder.ToString());
 
+            const int repeatCount = 10000;
             // Write 10,000 times with NTriplesFormatter
             Stopwatch timer = new Stopwatch();
             INodeFormatter formatter = new NTriplesFormatter();
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
             timer.Start();
-            strWriter.WriteLine(formatter.Format(n));
+            for (var i = 0; i < repeatCount; i++)
+            {
+                strWriter.WriteLine(formatter.Format(n));
+            }
             timer.Stop();
 
             Console.WriteLine("NTriples Formatter Time Elapsed: " + timer.Elapsed);
@@ -325,7 +329,10 @@ namespace VDS.RDF.Writing
             formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
             strWriter = new System.IO.StringWriter();
             timer.Start();
-            strWriter.WriteLine(formatter.Format(n));
+            for (var i = 0; i < repeatCount; i++)
+            {
+                strWriter.WriteLine(formatter.Format(n));
+            }
             timer.Stop();
 
             Console.WriteLine("NTriples Formatter (RDF 1.1) Time Elapsed: " + timer.Elapsed);
@@ -336,7 +343,10 @@ namespace VDS.RDF.Writing
             strWriter = new System.IO.StringWriter();
             formatter = new UncompressedTurtleFormatter();
             timer.Start();
-            strWriter.WriteLine(formatter.Format(n));
+            for (var i = 0; i < repeatCount; i++)
+            {
+                strWriter.WriteLine(formatter.Format(n));
+            }
             timer.Stop();
 
             Console.WriteLine("Turtle Write Time Elapsed: " + timer.Elapsed);

@@ -89,6 +89,7 @@ namespace VDS.RDF.Writing
         }
 
         [Test]
+        [Ignore("Extremely resource heavy")]
         public void WritingSerializeOwnOneOfVeryLarge()
         {
                 //Create the Graph for the Test and Generate a List of URIs

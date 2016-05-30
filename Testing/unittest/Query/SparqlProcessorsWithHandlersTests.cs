@@ -278,6 +278,7 @@ namespace VDS.RDF.Query
         }
 
         [Test]
+        [Ignore("Remote server is gone")]
         public void SparqlWithHandlersPelletCount()
         {
             try

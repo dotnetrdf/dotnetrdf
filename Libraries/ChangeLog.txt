@@ -15,7 +15,7 @@ Changed
  - Upgrade OpenLink.Data.Virtuoso to 7.20.3214.1 (VIRT-359)
   - Note that this removes support for Virtuoso on .Net Client Profile
  - Upgrade VDS.Common to 1.6.4 (CORE-459)
- - Upgrade Newtonsoft.Json to 7.0.1 (CORE-460)
+ - Upgrade Newtonsoft.Json to 8.0.3 (CORE-460)
 
 1.0.9
 -----

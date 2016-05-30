@@ -1616,7 +1616,7 @@ WHERE
             Assert.IsTrue(q.QueryExecutionTime.HasValue);
             Console.WriteLine(q.QueryExecutionTime.Value);
 
-            TestTools.ShowResults(results);
+            //TestTools.ShowResults(results);
         }
 
         [Test, Ignore, Timeout(15000)]
