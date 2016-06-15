@@ -294,76 +294,76 @@ namespace VDS.RDF.Query.Algebra
                         {
                             context.OutputMultiset.Add(tp.CreateResult(t));
                         }
+                    }
+                }
+                //Recurse unless we're the last pattern
+                if (pattern < this._triplePatterns.Count - 1)
+                {
+                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
 
-                        //Recurse unless we're the last pattern
-                        if (pattern < this._triplePatterns.Count - 1)
+                    //If recursion leads to a halt then we halt and return immediately
+                    if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+                    {
+                        return results;
+                    }
+                    else if (halt)
+                    {
+                        if (results.Count == 0)
                         {
-                            results = this.StreamingEvaluate(context, pattern + 1, out halt);
-
-                            //If recursion leads to a halt then we halt and return immediately
-                            if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+                            //If recursing leads to no results then eliminate all outputs
+                            //Also reset to prevResults to -1
+                            resultsFound = 0;
+                            localOutput = new Multiset();
+                            prevResults = -1;
+                        }
+                        else if (prevResults > -1)
+                        {
+                            if (results.Count == prevResults)
                             {
-                                return results;
-                            }
-                            else if (halt)
-                            {
-                                if (results.Count == 0)
-                                {
-                                    //If recursing leads to no results then eliminate all outputs
-                                    //Also reset to prevResults to -1
-                                    resultsFound = 0;
-                                    localOutput = new Multiset();
-                                    prevResults = -1;
-                                }
-                                else if (prevResults > -1)
-                                {
-                                    if (results.Count == prevResults)
-                                    {
-                                        //If the amount of results found hasn't increased then this match does not
-                                        //generate any further solutions further down the recursion so we can eliminate
-                                        //this from the results
-                                        localOutput.Remove(localOutput.SetIDs.Max());
-                                    }
-                                }
-                                prevResults = results.Count;
-
-                                //If we're supposed to halt but not reached the number of required results then continue
-                                context.InputMultiset = initialInput;
-                                context.OutputMultiset = localOutput;
-                            }
-                            else
-                            {
-                                //Otherwise we need to keep going here
-                                //So must reset our input and outputs before continuing
-                                context.InputMultiset = initialInput;
-                                context.OutputMultiset = new Multiset();
-                                resultsFound--;
+                                //If the amount of results found hasn't increased then this match does not
+                                //generate any further solutions further down the recursion so we can eliminate
+                                //this from the results
+                                localOutput.Remove(localOutput.SetIDs.Max());
                             }
                         }
-                        else
-                        {
-                            //If we're at the last pattern and we've found a match then we can halt
-                            halt = true;
+                        prevResults = results.Count;
 
-                            //Generate the final output and return it
-                            if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                            {
-                                //Disjoint so do a Product
-                                results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
-                            }
-                            else
-                            {
-                                //Normal Join
-                                results = context.InputMultiset.Join(context.OutputMultiset);
-                            }
+                        //If we're supposed to halt but not reached the number of required results then continue
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = localOutput;
+                    }
+                    else
+                    {
+                        //Otherwise we need to keep going here
+                        //So must reset our input and outputs before continuing
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = new Multiset();
+                        resultsFound--;
+                    }
+                }
+                else
+                {
+                    //If we're at the last pattern and we've found a match then we can halt
+                    halt = true;
 
-                            //If not reached required number of results continue
-                            if (results.Count >= this._requiredResults && this._requiredResults != -1)
-                            {
-                                context.OutputMultiset = results;
-                                return context.OutputMultiset;
-                            }
-                        }
+                    //Generate the final output and return it
+                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                    {
+                        //Disjoint so do a Product
+                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
+                            context.RemainingTimeout);
+                    }
+                    else
+                    {
+                        //Normal Join
+                        results = context.InputMultiset.Join(context.OutputMultiset);
+                    }
+
+                    //If not reached required number of results continue
+                    if (results.Count >= this._requiredResults && this._requiredResults != -1)
+                    {
+                        context.OutputMultiset = results;
+                        return context.OutputMultiset;
                     }
                 }
                 context.InputMultiset = results;
@@ -472,7 +472,8 @@ namespace VDS.RDF.Query.Algebra
 
                 if (context.InputMultiset.ContainsVariable(bindVar))
                 {
-                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
+                    throw new RdfQueryException(
+                        "Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
                 }
                 else
                 {
@@ -516,7 +517,8 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                throw new RdfQueryException("Encountered a " + temp.GetType().FullName + " which is not a lazily evaluable Pattern");
+                throw new RdfQueryException("Encountered a " + temp.GetType().FullName +
+                                            " which is not a lazily evaluable Pattern");
             }
 
             //If we found no possibles we return the null multiset

@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
         {
             String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z } LIMIT 5000";
             SparqlQuery q = this._parser.ParseFromString(query);
-            q.Timeout = 100;
+            q.Timeout = 10;
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
