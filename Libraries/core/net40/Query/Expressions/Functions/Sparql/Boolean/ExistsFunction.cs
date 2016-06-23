@@ -72,7 +72,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode() || this._lastCount != context.InputMultiset.Count) this.EvaluateInternal(context);
 
-            if (this._result is IdentityMultiset) return new BooleanNode(null, true);
             if (this._mustExist)
             {
                 //If an EXISTS then Null/Empty Other results in false
