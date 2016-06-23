@@ -1,6 +1,17 @@
 ﻿Change Log
 ==========
 
+1.0.11
+------
+
+NOTE: From this release, bug tracking has moved to https://github.com/dotnetrdf/dotnetrdf/issues
+so bug ID references are to this new tracker (in the form #XXX)
+
+Changed
+- Bug Fixes
+  - Fix for LazyBGP evaluation where triple patterns do not extend the result set with more bindings (#57)
+  - Fix for incorrect return on evaluation of a (NOT) EXISTS filter with no variables (#58)
+
 1.0.10
 ------
 
