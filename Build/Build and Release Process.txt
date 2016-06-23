@@ -88,7 +88,7 @@ the versions and release types are correct.
 
 You can then run the following nant command:
 
-nant no-build dist-libs-stable dist-utils-stable
+nant no-build dist-libs-stable dist-libs-nuget dist-utils-stable dist-utils-installer
 
 This will generate you four ZIP files comprising the libraries, source code, toolkit and toolkit installer
 

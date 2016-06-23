@@ -16,7 +16,6 @@
       <dependency id="OpenLink.Data.Virtuoso" version="7.20.3214.1" />
     </dependencies>
     <releaseNotes>
-- Upgraded to OpenLink.Data.Virtuoso 7.20.3214.1
     </releaseNotes>
   </metadata>
 </package>

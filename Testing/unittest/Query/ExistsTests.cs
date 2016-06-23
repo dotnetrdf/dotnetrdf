@@ -30,6 +30,7 @@ using System.Text;
 using NUnit.Framework;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
@@ -76,6 +77,49 @@ WHERE
             Assert.IsNotNull(results);
             Assert.IsFalse(results.IsEmpty);
             Assert.IsTrue(expected < results.Count, "Should be more triples found that just those matched by the EXISTS clause");
+        }
+
+        [Test]
+        public void SparqlNotExistsEmptyBgp()
+        {
+            var g = new Graph();
+            g.Assert(g.CreateUriNode(new Uri("http://example.org/s")),
+                g.CreateUriNode(new Uri("http://example.org/p")),
+                g.CreateUriNode(new Uri("http://example.org/o")));
+
+            // If FILTER NOT EXISTS returns false, no results expected
+            var query =
+                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }";
+            var q = new SparqlQueryParser().ParseFromString(query);
+            var results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(results.IsEmpty);
+            
+            // If FILTER NOT EXISTS returns true, one result expected
+            query =
+                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> } }";
+            q = new SparqlQueryParser().ParseFromString(query);
+            results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(1, results.Count);
+
+            // If FILTER EXISTS returns true, one result expected
+            query =
+                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }";
+            q = new SparqlQueryParser().ParseFromString(query);
+            results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(1, results.Count);
+
+            // If FILTER EXISTS returns false, no results expected
+            query =
+                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> } }";
+            q = new SparqlQueryParser().ParseFromString(query);
+            results = g.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(results.IsEmpty);
         }
     }
 }
