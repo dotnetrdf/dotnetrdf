@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <Thing rdf:about="http://example.org/thing/1" xmlns="http://example.org/ns/a#">
+    <p1 xmlns="http://example.org/ns/b#">This property is in namespace B</p1>
+    <p2>This property is in namespace A</p2>
+  </Thing>
+</rdf:RDF>

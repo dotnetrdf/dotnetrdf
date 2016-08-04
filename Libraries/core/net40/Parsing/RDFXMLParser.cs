@@ -469,8 +469,8 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Root Node should not contain any attributes other than XML Namespace Declarations", "RDF", element);
             }
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
 
             //Make sure we discard the current ElementEvent which will be at the front of the queue
             context.Events.Dequeue();
@@ -487,6 +487,9 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);
             }
+
+            // Exit the current namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -558,7 +561,8 @@ namespace VDS.RDF.Parsing
             //Check it has a valid Uri
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsNodeElementUri(element.QName))
             {
                 throw ParserHelper.Error("A Node Element was encountered with an invalid URI '" + element.QName + "' \nCore Syntax Terms, Old Syntax Terms and rdf:li cannot be used as Node Element URIs", "Node Element", element);
@@ -722,6 +726,9 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", "NodeElement", last);
             }
+
+            // Exit the current namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -796,7 +803,9 @@ namespace VDS.RDF.Parsing
             //Validate the Uri
             element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
-            this.ApplyNamespaces(context, element);
+
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsPropertyElementURI(element.QName))
             {
                 //Invalid Uri
@@ -871,6 +880,7 @@ namespace VDS.RDF.Parsing
                 //Error
                 throw ParserHelper.Error("An Element without a known Parse Type was encountered Or the Parser was unable to determine what to do based on the subsequent event - Parser cannot proceed!", "Node Element", element);
             }
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -895,8 +905,8 @@ namespace VDS.RDF.Parsing
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            //Start new namespace scope
+            ApplyNamespaces(context, element);
 
             //Only allowed one attribute max which must be an ID attribute
             String ID = String.Empty;
@@ -978,6 +988,9 @@ namespace VDS.RDF.Parsing
 
                 this.Reify(context, uri, subj, pred, obj);
             }
+
+            // End current namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -1009,8 +1022,8 @@ namespace VDS.RDF.Parsing
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace sscope
+            ApplyNamespaces(context, element);
 
             //Validate that the middle event is a TextEvent
             if (!(middle is TextEvent))
@@ -1097,6 +1110,9 @@ namespace VDS.RDF.Parsing
 
                 this.Reify(context, uri, subj, pred, obj);
             }
+
+            // End namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -1119,8 +1135,8 @@ namespace VDS.RDF.Parsing
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start new namespace scope
+            ApplyNamespaces(context, element);
 
             //Validate Attributes
             String ID = String.Empty;
@@ -1200,6 +1216,9 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
             }
+
+            // End the namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -1222,8 +1241,8 @@ namespace VDS.RDF.Parsing
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
 
             //Validate Attributes
             String ID = String.Empty;
@@ -1331,6 +1350,9 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
+
+            // End the namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -1353,8 +1375,8 @@ namespace VDS.RDF.Parsing
             ElementEvent element = (ElementEvent)first;
             if (this._traceparsing) this.ProductionTracePartial(element);
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
 
             //Validate Attributes
             String ID = String.Empty;
@@ -1517,6 +1539,9 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
             }
+
+            // End the current namespace scope
+            PopNamespaces(context);
         }
 
         /// <summary>
@@ -1533,8 +1558,8 @@ namespace VDS.RDF.Parsing
                 this.ProductionTrace("Empty Property Element");
             }
 
-            //Apply Namespaces
-            this.ApplyNamespaces(context, element);
+            // Start a new namespace scope
+            ApplyNamespaces(context, element);
 
             INode subj, pred, obj;
             ElementEvent parentEl;
@@ -1586,7 +1611,6 @@ namespace VDS.RDF.Parsing
                 temp.Enqueue(new TextEvent(String.Empty, String.Empty));
                 temp.Enqueue(new EndElementEvent());
                 this.GrammarProductionLiteralPropertyElement(context, temp, parent);
-                return;
             }
             else
             {
@@ -1743,6 +1767,8 @@ namespace VDS.RDF.Parsing
                     }
                 }
             }
+            // End the current namespace scope
+            PopNamespaces(context);
         }
 
         //Useful Functions defined as part of the Grammar
@@ -1753,8 +1779,9 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Parser Context</param>
         /// <param name="evt">Element Event</param>
-        private void ApplyNamespaces(RdfXmlParserContext context, ElementEvent evt)
+        private static void ApplyNamespaces(RdfXmlParserContext context, ElementEvent evt)
         {
+            context.Namespaces.IncrementNesting();
             if (!evt.BaseUri.Equals(String.Empty))
             {
                 Uri baseUri = UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
@@ -1769,6 +1796,11 @@ namespace VDS.RDF.Parsing
                     if (!context.Handler.HandleNamespace(ns.Prefix, UriFactory.Create(ns.Uri))) ParserHelper.Stop();
                 }
             }
+        }
+
+        private static void PopNamespaces(RdfXmlParserContext context)
+        {
+            context.Namespaces.DecrementNesting();
         }
 
         /// <summary>
