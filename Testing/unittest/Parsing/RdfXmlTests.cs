@@ -295,5 +295,23 @@ namespace VDS.RDF.Parsing
         {
             TestTools.RunAtDepth(5000, this.ParsingRdfXmlStackOverflow1);
         }
+
+        [Test]
+        public void ParsingRdfXmlResetDefaultNamespace()
+        {
+            IGraph g = new Graph();
+            var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
+            parser.Load(g, @"resources\rdfxml-defaultns-scope.xml");
+            var resourceNode = g.CreateUriNode(UriFactory.Create("http://example.org/thing/1"));
+            var p1Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/b#p1"));
+            var p2Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/a#p2"));
+            var triples = g.GetTriplesWithSubject(resourceNode).ToList();
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(3, triples.Count);
+            Assert.IsNotNull(p2Node);
+            Assert.AreEqual(1, g.GetTriplesWithSubjectPredicate(resourceNode, p1Node).Count());
+            Assert.AreEqual(1, g.GetTriplesWithSubjectPredicate(resourceNode, p2Node).Count());
+        }
 	}
 }

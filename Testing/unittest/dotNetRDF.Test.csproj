@@ -892,6 +892,9 @@
     <Content Include="resources\rdfa\webscience.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\rdfxml-defaultns-scope.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\rvesse.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

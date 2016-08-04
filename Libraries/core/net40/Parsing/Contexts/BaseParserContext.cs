@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         protected bool _traceParsing = false;
 
-        private NamespaceMapper _nsmap = new NamespaceMapper(true);
+        private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
         private Uri _baseUri;
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map for the parsing context
         /// </summary>
-        public INamespaceMapper Namespaces
+        public INestedNamespaceMapper Namespaces
         {
             get
             {

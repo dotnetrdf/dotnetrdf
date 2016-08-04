@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map for the Handler
         /// </summary>
-        INamespaceMapper Namespaces
+        INestedNamespaceMapper Namespaces
         {
             get;
         }
