@@ -31,4 +31,4 @@ Build\ToolkitInstaller\CoreFiles.wxs
 packages/
 
 # Developer/Environment specific config files
-Testing\unittest\resources\UnitTestConfig.properties
+Testing/unittest/resources/UnitTestConfig.properties
