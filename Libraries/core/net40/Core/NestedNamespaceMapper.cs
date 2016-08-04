@@ -33,7 +33,7 @@ namespace VDS.RDF
     /// <summary>
     /// A Namespace Mapper which has an explicit notion of Nesting
     /// </summary>
-    public class NestedNamespaceMapper : INamespaceMapper
+    public class NestedNamespaceMapper : INestedNamespaceMapper
     {
         private Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
         private Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();

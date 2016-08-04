@@ -690,6 +690,9 @@
     <Compile Include="..\net40\Core\INamespaceMapper.cs">
       <Link>Core\INamespaceMapper.cs</Link>
     </Compile>
+    <Compile Include="..\net40\Core\INestedNamespaceMapper.cs">
+      <Link>Core\INestedNamespaceMapper.cs</Link>
+    </Compile>
     <Compile Include="..\net40\Core\INodeFactory.cs">
       <Link>Core\INodeFactory.cs</Link>
     </Compile>
