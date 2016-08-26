@@ -381,6 +381,8 @@ namespace VDS.RDF.Query.Datasets
 
 #if !SILVERLIGHT
                 String assm = Assembly.GetAssembly(this.GetType()).FullName;
+#elif NETCORE
+                String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
                 String assm = this.GetType().Assembly.FullName;
 #endif

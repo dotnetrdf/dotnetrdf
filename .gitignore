@@ -28,6 +28,7 @@ _ReSharper*/
 *.lnk
 *.PublicKey
 Build/ToolkitInstaller/*.wxs
+*.lock.json
 
 # NuGet Package Management Stuff
 .nuget/*.exe

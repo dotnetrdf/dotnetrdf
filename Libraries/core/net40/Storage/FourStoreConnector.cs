@@ -456,9 +456,11 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_PROXY
                 //Ensure Proxy Settings have been taken from the class
                 this._endpoint.Proxy = this.Proxy;
                 this._endpoint.UseCredentialsForProxy = false;
+#endif
 
                 HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery);
                 StreamReader data = new StreamReader(response.GetResponseStream());
@@ -589,12 +591,12 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-        /// <summary>
-        /// Saves a Graph to the Store asynchronously
-        /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+                /// <summary>
+                /// Saves a Graph to the Store asynchronously
+                /// </summary>
+                /// <param name="g">Graph to save</param>
+                /// <param name="callback">Callback</param>
+                /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             //Set up the Request

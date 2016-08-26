@@ -43,8 +43,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// </summary>
         /// <param name="expr">Expression</param>
         public Sha256HashFunction(ISparqlExpression expr)
+#if NETCORE
+            :base(expr, SHA256.Create()) { }
+#else
             : base(expr, new SHA256Managed()) { }
-
+#endif
         /// <summary>
         /// Gets the String representation of the function
         /// </summary>

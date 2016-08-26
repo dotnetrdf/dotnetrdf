@@ -137,7 +137,8 @@ namespace VDS.RDF.Parsing
             }
         }
 
-#if !SILVERLIGHT
+        //#if !SILVERLIGHT
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
@@ -190,6 +191,9 @@ namespace VDS.RDF.Parsing
             if (u.IsFile)
 #endif
             {
+#if NO_FILE
+                throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
+#else
                 //Invoke FileLoader instead
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                 if (Path.DirectorySeparatorChar == '/')
@@ -201,6 +205,7 @@ namespace VDS.RDF.Parsing
                     FileLoader.Load(g, u.ToString().Substring(8), parser);
                 }
                 return;
+#endif
             }
             if (u.Scheme.Equals("data"))
             {
@@ -266,6 +271,9 @@ namespace VDS.RDF.Parsing
                 if (u.IsFile)
 #endif
                 {
+#if NO_FILE
+                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -277,6 +285,7 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.ToString().Substring(8), parser);
                     }
                     return;
+#endif
                 }
                 if (u.Scheme.Equals("data"))
                 {
@@ -355,7 +364,11 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if NETCORE
+                    httpRequest.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     httpRequest.UserAgent = _userAgent;
+#endif
                 }
 
                 Tools.HttpDebugRequest(httpRequest);
@@ -570,6 +583,9 @@ namespace VDS.RDF.Parsing
 #endif
 
                 {
+#if NO_FILE
+                    throw new RdfParseException("Loading from a file:// URL requires the synchronous file loader which is not currently supported on your system");
+#else
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
@@ -581,6 +597,7 @@ namespace VDS.RDF.Parsing
                         FileLoader.Load(handler, u.AbsoluteUri.Substring(8), parser);
                     }
                     return;
+#endif
                 }
 
                 //Sanitise the URI to remove any Fragment ID
@@ -608,7 +625,11 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
+#if NETCORE
+                    httpRequest.Headers[HttpRequestHeader.UserAgent] = _userAgent;
+#else
                     httpRequest.UserAgent = _userAgent;
+#endif
                 }
 
                 //HTTP Debugging
@@ -685,13 +706,13 @@ namespace VDS.RDF.Parsing
 
 #endif
 
-        #region Warning Events
+                    #region Warning Events
 
-        /// <summary>
-        /// Raises warning messages
-        /// </summary>
-        /// <param name="message">Warning Message</param>
-        static void RaiseWarning(String message)
+                    /// <summary>
+                    /// Raises warning messages
+                    /// </summary>
+                    /// <param name="message">Warning Message</param>
+                    static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

@@ -44,7 +44,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="expr">Expression</param>
         public Sha1Function(ISparqlExpression expr)
+#if NETCORE
+            :base(expr, SHA1.Create()) { }
+#else
             : base(expr, new SHA1Managed()) { }
+#endif
 
         /// <summary>
         /// Gets the String representation of the function

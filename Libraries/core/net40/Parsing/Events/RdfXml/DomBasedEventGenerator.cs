@@ -62,6 +62,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document.Load(input);
         }
 
+#if !NO_FILE
         /// <summary>
         /// Creates a new DOM Based event generator
         /// </summary>
@@ -71,6 +72,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             this._document = new XmlDocument();
             this._document.Load(file);
         }
+#endif
 
         /// <summary>
         /// Gets all events from the XML DOM
@@ -128,7 +130,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             root.DocumentElement = element;
             root.Children.Add(element);
 
-            #region Attribute Processing
+        #region Attribute Processing
 
             //Go through attributes looking for XML Namespace Declarations
             foreach (XmlAttribute attr in docEl.Attributes)
@@ -182,7 +184,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 }
             }
 
-            #endregion
+        #endregion
 
             //Iterate over Children
             foreach (XmlNode child in docEl.ChildNodes)
@@ -224,7 +226,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             ElementEvent parentEl = (ElementEvent)parent;
             element.Language = parentEl.Language;
 
-            #region Attribute Processing
+        #region Attribute Processing
 
             //Iterate over Attributes
             bool parseTypeLiteral = false;
@@ -376,7 +378,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 }
             }
 
-            #endregion
+        #endregion
 
             //Don't proceed if Literal Parse Type is on
             if (parseTypeLiteral)
@@ -546,4 +548,4 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     }
 
 #endif
-}
+    }
