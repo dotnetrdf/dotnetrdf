@@ -549,7 +549,11 @@ namespace VDS.RDF.Configuration
                                 Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : UriFactory.Create(valueNode.AsString()));
                                 property.SetValue(null, uriValue, null);
                             }
+#if NETCORE
+                            else if (valueType.IsEnum())
+#else
                             else if (valueType.IsEnum)
+#endif
                             {
                                 if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t.ToString() + " - the object must be a literal when the property being set has a enumeration type");
                                 Object enumVal = Enum.Parse(valueType, valueNode.AsString(), true);
@@ -746,9 +750,9 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        #endregion
+#endregion
 
-        #region Object Loading
+#region Object Loading
 
         /// <summary>
         /// Checks for circular references and throws an error if there is one
@@ -1467,9 +1471,9 @@ namespace VDS.RDF.Configuration
 #endif
         }
 
-        #endregion
+#endregion
 
-        #region Instance methods
+#region Instance methods
 
         private readonly IGraph _configGraph;
 
@@ -1592,7 +1596,7 @@ namespace VDS.RDF.Configuration
             return LoadObject(_configGraph, uriNode);
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader

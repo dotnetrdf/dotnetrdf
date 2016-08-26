@@ -42,7 +42,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="expr">Argument Expression</param>
         public Sha1HashFunction(ISparqlExpression expr)
+#if NETCORE
+            :base(expr, SHA1.Create()) { }
+#else
             : base(expr, new SHA1Managed()) { }
+#endif
 
         /// <summary>
         /// Gets the Functor of the Expression
