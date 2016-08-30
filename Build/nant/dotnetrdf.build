@@ -13,6 +13,7 @@
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
   <property name="dotnetrdf.noportable" value="${dotnetrdf.nosilverlight}" />
+  <property name="dotnetrdf.nonetcore" value=""/>
   <property name="dotnetrdf.configuration" value="Debug" />
   
   <!-- Set the Compiler Warnings we want to ignore -->
@@ -31,12 +32,12 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="1012" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
-  <property name="dotnetrdf.releasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
-  <property name="dotnetrdf.toolsversion" value="1012" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
-  <property name="dotnetrdf.toolsreleasetype" value="stable" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
-  <property name="dotnetrdf.nuspecversion" value="1.0.12" /> <!-- Version number passed to NuGet for packaging -->
-  <property name="dotnetrdf.buildversion" value="1.0.12.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
+  <property name="dotnetrdf.version" value="1013" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.releasetype" value="pre1" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.toolsversion" value="1013" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.toolsreleasetype" value="pre1" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
+  <property name="dotnetrdf.nuspecversion" value="1.0.13-pre1" /> <!-- Version number passed to NuGet for packaging -->
+  <property name="dotnetrdf.buildversion" value="1.0.13.0" /> <!-- Version number expected to be set for Assembly versions, used for pre-release validation -->
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -519,7 +520,8 @@
                    compile-core-net35,
                    compile-core-clientprofile,
                    compile-core-clientprofile-net35,
-                   compile-core-portable">  
+                   compile-core-portable,
+				   compile-core-netcore">  
   </target>
 
   <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
@@ -621,6 +623,15 @@
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
+  </target>
+  
+  <target name="compile-core-netcore" description="Compiles the dotNetRDF .NET Core Build" unless="${dotnetrdf.nocompile}" depends="license-core,restore-packages">
+	<exec program='C:\Program Files\dotnet\dotnet.exe'>
+		<arg value="build"/>
+		<arg value="Libraries\core\netcore" />
+		<arg line="--configuration ${dotnetrdf.configuration}"/>
+		<arg line="--no-dependencies" />
+	</exec>
   </target>
 
   <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core,restore-packages">
@@ -867,6 +878,7 @@
           depends="build-core,build-core-net35,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-portable,
+				   build-core-netcore,
                    build-data-virtuoso,build-data-virtuoso-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
 
@@ -926,6 +938,16 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/portable/" file="Libraries/core/portable/bin/${dotnetrdf.configuration}/VDS.Common.dll" />
   </target>
 
+  <target name="build-core-netcore" description="Copy the latest .NET Core build to the .NET Core Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-netcore">
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.dll" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.deps.json" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.pdb"
+          if="${dotnetrdf.configuration == 'Debug'}" />
+  </target>
+  
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/${dotnetrdf.configuration}/dotNetRDF.Data.Virtuoso.xml" />
@@ -1326,9 +1348,14 @@
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Core/lib/portable-net4+sl4+netcore45+wp8+MonoAndroid1+MonoTouch1">
-        <include name="*" />c
+        <include name="*" />
       </fileset>
     </delete>
+	<delete>
+	  <fileset basedir="Build/nuget/Core/lib/netstandard1.4">
+	    <include name="*" />
+	  </fileset>
+	</delete>
     <delete>
       <fileset basedir="Build/nuget/Core/src/">
         <include name="**.cs" />
@@ -1362,6 +1389,11 @@
         <include name="Portable.Runtime.dll" />
       </fileset>
     </copy>
+	<copy todir="Build/nuget/Core/lib/netstandard1.4">
+	  <fileset basedir="bin/stable/Libraries/Core/netcore/">
+	    <include name="dotNetRDF.*"/>
+	  </fileset>
+	</copy>
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
