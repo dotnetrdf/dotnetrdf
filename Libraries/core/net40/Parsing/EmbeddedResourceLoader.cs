@@ -28,7 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using VDS.RDF.Parsing.Handlers;
-using static VDS.RDF.Parsing.EmbeddedResourceLoader;
 
 namespace VDS.RDF.Parsing
 {
