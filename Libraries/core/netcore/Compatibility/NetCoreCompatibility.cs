@@ -125,11 +125,6 @@ namespace VDS.RDF
         {
             return t.GetTypeInfo().IsGenericType;
         }
-
-        public static IEnumerable<Type> GetInterfaces(this Type t)
-        {
-            return t.GetTypeInfo().ImplementedInterfaces;
-        }
     }
 
     public class DescriptionAttribute : Attribute
