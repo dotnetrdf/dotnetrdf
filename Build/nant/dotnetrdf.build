@@ -939,12 +939,19 @@
   </target>
 
   <target name="build-core-netcore" description="Copy the latest .NET Core build to the .NET Core Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-netcore">
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.dll" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.deps.json" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.pdb"
+          if="${dotnetrdf.configuration == 'Debug'}" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.dll" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.deps.json" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.pdb"
           if="${dotnetrdf.configuration == 'Debug'}" />
   </target>
   
@@ -1390,10 +1397,16 @@
       </fileset>
     </copy>
 	<copy todir="Build/nuget/Core/lib/netstandard1.4">
-	  <fileset basedir="bin/stable/Libraries/Core/netcore/">
+	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.4/">
 	    <include name="dotNetRDF.*"/>
 	  </fileset>
 	</copy>
+	<copy todir="Build/nuget/Core/lib/netstandard1.5">
+	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.5/">
+	    <include name="dotNetRDF.*"/>
+	  </fileset>
+	</copy>
+	  
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />

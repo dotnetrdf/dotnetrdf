@@ -21,7 +21,8 @@
 
   "frameworks": {
     "netstandard1.4": {
-    }
+    },
+    "netstandard1.5": {} 
   },
 
   "buildOptions": {
