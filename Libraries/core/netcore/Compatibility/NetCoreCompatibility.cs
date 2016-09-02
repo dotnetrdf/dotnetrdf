@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -98,17 +96,6 @@ namespace VDS.RDF
         public static void Close(this HttpWebResponse response)
         {
             // No-op    
-        }
-
-        /// <summary>
-        /// Implementation of Type.IsAssignableFrom(Type) for the .NET Standard Library
-        /// </summary>
-        /// <param name="t"></param>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public static bool IsAssignableFrom(this Type t, Type other)
-        {
-            return t.GetTypeInfo().IsAssignableFrom(other.GetTypeInfo());
         }
 
         public static ConstructorInfo[] GetConstructors(this Type t)
