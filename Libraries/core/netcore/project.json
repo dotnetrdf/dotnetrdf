@@ -1,28 +1,26 @@
 ﻿{
   "title": "dotNetRDF",
-  "version": "1.0.13-pre1",
+  "version": "1.0.13-pre3",
   "description": "API for manipulating RDF data (.NET Core)",
   "copyright": "Copyright © dotNetRDF Project 2009-2016",
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "System.Xml.XmlSerializer": "4.0.11",
-    "System.Xml.XmlDocument": "4.0.1",
-    "System.Reflection.TypeExtensions": "4.1.0",
-    "System.Net.Requests": "4.0.11",
     "Newtonsoft.JSON": "9.0.1",
-    "System.Security.Cryptography.Algorithms": "4.2.0",
+    "System.ComponentModel": "4.0.1",
     "System.ComponentModel.Annotations": "4.1.0",
     "System.ComponentModel.TypeConverter": "4.1.0",
-    "System.ComponentModel": "4.0.1",
-    "System.Threading.Thread": "4.0.0",
     "System.Globalization.Extensions": "4.0.1",
+    "System.Net.Requests": "4.0.11",
+    "System.Reflection.TypeExtensions": "4.1.0",
+    "System.Threading.Thread": "4.0.0",
+    "System.Xml.XmlSerializer": "4.0.11",
+    "System.Xml.XmlDocument": "4.0.1",
     "VDS.Common": "1.7.0-pre1"
   },
 
   "frameworks": {
     "netstandard1.4": {
-
     }
   },
 
