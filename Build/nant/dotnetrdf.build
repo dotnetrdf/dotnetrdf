@@ -1141,7 +1141,7 @@
           depends="clean-nightlies,clean-stable,
                    clean-intermediaries,
                    clean-dist,
-                   clean-ndoc,
+                   clean-shfb,
                    clean-nuget">
   </target>
 
@@ -1186,10 +1186,10 @@
     </delete>
   </target>
 
-  <target name="clean-ndoc" description="Cleans the NDoc working directory">
+  <target name="clean-shfb" description="Cleans the Sandcastle working directory">
     <delete failonerror="false">
       <fileset>
-        <include name="Build/ndoc3/docs/*" />
+        <include name="Build/shfb/Help/*" />
       </fileset>
     </delete>
   </target>
@@ -1250,7 +1250,7 @@
         <exclude name="Samples/" />
         <exclude name="*.zip" />
         <exclude name="Utilities/bsbm/" />
-        <exclude name="Build/ndoc3/docs/" />
+        <exclude name="Build/shfb/Help/" />
         <exclude name="Build/NuGet/*/lib/**/*" />
         <exclude name="packages/" />
       </fileset>
