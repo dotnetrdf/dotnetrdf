@@ -5,22 +5,19 @@
   "copyright": "Copyright © dotNetRDF Project 2009-2016",
 
   "dependencies": {
+    "Newtonsoft.Json": "9.0.1",
     "NETStandard.Library": "1.6.0",
-	"System.ComponentModel.TypeConverter": "4.1.0",
-	"System.Globalization.Extensions": "4.0.1",
-	"System.Net.Requests": "4.0.11",
-	"System.Reflection.TypeExtensions": "4.1.0",
-	"System.Threading.Thread": "4.0.0",
-	"System.Xml.XmlDocument": "4.0.1",
-	"VDS.Common": "1.7.0-*"
+    "System.ComponentModel.TypeConverter": "4.1.0",
+    "System.Globalization.Extensions": "4.0.1",
+    "System.Net.Requests": "4.0.11",
+    "System.Reflection.TypeExtensions": "4.1.0",
+    "System.Threading.Thread": "4.0.0",
+    "System.Xml.XmlDocument": "4.0.1",
+    "VDS.Common": "1.7.0-*"
   },
 
   "frameworks": {
-    "netstandard1.4": {
-      "dependencies": {
-        "Newtonsoft.JSON": "9.0.1"
-      }
-    }
+    "netstandard1.4": {}
   },
 
   "buildOptions": {
