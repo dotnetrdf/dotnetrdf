@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 using System.ComponentModel;
 #if SILVERLIGHT
 using System.ComponentModel.DataAnnotations;
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the Indexing Mode
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Triple Indexing Mode"), Description("Sets the indexing mode for the store"), DefaultValue(SesameNativeIndexMode.SPOC)]
 #else
@@ -147,7 +147,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
 #else
@@ -163,7 +163,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
 #else

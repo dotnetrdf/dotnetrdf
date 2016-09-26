@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- The configuration and platform will be used to determine which assemblies to include from solution and
+				 project documentation sources -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{463dd389-7fb4-4ee8-8221-a279d8f821ee}</ProjectGuid>
+    <SHFBSchemaVersion>2015.6.5.0</SHFBSchemaVersion>
+    <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual Studio adds them anyway -->
+    <AssemblyName>Documentation</AssemblyName>
+    <RootNamespace>Documentation</RootNamespace>
+    <Name>Documentation</Name>
+    <!-- SHFB properties -->
+    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <OutputPath>.\Help\</OutputPath>
+    <HtmlHelpName>dotNetRDFApi</HtmlHelpName>
+    <Language>en-US</Language>
+    <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
+    <IndentHtml>False</IndentHtml>
+    <KeepLogFile>True</KeepLogFile>
+    <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
+    <CleanIntermediates>True</CleanIntermediates>
+    <HelpFileVersion>1.0.13.0</HelpFileVersion>
+    <MaximumGroupParts>2</MaximumGroupParts>
+    <NamespaceGrouping>False</NamespaceGrouping>
+    <SyntaxFilters>C#, Visual Basic</SyntaxFilters>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <PresentationStyle>VS2013</PresentationStyle>
+    <Preliminary>False</Preliminary>
+    <NamingMethod>MemberName</NamingMethod>
+    <HelpTitle>dotNetRDF API Documentation</HelpTitle>
+    <FooterText>Please report any bugs or issues with this documentation at http://github.com/dotnetrdf/dotnetrdf/issues</FooterText>
+    <CopyrightText>Copyright %28c%29 2009 - 2016 dotNetRDF Project</CopyrightText>
+    <CopyrightHref>https://raw.githubusercontent.com/dotnetrdf/dotnetrdf/develop/License.txt</CopyrightHref>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <DocumentationSources>
+      <DocumentationSource sourceFile="..\..\Libraries\core\net40\bin\Debug\dotNetRDF.dll" />
+<DocumentationSource sourceFile="..\..\Libraries\core\net40\bin\Debug\dotNetRDF.xml" />
+<DocumentationSource sourceFile="..\..\Libraries\Data\Virtuoso\net40\bin\Debug\dotNetRDF.Data.Virtuoso.dll" />
+<DocumentationSource sourceFile="..\..\Libraries\Data\Virtuoso\net40\bin\Debug\dotNetRDF.Data.Virtuoso.xml" />
+<DocumentationSource sourceFile="..\..\Libraries\Query\FullText\net40\bin\Debug\dotNetRDF.Query.FullText.dll" />
+<DocumentationSource sourceFile="..\..\Libraries\Query\FullText\net40\bin\Debug\dotNetRDF.Query.FullText.xml" /></DocumentationSources>
+    <ProjectSummary>&amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
+
+&amp;lt%3bp&amp;gt%3bThis is the formal API documentation for the Library whose main namespace is VDS.RDF.  You may alternatively wish to look at the &amp;lt%3ba href=&amp;quot%3bhttp://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide&amp;quot%3b&amp;gt%3bUser Guide&amp;lt%3b/a&amp;gt%3b which contains informal documentation and examples or just visit the main &amp;lt%3ba href=&amp;quot%3bhttp://dotnetrdf.github.io&amp;quot%3b&amp;gt%3bProject Website&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
+    <TransformComponentArguments>
+      <Argument Key="logoFile" Value="" xmlns="" />
+      <Argument Key="logoHeight" Value="" xmlns="" />
+      <Argument Key="logoWidth" Value="" xmlns="" />
+      <Argument Key="logoAltText" Value="" xmlns="" />
+      <Argument Key="logoPlacement" Value="left" xmlns="" />
+      <Argument Key="logoAlignment" Value="left" xmlns="" />
+      <Argument Key="maxVersionParts" Value="" xmlns="" />
+      <Argument Key="defaultLanguage" Value="cs" xmlns="" />
+      <Argument Key="includeEnumValues" Value="true" xmlns="" />
+      <Argument Key="baseSourceCodeUrl" Value="" xmlns="" />
+      <Argument Key="requestExampleUrl" Value="" xmlns="" />
+    </TransformComponentArguments>
+  </PropertyGroup>
+  <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
+			 the build.  The others are optional common platform types that may appear. -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
+  </PropertyGroup>
+  <!-- Import the SHFB build targets -->
+  <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
+  <!-- The pre-build and post-build event properties must appear *after* the targets file import in order to be
+			 evaluated correctly. -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+</Project>

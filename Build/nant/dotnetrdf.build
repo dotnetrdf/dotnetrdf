@@ -33,7 +33,7 @@
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
   <property name="dotnetrdf.version" value="1013" /> <!-- Version number used for dotNetRDF Library release ZIPs -->
-  <property name="dotnetrdf.releasetype" value="pre1" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
+  <property name="dotnetrdf.releasetype" value="pre3" /> <!-- Version descriptor used for dotNetRDF Library release ZIPs -->
   <property name="dotnetrdf.toolsversion" value="1013" /> <!-- Version number used for dotNetRDF Toolkit release ZIPs -->
   <property name="dotnetrdf.toolsreleasetype" value="pre3" /> <!-- Version descriptor used for dotNetRDF Toolkit release ZIPs -->
   <property name="dotnetrdf.nuspecversion" value="1.0.13-pre3" /> <!-- Version number passed to NuGet for packaging -->
@@ -939,12 +939,19 @@
   </target>
 
   <target name="build-core-netcore" description="Copy the latest .NET Core build to the .NET Core Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-netcore">
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.dll" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.deps.json" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netcore/" 
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.pdb"
+          if="${dotnetrdf.configuration == 'Debug'}" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.dll" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.deps.json" />
+	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
+	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.pdb"
           if="${dotnetrdf.configuration == 'Debug'}" />
   </target>
   
@@ -1134,7 +1141,7 @@
           depends="clean-nightlies,clean-stable,
                    clean-intermediaries,
                    clean-dist,
-                   clean-ndoc,
+                   clean-shfb,
                    clean-nuget">
   </target>
 
@@ -1179,10 +1186,10 @@
     </delete>
   </target>
 
-  <target name="clean-ndoc" description="Cleans the NDoc working directory">
+  <target name="clean-shfb" description="Cleans the Sandcastle working directory">
     <delete failonerror="false">
       <fileset>
-        <include name="Build/ndoc3/docs/*" />
+        <include name="Build/shfb/Help/*" />
       </fileset>
     </delete>
   </target>
@@ -1243,7 +1250,7 @@
         <exclude name="Samples/" />
         <exclude name="*.zip" />
         <exclude name="Utilities/bsbm/" />
-        <exclude name="Build/ndoc3/docs/" />
+        <exclude name="Build/shfb/Help/" />
         <exclude name="Build/NuGet/*/lib/**/*" />
         <exclude name="packages/" />
       </fileset>
@@ -1390,10 +1397,16 @@
       </fileset>
     </copy>
 	<copy todir="Build/nuget/Core/lib/netstandard1.4">
-	  <fileset basedir="bin/stable/Libraries/Core/netcore/">
+	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.4/">
 	    <include name="dotNetRDF.*"/>
 	  </fileset>
 	</copy>
+	<copy todir="Build/nuget/Core/lib/netstandard1.5">
+	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.5/">
+	    <include name="dotNetRDF.*"/>
+	  </fileset>
+	</copy>
+	  
     <!-- Finally invoke nuget on the package -->
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />

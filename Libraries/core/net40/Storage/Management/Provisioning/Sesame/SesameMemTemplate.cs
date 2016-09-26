@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE && !NETCORE
 using System.ComponentModel;
 #if SILVERLIGHT
 using System.ComponentModel.DataAnnotations;
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to persist the store
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
         [Category("Sesame Configuration"), Description("Whether the store is persisted"), DefaultValue(true)]
 #endif
         public bool Persist
@@ -129,7 +129,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the sync delay
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
 #else
@@ -145,7 +145,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
 #else
@@ -161,7 +161,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
 #else

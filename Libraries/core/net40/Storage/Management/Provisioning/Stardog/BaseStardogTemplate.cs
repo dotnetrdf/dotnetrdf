@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-#if SILVERLIGHT && !WINDOWS_PHONE
+#if SILVERLIGHT && !WINDOWS_PHONE && !NETCORE
 using System.ComponentModel.DataAnnotations;
 #endif
 using System.Linq;
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets the Database Type
         /// </summary>
         [Category("Index Options"), 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Index Type"),
 #else
@@ -121,7 +121,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit), 
          Category("Index Options"), 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Differential Index Enabled Limit"), 
 #else
@@ -140,7 +140,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit), 
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Differential Index Merge Limit"), 
 #else
@@ -159,7 +159,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals),
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Canonicalise Literals"),
 #else
@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing),
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Index Named Graphs"),
 #else
@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndex),
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Persistent Indexes"),
 #else
@@ -216,7 +216,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync),
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Persist Indexes Synchronously"),
 #else
@@ -235,7 +235,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats),
          Category("Index Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Auto Update Statistics"),
 #else
@@ -264,7 +264,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets/Sets the active graphs for ICV
         /// </summary>
         [Category("Integrity Constraint Validation"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Active Graphs"), 
 #else
@@ -283,7 +283,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvEnabled),
          Category("Integrity Constraint Validation"), 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Enabled"), 
 #else
@@ -302,7 +302,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode),
          Category("Integrity Constraint Validation"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Reasoning Mode"), 
 #else
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking),
          Category("Reasoning Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Automatic Consistency Checking"),
 #else
@@ -351,7 +351,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPunning),
          Category("Reasoning Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Enable Punning")
 #else
@@ -369,7 +369,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Gets/Sets the graphs that contain the schema (TBox) that are used for reasoning
         /// </summary>
         [Category("Reasoning Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Schema Graphs"),
 #else
@@ -398,7 +398,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultFullTextSearch),
          Category("Search Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Enable Full Text Search"),
 #else
@@ -417,7 +417,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync),
          Category("Search Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Search Re-index Mode"),
 #else
@@ -442,7 +442,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultDurableTransactions),
          Category("Transaction Options"),
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETCORE
 #if !SILVERLIGHT
          DisplayName("Durable Transactions"),
 #else

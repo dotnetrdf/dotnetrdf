@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -36,7 +34,7 @@ namespace VDS.RDF
         /// <param name="stream"></param>
         public static void Close(this Stream stream)
         {
-
+            stream.Dispose();
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace VDS.RDF
         /// <param name="theWriter"></param>
         public static void Close(this StreamWriter theWriter)
         {
-
+            theWriter.Dispose();
         }
 
         /// <summary>
@@ -54,7 +52,7 @@ namespace VDS.RDF
         /// <param name="reader"></param>
         public static void Close(this StreamReader reader)
         {
-
+            reader.Dispose();
         }
 
         /// <summary>
@@ -63,7 +61,7 @@ namespace VDS.RDF
         /// <param name="reader"></param>
         public static void Close(this TextReader reader)
         {
-
+            reader.Dispose();
         }
 
         /// <summary>
@@ -72,7 +70,7 @@ namespace VDS.RDF
         /// <param name="theWriter"></param>
         public static void Close(this TextWriter theWriter)
         {
-
+            theWriter.Dispose();
         }
 
         /// <summary>
@@ -81,7 +79,7 @@ namespace VDS.RDF
         /// <param name="reader"></param>
         public static void Close(this XmlReader reader)
         {
-
+            reader.Dispose();
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace VDS.RDF
         /// <param name="theWriter"></param>
         public static void Close(this XmlWriter theWriter)
         {
-
+            theWriter.Dispose();
         }
         /// <summary>
         /// Provides a default no-op implementation of HttpWebResponse.Close() for the NET Standard Library
