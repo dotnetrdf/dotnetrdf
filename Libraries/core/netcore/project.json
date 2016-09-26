@@ -5,8 +5,8 @@
   "copyright": "Copyright © dotNetRDF Project 2009-2016",
 
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
     "NETStandard.Library": "1.6.0",
+    "Newtonsoft.Json": "9.0.1",
     "System.ComponentModel.TypeConverter": "4.1.0",
     "System.Globalization.Extensions": "4.0.1",
     "System.Net.Requests": "4.0.11",
