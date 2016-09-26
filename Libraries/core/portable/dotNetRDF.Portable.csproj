@@ -2400,7 +2400,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="VDS.Common, Version=1.7.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\VDS.Common.1.7.0-pre1\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
+      <HintPath>..\..\..\packages\VDS.Common.1.7.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\VDS.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
