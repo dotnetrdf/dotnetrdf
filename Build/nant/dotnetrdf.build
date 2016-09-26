@@ -946,13 +946,6 @@
 	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.4/" 
 	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.4/dotNetRDF.pdb"
           if="${dotnetrdf.configuration == 'Debug'}" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
-	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.dll" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
-	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.deps.json" />
-	<copy overwrite="true" todir="bin/nightlies/Libraries/Core/netstandard1.5/" 
-	      file="Libraries/core/netcore/bin/${dotnetrdf.configuration}/netstandard1.5/dotNetRDF.pdb"
-          if="${dotnetrdf.configuration == 'Debug'}" />
   </target>
   
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
@@ -1398,11 +1391,6 @@
     </copy>
 	<copy todir="Build/nuget/Core/lib/netstandard1.4">
 	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.4/">
-	    <include name="dotNetRDF.*"/>
-	  </fileset>
-	</copy>
-	<copy todir="Build/nuget/Core/lib/netstandard1.5">
-	  <fileset basedir="bin/stable/Libraries/Core/netstandard1.5/">
 	    <include name="dotNetRDF.*"/>
 	  </fileset>
 	</copy>
