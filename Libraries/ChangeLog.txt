@@ -1,6 +1,23 @@
 ﻿Change Log
 ==========
 
+1.0.13
+------
+
+Added
+- .NET Core build - targets the netstandard1.4 framework (see https://github.com/dotnet/corefx/blob/master/Documentation/architecture/net-platform-standard.md for compatibility details).
+
+Changed
+- Build Changes
+  - Changed API documentation build to use [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) rather than the older NDoc
+
+1.0.12
+------
+
+Changed
+- Bug Fixes
+  - Fix namespace handling error in the RDF/XML parser (#59)
+
 1.0.11
 ------
 
