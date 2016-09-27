@@ -214,7 +214,7 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE
+#if PORTABLE || NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;
@@ -429,7 +429,7 @@ namespace VDS.RDF.Parsing
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
-#if PORTABLE
+#if PORTABLE || NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
 #else
                     request.UserAgent = _userAgent;

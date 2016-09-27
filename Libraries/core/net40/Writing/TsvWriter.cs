@@ -260,7 +260,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !PORTABLE
+#if !(PORTABLE||NETCORE)
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything

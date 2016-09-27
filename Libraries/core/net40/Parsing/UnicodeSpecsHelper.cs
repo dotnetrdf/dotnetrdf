@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing
 
         private static UnicodeCategory GetUnicodeCategory(char c)
         {
-#if PORTABLE
+#if PORTABLE || NETCORE
             return CharUnicodeInfo.GetUnicodeCategory(c);
 #else
             return Char.GetUnicodeCategory(c);

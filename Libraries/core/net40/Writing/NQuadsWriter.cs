@@ -303,7 +303,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !PORTABLE // PCL doesn't provide Thread.Abort() or ThreadAbortException
+#if !(PORTABLE||NETCORE) // PCL doesn't provide Thread.Abort() or ThreadAbortException
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything
