@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(filename, Encoding.UTF8));
+            this.Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 #endif
 
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+            this.Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
         }
 #endif
 

@@ -52,8 +52,15 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public virtual void Save(SparqlResultSet results, String filename)
         {
+#if NETCORE
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                this.Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+            }
+#else
             StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(results, output);
+#endif
         }
 #endif
 

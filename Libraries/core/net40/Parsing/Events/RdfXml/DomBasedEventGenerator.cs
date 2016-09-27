@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         public DomBasedEventGenerator(String file)
         {
             this._document = new XmlDocument();
-            this._document.Load(file);
+            this._document.Load(File.OpenRead(file));
         }
 #endif
 

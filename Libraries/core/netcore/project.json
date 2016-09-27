@@ -28,7 +28,7 @@
         "../net40/Update/Protocol/*.cs"
       ]
     },
-    "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "SILVERLIGHT", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "PORTABLE", "NO_FILE", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
+    "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "SILVERLIGHT", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "PORTABLE", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
     "outputName": "dotNetRDF"
   }
 

@@ -172,13 +172,13 @@ namespace VDS.RDF.Parsing
 #if !SILVERLIGHT
                     input = new StreamReader(filename, Encoding.ASCII);
 #else
-            input = new StreamReader(filename);
+            input = new StreamReader(File.OpenRead(filename));
             this.RaiseWarning("NQuads files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
 #endif
                     break;
                 default:
                     // RDF 1.1 NQuads uses UTF-8 encoding
-                    input = new StreamReader(filename, Encoding.UTF8);
+                    input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
                     break;
             }
 

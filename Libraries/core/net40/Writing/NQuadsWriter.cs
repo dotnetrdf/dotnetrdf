@@ -102,7 +102,7 @@ namespace VDS.RDF.Writing
 #if !SILVERLIGHT
             this.Save(store, new StreamWriter(filename, false, Encoding.ASCII));
 #else
-            this.Save(store, new StreamWriter(filename));
+            this.Save(store, new StreamWriter(File.OpenWrite(filename)));
 #endif
         }
 #endif
