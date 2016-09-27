@@ -113,14 +113,10 @@ namespace VDS.RDF.Writing
         /// <param name="filename">Filename to save to</param>
         public void Save(IGraph g, string filename)
         {
-#if NETCORE
             using (var stream = File.Open(filename, FileMode.Create))
             {
                 this.Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
-#else
-            this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
-#endif
         }
 #endif
 

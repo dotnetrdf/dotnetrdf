@@ -61,14 +61,10 @@ namespace VDS.RDF.Writing
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-#if NETCORE
             using (var stream = File.Open(filename, FileMode.Create))
             {
                 this.Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
             }
-#else
-            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
-#endif
         }
 #endif
 
