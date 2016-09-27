@@ -13,6 +13,7 @@
     "System.Reflection.TypeExtensions": "4.1.0",
     "System.Threading.Thread": "4.0.0",
     "System.Xml.XmlDocument": "4.0.1",
+    "System.Xml.XmlSerializer": "4.0.11", 
     "VDS.Common": "1.7.0"
   },
 
@@ -28,7 +29,7 @@
         "../net40/Update/Protocol/*.cs"
       ]
     },
-    "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "SILVERLIGHT", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
+    "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
     "outputName": "dotNetRDF"
   }
 

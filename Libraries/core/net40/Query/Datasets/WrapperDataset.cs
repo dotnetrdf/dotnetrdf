@@ -379,12 +379,12 @@ namespace VDS.RDF.Query.Datasets
                 INode usingDataset = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));
                 INode innerDataset = context.Graph.CreateBlankNode();
 
-#if !SILVERLIGHT
-                String assm = Assembly.GetAssembly(this.GetType()).FullName;
+#if SILVERLIGHT
+                String assm = this.GetType().Assembly.FullName;
 #elif NETCORE
                 String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
-                String assm = this.GetType().Assembly.FullName;
+                String assm = Assembly.GetAssembly(this.GetType()).FullName;
 #endif
                 if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
                 String effectiveType = this.GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);

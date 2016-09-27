@@ -1451,6 +1451,9 @@ namespace VDS.RDF.Configuration
         {
 #if SILVERLIGHT
             return n;
+#elif NETCORE
+            // TODO: Could support looking up values using the .NET Core configuration API
+            return n;
 #else
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;

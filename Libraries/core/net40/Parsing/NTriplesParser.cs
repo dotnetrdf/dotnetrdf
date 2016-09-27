@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing
                 case NTriplesSyntax.Original:
                     // Original NTriples uses ASCII encoding
 #if !SILVERLIGHT
-                    input = new StreamReader(filename, Encoding.ASCII);
+                    input = new StreamReader(File.OpenRead(filename), Encoding.ASCII);
 #else
             input = new StreamReader(File.OpenRead(filename));
             this.RaiseWarning("NTriples files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");

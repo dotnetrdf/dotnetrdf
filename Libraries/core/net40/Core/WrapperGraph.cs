@@ -42,12 +42,12 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable, XmlRoot(ElementName="graph")]
 #endif
     public abstract class WrapperGraph 
         : IGraph
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         , ISerializable
 #endif
     {
@@ -88,7 +88,7 @@ namespace VDS.RDF
             this.AttachEventHandlers();
         }      
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         /// <summary>
         /// Deserialization Constructor
@@ -969,7 +969,7 @@ namespace VDS.RDF
             this._g.Dispose();
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         #region ISerializable Members
 

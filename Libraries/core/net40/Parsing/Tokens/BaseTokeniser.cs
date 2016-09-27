@@ -690,7 +690,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");
             }
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
 #else
             if (SilverlightExtensions.IsHexEncoding(localOutput.ToString(), 0))

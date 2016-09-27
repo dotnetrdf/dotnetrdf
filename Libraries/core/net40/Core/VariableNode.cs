@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Variable Nodes
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT || NETCORE)
     [Serializable,XmlRoot(ElementName="variable")]
 #endif
     public abstract class BaseVariableNode
@@ -69,7 +69,7 @@ namespace VDS.RDF
         protected BaseVariableNode()
             : base(null, NodeType.Variable) { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         /// <summary>
         /// Deserialization Constructor
@@ -356,7 +356,7 @@ namespace VDS.RDF
             return this.CompareTo((IVariableNode)other);
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         /// <summary>
         /// Gets the data for serialization
@@ -500,7 +500,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class representing Variable Nodes (only used for N3)
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="variable")]
 #endif
     public class VariableNode
@@ -520,7 +520,7 @@ namespace VDS.RDF
         protected VariableNode()
             : base() { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

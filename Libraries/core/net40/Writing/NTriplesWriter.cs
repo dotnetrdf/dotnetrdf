@@ -99,11 +99,13 @@ namespace VDS.RDF.Writing
         {
 #if SILVERLIGHT
             StreamWriter output = new StreamWriter(File.OpenWrite(filename));
-#else
-            StreamWriter output = new StreamWriter(filename, false, Encoding.ASCII);
-#endif
-
             this.Save(g, output);
+#else
+            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
+            {
+                this.Save(g, writer);
+            }
+#endif
         }
 #endif
 

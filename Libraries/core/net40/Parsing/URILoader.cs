@@ -359,7 +359,7 @@ namespace VDS.RDF.Parsing
 
                 //Use HTTP GET
                 httpRequest.Method = "GET";
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
@@ -620,7 +620,7 @@ namespace VDS.RDF.Parsing
 
                 //Use HTTP GET
                 httpRequest.Method = "GET";
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))

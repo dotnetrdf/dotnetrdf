@@ -40,7 +40,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Graph Literal Nodes
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="graphliteral")]
 #endif
     public abstract class BaseGraphLiteralNode
@@ -75,7 +75,7 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Deserializer Constructor
         /// </summary>
@@ -344,7 +344,7 @@ namespace VDS.RDF
             return this.CompareTo((IGraphLiteralNode)other);
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         #region Serialization
 
         /// <summary>
@@ -492,7 +492,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="graphliteral")]
 #endif
     public class GraphLiteralNode 
@@ -513,7 +513,7 @@ namespace VDS.RDF
         protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, subgraph) { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

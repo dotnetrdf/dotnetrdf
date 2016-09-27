@@ -71,7 +71,7 @@ namespace VDS.RDF
           IComparable<IUriNode>, IComparable<IVariableNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
           IEquatable<IUriNode>, IEquatable<IVariableNode>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
           ,ISerializable, IXmlSerializable
 #endif
     {

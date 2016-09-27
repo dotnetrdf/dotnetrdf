@@ -42,12 +42,12 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing RDF Triples in memory
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="triple")]
 #endif
     public sealed class Triple
         : IComparable<Triple>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -151,7 +151,7 @@ namespace VDS.RDF
         private Triple()
         { }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         private Triple(SerializationInfo info, StreamingContext context)
         {
             this._subject = (INode)info.GetValue("s", typeof(INode));
@@ -476,7 +476,7 @@ namespace VDS.RDF
             }
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         #region ISerializable Members
 

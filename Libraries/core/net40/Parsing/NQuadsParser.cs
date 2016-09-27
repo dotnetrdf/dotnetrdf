@@ -170,7 +170,7 @@ namespace VDS.RDF.Parsing
                 case NQuadsSyntax.Original:
                     // Original NQuads uses ASCII encoding
 #if !SILVERLIGHT
-                    input = new StreamReader(filename, Encoding.ASCII);
+                    input = new StreamReader(File.OpenRead(filename), Encoding.ASCII);
 #else
             input = new StreamReader(File.OpenRead(filename));
             this.RaiseWarning("NQuads files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");

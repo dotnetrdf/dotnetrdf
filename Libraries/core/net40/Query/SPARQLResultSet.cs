@@ -68,12 +68,12 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Class for representing Sparql Result Sets
     /// </summary>
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
     [Serializable,XmlRoot(ElementName="resultSet")]
 #endif
     public sealed class SparqlResultSet 
         : IEnumerable<SparqlResult>, IDisposable
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         , ISerializable, IXmlSerializable
 #endif
     {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
         private bool _result = false;
         private SparqlResultsType _type = SparqlResultsType.Unknown;
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         private ResultSetDeserializationInfo _dsInfo;
 #endif
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query
             }
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
         private SparqlResultSet(SerializationInfo info, StreamingContext context)
         {
             this._dsInfo = new ResultSetDeserializationInfo(info, context);
@@ -552,7 +552,7 @@ namespace VDS.RDF.Query
             this._result = false;
         }
 
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
 
         #region Serialization
 

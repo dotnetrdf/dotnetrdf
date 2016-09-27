@@ -381,7 +381,7 @@ namespace VDS.RDF
         /// <param name="httpRequest">HTTP Request</param>
         protected void ApplyRequestOptions(HttpWebRequest httpRequest)
         {
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
 #endif
 
@@ -391,7 +391,7 @@ namespace VDS.RDF
                 if (Options.ForceHttpBasicAuth)
                 {
                     //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
                     httpRequest.Headers.Add("Authorization", "Basic " + credentials);
 #else
@@ -403,7 +403,7 @@ namespace VDS.RDF
                 {
                     //Leave .Net to handle the HTTP auth challenge response itself
                     httpRequest.Credentials = this.Credentials;
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     httpRequest.PreAuthenticate = true;
 #endif
                 }

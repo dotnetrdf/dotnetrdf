@@ -1827,7 +1827,7 @@ namespace VDS.RDF.Storage
                 if (Options.ForceHttpBasicAuth)
                 {
                     //Forcibly include a HTTP basic authentication header
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     string credentials =
                         Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
                     request.Headers.Add("Authorization", "Basic " + credentials);
@@ -1841,7 +1841,7 @@ namespace VDS.RDF.Storage
                     //Leave .Net to cope with HTTP auth challenge response
                     NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                     request.Credentials = credentials;
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
                     request.PreAuthenticate = true;
 #endif
                 }
@@ -1856,7 +1856,7 @@ namespace VDS.RDF.Storage
         /// <param name="request"></param>
         protected virtual void AddStardogHeaders(HttpWebRequest request)
         {
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";" + this.GetReasoningParameter());
             // removed persist=sync, no longer needed in latest stardog versions?
             request.Headers.Add("SD-Protocol", "1.0");
@@ -2603,7 +2603,7 @@ namespace VDS.RDF.Storage
         protected override void AddStardogHeaders(HttpWebRequest request)
         {
             String reasoning = this.GetReasoningParameter();
-#if !SILVERLIGHT
+#if !(SILVERLIGHT||NETCORE)
             request.Headers.Add("SD-Connection-String", reasoning);
             // Only reasoning parameter needed in Stardog 2.0, but < 2.2
 #else
