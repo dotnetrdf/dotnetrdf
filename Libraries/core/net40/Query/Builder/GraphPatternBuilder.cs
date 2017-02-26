@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Builder
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
-        private GraphPatternType _graphPatternType;
+        private readonly GraphPatternType _graphPatternType;
         private readonly IToken _graphSpecifier;
 
         /// <summary>
@@ -57,15 +57,6 @@ namespace VDS.RDF.Query.Builder
         private GraphPatternBuilder(GraphPatternType graphPatternType)
         {
             _graphPatternType = graphPatternType;
-        }
-
-        private GraphPatternBuilder(GraphPatternBuilder graphPatternBuilder)
-            : this(graphPatternBuilder._graphPatternType)
-        {
-            _childGraphPatternBuilders = graphPatternBuilder._childGraphPatternBuilders.ToList();
-            _filterBuilders = graphPatternBuilder._filterBuilders.ToList();
-            _triplePatterns = graphPatternBuilder._triplePatterns.ToList();
-            _graphSpecifier = graphPatternBuilder._graphSpecifier;
         }
 
         internal GraphPatternBuilder(GraphPatternType graphPatternType, IToken graphSpecifier)
