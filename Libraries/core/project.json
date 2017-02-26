@@ -24,12 +24,10 @@
       "buildOptions": {
         "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
         "compile": {
-          "include": [
-            "Compatibility/NetCoreCompatibility.cs"
-          ],
           "exclude": [
             "Web/**/*.cs",
-            "Update/Protocol/*.cs"
+            "Update/Protocol/*.cs",
+            "Compatibility/Portable/**/*.cs"
           ]
         }
       }
@@ -42,7 +40,7 @@
         "define": [ "TRACE", "NET40" ],
         "compile": {
           "exclude": [
-            "Compatibility/*.cs"
+            "Compatibility/**/*.cs"
           ]
         }
       },
@@ -62,14 +60,8 @@
         "define": [ "TRACE", "NO_WEB", "NET40" ],
         "compile": {
           "exclude": [
-            "Compatibility/*.cs"
-          ],
-          "includeFiles": [
-            "Compatibility/HtmlTextWriter.cs",
-            "Compatibility/HtmlTextWriterAttribute.cs",
-            "Compatibility/HtmlTextWriterStyle.cs",
-            "Compatibility/HtmlTextWriterTag.cs",
-            "Compatibility/HttpUtility.cs"
+            "Compatibility/Core/*.cs",
+            "Compatibility/Portable/**/*.cs"
           ]
         }
       },
@@ -88,7 +80,7 @@
         "define": [ "TRACE" ],
         "compile": {
           "exclude": [
-            "Compatibility/*.cs"
+            "Compatibility/**/*.cs"
           ]
         }
       },
@@ -108,14 +100,8 @@
         "define": [ "TRACE", "NO_WEB" ],
         "compile": {
           "exclude": [
-            "Compatibility/*.cs"
-          ],
-          "includeFiles": [
-            "Compatibility/HtmlTextWriter.cs",
-            "Compatibility/HtmlTextWriterAttribute.cs",
-            "Compatibility/HtmlTextWriterStyle.cs",
-            "Compatibility/HtmlTextWriterTag.cs",
-            "Compatibility/HttpUtility.cs"
+            "Compatibility/Core/*.cs",
+            "Compatibility/Portable/**/*.cs"
           ]
         }
       },
@@ -151,11 +137,11 @@
           "NO_URICACHE"
         ],
         "compile": {
-          "include": [
-            "Compatibility/*.cs"
-          ],
           "exclude": [
-            "Compatibility/NetCoreCompatibility.cs"
+            "Compatibility/Core/*.cs"
+          ],
+          "include": [
+            "Compatibility/Portable/**/*.cs"
           ]
         }
       },
@@ -164,6 +150,9 @@
         "System": "2.0.5.0",
         "System.Net": "2.0.5.0",
         "System.Xml": "2.0.5.0"
+      },
+      "dependencies": {
+        "Portable.Runtime": "1.0.0-test1"
       }
     }
   },
