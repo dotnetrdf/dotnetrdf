@@ -1,0 +1,25 @@
+{
+  "name": "dotNetRDF.Query.Spin",
+  "title": "dotNetRDF SPIN",
+  "version": "1.0.13-pre6",
+  "description": "A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine",
+  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+
+  "dependencies": {
+    "dotNetRDF": "1.0.13-pre6"
+  },
+
+  "frameworks": {
+    "net40": {
+      "buildOptions": {
+        "define": [ "TRACE", "NET40" ]
+      }
+    }
+  },
+
+  "buildOptions": {
+    "outputName": "dotNetRDF.Query.Spin"
+  }
+
+}
+

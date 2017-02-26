@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>6532382c-3fcc-49fd-a662-4409f903d070</ProjectGuid>
-    <RootNamespace>VDS.RDF.Data.Virtuoso</RootNamespace>
+    <ProjectGuid>ca86b17c-e928-4412-a968-fc911cd86a53</ProjectGuid>
+    <RootNamespace>VDS.RDF.Query.Spin</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
@@ -15,9 +15,4 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties project_1json__JSONSchema="" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>
