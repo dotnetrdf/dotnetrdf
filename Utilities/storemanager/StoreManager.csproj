@@ -285,10 +285,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj">
-      <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
-      <Name>dotNetRDF.Data.Virtuoso</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>

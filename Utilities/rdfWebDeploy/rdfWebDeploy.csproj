@@ -101,10 +101,6 @@
     <Compile Include="XmlDeploy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj">
-      <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
-      <Name>dotNetRDF.Data.Virtuoso</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
       <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
       <Name>dotNetRDF.Query.FullText</Name>

@@ -1,0 +1,29 @@
+{
+  "name": "dotNetRDF.Data.Virtuoso",
+  "title": "dotNetRDF.Data.Virtuoso",
+  "version": "1.0.13-pre6",
+  "description": "Virtuoso Backend for dotNetRDF",
+  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+
+  "dependencies": {
+    "dotNetRDF": "1.0.13-pre6",
+    "OpenLink.Data.Virtuoso": "7.20.3214.1"
+  },
+
+  "frameworks": {
+    "net40": {
+      "buildOptions": {
+        "define": [ "TRACE", "NET40" ]
+      }
+    },
+    "net35": {
+      "buildOptions": {
+        "define": [ "TRACE" ]
+      }
+    }
+  },
+
+  "buildOptions": {
+    "outputName": "dotNetRDF.Data.Virtuoso"
+  }
+}
