@@ -1,0 +1,95 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#>.
+@prefix dnr-ft: <http://www.dotnetrdf.org/configuration/fulltext#>.
+
+@base <http://www.dotnetrdf.org/configuration/fulltext#> .
+
+dnr-ft:Indexer a rdfs:Class ;
+				rdfs:label "Class of Indexers" ;
+				rdfs:comment "An Indexer is an object that can perform the indexing of RDF Data" .
+				
+dnr-ft:Index a rdfs:Class ;
+			  rdfs:label "Class of Index" ;
+			  rdfs:comment "An Index represents an index of data" .
+			  
+dnr-ft:Analyzer a rdfs:Class ;
+				rdfs:label "Class of Analyzers" ;
+				rdfs:comment "An Analyzer is used to determine the actual terms from the data to be indexed" .
+			  
+dnr-ft:Searcher a rdfs:Class ;
+				  rdfs:label "Class of Search Providers" ;
+				  rdfs:comment "A Search Provider allows full text search and provides results in terms of RDF Terms and scores" .
+				  
+dnr-ft:Schema a rdfs:Class ;
+				rdfs:label "Class of Schemas" ;
+				rdfs:comment "A Schema controls how the Query.FullText library reads and writes documents in the Index" .
+				
+dnr-ft:indexer a rdf:Property ;
+				rdfs:label "Indexer" ;
+				rdfs:comment "Relates an object to an Indexer" ;
+				rdfs:range dnr-ft:Indexer .
+				
+dnr-ft:analyzer a rdf:Property ;
+				 rdfs:label "Analyzer" ;
+				 rdfs:comment "Relates an object to an Analyzer" ;
+				 rdfs:range dnr-ft:Analyzer ;
+				 rdfs:domain [ a owl:Class ; owl:UnionOf ( dnr-ft:Indexer dnr-ft:Searcher ) ] .
+				
+dnr-ft:searcher a rdf:Property ;
+				  rdfs:label "Searcher" ;
+				  rdfs:comment "Relates an object to a Index Searcher" ;
+				  rdfs:range dnr-ft:Searcher .
+				  
+dnr-ft:index a rdf:Property ;
+			  rdfs:label "Index" ;
+			  rdfs:comment "Relates an object to an Index" ;
+			  rdfs:range dnr-ft:Index ;
+			  rdfs:domain [ a owl:Class ; owl:unionOf ( dnr-ft:Indexer dnr-ft:Searcher ) ] .
+			  
+dnr-ft:schema a rdf:Property ;
+				rdfs:label "Schema" ;
+				rdfs:comment "Relates an object to an Index Schema" ;
+				rdfs:range dnr-ft:Schema ;
+				rdfs:domain [ a owl:Class ; owl:unionOf ( dnr-ft:Indexer dnr-ft:Searcher ) ].
+				
+dnr-ft:version a rdf:Property ;
+				rdfs:label "Version" ;
+				rdfs:comment "Used to state what version the index is and thus what compatibility settings if any apply" .
+				
+dnr-ft:ensureIndex a rdf:Property ;
+				   rdfs:label "Ensure Index" ;
+				   rdfs:comment "Used to state that the configuration loader should ensure the index is ready for use by creating and destroying an index writer relevant to the index being loaded" ;
+				   rdfs:range xsd:boolean ;
+				   rdfs:domain dnr-ft:Index .
+				   
+dnr-ft:buildIndexFor a rdf:Property ;
+					 rdfs:label "Build Index For" ;
+					 rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources first" ;
+					 rdfs:range [ a owl:Class ; owl:unionOf (dnr:SparqlDataset dnr:TripleStore dnr:Graph) ] ;
+					 rdfs:domain dnr-ft:Searcher .
+					 
+dnr-ft:buildIndexWith a rdf:Property ;
+					  rdfs:label "Build Index With" ;
+					  rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources using the specified Indexer first" ;
+					  rdfs:range dnr-ft:Indexer ;
+					  rdfs:domain dnr-ft:Searcher .
+
+dnr-ft:indexNow a rdf:Property ;
+				rdfs:label "Index Now" ;
+				rdfs:comment "Used to state that a dataset should be indexed immediately on initialization" ;
+				rdfs:range xsd:boolean ;
+				rdfs:domain dnr:SparqlDataset .
+
+dnr-ft:indexSync a rdf:Property ;
+				 rdfs:label "Index Sync" ;
+				 rdfs:comment "Used to state whether a searcher should always search the latest version of the index" ;
+				 rdfs:range xsd:boolean ;
+				 rdfs:domain dnr-ft:Searcher .
+					 
+				   
+				   

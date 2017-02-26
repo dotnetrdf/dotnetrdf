@@ -117,10 +117,6 @@
       <Project>{D381CE62-3B23-4BFE-847B-912F7992075B}</Project>
       <Name>rdfEditor.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
-      <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
-      <Name>dotNetRDF.Query.FullText</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\storemanager.core\StoreManager.Core.csproj">
       <Project>{396210A4-AEDA-4352-8458-1788083E336F}</Project>
       <Name>StoreManager.Core</Name>

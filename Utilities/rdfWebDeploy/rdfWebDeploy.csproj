@@ -101,12 +101,6 @@
     <Compile Include="XmlDeploy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
-      <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
-      <Name>dotNetRDF.Query.FullText</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

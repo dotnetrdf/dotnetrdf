@@ -1,0 +1,59 @@
+{
+  "name": "dotNetRDF.Query.FullText",
+  "title": "dotNetRDF.Query.FullText",
+  "version": "1.0.13-pre6",
+  "description": "Provides full text SPARQL capabilities using Lucene.Net to dotNetRDF's query engine",
+  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+
+  "dependencies": {
+    "dotNetRDF": "1.0.13-pre6",
+    "Lucene.Net": "3.0.3",
+    "SharpZipLib": "0.86.0"
+  },
+
+  "frameworks": {
+    "net40": {
+      "buildOptions": {
+        "define": [ "TRACE", "NET40" ]
+      },
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0"
+      }
+    },
+    "net40-client": {
+      "buildOptions": {
+        "define": [ "TRACE" ]
+      },
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0"
+      }
+    },
+    "net35": {
+      "buildOptions": {
+        "define": [ "TRACE", "NET40" ]
+      },
+      "frameworkAssemblies": {
+        "System.Xml": "2.0.0.0"
+      }
+    },
+    "net35-client": {
+      "buildOptions": {
+        "define": [ "TRACE" ]
+      },
+      "frameworkAssemblies": {
+        "System.Xml": "2.0.0.0"
+      }
+    }
+  },
+
+
+
+  "buildOptions": {
+    "outputName": "dotNetRDF.Query.FullText",
+    "embed": [
+      "FullText.ttl"
+    ]
+  }
+
+}
+
