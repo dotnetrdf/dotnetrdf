@@ -27,8 +27,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
@@ -583,14 +581,13 @@ namespace VDS.RDF.Query.Builder
         }
 
         [Test]
-        public void CanBuildUnionChildPattern()
+        public void CanBuildUnionOfChildPattern()
         {
             // when
             var query = QueryBuilder.SelectAll()
-                .Child(root =>
-                    root.Where(BuildSPOPattern)
-                        .Union(second => second.Where(BuildSPOPattern))
-                        .Union(third => third.Where(BuildSPOPattern)))
+                .Union(first => first.Where(BuildSPOPattern),
+                       second => second.Where(BuildSPOPattern),
+                       third => third.Where(BuildSPOPattern))
                 .BuildQuery();
 
             // then
@@ -604,31 +601,31 @@ namespace VDS.RDF.Query.Builder
         {
             // when
             var query = QueryBuilder.SelectAll()
-                .Child(root =>
-                    root.Service(new Uri("http://example.com"), service => service.Where(BuildSPOPattern))
-                        .Union(second => second.Graph("s", graph => graph.Where(BuildSPOPattern))))
+                .Union(
+                    first => first.Service(new Uri("http://example.com"), service => service.Where(BuildSPOPattern)),
+                    second => second.Graph("s", graph => graph.Where(BuildSPOPattern)))
                 .BuildQuery();
 
             // then
             var union = query.RootGraphPattern.ChildGraphPatterns.Single();
             Assert.That(union.IsUnion);
             Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(2));
-            Assert.That(union.ChildGraphPatterns[0].IsService);
-            Assert.That(union.ChildGraphPatterns[1].IsGraph);
+            Assert.That(union.ChildGraphPatterns[0].ChildGraphPatterns[0].IsService);
+            Assert.That(union.ChildGraphPatterns[1].ChildGraphPatterns[0].IsGraph);
         }
 
         [Test]
-        public void ShouldRemoveUnionedTriplePatternsFromRootGraphPattern()
+        public void SingleGraphPatternInUnionBehavesLikeChildPattern()
         {
             // when
             var query = QueryBuilder.SelectAll()
-                .Child(root =>
-                    root.Where(BuildSPOPattern)
-                        .Union(second => second.Where(BuildSPOPattern)))
+                .Union(graph => graph.Where(BuildSPOPattern))
                 .BuildQuery();
 
             // then
-            Assert.That(query.RootGraphPattern.TriplePatterns, Is.Empty);
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion, Is.False);
+            Assert.That(union.TriplePatterns, Has.Count.EqualTo(1));
         }
     }
 }

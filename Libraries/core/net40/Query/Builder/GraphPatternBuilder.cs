@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Builder
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
-        private readonly GraphPatternType _graphPatternType;
+        private GraphPatternType _graphPatternType;
         private readonly IToken _graphSpecifier;
 
         /// <summary>
@@ -57,6 +57,15 @@ namespace VDS.RDF.Query.Builder
         private GraphPatternBuilder(GraphPatternType graphPatternType)
         {
             _graphPatternType = graphPatternType;
+        }
+
+        private GraphPatternBuilder(GraphPatternBuilder graphPatternBuilder)
+            : this(graphPatternBuilder._graphPatternType)
+        {
+            _childGraphPatternBuilders = graphPatternBuilder._childGraphPatternBuilders.ToList();
+            _filterBuilders = graphPatternBuilder._filterBuilders.ToList();
+            _triplePatterns = graphPatternBuilder._triplePatterns.ToList();
+            _graphSpecifier = graphPatternBuilder._graphSpecifier;
         }
 
         internal GraphPatternBuilder(GraphPatternType graphPatternType, IToken graphSpecifier)
@@ -184,21 +193,23 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern)
+        public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders)
         {
-            GraphPatternBuilder union;
-            if (_graphPatternType == GraphPatternType.Union)
+            if (unionedGraphPatternBuilders == null || unionedGraphPatternBuilders.Length == 0)
             {
-                union = this;
-            }
-            else
-            {
-                union = new GraphPatternBuilder(GraphPatternType.Union);
-                union._childGraphPatternBuilders.Add(this);
+                return Child(firstGraphPattern);
             }
 
-            union.AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
-            return union;
+            var union = new GraphPatternBuilder(GraphPatternType.Union);
+            union.AddChildGraphPattern(firstGraphPattern, GraphPatternType.Normal);
+
+            foreach (var builder in unionedGraphPatternBuilders)
+            {
+                union.AddChildGraphPattern(builder, GraphPatternType.Normal);
+            }
+
+            _childGraphPatternBuilders.Add(union);
+            return this;
         }
 
         public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)

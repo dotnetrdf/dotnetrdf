@@ -160,5 +160,11 @@ namespace VDS.RDF.Query.Builder
             ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Filter(buildExpression);
             return queryBuilder;
         }
+
+        public static IQueryBuilder Union(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> firstGraphPattern, params Action<IGraphPatternBuilder>[] otherGraphPatterns)
+        {
+            ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Union(firstGraphPattern, otherGraphPatterns);
+            return queryBuilder;
+        }
     }
 }
