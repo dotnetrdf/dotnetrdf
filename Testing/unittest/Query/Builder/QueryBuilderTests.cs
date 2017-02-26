@@ -581,5 +581,54 @@ namespace VDS.RDF.Query.Builder
             }
             Assert.IsNull(currentOrdering);
         }
+
+        [Test]
+        public void CanBuildUnionChildPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Child(root =>
+                    root.Where(BuildSPOPattern)
+                        .Union(second => second.Where(BuildSPOPattern))
+                        .Union(third => third.Where(BuildSPOPattern)))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(3));
+        }
+
+        [Test]
+        public void CanBuildUnionOfMixedPatterns()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Child(root =>
+                    root.Service(new Uri("http://example.com"), service => service.Where(BuildSPOPattern))
+                        .Union(second => second.Graph("s", graph => graph.Where(BuildSPOPattern))))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(2));
+            Assert.That(union.ChildGraphPatterns[0].IsService);
+            Assert.That(union.ChildGraphPatterns[1].IsGraph);
+        }
+
+        [Test]
+        public void ShouldRemoveUnionedTriplePatternsFromRootGraphPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Child(root =>
+                    root.Where(BuildSPOPattern)
+                        .Union(second => second.Where(BuildSPOPattern)))
+                .BuildQuery();
+
+            // then
+            Assert.That(query.RootGraphPattern.TriplePatterns, Is.Empty);
+        }
     }
 }
