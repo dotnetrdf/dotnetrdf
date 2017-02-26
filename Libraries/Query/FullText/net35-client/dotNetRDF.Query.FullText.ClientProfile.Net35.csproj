@@ -163,12 +163,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj">
-      <Project>{5B3596B5-DB36-45B6-AC58-1B505E78FB86}</Project>
-      <Name>dotNetRDF.ClientProfile.Net35</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -193,4 +187,3 @@
     <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
-

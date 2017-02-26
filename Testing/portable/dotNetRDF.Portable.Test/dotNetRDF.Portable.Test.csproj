@@ -85,12 +85,6 @@
     <Compile Include="Compatibility\StoreReaderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Libraries\core\portable\dotNetRDF.Portable.csproj">
-      <Project>{8aaec132-8ec5-4a53-b27b-960fbab99e19}</Project>
-      <Name>dotNetRDF.Portable</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

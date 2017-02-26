@@ -102,12 +102,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\net35\dotNetRDF.Net35.csproj">
-      <Project>{C834D5A0-18DA-4206-BE86-C1CA59837DA8}</Project>
-      <Name>dotNetRDF.Net35</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>

@@ -141,10 +141,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
-      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>
@@ -188,4 +184,3 @@
   </Target>
   -->
 </Project>
-

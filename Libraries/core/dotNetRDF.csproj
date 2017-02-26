@@ -1,0 +1,944 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>dotNetRDF.snk</AssemblyOriginatorKeyFile>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0659,1574,0067,0419,0628</NoWarn>
+    <WarningsAsErrors>0672,0108</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.9.5\lib\Net40\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common, Version=1.7.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\VDS.Common.1.7.0\lib\net40-client\VDS.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compatability\HashSet.cs" />
+    <Compile Include="Compatability\HtmlTextWriter.cs" />
+    <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
+    <Compile Include="Compatability\HtmlTextWriterStyle.cs" />
+    <Compile Include="Compatability\HtmlTextWriterTag.cs" />
+    <Compile Include="Compatability\HttpUtility.cs" />
+    <Compile Include="Compatability\SilverlightCompatability.cs" />
+    <Compile Include="Compatability\WindowsPhoneCompatibility.cs" />
+    <Compile Include="Configuration\CollectionFactory.cs" />
+    <Compile Include="Configuration\IConfigurationLoader.cs" />
+    <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
+    <Compile Include="Configuration\OperatorFactory.cs" />
+    <Compile Include="Core\BaseDemandGraphCollection.cs" />
+    <Compile Include="Core\BaseGraph.cs" />
+    <Compile Include="Core\BaseGraphCollection.cs" />
+    <Compile Include="Core\BaseTripleStore.cs" />
+    <Compile Include="Core\INestedNamespaceMapper.cs" />
+    <Compile Include="Core\SubTreeIndexedTripleCollection.cs" />
+    <Compile Include="Core\WrapperGraph.cs" />
+    <Compile Include="Core\Extensions.cs" />
+    <Compile Include="Core\ISparqlResultsReader.cs" />
+    <Compile Include="Core\ISparqlResultsWriter.cs" />
+    <Compile Include="Core\BaseTripleCollection.cs" />
+    <Compile Include="Core\Options.cs" />
+    <Compile Include="Core\ThreadSafeGraph.cs" />
+    <Compile Include="Core\TreeIndexedTripleCollection.cs" />
+    <Compile Include="Core\WrapperGraphCollection.cs" />
+    <Compile Include="Core\WrapperTripleCollection.cs" />
+    <Compile Include="Core\WrapperTripleStore.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Nodes\TimeSpanNode.cs" />
+    <Compile Include="Parsing\BaseGZipParser.cs" />
+    <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
+    <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
+    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
+    <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
+    <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
+    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
+    <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
+    <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
+    <Compile Include="Parsing\RdfJsonParser.cs" />
+    <Compile Include="Parsing\RdfSpecsHelper.cs" />
+    <Compile Include="Parsing\SparqlJsonParser.cs" />
+    <Compile Include="Parsing\SparqlXmlParser.cs" />
+    <Compile Include="Parsing\StringParser.cs" />
+    <Compile Include="Parsing\Tokens\BaseTokeniser.cs" />
+    <Compile Include="Parsing\TriGParser.cs" />
+    <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
+    <Compile Include="Parsing\TurtleSpecsHelper.cs" />
+    <Compile Include="Query\Algebra\FilteredProduct.cs" />
+    <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
+    <Compile Include="Query\Algebra\PropertyFunction.cs" />
+    <Compile Include="Query\Algebra\SetDistinctnessComparer.cs" />
+    <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\DescribeBuilder.cs" />
+    <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderStringExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpressionExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\NumericExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\IriExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\LiteralExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\RdfTermExpression.cs" />
+    <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\GraphPatternType.cs" />
+    <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
+    <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ISelectBuilder.cs" />
+    <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\IQueryWithVariablesBuilder.cs" />
+    <Compile Include="Query\Builder\PatternItemFactory.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
+    <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
+    <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\SelectBuilder.cs" />
+    <Compile Include="Query\Builder\SparqlCastBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
+    <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
+    <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
+    <Compile Include="Query\Datasets\ExternalDataset.cs" />
+    <Compile Include="Query\Datasets\WebDemandDataset.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Builder\IQueryBuilder.cs" />
+    <Compile Include="Query\Operators\BaseOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanSubtraction.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeSubtraction.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeAddition.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanAddition.cs" />
+    <Compile Include="Query\Operators\ISparqlOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\AdditionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\BaseNumericOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\MultiplicationOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\DivisionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\SubtractionOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperatorType.cs" />
+    <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />
+    <Compile Include="Query\Optimisation\ImplicitJoinOptimiser.cs" />
+    <Compile Include="Query\Optimisation\OrderByDistinctOptimiser.cs" />
+    <Compile Include="Query\Optimisation\PropertyFunctionOptimiser.cs" />
+    <Compile Include="Query\Optimisation\VariableSubstitutionTransformer.cs" />
+    <Compile Include="Query\Patterns\GraphPattern.cs" />
+    <Compile Include="Query\Expressions\ISparqlCustomExpressionFactory.cs" />
+    <Compile Include="Query\Expressions\SparqlExpressionFactory.cs" />
+    <Compile Include="Query\Filters\SparqlFilterClasses.cs" />
+    <Compile Include="Query\Ordering\SparqlOrderByClasses.cs" />
+    <Compile Include="Query\Patterns\PropertyFunctionPattern.cs" />
+    <Compile Include="Query\Patterns\SparqlPatternClasses.cs" />
+    <Compile Include="Query\Patterns\TriplePattern.cs" />
+    <Compile Include="Query\Patterns\TriplePatternType.cs" />
+    <Compile Include="Query\PropertyFunctions\IPropertyFunctionFactory.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionHelper.cs" />
+    <Compile Include="Query\PropertyFunctions\ISparqlPropertyFunction.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
+    <Compile Include="Query\Builder\QueryBuilder.cs" />
+    <Compile Include="Query\SparqlExpressionParser.cs" />
+    <Compile Include="Query\SparqlResult.cs" />
+    <Compile Include="Query\SparqlResultBinder.cs" />
+    <Compile Include="Query\SparqlVariable.cs" />
+    <Compile Include="Parsing\Events\BaseEvent.cs" />
+    <Compile Include="Parsing\Tokens\BaseToken.cs" />
+    <Compile Include="Core\BlankNode.cs" />
+    <Compile Include="Parsing\Tokens\BufferedTokenQueue.cs" />
+    <Compile Include="Query\SparqlQuery.cs" />
+    <Compile Include="Parsing\SparqlQueryParser.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
+    <Compile Include="Core\Graph.cs" />
+    <Compile Include="Core\GraphCollection.cs" />
+    <Compile Include="Core\GraphLiteralNode.cs" />
+    <Compile Include="Storage\AsyncStorageExtensions.cs" />
+    <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
+    <Compile Include="Storage\IStorageProvider.cs" />
+    <Compile Include="Storage\Management\AllegroGraphServer.cs" />
+    <Compile Include="Storage\Management\IStorageServer.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\IStoreTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimLiteTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimSETemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\BaseStardogTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\StoreTemplate.cs" />
+    <Compile Include="Storage\Management\SesameServer.cs" />
+    <Compile Include="Storage\Management\StardogServer.cs" />
+    <Compile Include="Storage\StorageCallbacks.cs" />
+    <Compile Include="Storage\StorageHelper.cs" />
+    <Compile Include="Storage\Virtualisation\StoreVirtualGraphPersistenceWrapper.cs" />
+    <Compile Include="Web\WebContext.cs" />
+    <Compile Include="Web\IHttpContext.cs" />
+    <Compile Include="Writing\BaseGZipWriter.cs" />
+    <Compile Include="Writing\CompressingTurtleWriter.cs" />
+    <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
+    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
+    <Compile Include="Writing\GraphVizGenerator.cs" />
+    <Compile Include="Writing\GraphVizWriter.cs" />
+    <Compile Include="Core\IGraph.cs" />
+    <Compile Include="Core\INode.cs" />
+    <Compile Include="Core\IRdfReader.cs" />
+    <Compile Include="Core\IRdfWriter.cs" />
+    <Compile Include="Parsing\Events\IRdfXmlEvent.cs" />
+    <Compile Include="Core\IStoreReader.cs" />
+    <Compile Include="Core\IStoreWriter.cs" />
+    <Compile Include="Parsing\Tokens\IToken.cs" />
+    <Compile Include="Parsing\Tokens\ITokeniser.cs" />
+    <Compile Include="Parsing\Tokens\ITokenQueue.cs" />
+    <Compile Include="Core\ITripleContext.cs" />
+    <Compile Include="Core\ITripleStore.cs" />
+    <Compile Include="Core\LiteralNode.cs" />
+    <Compile Include="Core\MimeTypesHelper.cs" />
+    <Compile Include="NamespaceDocs.cs" />
+    <Compile Include="Core\NamespaceMapper.cs" />
+    <Compile Include="Parsing\NTriplesParser.cs" />
+    <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
+    <Compile Include="Query\SparqlRemoteEndpoint.cs" />
+    <Compile Include="Query\SparqlResultSet.cs" />
+    <Compile Include="Query\SparqlSpecsHelper.cs" />
+    <Compile Include="Writing\SparqlHtmlWriter.cs" />
+    <Compile Include="Writing\SparqlJsonWriter.cs" />
+    <Compile Include="Writing\SparqlXmlWriter.cs" />
+    <Compile Include="Core\TripleStore.cs" />
+    <Compile Include="Writing\StringWriter.cs" />
+    <Compile Include="Writing\TriGWriter.cs" />
+    <Compile Include="Writing\NTriplesWriter.cs" />
+    <Compile Include="Core\Tools.cs" />
+    <Compile Include="Parsing\Tokens\TurtleTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\Tokens.cs" />
+    <Compile Include="Parsing\UnicodeSpecsHelper.cs" />
+    <Compile Include="Parsing\UriLoader.cs" />
+    <Compile Include="Core\UriNode.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Triple.cs" />
+    <Compile Include="Core\TripleCollection.cs" />
+    <Compile Include="Parsing\Events\RdfXml\XmlEvents.cs" />
+    <Compile Include="Parsing\RdfXmlParser.cs" />
+    <Compile Include="Parsing\XmlSpecsHelper.cs" />
+    <Compile Include="Writing\WriterUtilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Callbacks.cs" />
+    <Compile Include="Configuration\CachedObjectKey.cs" />
+    <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
+    <Compile Include="Configuration\CredentialsFactory.cs" />
+    <Compile Include="Configuration\DataFactories.cs" />
+    <Compile Include="Configuration\DatasetFactory.cs" />
+    <Compile Include="Configuration\EndpointFactories.cs" />
+    <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
+    <Compile Include="Configuration\OptimiserFactory.cs" />
+    <Compile Include="Configuration\ParserFactory.cs" />
+    <Compile Include="Configuration\PermissionFactories.cs" />
+    <Compile Include="Configuration\Permissions\Permission.cs" />
+    <Compile Include="Configuration\Permissions\UserGroup.cs" />
+    <Compile Include="Configuration\ProcessorFactories.cs" />
+    <Compile Include="Configuration\ObjectFactoryFactory.cs" />
+    <Compile Include="Configuration\ProxyFactory.cs" />
+    <Compile Include="Configuration\ReasonerFactory.cs" />
+    <Compile Include="Core\BaseEndpoint.cs" />
+    <Compile Include="Core\BaseNode.cs" />
+    <Compile Include="Core\BlankNodeMapper.cs" />
+    <Compile Include="Core\DiskDemandTripleStore.cs" />
+    <Compile Include="Core\EqualityHelper.cs" />
+    <Compile Include="Core\GraphDiff.cs" />
+    <Compile Include="Core\INamespaceMapper.cs" />
+    <Compile Include="Core\INodeFactory.cs" />
+    <Compile Include="Core\IRdfHandler.cs" />
+    <Compile Include="Core\ISparqlResultsHandler.cs" />
+    <Compile Include="Core\MimeTypeDefinition.cs" />
+    <Compile Include="Core\GraphPersistenceWrapper.cs" />
+    <Compile Include="Core\NestedNamespaceMapper.cs" />
+    <Compile Include="Core\NodeFactory.cs" />
+    <Compile Include="Core\PersistenceAction.cs" />
+    <Compile Include="Core\PersistentTripleStore.cs" />
+    <Compile Include="Core\SubGraphMatcher.cs" />
+    <Compile Include="Core\GraphMatcher.cs" />
+    <Compile Include="Core\QueryableGraph.cs" />
+    <Compile Include="Core\TripleComparers.cs" />
+    <Compile Include="Core\UnionCollections.cs" />
+    <Compile Include="Core\UnionGraph.cs" />
+    <Compile Include="Core\UriFactory.cs" />
+    <Compile Include="Core\VariableNode.cs" />
+    <Compile Include="Core\VariableContext.cs" />
+    <Compile Include="Core\WebDemandTripleStore.cs" />
+    <Compile Include="Events.cs" />
+    <Compile Include="Indexing.cs" />
+    <Compile Include="Ontology\Individual.cs" />
+    <Compile Include="Ontology\Ontology.cs" />
+    <Compile Include="Ontology\OntologyClass.cs" />
+    <Compile Include="Ontology\OntologyGraph.cs" />
+    <Compile Include="Ontology\OntologyHelper.cs" />
+    <Compile Include="Ontology\OntologyProperty.cs" />
+    <Compile Include="Ontology\OntologyResource.cs" />
+    <Compile Include="Ontology\ReasonerGraph.cs" />
+    <Compile Include="Parsing\SparqlCsvParser.cs" />
+    <Compile Include="Parsing\Handlers\AnyHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
+    <Compile Include="Core\IObjectParser.cs" />
+    <Compile Include="Parsing\SparqlTsvParser.cs" />
+    <Compile Include="Parsing\Tokens\CsvTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\TsvTokeniser.cs" />
+    <Compile Include="Parsing\UriLoaderAsync.cs" />
+    <Compile Include="Parsing\BlockingTextReader.cs" />
+    <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
+    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\JsonParserContext.cs" />
+    <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfACoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
+    <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
+    <Compile Include="Parsing\DataUriLoader.cs" />
+    <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
+    <Compile Include="Parsing\Events\DualEventQueue.cs" />
+    <Compile Include="Parsing\Events\RdfA\HtmlEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfA\IRdfAHostLanguage.cs" />
+    <Compile Include="Parsing\Events\RdfA\XHtmlHost.cs" />
+    <Compile Include="Parsing\Events\RdfA\XmlHost.cs" />
+    <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
+    <Compile Include="Parsing\Events\EventQueue.cs" />
+    <Compile Include="Parsing\Events\IEvent.cs" />
+    <Compile Include="Parsing\Events\IEventGenerator.cs" />
+    <Compile Include="Parsing\Events\IEventQueue.cs" />
+    <Compile Include="Parsing\Events\IRdfAEvent.cs" />
+    <Compile Include="Parsing\Events\RdfA\RdfAEvents.cs" />
+    <Compile Include="Parsing\Handlers\BaseHandler.cs" />
+    <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
+    <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
+    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\MultiHandler.cs" />
+    <Compile Include="Parsing\Handlers\ChainedHandler.cs" />
+    <Compile Include="Parsing\Handlers\NullHandler.cs" />
+    <Compile Include="Parsing\Handlers\CountHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphHandler.cs" />
+    <Compile Include="Parsing\Handlers\PagingHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
+    <Compile Include="Parsing\HtmlPlusRdfAParser.cs" />
+    <Compile Include="Parsing\IRdfAVocabulary.cs" />
+    <Compile Include="Parsing\IriSpecsHelper.cs" />
+    <Compile Include="Parsing\IUriLoaderCache.cs" />
+    <Compile Include="Parsing\Notation3Parser.cs" />
+    <Compile Include="Parsing\FileLoader.cs" />
+    <Compile Include="Parsing\ParserHelper.cs" />
+    <Compile Include="Parsing\PositionInfo.cs" />
+    <Compile Include="Parsing\RdfACoreParser.cs" />
+    <Compile Include="Parsing\RdfAParser.cs" />
+    <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
+    <Compile Include="Parsing\Events\RdfXml\StreamingEventGenerator.cs" />
+    <Compile Include="Parsing\SparqlRdfParser.cs" />
+    <Compile Include="Parsing\SparqlUpdateParser.cs" />
+    <Compile Include="Parsing\Tokens\PathToken.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokens.cs" />
+    <Compile Include="Parsing\Tokens\SparqlUpdateTokens.cs" />
+    <Compile Include="Parsing\Tokens\Token.cs" />
+    <Compile Include="Parsing\TurtleParser.cs" />
+    <Compile Include="Parsing\NQuadsParser.cs" />
+    <Compile Include="Parsing\SparqlBooleanParser.cs" />
+    <Compile Include="Parsing\TriXParser.cs" />
+    <Compile Include="Parsing\UriLoaderCache.cs" />
+    <Compile Include="Parsing\Validation\ISyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfDatasetSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
+    <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
+    <Compile Include="Parsing\XmlPlusRdfAParser.cs" />
+    <Compile Include="Query\Aggregates\BaseAggregate.cs" />
+    <Compile Include="Query\Aggregates\LeviathanNumericAggregates.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\AllAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\AnyAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\MedianAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\ModeAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\NoneAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\NumericMaxAggregate.cs" />
+    <Compile Include="Query\Aggregates\Leviathan\NumericMinAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\AverageAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\CountAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\CountAllAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\CountAllDistinctAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\CountDistinctAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\GroupConcatAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\MaxAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\MinAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\SampleAggregate.cs" />
+    <Compile Include="Query\Aggregates\Sparql\SumAggregate.cs" />
+    <Compile Include="Query\Aggregates\XPath\StringJoin.cs" />
+    <Compile Include="Query\Algebra\AlgebraExtensions.cs" />
+    <Compile Include="Query\Algebra\AskBgp.cs" />
+    <Compile Include="Query\Algebra\BaseMultiset.cs" />
+    <Compile Include="Query\Algebra\Bgp.cs" />
+    <Compile Include="Query\Algebra\Bindings.cs" />
+    <Compile Include="Query\Algebra\Extend.cs" />
+    <Compile Include="Query\Algebra\ISet.cs" />
+    <Compile Include="Query\Algebra\LazyBgp.cs" />
+    <Compile Include="Query\Algebra\Distinct.cs" />
+    <Compile Include="Query\Algebra\Filter.cs" />
+    <Compile Include="Query\Algebra\Graph.cs" />
+    <Compile Include="Query\Algebra\GroupBy.cs" />
+    <Compile Include="Query\Algebra\GroupMultiset.cs" />
+    <Compile Include="Query\Algebra\Having.cs" />
+    <Compile Include="Query\Algebra\IdentityMultiset.cs" />
+    <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
+    <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
+    <Compile Include="Query\Algebra\NegatedPropertySet.cs" />
+    <Compile Include="Query\Algebra\NullOperator.cs" />
+    <Compile Include="Query\Algebra\OneOrMorePath.cs" />
+    <Compile Include="Query\Algebra\ParallelisedJoinClasses.cs" />
+    <Compile Include="Query\Algebra\PropertyPath.cs" />
+    <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
+    <Compile Include="Query\Algebra\RestrictionFilters.cs" />
+    <Compile Include="Query\Algebra\SubQuery.cs" />
+    <Compile Include="Query\Algebra\ZeroLengthPath.cs" />
+    <Compile Include="Query\Algebra\ZeroOrMorePath.cs" />
+    <Compile Include="Query\Datasets\BaseQuadDataset.cs" />
+    <Compile Include="Query\Datasets\InMemoryQuadDataset.cs" />
+    <Compile Include="Query\Datasets\QuadDatasetTripleCollection.cs" />
+    <Compile Include="Query\Datasets\WrapperDataset.cs" />
+    <Compile Include="Query\ExplainQueryProcessor.cs" />
+    <Compile Include="Query\Expressions\Arithmetic\AdditionExpression.cs" />
+    <Compile Include="Query\Expressions\Arithmetic\DivisionExpression.cs" />
+    <Compile Include="Query\Expressions\Arithmetic\MinusExpression.cs" />
+    <Compile Include="Query\Expressions\Arithmetic\MultiplicationExpression.cs" />
+    <Compile Include="Query\Expressions\Arithmetic\SubtractionExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\EqualsExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\GreaterThanExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\GreaterThanOrEqualToExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\LessThanExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\LessThanOrEqualToExpression.cs" />
+    <Compile Include="Query\Expressions\Comparison\NotEqualsExpression.cs" />
+    <Compile Include="Query\Expressions\Conditional\AndExpression.cs" />
+    <Compile Include="Query\Expressions\Conditional\NotExpression.cs" />
+    <Compile Include="Query\Expressions\Conditional\OrExpression.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\BNodeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\EFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\LocalNameFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\MaxFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\MinFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\NamespaceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\NowFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\PiFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\Sha1Function.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\StringJoinFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Arq\SubstringFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Hash\MD5HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Hash\Sha256HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\CubeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\EFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\FactorialFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\LogFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\NaturalLogFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\PowerFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\PythagoreanDistanceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\RandomFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\ReciprocalFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\RootFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\SquareFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\SquareRootFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\TenFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\BaseTrigonometricFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosecantFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosineFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CotangentFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\DegreesToRadiansFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\RadiansToDegressFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SecantFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SineFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\TangentFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Numeric\AbsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\BaseBinaryStringFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Numeric\CeilFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\ConcatFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\ContainsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\EncodeForUriFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Numeric\FloorFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\IsNumericFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\LCaseFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Numeric\RandFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\ReplaceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Numeric\RoundFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha384HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Set\BaseSetFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Constructor\BNodeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\BoundFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\DataTypeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\DayFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\HoursFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Set\InFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Constructor\IriFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\IsBlankFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\IsIriFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\IsLiteralFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\LangFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\LangMatchesFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\MD5HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\MinutesFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\MonthFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Set\NotInFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\NowFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\RegexFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\SameTermFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\SecondsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha1HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha256HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha512HashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrAfterFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrBeforeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Constructor\StrDtFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrEndsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Constructor\StrLangFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrLenFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\StrStartsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\SubStrFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\TimezoneFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\TZFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\String\UCaseFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\DateTime\YearFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\CompareFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\BaseBinaryStringFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\BaseUnaryDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\BaseCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\BaseUnaryStringFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\DayFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\ConcatFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\EncodeForUriFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\EndsWithFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\EscapeHtmlUriFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\HoursFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\LowerCaseFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\MinutesFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\MonthFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\NormalizeSpaceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\NormalizeUnicodeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Numeric\RoundHalfToEvenFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Numeric\AbsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\BooleanCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Numeric\CeilingFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\DateTimeCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\DecimalCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\DoubleCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\FloatCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Numeric\FloorFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\IntegerCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Numeric\RoundFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\SecondsFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\Cast\StringCast.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\ReplaceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\StartsWithFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\StringLengthFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\ContainsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\TimezoneFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\SubstringAfterFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\SubstringBeforeFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\SubstringFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\String\UpperCaseFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\DateTime\YearFromDateTimeFunction.cs" />
+    <Compile Include="Query\Expressions\IExpressionTransformer.cs" />
+    <Compile Include="Nodes\BooleanNode.cs" />
+    <Compile Include="Nodes\ByteNodes.cs" />
+    <Compile Include="Nodes\DateTimeNode.cs" />
+    <Compile Include="Nodes\DecimalNode.cs" />
+    <Compile Include="Nodes\DoubleNode.cs" />
+    <Compile Include="Nodes\ValuedNodeExtensions.cs" />
+    <Compile Include="Nodes\FloatNode.cs" />
+    <Compile Include="Nodes\IValuedNode.cs" />
+    <Compile Include="Nodes\LongNode.cs" />
+    <Compile Include="Nodes\NumericNode.cs" />
+    <Compile Include="Nodes\StringNode.cs" />
+    <Compile Include="Query\Expressions\Primary\AggregateTerm.cs" />
+    <Compile Include="Query\Expressions\Primary\AllModifier.cs" />
+    <Compile Include="Query\Expressions\Primary\ConstantTerm.cs" />
+    <Compile Include="Query\Expressions\Primary\DistinctModifier.cs" />
+    <Compile Include="Query\Expressions\Primary\GraphPatternTerm.cs" />
+    <Compile Include="Query\Expressions\Primary\VariableTerm.cs" />
+    <Compile Include="Query\FederatedSparqlRemoteEndpoint.cs" />
+    <Compile Include="Query\Optimisation\BaseAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\BaseQueryOptimiser.cs" />
+    <Compile Include="Query\Optimisation\BgpOptimisers.cs" />
+    <Compile Include="Query\Algebra\Minus.cs" />
+    <Compile Include="Query\Algebra\Multiset.cs" />
+    <Compile Include="Query\Algebra\NullMultiset.cs" />
+    <Compile Include="Query\Algebra\OrderBy.cs" />
+    <Compile Include="Query\Algebra\Project.cs" />
+    <Compile Include="Query\Algebra\Service.cs" />
+    <Compile Include="Query\Algebra\Set.cs" />
+    <Compile Include="Query\Algebra\Slice.cs" />
+    <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
+    <Compile Include="Query\Construct\ConstructContext.cs" />
+    <Compile Include="Query\Datasets\BaseDataset.cs" />
+    <Compile Include="Query\Datasets\DatasetGraphCollection.cs" />
+    <Compile Include="Query\Datasets\InMemoryDataset.cs" />
+    <Compile Include="Query\Datasets\ISparqlDataset.cs" />
+    <Compile Include="Query\Describe\BaseDescribeAlgorithm.cs" />
+    <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
+    <Compile Include="Query\Describe\LabelledDescription.cs" />
+    <Compile Include="Query\Describe\MinimalSpanningGraph.cs" />
+    <Compile Include="Query\Describe\SymmetricConciseBoundedDescription.cs" />
+    <Compile Include="Query\Describe\SimpleSubjectObjectDescription.cs" />
+    <Compile Include="Query\Describe\NamedGraphDescription.cs" />
+    <Compile Include="Query\Describe\SimpleSubjectDescription.cs" />
+    <Compile Include="Query\Expressions\ArqFunctionFactory.cs" />
+    <Compile Include="Query\Expressions\BaseExpressionClasses.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Hash\BaseHashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Leviathan\Numeric\CartesianFunctions.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\CoalesceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\Boolean\ExistsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\IfFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\UnknownFunction.cs" />
+    <Compile Include="Query\Expressions\LeviathanFunctionFactory.cs" />
+    <Compile Include="Query\Expressions\Functions\XPath\BooleanFunction.cs" />
+    <Compile Include="Query\Expressions\SparqlBuiltInFunctionFactory.cs" />
+    <Compile Include="Query\Describe\ISparqlDescribe.cs" />
+    <Compile Include="Query\Inference\InferenceHelper.cs" />
+    <Compile Include="Query\Inference\IOwlReasoner.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\ClusterService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\SimilarityService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\PredictService.cs" />
+    <Compile Include="Query\Inference\SimpleN3RulesReasoner.cs" />
+    <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
+    <Compile Include="Query\Inference\PelletReasoner.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
+    <Compile Include="Query\Optimisation\IAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\IdentityFilterOptimiser.cs" />
+    <Compile Include="Query\Optimisation\IQueryOptimiser.cs" />
+    <Compile Include="Query\Optimisation\ParallelEvaluationOptimiser.cs" />
+    <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
+    <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
+    <Compile Include="Query\Optimisation\StrictAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\VirtualAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\WeightedOptimiser.cs" />
+    <Compile Include="Query\Ordering\TripleComparer.cs" />
+    <Compile Include="Query\Paths\NegatedSet.cs" />
+    <Compile Include="Query\Patterns\BindPattern.cs" />
+    <Compile Include="Query\Patterns\BlankNodePattern.cs" />
+    <Compile Include="Query\Patterns\FixedBlankNodePattern.cs" />
+    <Compile Include="Query\Patterns\NodeMatchPattern.cs" />
+    <Compile Include="Query\Patterns\VariablePattern.cs" />
+    <Compile Include="Query\PelletQueryProcessor.cs" />
+    <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />
+    <Compile Include="Query\Inference\Pellet\KnowledgeBase.cs" />
+    <Compile Include="Query\Inference\Pellet\PelletHelper.cs" />
+    <Compile Include="Query\Inference\Pellet\PelletServer.cs" />
+    <Compile Include="Query\Inference\Pellet\PelletService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\ClassifyService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\ConsistencyService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\ExplainServices.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\QueryService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\RealizeService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\SearchService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\UnsupportedService.cs" />
+    <Compile Include="Query\ISparqlQueryProcessor.cs" />
+    <Compile Include="Query\LeviathanQueryProcessor.cs" />
+    <Compile Include="Query\Ordering\ISparqlOrderBy.cs" />
+    <Compile Include="Query\Paths\AlternativePath.cs" />
+    <Compile Include="Query\Paths\BaseBinaryPath.cs" />
+    <Compile Include="Query\Paths\BaseUnaryPath.cs" />
+    <Compile Include="Query\Paths\CardinalityPathClasses.cs" />
+    <Compile Include="Query\Paths\InversePath.cs" />
+    <Compile Include="Query\Paths\ISparqlPath.cs" />
+    <Compile Include="Query\Paths\PartialPath.cs" />
+    <Compile Include="Query\Paths\PathEvaluationContext.cs" />
+    <Compile Include="Query\Paths\PathTransformContext.cs" />
+    <Compile Include="Query\Paths\Property.cs" />
+    <Compile Include="Query\Paths\SequencePath.cs" />
+    <Compile Include="Query\Patterns\BaseTriplePattern.cs" />
+    <Compile Include="Query\Patterns\BindingsPattern.cs" />
+    <Compile Include="Query\Patterns\FilterPattern.cs" />
+    <Compile Include="Query\Filters\ISparqlFilter.cs" />
+    <Compile Include="Query\Patterns\ITriplePattern.cs" />
+    <Compile Include="Query\Patterns\LetPattern.cs" />
+    <Compile Include="Query\Patterns\PropertyPathPattern.cs" />
+    <Compile Include="Query\Patterns\SubQueryPattern.cs" />
+    <Compile Include="Query\Expressions\XPathFunctionFactory.cs" />
+    <Compile Include="Query\QueryExtensions.cs" />
+    <Compile Include="Query\QueryProcessors.cs" />
+    <Compile Include="Query\SparqlEvaluationContext.cs" />
+    <Compile Include="Query\SparqlNodeComparer.cs" />
+    <Compile Include="Query\SparqlParameterizedString.cs" />
+    <Compile Include="Query\SparqlPathParser.cs" />
+    <Compile Include="Query\SparqlView.cs" />
+    <Compile Include="Storage\BaseHttpConnector.cs" />
+    <Compile Include="Storage\IOBehaviour.cs" />
+    <Compile Include="Storage\StardogConnector.cs" />
+    <Compile Include="Storage\DatasetFileManager.cs" />
+    <Compile Include="Storage\FusekiConnector.cs" />
+    <Compile Include="Storage\InMemoryManager.cs" />
+    <Compile Include="Storage\ReadOnlyConnector.cs" />
+    <Compile Include="Storage\SparqlConnector.cs" />
+    <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualRdfProvider.cs" />
+    <Compile Include="Storage\Virtualisation\SimpleVirtualNodes.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNodeCache.cs" />
+    <Compile Include="Update\Commands\AddCommand.cs" />
+    <Compile Include="Update\Commands\BaseModifyCommand.cs" />
+    <Compile Include="Update\Commands\BaseTransferCommand.cs" />
+    <Compile Include="Update\Commands\ClearCommand.cs" />
+    <Compile Include="Update\Commands\CopyCommand.cs" />
+    <Compile Include="Update\Commands\CreateCommand.cs" />
+    <Compile Include="Update\Commands\DeleteCommand.cs" />
+    <Compile Include="Update\Commands\DeleteDataCommand.cs" />
+    <Compile Include="Update\Commands\DropCommand.cs" />
+    <Compile Include="Update\Commands\InsertCommand.cs" />
+    <Compile Include="Update\Commands\InsertDataCommand.cs" />
+    <Compile Include="Update\Commands\LoadCommand.cs" />
+    <Compile Include="Update\Commands\ModifyCommand.cs" />
+    <Compile Include="Update\Commands\MoveCommand.cs" />
+    <Compile Include="Update\ExplainUpdateProcessor.cs" />
+    <Compile Include="Update\GenericUpdateProcessor.cs" />
+    <Compile Include="Update\ISparqlUpdateProcessor.cs" />
+    <Compile Include="Update\LeviathanUpdateProcessor.cs" />
+    <Compile Include="Update\RemoteUpdateProcessor.cs" />
+    <Compile Include="Update\SimpleUpdateProcessor.cs" />
+    <Compile Include="Update\Protocol\BaseProtocolProcessor.cs" />
+    <Compile Include="Update\Protocol\GenericProtocolProcessor.cs" />
+    <Compile Include="Update\Protocol\LeviathanProtocolProcessor.cs" />
+    <Compile Include="Update\Protocol\ProtocolToUpdateProcessor.cs" />
+    <Compile Include="Update\SparqlRemoteUpdateEndpoint.cs" />
+    <Compile Include="Update\SparqlUpdateCommand.cs" />
+    <Compile Include="Update\SparqlUpdateCommandSet.cs" />
+    <Compile Include="Update\SparqlUpdateEvaluationContext.cs" />
+    <Compile Include="Update\SparqlUpdateSpecsHelper.cs" />
+    <Compile Include="Web\BaseDatasetHandler.cs" />
+    <Compile Include="Web\BaseGraphHandler.cs" />
+    <Compile Include="Web\BaseSparqlHttpProtocolHandler.cs" />
+    <Compile Include="Web\BaseSparqlQueryHandler.cs" />
+    <Compile Include="Web\BaseSparqlUpdateHandler.cs" />
+    <Compile Include="Configuration\ConfigurationLoader.cs" />
+    <Compile Include="Configuration\ConfigurationInterfaces.cs" />
+    <Compile Include="Web\Configuration\BaseHandlerConfiguration.cs" />
+    <Compile Include="Web\BaseSparqlServer.cs" />
+    <Compile Include="Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs" />
+    <Compile Include="Web\Configuration\Query\BaseQueryHandlerConfiguration.cs" />
+    <Compile Include="Update\Protocol\ISparqlHttpProtocolProcessor.cs" />
+    <Compile Include="Web\Configuration\Resource\BaseDatasetHandlerConfiguration.cs" />
+    <Compile Include="Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs" />
+    <Compile Include="Configuration\StorageFactories.cs" />
+    <Compile Include="Web\Configuration\Server\BaseSparqlServerConfiguration.cs" />
+    <Compile Include="Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs" />
+    <Compile Include="Web\Configuration\WebConfigurationLoader.cs" />
+    <Compile Include="Web\DatasetHandler.cs" />
+    <Compile Include="Web\NegotiateByFileExtension.cs" />
+    <Compile Include="Web\SchemaGraphHandler.cs" />
+    <Compile Include="Web\SparqlServiceDescriber.cs" />
+    <Compile Include="Web\WildcardProtocolHandler.cs" />
+    <Compile Include="Web\GraphHandler.cs" />
+    <Compile Include="Web\HandlerHelper.cs" />
+    <Compile Include="Web\ProtocolHandler.cs" />
+    <Compile Include="Web\QueryHandler.cs" />
+    <Compile Include="Web\SparqlServer.cs" />
+    <Compile Include="Web\UpdateHandler.cs" />
+    <Compile Include="Web\WildcardGraphHandler.cs" />
+    <Compile Include="Writing\BaseHtmlWriter.cs" />
+    <Compile Include="Writing\Contexts\BaseStoreWriterContexts.cs" />
+    <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
+    <Compile Include="Query\BindingClasses.cs" />
+    <Compile Include="Query\Inference\IInferenceEngine.cs" />
+    <Compile Include="Query\Inference\RdfsReasoner.cs" />
+    <Compile Include="Query\Inference\SkosReasoner.cs" />
+    <Compile Include="Query\Aggregates\ISparqlAggregate.cs" />
+    <Compile Include="Query\Expressions\ISparqlExpression.cs" />
+    <Compile Include="Query\Grouping\ISparqlGroupBy.cs" />
+    <Compile Include="Query\Grouping\SparqlGroupByClasses.cs" />
+    <Compile Include="Storage\AllegroGraphConnector.cs" />
+    <Compile Include="Storage\FourStoreConnector.cs" />
+    <Compile Include="Storage\BatchTriple.cs" />
+    <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
+    <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
+    <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
+    <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
+    <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
+    <Compile Include="Writing\Formatting\IGraphFormatter.cs" />
+    <Compile Include="Writing\Formatting\IResultSetFormatter.cs" />
+    <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
+    <Compile Include="Writing\Formatting\SparqlXmlFormatter.cs" />
+    <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
+    <Compile Include="Writing\Formatting\BaseFormatter.cs" />
+    <Compile Include="Writing\Formatting\CsvFormatter.cs" />
+    <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
+    <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
+    <Compile Include="Writing\Formatting\ICharFormatter.cs" />
+    <Compile Include="Writing\Formatting\INamespaceFormatter.cs" />
+    <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
+    <Compile Include="Writing\Formatting\IResultFormatter.cs" />
+    <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
+    <Compile Include="Writing\Formatting\IUriFormatter.cs" />
+    <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
+    <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
+    <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
+    <Compile Include="Writing\Formatting\QNameFormatter.cs" />
+    <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
+    <Compile Include="Writing\Formatting\TsvFormatter.cs" />
+    <Compile Include="Writing\Formatting\TurtleFormatter.cs" />
+    <Compile Include="Writing\HtmlSchemaWriter.cs" />
+    <Compile Include="Writing\RdfXmlWriter.cs" />
+    <Compile Include="Writing\HtmlWriter.cs" />
+    <Compile Include="Writing\CsvWriter.cs" />
+    <Compile Include="Writing\Notation3Writer.cs" />
+    <Compile Include="Writing\NQuadsWriter.cs" />
+    <Compile Include="Writing\RdfJsonWriter.cs" />
+    <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\ResultSetDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\SerializationHelper.cs" />
+    <Compile Include="Writing\SparqlCsvWriter.cs" />
+    <Compile Include="Writing\SparqlRdfWriter.cs" />
+    <Compile Include="Writing\SparqlTsvWriter.cs" />
+    <Compile Include="Writing\SparqlXsltWriter.cs" />
+    <Compile Include="Writing\TriXWriter.cs" />
+    <Compile Include="Writing\TsvWriter.cs" />
+    <Compile Include="Writing\TurtleWriter.cs" />
+    <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd" />
+    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <Compile Include="Writing\Formatting\INodeFormatter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\configuration.ttl" />
+    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dotNetRDF.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>echo "$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
+</Project>

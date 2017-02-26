@@ -1,0 +1,176 @@
+{
+  "title": "dotNetRDF",
+  "version": "1.0.13-pre6",
+  "description": "API for manipulating RDF data",
+  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+
+  "dependencies": {
+    "Newtonsoft.Json": "9.0.1",
+    "VDS.Common": "1.7.0"
+  },
+
+  "frameworks": {
+    "netstandard1.4": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.ComponentModel.TypeConverter": "4.1.0",
+        "System.Globalization.Extensions": "4.0.1",
+        "System.Net.Requests": "4.0.11",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "System.Threading.Thread": "4.0.0",
+        "System.Xml.XmlDocument": "4.0.1",
+        "System.Xml.XmlSerializer": "4.0.11"
+      },
+      "buildOptions": {
+        "define": [ "NO_SYSTEMCONFIGURATION", "NO_PROXY", "NO_XSL", "NO_HTMLAGILITYPACK", "NO_DATA", "NO_WEB", "NO_PROCESS", "NO_URICACHE", "NETCORE" ],
+        "compile": {
+          "include": [
+            "Compatibility/NetCoreCompatibility.cs"
+          ],
+          "exclude": [
+            "Web/**/*.cs",
+            "Update/Protocol/*.cs"
+          ]
+        }
+      }
+    },
+    "net40": {
+      "dependencies": {
+        "HtmlAgilityPack": "1.4.9.5"
+      },
+      "buildOptions": {
+        "define": [ "TRACE", "NET40" ],
+        "compile": {
+          "exclude": [
+            "Compatibility/*.cs"
+          ]
+        }
+      },
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Security": "4.0.0.0",
+        "System.Web": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
+      }
+    },
+    "net40-client": {
+      "dependencies": {
+        "HtmlAgilityPack": "1.4.9.5"
+      },
+      "buildOptions": {
+        "define": [ "TRACE", "NO_WEB", "NET40" ],
+        "compile": {
+          "exclude": [
+            "Compatibility/*.cs"
+          ],
+          "includeFiles": [
+            "Compatibility/HtmlTextWriter.cs",
+            "Compatibility/HtmlTextWriterAttribute.cs",
+            "Compatibility/HtmlTextWriterStyle.cs",
+            "Compatibility/HtmlTextWriterTag.cs",
+            "Compatibility/HttpUtility.cs"
+          ]
+        }
+      },
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0",
+        "System.Data": "4.0.0.0",
+        "System.Security": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
+      }
+    },
+    "net35": {
+      "dependencies": {
+        "HtmlAgilityPack": "1.4.9.5"
+      },
+      "buildOptions": {
+        "define": [ "TRACE" ],
+        "compile": {
+          "exclude": [
+            "Compatibility/*.cs"
+          ]
+        }
+      },
+      "frameworkAssemblies": {
+        "System.Configuration": "2.0.0.0",
+        "System.Data": "2.0.0.0",
+        "System.Security": "2.0.0.0",
+        "System.Web": "2.0.0.0",
+        "System.Xml": "2.0.0.0"
+      }
+    },
+    "net35-client": {
+      "dependencies": {
+        "HtmlAgilityPack": "1.4.9.5"
+      },
+      "buildOptions": {
+        "define": [ "TRACE", "NO_WEB" ],
+        "compile": {
+          "exclude": [
+            "Compatibility/*.cs"
+          ],
+          "includeFiles": [
+            "Compatibility/HtmlTextWriter.cs",
+            "Compatibility/HtmlTextWriterAttribute.cs",
+            "Compatibility/HtmlTextWriterStyle.cs",
+            "Compatibility/HtmlTextWriterTag.cs",
+            "Compatibility/HttpUtility.cs"
+          ]
+        }
+      },
+      "frameworkAssemblies": {
+        "System.Configuration": "2.0.0.0",
+        "System.Data": "2.0.0.0",
+        "System.Security": "2.0.0.0",
+        "System.Xml": "2.0.0.0"
+      }
+    },
+    ".NETPortable,Version=v4.0,Profile=Profile328": {
+      "buildOptions": {
+        "define": [
+          "TRACE",
+          "PORTABLE",
+          "SILVERLIGHT",
+          "WINDOWS_PHONE",
+          "NO_WEB",
+          "NO_ASP",
+          "NO_DATA",
+          "NO_COMPRESSION",
+          "NO_HTMLAGILITYPACK",
+          "NO_XSL",
+          "NO_SYSTEMCONFIGURATION",
+          "NO_PROXY",
+          "NO_XMLDOM",
+          "NO_RWLOCK",
+          "NO_STOPWATCH",
+          "NO_FILE",
+          "NO_SYNC_HTTP",
+          "NO_PROCESS",
+          "NO_NORM",
+          "NO_URICACHE"
+        ],
+        "compile": {
+          "include": [
+            "Compatibility/*.cs"
+          ],
+          "exclude": [
+            "Compatibility/NetCoreCompatibility.cs"
+          ]
+        }
+      },
+      "frameworkAssemblies": {
+        "mscorlib": "2.0.5.0",
+        "System": "2.0.5.0",
+        "System.Net": "2.0.5.0",
+        "System.Xml": "2.0.5.0"
+      }
+    }
+  },
+
+  "buildOptions": {
+    "outputName": "dotNetRDF"
+  }
+
+}
+

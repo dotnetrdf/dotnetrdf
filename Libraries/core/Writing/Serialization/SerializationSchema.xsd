@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DotNetRdfSchema"
+    targetNamespace="http://www.dotnetrdf.org/xmlserialization#"
+    elementFormDefault="qualified"
+    xmlns="http://www.dotnetrdf.org/xmlserialization#"
+    xmlns:mstns="http://www.dotnetrdf.org/xmlserialization#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <!-- graph element -->
+  <xs:element name="graph">
+    <xs:complexType>
+      <!-- graph contains a single triples element -->
+      <xs:sequence>
+        <xs:element ref="namespaces" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="triples" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="base" type="xs:anyURI" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- triples element -->
+  <xs:element name="triples">
+    <xs:complexType>
+      <!-- triples contains a sequence of triple elements which may be empty -->
+      <xs:sequence>
+        <xs:element ref="triple" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- triple element -->
+  <xs:element name="triple">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:group ref="node" minOccurs="3" maxOccurs="3" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- node group -->
+  <xs:group name="node">
+    <xs:choice>
+      <!-- bnode has simple string content -->
+      <xs:element name="bnode" type="xs:string" />
+      <!-- graphliteral contains a graph element -->
+      <xs:element name="graphliteral">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="graph" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <!-- literal contains a value and an optional lang and/or datatype attribute -->
+      <xs:element name="literal">
+        <xs:complexType mixed="true">
+          <xs:attribute name="datatype" type="xs:anyURI" use="optional" />
+          <xs:attribute name="lang" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
+      <!-- uri contains a value -->
+      <xs:element name="uri" type="xs:anyURI" />
+      <!-- variable contains a string -->
+      <xs:element name="variable" type="xs:string" />
+    </xs:choice>
+  </xs:group>
+
+  <!-- namespaces element -->
+  <xs:element name="namespaces">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="namespace" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- namespace element -->
+  <xs:element name="namespace">
+    <xs:complexType>
+      <xs:attribute name="prefix" type="xs:string" />
+      <xs:attribute name="uri" type="xs:anyURI" />
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- resultset element -->
+  <xs:element name="resultSet">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element name="boolean" type="xs:boolean" />
+        <xs:sequence>
+          <xs:element ref="variables" minOccurs="1" maxOccurs="1" />
+          <xs:element ref="results" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- variables element -->
+  <xs:element name="variables">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="variable" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- results element -->
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="result" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- result element -->
+  <xs:element name="result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="binding" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- binding element -->
+  <xs:element name="binding">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:group ref="node" maxOccurs="1" minOccurs="0" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  
+</xs:schema>

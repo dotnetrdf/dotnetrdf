@@ -185,10 +185,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
-      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\editor.wpf\rdfEditor.Core.Wpf.csproj">
       <Project>{C06AF971-A922-4070-A335-1C5D6A16A6CE}</Project>
       <Name>rdfEditor.Core.Wpf</Name>
@@ -320,4 +316,3 @@
   </Target>
   -->
 </Project>
-
