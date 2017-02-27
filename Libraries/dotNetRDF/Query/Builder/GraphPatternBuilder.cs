@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class GraphPatternBuilder : IGraphPatternBuilder
+    internal sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
