@@ -27,8 +27,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
@@ -580,6 +578,54 @@ namespace VDS.RDF.Query.Builder
                 currentOrdering = currentOrdering.Child;
             }
             Assert.IsNull(currentOrdering);
+        }
+
+        [Test]
+        public void CanBuildUnionOfChildPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(first => first.Where(BuildSPOPattern),
+                       second => second.Where(BuildSPOPattern),
+                       third => third.Where(BuildSPOPattern))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(3));
+        }
+
+        [Test]
+        public void CanBuildUnionOfMixedPatterns()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(
+                    first => first.Service(new Uri("http://example.com"), service => service.Where(BuildSPOPattern)),
+                    second => second.Graph("s", graph => graph.Where(BuildSPOPattern)))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion);
+            Assert.That(union.ChildGraphPatterns, Has.Count.EqualTo(2));
+            Assert.That(union.ChildGraphPatterns[0].ChildGraphPatterns[0].IsService);
+            Assert.That(union.ChildGraphPatterns[1].ChildGraphPatterns[0].IsGraph);
+        }
+
+        [Test]
+        public void SingleGraphPatternInUnionBehavesLikeChildPattern()
+        {
+            // when
+            var query = QueryBuilder.SelectAll()
+                .Union(graph => graph.Where(BuildSPOPattern))
+                .BuildQuery();
+
+            // then
+            var union = query.RootGraphPattern.ChildGraphPatterns.Single();
+            Assert.That(union.IsUnion, Is.False);
+            Assert.That(union.TriplePatterns, Has.Count.EqualTo(1));
         }
     }
 }

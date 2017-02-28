@@ -36,9 +36,10 @@ namespace VDS.RDF.Query.Builder
     public interface IGraphPatternBuilder
     {
         /// <summary>
-        /// Creates a UNION of the current graph pattern and a new one
+        /// Creates a UNION of multiple graph patterns. If <paramref name="unionedGraphPatternBuilders"/> is null or empty,
+        /// acts as a call to the <see cref="Child"/> method.
         /// </summary>
-        IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern);
+        IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildFirstGraphPattern, params Action<IGraphPatternBuilder>[] unionedGraphPatternBuilders);
         /// <summary>
         /// Adds triple patterns to the SPARQL query or graph pattern
         /// </summary>
