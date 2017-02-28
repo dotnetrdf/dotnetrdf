@@ -109,7 +109,7 @@ namespace VDS.RDF.Query
             Console.WriteLine(query.ToString());
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void SparqlParameterizedStringWithNulls2()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query
             Console.WriteLine();
 
             //Set the URI to a null
-            query.SetUri("s", null);
+            Assert.Throws<ArgumentNullException>(() => query.SetUri("s", null));
         }
 
         // TODO: Determine if this really is a problem that we should even be testing for rather than just documenting as a "feature"
@@ -532,7 +532,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         }
 
         [Test]
-        [Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
+        [NUnit.Framework.Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
         public void SparqlBindMultiple()
         {
             const string sourceGraphTurtle = @"<urn:cell:cell23>

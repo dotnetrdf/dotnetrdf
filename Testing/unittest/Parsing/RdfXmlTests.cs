@@ -182,12 +182,13 @@ namespace VDS.RDF.Parsing
         }
 #endif
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingRdfXmlPropertyInDefaultNamespaceBad()
         {
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            g.LoadFromFile("resources\\rdfxml-bad-property.rdf", parser);
+
+            Assert.Throws<RdfParseException>(() => g.LoadFromFile("resources\\rdfxml-bad-property.rdf", parser));
         }
 
         [Test]
@@ -289,8 +290,8 @@ namespace VDS.RDF.Parsing
         {
             TestTools.RunAtDepth(1000, this.ParsingRdfXmlStackOverflow1);
         }
-// Ignore potentially risky test
-        [Test,Ignore]
+
+        [Test,Ignore("potentially risky test")]
         public void ParsingRdfXmlStackOverflow4()
         {
             TestTools.RunAtDepth(5000, this.ParsingRdfXmlStackOverflow1);

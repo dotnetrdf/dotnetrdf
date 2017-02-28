@@ -36,7 +36,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Results.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlTsv02()
         {
             // Relative URI - CORE-432
@@ -44,10 +44,11 @@ namespace VDS.RDF.Parsing
                                 + "<http://x>\t<y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlTsv03()
         {
             // Invalid URI - CORE-432
@@ -55,7 +56,8 @@ namespace VDS.RDF.Parsing
                                 + "<http://x a bad uri>\t<y>\n";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
     }
 }

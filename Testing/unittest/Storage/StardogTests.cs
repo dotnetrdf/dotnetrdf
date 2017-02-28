@@ -400,7 +400,7 @@ namespace VDS.RDF.Storage
                 "Reasoning should yield as many if not more results");
         }
 
-        [Test, ExpectedException(typeof(RdfStorageException))]
+        [Test]
         public void StorageStardogReasoningMode()
         {
             StardogConnector connector = StardogTests.GetConnection();
@@ -411,7 +411,9 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                connector.Reasoning = StardogReasoningMode.DL;
+                Assert.Throws<RdfStorageException>(() =>
+                    connector.Reasoning = StardogReasoningMode.DL
+                    );
             }
         }
 

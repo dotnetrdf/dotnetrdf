@@ -119,7 +119,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlXmlCore432_01()
         {
             // Test case based off of CORE-432 - relative URI in XML
@@ -134,10 +134,11 @@ namespace VDS.RDF.Writing
   </results>
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlXmlCore432_02()
         {
             // Test case based off of CORE-432 - relative URI in XML
@@ -152,10 +153,11 @@ namespace VDS.RDF.Writing
   </results>
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlXmlCore432_03()
         {
             // Test case based off of CORE-432 - invalid URI in XML
@@ -170,10 +172,11 @@ namespace VDS.RDF.Writing
   </results>
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlXmlCore432_04()
         {
             // Test case based off of CORE-432 - invalid URI in XML
@@ -188,7 +191,8 @@ namespace VDS.RDF.Writing
   </results>
 </sparql>";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
     }
 }

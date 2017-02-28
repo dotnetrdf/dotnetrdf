@@ -503,30 +503,33 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingMalformedSparqlXml()
         {
             SparqlResultSet results = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
-            parser.Load(results, "resources\\bad_srx.srx");
+
+            Assert.Throws<RdfParseException>(() => parser.Load(results, "resources\\bad_srx.srx"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingTurtleDBPediaMalformedData()
         {
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser(TurtleSyntax.Original);
-            parser.Load(g, "resources\\dbpedia_malformed.ttl");
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\dbpedia_malformed.ttl"));
             Assert.IsFalse(g.IsEmpty);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingDefaultPrefixFallbackTurtle1()
         {
             String data = @"@base <http://base/> . :subj :pred :obj .";
             IRdfReader parser = new TurtleParser();
             Graph g = new Graph();
-            parser.Load(g, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(data)));
         }
 
         [Test]

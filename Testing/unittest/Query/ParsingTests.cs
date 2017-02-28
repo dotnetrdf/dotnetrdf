@@ -278,18 +278,20 @@ SELECT ?X WHERE
             }
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Test]
         public void SparqlParsingInsertDataWithGraphVar()
         {
             String update = "INSERT DATA { GRAPH ?g { } }";
-            TestUpdate(update);
+
+            Assert.Throws<RdfParseException>(() => TestUpdate(update));
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Test]
         public void SparqlParsingDeleteDataWithGraphVar()
         {
             String update = "DELETE DATA { GRAPH ?g { } }";
-            TestUpdate(update);
+
+            Assert.Throws<RdfParseException>(() => TestUpdate(update));
         }
 
         [Test]
@@ -643,11 +645,12 @@ WHERE
             Assert.IsTrue(formattedString.Contains("(STRUUID"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlParsingIllegalWhitespaceInUris()
         {
             const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
-            this._parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
         }
         
         [Test]
@@ -694,12 +697,13 @@ WHERE
             this._parser.ParseFromString(query);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlParsingAggregatesCore446_3()
         {
             // Invalid because non-aggregate and non-group key used in projection
             const String query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
-            this._parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
         }
 
         [Test]

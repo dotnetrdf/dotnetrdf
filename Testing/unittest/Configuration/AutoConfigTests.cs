@@ -82,32 +82,36 @@ namespace VDS.RDF.Configuration
             ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
 
-        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test]
         public void ConfigurationStaticOptionsNoFragment()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph");
-            this.ApplyStaticOptionsConfigure(optionUri, "");
+
+            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test]
         public void ConfigurationStaticOptionsBadClass()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.NoSuchClass#Property");
-            this.ApplyStaticOptionsConfigure(optionUri, "");
+
+            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test]
         public void ConfigurationStaticOptionsBadProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#NoSuchProperty");
-            this.ApplyStaticOptionsConfigure(optionUri, "");
+
+            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
-        [Test, ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test]
         public void ConfigurationStaticOptionsNonStaticProperty()
         {
             Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#BaseUri");
-            this.ApplyStaticOptionsConfigure(optionUri, "http://example.org");
+
+            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, "http://example.org"));
         }
 
         [Test]

@@ -275,7 +275,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlParsingSubqueries1()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed original input OK");
 
             String query2 = q.ToString();
-            SparqlQuery q2 = parser.ParseFromString(query2);
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query2));
             Console.WriteLine("Parsed reserialized input OK");
         }
 
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlParsingSubqueries3()
         {
             String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query
 
             SparqlFormatter formatter = new SparqlFormatter();
             String query2 = formatter.Format(q);
-            SparqlQuery q2 = parser.ParseFromString(query2);
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query2));
             Console.WriteLine("Parsed reserialized input OK");
         }
 
@@ -329,12 +329,12 @@ namespace VDS.RDF.Query
             Console.WriteLine("Parsed reserialized input OK");
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlParsingUpdateWithDeleteWhereIllegal()
         {
             const string update = "WITH <http://graph> DELETE WHERE { ?s ?p ?o }";
             SparqlUpdateParser parser = new SparqlUpdateParser();
-            parser.ParseFromString(update);
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(update));
         }
 
         [Test]

@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual("relative", obj.Segments[1]);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingRelativeUriNoBaseRdfXml()
         {
             //This invocation fails because when invoking the parser directly
@@ -92,17 +92,19 @@ namespace VDS.RDF.Parsing
 
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            parser.Load(g, "resources\\rdfxml-relative-uri.rdf");
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\rdfxml-relative-uri.rdf"));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingRelativeUriNoBaseTurtle()
         {
             //This invocation fails because there is no Base URI to
             //resolve against
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser();
-            parser.Load(g, new StringReader(TurtleExample));
+
+            Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(TurtleExample)));
         }
 
         [Test]

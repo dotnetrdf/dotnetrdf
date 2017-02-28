@@ -5,7 +5,7 @@
   "dependencies": {
     "dotNetRDF.Query.FullText": "1.0.13-pre6",
     "dotNetRDF.Data.Virtuoso": "1.0.13-pre6",
-    "NUnit": "3.0.0",
+    "NUnit": "3.6.1",
     "Moq": "4.2.1409.1722",
     "dotnet-test-nunit": "3.4.0-*",
     "dotNetRDF": "1.0.13-pre6"

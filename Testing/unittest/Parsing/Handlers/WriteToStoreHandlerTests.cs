@@ -182,22 +182,22 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void ParsingWriteToStoreHandlerBadInstantiation()
         {
-            WriteToStoreHandler handler = new WriteToStoreHandler(null, null);
+            Assert.Throws<ArgumentNullException>(() => new WriteToStoreHandler(null, null));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingWriteToStoreHandlerBadInstantiation2()
         {
-            WriteToStoreHandler handler = new WriteToStoreHandler(new ReadOnlyConnector(new InMemoryManager()), null);
+            Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new ReadOnlyConnector(new InMemoryManager()), null));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingWriteToStoreHandlerBadInstantiation4()
         {
-            WriteToStoreHandler handler = new WriteToStoreHandler(new InMemoryManager(), null, 0);
+            Assert.Throws<ArgumentException>(() => new WriteToStoreHandler(new InMemoryManager(), null, 0));
         }
 
 #if !PORTABLE // No VirtuosoManager in PCL

@@ -1445,10 +1445,10 @@ namespace VDS.RDF
         }
 #endif
 
-        [Test, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test]
         public void MimeTypesGetParserByTypeUnknown()
         {
-            IRdfReader reader = MimeTypesHelper.GetParser("application/unknown");
+            Assert.Throws<RdfParserSelectionException>(() => MimeTypesHelper.GetParser("application/unknown"));
         }
 
         [Test]
@@ -2071,10 +2071,10 @@ namespace VDS.RDF
 #endif
 #endif
 
-        [Test, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test]
         public void MimeTypesGetSparqlParserByTypeUnknown()
         {
-            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("application/unknown");
+            Assert.Throws<RdfParserSelectionException>(() => MimeTypesHelper.GetSparqlParser("application/unknown"));
         }
 
         [Test]
@@ -2429,10 +2429,10 @@ namespace VDS.RDF
         }
 #endif
 
-        [Test, ExpectedException(typeof(RdfParserSelectionException))]
+        [Test]
         public void MimeTypesGetStoreParserByTypeUnknown()
         {
-            IStoreReader parser = MimeTypesHelper.GetStoreParser("application/unknown");
+            Assert.Throws<RdfParserSelectionException>(() => MimeTypesHelper.GetStoreParser("application/unknown"));
         }
 
         [Test]

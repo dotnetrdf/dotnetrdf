@@ -276,19 +276,13 @@ namespace VDS.RDF
             Assert.AreEqual(expected, actual.Uri);
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void UriResolutionUriProvidedToQNameMethod()
         {
-            try
-            {
-                IGraph g = new Graph();
-                INode test = g.CreateUriNode("http://example.org");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex);
-                throw ex;
-            }
+            IGraph g = new Graph();
+            var ex = Assert.Throws<RdfException>(() => g.CreateUriNode("http://example.org"));
+         
+            TestTools.ReportError("Error", ex);
         }
 
         [Test]

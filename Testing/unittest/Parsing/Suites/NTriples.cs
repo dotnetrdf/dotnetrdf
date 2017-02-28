@@ -63,23 +63,23 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual(1, g.Triples.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingNTriplesComplexBNodeIDs()
         {
             const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
 <http://s> <http://p> _:node.id.";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, this.Parser));
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Test]
         public void ParsingNTriplesLiteralEscapes1()
         {
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, this.Parser);
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, this.Parser));
         }
 
         [Test]

@@ -38,7 +38,7 @@ namespace VDS.RDF.Configuration
     [TestFixture]
     public class ConfigurationApiTests
     {
-        [Test,ExpectedException(typeof(DotNetRdfConfigurationException))]
+        [Test]
         public void ConfigurationCircularReference()
         {
             String graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
@@ -50,7 +50,7 @@ _:b a dnr:Graph ;
             Graph g = new Graph();
             g.LoadFromString(graph);
 
-            ConfigurationLoader.LoadObject(g, g.GetBlankNode("a"));
+            Assert.Throws<DotNetRdfConfigurationException>(() => ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")));
         }
 
 #if !PORTABLE // No ConfigurationLoader.Load(string) method

@@ -78,10 +78,10 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test,ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void StoragePersistentTripleStoreBadInstantiation()
         {
-            PersistentTripleStore store = new PersistentTripleStore(null);
+            Assert.Throws<ArgumentNullException>(() => new PersistentTripleStore(null));
         }
 
         #region Contains Tests
@@ -986,28 +986,28 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test,ExpectedException(typeof(RdfQueryException))]
+        [Test]
         public void StoragePersistentTripleStoreMemQueryUnsynced()
         {
             InMemoryManager manager = new InMemoryManager();
-            this.TestQueryUnsynced(manager);
+            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(manager));
         }
 
 #if !NO_SYNC_HTTP
-        [Test, ExpectedException(typeof(RdfQueryException))]
+        [Test]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestQueryUnsynced(fuseki);
+            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(fuseki));
         }
 #endif
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Test, ExpectedException(typeof(RdfQueryException))]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryUnsynced(virtuoso);
+            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(virtuoso));
         }
 #endif
 
@@ -1168,28 +1168,28 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [Test, ExpectedException(typeof(SparqlUpdateException))]
+        [Test]
         public void StoragePersistentTripleStoreMemUpdateUnsynced()
         {
             InMemoryManager manager = new InMemoryManager();
-            this.TestUpdateUnsynced(manager);
+            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(manager));
         }
 
 #if !NO_SYNC_HTTP
-        [Test, ExpectedException(typeof(SparqlUpdateException))]
+        [Test]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestUpdateUnsynced(fuseki);
+            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(fuseki));
         }
 #endif
 
 #if !PORTABLE // No VirtuosoManager in PCL
-        [Test, ExpectedException(typeof(SparqlUpdateException))]
+        [Test]
         public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestUpdateUnsynced(virtuoso);
+            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(virtuoso));
         }
 #endif
 

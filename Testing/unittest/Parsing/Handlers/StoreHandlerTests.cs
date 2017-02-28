@@ -51,10 +51,10 @@ namespace VDS.RDF.Parsing.Handlers
             store.SaveToFile(testFile);
         }
 
-        [Test,ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void ParsingStoreHandlerBadInstantiation()
         {
-            StoreHandler handler = new StoreHandler(null);
+            Assert.Throws<ArgumentNullException>(() => new StoreHandler(null));
         }
 
         #region NQuads Tests

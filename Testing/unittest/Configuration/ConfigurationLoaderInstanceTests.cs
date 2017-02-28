@@ -126,7 +126,7 @@ _:a a dnr:TripleCollection ;
             Assert.IsTrue(collection is TreeIndexedTripleCollection);
         }
 
-        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource <http://example.com/notSuchObject> was not found is configuration graph")]
+        [Test]
         public void ShouldThrowWhenUriNodeIsNotFound()
         {
             // given
@@ -141,10 +141,11 @@ _:a a dnr:TripleCollection ;
             var configuration = new ConfigurationLoader("configuration.ttl");
 #endif
             // then
-            configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject"));
+            var exception = Assert.Throws<ArgumentException>(() => configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject")));
+            Assert.That(exception.Message, Is.EqualTo("Resource <http://example.com/notSuchObject> was not found is configuration graph"));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException), ExpectedMessage = "Resource _:store was not found is configuration graph")]
+        [Test]
         public void ShouldThrowWhenBlankNodeIsNotFound()
         {
             // given
@@ -160,10 +161,11 @@ _:a a dnr:TripleCollection ;
 #endif
 
             // then
-            configuration.LoadObject<BaseTripleCollection>("store");
+            var exception = Assert.Throws<ArgumentException>(() => configuration.LoadObject<BaseTripleCollection>("store"));
+            Assert.That(exception.Message, Is.EqualTo("Resource _:store was not found is configuration graph"));
         }
 
-        [Test, ExpectedException(typeof(InvalidCastException))]
+        [Test]
         public void ShouldThrowWhenTryingToLoadWrongType()
         {
             // given
@@ -178,7 +180,7 @@ _:a a dnr:TripleCollection ;
             var configuration = new ConfigurationLoader("configuration.ttl");
 #endif
             // then
-            configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection"));
+            Assert.Throws<InvalidCastException>(() => configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection")));
         } 
     }
 }

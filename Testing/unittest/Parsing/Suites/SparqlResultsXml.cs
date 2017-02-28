@@ -90,12 +90,13 @@ namespace VDS.RDF.Parsing.Suites
             Assert.AreEqual("test plain literal", thirdLit.Value);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlResultsXmlConflictingAttributes()
         {
             // Test case based off of CORE-410
             SparqlResultSet results = new SparqlResultSet();
-            this.ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx");
+
+            Assert.Throws<RdfParseException>(() => this.ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx"));
         }
     }
 }

@@ -47,23 +47,24 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
         
-        [Test,ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingMultiHandlerBadInstantiation()
         {
-            MultiHandler handler = new MultiHandler(Enumerable.Empty<IRdfHandler>());
+            Assert.Throws<ArgumentException>(() => new MultiHandler(Enumerable.Empty<IRdfHandler>()));
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void ParsingMultiHandlerBadInstantiation2()
         {
-            MultiHandler handler = new MultiHandler(null);
+            Assert.Throws<ArgumentNullException>(() => new MultiHandler(null));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingMultiHandlerBadInstantiation3()
         {
             GraphHandler h = new GraphHandler(new Graph());
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { h, h });
+
+            Assert.Throws<ArgumentException>(() => new MultiHandler(new IRdfHandler[] { h, h }));
         }
 
         [Test]

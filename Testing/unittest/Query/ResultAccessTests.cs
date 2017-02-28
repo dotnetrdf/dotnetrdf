@@ -88,17 +88,21 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test,ExpectedException(typeof(RdfException))]
+        [Test]
         public void SparqlResultAccessByNameError()
         {
-            String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
-            SparqlQuery q = this.CreateQuery(query);
-            SparqlResultSet results = this.GetResults(q);
-
-            foreach (SparqlResult r in results)
+            Assert.Throws<RdfException>(() =>
             {
-                Console.WriteLine("?s = " + r["s"].ToString(this._formatter) + " ?range = " + r["range"].ToString(this._formatter));
-            }
+                String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
+                SparqlQuery q = this.CreateQuery(query);
+                SparqlResultSet results = this.GetResults(q);
+
+                foreach (SparqlResult r in results)
+                {
+                    Console.WriteLine("?s = " + r["s"].ToString(this._formatter) + " ?range = " +
+                                      r["range"].ToString(this._formatter));
+                }
+            });
         }
 
         [Test]

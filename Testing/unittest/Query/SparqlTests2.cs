@@ -379,7 +379,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        [Test, ExpectedException(typeof (RdfParseException))]
+        [Test]
         public void SparqlBindScope1()
         {
             String query = @"PREFIX : <http://www.example.org>
@@ -393,7 +393,8 @@ namespace VDS.RDF.Query
  }";
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
         }
 
         [Test]
@@ -1619,18 +1620,16 @@ WHERE
             //TestTools.ShowResults(results);
         }
 
-        [Test, Ignore, Timeout(15000)]
+        [Test, Ignore("the query requires generating ~4.7 million solutions so is fundamentally unsolvable"), Timeout(15000)]
         public void SparqlGraphOptionalInteractionCore457_1()
         {
-            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
             RunCore457("optional.rq");
         }
 
 
-        [Test, Ignore, Timeout(15000)]
+        [Test, Ignore("the query requires generating ~4.7 million solutions so is fundamentally unsolvable"), Timeout(15000)]
         public void SparqlGraphOptionalInteractionCore457_2()
         {
-            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
             try
             {
                 Options.UsePLinqEvaluation = false;
@@ -1648,17 +1647,15 @@ WHERE
             RunCore457("optional2.rq");
         }
 
-        [Test, Ignore, Timeout(15000)]
+        [Test, Ignore("the query requires generating ~4.7 million solutions so is fundamentally unsolvable"), Timeout(15000)]
         public void SparqlGraphExistsInteractionCore457_1()
         {
-            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
             RunCore457("exists.rq");
         }
 
-        [Test, Ignore, Timeout(15000)]
+        [Test, Ignore("the query requires generating ~4.7 million solutions so is fundamentally unsolvable"), Timeout(15000)]
         public void SparqlGraphExistsInteractionCore457_2()
         {
-            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
             try
             {
                 Options.UsePLinqEvaluation = false;
@@ -1682,10 +1679,9 @@ WHERE
             RunCore457("exists3.rq");
         }
 
-        [Test, Ignore, Timeout(15000)]
+        [Test, Ignore("the query requires generating ~4.7 million solutions so is fundamentally unsolvable"), Timeout(15000)]
         public void SparqlGraphExistsInteractionCore457_5()
         {
-            // Ignored because the query requires generating ~4.7 million solutions so is fundamentally unsolvable
             RunCore457("exists-limit.rq");
         }
 

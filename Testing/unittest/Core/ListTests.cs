@@ -133,39 +133,44 @@ namespace VDS.RDF
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void GraphListsError1()
         {
             Graph g = new Graph();
-            g.GetListItems(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.GetListItems(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void GraphListsError2()
         {
             Graph g = new Graph();
-            g.GetListAsTriples(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.GetListAsTriples(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void GraphListsError3()
         {
             Graph g = new Graph();
-            g.RetractList(g.CreateBlankNode());
+
+            Assert.Throws<RdfException>(() => g.RetractList(g.CreateBlankNode()));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void GraphListsError4()
         {
             Graph g = new Graph();
-            g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g));
+
+            Assert.Throws<RdfException>(() => g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }
 
-        [Test, ExpectedException(typeof(RdfException))]
+        [Test]
         public void GraphListsError5()
         {
             Graph g = new Graph();
-            g.RemoveFromList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g));
+
+            Assert.Throws<RdfException>(() => g.RemoveFromList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }
     }
 }

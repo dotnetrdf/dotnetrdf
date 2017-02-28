@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing
            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void WritingNTriplesNonAsciiChars2()
         {
             StringBuilder builder = new StringBuilder();
@@ -124,7 +124,9 @@ namespace VDS.RDF.Writing
                 builder.Append((char)i);
             }
 
-            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+            Assert.Throws<RdfParseException>(() =>
+                this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original))
+            );
         }
 
         [Test]
@@ -188,7 +190,7 @@ namespace VDS.RDF.Writing
             this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void WritingNTriplesMixedChars3()
         {
             StringBuilder builder = new StringBuilder();
@@ -198,10 +200,12 @@ namespace VDS.RDF.Writing
                 builder.Append((char)j);
             }
 
-            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+            Assert.Throws<RdfParseException>(() =>
+                this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original))
+            );
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void WritingNTriplesMixedChars4()
         {
             StringBuilder builder = new StringBuilder();
@@ -222,7 +226,9 @@ namespace VDS.RDF.Writing
                 i++;
             }
 
-            this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original));
+            Assert.Throws<RdfParseException>(() =>
+                this.Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Original))
+            );
         }
 
         [Test]

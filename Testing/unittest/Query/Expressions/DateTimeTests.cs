@@ -121,32 +121,33 @@ namespace VDS.RDF.Query.Expressions
         }
 
         [TestCase("2013-07-05T12:00:00", "2013-07-05T12:00:00Z")]
-        [ExpectedException(typeof(RdfQueryException))]
         public void SparqlDateTimeIncomparable(String x, String y)
         {
             IGraph g = new Graph();
             INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2);
+
+            Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
         }
 
-        [ExpectedException(typeof(RdfQueryException))]
+        [Test]
         public void SparqlDateIncomparable(String x, String y)
         {
             IGraph g = new Graph();
             INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
             INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-            SparqlSpecsHelper.DateEquality(dateTime1, dateTime2);
+
+            Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateEquality(dateTime1, dateTime2));
         }
 
         [TestCase("2006-08-23T09:00:00+01:00", "2006-08-23")]
-        [ExpectedException(typeof(RdfQueryException))]
         public void SparqlDateTimeMixedIncomparable(String x, String y)
         {
             IGraph g = new Graph();
             INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             INode date2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-            SparqlSpecsHelper.DateTimeEquality(dateTime1, date2);
+
+            Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
         }
 
         [Test]

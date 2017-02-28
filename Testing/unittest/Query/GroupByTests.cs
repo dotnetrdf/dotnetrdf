@@ -563,13 +563,14 @@ WHERE
             Assert.AreEqual("$5", y["Total"].AsValuedNode().AsString());
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void SparqlGroupByComplex2()
         {
             //Nested aggregates are a parser error
             String query = @"SELECT ?s (SUM(MIN(?o)) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
             SparqlQueryParser parser = new SparqlQueryParser();
-            parser.ParseFromString(query);
+
+            Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
         }
 
         [Test]

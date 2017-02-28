@@ -128,16 +128,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void ParsingTextReaderBlockingBadInstantiation()
         {
-            BlockingTextReader reader = ParsingTextReader.CreateBlocking((TextReader)null);
+            Assert.Throws<ArgumentNullException>(() => ParsingTextReader.CreateBlocking((TextReader)null));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingTextReaderBlockingBadInstantiation2()
         {
-            BlockingTextReader reader = ParsingTextReader.CreateBlocking(new StringReader(String.Empty), 0);
+            Assert.Throws<ArgumentException>(() => ParsingTextReader.CreateBlocking(new StringReader(String.Empty), 0));
         }
 
         [Test]

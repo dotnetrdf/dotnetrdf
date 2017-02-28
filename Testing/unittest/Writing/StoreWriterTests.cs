@@ -114,16 +114,16 @@ namespace VDS.RDF.Writing
             this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void WritingNQuadsMixedBad()
         {
-            TestTools.TestInMTAThread(this.WritingNQuadsMixedBadActual);
+            Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(this.WritingNQuadsMixedBadActual));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void WritingNQuadsMixedBadSingleThreaded()
         {
-            this.WritingNQuadsMixedBadActual();
+            Assert.Throws<RdfParseException>(() => this.WritingNQuadsMixedBadActual());
         }
 
         private void WritingNQuadsMixedBadActual()

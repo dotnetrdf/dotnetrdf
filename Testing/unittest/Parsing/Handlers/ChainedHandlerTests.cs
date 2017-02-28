@@ -47,23 +47,23 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
         
-        [Test,ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingChainedHandlerBadInstantiation()
         {
-            ChainedHandler handler = new ChainedHandler(Enumerable.Empty<IRdfHandler>());
+            Assert.Throws<ArgumentException>(() => new ChainedHandler(Enumerable.Empty<IRdfHandler>()));
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void ParsingChainedHandlerBadInstantiation2()
         {
-            ChainedHandler handler = new ChainedHandler(null);
+            Assert.Throws<ArgumentNullException>(() => new ChainedHandler(null));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void ParsingChainedHandlerBadInstantiation3()
         {
             GraphHandler h = new GraphHandler(new Graph());
-            ChainedHandler handler = new ChainedHandler(new IRdfHandler[] { h, h });
+            Assert.Throws<ArgumentException>(() => new ChainedHandler(new IRdfHandler[] { h, h }));
         }
 
         [Test]

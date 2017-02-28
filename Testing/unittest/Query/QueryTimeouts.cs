@@ -292,11 +292,9 @@ namespace VDS.RDF.Query
         }
 
         [Test]
-        [Ignore]
+        [Ignore("in practise it is suprisingly easy to compute this in under a millisecond given a reasonable machine since it only needs to compute one value")]
         public void SparqlQueryTimeoutDuringProductLazy2()
         {
-            // This is ignored because in practise it is suprisingly easy to compute this in under a millisecond given a reasonable machine
-            // since it only needs to compute one value
             String query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;

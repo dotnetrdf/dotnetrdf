@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonNumerics2()
         {
             const string data = @"{
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
 }";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
 
             Assert.AreEqual(1, results.Count);
         }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonBoolean2()
         {
             const string data = @"{
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing
 }";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
 
             Assert.AreEqual(1, results.Count);
         }
@@ -301,7 +301,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, results.Count);
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore419_09()
         {
             const String data = @"{
@@ -316,16 +316,18 @@ namespace VDS.RDF.Parsing
  }
 }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonMalformed()
         {
             const String data = @"{ ""junk"": ]";
 
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
         [Test]
@@ -386,7 +388,7 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(2, results.Variables.Count());
         }
 
-        [Test,ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore423_05()
         {
             const String data = @"{ 
@@ -397,10 +399,11 @@ namespace VDS.RDF.Parsing
   },
   ""head"": { ""vars"": [ ""x"" ] }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore432_01()
         {
             // Test case based off of CORE-432 - relative URI in JSON
@@ -413,10 +416,11 @@ namespace VDS.RDF.Parsing
   }
 }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore432_02()
         {
             // Test case based off of CORE-432 - relative URI in JSON
@@ -429,10 +433,11 @@ namespace VDS.RDF.Parsing
   }
 }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore432_03()
         {
             // Test case based off of CORE-432 - invalid URI in JSON
@@ -445,10 +450,11 @@ namespace VDS.RDF.Parsing
   }
 }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
 
-        [Test, ExpectedException(typeof(RdfParseException))]
+        [Test]
         public void ParsingSparqlJsonCore432_04()
         {
             // Test case based off of CORE-432 - invalid URI in JSON
@@ -461,7 +467,8 @@ namespace VDS.RDF.Parsing
   }
 }";
             SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+
+            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
         }
     }
 }
