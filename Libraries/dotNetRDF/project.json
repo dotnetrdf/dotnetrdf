@@ -159,7 +159,11 @@
   },
 
   "buildOptions": {
-    "outputName": "dotNetRDF"
+    "outputName": "dotNetRDF",
+    "embed": [
+      "Configuration/configuration.ttl"
+    ],
+    "xmlDoc": true 
   }
 
 }
