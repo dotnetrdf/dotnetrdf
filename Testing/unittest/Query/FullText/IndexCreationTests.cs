@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.FullText
         private IGraph GetTestData()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             return g;
         }
 

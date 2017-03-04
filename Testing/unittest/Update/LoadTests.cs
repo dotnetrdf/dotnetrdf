@@ -18,7 +18,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateLoadQuads1()
         {
             var tripleStore = new TripleStore();
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"resources\core-421\test.ru");
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test.ru");
 
             tripleStore.ExecuteUpdate(cmds);
             Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
@@ -37,7 +37,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateLoadQuads2()
         {
             var tripleStore = new TripleStore();
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"resources\core-421\test2.ru");
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test2.ru");
 
             tripleStore.ExecuteUpdate(cmds);
             Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
@@ -56,7 +56,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateLoadQuads3()
         {
             var tripleStore = new TripleStore();
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"resources\core-421\test3.ru");
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromFile(@"..\\resources\core-421\test3.ru");
 
             tripleStore.ExecuteUpdate(cmds);
             Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
@@ -76,8 +76,8 @@ namespace VDS.RDF.Update
         {
             var tripleStore = new TripleStore();
 
-            String g1 = Path.GetFullPath(@"resources\core-421\g1.nq").Replace('\\','/');
-            String g2 = Path.GetFullPath(@"resources\core-421\g2.nq").Replace('\\','/');
+            String g1 = Path.GetFullPath(@"..\\resources\core-421\g1.nq").Replace('\\','/');
+            String g2 = Path.GetFullPath(@"..\\resources\core-421\g2.nq").Replace('\\','/');
 
             tripleStore.ExecuteUpdate("LOAD <file:///" + g1 + "> into graph <http://test.org/user>");
             tripleStore.ExecuteUpdate("LOAD <file:///" + g2 + "> into graph <http://test.org/prodList/>");
@@ -98,7 +98,7 @@ namespace VDS.RDF.Update
         {
             var tripleStore = new TripleStore();
 
-            tripleStore.LoadFromFile(@"resources\core-421\test.nq");
+            tripleStore.LoadFromFile(@"..\\resources\core-421\test.nq");
             Assert.That(tripleStore.Triples.ToList(), Has.Count.EqualTo(3));
             Assert.That(tripleStore.Graphs, Has.Count.EqualTo(2));
 

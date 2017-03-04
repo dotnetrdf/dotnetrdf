@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.FullText
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 store.Add(g);
 
                 this._dataset = new InMemoryDataset(store, g.BaseUri);

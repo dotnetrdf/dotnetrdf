@@ -141,16 +141,16 @@ namespace VDS.RDF.Writing
         {
             List<IGraph> graphs = new List<IGraph>();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("resources\\cyrillic.rdf");
+            g.LoadFromFile("..\\resources\\cyrillic.rdf");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile("..\\resources\\complex-collections.nt");
             graphs.Add(g);
 
             List<IGraphFormatter> formatters = new List<IGraphFormatter>()
@@ -202,7 +202,7 @@ namespace VDS.RDF.Writing
         public void WritingFormattingResultSets()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             SparqlResultSet expected = g.ExecuteQuery("SELECT * WHERE { ?s a ?type }") as SparqlResultSet;
 
             List<IResultSetFormatter> formatters = new List<IResultSetFormatter>()

@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
             if (!System.IO.File.Exists("temp.ttl"))
             {
                 Graph g = new Graph();
-                EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+                EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
                 g.SaveToFile("temp.ttl");
             }
         }
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing.Handlers
             //Do the parsing and thus the loading
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri);
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(handler, new StreamReader("resources\\writetostore.nq"));
+            parser.Load(handler, new StreamReader("..\\resources\\writetostore.nq"));
 
             //Load the expected Graphs
             Graph def = new Graph();

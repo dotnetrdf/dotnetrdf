@@ -173,7 +173,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationXmlGraph()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationXml(g);
         }
@@ -182,7 +182,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationXmlGraph2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationXml(g);
         }
@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationXmlGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile("..\\resources\\complex-collections.nt");
 
             this.TestGraphSerializationXml(g);
         }
@@ -214,7 +214,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationXmlGraph5()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationXml<MockWrapperGraph>(new MockWrapperGraph(g));
         }
@@ -223,7 +223,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationBinaryGraph()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationBinary(g);
         }
@@ -232,7 +232,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationBinaryGraph2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationBinary(g);
         }
@@ -255,7 +255,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationBinaryGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile("..\\resources\\complex-collections.nt");
 
             this.TestGraphSerializationBinary(g);
         }
@@ -264,7 +264,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationBinaryGraph5()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationBinary<MockWrapperGraph>(new MockWrapperGraph(g));
         }
@@ -273,7 +273,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationDataContractGraph()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationDataContract(g);
         }
@@ -282,7 +282,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationDataContractGraph2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationDataContract(g);
         }
@@ -305,7 +305,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationDataContractGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile("..\\resources\\complex-collections.nt");
 
             this.TestGraphSerializationDataContract(g);
         }
@@ -314,7 +314,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationDataContractGraph5()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationDataContract(new MockWrapperGraph(g));
         }
@@ -323,7 +323,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationJson(g);
         }
@@ -332,7 +332,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationJsonGraph2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             this.TestGraphSerializationJson(g);
         }
@@ -355,7 +355,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationJsonGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile("..\\resources\\complex-collections.nt");
 
             this.TestGraphSerializationJson(g);
         }
@@ -364,7 +364,7 @@ namespace VDS.RDF.Writing.Serialization
         //public void SerializationJsonGraph5()
         //{
         //    Graph g = new Graph();
-        //    EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+        //    EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "dotNetRDF.Configuration.configuration.ttl");
 
         //    this.TestGraphSerializationJson(new MockWrapperGraph(g));
         //}

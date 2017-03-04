@@ -64,7 +64,7 @@ namespace VDS.RDF.Storage
         public void StorageSesameSaveLoad()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/SesameTest");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -174,7 +174,7 @@ namespace VDS.RDF.Storage
         public void StorageSesameDeleteTriples1()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/SesameTest");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
@@ -242,7 +242,7 @@ namespace VDS.RDF.Storage
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
-            FileLoader.Load(g, @"resources\chinese.ttl");
+            FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
             String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
@@ -281,7 +281,7 @@ namespace VDS.RDF.Storage
             Uri graphUri = new Uri("http://example.org/Sesame/delete");
 
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = graphUri;
 
             sesame.SaveGraph(g);
@@ -307,7 +307,7 @@ namespace VDS.RDF.Storage
             sesame.DeleteGraph(graphUri);
 
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = graphUri;
 
             sesame.SaveGraph(g);
@@ -331,7 +331,7 @@ namespace VDS.RDF.Storage
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
-            FileLoader.Load(g, @"resources\cyrillic.rdf");
+            FileLoader.Load(g, @"..\\resources\cyrillic.rdf");
             sesame.SaveGraph(g);
 
             String ask = "ASK WHERE { GRAPH <http://example.org/sesame/cyrillic> { ?s ?p 'литерал' } }";
@@ -354,7 +354,7 @@ namespace VDS.RDF.Storage
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
-            FileLoader.Load(g, @"resources\chinese.ttl");
+            FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
             String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
@@ -446,7 +446,7 @@ DELETE WHERE
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/sparqlUpdateDeleteWhere");
             sesame.SaveGraph(g);
 
@@ -466,7 +466,7 @@ DELETE WHERE
             // Ensure required graph is present
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
-            FileLoader.Load(g, @"resources\chinese.ttl");
+            FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
             String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
@@ -508,7 +508,7 @@ DELETE WHERE
 
             // Insert the Data
             StringBuilder updates = new StringBuilder();
-            using (StreamReader reader = new StreamReader(@"resources\core-374.ru"))
+            using (StreamReader reader = new StreamReader(@"..\\resources\core-374.ru"))
             {
                 updates.Append(reader.ReadToEnd());
                 reader.Close();

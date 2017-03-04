@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
         public void StorageFourStoreSaveGraph()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -77,7 +77,7 @@ namespace VDS.RDF.Storage
             StorageFourStoreSaveGraph();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();

@@ -391,7 +391,7 @@ namespace VDS.RDF.Query.FullText
             //Now add the Graph we want to get auto-indexed
             INode graphObj = g.CreateBlankNode();
             g.Assert(graphObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr:Graph"));
-            g.Assert(graphObj, g.CreateUriNode("dnr:fromEmbedded"), g.CreateLiteralNode("VDS.RDF.Configuration.configuration.ttl"));
+            g.Assert(graphObj, g.CreateUriNode("dnr:fromEmbedded"), g.CreateLiteralNode("dotNetRDF.Configuration.configuration.ttl"));
 
             //Then add the Indexer for use by the auto-indexing  
             INode indexerObj = g.CreateBlankNode();

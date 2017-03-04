@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
@@ -103,7 +103,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fuseki#test");
 
                 //Save Graph to Fuseki
@@ -141,7 +141,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -180,7 +180,7 @@ namespace VDS.RDF.Storage
 #endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store

@@ -127,7 +127,7 @@ namespace VDS.RDF
         public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "resources\\InferenceTest.ttl");
+            FileLoader.Load(parent, "..\\resources\\InferenceTest.ttl");
             Graph subgraph = new Graph();
             subgraph.NamespaceMap.Import(parent.NamespaceMap);
             subgraph.Assert(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
@@ -176,7 +176,7 @@ namespace VDS.RDF
         public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "resources\\Turtle.ttl");
+            FileLoader.Load(parent, "..\\resources\\Turtle.ttl");
             Graph subgraph = new Graph();
             subgraph.Assert(parent.Triples.Where(t => !t.IsGroundTriple));
 
@@ -219,8 +219,8 @@ namespace VDS.RDF
                 Graph h = new Graph();
 
                 TurtleParser ttlparser = new TurtleParser();
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
-                ttlparser.Load(h, "resources\\MergePart1.ttl");
+                ttlparser.Load(g, "..\\resources\\MergePart1.ttl");
+                ttlparser.Load(h, "..\\resources\\MergePart1.ttl");
 
                 Assert.AreEqual(g.BaseUri, h.BaseUri, "The Base URIs of the Graphs should not be affected by the Load and so should be both null");
                 //TestTools.CompareGraphs(g, h, true);
@@ -374,7 +374,7 @@ namespace VDS.RDF
         public void GraphToDataTable()
         {
             Graph g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
 
             DataTable table = (DataTable)g;
 

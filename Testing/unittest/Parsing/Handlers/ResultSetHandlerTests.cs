@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Handlers
             if (!File.Exists(file))
             {
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
                 if (results == null) Assert.Fail("Failed to generate sample SPARQL Results");

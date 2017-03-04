@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 
             IGraph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.IsNotNull(results);
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 
             IGraph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.IsNotNull(results);

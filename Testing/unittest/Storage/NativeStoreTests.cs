@@ -43,7 +43,7 @@ namespace VDS.RDF
             //Load in our Test Graph
             TurtleParser ttlparser = new TurtleParser();
             Graph g = new Graph();
-            ttlparser.Load(g, "resources\\Turtle.ttl");
+            ttlparser.Load(g, "..\\resources\\Turtle.ttl");
 
             Console.WriteLine("Loaded Test Graph OK");
             Console.WriteLine("Test Graph contains:");

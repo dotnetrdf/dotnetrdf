@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Suites
 
             this._parser = testParser;
             this._resultsParser = resultsParser;
-            this._baseDir = string.Format("resources\\{0}", baseDir);
+            this._baseDir = string.Format("..\\resources\\{0}", baseDir);
         }
 
         /// <summary>

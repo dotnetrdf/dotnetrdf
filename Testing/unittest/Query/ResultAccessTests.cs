@@ -47,7 +47,7 @@ namespace VDS.RDF.Query
         public void EnsureDataset()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             TripleStore store = new TripleStore();
             store.Add(g);
             this._dataset = new InMemoryDataset(store);

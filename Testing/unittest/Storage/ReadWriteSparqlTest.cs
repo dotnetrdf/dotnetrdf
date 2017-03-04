@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile("..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Save Graph to ReadWriteSparql
@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile("..\\resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -135,7 +135,7 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile("..\\resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -173,7 +173,7 @@ namespace VDS.RDF.Storage
                 StorageReadWriteSparqlSaveGraph();
 
                 Graph g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile("..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Try to load the relevant Graph back from the Store

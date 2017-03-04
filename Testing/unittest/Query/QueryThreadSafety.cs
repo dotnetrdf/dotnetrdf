@@ -142,7 +142,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             Graph h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             Graph h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");

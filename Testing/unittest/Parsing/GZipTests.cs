@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         public void Setup()
         {
             this._g = new Graph();
-            this._g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            this._g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             this._results = this._g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)

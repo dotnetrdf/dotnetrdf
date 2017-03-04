@@ -257,9 +257,9 @@ namespace VDS.RDF.Writing.Serialization
         {
             Graph g = new Graph();
             Graph h = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(h), 10), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(h), 10), "dotNetRDF.Configuration.configuration.ttl");
             Graph i = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(i), 5, 25), "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(i), 5, 25), "dotNetRDF.Configuration.configuration.ttl");
 
             List<INode> nodes = new List<INode>()
             {

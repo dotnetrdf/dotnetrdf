@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
         public void SparqlFunctionsNow()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("resources\\now01.rq");
+            SparqlQuery q = parser.ParseFromFile("..\\resources\\now01.rq");
 
             Console.WriteLine("ToString Output:");
             Console.WriteLine(q.ToString());
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query
         {
             String query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
             Graph g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
 
             Object results = g.ExecuteQuery(query);
             if (results is SparqlResultSet)
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
         {
             String query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             for (int i = 0; i < 50; i++)
             {

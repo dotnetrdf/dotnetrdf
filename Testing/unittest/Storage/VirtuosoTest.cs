@@ -66,11 +66,11 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, @"resources\MergePart1.ttl");
+                FileLoader.Load(testData, @"..\\resources\MergePart1.ttl");
                 testData.BaseUri = new Uri("http://localhost/VirtuosoTest");
                 manager.SaveGraph(testData);
                 testData = new Graph();
-                FileLoader.Load(testData, @"resources\Turtle.ttl");
+                FileLoader.Load(testData, @"..\\resources\Turtle.ttl");
                 testData.BaseUri = new Uri("http://localhost/TurtleImportTest");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, "resources\\Turtle.ttl");
+                FileLoader.Load(testData, "..\\resources\\Turtle.ttl");
                 testData.BaseUri = new Uri("http://example.org/virtuoso/tests/null");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -158,7 +158,7 @@ namespace VDS.RDF.Storage
 
                 //Load in our Test Graph
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/storage/virtuoso/save");
 
                 Console.WriteLine();
@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage
                 //Load in our Test Graph
                 TurtleParser ttlparser = new TurtleParser();
                 Graph g = new Graph();
-                ttlparser.Load(g, "resources\\Turtle.ttl");
+                ttlparser.Load(g, "..\\resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/deleteMe");
 
                 Console.WriteLine();
@@ -810,7 +810,7 @@ namespace VDS.RDF.Storage
             {
                 //Load in our Test Graph
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("/storage/virtuoso/relative", UriKind.Relative);
 
                 virtuoso.SaveGraph(g);

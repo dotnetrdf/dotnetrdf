@@ -49,13 +49,13 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
             Assert.AreEqual(1, dataset.Graphs.Count());
 
-            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graph.ru");
+            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_default_graph.ru");
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.AreEqual(3, dataset.Graphs.Count());
             Assert.AreEqual(1, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-test/")].Triples.Count());
 
-            SparqlQuery query = this._queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graph.rq");
+            SparqlQuery query = this._queryParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_default_graph.rq");
 
             ISparqlAlgebra algebra = query.ToAlgebra();
             Console.WriteLine(algebra.ToString());
@@ -74,13 +74,13 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
             Assert.AreEqual(1, dataset.Graphs.Count());
 
-            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graphs.ru");
+            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_default_graphs.ru");
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.AreEqual(5, dataset.Graphs.Count());
             Assert.AreEqual(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-graphs-test/")].Triples.Count());
 
-            SparqlQuery query = this._queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graphs.rq");
+            SparqlQuery query = this._queryParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_default_graphs.rq");
 
             ISparqlAlgebra algebra = query.ToAlgebra();
             Console.WriteLine(algebra.ToString());
@@ -99,13 +99,13 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
             Assert.AreEqual(1, dataset.Graphs.Count());
 
-            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_named_graphs.ru");
+            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_named_graphs.ru");
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.AreEqual(5, dataset.Graphs.Count());
             Assert.AreEqual(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-named-graphs-test/")].Triples.Count());
 
-            SparqlQuery query = this._queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_named_graphs.rq");
+            SparqlQuery query = this._queryParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_named_graphs.rq");
 
             ISparqlAlgebra algebra = query.ToAlgebra();
             Console.WriteLine(algebra.ToString());
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query
             LeviathanQueryProcessor queryProcessor = new LeviathanQueryProcessor(dataset);
             Assert.AreEqual(1, dataset.Graphs.Count());
 
-            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_full.ru");
+            SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_full.ru");
             updateProcessor.ProcessCommandSet(updates);
 
             Console.WriteLine(updates.ToString());
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual(5, dataset.Graphs.Count());
             Assert.AreEqual(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-full-test/")].Triples.Count());
 
-            SparqlQuery query = this._queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_full.rq");
+            SparqlQuery query = this._queryParser.ParseFromFile("..\\resources\\sparql\\protocol\\update_dataset_full.rq");
 
             ISparqlAlgebra algebra = query.ToAlgebra();
             Console.WriteLine(algebra.ToString());

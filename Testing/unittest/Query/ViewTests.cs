@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = null;
                 store.Add(g, true);
 
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to ensure there is some data for the view to retrieve
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 agraph.SaveGraph(g);
 
                 //Create the SPARQL View
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query
                 //Load another Graph with a different URI into the Store
                 Graph h = new Graph();
                 h.BaseUri = new Uri("http://example.org/2");
-                FileLoader.Load(h, "resources\\Turtle.ttl");
+                FileLoader.Load(h, "..\\resources\\Turtle.ttl");
                 store.Add(h);
 
                 Thread.Sleep(500);

@@ -31,7 +31,7 @@ namespace VDS.RDF.Parsing.Handlers
     [TestFixture]
     public class FileLoaderHandlerTests
     {
-        private const string TestDataFile = "resources\\temp.ttl";
+        private const string TestDataFile = "..\\resources\\temp.ttl";
 
         [SetUp]
         public void Setup()
@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.SaveToFile(TestDataFile);
         }
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingFileLoaderCountHandlerTurtle()
         {
             Graph orig = new Graph();
-            orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            orig.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             CountHandler handler = new CountHandler();
 #if PORTABLE
             using (var input = File.OpenRead(TestDataFile))

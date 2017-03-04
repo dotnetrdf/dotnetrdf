@@ -149,7 +149,7 @@ namespace VDS.RDF.Update
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
             g.BaseUri = null;
             store.Add(g);
 
@@ -169,7 +169,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateWithDefaultQueryProcessor()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             TripleStore store = new TripleStore();
             store.Add(g);
@@ -186,7 +186,7 @@ namespace VDS.RDF.Update
         public void SparqlUpdateWithCustomQueryProcessor()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             TripleStore store = new TripleStore();
             store.Add(g);

@@ -295,7 +295,7 @@ namespace VDS.RDF.Writing
         {
             Graph g = new Graph();
             TurtleParser parser = new TurtleParser();
-            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "resources\\chado-in-owl.ttl");
+            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "..\\resources\\chado-in-owl.ttl");
 
             this.CheckRoundTrip(g);
         }

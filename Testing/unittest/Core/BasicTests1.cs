@@ -812,8 +812,8 @@ namespace VDS.RDF
                 Graph h = new Graph();
                 Assert.IsNotNull(g);
                 Assert.IsNotNull(h);
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
-                ttlparser.Load(h, "resources\\MergePart2.ttl");
+                ttlparser.Load(g, "..\\resources\\MergePart1.ttl");
+                ttlparser.Load(h, "..\\resources\\MergePart2.ttl");
 
                 Console.WriteLine("Merge Test Data Loaded OK");
                 Console.WriteLine();
@@ -851,7 +851,7 @@ namespace VDS.RDF
 
                 //Need to reload g from disk
                 g = new Graph();
-                ttlparser.Load(g, "resources\\MergePart1.ttl");
+                ttlparser.Load(g, "..\\resources\\MergePart1.ttl");
 
                 //Do the actual merge
                 i.Merge(g);

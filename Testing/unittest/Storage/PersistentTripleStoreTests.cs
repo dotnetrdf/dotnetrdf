@@ -48,13 +48,13 @@ namespace VDS.RDF.Storage
         private void EnsureTestDataset(IStorageProvider manager)
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri(TestGraphUri1);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
 
             g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri(TestGraphUri2);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
@@ -148,7 +148,7 @@ namespace VDS.RDF.Storage
             try
             {
                 Graph aExpected = new Graph();
-                aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                aExpected.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 aExpected.BaseUri = new Uri(TestGraphUri1);
                 IGraph aActual = store[aExpected.BaseUri];
@@ -157,7 +157,7 @@ namespace VDS.RDF.Storage
                 Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graphs[]");
 
                 Graph bExpected = new Graph();
-                bExpected.LoadFromFile("resources\\InferenceTest.ttl");
+                bExpected.LoadFromFile("..\\resources\\InferenceTest.ttl");
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 bExpected.BaseUri = new Uri(TestGraphUri2);
                 IGraph bActual = store[bExpected.BaseUri];

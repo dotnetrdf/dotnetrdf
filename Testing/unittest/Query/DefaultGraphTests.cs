@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, "..\\resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, "..\\resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -332,7 +332,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, "..\\resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -364,7 +364,7 @@ namespace VDS.RDF.Query
 
             InMemoryDataset dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, "..\\resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
@@ -394,11 +394,11 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             IGraph ex = new Graph();
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, "..\\resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/named");
             store.Add(ex);
             IGraph ex2 = new Graph();
-            ex2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            ex2.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             ex2.BaseUri = new Uri("http://example.org/other");
             store.Add(ex2);
 

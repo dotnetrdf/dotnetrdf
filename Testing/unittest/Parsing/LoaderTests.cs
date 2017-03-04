@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             TestTools.ShowGraph(g);
 
@@ -300,7 +300,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl, dotNetRDF");
 
             TestTools.ShowGraph(g);
 
@@ -326,7 +326,7 @@ namespace VDS.RDF.Parsing
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
             TripleStore store = new TripleStore();
-            store.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            store.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
 
             Assert.IsTrue(store.Triples.Count() > 0);
             Assert.AreEqual(1, store.Graphs.Count);
@@ -336,7 +336,7 @@ namespace VDS.RDF.Parsing
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
             TripleStore store = new TripleStore();

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             {
                 this._data = new TripleStore();
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 this._data.Add(g);
             }
             if (this._processor == null)

@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage
         {
             StardogConnector stardog = StardogTests.GetConnection();
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             stardog.SaveGraph(g);
 
@@ -113,7 +113,7 @@ namespace VDS.RDF.Storage
 
             // Ensure graph exists
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/graph");
             stardog.SaveGraph(g);
 
@@ -137,7 +137,7 @@ namespace VDS.RDF.Storage
             StardogConnector stardog = StardogTests.GetConnection();
             
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             stardog.SaveGraph(g);
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();
                 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
                 stardog.SaveGraph(g);
 
@@ -190,7 +190,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();
                 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 Uri u = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
                 g.BaseUri = u;
                 stardog.SaveGraph(g);
@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage
             StardogConnector stardog = StardogTests.GetConnection();
             
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/namedGraph");
             stardog.SaveGraph(g);
 
@@ -243,7 +243,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();
                 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
                 stardog.SaveGraph(g);
 
@@ -282,7 +282,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();
                 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
 
                 INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
@@ -325,7 +325,7 @@ namespace VDS.RDF.Storage
                 StardogConnector stardog = StardogTests.GetConnection();
                 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/tempGraph");
                 stardog.SaveGraph(g);
 
@@ -364,7 +364,7 @@ namespace VDS.RDF.Storage
             }
 
             Graph g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/reasoning");
             stardog.SaveGraph(g);
 

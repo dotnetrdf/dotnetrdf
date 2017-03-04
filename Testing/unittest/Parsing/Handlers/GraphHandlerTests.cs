@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Handlers
                 Options.UriLoaderCaching = false;
 
                 Graph g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
                 UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
                 NTriplesFormatter formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples)
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingGraphHandlerImplicitTurtle()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in g.Triples)
@@ -104,7 +104,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
             Graph h = new Graph();
@@ -177,7 +177,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingGraphHandlerExplicitMerging()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
             g.SaveToFile("temp.ttl");
 
             Graph h = new Graph();
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingGraphHandlerImplicitMerging()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+            EmbeddedResourceLoader.Load(g, "dotNetRDF.Configuration.configuration.ttl");
             g.SaveToFile("temp.ttl");
 
             Graph h = new Graph();

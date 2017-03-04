@@ -194,7 +194,7 @@ namespace VDS.RDF.Writing.Serialization
         private SparqlResultSet GetResults(String query)
         {
             Graph g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             return g.ExecuteQuery(query) as SparqlResultSet;
         }
 

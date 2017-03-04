@@ -49,9 +49,9 @@ namespace VDS.RDF.Parsing.Suites
 #if NO_XSL
         private readonly string[] _trixFilesRequiringStylesheet = new string[]
             {
-                "resources\\trix\\curies.xml",
-                "resources\\trix\\datatypes.xml",
-                "resources\\trix\\multiple-stylesheets.xml"
+                "..\\resources\\trix\\curies.xml",
+                "..\\resources\\trix\\datatypes.xml",
+                "..\\resources\\trix\\multiple-stylesheets.xml"
             };
 #endif
 
