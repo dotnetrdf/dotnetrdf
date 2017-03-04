@@ -1,5 +1,5 @@
 {
-  "name": "dotNetRDF", 
+  "name": "dotNetRDF",
   "title": "dotNetRDF",
   "version": "1.0.13-pre6",
   "description": "API for manipulating RDF data",
@@ -8,6 +8,9 @@
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
     "VDS.Common": "1.7.0"
+  },
+  "tools": {
+    "dotnet-version": "1.1.0"
   },
 
   "frameworks": {

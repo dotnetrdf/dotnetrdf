@@ -9,6 +9,9 @@
     "dotNetRDF": "1.0.13-pre6",
     "OpenLink.Data.Virtuoso": "7.20.3214.1"
   },
+  "tools": {
+    "dotnet-version": "1.1.0"
+  },
 
   "frameworks": {
     "net40": {
