@@ -1,7 +1,7 @@
 branches:
   only:
     - netcore-reorg
-	
+
 install:
   - choco install gitversion.portable -pre -y
 
@@ -15,6 +15,6 @@ configuration: Release
 build_script:
   - dotnet build ./**/project.json 
   - dotnet pack -c Release -o nugets ./Libraries/**/project.json 
-  
+
 artifacts:
   - path: 'nugets\*.nupkg'
