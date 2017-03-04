@@ -18,6 +18,7 @@
   },
 
   "buildOptions": {
+    "keyFile": "../../Build/dotNetRDF.snk",
     "outputName": "dotNetRDF.Query.Spin"
   }
 
