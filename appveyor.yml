@@ -14,7 +14,9 @@ configuration: Release
 
 build_script:
   - dotnet build ./**/project.json 
-  - dotnet pack -c Release -o nugets ./Libraries/**/project.json 
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Data.Virtuoso
+  - dotnet pack -c Release -o nugets Libraries/dotNetRDF.Query.FullText
 
 artifacts:
   - path: 'nugets\*.nupkg'
