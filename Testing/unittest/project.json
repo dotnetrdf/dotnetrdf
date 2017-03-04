@@ -37,6 +37,7 @@
   },
 
   "buildOptions": {
-    "outputName": "dotNetRDF.Test"
+    "outputName": "dotNetRDF.Test",
+    "keyFile": "../../Build/dotNetRDF.snk"
   }
 }

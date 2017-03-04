@@ -49,6 +49,7 @@
 
 
   "buildOptions": {
+    "keyFile": "../../Build/dotNetRDF.snk",
     "outputName": "dotNetRDF.Query.FullText",
     "embed": [
       "FullText.ttl"

@@ -24,6 +24,7 @@
   },
 
   "buildOptions": {
+    "keyFile": "../../Build/dotNetRDF.snk",
     "outputName": "dotNetRDF.Data.Virtuoso"
   }
 }

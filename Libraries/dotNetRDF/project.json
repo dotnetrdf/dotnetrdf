@@ -159,11 +159,12 @@
   },
 
   "buildOptions": {
+    "keyFile": "../../Build/dotNetRDF.snk",
     "outputName": "dotNetRDF",
     "embed": [
       "Configuration/configuration.ttl"
     ],
-    "xmlDoc": true 
+    "xmlDoc": true
   }
 
 }
