@@ -1,0 +1,20 @@
+branches:
+  only:
+    - netcore-reorg
+	
+install:
+  - choco install gitversion.portable -pre -y
+
+before_build:
+  - dotnet restore
+  - ps: gitversion /l console /output buildserver /updateassemblyinfo
+  - ps: Get-ChildItem -Filter project.json -Recurse | % { start-process dotnet -ArgumentList version,$env:GitVersion_LegacySemVer -wo $_.Directory.FullName -NoNewWindow }
+
+configuration: Release
+
+build_script:
+  - dotnet build ./**/project.json 
+  - dotnet pack -c Release -o nugets ./Libraries/**/project.json 
+  
+artifacts:
+  - path: 'nugets\*.nupkg'
