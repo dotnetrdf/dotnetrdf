@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -278,7 +278,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_0);
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -342,7 +342,7 @@ namespace VDS.RDF.Query
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -512,7 +512,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
@@ -542,7 +542,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
@@ -568,7 +568,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -601,7 +601,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -634,7 +634,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -667,7 +667,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -700,7 +700,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -733,7 +733,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -767,7 +767,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -801,7 +801,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -835,7 +835,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -869,7 +869,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -903,7 +903,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -937,7 +937,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -972,7 +972,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\dataset_50.ttl.gz");
+            FileLoader.Load(g, "resources\\dataset_50.ttl.gz");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -1035,7 +1035,7 @@ WHERE
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -1073,7 +1073,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -1115,7 +1115,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -1161,7 +1161,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -1205,7 +1205,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -1301,7 +1301,7 @@ WHERE
 
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 store.Add(g);
 
                 SparqlQueryParser parser = new SparqlQueryParser();
@@ -1368,7 +1368,7 @@ WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 1";
 
                 var g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 var parser = new SparqlQueryParser();
                 var q = parser.ParseFromString(query);
@@ -1400,7 +1400,7 @@ WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 20";
 
                 var g = new Graph();
-                FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 var parser = new SparqlQueryParser();
                 var q = parser.ParseFromString(query);

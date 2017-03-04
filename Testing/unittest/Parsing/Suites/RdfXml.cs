@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this.Parser.Load(g, "..\\resources\\rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 #endif
@@ -85,10 +85,10 @@ namespace VDS.RDF.Parsing.Suites
 #if PORTABLE
         private readonly string[] _portableIgnoreTests = new string[]
             {
-                "..\\resources\\rdfxml\\amp-in-url\\test001.rdf", // Has a DOCTYPE declaration which cannot be parsed in PCL
-                "..\\resources\\rdfxml\\rdf-containers-syntax-vs-schema\\test005.rdf", // Has no root element -- note that this test is not run by the NET40 build either
-                "..\\resources\\rdfxml\\xmlbase\\test012.rdf", // Has no root element -- again this test is not run byt the NET40 build
-                "..\\resources\\rdfxml\\rdf-charmod-uris\\error001.rdf" // Tests for normalization but there is no support for this in PCL
+                "resources\\rdfxml\\amp-in-url\\test001.rdf", // Has a DOCTYPE declaration which cannot be parsed in PCL
+                "resources\\rdfxml\\rdf-containers-syntax-vs-schema\\test005.rdf", // Has no root element -- note that this test is not run by the NET40 build either
+                "resources\\rdfxml\\xmlbase\\test012.rdf", // Has no root element -- again this test is not run byt the NET40 build
+                "resources\\rdfxml\\rdf-charmod-uris\\error001.rdf" // Tests for normalization but there is no support for this in PCL
             };
 #endif
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             IGraph g = new Graph();
             g.BaseUri = BaseRdfParserSuite.BaseUri;
-            this.Parser.Load(g, "..\\resources\\rdfxml\\xmlbase\\test014.rdf");
+            this.Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
         }
     }
 }

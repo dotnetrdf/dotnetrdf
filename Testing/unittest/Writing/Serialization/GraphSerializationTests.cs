@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationXmlGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationXml(g);
         }
@@ -255,7 +255,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationBinaryGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationBinary(g);
         }
@@ -305,7 +305,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationDataContractGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationDataContract(g);
         }
@@ -355,7 +355,7 @@ namespace VDS.RDF.Writing.Serialization
         public void SerializationJsonGraph4()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             this.TestGraphSerializationJson(g);
         }

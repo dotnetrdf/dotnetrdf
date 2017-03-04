@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
             g.BaseUri = null;
             store.Add(g);
             g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
             g = new Graph();

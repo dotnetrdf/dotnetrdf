@@ -102,11 +102,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -132,11 +132,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand2()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = null;
 
             TripleStore store = new TripleStore();
@@ -162,11 +162,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = null;
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -192,11 +192,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -222,11 +222,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand2()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = null;
 
             TripleStore store = new TripleStore();
@@ -252,11 +252,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = null;
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -282,11 +282,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -307,7 +307,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             Graph orig = new Graph();
-            FileLoader.Load(orig, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
@@ -315,11 +315,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand2()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = null;
 
             TripleStore store = new TripleStore();
@@ -340,7 +340,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             Graph orig = new Graph();
-            FileLoader.Load(orig, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
@@ -348,11 +348,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = null;
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\Turtle.ttl");
+            FileLoader.Load(h, "resources\\Turtle.ttl");
             h.BaseUri = new Uri("http://example.org/destination");
 
             TripleStore store = new TripleStore();
@@ -374,7 +374,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsTrue(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
 
             Graph orig = new Graph();
-            FileLoader.Load(orig, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
             Assert.AreEqual(orig, h, "Destination Graph should be equal to the original contents of the Source Graph");
         }
 
@@ -391,7 +391,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             g.BaseUri = null;
             store.Add(g);
@@ -407,7 +407,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             //Now reload the test data and apply an RDFS reasoner over it
             //This should give us a Graph equivalent to the one created by the previous INSERT commands
             Graph h = new Graph();
-            FileLoader.Load(h, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(h, "resources\\InferenceTest.ttl");
             h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
             RdfsReasoner reasoner = new RdfsReasoner();
             reasoner.Apply(h);
@@ -434,7 +434,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
             int origTriples = g.Triples.Count;
@@ -481,7 +481,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
 
@@ -510,7 +510,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
 
@@ -632,7 +632,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\rvesse.ttl");
+            g.LoadFromFile("resources\\rvesse.ttl");
             store.Add(g);
 
             int origTriples = g.Triples.Count;
@@ -657,7 +657,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\rvesse.ttl");
+            g.LoadFromFile("resources\\rvesse.ttl");
             store.Add(g);
 
             int origTriples = g.Triples.Count;
@@ -682,7 +682,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\rvesse.ttl");
+            g.LoadFromFile("resources\\rvesse.ttl");
             store.Add(g);
 
             int origTriples = g.Triples.Count;
@@ -707,7 +707,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\rvesse.ttl");
+            g.LoadFromFile("resources\\rvesse.ttl");
             store.Add(g);
 
             int origTriples = g.Triples.Count;

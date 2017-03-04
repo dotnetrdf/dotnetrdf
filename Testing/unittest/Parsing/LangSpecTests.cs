@@ -38,11 +38,11 @@ namespace VDS.RDF.Parsing
     [TestFixture]
     public class LangSpecTests
     {
-        private const string NTriplesLangSpec = "..\\resources\\langspec.nt";
-        private const string TurtleLangSpec = "..\\resources\\langspec.ttl";
-        private const string N3LangSpec = "..\\resources\\langspec.n3";
-        private const string TrigLangSpec = "..\\resources\\langspec.trig";
-        private const string NQuadsLangSpec = "..\\resources\\langspec.nq";
+        private const string NTriplesLangSpec = "resources\\langspec.nt";
+        private const string TurtleLangSpec = "resources\\langspec.ttl";
+        private const string N3LangSpec = "resources\\langspec.n3";
+        private const string TrigLangSpec = "resources\\langspec.trig";
+        private const string NQuadsLangSpec = "resources\\langspec.nq";
 
         private IGraph _original;
         private TripleStore _store;

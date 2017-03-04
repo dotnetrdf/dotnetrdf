@@ -291,9 +291,9 @@ namespace VDS.RDF
         private static void TestGraphMatch(string testGraphName)
         {
             Graph a = new Graph();
-            a.LoadFromFile(string.Format("..\\resources\\diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
             Graph b = new Graph();
-            b.LoadFromFile(string.Format("..\\resources\\diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             Assert.IsTrue(a.Equals(b));
             Assert.IsTrue(b.Equals(a));

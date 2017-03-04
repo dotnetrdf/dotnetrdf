@@ -144,13 +144,13 @@ namespace VDS.RDF.Writing
             g.LoadFromEmbeddedResource("dotNetRDF.Configuration.configuration.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("..\\resources\\cyrillic.rdf");
+            g.LoadFromFile("resources\\cyrillic.rdf");
             graphs.Add(g);
             g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
             graphs.Add(g);
 
             List<IGraphFormatter> formatters = new List<IGraphFormatter>()

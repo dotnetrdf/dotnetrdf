@@ -20,7 +20,8 @@
       "buildOptions": {
         "define": [ "TRACE", "NET40" ],
         "copyToOutput": [
-          "resources/**/*.*"
+          "resources/**/*.*",
+          "resources/*.*"
         ],
         "embed": [
           "Query/SampleWeightings.n3",

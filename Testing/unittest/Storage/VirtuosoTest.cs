@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage
 
                 //Add the Test Date to Virtuoso
                 Graph testData = new Graph();
-                FileLoader.Load(testData, "..\\resources\\Turtle.ttl");
+                FileLoader.Load(testData, "resources\\Turtle.ttl");
                 testData.BaseUri = new Uri("http://example.org/virtuoso/tests/null");
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage
                 //Load in our Test Graph
                 TurtleParser ttlparser = new TurtleParser();
                 Graph g = new Graph();
-                ttlparser.Load(g, "..\\resources\\Turtle.ttl");
+                ttlparser.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/deleteMe");
 
                 Console.WriteLine();

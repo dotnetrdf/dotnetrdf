@@ -253,7 +253,7 @@ namespace VDS.RDF.Writing
         public void WritingCollectionCompressionComplex2()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\complex-collections.nt");
+            g.LoadFromFile("resources\\complex-collections.nt");
 
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);

@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing
             NTriplesFormatter formatter = new NTriplesFormatter();
             RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
             Graph g = new Graph();
-            domParser.Load(g, "..\\resources\\empty-string-rdfxml.rdf");
+            domParser.Load(g, "resources\\empty-string-rdfxml.rdf");
 
             Console.WriteLine("DOM Parser parsed OK");
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing
 
             RdfXmlParser streamingParser = new RdfXmlParser(RdfXmlParserMode.Streaming);
             Graph h = new Graph();
-            streamingParser.Load(h, "..\\resources\\empty-string-rdfxml.rdf");
+            streamingParser.Load(h, "resources\\empty-string-rdfxml.rdf");
 
             Console.WriteLine("Streaming Parser parsed OK");
 
@@ -108,10 +108,10 @@ namespace VDS.RDF.Parsing
         }
 
 #if !NO_XMLDOM
-        [TestCase(RdfXmlParserMode.DOM, "..\\resources\\sequence.rdf")]
-        [TestCase(RdfXmlParserMode.Streaming, "..\\resources\\sequence.rdf")]
-        [TestCase(RdfXmlParserMode.DOM, "..\\resources\\sequence2.rdf")]
-        [TestCase(RdfXmlParserMode.Streaming, "..\\resources\\sequence2.rdf")]
+        [TestCase(RdfXmlParserMode.DOM, "resources\\sequence.rdf")]
+        [TestCase(RdfXmlParserMode.Streaming, "resources\\sequence.rdf")]
+        [TestCase(RdfXmlParserMode.DOM, "resources\\sequence2.rdf")]
+        [TestCase(RdfXmlParserMode.Streaming, "resources\\sequence2.rdf")]
         public void ParsingRdfXml(RdfXmlParserMode parsingMode, string path)
         {
             RdfXmlParser parser = new RdfXmlParser(parsingMode);
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing
             NTriplesFormatter formatter = new NTriplesFormatter();
             RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
             Graph g = new Graph();
-            domParser.Load(g, "..\\resources\\urlencodes-in-rdfxml.rdf");
+            domParser.Load(g, "resources\\urlencodes-in-rdfxml.rdf");
 
             foreach (Triple t in g.Triples)
             {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing
             NTriplesFormatter formatter = new NTriplesFormatter();
             RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
             Graph g = new Graph();
-            domParser.Load(g, "..\\resources\\urlencodes-in-rdfxml.rdf");
+            domParser.Load(g, "resources\\urlencodes-in-rdfxml.rdf");
 
             foreach (Triple t in g.Triples)
             {
@@ -188,7 +188,7 @@ namespace VDS.RDF.Parsing
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
 
-            Assert.Throws<RdfParseException>(() => g.LoadFromFile("..\\resources\\rdfxml-bad-property.rdf", parser));
+            Assert.Throws<RdfParseException>(() => g.LoadFromFile("resources\\rdfxml-bad-property.rdf", parser));
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing
         {
             Graph g = new Graph();
             RdfXmlParser parser = new RdfXmlParser();
-            g.LoadFromFile("..\\resources\\rdfxml-good-property.rdf", parser);
+            g.LoadFromFile("resources\\rdfxml-good-property.rdf", parser);
 
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing
         public void ParsingRdfXmlElementUsesXmlNamespaceDom()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
+            g.LoadFromFile("resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.DOM));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }
@@ -221,7 +221,7 @@ namespace VDS.RDF.Parsing
         public void ParsingRdfXmlElementUsesXmlNamespaceStreaming()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
+            g.LoadFromFile("resources\\xml-prop.rdf", new RdfXmlParser(RdfXmlParserMode.Streaming));
             Assert.IsFalse(g.IsEmpty);
             Assert.AreEqual(1, g.Triples.Count);
         }

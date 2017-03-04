@@ -41,7 +41,7 @@ namespace VDS.RDF.Query
         {
             InMemoryDataset dataset = new InMemoryDataset();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             dataset.AddGraph(g);
 
             return dataset;
@@ -137,11 +137,11 @@ namespace VDS.RDF.Query
         [Test]
         public void SparqlNegationFullMinued()
         {
-            SparqlQuery lhsQuery = this._parser.ParseFromFile("..\\resources\\full-minuend-lhs.rq");
-            SparqlQuery rhsQuery = this._parser.ParseFromFile("..\\resources\\full-minuend-rhs.rq");
-            SparqlQuery query = this._parser.ParseFromFile("..\\resources\\full-minuend.rq");
+            SparqlQuery lhsQuery = this._parser.ParseFromFile("resources\\full-minuend-lhs.rq");
+            SparqlQuery rhsQuery = this._parser.ParseFromFile("resources\\full-minuend-rhs.rq");
+            SparqlQuery query = this._parser.ParseFromFile("resources\\full-minuend.rq");
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\full-minuend.ttl");
+            g.LoadFromFile("resources\\full-minuend.ttl");
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
 
             SparqlResultSet lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query
             if (actual == null) Assert.Fail("Null results");
             SparqlResultSet expected = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
-            parser.Load(expected, "..\\resources\\full-minuend.srx");
+            parser.Load(expected, "resources\\full-minuend.srx");
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);

@@ -31,7 +31,7 @@ namespace VDS.RDF.Parsing.Handlers
     [TestFixture]
     public class FileLoaderHandlerTests
     {
-        private const string TestDataFile = "..\\resources\\temp.ttl";
+        private const string TestDataFile = "resources\\temp.ttl";
 
         [SetUp]
         public void Setup()

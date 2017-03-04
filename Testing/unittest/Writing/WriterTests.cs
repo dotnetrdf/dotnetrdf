@@ -81,7 +81,7 @@ namespace VDS.RDF.Writing
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\charescaping.owl");
+            FileLoader.Load(g, "resources\\charescaping.owl");
 
             Console.WriteLine("Original Triples");
             foreach (Triple t in g.Triples)
@@ -111,7 +111,7 @@ namespace VDS.RDF.Writing
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "..\\resources\\InferenceTest.ttl");
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
             String data = VDS.RDF.Writing.StringWriter.Write(g, writer);

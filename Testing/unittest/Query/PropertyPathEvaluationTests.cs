@@ -246,7 +246,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -265,7 +265,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -305,7 +305,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
@@ -324,7 +324,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
@@ -344,7 +344,7 @@ namespace VDS.RDF.Query
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             InMemoryDataset dataset = new InMemoryDataset(store);
 
@@ -390,11 +390,11 @@ WHERE
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("..\\resources\\schema-org.ttl");
+            g.LoadFromFile("resources\\schema-org.ttl");
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("..\\resources\\schema-org.rq");
-            SparqlQuery qDistinct = parser.ParseFromFile("..\\resources\\schema-org.rq");
+            SparqlQuery q = parser.ParseFromFile("resources\\schema-org.rq");
+            SparqlQuery qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
             qDistinct.QueryType = SparqlQueryType.SelectDistinct;
 
             InMemoryDataset dataset = new InMemoryDataset(g);

@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
             this._parser = new SparqlQueryParser();
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\describe-algos.ttl");
+            g.LoadFromFile("resources\\describe-algos.ttl");
             store.Add(g);
             this._data = new InMemoryDataset(store);
             this._processor = new LeviathanQueryProcessor(this._data);

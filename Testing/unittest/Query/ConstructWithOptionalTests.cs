@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         public void SparqlConstructWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
 
             Graph expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query
         public void SparqlUpdateInsertWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph expected = new Graph();
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query
         public void SparqlUpdateDeleteWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph def = new Graph();
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query
         public void SparqlUpdateModifyWithOptional()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph expected = new Graph();
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
         public void SparqlUpdateModifyWithOptional2()
         {
             Graph g = new Graph();
-            g.LoadFromFile("..\\resources\\InferenceTest.ttl");
+            g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
             Graph def = new Graph();

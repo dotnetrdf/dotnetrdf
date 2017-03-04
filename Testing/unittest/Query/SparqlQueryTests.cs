@@ -72,8 +72,8 @@ namespace VDS.RDF.Query
         public void SparqlJoinExplosion()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("..\\resources\\LearningStyles.rdf");
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile("..\\resources\\learning-problem.rq");
+            g.LoadFromFile("resources\\LearningStyles.rdf");
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile("resources\\learning-problem.rq");
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;

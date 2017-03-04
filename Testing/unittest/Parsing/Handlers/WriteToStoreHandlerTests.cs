@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing.Handlers
             //Do the parsing and thus the loading
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri);
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(handler, new StreamReader("..\\resources\\writetostore.nq"));
+            parser.Load(handler, new StreamReader("resources\\writetostore.nq"));
 
             //Load the expected Graphs
             Graph def = new Graph();

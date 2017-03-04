@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
             Graph g = new Graph();
             Console.WriteLine("Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored");
             g.BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale");
-            FileLoader.Load(g, "..\\resources\\bad_rdfa.html");
+            FileLoader.Load(g, "resources\\bad_rdfa.html");
 
             Console.WriteLine(g.Triples.Count + " Triples");
             foreach (Triple t in g.Triples)
@@ -84,10 +84,10 @@ namespace VDS.RDF.Parsing
                     h.BaseUri = g.BaseUri;
 
                     Console.WriteLine("Graph A Warnings:");
-                    FileLoader.Load(g, string.Format("..\\resources\\{0}.xhtml", test));
+                    FileLoader.Load(g, string.Format("resources\\{0}.xhtml", test));
                     Console.WriteLine();
                     Console.WriteLine("Graph B Warnings:");
-                    FileLoader.Load(h, string.Format("..\\resources\\{0}b.xhtml", test));
+                    FileLoader.Load(h, string.Format("resources\\{0}b.xhtml", test));
                     Console.WriteLine();
 
                     Console.WriteLine("Graph A (RDFa 1.0)");
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing
             parser.Warning += TestTools.WarningPrinter;
 
             Graph g = new Graph();
-            parser.Load(g, "..\\resources\\bad_profile.xhtml");
+            parser.Load(g, "resources\\bad_profile.xhtml");
 
             TestTools.ShowGraph(g);
 
