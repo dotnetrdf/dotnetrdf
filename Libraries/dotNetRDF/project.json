@@ -2,9 +2,26 @@
   "name": "dotNetRDF",
   "title": "dotNetRDF",
   "version": "1.0.13-pre6",
-  "description": "API for manipulating RDF data",
-  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+  "description": "dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.",
+  "copyright": "Copyright © dotNetRDF Project 2009-2017",
 
+  "authors": [
+    "RobVesse",
+    "tpluscode",
+    "kal_ahmed",
+    "ronmichael"
+  ],
+  "packOptions": {
+    "tags": [ "RDF", "Semantic", "Web", "SPARQL", "RDF/XML", "Turtle", "Notation3" ],
+    "iconUrl": "http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif",
+    "projectUrl": "http://www.dotnetrdf.org",
+    "licenseUrl": "http://www.opensource.org/licenses/MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnetrdf/dotnetrdf"
+    },
+    "owners": [ "RobVesse", "kal_ahmed" ]
+  },
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
     "VDS.Common": "1.7.0",

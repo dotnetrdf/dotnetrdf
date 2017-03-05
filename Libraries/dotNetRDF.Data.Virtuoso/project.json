@@ -2,8 +2,21 @@
   "name": "dotNetRDF.Data.Virtuoso",
   "title": "dotNetRDF.Data.Virtuoso",
   "version": "1.0.13-pre6",
-  "description": "Virtuoso Backend for dotNetRDF",
-  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+  "description": "dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF",
+  "copyright": "Copyright © dotNetRDF Project 2009-2017",
+
+  "authors": [ "RobVesse", "tpluscode", "kal_ahmed", "ronmichael" ],
+  "packOptions": {
+    "iconUrl": "http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif",
+    "projectUrl": "http://www.dotnetrdf.org",
+    "licenseUrl": "http://www.opensource.org/licenses/MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnetrdf/dotnetrdf"
+    },
+    "owners": [ "RobVesse", "kal_ahmed" ],
+    "tags": [ "RDF", "Semantic", "Web", "SPARQL", "Virtuoso", "OpenLink" ]
+  },
 
   "dependencies": {
     "dotNetRDF": "1.0.13-pre6",

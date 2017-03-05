@@ -2,8 +2,21 @@
   "name": "dotNetRDF.Query.FullText",
   "title": "dotNetRDF.Query.FullText",
   "version": "1.0.13-pre6",
-  "description": "Provides full text SPARQL capabilities using Lucene.Net to dotNetRDF's query engine",
-  "copyright": "Copyright © dotNetRDF Project 2009-2016",
+  "description": "dotNetRDF.Query.FullText provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net",
+  "copyright": "Copyright © dotNetRDF Project 2009-2017",
+
+  "authors": [ "RobVesse", "tpluscode", "kal_ahmed", "ronmichael" ],
+  "packOptions": {
+    "iconUrl": "http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif",
+    "projectUrl": "http://www.dotnetrdf.org",
+    "licenseUrl": "http://www.opensource.org/licenses/MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnetrdf/dotnetrdf"
+    },
+    "owners": [ "RobVesse", "kal_ahmed" ],
+    "tags": [ "RDF", "Semantic", "Web", "SPARQL", "Query", "Full", "Text", "Lucene" ]
+  },
 
   "dependencies": {
     "dotNetRDF": "1.0.13-pre6",
@@ -52,8 +65,6 @@
       }
     }
   },
-
-
 
   "buildOptions": {
     "keyFile": "../../Build/dotNetRDF.snk",

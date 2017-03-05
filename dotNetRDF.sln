@@ -61,14 +61,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkit", "Toolkit", "{AC3D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI Libraries", "GUI Libraries", "{B89D7860-CC8A-4E2B-97AD-42E03FD97766}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{99E6AA95-7905-4997-A593-F21E11BDD2DB}"
-	ProjectSection(SolutionItems) = preProject
-		Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec = Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec
-		Build\nuget\Core\dotNetRDF.nuspec = Build\nuget\Core\dotNetRDF.nuspec
-		Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec = Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec
-		Build\nuget\Core\readme.txt = Build\nuget\Core\readme.txt
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4}"
 	ProjectSection(SolutionItems) = preProject
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
@@ -527,7 +519,6 @@ Global
 		{C5B85D93-6717-4270-9C36-79EFC18441C5} = {05FF69EA-EC65-4CD6-AC82-12D110E6D626}
 		{AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D} = {DF7AB4DD-581E-4785-ACB6-BE22AC36B064}
 		{B89D7860-CC8A-4E2B-97AD-42E03FD97766} = {6F7FE654-1B71-4433-B008-6DA0AB0FCBE0}
-		{99E6AA95-7905-4997-A593-F21E11BDD2DB} = {3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}
 		{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4} = {3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}
 		{38C7644F-11E4-4C98-A82B-63A9AC8D17AA} = {4F5A0512-21FC-45E3-BCC7-D21D3CE73053}
 		{5B73EE4C-D365-437B-B3DC-8D8831BF74F3} = {AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D}
